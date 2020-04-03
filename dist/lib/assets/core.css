@@ -1,0 +1,228 @@
+.rg-celleditor-input, .rg-celleditor input {
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  font-size: 1em;
+  outline: none; }
+
+.rg-celleditor {
+  box-sizing: border-box;
+  z-index: 5;
+  background-color: #ffffff;
+  box-shadow: 1px 1px 6px rgba(0, 0, 0, 0.8);
+  border-style: solid;
+  border-color: #3579f8;
+  border-width: 2px;
+  padding: 0 4px; }
+
+.rg-number-celleditor input {
+  text-align: right; }
+
+.rg-number-cell, .rg-time-cell, .rg-date-cell {
+  justify-content: flex-end; }
+
+.rg-email-cell.invalid {
+  color: red; }
+
+.rg-checkbox-cell {
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  pointer-events: auto; }
+  .rg-checkbox-cell input {
+    width: 20px;
+    height: 20px; }
+
+/* GROUP CELL TEMPLATE */
+.rg-group-cell .chevron {
+  pointer-events: auto;
+  display: flex;
+  justify-content: center;
+  height: 1.4em;
+  width: 1.4em;
+  font-weight: bold;
+  cursor: pointer; }
+  .rg-group-cell .chevron .icon {
+    transition: 200ms all ease-in-out; }
+
+.rg-group-cell.expanded .icon {
+  transform: rotate(90deg); }
+
+.rg-group-cell.collapsed .icon {
+  transform: rotate(0deg) translate(0.15em, 0.15em); }
+
+[contenteditable] {
+  -webkit-user-select: text;
+  user-select: text; }
+
+.reactgrid-content {
+  user-select: none;
+  -moz-user-select: none;
+  -webkit-user-select: none;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  align-items: flex-start; }
+  .reactgrid-content .rg-pane.rg-pane-top, .reactgrid-content .rg-pane.rg-pane-left {
+    position: sticky;
+    position: -webkit-sticky;
+    background-color: #ffffff; }
+  .reactgrid-content .rg-pane.rg-pane-top {
+    top: 0;
+    box-shadow: 0 3px 7px -2px rgba(0, 0, 0, 0.8); }
+    .reactgrid-content .rg-pane.rg-pane-top.rg-pane-left {
+      box-shadow: 0 3px 7px -2px rgba(0, 0, 0, 0.8), 3px 0 7px -2px rgba(0, 0, 0, 0.8); }
+  .reactgrid-content .rg-pane.rg-pane-left {
+    left: 0;
+    box-shadow: 3px 0 7px -2px rgba(0, 0, 0, 0.8); }
+  .reactgrid-content .rg-pane .rg-cell {
+    font-size: 1em;
+    box-sizing: border-box;
+    white-space: nowrap;
+    position: absolute;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    overflow: hidden;
+    padding: 0 4px;
+    outline: none; }
+    .reactgrid-content .rg-pane .rg-cell .rg-touch-resize-handle {
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 11px;
+      height: 100%;
+      pointer-events: auto; }
+      .reactgrid-content .rg-pane .rg-cell .rg-touch-resize-handle .rg-resize-handle {
+        position: absolute;
+        right: 0;
+        width: 6px;
+        height: 100%; }
+        .reactgrid-content .rg-pane .rg-cell .rg-touch-resize-handle .rg-resize-handle:hover {
+          cursor: col-resize;
+          background-color: #3579f8; }
+  .reactgrid-content .rg-pane .rg-separator-line {
+    position: absolute;
+    box-sizing: border-box;
+    pointer-events: none; }
+    .reactgrid-content .rg-pane .rg-separator-line-row {
+      width: 100%;
+      border-bottom-width: 1px;
+      border-bottom-color: #e5e5e5;
+      border-bottom-style: solid; }
+    .reactgrid-content .rg-pane .rg-separator-line-col {
+      height: 100%;
+      top: 0;
+      border-right-width: 1px;
+      border-right-color: #e5e5e5;
+      border-right-style: solid; }
+  .reactgrid-content .rg-pane .rg-cell-focus {
+    position: absolute;
+    pointer-events: none;
+    box-sizing: border-box;
+    border-style: solid;
+    border-width: 2px;
+    border-color: #3579f8; }
+  .reactgrid-content .rg-pane .rg-touch-fill-handle {
+    position: absolute;
+    width: 40px;
+    height: 40px;
+    background-color: rgba(255, 255, 255, 0.01);
+    touch-action: none;
+    pointer-events: auto; }
+    .reactgrid-content .rg-pane .rg-touch-fill-handle .rg-fill-handle {
+      position: absolute;
+      cursor: crosshair;
+      top: 50%;
+      left: 50%;
+      transform: translate(calc(-50% - ( 1px/2 )), calc(-50% - ( 1px/2 )));
+      width: 6.5px;
+      height: 6.5px;
+      background-color: #3579f8;
+      border-width: 1px;
+      border-style: solid;
+      border-color: #ffffff; }
+  .reactgrid-content .rg-pane .rg-partial-area {
+    position: absolute;
+    pointer-events: none;
+    box-sizing: border-box; }
+    .reactgrid-content .rg-pane .rg-partial-area.rg-partial-area-part {
+      border-width: 1px;
+      border-style: dashed;
+      border-color: #000000; }
+    .reactgrid-content .rg-pane .rg-partial-area.rg-partial-area-selected-range {
+      border-width: 1px;
+      border-style: solid;
+      border-color: #3579f8;
+      background-color: rgba(53, 121, 248, 0.3); }
+  .reactgrid-content .rg-hidden-element {
+    position: fixed;
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+    top: 50%;
+    left: 50%; }
+
+/* Customize the label (the container) */
+.checkbox {
+  display: block;
+  position: relative;
+  padding-left: 35px;
+  margin-bottom: 12px;
+  cursor: pointer;
+  font-size: 22px;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none; }
+
+/* Hide the browser's default checkbox */
+.checkbox input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  height: 0;
+  width: 0; }
+
+/* Create a custom checkbox */
+.checkmark {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 25px;
+  width: 25px;
+  background-color: #eee; }
+
+/* On mouse-over, add a grey background color */
+.checkbox:hover input ~ .checkmark {
+  background-color: #ccc; }
+
+/* When the checkbox is checked, add a blue background */
+.checkbox input:checked ~ .checkmark {
+  background-color: #2196F3; }
+
+/* Create the checkmark/indicator (hidden when not checked) */
+.checkmark:after {
+  content: "";
+  position: absolute;
+  display: none; }
+
+/* Show the checkmark when checked */
+.checkbox input:checked ~ .checkmark:after {
+  display: block; }
+
+/* Style the checkmark/indicator */
+.checkbox .checkmark:after {
+  left: 9px;
+  top: 5px;
+  width: 5px;
+  height: 10px;
+  border: solid white;
+  border-width: 0 3px 3px 0;
+  -webkit-transform: rotate(45deg);
+  -ms-transform: rotate(45deg);
+  transform: rotate(45deg); }
