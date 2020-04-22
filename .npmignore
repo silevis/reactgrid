@@ -7,6 +7,3 @@ public
 src
 tsconfig.*json
 package.*json
-azure-pipelines-upgrade-rc-version.yml
-snapshots.js
-.gitignore

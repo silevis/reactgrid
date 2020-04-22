@@ -1,41 +1,64 @@
-import { State, CellMatrix, ReactGridProps } from '../Model';
+import { CellMatrix, ReactGridProps, State } from '../Model';
 import { recalcVisibleRange } from '.';
 import { defaultCellTemplates } from './defaultCellTemplates';
 import { setInitialFocusLocation } from './setInitialFocusLocation';
 
-/*
- * This function is still necessary, it will be hardly to reimplement with this 
- * guide https://en.reactjs.org/blog/2018/06/07/you-probably-dont-need-derived-state.html#when-to-use-derived-state
- * on our state management.
- * 
- * Currently, this function doesn't cause any unexpected behavior.
- */
+
 export function getDerivedStateFromProps(props: ReactGridProps, state: State): State {
-    if (state.props !== props) { // necessary 
-        state = { ...state, props };
-    }
+
+    const stateDeriverWithProps = stateDeriver(props);
+
+    state = stateDeriverWithProps(state)(updateStateProps);
 
     const dataHasChanged = !state.cellMatrix || props !== state.cellMatrix.props;
-
-    if (dataHasChanged) { // necessary, mayby contsraint to not creating new, but just update
-        state = { ...state, cellMatrix: new CellMatrix(props) };
+    if (dataHasChanged) {
+        state = stateDeriverWithProps(state)(updateCellMatrix);
     }
 
-    if (!state.currentlyEditedCell && state.focusedLocation && state.cellMatrix.columns.length > 0 && dataHasChanged) { // keeps focus location in correct place 
-        state = { ...state, focusedLocation: state.cellMatrix.validateLocation(state.focusedLocation) };
+    state = stateDeriverWithProps(state)(updateFocusedLocation);
+
+    if (dataHasChanged) {
+        state = stateDeriverWithProps(state)(updateVisibleRange);
     }
 
-    if (state.visibleRange && dataHasChanged) {
-        state = recalcVisibleRange(state);
-    }
-
-    // TODO move to other place where cellMatrix is created
     state = setInitialFocusLocation(state, props.focusLocation);
 
+    state = stateDeriverWithProps(state)(appendCellTamplatesAndHighlights);
+
+    return state;
+}
+
+export const stateDeriver = (props: ReactGridProps) => (state: State) => (fn: (props: ReactGridProps, state: State) => State) => fn(props, state);
+
+export function updateStateProps(props: ReactGridProps, state: State): State {
+    if (state.props !== props) {
+        state = { ...state, props };
+    }
+    return state;
+}
+
+function updateCellMatrix(props: ReactGridProps, state: State): State {
+    return { ...state, cellMatrix: new CellMatrix(props) };
+}
+
+export function updateFocusedLocation(props: ReactGridProps, state: State): State {
+    if (state.cellMatrix.columns.length > 0 && state.focusedLocation && !state.currentlyEditedCell) {
+        state = { ...state, focusedLocation: state.cellMatrix.validateLocation(state.focusedLocation) };
+    }
+    return state;
+}
+
+export function updateVisibleRange(props: ReactGridProps, state: State): State {
+    if (state.visibleRange) {
+        state = recalcVisibleRange(state);
+    }
+    return state;
+}
+
+export function appendCellTamplatesAndHighlights(props: ReactGridProps, state: State): State {
     return {
         ...state,
-        highlightLocations: props.highlights ?? [],
         cellTemplates: { ...defaultCellTemplates, ...props.customCellTemplates },
+        highlightLocations: props.highlights || [],
     }
-
 }

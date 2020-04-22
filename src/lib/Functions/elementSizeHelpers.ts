@@ -1,4 +1,4 @@
-import { getTopScrollableElement, getScrollOfScrollableElement } from '.';
+import { getScrollOfScrollableElement, getTopScrollableElement } from '.';
 import { State } from '../Model';
 import { isIOS } from './operatingSystem';
 
@@ -13,12 +13,16 @@ export function getOffsetsOfElement(element: any): { offsetLeft: number, offsetT
 }
 
 export function getReactGridOffsets(state: State): { left: number, top: number } {
+    const { scrollLeft, scrollTop } = getScrollOfScrollableElement(state.scrollableElement);
+    const { left, top } = state.reactGridElement!.getBoundingClientRect();
+    const { offsetLeft, offsetTop } = getOffsetsOfElement(state.scrollableElement);
     if (state.scrollableElement === getTopScrollableElement()) {
-        const { scrollLeft, scrollTop } = getScrollOfScrollableElement(state.scrollableElement);
-        const { left, top } = state.reactGridElement.getBoundingClientRect();
-        return { left: left + scrollLeft, top: top + scrollTop }
+        return { left: left + scrollLeft - offsetLeft, top: top + scrollTop - offsetTop }
     } else {
-        return { left: state.reactGridElement?.offsetLeft ?? 0, top: state.reactGridElement?.offsetTop ?? 0 }
+        return {
+            left: left + scrollLeft - offsetLeft + getTopScrollableElement().scrollX,
+            top: top + scrollTop - offsetTop + getTopScrollableElement().scrollY
+        }
     }
 }
 

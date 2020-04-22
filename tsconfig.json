@@ -24,11 +24,10 @@
     "experimentalDecorators": true
   },
   "include": [
-    "src"
+    "src",
+    "core"
   ],
   "exclude": [
-    "src/index.tsx",
-    "src/TestGrid.tsx",
-    "src/flagCell/**"
+    "src/index.tsx"
   ]
 }

@@ -1,11 +1,10 @@
 import { State, CellLocation } from '../Model';
 
-export function setInitialFocusLocation(state: State, locationToFocus: CellLocation | undefined): State {
-    if (locationToFocus && !state.focusedLocation) {
-        // TODO rewrite using focusLocation function, 
+export function setInitialFocusLocation(state: State, focusLocation: CellLocation | undefined): State {
+    if (focusLocation && !state.focusedLocation) {
         state = {
             ...state,
-            focusedLocation: state.cellMatrix.getLocationById(locationToFocus.rowId, locationToFocus.columnId)
+            focusedLocation: state.cellMatrix.getLocationById(focusLocation.rowId, focusLocation.columnId)
         }
     }
     return state;

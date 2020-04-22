@@ -1,30 +1,33 @@
-import { Location, State, StateUpdater, PointerEvent } from '../Model';
-import {
-    getLocationFromClient,
-} from '.';
-import { DefaultBehavior } from '../Behaviors/DefaultBehavior';
-import { areLocationsEqual } from './areLocationsEqual';
-import {
-    isMacOs,
-} from './operatingSystem';
+import { StateUpdater, Location, PointerLocation } from '.';
+import { State, PointerEvent } from '.';
+import { areLocationsEqual } from '../Functions/areLocationsEqual';
+import { isMacOs } from '../Functions/operatingSystem';
+import { getLocationFromClient } from '../Functions';
+import { Behavior } from './Behavior';
 
-export class PointerEventsController {
-    constructor(private readonly updateState: StateUpdater) { }
+export abstract class AbstractPointerEventsController {
 
-    // TODO add opportunity to add Handle PointerCancel
-    private eventTimestamps: number[] = [0, 0];
-    private eventLocations: Array<Location | undefined> = [undefined, undefined];
-    private currentIndex: number = 0;
-    private pointerDownLocation?: Location;
+    constructor(readonly updateState: StateUpdater) { }
 
-    public handlePointerDown = (event: PointerEvent, state: State): State => {
-        if ((event.button !== 0 && event.button !== undefined) || ((event.target as HTMLDivElement).className === 'reactgrid-content' && event.pointerType !== undefined)) {
+    eventTimestamps: [number, number] = [0, 0];
+    eventLocations: Array<Location | undefined> = [undefined, undefined];
+    currentIndex: number = 0;
+    pointerDownLocation?: Location;
+
+    abstract handlePointerDown: (event: PointerEvent, state: State) => State;
+
+    // TODO use as function only???
+    protected isReadyToHandleEvent = (event: PointerEvent, state: State): State => {
+        if ((event.button !== 0 && event.button !== undefined) ||
+            ((event.target as HTMLDivElement).className === 'reactgrid-content' && event.pointerType !== undefined)) {
             return state;
         }
-        window.addEventListener('pointerup', this.handlePointerUp as any);
-        const previousLocation = this.eventLocations[this.currentIndex];
-        const currentLocation = getLocationFromClient(state, event.clientX, event.clientY);
+        return state;
+    }
+
+    protected handlePointerDownInternal(event: PointerEvent, currentLocation: PointerLocation, state: State): State {
         this.pointerDownLocation = currentLocation;
+        const previousLocation = this.eventLocations[this.currentIndex];
         this.currentIndex = 1 - this.currentIndex;
         this.eventTimestamps[this.currentIndex] = new Date().valueOf();
         this.eventLocations[this.currentIndex] = currentLocation;
@@ -35,13 +38,10 @@ export class PointerEventsController {
             state = state.currentBehavior.handlePointerDown(event, currentLocation, state);
         }
         return state;
-    };
+    }
 
-    private handlePointerUp = (event: PointerEvent): void => {
-        if (event.button !== 0 && event.button !== undefined) return;
-
+    protected handlePointerUpInternal(event: PointerEvent, defaultBehavior: Behavior): void {
         this.updateState(state => {
-            window.removeEventListener('pointerup', this.handlePointerUp as any);
             const currentLocation = getLocationFromClient(state, event.clientX, event.clientY);
             const currentTimestamp = new Date().valueOf();
             const secondLastTimestamp = this.eventTimestamps[1 - this.currentIndex];
@@ -56,7 +56,7 @@ export class PointerEventsController {
             ) {
                 state = state.currentBehavior.handlePointerDown(event, currentLocation, state);
             }
-            state = { ...state, currentBehavior: new DefaultBehavior() };
+            state = { ...state, currentBehavior: defaultBehavior };
             if (currentTimestamp - secondLastTimestamp < 500 &&
                 areLocationsEqual(currentLocation, this.eventLocations[0]) &&
                 areLocationsEqual(currentLocation, this.eventLocations[1])) {
@@ -67,8 +67,9 @@ export class PointerEventsController {
                 && areLocationsEqual(currentLocation, this.eventLocations[0])
                 && areLocationsEqual(currentLocation, this.eventLocations[1])
             ) { }
-            state.hiddenFocusElement.focus();
+            state.hiddenFocusElement?.focus();
             return state;
         });
-    };
+    }
+
 }

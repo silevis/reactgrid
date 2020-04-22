@@ -69,13 +69,14 @@ function App() {
     <ReactGrid
       rows={state.rows}
       columns={state.columns}
+      license={"non-commercial"}
     />
   );
 }
 ```
 
 ## 4. Render your component
-
+a
 ```tsx
 const rootElement = document.getElementById("root");
 ReactDOM.render(<App />, rootElement);
@@ -85,13 +86,13 @@ Open example on [codesandbox.io](https://codesandbox.io/s/reactgrid-getting-star
 
 ## Docs
 
-Browse docs: [click](http://reactgrid.com/)
+Browse docs: [click](http://reactgrid.com/docs/2.0.9/0-introduction/)
 
 ## Licensing
 
 ReactGrid is distributed under [MIT](link) license.
 
-(c) 2020 Silevis Software
+(c) 2020 Silevis Sorftware
 
 ## Author
 
@@ -99,6 +100,6 @@ ReactGrid is distributed under [MIT](link) license.
 
 <p align="center">
   <a href="https://www.silevis.com/">
-    <img alt="Silevis" src="https://media.licdn.com/dms/image/C4D0BAQGgkonm5f80mA/company-logo_200_200/0?e=2159024400&v=beta&t=l5Nw-CF55OIxVORSAXOw79DlgSiDakhnYLlkBOMj7s8" width="200" />
+    <img alt="Silevis" src="https://media.licdn.com/dms/image/C4D0BAQGgkonm5f80mA/company-logo_200_200/0?e=2159024400&v=beta&t=l5Nw-CF55OIxVORSAXOw79DlgSiDakhnYLlkBOMj7s8" width="120" />
   </a>
 </p>

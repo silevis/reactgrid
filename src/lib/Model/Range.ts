@@ -1,6 +1,18 @@
 import { GridColumn, GridRow, Location } from '.';
 
-export class Range {
+export type SliceDirection = 'columns' | 'rows' | 'both';
+
+export interface IRange {
+    readonly width: number;
+    readonly height: number;
+    readonly first: Location;
+    readonly last: Location;
+
+    contains: (location: Location) => boolean;
+    slice: (range: Range, direction: SliceDirection) => Range;
+}
+
+export class Range implements IRange {
     readonly width: number;
     readonly height: number;
     readonly first: Location;
@@ -22,7 +34,7 @@ export class Range {
             location.row.idx <= this.last.row.idx;
     }
 
-    slice(range: Range, direction: 'columns' | 'rows' | 'both'): Range {
+    slice(range: Range, direction: SliceDirection): Range {
         const firstRow = direction === 'rows' ? range.first.row : this.first.row;
         const firstColumn = direction === 'columns' ? range.first.column : this.first.column;
         const lastRow = direction === 'rows' ? range.last.row : this.last.row;

@@ -1,4 +1,4 @@
-const characterMapShift: string[] = [];
+const characterMapShift: any = [];
 characterMapShift[8] = "";
 characterMapShift[9] = "";
 characterMapShift[13] = "\n";
@@ -101,7 +101,7 @@ characterMapShift[220] = "|";
 characterMapShift[221] = "}";
 characterMapShift[222] = "\"";
 
-const characterMap: string[] = [];
+const characterMap: any = [];
 characterMap[8] = "";
 characterMap[9] = "";
 characterMap[13] = "\n";

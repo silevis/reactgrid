@@ -1,23 +1,28 @@
 import * as React from 'react'
 import * as ReactDOM from 'react-dom';
 import { TestGrid } from './TestGrid';
-// DO NOT MOVE
-// this index.tsx is required by react-scripts-ts
+import { ReactGrid } from './lib/Components/ReactGrid';
+import { config } from './testEnvConfig';
 
-let component = <TestGrid />;
+const props = {
+  component: ReactGrid,
+  isPro: false,
+  config
+}
+let component = <TestGrid {...props} />;
 switch (window.location.pathname) {
   case '/enableSticky':
-    component = <TestGrid
+    component = <TestGrid {...props}
       enableSticky
     />;
     break;
   case '/enableColumnAndRowSelection':
-    component = <TestGrid
+    component = <TestGrid {...props}
       enableColumnAndRowSelection
     />;
     break;
   case '/enableColumnAndRowSelectionWithSticky':
-    component = <TestGrid
+    component = <TestGrid {...props}
       enableColumnAndRowSelection
       enableSticky
     />;

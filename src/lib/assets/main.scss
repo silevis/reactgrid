@@ -1,17 +1,10 @@
-@mixin fill-absolute {
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
-}
-
 [contenteditable] {
     -webkit-user-select: text;
     user-select: text;
 }
 
 .reactgrid-content {
-    user-select: none;
+    user-select: none; 
     -moz-user-select: none;
     -webkit-user-select: none;
     display: flex;
@@ -19,7 +12,7 @@
     justify-content: flex-start;
     align-items: flex-start;
     .rg-pane {
-        &.rg-pane-top, &.rg-pane-left {
+        &.rg-pane-top, &.rg-pane-bottom, &.rg-pane-left, &.rg-pane-right {
             position: sticky;
             position: -webkit-sticky;
             background-color: $sticky-bg-color;
@@ -31,10 +24,30 @@
                 box-shadow: $shadow-on-bottom $cell-shadow-color,
                 $shadow-on-right $cell-shadow-color;
             }
+            &.rg-pane-right {
+                box-shadow: $shadow-on-bottom $cell-shadow-color,
+                $shadow-on-left $cell-shadow-color;
+            }
+        }
+        &.rg-pane-bottom {
+            bottom: 0;
+            box-shadow: $shadow-on-top $cell-shadow-color;
+            &.rg-pane-left {
+                box-shadow: $shadow-on-top $cell-shadow-color,
+                $shadow-on-right $cell-shadow-color;
+            }
+            &.rg-pane-right {
+                box-shadow: $shadow-on-top $cell-shadow-color,
+                $shadow-on-left $cell-shadow-color;
+            }
         }
         &.rg-pane-left {
             left: 0; 
             box-shadow: $shadow-on-right $cell-shadow-color; 
+        }
+        &.rg-pane-right {
+            right: 0; 
+            box-shadow: $shadow-on-left $cell-shadow-color;
         }
         .rg-cell {
             font-size: $cell-font-size;
@@ -129,6 +142,39 @@
                 border-color: $partial-area-border-color;
                 background-color: $partial-area-background-color;
             }
+        }
+    }
+    .rg-context-menu {
+        position: fixed;
+        z-index: 1000;
+        background-color: $main-bg-color;
+        font-size: $context-menu-font-size;
+        box-shadow: $context-menu-shadow $cell-shadow-color;
+        .rg-context-menu-option {
+            padding: $context-menu-option-padding;
+            cursor: pointer;
+            &:hover {
+                background-color: darken($main-bg-color, 5);
+            }
+        }
+    }
+    .rg-shadow {
+        position: absolute;
+        background-color: $shadow-bg;
+        opacity: $opacity-10;
+        z-index: 4;
+    }
+    .rg-line {
+        position: absolute;
+        background-color: $resize-line-color;
+        z-index: 4;
+        &-horizontal {
+            left: 0;
+            height: $line-size-horizontal;
+        }
+        &-vertical {
+            top: 0;
+            width: $line-size-vertical;
         }
     }
     .rg-hidden-element {

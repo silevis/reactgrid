@@ -1,6 +1,6 @@
 {
   "name": "@silevis/reactgrid",
-  "version": "3.0.3",
+  "version": "3.0.4",
   "homepage": "https://reactgrid.com",
   "license": "MIT",
   "keywords": [
@@ -8,41 +8,43 @@
     "reactgrid",
     "spreadsheet",
     "datagrid",
-    "table"
+    "datatable"
   ],
-  "main": "dist/reactgrid.js",
-  "typings": "dist/reactgrid.d.ts",
+  "main": "src/reactgrid.js",
+  "typings": "src/reactgrid.d.ts",
   "devDependencies": {
     "@cypress/snapshot": "^2.1.7",
-    "@types/node": "^13.11.0",
-    "@types/react": "^16.9.32",
+    "@types/node": "^13.11.1",
+    "@types/react": "^16.9.34",
     "@types/react-dom": "^16.9.6",
     "cross-env": "^7.0.2",
-    "cypress": "^4.3.0",
+    "cypress": "^4.4.0",
     "node-sass": "^4.13.1",
     "npm-run-all": "^4.1.5",
     "npm-version-suffix": "^0.2.0",
-    "react": "^16.13.1",
-    "react-dom": "^16.13.1",
     "react-scripts": "^3.4.1",
     "typescript": "^3.8.3"
   },
   "peerDependencies": {
-    "react": "^16.13.0"
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1"
   },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
     "build:tsc": "rm -rf ./dist && tsc -p tsconfig.prod.json",
-    "copy:assets": "cp -r src/lib/assets dist/lib/assets",
-    "build:assets": "node-sass src/lib/assets/core.scss --output dist/lib/assets",
-    "pre-deploy": "npm-run-all build:tsc copy:assets build:assets",
+    "copy:assets": "cp -r src/lib/assets dist/src/lib/assets",
+    "build:assets": "node-sass src/lib/assets/core.scss --output dist/src/lib/assets",
+    "copy:package.json": "cp -r package.json dist",
+    "copy:testEnvConfig.d.ts": "cp -r src/testEnvConfig.d.ts dist",
+    "copy:theming-test.scss": "cp -r src/theming-test.scss dist/src",
+    "pre-deploy": "npm-run-all build:tsc copy:assets build:assets copy:package.json copy:testEnvConfig.d.ts copy:theming-test.scss",
     "deploy": "npm publish && echo 'Finished publishing NPM package'",
     "eject": "react-scripts eject",
     "test:cypress": "node_modules\\.bin\\cypress open",
-    "run:all:tests": "npm-run-all -p test:cypress:standard test:cypress:sticky",
-    "test:cypress:standard": "node_modules\\.bin\\cypress run --browser chrome --spec 'cypress/integration/tests/standard/*'",
-    "test:cypress:sticky": "node_modules\\.bin\\cypress run --browser chrome --spec 'cypress/integration/tests/sticky/*'",
+    "run:all:tests": "npm-run-all -p test:cypress:interactive:standard test:cypress:interactive:sticky",
+    "test:cypress:interactive:standard": "node_modules\\.bin\\cypress run --browser chrome --spec 'cypress/integration/tests/standard/*'",
+    "test:cypress:interactive:sticky": "node_modules\\.bin\\cypress run --browser chrome --spec 'cypress/integration/tests/sticky/*'",
     "remove-suffix": "cross-env SUFFIX=rc node ./node_modules/npm-version-suffix/run-remove-suffix.js"
   },
   "eslintConfig": {

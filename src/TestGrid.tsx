@@ -1,15 +1,11 @@
 import React, { useState } from 'react';
 import {
-    ReactGrid, Column, Row, CellChange, Id, MenuOption, SelectionMode, DropPosition, Cell, CellLocation,
-    NumberCell, GroupCell,
+    Column, Row, CellChange, Id, MenuOption, SelectionMode, DropPosition, Cell, CellLocation,
+    NumberCell, GroupCell
 } from './lib';
-import { config } from './testEnvConfig';
 import './theming-test.scss';
 import './lib/assets/core.scss';
-import { FlagCellTemplate } from './flagCell/FlagCellTemplate';
-
-const columnCount = config.columns;
-const rowCount = config.rows;
+import { Config } from './testEnvConfig';
 
 interface TestGridState {
     columns: Column[]
@@ -23,13 +19,14 @@ interface TestGridProps {
     enableSticky?: boolean;
     enableColumnAndRowSelection?: boolean;
     disableFloatingCellEditor?: boolean;
+    isPro?: boolean;
+    config: Config;
+    component?: any; //TODO check why any?
 }
 
 const emailValidator = (email: string): boolean => {
     const email_regex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-    if (email_regex.test(email.replace(/\s+/g, '')))
-        return true;
-    return false;
+    return email_regex.test(email.replace(/\s+/g, ''));
 }
 
 export const TestGrid: React.FunctionComponent<TestGridProps> = (props) => {
@@ -39,14 +36,14 @@ export const TestGrid: React.FunctionComponent<TestGridProps> = (props) => {
     const myTimeFormat = new Intl.DateTimeFormat('pl', { hour: '2-digit', minute: '2-digit' })
 
     const [state, setState] = useState<TestGridState>(() => {
-        const columns = new Array(columnCount).fill(0).map((_, ci) => ({
-            columnId: `col-${ci}`, resizable: true, reorderable: true, width: config.cellWidth,
+        const columns = new Array(props.config.columns).fill(0).map((_, ci) => ({
+            columnId: `col-${ci}`, resizable: true, reorderable: true, width: props.config.cellWidth,
         } as Column));
 
-        const rows = new Array(rowCount).fill(0).map((_, ri) => {
+        const rows = new Array(props.config.rows).fill(0).map((_, ri) => {
             return {
-                rowId: `row-${ri}`, reorderable: true, height: config.cellHeight, cells: columns.map((_, ci) => {
-                    if (ri === 0) return { type: config.firstRowType, text: `${ri} - ${ci}` }
+                rowId: `row-${ri}`, reorderable: true, height: props.config.cellHeight, cells: columns.map((_, ci) => {
+                    if (ri === 0) return { type: props.config.firstRowType, text: `${ri} - ${ci}` }
                     const now = new Date();
                     switch (ci) {
                         case 0:
@@ -63,8 +60,6 @@ export const TestGrid: React.FunctionComponent<TestGridProps> = (props) => {
                             return { type: 'time', format: myTimeFormat, time: new Date(now.setHours(now.getHours() + ri)) }
                         case 6:
                             return { type: 'checkbox', checked: false, checkedText: 'Zaznaczono', uncheckedText: false }
-                        case 7:
-                            return { type: 'flag', text: 'pol' }
                         default:
                             return { type: 'text', text: `${ri} - ${ci}`, validator: () => { } }
                     }
@@ -152,55 +147,54 @@ export const TestGrid: React.FunctionComponent<TestGridProps> = (props) => {
         return true;
     }
 
+    const rgProps = {
+        rows: state.rows,
+        columns: state.columns,
+        focusLocation: { columnId: 'col-2', rowId: 'row-2', color: 'red' },
+        onCellsChanged: handleChanges,
+        onColumnResized: handleColumnResize,
+        highlights: [{ columnId: 'col-1', rowId: 'row-1', borderColor: '#00ff00' }],
+        stickyLeftColumns: props.enableSticky && props.config.stickyLeft,
+        stickyRightColumns: props.enableSticky && props.config.stickyRight,
+        stickyTopRows: props.enableSticky && props.config.stickyTop,
+        stickyBottomRows: props.enableSticky && props.config.stickyBottom,
+        canReorderColumns: handleCanReorderColumns,
+        canReorderRows: handleCanReorderRows,
+        onColumnsReordered: handleColumnsReordered,
+        onRowsReordered: handleRowsReordered,
+        onContextMenu: handleContextMenu,
+        onFocusLocationChanged: handleFocusLocationChanged,
+        enableRowSelection: props.enableColumnAndRowSelection || false,
+        enableColumnSelection: props.enableColumnAndRowSelection || false,
+        disableFloatingCellEditor: props.disableFloatingCellEditor || false,
+    }
+
+    const Component = props.component;
+
     return (
         <>
             <div className="test-grid-container" data-cy="div-scrollable-element" style={{
-                ...(!config.pinToBody && {
-                    height: props.containerHeight || config.rgViewportHeight,
-                    width: props.containerWidth || config.rgViewportWidth,
-                    margin: props.containerMargin || config.margin,
+                ...(!props.config.pinToBody && {
+                    height: props.containerHeight || props.config.rgViewportHeight,
+                    width: props.containerWidth || props.config.rgViewportWidth,
+                    margin: props.containerMargin || props.config.margin,
                     overflow: 'auto',
                 }),
                 position: 'relative',
-                ...(config.flexRow && {
+                ...(props.config.flexRow && {
                     display: 'flex',
                     flexDirection: 'row'
                 }),
             }}>
-                {config.enableAdditionalContent &&
+                {props.config.enableAdditionalContent &&
                     <>
-                        <Logo />
-                        <Logo />
-                        <Logo />
+                        <Logo isPro={props.isPro} />
+                        <Logo isPro={props.isPro} />
+                        <Logo isPro={props.isPro} />
                     </>
                 }
-                <ReactGrid
-                    rows={state.rows}
-                    columns={state.columns}
-                    customCellTemplates={{
-                        'flag': new FlagCellTemplate(),
-                    }}
-                    focusLocation={{ columnId: 'col-2', rowId: 'row-2' }}
-                    onCellsChanged={handleChanges}
-                    onColumnResized={handleColumnResize}
-                    highlights={[{ columnId: 'col-1', rowId: 'row-1', borderColor: '#00ff00' }]}
-                    stickyLeftColumns={props.enableSticky && config.stickyLeft}
-                    stickyRightColumns={props.enableSticky && config.stickyRight}
-                    stickyTopRows={props.enableSticky && config.stickyTop}
-                    stickyBottomRows={props.enableSticky && config.stickyBottom}
-                    canReorderColumns={handleCanReorderColumns}
-                    canReorderRows={handleCanReorderRows}
-                    onColumnsReordered={handleColumnsReordered}
-                    onRowsReordered={handleRowsReordered}
-                    onContextMenu={handleContextMenu}
-                    onFocusLocationChanged={handleFocusLocationChanged}
-                    enableRowSelection={props.enableColumnAndRowSelection || false}
-                    enableColumnSelection={props.enableColumnAndRowSelection || false}
-                    disableFloatingCellEditor={props.disableFloatingCellEditor || false}
-
-                />
-
-                {config.enableAdditionalContent &&
+                <Component {...rgProps} />
+                {props.config.enableAdditionalContent &&
                     <>
                         <h1 style={{ width: 3000 }}>TEXT</h1> Test WITH IT
                         <h1>TEXT</h1> Test WITH IT
@@ -218,7 +212,8 @@ export const TestGrid: React.FunctionComponent<TestGridProps> = (props) => {
                 }
             </div>
             <input type='text' data-cy="outer-input" />
-            {config.enableAdditionalContent &&
+            <Logo isPro={props.isPro} />
+            {props.config.enableAdditionalContent &&
                 <>
                     <h1 style={{ width: 3000 }}>TEXT</h1> Test WITH IT
                     <h1>TEXT</h1> Test WITH IT
@@ -239,11 +234,11 @@ export const TestGrid: React.FunctionComponent<TestGridProps> = (props) => {
 
 }
 
-const Logo = () => {
+const Logo: React.FC<{ isPro?: boolean }> = props => {
     return <div style={{ display: 'flex', minWidth: 185 }}>
         <h1 style={{ position: 'relative' }}>
             ReactGrid
-            <div
+            {props.isPro && <div
                 style={{
                     position: 'absolute',
                     top: '-0.5em',
@@ -255,7 +250,7 @@ const Logo = () => {
                     fontSize: '0.3em',
                     color: 'black'
                 }}>
-                PRO</div>
+                PRO</div>}
         </h1>
     </div>
 }

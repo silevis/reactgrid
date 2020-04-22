@@ -10,11 +10,13 @@ export interface CellRendererProps {
 }
 
 export const CellRenderer: React.FunctionComponent<CellRendererProps> = props => {
-    const { cell, cellTemplate } = getCompatibleCellAndTemplate(props.state, props.location);
-    const state = { ...props.state };
-    const location = props.location;
-    const isFocused = state.focusedLocation !== undefined && (state.focusedLocation.column.idx === props.location.column.idx && state.focusedLocation.row.idx === props.location.row.idx);
-    const customClass = cellTemplate.getClassName ? cellTemplate.getClassName(cell, false) : '';
+    const { state, location, children } = props;
+    const { cell, cellTemplate } = getCompatibleCellAndTemplate(state, location);
+    // const state = { ...props.state };
+    // const location = props.location;
+    const isFocused = state.focusedLocation !== undefined && (state.focusedLocation.column.idx === location.column.idx &&
+        state.focusedLocation.row.idx === location.row.idx);
+    const customClass = (cellTemplate.getClassName && cellTemplate.getClassName(cell, false)) ?? '';
 
     // TODO custom style
     const style: React.CSSProperties = {
@@ -31,12 +33,11 @@ export const CellRenderer: React.FunctionComponent<CellRendererProps> = props =>
     return (
         <div className={`rg-cell rg-${cell.type}-cell ${customClass}`} style={style}
             data-cell-colidx={location.column.idx} data-cell-rowidx={location.row.idx} >
-            {
-                cellTemplate.render(cell, false, (cell, commit) => {
-                    if (!commit) throw new Error('commit should be set to true in this case.');
-                    props.state.update(state => tryAppendChange(state, location, cell));
-                })
-            }
+            {cellTemplate.render(cell, false, (cell, commit) => {
+                if (!commit) throw new Error('commit should be set to true in this case.');
+                state.update(state => tryAppendChange(state, location, cell));
+            })}
+            {children}
         </div >
     );
 };

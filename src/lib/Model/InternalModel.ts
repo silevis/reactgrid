@@ -1,5 +1,5 @@
 import { Row, Column, State } from '.';
-import { EventHandlers } from '../Functions/EventHandlers';
+import { EventHandlers } from './EventHandlers';
 
 export type Orientation = 'horizontal' | 'vertical';
 

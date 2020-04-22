@@ -26,7 +26,7 @@ export class TextCellTemplate implements CellTemplate<TextCell> {
 
     handleKeyDown(cell: Compatible<TextCell>, keyCode: number, ctrl: boolean, shift: boolean, alt: boolean): { cell: Compatible<TextCell>, enableEditMode: boolean } {
         const char = getCharFromKeyCode(keyCode, shift);
-        if (!ctrl && !alt && !shift && isAlphaNumericKey(keyCode))
+        if (!ctrl && !alt && isAlphaNumericKey(keyCode))
             return { cell: this.getCompatibleCell({ ...cell, text: shift ? char : char.toLowerCase() }), enableEditMode: true }
         return { cell, enableEditMode: keyCode === keyCodes.POINTER || keyCode === keyCodes.ENTER }
     }

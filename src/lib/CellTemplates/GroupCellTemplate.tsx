@@ -18,19 +18,19 @@ export class GroupCellTemplate implements CellTemplate<GroupCell> {
 
     getCompatibleCell(uncertainCell: Uncertain<GroupCell>): Compatible<GroupCell> {
         const text = getCellProperty(uncertainCell, 'text', 'string');
-        let isExpanded = false;
+        let isExpanded;
         try {
             isExpanded = getCellProperty(uncertainCell, 'isExpanded', 'boolean');
         } catch {
             isExpanded = true;
         }
-        let indent = -1;
+        let indent;
         try {
             indent = getCellProperty(uncertainCell, 'indent', 'number');
         } catch {
             indent = 0;
         }
-        let hasChildrens = false;
+        let hasChildrens;
         try {
             hasChildrens = getCellProperty(uncertainCell, 'hasChildrens', 'boolean');
         } catch {
