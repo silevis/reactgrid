@@ -1,12 +1,14 @@
 import { GridColumn, GridRow, Location } from '.';
 
+export type SliceDirection = 'columns' | 'rows' | 'both';
+
+
 export class Range {
     readonly width: number;
     readonly height: number;
     readonly first: Location;
     readonly last: Location;
 
-    // TODO add containsRange and intersectsWith in pro be extending this class
     constructor(public readonly rows: GridRow[], public readonly columns: GridColumn[]) {
         this.first = { row: this.rows[0], column: this.columns[0] };
         this.last = { row: this.rows[this.rows.length - 1], column: this.columns[this.columns.length - 1] };
@@ -22,7 +24,7 @@ export class Range {
             location.row.idx <= this.last.row.idx;
     }
 
-    slice(range: Range, direction: 'columns' | 'rows' | 'both'): Range {
+    slice(range: Range, direction: SliceDirection): Range {
         const firstRow = direction === 'rows' ? range.first.row : this.first.row;
         const firstColumn = direction === 'columns' ? range.first.column : this.first.column;
         const lastRow = direction === 'rows' ? range.last.row : this.last.row;

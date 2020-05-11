@@ -1,11 +1,6 @@
-import { Id } from './PublicModel';
-import { Range } from './Range';
-import { Column, Row, Location, Cell, GridRow, GridColumn } from '.';
+import { Location, GridRow, GridColumn, Id, Range, Cell, Column, Row } from '.';
 
-const DEFAULT_ROW_HEIGHT = 25;
-const DEFAULT_COLUMN_WIDTH = 150;
-
-interface IndexLookup {
+export interface IndexLookup {
     [id: string]: number;
 }
 
@@ -17,60 +12,31 @@ export interface CellMatrixProps {
     stickyLeftColumns?: number;
 }
 
+export interface StickyRanges {
+    stickyTopRange: Range;
+    stickyLeftRange: Range;
+}
+
 // INTERNAL
-export class CellMatrix {
-    readonly stickyTopRange: Range;
-    readonly stickyLeftRange: Range;
-    readonly scrollableRange: Range;
-    readonly width: number = 0;
-    readonly height: number = 0;
+export class CellMatrix<TStickyRanges extends StickyRanges = StickyRanges, TCellMatrixProps extends CellMatrixProps = CellMatrixProps> {
 
-    readonly columns: GridColumn[];
-    readonly rows: GridRow[];
-    readonly first: Location;
-    readonly last: Location;
+    static DEFAULT_ROW_HEIGHT = 25;
+    static DEFAULT_COLUMN_WIDTH = 150;
 
-    private readonly rowIndexLookup: IndexLookup = {};
-    private readonly columnIndexLookup: IndexLookup = {};
+    props!: TCellMatrixProps;
+    scrollableRange!: Range;
+    width: number = 0;
+    height: number = 0;
 
-    constructor(public readonly props: CellMatrixProps) {
-        // add opporutnity to add custom manage cellMatrix and rigth and bottom sticky
-        let totalHeight = 0,
-            totalWidth = 0;
+    columns!: GridColumn[];
+    rows!: GridRow[];
+    first!: Location;
+    last!: Location;
 
-        this.rows = props.rows.reduce(
-            (rows, row, idx) => {
-                const top = idx === 0 || idx === props.stickyTopRows ? 0 : rows[idx - 1].top + rows[idx - 1].height;
-                const height = row.height || DEFAULT_ROW_HEIGHT;
-                rows.push({ ...row, top, height, idx, bottom: top + height });
-                totalHeight += height;
+    rowIndexLookup: IndexLookup = {};
+    columnIndexLookup: IndexLookup = {};
 
-                // TODO what with rowIndexLookup?
-                this.rowIndexLookup[row.rowId] = idx;
-                return rows;
-            },
-            [] as GridRow[]
-        );
-        this.columns = props.columns.reduce(
-            (cols, column, idx) => {
-                const left = idx === 0 || idx === props.stickyLeftColumns ? 0 : cols[idx - 1].left + cols[idx - 1].width;
-                const width = column.width || DEFAULT_COLUMN_WIDTH;
-                cols.push({ ...column, idx, left, width, right: left + width });
-                totalWidth += width;
-                // TODO what with columnIndexLookup?
-                this.columnIndexLookup[column.columnId] = idx;
-                return cols;
-            },
-            [] as GridColumn[]
-        );
-        this.height = totalHeight;
-        this.width = totalWidth;
-        this.stickyLeftRange = new Range(this.rows, this.columns.slice(0, props.stickyLeftColumns || 0));
-        this.stickyTopRange = new Range(this.rows.slice(0, props.stickyTopRows || 0), this.columns);
-        this.scrollableRange = new Range(this.rows.slice(props.stickyTopRows || 0), this.columns.slice(props.stickyLeftColumns || 0));
-        this.first = this.getLocation(0, 0);
-        this.last = this.getLocation(this.rows.length - 1, this.columns.length - 1);
-    }
+    constructor(public ranges: TStickyRanges) { }
 
     getRange(start: Location, end: Location): Range {
         const cols = this.columns.slice(start.column.idx < end.column.idx ? start.column.idx : end.column.idx, start.column.idx > end.column.idx ? start.column.idx + 1 : end.column.idx + 1);
@@ -94,9 +60,12 @@ export class CellMatrix {
         return this.getLocation(rowIdx, colIdx);
     }
 
-    // add validateRange
+    validateRange(range: Range): Range {
+        return this.getRange(this.validateLocation(range.first), this.validateLocation(range.last));
+    }
 
     getCell(location: Location): Cell {
-        return this.rows[location.row.idx].cells[location.column.idx]
+        return this.rows[location.row.idx].cells[location.column.idx];
     }
+
 }

@@ -1,9 +1,10 @@
 /// <reference types="cypress" />
 
 const Constants = require('./constants');
-const config = require('../../../src/testEnvConfig');
+const config = require('../../../src/test/testEnvConfig');
 
 class Utils {
+
     visit() {
         cy.visit('/');
     }
@@ -62,11 +63,11 @@ class Utils {
     selectCell(clientX, clientY, customEventArgs) {
         const scrollableElement = this.getScrollableElement();
         if (customEventArgs !== undefined) {
-            scrollableElement.trigger('pointerdown', clientX, clientY, customEventArgs);
+            scrollableElement.trigger('pointerdown', clientX, clientY, { ...customEventArgs, pointerType: 'mouse' });
         } else {
-            scrollableElement.trigger('pointerdown', clientX, clientY);
+            scrollableElement.trigger('pointerdown', clientX, clientY, { pointerType: 'mouse' });
         }
-        scrollableElement.trigger('pointerup', clientX, clientY, { force: true });
+        scrollableElement.trigger('pointerup', clientX, clientY, { force: true, pointerType: 'mouse' });
         cy.wait(200);
     }
 
@@ -127,21 +128,6 @@ class Utils {
         });
     }
 
-    swingCursor(startX, startY, direction, repeations) {
-        const log = false;
-        for (let i = 0; i < repeations; i++) {
-            cy.wait(10, { log });
-            const delta = i % 2;
-            if (direction === 'horizontal') {
-                this.getBody().trigger('pointermove', { clientX: startX + delta, clientY: startY, force: true, log });
-            } else if (direction === 'vertical') {
-                this.getBody().trigger('pointermove', { clientX: startX, clientY: startY + delta, force: true, log });
-            } else {
-                cy.log('Unknown cursor swing direction!')
-            }
-        }
-    }
-
     selectCellInEditMode(clientX, clientY) {
         this.selectCell(clientX, clientY)
         this.keyDown(Constants.keyCodes.Enter, { force: true });
@@ -151,31 +137,6 @@ class Utils {
         return Math.random()
             .toString(36)
             .substring(7);
-    }
-
-
-    moveCursorHorizontallyOnScrollable(startX, startY, distance, step = 5) {
-        const endingPoint = startX + distance;
-        const logEnabled = false;
-        const rg = this.getScrollableElement();
-        const body = this.getBody();
-        rg.trigger('pointerdown', startX, startY);
-        for (let x = startX; distance < 0 ? (x > endingPoint) : (x < endingPoint); x += distance > 0 ? step : -step) {
-            body.trigger('pointermove', x, startY, { log: logEnabled, force: true });
-        }
-        body.trigger('pointerup', { clientX: endingPoint, clientY: startY, log: logEnabled, force: true });
-    }
-
-    moveCursorVerticallyOnScrollable(startX, startY, distance, step = 5) {
-        const endingPoint = startY + distance;
-        const logEnabled = true;
-        const rg = this.getScrollableElement();
-        const body = this.getBody();
-        rg.trigger('pointerdown', startX, startY);
-        for (let x = startY; distance < 0 ? (x > endingPoint) : (x < endingPoint); x += distance > 0 ? step : -step) {
-            body.trigger('pointermove', startX, x, { log: logEnabled, force: true });
-        }
-        body.trigger('pointerup', { clientX: startX, clientY: endingPoint, log: logEnabled, force: true });
     }
 
     selectCellByTouch(clientX, clientY) {

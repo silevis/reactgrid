@@ -27,8 +27,6 @@
     "src"
   ],
   "exclude": [
-    "src/index.tsx",
-    "src/TestGrid.tsx",
-    "src/flagCell/**"
+    "src/index.tsx"
   ]
 }

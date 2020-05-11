@@ -2,9 +2,10 @@
 
 const Utils = require('../../common/utils');
 const Constants = require('../../common/constants');
-const config = require('../../../../src/testEnvConfig');
+const config = require('../../../../src/test/testEnvConfig');
 
-context('Selection', () => {
+context('Focus', () => {
+
     beforeEach(() => {
         Utils.visit();
     });
@@ -37,4 +38,5 @@ context('Selection', () => {
         Utils.assertElementLeftIsEqual(Utils.getCellFocus(), config.cellWidth * (config.columns - 1) - config.lineWidth);
         Utils.assertElementTopIsEqual(Utils.getCellFocus(), config.cellHeight * (config.rows - 1) - config.lineWidth);
     })
+
 });

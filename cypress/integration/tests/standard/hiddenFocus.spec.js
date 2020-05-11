@@ -2,7 +2,7 @@
 
 const Utils = require('../../common/utils');
 const Constants = require('../../common/constants');
-const config = require('../../../../src/testEnvConfig');
+const config = require('../../../../src/test/testEnvConfig');
 
 context('Hidden focus', () => {
     beforeEach(() => {

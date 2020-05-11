@@ -1,5 +1,5 @@
 const Utils = require('../../common/utils');
-const config = require('../../../../src/testEnvConfig');
+const config = require('../../../../src/test/testEnvConfig');
 const Constants = require('../../common/constants');
 
 context('Scroll', () => {

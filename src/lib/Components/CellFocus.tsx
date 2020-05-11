@@ -8,6 +8,7 @@ interface CellFocusProps {
     className?: string;
 }
 
+// TODO make HOC for highlights 
 export const CellFocus: React.FunctionComponent<CellFocusProps> = props => (
     <div
         key={props.borderColor}

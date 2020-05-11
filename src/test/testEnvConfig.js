@@ -1,3 +1,4 @@
+// TODO is necessary to export this file (export only definition)
 export const config = {
     pinToBody: false,
     enableAdditionalContent: false,
@@ -6,6 +7,7 @@ export const config = {
     rgViewportHeight: 600,
     rgViewportWidth: 1150,
     margin: '0',
+    disableRangeSelection: false,
 
     cellHeight: 25,
     cellWidth: 150,

@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { State, GridRow, GridColumn, Borders } from '../Model';
-import { CellRenderer } from './CellRenderer';
+import { CellRendererProps } from './CellRenderer';
 
 export interface RowRendererProps {
     state: State;
@@ -8,19 +8,29 @@ export interface RowRendererProps {
     columns: GridColumn[];
     forceUpdate: boolean;
     borders: Borders;
+    cellRenderer: React.FunctionComponent<CellRendererProps>;
 }
 
-export class RowRenderer extends React.Component<RowRendererProps, {}> {
+export class RowRenderer extends React.Component<RowRendererProps> {
     shouldComponentUpdate(nextProps: RowRendererProps) {
-        return nextProps.forceUpdate || nextProps.columns[0].idx !== this.props.columns[0].idx || nextProps.columns.length !== this.props.columns.length;
+        const { columns } = this.props;
+        return nextProps.forceUpdate
+            || nextProps.columns[0].idx !== columns[0].idx || nextProps.columns.length !== columns.length
+            || nextProps.columns[nextProps.columns.length - 1].idx !== columns[columns.length - 1].idx;
     }
 
     render() {
-        const lastColIdx = this.props.columns[this.props.columns.length - 1].idx;
-        return this.props.columns.map(column => <CellRenderer
-            key={this.props.row.idx + '-' + column.idx}
-            borders={{ ...this.props.borders, left: this.props.borders.left && column.left === 0, right: this.props.borders.right && column.idx === lastColIdx }}
-            state={this.props.state}
-            location={{ row: this.props.row, column }} />);
+        const { columns, row, cellRenderer, borders, state } = this.props;
+        const lastColIdx = columns[columns.length - 1].idx;
+        const CellRenderer = cellRenderer;
+        return columns.map(column => <CellRenderer
+            key={row.idx + '-' + column.idx}
+            borders={{
+                ...borders,
+                left: borders.left && column.left === 0,
+                right: borders.right && column.idx === lastColIdx
+            }}
+            state={state}
+            location={{ row, column }} />);
     }
 }

@@ -48,9 +48,9 @@ export class GroupCellTemplate implements CellTemplate<GroupCell> {
         let enableEditMode = keyCode === keyCodes.POINTER || keyCode === keyCodes.ENTER;
         const cellCopy = { ...cell };
         const char = getCharFromKeyCode(keyCode, shift);
-        if (keyCode === keyCodes.SPACE && cellCopy.isExpanded !== undefined) {
+        if (keyCode === keyCodes.SPACE && cellCopy.isExpanded !== undefined && !shift) {
             cellCopy.isExpanded = !cellCopy.isExpanded;
-        } else if (!ctrl && !alt && isAlphaNumericKey(keyCode)) {
+        } else if (!ctrl && !alt && isAlphaNumericKey(keyCode) && !(shift && keyCode === keyCodes.SPACE)) {
             cellCopy.text = !shift ? char.toLowerCase() : char;
             enableEditMode = true;
         }
@@ -59,12 +59,12 @@ export class GroupCellTemplate implements CellTemplate<GroupCell> {
 
     getClassName(cell: Compatible<GroupCell>, isInEditMode: boolean) {
         const isExpanded = cell.hasChildrens ? cell.isExpanded ? 'expanded' : 'collapsed' : '';
-        const className = cell.className ? cell.className : '';
+        const className = cell.className ?? '';
         return `${isExpanded} ${className}`;
     }
 
     getStyle(cell: Compatible<GroupCell>, isInEditMode: boolean): CellStyle {
-        const indent = cell.indent ? cell.indent : 0;
+        const indent = cell.indent ?? 0;
         const elementMarginMultiplier = indent * 1.4;
         return { paddingLeft: `calc(${elementMarginMultiplier}em + 2px)` };
     }

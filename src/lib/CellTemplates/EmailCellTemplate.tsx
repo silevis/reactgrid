@@ -22,7 +22,7 @@ export class EmailCellTemplate implements CellTemplate<EmailCell> {
 
     handleKeyDown(cell: Compatible<EmailCell>, keyCode: number, ctrl: boolean, shift: boolean, alt: boolean): { cell: Compatible<EmailCell>, enableEditMode: boolean } {
         const char = getCharFromKeyCode(keyCode, shift);
-        if (!ctrl && !alt && !shift && isAlphaNumericKey(keyCode))
+        if (!ctrl && !alt && isAlphaNumericKey(keyCode) && !(shift && keyCode === keyCodes.SPACE))
             return { cell: { ...cell, text: !shift ? char.toLowerCase() : char }, enableEditMode: true }
         return { cell, enableEditMode: keyCode === keyCodes.POINTER || keyCode === keyCodes.ENTER }
     }

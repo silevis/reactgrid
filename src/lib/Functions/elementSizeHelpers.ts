@@ -1,4 +1,5 @@
-import { getTopScrollableElement, getScrollOfScrollableElement } from '.';
+import { getScrollOfScrollableElement } from './scrollHelpers';
+import { getTopScrollableElement } from '.';
 import { State } from '../Model';
 import { isIOS } from './operatingSystem';
 
@@ -15,16 +16,30 @@ export function getOffsetsOfElement(element: any): { offsetLeft: number, offsetT
 export function getReactGridOffsets(state: State): { left: number, top: number } {
     if (state.scrollableElement === getTopScrollableElement()) {
         const { scrollLeft, scrollTop } = getScrollOfScrollableElement(state.scrollableElement);
-        const { left, top } = state.reactGridElement.getBoundingClientRect();
+        const { left, top } = state.reactGridElement!.getBoundingClientRect();
         return { left: left + scrollLeft, top: top + scrollTop }
     } else {
         return { left: state.reactGridElement?.offsetLeft ?? 0, top: state.reactGridElement?.offsetTop ?? 0 }
     }
 }
 
+export function getReactGridOffsetsForCellEditor(state: State): { left: number, top: number } {
+    const { scrollLeft, scrollTop } = getScrollOfScrollableElement(state.scrollableElement);
+    const { left, top } = state.reactGridElement!.getBoundingClientRect();
+    const { offsetLeft, offsetTop } = getOffsetsOfElement(state.scrollableElement!);
+    if (state.scrollableElement === getTopScrollableElement()) {
+        return { left: left + scrollLeft - offsetLeft, top: top + scrollTop - offsetTop }
+    } else {
+        return {
+            left: left + scrollLeft - offsetLeft + getTopScrollableElement().scrollX,
+            top: top + scrollTop - offsetTop + getTopScrollableElement().scrollY
+        }
+    }
+}
+
 export function getVisibleSizeOfReactGrid(state: State): { width: number, height: number, visibleOffsetRight: number, visibleOffsetBottom: number } {
     const { scrollLeft, scrollTop } = getScrollOfScrollableElement(state.scrollableElement);
-    const { width: widthOfScrollableElement, height: heightOfScrollableElement } = getSizeOfElement(state.scrollableElement);
+    const { width: widthOfScrollableElement, height: heightOfScrollableElement } = getSizeOfElement(state.scrollableElement!);
     const { left, top } = getReactGridOffsets(state);
 
     const scrollBottom = scrollTop + heightOfScrollableElement,

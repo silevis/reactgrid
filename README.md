@@ -1,3 +1,14 @@
+# ReactGrid
+
+ReactGrid allows you to create custom data grids inside your ReactJS application while providing a spreadsheet-like 
+look and feel.
+
+Before run you need to have installed:
+- "react": "^16.13.1",
+- "react-dom": "^16.13.1"
+
+# Installation
+
 ## 1. Install ReactGrid from npm repository
 
 ```shell
@@ -15,7 +26,7 @@ import { ReactGrid } from "@silevis/reactgrid";
 Import file from `node_modules` directory. This file is necessary to correctly displaying.
 
 ```tsx
-import "@silevis/reactgrid/dist/lib/assets/core.css";
+import "@silevis/reactgrid/lib/assets/core.css";
 ```
 
 ## 4. Create a cell matrix
@@ -28,7 +39,7 @@ Both of them must be valid ReactGrid objects: `Columns` `Rows`.
 import React, { useState } from "react";
 import ReactDOM from "react-dom";
 import { ReactGrid } from "@silevis/reactgrid";
-import "@silevis/reactgrid/dist/lib/assets/core.css";
+import "@silevis/reactgrid/lib/assets/core.css";
 
 function App() {
   const [state, setState] = useState(() => ({
@@ -83,17 +94,17 @@ ReactDOM.render(<App />, rootElement);
 
 Open example on [codesandbox.io](https://codesandbox.io/s/reactgrid-getting-started-0754c)
 
-## Docs
+# Docs
 
 Browse docs: [click](http://reactgrid.com/)
 
-## Licensing
+# Licensing
 
 ReactGrid is distributed under [MIT](link) license.
 
 (c) 2020 Silevis Software
 
-## Author
+# Author
 
 [Silevis Software](https://www.silevis.com/)
 
