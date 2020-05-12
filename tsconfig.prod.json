@@ -1,0 +1,12 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "allowJs": false,
+    "outDir": "./dist",
+    "jsx": "react",
+    "declaration": true,
+    "removeComments": true, // TODO is needed?
+    "isolatedModules": false,
+    "noEmit": false
+  }
+}
