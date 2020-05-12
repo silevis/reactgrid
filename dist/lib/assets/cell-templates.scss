@@ -1,0 +1,134 @@
+.rg-celleditor-input{
+    width: 100%;
+    height: 100%;
+    padding: $template-padding;
+    border: $template-margin;
+    background: $template-bg-color;
+    font-size: $template-font-size;
+    outline: none;
+}
+
+.rg-celleditor {
+    box-sizing: border-box;
+    z-index: 5;
+    background-color: $cell-editor-gb-color;
+    box-shadow: $cell-editor-shadow $cell-shadow-color;
+    border-style: solid;
+    border-color: $cell-editor-border-color;
+    border-width: $celleditor-border-width;
+    padding: $cell-padding;
+    input {
+        @extend .rg-celleditor-input;
+    }
+}
+
+.rg-number-celleditor input {
+    text-align: right;
+}
+
+.rg-number-cell, .rg-time-cell, .rg-date-cell { 
+    justify-content: flex-end;
+}
+
+.rg-email-cell.invalid {
+    color: $template-content-invalid;
+}
+
+.rg-checkbox-cell {
+    align-items: center;
+    justify-content: center;
+    padding: $template-padding;
+    border: $template-margin;
+    background: $template-bg-color;
+    pointer-events: auto;
+    input {
+        width: $template-checkbox-size;
+        height: $template-checkbox-size;
+    }
+}
+
+/* GROUP CELL TEMPLATE */
+.rg-group-cell {
+    .chevron {
+        pointer-events: auto;
+        display: flex;
+        justify-content: center;
+        height: $template-font-size * 1.4;
+        width: $template-font-size * 1.4;
+        font-weight: bold;
+        cursor: pointer;
+        .icon {
+            transition: 200ms all ease-in-out;
+        }
+    }
+    &.expanded .icon {
+        transform: rotate(90deg) ;
+    }
+    &.collapsed .icon {
+        transform: rotate(0deg) translate($template-font-size * 0.15, $template-font-size * 0.15);
+    }
+}
+
+.rg-checkbox-cell {
+    justify-content: center;
+
+    label {
+        position: relative;
+        height: $checkbox-size;
+        width: $checkbox-size;
+        cursor: pointer;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+    }
+    
+    label input {
+        position: absolute;
+        opacity: 0;
+        cursor: pointer;
+        margin: 0;
+        height: $checkbox-size;
+        width: $checkbox-size;
+    }
+    
+    span {
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: $checkbox-size;
+        width: $checkbox-size;
+        background-color: $checkbox-unchecked;
+    }
+    
+    label:hover input ~ span {
+        background-color: $checkbox-hover;
+    }
+    
+    label input:checked ~ span {
+        background-color: $checkbox-checked;
+    }
+    
+    span:after {
+        content: "";
+        position: absolute;
+        display: none;
+    }
+    
+    label input:checked ~ span:after {
+        display: block;
+    }
+    
+    label span:after {
+        left: 5px;
+        top: 0px;
+        width: 4px;
+        height: $checkbox-size - 6px;
+        border: solid $checkbox-mark;
+        border-width: 0 3px 3px 0;
+        -webkit-transform: rotate(45deg);
+        -ms-transform: rotate(45deg);
+        transform: rotate(45deg);
+    }
+  
+}
