@@ -10,9 +10,9 @@ var __assign = (this && this.__assign) || function () {
     return __assign.apply(this, arguments);
 };
 import * as React from 'react';
-import { keyCodes } from '../Functions';
+import { keyCodes } from '../Functions/keyCodes';
 import { isNavigationKey, isAlphaNumericKey } from './keyCodeCheckings';
-import { getCellProperty } from '..';
+import { getCellProperty } from '../Functions/getCellProperty';
 import { getCharFromKeyCode } from './getCharFromKeyCode';
 var GroupCellTemplate = (function () {
     function GroupCellTemplate() {
