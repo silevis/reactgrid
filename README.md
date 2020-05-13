@@ -92,7 +92,7 @@ const rootElement = document.getElementById("root");
 ReactDOM.render(<App />, rootElement);
 ```
 
-Open example on [codesandbox.io](https://codesandbox.io/s/reactgrid-getting-started-0754c)
+Open example on [codesandbox.io](https://stackblitz.com/edit/reactgrid-getting-started-xnsgxr)
 
 # Docs
 
