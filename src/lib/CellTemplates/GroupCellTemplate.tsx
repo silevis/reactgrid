@@ -1,8 +1,8 @@
 import * as React from 'react';
-import { keyCodes } from '../Functions';
+import { keyCodes } from '../Functions/keyCodes';
 import { CellTemplate, Cell, Compatible, Uncertain, UncertainCompatible, Id, CellStyle } from '../Model';
 import { isNavigationKey, isAlphaNumericKey } from './keyCodeCheckings';
-import { getCellProperty } from '..';
+import { getCellProperty } from '../Functions/getCellProperty';
 import { getCharFromKeyCode } from './getCharFromKeyCode';
 
 export interface GroupCell extends Cell {
