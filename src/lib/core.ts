@@ -6,8 +6,10 @@ export * from './Components/LegacyBrowserGridRenderer';
 export * from './Components/CellRenderer';
 export * from './Components/Pane';
 export * from './Components/PanesRenderer';
+export * from './CellTemplates';
 
 export * from './Functions/getCompatibleCellAndTemplate';
+export * from './Functions/getCellProperty';
 export * from './Functions/tryAppendChange';
 export * from './Functions/getLocationFromClient';
 export * from './Functions/handleKeyDown';
