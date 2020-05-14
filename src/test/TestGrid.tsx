@@ -266,7 +266,6 @@ export const withDiv = <T extends object>(Component: React.ComponentType<T>): Re
             <div style={{
                 padding: 20,
                 position: 'relative',
-                // background: '#777'
             }}>
                 <Component {...props as T} />
             </div>

@@ -13,6 +13,7 @@ export function getOffsetsOfElement(element: any): { offsetLeft: number, offsetT
     return { offsetLeft: element.offsetLeft ?? 0, offsetTop: element.offsetTop ?? 0 };
 }
 
+// TODO REWRITE to be not much fragile to 'position:relative', use getBoundingClientRect() from first condition
 export function getReactGridOffsets(state: State): { left: number, top: number } {
     if (state.scrollableElement === getTopScrollableElement()) {
         const { scrollLeft, scrollTop } = getScrollOfScrollableElement(state.scrollableElement);
@@ -20,20 +21,6 @@ export function getReactGridOffsets(state: State): { left: number, top: number }
         return { left: left + scrollLeft, top: top + scrollTop }
     } else {
         return { left: state.reactGridElement?.offsetLeft ?? 0, top: state.reactGridElement?.offsetTop ?? 0 }
-    }
-}
-
-export function getReactGridOffsetsForCellEditor(state: State): { left: number, top: number } {
-    const { scrollLeft, scrollTop } = getScrollOfScrollableElement(state.scrollableElement);
-    const { left, top } = state.reactGridElement!.getBoundingClientRect();
-    const { offsetLeft, offsetTop } = getOffsetsOfElement(state.scrollableElement!);
-    if (state.scrollableElement === getTopScrollableElement()) {
-        return { left: left + scrollLeft - offsetLeft, top: top + scrollTop - offsetTop }
-    } else {
-        return {
-            left: left + scrollLeft - offsetLeft + getTopScrollableElement().scrollX,
-            top: top + scrollTop - offsetTop + getTopScrollableElement().scrollY
-        }
     }
 }
 
