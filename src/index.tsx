@@ -1,6 +1,6 @@
 import * as React from 'react'
 import * as ReactDOM from 'react-dom';
-import { TestGrid } from './test/TestGrid';
+import { ExtTestGrid as TestGrid } from './test/TestGrid';
 import { ReactGrid } from './lib/Components/ReactGrid';
 // import './theming-test.scss';
 import { config } from './test/testEnvConfig';

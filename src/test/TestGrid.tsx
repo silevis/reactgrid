@@ -81,16 +81,16 @@ export const TestGrid: React.FunctionComponent<TestGridProps> = (props) => {
         setState(newState);
     }
 
-    const handleChanges = (changes: CellChange[]) => {
-        let newState = { ...state };
-        changes.forEach((change: CellChange) => {
+    const handleChanges = (changes: CellChange<any>[]) => {
+        const newState = { ...state };
+        changes.forEach(change => {
             const changeRowIdx = newState.rows.findIndex(el => el.rowId === change.rowId);
             const changeColumnIdx = newState.columns.findIndex(el => el.columnId === change.columnId);
             newState.rows[changeRowIdx].cells[changeColumnIdx] = change.newCell;
-        })
+        });
         setState(newState);
         return true;
-    }
+    };
 
     const reorderArray = <T extends {}>(arr: T[], idxs: number[], to: number) => {
         const movedElements: T[] = arr.filter((_: T, idx: number) => idxs.includes(idx));
@@ -258,3 +258,20 @@ const Logo: React.FC<{ isPro?: boolean }> = props => {
         </h1>
     </div>
 }
+
+export const withDiv = <T extends object>(Component: React.ComponentType<T>): React.FC<T & TestGridProps> => {
+    return ({ ...props }: TestGridProps) => {
+        Component.displayName = 'WithDivWrapperTestGrid';
+        return (
+            <div style={{
+                padding: 20,
+                position: 'relative',
+                // background: '#777'
+            }}>
+                <Component {...props as T} />
+            </div>
+        )
+    }
+}
+
+export const ExtTestGrid = withDiv(TestGrid);
