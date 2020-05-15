@@ -13,17 +13,6 @@ export function getOffsetsOfElement(element: any): { offsetLeft: number, offsetT
     return { offsetLeft: element.offsetLeft ?? 0, offsetTop: element.offsetTop ?? 0 };
 }
 
-// use getReactGridOffsets() if you reimplements usage of this function
-export function getReactGridOffsets_DEPRECATED(state: State): { left: number, top: number } {
-    if (state.scrollableElement === getTopScrollableElement()) {
-        const { scrollLeft, scrollTop } = getScrollOfScrollableElement(state.scrollableElement);
-        const { left, top } = state.reactGridElement!.getBoundingClientRect();
-        return { left: left + scrollLeft, top: top + scrollTop }
-    } else {
-        return { left: state.reactGridElement?.offsetLeft ?? 0, top: state.reactGridElement?.offsetTop ?? 0 }
-    }
-}
-
 export function getReactGridOffsets(state: State): { left: number, top: number } {
     const { scrollLeft, scrollTop } = getScrollOfScrollableElement(state.scrollableElement);
     const { left: leftReactGrid, top: topReactGrid } = state.reactGridElement!.getBoundingClientRect();
@@ -40,7 +29,7 @@ export function getReactGridOffsets(state: State): { left: number, top: number }
 export function getVisibleSizeOfReactGrid(state: State): { width: number, height: number, visibleOffsetRight: number, visibleOffsetBottom: number } {
     const { scrollLeft, scrollTop } = getScrollOfScrollableElement(state.scrollableElement);
     const { width: widthOfScrollableElement, height: heightOfScrollableElement } = getSizeOfElement(state.scrollableElement!);
-    const { left, top } = getReactGridOffsets_DEPRECATED(state);
+    const { left, top } = getReactGridOffsets(state);
 
     const scrollBottom = scrollTop + heightOfScrollableElement,
         reactGridBottom = top + (state.reactGridElement?.offsetHeight ?? 0),

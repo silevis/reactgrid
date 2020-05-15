@@ -1,6 +1,6 @@
 import { State, Location } from '../Model';
 import { getScrollOfScrollableElement } from '../Functions';
-import { getVisibleSizeOfReactGrid, getReactGridOffsets_DEPRECATED, getStickyOffset } from './elementSizeHelpers';
+import { getVisibleSizeOfReactGrid, getReactGridOffsets, getStickyOffset } from './elementSizeHelpers';
 
 export function scrollIntoView(state: State, top: number, left: number) {
     (state.scrollableElement as HTMLElement).scrollTop !== undefined ? (state.scrollableElement as HTMLElement).scrollTop = top : state.scrollableElement!.scrollTo({ top });
@@ -22,14 +22,14 @@ export function getCalculatedScrollTopValueToTop(location: Location, scrollTop: 
 
 export function isBottomCellAllVisible(state: State, location: Location, visibleScrollAreaHeight: number) {
     const { scrollTop } = getScrollOfScrollableElement(state.scrollableElement);
-    const { top } = getReactGridOffsets_DEPRECATED(state);
+    const { top } = getReactGridOffsets(state);
     const topStickyOffset = getStickyOffset(scrollTop, top);
     return visibleScrollAreaHeight < location.row.bottom - topStickyOffset;
 }
 
 export function isTopCellAllVisible(state: State, location: Location) {
     const { scrollTop } = getScrollOfScrollableElement(state.scrollableElement);
-    const { top } = getReactGridOffsets_DEPRECATED(state);
+    const { top } = getReactGridOffsets(state);
     const topStickyOffset = getStickyOffset(scrollTop, top);
     return location.row.top < topStickyOffset;;
 }
@@ -55,14 +55,14 @@ export function getCalculatedScrollLeftValueToLeft(location: Location, scrollLef
 
 export function isRightCellAllVisible(state: State, location: Location, visibleScrollAreaWidth: number) {
     const { scrollLeft } = getScrollOfScrollableElement(state.scrollableElement);
-    const { left } = getReactGridOffsets_DEPRECATED(state);
+    const { left } = getReactGridOffsets(state);
     const leftStickyOffset = getStickyOffset(scrollLeft, left);
     return visibleScrollAreaWidth < location.column.right - leftStickyOffset
 }
 
 export function isLeftCellAllVisible(state: State, location: Location) {
     const { scrollLeft } = getScrollOfScrollableElement(state.scrollableElement);
-    const { left } = getReactGridOffsets_DEPRECATED(state);
+    const { left } = getReactGridOffsets(state);
     const leftStickyOffset = getStickyOffset(scrollLeft, left);
     return location.column.left < leftStickyOffset;
 }

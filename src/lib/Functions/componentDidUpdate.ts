@@ -1,8 +1,13 @@
 import { ReactGridProps, Location } from './../Model';
 import { State } from './../Model/State';
 import { areLocationsEqual } from './../Functions/areLocationsEqual';
-import { scrollIntoView, getScrollOfScrollableElement, getVisibleScrollAreaHeight, getCalculatedScrollTopValueToBottom, getCalculatedScrollTopValueToTop, isBottomCellAllVisible, isTopCellAllVisible, isFocusLocationOnTopSticky, getVisibleScrollAreaWidth, isFocusLocationOnLeftSticky, isRightCellAllVisible, getCalculatedScrollLeftValueToRight, isLeftCellAllVisible, getCalculatedScrollLeftValueToLeft } from '.';
-import { getReactGridOffsets_DEPRECATED, getStickyOffset } from '../core';
+import {
+    scrollIntoView, getScrollOfScrollableElement, getVisibleScrollAreaHeight, getCalculatedScrollTopValueToBottom,
+    getCalculatedScrollTopValueToTop, isBottomCellAllVisible, isTopCellAllVisible, isFocusLocationOnTopSticky,
+    getVisibleScrollAreaWidth, isFocusLocationOnLeftSticky, isRightCellAllVisible, getCalculatedScrollLeftValueToRight,
+    isLeftCellAllVisible, getCalculatedScrollLeftValueToLeft
+} from '.';
+import { getReactGridOffsets, getStickyOffset } from '../core';
 
 export function componentDidUpdate(prevProps: ReactGridProps, prevState: State, state: State) {
     const location = state.focusedLocation;
@@ -23,7 +28,7 @@ function getScrollTop(state: State, location: Location): number {
     const { scrollTop } = getScrollOfScrollableElement(state.scrollableElement);
     const wholeStickyHeight = stickyTopRange.height;
     const visibleScrollAreaHeight = getVisibleScrollAreaHeight(state, wholeStickyHeight);
-    const { top } = getReactGridOffsets_DEPRECATED(state);
+    const { top } = getReactGridOffsets(state);
     const topStickyOffset = getStickyOffset(scrollTop, top);
 
     if (isBottomCellAllVisible(state, location, visibleScrollAreaHeight)) {
@@ -39,7 +44,7 @@ function getScrollLeft(state: State, location: Location): number {
     const { scrollLeft } = getScrollOfScrollableElement(state.scrollableElement);
     const wholeStickyWidth = stickyLeftRange.width;
     const visibleScrollAreaWidth = getVisibleScrollAreaWidth(state, wholeStickyWidth)
-    const { left } = getReactGridOffsets_DEPRECATED(state);
+    const { left } = getReactGridOffsets(state);
     const leftStickyOffset = getStickyOffset(scrollLeft, left);
 
     if (isRightCellAllVisible(state, location, visibleScrollAreaWidth)) {
