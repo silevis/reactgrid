@@ -1,8 +1,8 @@
 import * as React from 'react';
 import { State, Location, Compatible, Cell, CellMatrix } from '../Model';
 import { tryAppendChange } from '../Functions';
-import { getScrollOfScrollableElement } from './../Functions/scrollHelpers';
-import { getStickyOffset, getReactGridOffsets_DEPRECATED } from '../Functions/elementSizeHelpers';
+import { getScrollOfScrollableElement, getTopScrollableElement } from './../Functions/scrollHelpers';
+import { getStickyOffset, getReactGridOffsets_DEPRECATED, getReactGridOffsets, getOffsetsOfElement } from '../Functions/elementSizeHelpers';
 
 export interface CellEditorOffset {
     top: number;
@@ -106,7 +106,7 @@ export function getLeftStickyOffset(cellMatrix: CellMatrix, location: Location, 
         && location.column.idx <= cellMatrix.ranges.stickyLeftRange.last.column.idx
     ) {
         const { scrollLeft } = getScrollOfScrollableElement(state.scrollableElement);
-        const { left } = getReactGridOffsets_DEPRECATED(state);
+        const { left } = getReactGridOffsets(state);
         const leftStickyOffset = getStickyOffset(scrollLeft, left);
         return leftStickyOffset;
     }
@@ -117,7 +117,7 @@ export function getTopStickyOffset(cellMatrix: CellMatrix, location: Location, s
         && location.row.idx <= cellMatrix.ranges.stickyTopRange.last.row.idx
     ) {
         const { scrollTop } = getScrollOfScrollableElement(state.scrollableElement);
-        const { top } = getReactGridOffsets_DEPRECATED(state);
+        const { top } = getReactGridOffsets(state);
         const topStickyOffset = getStickyOffset(scrollTop, top);
         return topStickyOffset;
     }
@@ -125,10 +125,24 @@ export function getTopStickyOffset(cellMatrix: CellMatrix, location: Location, s
 
 export const cellEditorCalculator = (options: PositionState): CellEditorOffset => {
     const { state, location } = options;
-    // TODO use rewrited version of getReactGridOffsets()
-    const { left, top } = state.reactGridElement!.getBoundingClientRect();
+    const { scrollTop, scrollLeft } = getScrollOfScrollableElement(state.scrollableElement);
+    const { top, left } = getReactGridOffsets(state);
+    let offsetLeft = 0,
+        offsetTop = 0;
+    if (state.scrollableElement !== getTopScrollableElement()) {
+        const { left, top } = (state.scrollableElement! as HTMLElement).getBoundingClientRect();
+        offsetLeft = left;
+        offsetTop = top;
+    }
+
     return {
-        left: location.column.left + calculatedXAxisOffset(location, state) + left,
-        top: location.row.top + calculatedYAxisOffset(location, state) + top
+        left: location.column.left + calculatedXAxisOffset(location, state)
+            + offsetLeft
+            + left
+            - scrollLeft,
+        top: location.row.top + calculatedYAxisOffset(location, state)
+            + offsetTop
+            + top
+            - scrollTop
     };
 }

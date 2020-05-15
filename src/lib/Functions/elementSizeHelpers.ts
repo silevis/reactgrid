@@ -24,6 +24,19 @@ export function getReactGridOffsets_DEPRECATED(state: State): { left: number, to
     }
 }
 
+export function getReactGridOffsets(state: State): { left: number, top: number } {
+    const { scrollLeft, scrollTop } = getScrollOfScrollableElement(state.scrollableElement);
+    const { left: leftReactGrid, top: topReactGrid } = state.reactGridElement!.getBoundingClientRect();
+    let left = leftReactGrid + scrollLeft,
+        top = topReactGrid + scrollTop;
+    if (state.scrollableElement !== getTopScrollableElement()) {
+        const { left: leftScrollable, top: topScrollable } = (state.scrollableElement! as Element).getBoundingClientRect();
+        left -= leftScrollable;
+        top -= topScrollable;
+    }
+    return { left, top };
+}
+
 export function getVisibleSizeOfReactGrid(state: State): { width: number, height: number, visibleOffsetRight: number, visibleOffsetBottom: number } {
     const { scrollLeft, scrollTop } = getScrollOfScrollableElement(state.scrollableElement);
     const { width: widthOfScrollableElement, height: heightOfScrollableElement } = getSizeOfElement(state.scrollableElement!);
