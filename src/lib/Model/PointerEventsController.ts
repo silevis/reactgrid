@@ -29,7 +29,7 @@ export class PointerEventsController extends AbstractPointerEventsController {
             if (this.shouldHandleDoubleClick(currentLocation, currentTimestamp, secondLastTimestamp)) {
                 state = state.currentBehavior.handleDoubleClick(event, currentLocation, state);
             }
-            state.hiddenFocusElement?.focus();
+            state.hiddenFocusElement?.focus({ preventScroll: true });
             return state;
         });
     };

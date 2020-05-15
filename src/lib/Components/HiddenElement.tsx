@@ -2,7 +2,7 @@ import * as React from 'react';
 import { State } from '../Model';
 import { isBrowserSafari } from '../Functions/safari';
 import { getScrollOfScrollableElement } from '../Functions/scrollHelpers';
-import { getSizeOfElement, getReactGridOffsets, getVisibleSizeOfReactGrid } from '../Functions/elementSizeHelpers';
+import { getSizeOfElement, getVisibleSizeOfReactGrid, getReactGridOffsets } from '../Functions/elementSizeHelpers';
 
 interface HiddenElementProps {
     state: State;

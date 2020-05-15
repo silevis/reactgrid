@@ -24,6 +24,6 @@ export function copyDataCommands(event: ClipboardEvent, state: State, div: HTMLD
         document.body.removeChild(div);
     }
 
-    state.hiddenFocusElement?.focus();
+    state.hiddenFocusElement?.focus({ preventScroll: true });
     event.preventDefault();
 }

@@ -1,8 +1,8 @@
 import * as React from 'react';
 import { State, Location, Compatible, Cell, CellMatrix } from '../Model';
-import { tryAppendChange, getTopScrollableElement } from '../Functions';
-import { getScrollOfScrollableElement } from './../Functions/scrollHelpers';
-import { getStickyOffset, getOffsetsOfElement, getReactGridOffsets } from '../Functions/elementSizeHelpers';
+import { tryAppendChange } from '../Functions';
+import { getScrollOfScrollableElement, getTopScrollableElement } from './../Functions/scrollHelpers';
+import { getStickyOffset, getReactGridOffsets } from '../Functions/elementSizeHelpers';
 
 export interface CellEditorOffset {
     top: number;
@@ -125,14 +125,24 @@ export function getTopStickyOffset(cellMatrix: CellMatrix, location: Location, s
 
 export const cellEditorCalculator = (options: PositionState): CellEditorOffset => {
     const { state, location } = options;
-    const { offsetTop, offsetLeft } = getOffsetsOfElement(state.scrollableElement!);
     const { scrollTop, scrollLeft } = getScrollOfScrollableElement(state.scrollableElement);
     const { top, left } = getReactGridOffsets(state);
-    const topScrollableElement = getTopScrollableElement();
-    const windowScrollY = state.scrollableElement !== topScrollableElement ? topScrollableElement.scrollY : 0;
-    const windowScrollX = state.scrollableElement !== topScrollableElement ? topScrollableElement.scrollX : 0;
+    let offsetLeft = 0,
+        offsetTop = 0;
+    if (state.scrollableElement !== getTopScrollableElement()) {
+        const { left, top } = (state.scrollableElement! as HTMLElement).getBoundingClientRect();
+        offsetLeft = left;
+        offsetTop = top;
+    }
+
     return {
-        left: location.column.left + calculatedXAxisOffset(location, state) + offsetLeft - windowScrollX + left - scrollLeft,
-        top: location.row.top + calculatedYAxisOffset(location, state) + offsetTop - windowScrollY + top - scrollTop
+        left: location.column.left + calculatedXAxisOffset(location, state)
+            + offsetLeft
+            + left
+            - scrollLeft,
+        top: location.row.top + calculatedYAxisOffset(location, state)
+            + offsetTop
+            + top
+            - scrollTop
     };
 }

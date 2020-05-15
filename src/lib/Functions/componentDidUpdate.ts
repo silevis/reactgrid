@@ -1,7 +1,12 @@
 import { ReactGridProps, Location } from './../Model';
 import { State } from './../Model/State';
 import { areLocationsEqual } from './../Functions/areLocationsEqual';
-import { scrollIntoView, getScrollOfScrollableElement, getVisibleScrollAreaHeight, getCalculatedScrollTopValueToBottom, getCalculatedScrollTopValueToTop, isBottomCellAllVisible, isTopCellAllVisible, isFocusLocationOnTopSticky, getVisibleScrollAreaWidth, isFocusLocationOnLeftSticky, isRightCellAllVisible, getCalculatedScrollLeftValueToRight, isLeftCellAllVisible, getCalculatedScrollLeftValueToLeft } from '.';
+import {
+    scrollIntoView, getScrollOfScrollableElement, getVisibleScrollAreaHeight, getCalculatedScrollTopValueToBottom,
+    getCalculatedScrollTopValueToTop, isBottomCellAllVisible, isTopCellAllVisible, isFocusLocationOnTopSticky,
+    getVisibleScrollAreaWidth, isFocusLocationOnLeftSticky, isRightCellAllVisible, getCalculatedScrollLeftValueToRight,
+    isLeftCellAllVisible, getCalculatedScrollLeftValueToLeft
+} from '.';
 import { getReactGridOffsets, getStickyOffset } from '../core';
 
 export function componentDidUpdate(prevProps: ReactGridProps, prevState: State, state: State) {
