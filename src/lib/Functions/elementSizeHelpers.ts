@@ -14,7 +14,7 @@ export function getOffsetsOfElement(element: any): { offsetLeft: number, offsetT
 }
 
 // TODO REWRITE to be not much fragile to 'position:relative', use getBoundingClientRect() from first condition
-export function getReactGridOffsets(state: State): { left: number, top: number } {
+export function getReactGridOffsets_DEPRECATED(state: State): { left: number, top: number } {
     if (state.scrollableElement === getTopScrollableElement()) {
         const { scrollLeft, scrollTop } = getScrollOfScrollableElement(state.scrollableElement);
         const { left, top } = state.reactGridElement!.getBoundingClientRect();
@@ -27,7 +27,7 @@ export function getReactGridOffsets(state: State): { left: number, top: number }
 export function getVisibleSizeOfReactGrid(state: State): { width: number, height: number, visibleOffsetRight: number, visibleOffsetBottom: number } {
     const { scrollLeft, scrollTop } = getScrollOfScrollableElement(state.scrollableElement);
     const { width: widthOfScrollableElement, height: heightOfScrollableElement } = getSizeOfElement(state.scrollableElement!);
-    const { left, top } = getReactGridOffsets(state);
+    const { left, top } = getReactGridOffsets_DEPRECATED(state);
 
     const scrollBottom = scrollTop + heightOfScrollableElement,
         reactGridBottom = top + (state.reactGridElement?.offsetHeight ?? 0),

@@ -1,6 +1,6 @@
 import { Range, State, GridColumn, GridRow } from '../Model';
 import { getScrollOfScrollableElement } from './scrollHelpers';
-import { getVisibleSizeOfReactGrid, getReactGridOffsets, getStickyOffset } from './elementSizeHelpers';
+import { getVisibleSizeOfReactGrid, getReactGridOffsets_DEPRECATED, getStickyOffset } from './elementSizeHelpers';
 
 export const VS_PAGE_HEIGHT = 300;
 export const VS_PAGE_WIDTH = 300;
@@ -32,7 +32,7 @@ export function getVisibleScrollableSize(state: State, heights: number[], widths
 }
 
 export function getVisibleColumns(state: State, scrollableWidth: number): GridColumn[] {
-    const { left } = getReactGridOffsets(state);
+    const { left } = getReactGridOffsets_DEPRECATED(state);
     const { scrollLeft } = getScrollOfScrollableElement(state.scrollableElement);
     const firstIndex = colBinarySearch(state.cellMatrix.scrollableRange.columns, scrollLeft - left - VS_PAGE_HEIGHT);
     const lastIndex = colBinarySearch(state.cellMatrix.scrollableRange.columns,
@@ -41,7 +41,7 @@ export function getVisibleColumns(state: State, scrollableWidth: number): GridCo
 }
 
 export function getVisibleRows(state: State, scrollableHeight: number): GridRow[] {
-    const { top } = getReactGridOffsets(state);
+    const { top } = getReactGridOffsets_DEPRECATED(state);
     const { scrollTop } = getScrollOfScrollableElement(state.scrollableElement);
     const firstIndex = rowBinarySearch(state.cellMatrix.scrollableRange.rows, scrollTop - top - VS_PAGE_HEIGHT);
     const lastIndex = rowBinarySearch(state.cellMatrix.scrollableRange.rows,
