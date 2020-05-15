@@ -2,7 +2,7 @@ import * as React from 'react';
 import { State, Location, Compatible, Cell, CellMatrix } from '../Model';
 import { tryAppendChange } from '../Functions';
 import { getScrollOfScrollableElement, getTopScrollableElement } from './../Functions/scrollHelpers';
-import { getStickyOffset, getReactGridOffsets_DEPRECATED, getReactGridOffsets, getOffsetsOfElement } from '../Functions/elementSizeHelpers';
+import { getStickyOffset, getReactGridOffsets } from '../Functions/elementSizeHelpers';
 
 export interface CellEditorOffset {
     top: number;

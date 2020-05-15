@@ -13,7 +13,7 @@ export function getOffsetsOfElement(element: any): { offsetLeft: number, offsetT
     return { offsetLeft: element.offsetLeft ?? 0, offsetTop: element.offsetTop ?? 0 };
 }
 
-// TODO REWRITE to be not much fragile to 'position:relative', use getBoundingClientRect() from first condition
+// use getReactGridOffsets() if you reimplements usage of this function
 export function getReactGridOffsets_DEPRECATED(state: State): { left: number, top: number } {
     if (state.scrollableElement === getTopScrollableElement()) {
         const { scrollLeft, scrollTop } = getScrollOfScrollableElement(state.scrollableElement);
