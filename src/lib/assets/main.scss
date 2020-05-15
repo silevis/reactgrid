@@ -178,6 +178,9 @@
         }
     }
     .rg-hidden-element {
+        border: 0;
+        padding: 0;
+        margin: 0;
         position: fixed;
         width: 1px;
         height: 1px;

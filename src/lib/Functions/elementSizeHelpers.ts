@@ -14,27 +14,16 @@ export function getOffsetsOfElement(element: any): { offsetLeft: number, offsetT
 }
 
 export function getReactGridOffsets(state: State): { left: number, top: number } {
-    if (state.scrollableElement === getTopScrollableElement()) {
-        const { scrollLeft, scrollTop } = getScrollOfScrollableElement(state.scrollableElement);
-        const { left, top } = state.reactGridElement!.getBoundingClientRect();
-        return { left: left + scrollLeft, top: top + scrollTop }
-    } else {
-        return { left: state.reactGridElement?.offsetLeft ?? 0, top: state.reactGridElement?.offsetTop ?? 0 }
-    }
-}
-
-export function getReactGridOffsetsForCellEditor(state: State): { left: number, top: number } {
     const { scrollLeft, scrollTop } = getScrollOfScrollableElement(state.scrollableElement);
-    const { left, top } = state.reactGridElement!.getBoundingClientRect();
-    const { offsetLeft, offsetTop } = getOffsetsOfElement(state.scrollableElement!);
-    if (state.scrollableElement === getTopScrollableElement()) {
-        return { left: left + scrollLeft - offsetLeft, top: top + scrollTop - offsetTop }
-    } else {
-        return {
-            left: left + scrollLeft - offsetLeft + getTopScrollableElement().scrollX,
-            top: top + scrollTop - offsetTop + getTopScrollableElement().scrollY
-        }
+    const { left: leftReactGrid, top: topReactGrid } = state.reactGridElement!.getBoundingClientRect();
+    let left = leftReactGrid + scrollLeft,
+        top = topReactGrid + scrollTop;
+    if (state.scrollableElement !== getTopScrollableElement()) {
+        const { left: leftScrollable, top: topScrollable } = (state.scrollableElement! as Element).getBoundingClientRect();
+        left -= leftScrollable;
+        top -= topScrollable;
     }
+    return { left, top };
 }
 
 export function getVisibleSizeOfReactGrid(state: State): { width: number, height: number, visibleOffsetRight: number, visibleOffsetBottom: number } {
