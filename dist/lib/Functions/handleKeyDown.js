@@ -40,7 +40,7 @@ function handleKeyDownInternal(state, event) {
                 event.preventDefault();
                 return moveFocusLeft(state);
             case keyCodes.ENTER:
-                (_a = state.hiddenFocusElement) === null || _a === void 0 ? void 0 : _a.focus();
+                (_a = state.hiddenFocusElement) === null || _a === void 0 ? void 0 : _a.focus({ preventScroll: true });
                 return moveFocusUp(state);
         }
     }
@@ -56,44 +56,44 @@ function handleKeyDownInternal(state, event) {
         switch (event.keyCode) {
             case keyCodes.DELETE:
             case keyCodes.BACKSPACE:
-                (_b = state.hiddenFocusElement) === null || _b === void 0 ? void 0 : _b.focus();
+                (_b = state.hiddenFocusElement) === null || _b === void 0 ? void 0 : _b.focus({ preventScroll: true });
                 return wipeSelectedRanges(state);
             case keyCodes.UP_ARROW:
-                (_c = state.hiddenFocusElement) === null || _c === void 0 ? void 0 : _c.focus();
+                (_c = state.hiddenFocusElement) === null || _c === void 0 ? void 0 : _c.focus({ preventScroll: true });
                 return moveFocusUp(state);
             case keyCodes.DOWN_ARROW:
-                (_d = state.hiddenFocusElement) === null || _d === void 0 ? void 0 : _d.focus();
+                (_d = state.hiddenFocusElement) === null || _d === void 0 ? void 0 : _d.focus({ preventScroll: true });
                 return moveFocusDown(state);
             case keyCodes.LEFT_ARROW:
-                (_e = state.hiddenFocusElement) === null || _e === void 0 ? void 0 : _e.focus();
+                (_e = state.hiddenFocusElement) === null || _e === void 0 ? void 0 : _e.focus({ preventScroll: true });
                 return moveFocusLeft(state);
             case keyCodes.RIGHT_ARROW:
-                (_f = state.hiddenFocusElement) === null || _f === void 0 ? void 0 : _f.focus();
+                (_f = state.hiddenFocusElement) === null || _f === void 0 ? void 0 : _f.focus({ preventScroll: true });
                 return moveFocusRight(state);
             case keyCodes.TAB:
-                (_g = state.hiddenFocusElement) === null || _g === void 0 ? void 0 : _g.focus();
+                (_g = state.hiddenFocusElement) === null || _g === void 0 ? void 0 : _g.focus({ preventScroll: true });
                 event.preventDefault();
                 return moveFocusRight(state);
             case keyCodes.HOME:
-                (_h = state.hiddenFocusElement) === null || _h === void 0 ? void 0 : _h.focus();
+                (_h = state.hiddenFocusElement) === null || _h === void 0 ? void 0 : _h.focus({ preventScroll: true });
                 return state.focusedLocation ? focusCell(0, state.focusedLocation.row.idx, state) : state;
             case keyCodes.END:
-                (_j = state.hiddenFocusElement) === null || _j === void 0 ? void 0 : _j.focus();
+                (_j = state.hiddenFocusElement) === null || _j === void 0 ? void 0 : _j.focus({ preventScroll: true });
                 return state.focusedLocation
                     ? focusCell(state.cellMatrix.columns.length - 1, state.focusedLocation.row.idx, state)
                     : state;
             case keyCodes.PAGE_UP:
-                (_k = state.hiddenFocusElement) === null || _k === void 0 ? void 0 : _k.focus();
+                (_k = state.hiddenFocusElement) === null || _k === void 0 ? void 0 : _k.focus({ preventScroll: true });
                 return moveFocusPageUp(state);
             case keyCodes.PAGE_DOWN:
-                (_l = state.hiddenFocusElement) === null || _l === void 0 ? void 0 : _l.focus();
+                (_l = state.hiddenFocusElement) === null || _l === void 0 ? void 0 : _l.focus({ preventScroll: true });
                 return moveFocusPageDown(state);
             case keyCodes.ENTER:
-                (_m = state.hiddenFocusElement) === null || _m === void 0 ? void 0 : _m.focus();
+                (_m = state.hiddenFocusElement) === null || _m === void 0 ? void 0 : _m.focus({ preventScroll: true });
                 return __assign(__assign({}, moveFocusDown(state)), { currentlyEditedCell: undefined });
             case keyCodes.ESCAPE:
                 event.preventDefault();
-                (_o = state.hiddenFocusElement) === null || _o === void 0 ? void 0 : _o.focus();
+                (_o = state.hiddenFocusElement) === null || _o === void 0 ? void 0 : _o.focus({ preventScroll: true });
                 return (state.currentlyEditedCell) ? __assign(__assign({}, state), { currentlyEditedCell: undefined }) : state;
         }
     }

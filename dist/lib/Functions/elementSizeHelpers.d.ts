@@ -11,10 +11,6 @@ export declare function getReactGridOffsets(state: State): {
     left: number;
     top: number;
 };
-export declare function getReactGridOffsetsForCellEditor(state: State): {
-    left: number;
-    top: number;
-};
 export declare function getVisibleSizeOfReactGrid(state: State): {
     width: number;
     height: number;

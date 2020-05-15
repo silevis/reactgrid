@@ -53,7 +53,7 @@ var PointerEventsController = (function (_super) {
                 if (_this.shouldHandleDoubleClick(currentLocation, currentTimestamp, secondLastTimestamp)) {
                     state = state.currentBehavior.handleDoubleClick(event, currentLocation, state);
                 }
-                (_a = state.hiddenFocusElement) === null || _a === void 0 ? void 0 : _a.focus();
+                (_a = state.hiddenFocusElement) === null || _a === void 0 ? void 0 : _a.focus({ preventScroll: true });
                 return state;
             });
         };

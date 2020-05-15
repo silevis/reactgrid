@@ -10,9 +10,9 @@ var __assign = (this && this.__assign) || function () {
     return __assign.apply(this, arguments);
 };
 import * as React from 'react';
-import { tryAppendChange, getTopScrollableElement } from '../Functions';
-import { getScrollOfScrollableElement } from './../Functions/scrollHelpers';
-import { getStickyOffset, getOffsetsOfElement, getReactGridOffsets } from '../Functions/elementSizeHelpers';
+import { tryAppendChange } from '../Functions';
+import { getScrollOfScrollableElement, getTopScrollableElement } from './../Functions/scrollHelpers';
+import { getStickyOffset, getReactGridOffsets } from '../Functions/elementSizeHelpers';
 export var CellEditorRenderer = function (props) {
     var state = props.state, positionCalculator = props.positionCalculator;
     var currentlyEditedCell = state.currentlyEditedCell, disableFloatingCellEditor = state.disableFloatingCellEditor;
@@ -85,14 +85,22 @@ export function getTopStickyOffset(cellMatrix, location, state) {
 }
 export var cellEditorCalculator = function (options) {
     var state = options.state, location = options.location;
-    var _a = getOffsetsOfElement(state.scrollableElement), offsetTop = _a.offsetTop, offsetLeft = _a.offsetLeft;
-    var _b = getScrollOfScrollableElement(state.scrollableElement), scrollTop = _b.scrollTop, scrollLeft = _b.scrollLeft;
-    var _c = getReactGridOffsets(state), top = _c.top, left = _c.left;
-    var topScrollableElement = getTopScrollableElement();
-    var windowScrollY = state.scrollableElement !== topScrollableElement ? topScrollableElement.scrollY : 0;
-    var windowScrollX = state.scrollableElement !== topScrollableElement ? topScrollableElement.scrollX : 0;
+    var _a = getScrollOfScrollableElement(state.scrollableElement), scrollTop = _a.scrollTop, scrollLeft = _a.scrollLeft;
+    var _b = getReactGridOffsets(state), top = _b.top, left = _b.left;
+    var offsetLeft = 0, offsetTop = 0;
+    if (state.scrollableElement !== getTopScrollableElement()) {
+        var _c = state.scrollableElement.getBoundingClientRect(), left_1 = _c.left, top_2 = _c.top;
+        offsetLeft = left_1;
+        offsetTop = top_2;
+    }
     return {
-        left: location.column.left + calculatedXAxisOffset(location, state) + offsetLeft - windowScrollX + left - scrollLeft,
-        top: location.row.top + calculatedYAxisOffset(location, state) + offsetTop - windowScrollY + top - scrollTop
+        left: location.column.left + calculatedXAxisOffset(location, state)
+            + offsetLeft
+            + left
+            - scrollLeft,
+        top: location.row.top + calculatedYAxisOffset(location, state)
+            + offsetTop
+            + top
+            - scrollTop
     };
 };

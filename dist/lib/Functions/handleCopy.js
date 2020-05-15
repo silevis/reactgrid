@@ -23,6 +23,6 @@ export function copyDataCommands(event, state, div) {
         document.execCommand('copy');
         document.body.removeChild(div);
     }
-    (_a = state.hiddenFocusElement) === null || _a === void 0 ? void 0 : _a.focus();
+    (_a = state.hiddenFocusElement) === null || _a === void 0 ? void 0 : _a.focus({ preventScroll: true });
     event.preventDefault();
 }

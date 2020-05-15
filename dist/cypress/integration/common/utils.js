@@ -120,10 +120,10 @@ class Utils {
             this.getScrollableElement().then($scrollable => {
                 const v = $scrollable[0];
                 const elementRect = $el[0].getBoundingClientRect();
-                expect($el[0].offsetTop).to.be.least(v.scrollTop, 'top')
-                expect($el[0].offsetTop + elementRect.height).to.be.most(v.scrollTop + v.clientHeight, 'bottom')
-                expect($el[0].offsetLeft).to.be.least(v.scrollLeft, 'left')
-                expect($el[0].offsetLeft + elementRect.width).to.be.most(v.scrollLeft + v.clientWidth, 'right')
+                expect($el[0].offsetTop).to.be.least(v.scrollTop - 1, 'top')
+                expect($el[0].offsetTop + elementRect.height).to.be.most(v.scrollTop + v.clientHeight + 1, 'bottom')
+                expect($el[0].offsetLeft).to.be.least(v.scrollLeft - 1, 'left')
+                expect($el[0].offsetLeft + elementRect.width).to.be.most(v.scrollLeft + v.clientWidth + 1, 'right')
             });
         });
     }

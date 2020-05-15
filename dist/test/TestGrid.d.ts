@@ -13,4 +13,6 @@ interface TestGridProps {
     component?: any;
 }
 export declare const TestGrid: React.FunctionComponent<TestGridProps>;
+export declare const withDiv: <T extends object>(Component: React.ComponentType<T>) => React.FC<T & TestGridProps>;
+export declare const ExtTestGrid: React.FC<TestGridProps>;
 export {};
