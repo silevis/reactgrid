@@ -12,8 +12,6 @@ export interface CellRendererProps {
 export const CellRenderer: React.FunctionComponent<CellRendererProps> = props => {
     const { state, location, children } = props;
     const { cell, cellTemplate } = getCompatibleCellAndTemplate(state, location);
-    // const state = { ...props.state };
-    // const location = props.location;
     const isFocused = state.focusedLocation !== undefined && (state.focusedLocation.column.idx === location.column.idx &&
         state.focusedLocation.row.idx === location.row.idx);
     const customClass = (cellTemplate.getClassName && cellTemplate.getClassName(cell, false)) ?? '';
@@ -26,8 +24,7 @@ export const CellRenderer: React.FunctionComponent<CellRendererProps> = props =>
         top: location.row.top,
         width: location.column.width,
         height: location.row.height,
-        // TODO when to prevent scrolling?
-        touchAction: (isFocused || cell.type === 'header') ? 'none' : 'auto' // prevent scrolling
+        ...((isFocused || cell.type === 'header') && { touchAction: 'none' }) // prevent scrolling
     };
 
     return (

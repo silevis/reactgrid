@@ -2,7 +2,7 @@ import { Range, State, GridColumn, GridRow } from '../Model';
 import { getScrollOfScrollableElement } from './scrollHelpers';
 import { getVisibleSizeOfReactGrid, getReactGridOffsets, getStickyOffset } from './elementSizeHelpers';
 
-export const VS_PAGE_HEIGHT = 300;
+export const VS_PAGE_HEIGHT = 400;
 export const VS_PAGE_WIDTH = 300;
 
 export function recalcVisibleRange(state: State): State {

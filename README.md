@@ -4,8 +4,8 @@ ReactGrid allows you to create custom data grids inside your ReactJS application
 look and feel.
 
 Before run you need to have installed:
-- "react": "^16.13.1",
-- "react-dom": "^16.13.1"
+- react": "^16.13.1"
+- react-dom: "^16.13.1"
 
 # Installation
 
@@ -92,11 +92,11 @@ const rootElement = document.getElementById("root");
 ReactDOM.render(<App />, rootElement);
 ```
 
-Open example on [codesandbox.io](https://stackblitz.com/edit/reactgrid-getting-started-xnsgxr)
+Open examples on [stackblitz.com](https://stackblitz.com/edit/reactgrid-getting-started)
 
 # Docs
 
-Browse docs: [click](http://reactgrid.com/)
+Browse docs: [here](http://reactgrid.com/)
 
 # Licensing
 

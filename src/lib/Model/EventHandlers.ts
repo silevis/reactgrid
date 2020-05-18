@@ -42,10 +42,11 @@ export class EventHandlers {
 
     protected updateOnScrollChange = (visibleRangeCalculator: StateModifier) => {
         this.updateState(state => {
+            const PAGE_UPDATE_OFFSET = 200;
             const { scrollTop, scrollLeft } = getScrollOfScrollableElement(state.scrollableElement);
             const { width, height } = getVisibleSizeOfReactGrid(state);
             const shouldBeVisibleRangeRecalc = width > 0 && height > 0 && (
-                scrollTop >= state.bottomScrollBoudary || scrollTop <= state.topScrollBoudary ||
+                scrollTop >= state.bottomScrollBoudary - PAGE_UPDATE_OFFSET || scrollTop <= state.topScrollBoudary + PAGE_UPDATE_OFFSET ||
                 scrollLeft >= state.rightScrollBoudary || scrollLeft <= state.leftScrollBoudary
             );
             return shouldBeVisibleRangeRecalc ? visibleRangeCalculator(state) : state;
