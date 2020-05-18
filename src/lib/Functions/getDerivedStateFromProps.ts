@@ -12,12 +12,16 @@ export function getDerivedStateFromProps(props: ReactGridProps, state: State): S
 
     state = stateDeriverWithProps(state)(appendCellTamplatesAndHighlights);
 
-    state = stateDeriverWithProps(state)(updateCellMatrix);
+    const hasChanged = dataHasChanged(props, state);
+    if (hasChanged) {
+        state = stateDeriverWithProps(state)(updateCellMatrix);
+    }
 
     state = stateDeriverWithProps(state)(updateFocusedLocation);
 
-    state = stateDeriverWithProps(state)(updateVisibleRange);
-
+    if (hasChanged) {
+        state = stateDeriverWithProps(state)(updateVisibleRange);
+    }
     state = stateDeriverWithProps(state)(setInitialFocusLocation);
 
     return state;
@@ -25,9 +29,7 @@ export function getDerivedStateFromProps(props: ReactGridProps, state: State): S
 
 export const stateDeriver = (props: ReactGridProps) => (state: State) => (fn: (props: ReactGridProps, state: State) => State) => fn(props, state);
 
-export const dataHasChanged = (props: ReactGridProps, state: State): boolean => {
-    return !state.cellMatrix || props !== state.cellMatrix.props;
-}
+export const dataHasChanged = (props: ReactGridProps, state: State) => !state.cellMatrix || props !== state.cellMatrix.props;
 
 export function updateStateProps(props: ReactGridProps, state: State): State {
     if (state.props !== props) {
@@ -37,15 +39,12 @@ export function updateStateProps(props: ReactGridProps, state: State): State {
 }
 
 function updateCellMatrix(props: ReactGridProps, state: State): State {
-    if (dataHasChanged(props, state)) {
-        const builder = new CellMatrixBuilder();
-        return {
-            ...state,
-            cellMatrix: builder.setProps(props).fillRowsAndCols().fillSticky().fillScrollableRange()
-                .setEdgeLocations().getCellMatrix()
-        };
-    }
-    return state;
+    const builder = new CellMatrixBuilder();
+    return {
+        ...state,
+        cellMatrix: builder.setProps(props).fillRowsAndCols().fillSticky().fillScrollableRange()
+            .setEdgeLocations().getCellMatrix()
+    };
 }
 
 export function updateFocusedLocation(props: ReactGridProps, state: State): State {
@@ -56,7 +55,7 @@ export function updateFocusedLocation(props: ReactGridProps, state: State): Stat
 }
 
 function updateVisibleRange(props: ReactGridProps, state: State): State {
-    if (state.visibleRange && dataHasChanged(props, state)) {
+    if (state.visibleRange) {
         state = recalcVisibleRange(state);
     }
     return state;
