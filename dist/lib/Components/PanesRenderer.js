@@ -10,7 +10,7 @@ var __assign = (this && this.__assign) || function () {
     return __assign.apply(this, arguments);
 };
 import * as React from 'react';
-import { Pane, PaneContent, } from './Pane';
+import { Pane, PaneContent } from './Pane';
 import { isBrowserFirefox } from '../Functions';
 import { shouldRenderTopSticky, shouldRenderMiddleRange, shouldRenderLeftSticky, shouldRenderCenterRange } from '../Functions/paneRendererPredicates';
 export var PanesRenderer = function (props) {

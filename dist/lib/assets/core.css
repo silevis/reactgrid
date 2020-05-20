@@ -147,7 +147,8 @@
     align-items: center;
     overflow: hidden;
     padding: 0 4px;
-    outline: none; }
+    outline: none;
+    touch-action: auto; }
     .reactgrid-content .rg-pane .rg-cell .rg-touch-resize-handle {
       position: absolute;
       top: 0;

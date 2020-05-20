@@ -10,5 +10,6 @@ export * from './keyCodes';
 export * from './emptyCell';
 export * from './safari';
 export * from './firefox';
+export * from '../Model/domEventsTypes';
 export * from './newLocation';
 export * from './scrollHelpers';

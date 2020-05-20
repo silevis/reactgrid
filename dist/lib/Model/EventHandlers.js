@@ -47,9 +47,10 @@ var EventHandlers = (function () {
         };
         this.updateOnScrollChange = function (visibleRangeCalculator) {
             _this.updateState(function (state) {
+                var PAGE_UPDATE_OFFSET = 200;
                 var _a = getScrollOfScrollableElement(state.scrollableElement), scrollTop = _a.scrollTop, scrollLeft = _a.scrollLeft;
                 var _b = getVisibleSizeOfReactGrid(state), width = _b.width, height = _b.height;
-                var shouldBeVisibleRangeRecalc = width > 0 && height > 0 && (scrollTop >= state.bottomScrollBoudary || scrollTop <= state.topScrollBoudary ||
+                var shouldBeVisibleRangeRecalc = width > 0 && height > 0 && (scrollTop >= state.bottomScrollBoudary - PAGE_UPDATE_OFFSET || scrollTop <= state.topScrollBoudary + PAGE_UPDATE_OFFSET ||
                     scrollLeft >= state.rightScrollBoudary || scrollLeft <= state.leftScrollBoudary);
                 return shouldBeVisibleRangeRecalc ? visibleRangeCalculator(state) : state;
             });

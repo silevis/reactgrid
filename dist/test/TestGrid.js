@@ -40,11 +40,14 @@ export var TestGrid = function (props) {
     var myTimeFormat = new Intl.DateTimeFormat('pl', { hour: '2-digit', minute: '2-digit' });
     var _a = useState(function () {
         var columns = new Array(props.config.columns).fill(0).map(function (_, ci) { return ({
-            columnId: "col-" + ci, resizable: true, reorderable: true, width: props.config.cellWidth,
+            columnId: "col-" + ci,
+            resizable: true, reorderable: true, width: props.config.cellWidth,
         }); });
         var rows = new Array(props.config.rows).fill(0).map(function (_, ri) {
             return {
-                rowId: "row-" + ri, reorderable: true, height: props.config.cellHeight, cells: columns.map(function (_, ci) {
+                rowId: "row-" + ri,
+                reorderable: true, height: props.config.cellHeight,
+                cells: columns.map(function (_, ci) {
                     if (ri === 0)
                         return { type: props.config.firstRowType, text: ri + " - " + ci };
                     var now = new Date();

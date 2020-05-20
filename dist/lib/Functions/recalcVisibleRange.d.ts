@@ -1,5 +1,5 @@
 import { State, GridColumn, GridRow } from '../Model';
-export declare const VS_PAGE_HEIGHT = 300;
+export declare const VS_PAGE_HEIGHT = 400;
 export declare const VS_PAGE_WIDTH = 300;
 export declare function recalcVisibleRange(state: State): State;
 export declare function getVisibleScrollableSize(state: State, heights: number[], widths: number[]): {

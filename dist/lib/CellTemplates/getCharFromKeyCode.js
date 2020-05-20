@@ -204,5 +204,5 @@ characterMap[221] = "]";
 characterMap[222] = "'";
 export var getCharFromKeyCode = function (keyCode, isShiftKey) {
     if (isShiftKey === void 0) { isShiftKey = false; }
-    return isShiftKey ? characterMapShift[keyCode] : characterMapShift[keyCode];
+    return isShiftKey ? characterMapShift[keyCode] : characterMap[keyCode];
 };

@@ -16,16 +16,19 @@ export function getDerivedStateFromProps(props, state) {
     var stateDeriverWithProps = stateDeriver(props);
     state = stateDeriverWithProps(state)(updateStateProps);
     state = stateDeriverWithProps(state)(appendCellTamplatesAndHighlights);
-    state = stateDeriverWithProps(state)(updateCellMatrix);
+    var hasChanged = dataHasChanged(props, state);
+    if (hasChanged) {
+        state = stateDeriverWithProps(state)(updateCellMatrix);
+    }
     state = stateDeriverWithProps(state)(updateFocusedLocation);
-    state = stateDeriverWithProps(state)(updateVisibleRange);
+    if (hasChanged) {
+        state = stateDeriverWithProps(state)(updateVisibleRange);
+    }
     state = stateDeriverWithProps(state)(setInitialFocusLocation);
     return state;
 }
 export var stateDeriver = function (props) { return function (state) { return function (fn) { return fn(props, state); }; }; };
-export var dataHasChanged = function (props, state) {
-    return !state.cellMatrix || props !== state.cellMatrix.props;
-};
+export var dataHasChanged = function (props, state) { return !state.cellMatrix || props !== state.cellMatrix.props; };
 export function updateStateProps(props, state) {
     if (state.props !== props) {
         state = __assign(__assign({}, state), { props: props });
@@ -33,12 +36,9 @@ export function updateStateProps(props, state) {
     return state;
 }
 function updateCellMatrix(props, state) {
-    if (dataHasChanged(props, state)) {
-        var builder = new CellMatrixBuilder();
-        return __assign(__assign({}, state), { cellMatrix: builder.setProps(props).fillRowsAndCols().fillSticky().fillScrollableRange()
-                .setEdgeLocations().getCellMatrix() });
-    }
-    return state;
+    var builder = new CellMatrixBuilder();
+    return __assign(__assign({}, state), { cellMatrix: builder.setProps(props).fillRowsAndCols().fillSticky().fillScrollableRange()
+            .setEdgeLocations().getCellMatrix() });
 }
 export function updateFocusedLocation(props, state) {
     if (state.cellMatrix.columns.length > 0 && state.focusedLocation && !state.currentlyEditedCell) {
@@ -47,7 +47,7 @@ export function updateFocusedLocation(props, state) {
     return state;
 }
 function updateVisibleRange(props, state) {
-    if (state.visibleRange && dataHasChanged(props, state)) {
+    if (state.visibleRange) {
         state = recalcVisibleRange(state);
     }
     return state;

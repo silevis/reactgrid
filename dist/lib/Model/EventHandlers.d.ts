@@ -14,7 +14,7 @@ export declare class EventHandlers {
     reactgridRefHandler: (reactGridElement: HTMLDivElement) => void;
     hiddenElementRefHandler: (hiddenFocusElement: HTMLInputElement) => void;
     pasteCaptureHandler: (event: ClipboardEvent) => void;
-    scrollHandler: (visibleRangeCalculator: StateModifier<import("./State").State<import("./CellMatrix").CellMatrix<import("./CellMatrix").StickyRanges, import("./CellMatrix").CellMatrixProps>, import("./Behavior").Behavior>>) => void;
-    protected assignScrollHandlerToReactGridElement: (reactGridElement: HTMLDivElement, visibleRangeCalculator: StateModifier<import("./State").State<import("./CellMatrix").CellMatrix<import("./CellMatrix").StickyRanges, import("./CellMatrix").CellMatrixProps>, import("./Behavior").Behavior>>) => void;
-    protected updateOnScrollChange: (visibleRangeCalculator: StateModifier<import("./State").State<import("./CellMatrix").CellMatrix<import("./CellMatrix").StickyRanges, import("./CellMatrix").CellMatrixProps>, import("./Behavior").Behavior>>) => void;
+    scrollHandler: (visibleRangeCalculator: StateModifier) => void;
+    protected assignScrollHandlerToReactGridElement: (reactGridElement: HTMLDivElement, visibleRangeCalculator: StateModifier) => void;
+    protected updateOnScrollChange: (visibleRangeCalculator: StateModifier) => void;
 }

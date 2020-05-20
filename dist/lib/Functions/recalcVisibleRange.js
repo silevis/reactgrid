@@ -12,7 +12,7 @@ var __assign = (this && this.__assign) || function () {
 import { Range } from '../Model';
 import { getScrollOfScrollableElement } from './scrollHelpers';
 import { getVisibleSizeOfReactGrid, getReactGridOffsets, getStickyOffset } from './elementSizeHelpers';
-export var VS_PAGE_HEIGHT = 300;
+export var VS_PAGE_HEIGHT = 400;
 export var VS_PAGE_WIDTH = 300;
 export function recalcVisibleRange(state) {
     var _a = getScrollOfScrollableElement(state.scrollableElement), scrollTop = _a.scrollTop, scrollLeft = _a.scrollLeft;

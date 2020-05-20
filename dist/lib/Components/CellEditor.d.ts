@@ -17,4 +17,4 @@ export declare function getStickyLeftRangeWidth(cellMatrix: CellMatrix, location
 export declare function getStickyTopRangeWidth(cellMatrix: CellMatrix, location: Location): number | undefined;
 export declare function getLeftStickyOffset(cellMatrix: CellMatrix, location: Location, state: State): number | undefined;
 export declare function getTopStickyOffset(cellMatrix: CellMatrix, location: Location, state: State): number | undefined;
-export declare const cellEditorCalculator: (options: PositionState<State<CellMatrix<import("../Model").StickyRanges, import("../Model").CellMatrixProps>, import("../Model").Behavior>>) => CellEditorOffset;
+export declare const cellEditorCalculator: (options: PositionState) => CellEditorOffset;
