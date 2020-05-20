@@ -205,5 +205,5 @@ characterMap[221] = "]";
 characterMap[222] = "'";
 
 export const getCharFromKeyCode = (keyCode: number, isShiftKey: boolean = false) => {
-    return isShiftKey ? characterMapShift[keyCode] : characterMapShift[keyCode];
+    return isShiftKey ? characterMapShift[keyCode] : characterMap[keyCode];
 }

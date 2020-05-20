@@ -1,5 +1,6 @@
 import { State, Location } from "../Model";
 import { focusLocation } from "./focusLocation";
+import { getVisibleScrollAreaHeight, isFocusLocationOnTopSticky } from ".";
 
 
 export type FocusLocationFn = (state: State, location: Location) => State;
@@ -50,36 +51,75 @@ export function withMoveFocusDown(fc: FocusCellFn) {
     }
 }
 
-// TODO this should be rewritten, not working propely 
+function getVisibleHeight(state: State): number {
+    const { stickyTopRange } = state.cellMatrix.ranges;
+    const wholeStickyHeight = stickyTopRange.height;
+    const visibleScrollAreaHeight = getVisibleScrollAreaHeight(state, wholeStickyHeight);
+    return visibleScrollAreaHeight;
+}
+
 export function withMoveFocusPageUp(fc: FocusCellFn) {
     return (state: State): State => {
+        const visibleScrollAreaHeight = getVisibleHeight(state);
+        const location = state.focusedLocation;
         if (!state.focusedLocation)
             return state;
-        const rowsOnScreen = state.cellMatrix.rows.filter(
-            row => row.top < state.reactGridElement!.clientHeight // TODO check this line
-        );
+
+        const hasTopSticky = state.cellMatrix.ranges.stickyTopRange.rows.length > 0;
+        const isOnTopSticky = hasTopSticky && isFocusLocationOnTopSticky(state, location!);
+        const hasScrollableRange = state.cellMatrix.scrollableRange.rows.length > 0;
+        const isOnFirstElementOnScrollableRange = hasScrollableRange && location?.row.idx === state.cellMatrix.scrollableRange.first.row.idx;
+        const rowsOnScreen = state.cellMatrix.scrollableRange.rows.filter(row => row.bottom < visibleScrollAreaHeight)
+        const { stickyTopRange } = state.cellMatrix.ranges;
+
+        let rowIdx = 0;
+        if (isOnTopSticky) {
+            rowIdx = state.cellMatrix.ranges.stickyTopRange.first.row.idx;
+        } else if (isOnFirstElementOnScrollableRange) {
+            rowIdx = stickyTopRange.rows.length > 0 ? state.cellMatrix.ranges.stickyTopRange.last.row.idx : state.cellMatrix.first.row.idx;
+        } else if (location!.row.idx >= rowsOnScreen.length + state.cellMatrix.ranges.stickyTopRange.rows.length) {
+            rowIdx = state.focusedLocation.row.idx - rowsOnScreen.length > 0
+                ? state.focusedLocation.row.idx - rowsOnScreen.length
+                : 0;
+        } else {
+            rowIdx = state.cellMatrix.scrollableRange.first.row.idx;
+        }
         return fc(
             state.focusedLocation.column.idx,
-            state.focusedLocation.row.idx - rowsOnScreen.length > 0
-                ? state.focusedLocation.row.idx - rowsOnScreen.length
-                : 0, state
+            rowIdx,
+            state
         );
     }
 }
 
-// TODO this should be rewritten, not working propely
 export function withMoveFocusPageDown(fc: FocusCellFn) {
     return (state: State): State => {
+        const visibleScrollAreaHeight = getVisibleHeight(state);
+        const location = state.focusedLocation;
         if (!state.focusedLocation)
             return state;
-        const rowsOnScreen = state.cellMatrix.rows
-            .slice(state.cellMatrix.ranges.stickyTopRange.rows.length, state.cellMatrix.rows.length)
-            .filter(row => row.top + row.height < state.reactGridElement!.clientHeight);
+        const isOnTopSticky = isFocusLocationOnTopSticky(state, location!);
+        const hasTopSticky = state.cellMatrix.ranges.stickyTopRange.rows.length > 0;
+        const isOnLastRowOnTopSticky = hasTopSticky && location?.row.idx === state.cellMatrix.ranges?.stickyTopRange.last.row.idx;
+        const hasScrollableRange = state.cellMatrix.scrollableRange.rows.length > 0;
+
+        let rowIdx = 0;
+        if (isOnTopSticky) {
+            if (isOnTopSticky && !isOnLastRowOnTopSticky) {
+                rowIdx = state.cellMatrix.ranges.stickyTopRange.last.row.idx;
+            } else {
+                hasScrollableRange ? rowIdx = state.cellMatrix.scrollableRange.first.row.idx : rowIdx = state.cellMatrix.ranges.stickyTopRange.last.row.idx;
+            }
+        } else {
+            const rowsOnScreen = state.cellMatrix.scrollableRange.rows.filter(row => row.top + row.height < visibleScrollAreaHeight)
+            rowIdx = state.focusedLocation.row.idx + rowsOnScreen.length < state.cellMatrix.rows.length
+                ? state.focusedLocation.row.idx + rowsOnScreen.length
+                : state.cellMatrix.rows.length - 1
+        }
         return fc(
             state.focusedLocation.column.idx,
-            state.focusedLocation.row.idx + rowsOnScreen.length < state.cellMatrix.rows.length
-                ? state.focusedLocation.row.idx + rowsOnScreen.length
-                : state.cellMatrix.rows.length - 1, state
+            rowIdx,
+            state
         );
     }
 }

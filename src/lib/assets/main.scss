@@ -60,6 +60,7 @@
             overflow: hidden;
             padding: $cell-padding;
             outline: none;
+            touch-action: auto;
             .rg-touch-resize-handle {
                 position: absolute;
                 top: 0;

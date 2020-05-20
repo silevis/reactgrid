@@ -74,7 +74,7 @@ export const TestGrid: React.FunctionComponent<TestGridProps> = (props) => {
 
     const handleColumnResize = (ci: Id, width: number) => {
         let newState = { ...state };
-        const columnIndex = newState.columns.findIndex(el => el.columnId === ci);
+        const columnIndex = newState.columns.findIndex((el: Column) => el.columnId === ci);
         const resizedColumn: Column = newState.columns[columnIndex];
         const updateColumn: Column = { ...resizedColumn, width };
         newState.columns[columnIndex] = updateColumn;

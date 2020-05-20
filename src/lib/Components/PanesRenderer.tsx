@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Pane, PaneContent, } from './Pane';
+import { Pane, PaneContent } from './Pane';
 import { State } from '../Model';
 import { isBrowserFirefox } from '../Functions';
 import { CellRendererProps, } from './CellRenderer';
