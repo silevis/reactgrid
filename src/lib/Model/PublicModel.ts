@@ -13,6 +13,9 @@ export interface ReactGridProps {
     readonly columns: Column[];
     readonly rows: Row[];
     readonly customCellTemplates?: CellTemplates;
+    // if focusLocation is null - managing inside grid
+    // else - onFocusLocationChanging - manages by user - developer
+    // initialFocusLocation and focusLocation
     readonly focusLocation?: CellLocation;
     readonly highlights?: Highlight[];
     readonly stickyTopRows?: number;
@@ -25,14 +28,14 @@ export interface ReactGridProps {
     readonly enableColumnSelection?: boolean;
     readonly disableFloatingCellEditor?: boolean;
 
-    readonly onCellsChanged?: (cellChanges: CellChange<Cell>[]) => boolean;
+    readonly onCellsChanged?: (cellChanges: CellChange<Cell>[]) => void;
     readonly onFocusLocationChanged?: (location: CellLocation) => boolean;
     readonly onColumnResized?: (columnId: Id, width: number) => void;
-    readonly canReorderRows?: (targetRowId: Id, rowIds: Id[], dropPosition: DropPosition) => boolean;
     readonly onRowsReordered?: (targetRowId: Id, rowIds: Id[], dropPosition: DropPosition) => void;
-    readonly canReorderColumns?: (targetColumnId: Id, columnIds: Id[], dropPosition: DropPosition) => boolean;
     readonly onColumnsReordered?: (targetColumnId: Id, columnIds: Id[], dropPosition: DropPosition) => void;
     readonly onContextMenu?: (selectedRowIds: Id[], selectedColIds: Id[], selectionMode: SelectionMode, menuOptions: MenuOption[]) => MenuOption[];
+    // readonly canReorderColumns?: (targetColumnId: Id, columnIds: Id[], dropPosition: DropPosition) => boolean;
+    // readonly canReorderRows?: (targetRowId: Id, rowIds: Id[], dropPosition: DropPosition) => boolean;
 }
 
 // ASK ARCHITECT BEFORE INTRODUCING ANY CHANGE!
@@ -139,7 +142,7 @@ export type UncertainCompatible<TCell extends Cell> = Uncertain<TCell> & {
 }
 
 // ASK ARCHITECT BEFORE INTRODUCING ANY CHANGE!
-export interface Row {
+export interface Row<> {
     readonly rowId: Id;
     readonly cells: Cell[];
     // default: 25

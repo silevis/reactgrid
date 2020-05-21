@@ -21,7 +21,7 @@ interface TestGridProps {
     disableFloatingCellEditor?: boolean;
     isPro?: boolean;
     config: Config;
-    component?: any; //TODO check why any?
+    component: React.ComponentClass<any>; //TODO check why any?
 }
 
 const emailValidator = (email: string): boolean => {
@@ -86,6 +86,12 @@ export const TestGrid: React.FunctionComponent<TestGridProps> = (props) => {
         changes.forEach(change => {
             const changeRowIdx = newState.rows.findIndex(el => el.rowId === change.rowId);
             const changeColumnIdx = newState.columns.findIndex(el => el.columnId === change.columnId);
+            // if (change.newCell.type === 'text') {
+            //      (change as CellChange<TextCell>).initialCell
+            // }
+            // if (change.newCell.type === 'checkbox') {
+            //      change.newCell
+            // }
             newState.rows[changeRowIdx].cells[changeColumnIdx] = change.newCell;
         });
         setState(newState);
@@ -157,10 +163,10 @@ export const TestGrid: React.FunctionComponent<TestGridProps> = (props) => {
         onColumnResized: handleColumnResize,
         customCellTemplates: { 'flag': new FlagCellTemplate() },
         highlights: [{ columnId: 'col-1', rowId: 'row-1', borderColor: '#00ff00' }],
-        stickyLeftColumns: props.enableSticky && props.config.stickyLeft,
-        stickyRightColumns: props.enableSticky && props.config.stickyRight,
-        stickyTopRows: props.enableSticky && props.config.stickyTop,
-        stickyBottomRows: props.enableSticky && props.config.stickyBottom,
+        stickyLeftColumns: props.enableSticky ? props.config.stickyLeft : undefined,
+        stickyRightColumns: props.enableSticky ? props.config.stickyRight : undefined,
+        stickyTopRows: props.enableSticky ? props.config.stickyTop : undefined,
+        stickyBottomRows: props.enableSticky ? props.config.stickyBottom : undefined,
         canReorderColumns: handleCanReorderColumns,
         canReorderRows: handleCanReorderRows,
         onColumnsReordered: handleColumnsReordered,

@@ -14,6 +14,9 @@ export function focusLocation(state: State, location: Location): State {
     if (!isFocusable)
         return state;
 
+    // TODO if return false then no focus change
+    // onFocusLocationChanging - handle returned value
+
     const { onFocusLocationChanged } = state.props!;
     onFocusLocationChanged && onFocusLocationChanged({ rowId: location.row.rowId, columnId: location.column.columnId });
 
