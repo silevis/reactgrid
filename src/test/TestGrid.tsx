@@ -1,15 +1,15 @@
 import React, { useState } from 'react';
 import {
-    Column, Row, CellChange, Id, MenuOption, SelectionMode, DropPosition, Cell, CellLocation,
+    Column, Row, CellChange, Id, MenuOption, SelectionMode, DropPosition, CellLocation,
     NumberCell, GroupCell
 } from '../lib';
 import { Config } from './../test/testEnvConfig';
 import './../lib/assets/core.scss';
-import { FlagCellTemplate } from './flagCell/FlagCellTemplate';
+import { FlagCellTemplate, FlagCell } from './flagCell/FlagCellTemplate';
 
 interface TestGridState {
     columns: Column[]
-    rows: Row[]
+    rows: Row<FlagCell>[]
 }
 
 interface TestGridProps {
@@ -61,12 +61,12 @@ export const TestGrid: React.FunctionComponent<TestGridProps> = (props) => {
                         case 6:
                             return { type: 'checkbox', checked: false, checkedText: 'Zaznaczono', uncheckedText: false }
                         case 7:
-                            return { type: 'flag', text: 'pol' }
+                            return { type: 'flag', text: 'bra' }
                         default:
                             return { type: 'text', text: `${ri} - ${ci}`, validator: () => { } }
                     }
                 })
-            } as Row
+            } as Row<FlagCell>
         });
 
         return { rows, columns }
@@ -81,18 +81,17 @@ export const TestGrid: React.FunctionComponent<TestGridProps> = (props) => {
         setState(newState);
     }
 
-    const handleChanges = (changes: CellChange<any>[]) => {
+    const handleChanges = (changes: CellChange[]) => {
         const newState = { ...state };
         changes.forEach(change => {
             const changeRowIdx = newState.rows.findIndex(el => el.rowId === change.rowId);
             const changeColumnIdx = newState.columns.findIndex(el => el.columnId === change.columnId);
-            // if (change.newCell.type === 'text') {
-            //      (change as CellChange<TextCell>).initialCell
-            // }
-            // if (change.newCell.type === 'checkbox') {
-            //      change.newCell
-            // }
-            newState.rows[changeRowIdx].cells[changeColumnIdx] = change.newCell;
+            //  (change as CellChange<TextCell>).
+            if (change.newCell.type === 'flag') { // types of `newCell` and `initialCell`  are diffrent
+                // change.newCell.
+                // change.initialCell.type
+            }
+            newState.rows[changeRowIdx].cells[changeColumnIdx] = (change.newCell as any);
         });
         setState(newState);
         return true;
@@ -120,16 +119,16 @@ export const TestGrid: React.FunctionComponent<TestGridProps> = (props) => {
         const to = state.columns.findIndex((column: Column) => column.columnId === targetColumnId);
         const columnIdxs = columnIds.map((id: Id, idx: number) => state.columns.findIndex((c: Column) => c.columnId === id));
         setState({
-            columns: reorderArray<Column>(state.columns, columnIdxs, to),
-            rows: state.rows.map(row => ({ ...row, cells: reorderArray<Cell>(row.cells, columnIdxs, to) })),
+            columns: reorderArray(state.columns, columnIdxs, to),
+            rows: state.rows.map(row => ({ ...row, cells: reorderArray(row.cells, columnIdxs, to) })),
         });
     }
 
     const handleRowsReordered = (targetRowId: Id, rowIds: Id[], dropPosition: DropPosition) => {
         const newState = { ...state };
-        const to = state.rows.findIndex((row: Row) => row.rowId === targetRowId);
-        const ids = rowIds.map((id: Id) => state.rows.findIndex(r => r.rowId === id)) as number[];
-        setState({ ...newState, rows: reorderArray<Row>(state.rows, ids, to) });
+        const to = state.rows.findIndex((row: Row<FlagCell>) => row.rowId === targetRowId);
+        const ids = rowIds.map((id: Id) => state.rows.findIndex(r => r.rowId === id));
+        setState({ ...newState, rows: reorderArray(state.rows, ids, to) });
     }
 
     const handleContextMenu = (selectedRowIds: Id[], selectedColIds: Id[], selectionMode: SelectionMode, menuOptions: MenuOption[]): MenuOption[] => {

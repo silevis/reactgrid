@@ -5,6 +5,7 @@
 //  THANKS!
 
 //  Michael Matejko
+import { TextCell, HeaderCell, CheckboxCell, DateCell, EmailCell, GroupCell, NumberCell, TimeCell } from './../CellTemplates';
 
 export type SelectionMode = 'row' | 'column' | 'range';
 
@@ -34,8 +35,8 @@ export interface ReactGridProps {
     readonly onRowsReordered?: (targetRowId: Id, rowIds: Id[], dropPosition: DropPosition) => void;
     readonly onColumnsReordered?: (targetColumnId: Id, columnIds: Id[], dropPosition: DropPosition) => void;
     readonly onContextMenu?: (selectedRowIds: Id[], selectedColIds: Id[], selectionMode: SelectionMode, menuOptions: MenuOption[]) => MenuOption[];
-    // readonly canReorderColumns?: (targetColumnId: Id, columnIds: Id[], dropPosition: DropPosition) => boolean;
-    // readonly canReorderRows?: (targetRowId: Id, rowIds: Id[], dropPosition: DropPosition) => boolean;
+    readonly canReorderColumns?: (targetColumnId: Id, columnIds: Id[], dropPosition: DropPosition) => boolean;
+    readonly canReorderRows?: (targetRowId: Id, rowIds: Id[], dropPosition: DropPosition) => boolean;
 }
 
 // ASK ARCHITECT BEFORE INTRODUCING ANY CHANGE!
@@ -141,16 +142,18 @@ export type UncertainCompatible<TCell extends Cell> = Uncertain<TCell> & {
     value: number;
 }
 
+type DefaultCellTypes = CheckboxCell | DateCell | EmailCell | GroupCell | HeaderCell | NumberCell | TextCell | TimeCell;
+
+type Filter<T> = T extends Cell ? T : never;
+
 // ASK ARCHITECT BEFORE INTRODUCING ANY CHANGE!
-export interface Row<> {
+export interface Row<TCell = DefaultCellTypes> {
     readonly rowId: Id;
-    readonly cells: Cell[];
-    // default: 25
+    readonly cells: Filter<DefaultCellTypes | TCell>[];
+    // default: 25 
     readonly height?: number;
     // default: false
     readonly reorderable?: boolean;
-    //readonly canDrop?: (rowIds: Id[], position: DropPosition) => boolean;
-    //readonly onDrop?: (rowIds: Id[], position: DropPosition) => void;
 };
 
 // ASK ARCHITECT BEFORE INTRODUCING ANY CHANGE!
