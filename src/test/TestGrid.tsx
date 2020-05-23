@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import {
     Column, Row, CellChange, Id, MenuOption, SelectionMode, DropPosition, CellLocation,
-    NumberCell, GroupCell
+    NumberCell, GroupCell, DateCell
 } from '../lib';
 import { Config } from './../test/testEnvConfig';
 import './../lib/assets/core.scss';
@@ -87,9 +87,13 @@ export const TestGrid: React.FunctionComponent<TestGridProps> = (props) => {
             const changeRowIdx = newState.rows.findIndex(el => el.rowId === change.rowId);
             const changeColumnIdx = newState.columns.findIndex(el => el.columnId === change.columnId);
             //  (change as CellChange<TextCell>).
-            if (change.newCell.type === 'flag') { // types of `newCell` and `initialCell`  are diffrent
+            // if (change.newCell.type === 'flag') { // types of `newCell` and `initialCell`  are diffrent
+            // change.newCell.
+            // change.initialCell.type
+            // }
+            if (change.type === 'email') {
+                console.log(change.newCell.email);
                 // change.newCell.
-                // change.initialCell.type
             }
             newState.rows[changeRowIdx].cells[changeColumnIdx] = (change.newCell as any);
         });

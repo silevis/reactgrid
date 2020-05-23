@@ -1,4 +1,4 @@
-import { Location, State, Cell, Compatible } from '../Model';
+import { Location, State, Cell, Compatible, DefaultCellTypes, Type } from '../Model';
 import { getCompatibleCellAndTemplate } from './getCompatibleCellAndTemplate';
 
 export function tryAppendChange(state: State, location: Location, cell: Compatible<Cell>): State {
@@ -10,8 +10,9 @@ export function tryAppendChange(state: State, location: Location, cell: Compatib
     const newCell = cellTemplate.update(initialCell, cell);
     if (newCell !== initialCell || JSON.stringify(newCell) !== JSON.stringify(initialCell))
         state.queuedCellChanges.push({
-            initialCell,
-            newCell,
+            initialCell: initialCell as DefaultCellTypes,
+            newCell: newCell as DefaultCellTypes,
+            type: newCell.type as Type<DefaultCellTypes>,
             rowId: location.row.rowId,
             columnId: location.column.columnId
         });

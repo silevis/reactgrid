@@ -29,7 +29,7 @@ export interface ReactGridProps {
     readonly enableColumnSelection?: boolean;
     readonly disableFloatingCellEditor?: boolean;
 
-    readonly onCellsChanged?: (cellChanges: CellChange<Cell>[]) => void;
+    readonly onCellsChanged?: (cellChanges: CellChange[]) => void;
     readonly onFocusLocationChanged?: (location: CellLocation) => boolean;
     readonly onColumnResized?: (columnId: Id, width: number) => void;
     readonly onRowsReordered?: (targetRowId: Id, rowIds: Id[], dropPosition: DropPosition) => void;
@@ -57,10 +57,13 @@ export interface Highlight {
     readonly className?: string;
 }
 
+export type Type<T> = T extends Cell ? T['type'] : never;
+
 // ASK ARCHITECT BEFORE INTRODUCING ANY CHANGE!
-export interface CellChange<TCell extends Cell = Cell> {
+export interface CellChange<TCell extends DefaultCellTypes = DefaultCellTypes> {
     readonly rowId: Id;
     readonly columnId: Id;
+    readonly type: Type<TCell>;
     readonly initialCell: TCell;
     readonly newCell: TCell;
 }
@@ -142,7 +145,7 @@ export type UncertainCompatible<TCell extends Cell> = Uncertain<TCell> & {
     value: number;
 }
 
-type DefaultCellTypes = CheckboxCell | DateCell | EmailCell | GroupCell | HeaderCell | NumberCell | TextCell | TimeCell;
+export type DefaultCellTypes = CheckboxCell | DateCell | EmailCell | GroupCell | HeaderCell | NumberCell | TextCell | TimeCell;
 
 type Filter<T> = T extends Cell ? T : never;
 
