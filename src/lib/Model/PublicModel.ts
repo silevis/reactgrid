@@ -29,7 +29,7 @@ export interface ReactGridProps {
     readonly enableColumnSelection?: boolean;
     readonly disableFloatingCellEditor?: boolean;
 
-    readonly onCellsChanged?: (cellChanges: CellChange[]) => void;
+    readonly onCellsChanged?: (cellChanges: CellChangeEnd[]) => void;
     readonly onFocusLocationChanged?: (location: CellLocation) => boolean;
     readonly onColumnResized?: (columnId: Id, width: number) => void;
     readonly onRowsReordered?: (targetRowId: Id, rowIds: Id[], dropPosition: DropPosition) => void;
@@ -57,13 +57,23 @@ export interface Highlight {
     readonly className?: string;
 }
 
-export type Type<T> = T extends Cell ? T['type'] : never;
+type ExtractCellTypes<P> = P extends CellChange<infer T> ? T : never;
+type ExtractedCellTyped = ExtractCellTypes<DefaultCellChanges>;
+type FilterA<T> = T extends any ? T : never;
+
+type ToCellChange<T> = T extends Cell ? CellChange<T> : never;
+
+export type DefaultCellChanges = ToCellChange<DefaultCellTypes>;
+
+export type CellChangeEnd<T extends any = DefaultCellChanges> = DefaultCellChanges | CellChange<T>;
+
+type CellTypes<T> = T extends Cell ? T['type'] : never;
 
 // ASK ARCHITECT BEFORE INTRODUCING ANY CHANGE!
-export interface CellChange<TCell extends DefaultCellTypes = DefaultCellTypes> {
+export interface CellChange<TCell = DefaultCellTypes> {
     readonly rowId: Id;
     readonly columnId: Id;
-    readonly type: Type<TCell>;
+    readonly type: CellTypes<TCell>;
     readonly initialCell: TCell;
     readonly newCell: TCell;
 }
@@ -147,12 +157,12 @@ export type UncertainCompatible<TCell extends Cell> = Uncertain<TCell> & {
 
 export type DefaultCellTypes = CheckboxCell | DateCell | EmailCell | GroupCell | HeaderCell | NumberCell | TextCell | TimeCell;
 
-type Filter<T> = T extends Cell ? T : never;
+type FilterCell<T> = T extends Cell ? T : never;
 
 // ASK ARCHITECT BEFORE INTRODUCING ANY CHANGE!
 export interface Row<TCell = DefaultCellTypes> {
     readonly rowId: Id;
-    readonly cells: Filter<DefaultCellTypes | TCell>[];
+    readonly cells: FilterCell<DefaultCellTypes | TCell>[];
     // default: 25 
     readonly height?: number;
     // default: false
