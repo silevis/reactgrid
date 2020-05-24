@@ -1,4 +1,4 @@
-import { Location, State, Cell, Compatible, CellChange, DefaultCellChanges } from '../Model';
+import { Location, State, Cell, Compatible, CellChange } from '../Model';
 import { getCompatibleCellAndTemplate } from './getCompatibleCellAndTemplate';
 
 export function tryAppendChange(state: State, location: Location, cell: Compatible<Cell>): State {

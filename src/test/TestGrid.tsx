@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import {
-    Column, Row, CellChange, Id, MenuOption, SelectionMode, DropPosition, CellLocation,
-    NumberCell, GroupCell, DateCell, CellChangeEnd
+    Column, Row, Id, MenuOption, SelectionMode, DropPosition, CellLocation,
+    NumberCell, GroupCell, CellChangeEnd, CellChange
 } from '../lib';
 import { Config } from './../test/testEnvConfig';
 import './../lib/assets/core.scss';
@@ -82,6 +82,8 @@ export const TestGrid: React.FunctionComponent<TestGridProps> = (props) => {
     }
 
     const handleChanges = (changes: CellChangeEnd<FlagCell>[]) => {
+        // const handleChanges = (changes: CellChangeEnd[] | CellChange<FlagCell>[]) => { // no generic CellChangeEnd
+
         const newState = { ...state };
         changes.forEach(change => {
             const changeRowIdx = newState.rows.findIndex(el => el.rowId === change.rowId);
@@ -99,7 +101,7 @@ export const TestGrid: React.FunctionComponent<TestGridProps> = (props) => {
                 // change.newCell
             }
             if (change.type === 'checkbox') {
-                console.log(change.newCell.checked);
+                console.log(change.newCell);
                 // change.newCell
             }
             newState.rows[changeRowIdx].cells[changeColumnIdx] = (change.newCell as any);

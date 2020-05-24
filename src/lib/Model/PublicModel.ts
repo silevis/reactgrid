@@ -57,17 +57,17 @@ export interface Highlight {
     readonly className?: string;
 }
 
-type ExtractCellTypes<P> = P extends CellChange<infer T> ? T : never;
-type ExtractedCellTyped = ExtractCellTypes<DefaultCellChanges>;
-type FilterA<T> = T extends any ? T : never;
+export type DefaultCellTypes = CheckboxCell | DateCell | EmailCell | GroupCell | HeaderCell | NumberCell | TextCell | TimeCell;
 
+// 1. usage method
+// 2. DefaultCellChanges or CellChanges
+type FilterCell<T> = T extends Cell ? T : never;
 type ToCellChange<T> = T extends Cell ? CellChange<T> : never;
-
-export type DefaultCellChanges = ToCellChange<DefaultCellTypes>;
-
-export type CellChangeEnd<T extends any = DefaultCellChanges> = DefaultCellChanges | CellChange<T>;
-
 type CellTypes<T> = T extends Cell ? T['type'] : never;
+
+type DefaultCellChanges = ToCellChange<DefaultCellTypes>;
+
+export type CellChangeEnd<T = object> = DefaultCellChanges | CellChange<T>; // `object` disallow unknown cell types
 
 // ASK ARCHITECT BEFORE INTRODUCING ANY CHANGE!
 export interface CellChange<TCell = DefaultCellTypes> {
@@ -154,10 +154,6 @@ export type UncertainCompatible<TCell extends Cell> = Uncertain<TCell> & {
     text: string;
     value: number;
 }
-
-export type DefaultCellTypes = CheckboxCell | DateCell | EmailCell | GroupCell | HeaderCell | NumberCell | TextCell | TimeCell;
-
-type FilterCell<T> = T extends Cell ? T : never;
 
 // ASK ARCHITECT BEFORE INTRODUCING ANY CHANGE!
 export interface Row<TCell = DefaultCellTypes> {
