@@ -65,9 +65,7 @@ type FilterCell<T> = T extends Cell ? T : never;
 type ToCellChange<T> = T extends Cell ? CellChange<T> : never;
 type CellTypes<T> = T extends Cell ? T['type'] : never;
 
-type DefaultCellChanges = ToCellChange<DefaultCellTypes>;
-
-export type CellChangeEnd<T = object> = DefaultCellChanges | CellChange<T>; // `object` disallow unknown cell types
+export type CellChangeEnd<T = object> = ToCellChange<DefaultCellTypes | T>; // `object` disallow unknown cell types
 
 // ASK ARCHITECT BEFORE INTRODUCING ANY CHANGE!
 export interface CellChange<TCell = DefaultCellTypes> {
