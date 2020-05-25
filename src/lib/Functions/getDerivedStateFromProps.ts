@@ -70,7 +70,7 @@ export function appendCellTamplatesAndHighlights(props: ReactGridProps, state: S
 }
 
 export function setInitialFocusLocation(props: ReactGridProps, state: State): State {
-    const locationToFocus = props.focusLocation;
+    const locationToFocus = props.initialFocusLocation;
     if (locationToFocus && !state.focusedLocation) {
         return focusLocation(state, state.cellMatrix.getLocationById(locationToFocus.rowId, locationToFocus.columnId))
     }

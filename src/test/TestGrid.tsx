@@ -157,7 +157,7 @@ export const TestGrid: React.FunctionComponent<TestGridProps> = (props) => {
     const rgProps = {
         rows: state.rows,
         columns: state.columns,
-        focusLocation: { columnId: 'col-2', rowId: 'row-2' },
+        initialFocusLocation: { columnId: 'col-2', rowId: 'row-2' },
         onCellsChanged: handleChanges,
         onColumnResized: handleColumnResize,
         customCellTemplates: { 'flag': new FlagCellTemplate() },

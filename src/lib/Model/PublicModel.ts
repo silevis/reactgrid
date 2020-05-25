@@ -17,7 +17,7 @@ export interface ReactGridProps {
     // if focusLocation is null - managing inside grid
     // else - onFocusLocationChanging - manages by user - developer
     // initialFocusLocation and focusLocation
-    readonly focusLocation?: CellLocation;
+    readonly initialFocusLocation?: CellLocation;
     readonly highlights?: Highlight[];
     readonly stickyTopRows?: number;
     readonly stickyBottomRows?: number;
