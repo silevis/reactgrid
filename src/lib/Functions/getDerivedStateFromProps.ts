@@ -10,7 +10,7 @@ export function getDerivedStateFromProps(props: ReactGridProps, state: State): S
 
     state = stateDeriverWithProps(state)(updateStateProps);
 
-    state = stateDeriverWithProps(state)(appendCellTamplatesAndHighlights);
+    state = stateDeriverWithProps(state)(appendCellTemplatesAndHighlights);
 
     const hasChanged = dataHasChanged(props, state);
     if (hasChanged) {
@@ -23,6 +23,8 @@ export function getDerivedStateFromProps(props: ReactGridProps, state: State): S
         state = stateDeriverWithProps(state)(updateVisibleRange);
     }
     state = stateDeriverWithProps(state)(setInitialFocusLocation);
+
+    state = stateDeriverWithProps(state)(setFocusLocation);
 
     return state;
 }
@@ -61,7 +63,7 @@ function updateVisibleRange(props: ReactGridProps, state: State): State {
     return state;
 }
 
-export function appendCellTamplatesAndHighlights(props: ReactGridProps, state: State): State {
+export function appendCellTemplatesAndHighlights(props: ReactGridProps, state: State): State {
     return {
         ...state,
         highlightLocations: props.highlights ?? [],
@@ -70,9 +72,18 @@ export function appendCellTamplatesAndHighlights(props: ReactGridProps, state: S
 }
 
 export function setInitialFocusLocation(props: ReactGridProps, state: State): State {
-    const locationToFocus = props.focusLocation;
+    const locationToFocus = props.initialFocusLocation;
     if (locationToFocus && !state.focusedLocation) {
-        return focusLocation(state, state.cellMatrix.getLocationById(locationToFocus.rowId, locationToFocus.columnId))
+        return focusLocation(state, state.cellMatrix.getLocationById(locationToFocus.rowId, locationToFocus.columnId));
+    }
+    return state;
+}
+
+export function setFocusLocation(props: ReactGridProps, state: State): State {
+    const locationToFocus = props.focusLocation;
+    if (locationToFocus) {
+        const location = state.cellMatrix.getLocationById(locationToFocus.rowId, locationToFocus.columnId);
+        return focusLocation(state, location)
     }
     return state;
 }

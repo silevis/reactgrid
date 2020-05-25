@@ -12,12 +12,10 @@ export type SelectionMode = 'row' | 'column' | 'range';
 // ASK ARCHITECT BEFORE INTRODUCING ANY CHANGE!
 export interface ReactGridProps {
     readonly columns: Column[];
-    readonly rows: Row[];
+    readonly rows: Row<Cell>[];
     readonly customCellTemplates?: CellTemplates;
-    // if focusLocation is null - managing inside grid
-    // else - onFocusLocationChanging - manages by user - developer
-    // initialFocusLocation and focusLocation
     readonly focusLocation?: CellLocation;
+    readonly initialFocusLocation?: CellLocation;
     readonly highlights?: Highlight[];
     readonly stickyTopRows?: number;
     readonly stickyBottomRows?: number;
@@ -154,7 +152,7 @@ export type UncertainCompatible<TCell extends Cell> = Uncertain<TCell> & {
 }
 
 // ASK ARCHITECT BEFORE INTRODUCING ANY CHANGE!
-export interface Row<TCell = DefaultCellTypes> {
+export interface Row<TCell extends Cell = DefaultCellTypes | Cell> {
     readonly rowId: Id;
     readonly cells: FilterCell<DefaultCellTypes | TCell>[];
     // default: 25 
