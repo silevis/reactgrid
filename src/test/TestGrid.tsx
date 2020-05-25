@@ -126,8 +126,8 @@ export const TestGrid: React.FunctionComponent<TestGridProps> = (props) => {
 
     const handleRowsReordered = (targetRowId: Id, rowIds: Id[], dropPosition: DropPosition) => {
         const newState = { ...state };
-        const to = state.rows.findIndex((row: Row<FlagCell>) => row.rowId === targetRowId);
-        const ids = rowIds.map((id: Id) => state.rows.findIndex(r => r.rowId === id));
+        const to = state.rows.findIndex(row => row.rowId === targetRowId);
+        const ids = rowIds.map(id => state.rows.findIndex(r => r.rowId === id));
         setState({ ...newState, rows: reorderArray(state.rows, ids, to) });
     }
 
@@ -204,11 +204,6 @@ export const TestGrid: React.FunctionComponent<TestGridProps> = (props) => {
                     </>
                 }
                 <Component {...rgProps} />
-                {/* <ReactGrid
-                    rows={state.rows}
-                    columns={state.columns}
-                > 
-                </ReactGrid>*/}
                 {props.config.enableAdditionalContent &&
                     <>
                         <h1 style={{ width: 3000 }}>TEXT</h1> Test WITH IT

@@ -12,7 +12,7 @@ export type SelectionMode = 'row' | 'column' | 'range';
 // ASK ARCHITECT BEFORE INTRODUCING ANY CHANGE!
 export interface ReactGridProps {
     readonly columns: Column[];
-    readonly rows: Row[];
+    readonly rows: Row<Cell>[];
     readonly customCellTemplates?: CellTemplates;
     readonly focusLocation?: CellLocation;
     readonly initialFocusLocation?: CellLocation;
@@ -145,7 +145,7 @@ export type DefaultCellTypes = CheckboxCell | DateCell | EmailCell | GroupCell |
 type Filter<T> = T extends Cell ? T : never;
 
 // ASK ARCHITECT BEFORE INTRODUCING ANY CHANGE!
-export interface Row<TCell = DefaultCellTypes> {
+export interface Row<TCell extends Cell = DefaultCellTypes | Cell> {
     readonly rowId: Id;
     readonly cells: Filter<DefaultCellTypes | TCell>[];
     // default: 25 
