@@ -1,16 +1,24 @@
 export function isMacOs() {
-    return navigator.appVersion.indexOf("Mac") !== -1;
+    if (typeof window !== 'undefined') { // condition needed for CI/CD
+        return window.navigator.appVersion.indexOf("Mac") !== -1;
+    }
+    return false;
 }
 
 export function isIOS() {
-    if (/iPad|iPhone|iPod/.test(navigator.platform)) {
-        return true;
-    } else {
-        return isIpadOS();
+    if (typeof window !== 'undefined') { // condition needed for CI/CD
+        if (/iPad|iPhone|iPod/.test(window.navigator.platform)) {
+            return true;
+        } else {
+            return isIpadOS();
+        }
     }
+    return false;
 }
 
 export function isIpadOS() {
-    return navigator.maxTouchPoints && navigator.maxTouchPoints > 2 &&
-        /MacIntel/.test(navigator.platform);
+    if (typeof window !== 'undefined') { // condition needed for CI/CD
+        return window.navigator.maxTouchPoints > 2 && /MacIntel/.test(window.navigator.platform);
+    }
+    return false;
 }
