@@ -14,9 +14,7 @@ export interface ReactGridProps {
     readonly columns: Column[];
     readonly rows: Row[];
     readonly customCellTemplates?: CellTemplates;
-    // if focusLocation is null - managing inside grid
-    // else - onFocusLocationChanging - manages by user - developer
-    // initialFocusLocation and focusLocation
+    readonly focusLocation?: CellLocation;
     readonly initialFocusLocation?: CellLocation;
     readonly highlights?: Highlight[];
     readonly stickyTopRows?: number;
@@ -142,7 +140,7 @@ export type UncertainCompatible<TCell extends Cell> = Uncertain<TCell> & {
     value: number;
 }
 
-type DefaultCellTypes = CheckboxCell | DateCell | EmailCell | GroupCell | HeaderCell | NumberCell | TextCell | TimeCell;
+export type DefaultCellTypes = CheckboxCell | DateCell | EmailCell | GroupCell | HeaderCell | NumberCell | TextCell | TimeCell;
 
 type Filter<T> = T extends Cell ? T : never;
 

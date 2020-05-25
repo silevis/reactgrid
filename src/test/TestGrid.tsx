@@ -158,6 +158,7 @@ export const TestGrid: React.FunctionComponent<TestGridProps> = (props) => {
         rows: state.rows,
         columns: state.columns,
         initialFocusLocation: { columnId: 'col-2', rowId: 'row-2' },
+        // focusLocation: { columnId: 'col-1', rowId: 'row-3' },
         onCellsChanged: handleChanges,
         onColumnResized: handleColumnResize,
         customCellTemplates: { 'flag': new FlagCellTemplate() },
@@ -203,6 +204,11 @@ export const TestGrid: React.FunctionComponent<TestGridProps> = (props) => {
                     </>
                 }
                 <Component {...rgProps} />
+                {/* <ReactGrid
+                    rows={state.rows}
+                    columns={state.columns}
+                > 
+                </ReactGrid>*/}
                 {props.config.enableAdditionalContent &&
                     <>
                         <h1 style={{ width: 3000 }}>TEXT</h1> Test WITH IT
