@@ -8,17 +8,17 @@ export function focusLocation(state: State, location: Location): State {
         state = tryAppendChange(state, state.focusedLocation, state.currentlyEditedCell);
     }
 
+    const { onFocusLocationChanged, onFocusLocationChanging } = state.props!;
     const { cell, cellTemplate } = getCompatibleCellAndTemplate(state, location);
-    const isFocusable = !cellTemplate.isFocusable || cellTemplate.isFocusable(cell);
+    const cellLocation = { rowId: location.row.rowId, columnId: location.column.columnId };
+
+    const isFocusable = (!cellTemplate.isFocusable || cellTemplate.isFocusable(cell)) &&
+        (!onFocusLocationChanging || onFocusLocationChanging(cellLocation));
 
     if (!isFocusable)
         return state;
 
-    // TODO if return false then no focus change
-    // onFocusLocationChanging - handle returned value
-
-    const { onFocusLocationChanged } = state.props!;
-    onFocusLocationChanged && onFocusLocationChanged({ rowId: location.row.rowId, columnId: location.column.columnId });
+    onFocusLocationChanged && onFocusLocationChanged(cellLocation);
 
     return {
         ...state,

@@ -150,7 +150,9 @@ export const TestGrid: React.FunctionComponent<TestGridProps> = (props) => {
         ];
     }
 
-    const handleFocusLocationChanged = (location: CellLocation): boolean => {
+    const handleFocusLocationChanged = (location: CellLocation): void => { }
+
+    const handleFocusLocationChanging = (location: CellLocation): boolean => {
         return true;
     }
 
@@ -173,6 +175,7 @@ export const TestGrid: React.FunctionComponent<TestGridProps> = (props) => {
         onRowsReordered: handleRowsReordered,
         onContextMenu: handleContextMenu,
         onFocusLocationChanged: handleFocusLocationChanged,
+        onFocusLocationChanging: handleFocusLocationChanging,
         enableRowSelection: props.enableColumnAndRowSelection || false,
         enableColumnSelection: props.enableColumnAndRowSelection || false,
         disableRangeSelection: props.config.disableRangeSelection,
