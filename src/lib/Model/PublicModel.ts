@@ -57,9 +57,6 @@ export interface Highlight {
 
 export type DefaultCellTypes = CheckboxCell | DateCell | EmailCell | GroupCell | HeaderCell | NumberCell | TextCell | TimeCell;
 
-// 1. usage method
-// 2. DefaultCellChanges or CellChanges
-type FilterCell<T> = T extends Cell ? T : never;
 type ToCellChange<T> = T extends Cell ? CellChange<T> : never;
 type CellTypes<T> = T extends Cell ? T['type'] : never;
 
@@ -152,9 +149,9 @@ export type UncertainCompatible<TCell extends Cell> = Uncertain<TCell> & {
 }
 
 // ASK ARCHITECT BEFORE INTRODUCING ANY CHANGE!
-export interface Row<TCell extends Cell = DefaultCellTypes | Cell> {
+export interface Row<TCell extends Cell = DefaultCellTypes> {
     readonly rowId: Id;
-    readonly cells: FilterCell<DefaultCellTypes | TCell>[];
+    readonly cells: TCell[];
     // default: 25 
     readonly height?: number;
     // default: false

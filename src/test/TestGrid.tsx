@@ -1,15 +1,17 @@
 import React, { useState } from 'react';
 import {
     Column, Row, Id, MenuOption, SelectionMode, DropPosition, CellLocation,
-    NumberCell, GroupCell, CellChangeEnd, CellChange
+    NumberCell, GroupCell, CellChangeEnd, ReactGrid, DefaultCellTypes
 } from '../lib';
 import { Config } from './../test/testEnvConfig';
 import './../lib/assets/core.scss';
 import { FlagCellTemplate, FlagCell } from './flagCell/FlagCellTemplate';
 
+type TestGridRow = Row<DefaultCellTypes | FlagCell>;
+
 interface TestGridState {
     columns: Column[]
-    rows: Row<FlagCell>[]
+    rows: TestGridRow[]
 }
 
 interface TestGridProps {
@@ -40,6 +42,51 @@ export const TestGrid: React.FunctionComponent<TestGridProps> = (props) => {
             columnId: `col-${ci}`, resizable: true, reorderable: true, width: props.config.cellWidth,
         } as Column));
 
+        // const rowsd = (reorderable: boolean): TestGridRow[] => [ // TODO ROW<generic>
+        //     {
+        //         rowId: 'header',
+        //         height: 25,
+        //         reorderable,
+        //         cells: [
+        //             { type: 'header', text: 'Name' },
+        //             { type: 'header', text: 'Surname' },
+        //             { type: 'header', text: 'Sex' },
+        //             { type: 'header', text: 'Email' },
+        //             { type: 'header', text: 'Phone' },
+        //             { type: 'header', text: 'City' },
+        //             { type: 'header', text: 'Street' },
+        //             { type: 'header', text: 'Registered' },
+        //             { type: 'header', text: 'Country' },
+        //             { type: 'header', text: 'Birth date' },
+        //             { type: 'header', text: 'Position' },
+        //             { type: 'header', text: 'Skills' },
+        //             { type: 'header', text: 'Is active' },
+        //         ]
+        //     },
+        //     {
+        //         rowId: '1',
+        //         height: 25,
+        //         reorderable,
+        //         cells: [
+        //             // IS IT CORRECT
+        //             { type: 'text', text: 'Jacob' },
+        //             { type: 'text', text: 'Sandberg' },
+        //             { type: 'text', text: 'male' },
+        //             { type: 'email', text: 'j.sandberg@gmail.com' },
+        //             { type: 'number', value: 7958372938 },
+        //             { type: 'text', text: 'New York' },
+        //             { type: 'text', text: 'Wellham Ave' },
+        //             { type: 'date', date: new Date('2008-11-12') },
+        //             { type: 'flag', text: 'usa' },
+        //             { type: 'date', date: new Date('1962-09-04') },
+        //             { type: 'text', text: 'Director' },
+        //             { type: 'dropdownNumber', value: 20, isOpened: false },
+        //             { type: 'checkbox', checked: true }
+        //         ]
+        //     }
+        // ]
+
+
         const rows = new Array(props.config.rows).fill(0).map((_, ri) => {
             return {
                 rowId: `row-${ri}`, reorderable: true, height: props.config.cellHeight, cells: columns.map((_, ci) => {
@@ -66,7 +113,7 @@ export const TestGrid: React.FunctionComponent<TestGridProps> = (props) => {
                             return { type: 'text', text: `${ri} - ${ci}`, validator: () => { } }
                     }
                 })
-            } as Row<FlagCell>
+            } as TestGridRow
         });
 
         return { rows, columns }
@@ -217,6 +264,9 @@ export const TestGrid: React.FunctionComponent<TestGridProps> = (props) => {
                     </>
                 }
                 <Component {...rgProps} />
+                <ReactGrid rows={state.rows} columns={state.columns} customCellTemplates={{ 'flag': new FlagCellTemplate() }} >
+
+                </ReactGrid>
                 {props.config.enableAdditionalContent &&
                     <>
                         <h1 style={{ width: 3000 }}>TEXT</h1> Test WITH IT
