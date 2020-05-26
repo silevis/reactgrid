@@ -1,4 +1,4 @@
-import { Location, State, Cell, Compatible } from '../Model';
+import { Location, State, Cell, Compatible, CellChange } from '../Model';
 import { getCompatibleCellAndTemplate } from './getCompatibleCellAndTemplate';
 
 export function tryAppendChange(state: State, location: Location, cell: Compatible<Cell>): State {
@@ -12,8 +12,9 @@ export function tryAppendChange(state: State, location: Location, cell: Compatib
         state.queuedCellChanges.push({
             initialCell,
             newCell,
+            type: newCell.type,
             rowId: location.row.rowId,
             columnId: location.column.columnId
-        });
+        } as CellChange);
     return { ...state };
 }

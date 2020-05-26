@@ -1,15 +1,17 @@
 import React, { useState } from 'react';
 import {
-    Column, Row, CellChange, Id, MenuOption, SelectionMode, DropPosition, CellLocation,
-    NumberCell, GroupCell
+    Column, Row, Id, MenuOption, SelectionMode, DropPosition, CellLocation,
+    NumberCell, GroupCell, DefaultCellTypes, CellChange
 } from '../lib';
 import { Config } from './../test/testEnvConfig';
 import './../lib/assets/core.scss';
 import { FlagCellTemplate, FlagCell } from './flagCell/FlagCellTemplate';
 
+type TestGridRow = Row<DefaultCellTypes | FlagCell>;
+
 interface TestGridState {
     columns: Column[]
-    rows: Row<FlagCell>[]
+    rows: TestGridRow[]
 }
 
 interface TestGridProps {
@@ -66,7 +68,7 @@ export const TestGrid: React.FunctionComponent<TestGridProps> = (props) => {
                             return { type: 'text', text: `${ri} - ${ci}`, validator: () => { } }
                     }
                 })
-            } as Row<FlagCell>
+            } as TestGridRow
         });
 
         return { rows, columns }
@@ -87,9 +89,20 @@ export const TestGrid: React.FunctionComponent<TestGridProps> = (props) => {
             const changeRowIdx = newState.rows.findIndex(el => el.rowId === change.rowId);
             const changeColumnIdx = newState.columns.findIndex(el => el.columnId === change.columnId);
             //  (change as CellChange<TextCell>).
-            if (change.newCell.type === 'flag') { // types of `newCell` and `initialCell`  are diffrent
-                // change.newCell.
-                // change.initialCell.type
+            // if (change.newCell.type === 'flag') { // types of `newCell` and `initialCell`  are diffrent
+            // change.newCell.
+            // change.initialCell.type
+            // }
+            /* if (change.type === '') {
+                console.log(change.newCell);
+            } */
+            if (change.type === 'text') {
+                console.log(change.newCell);
+                // change.newCell
+            }
+            if (change.type === 'checkbox') {
+                console.log(change.newCell);
+                // change.newCell
             }
             newState.rows[changeRowIdx].cells[changeColumnIdx] = (change.newCell as any);
         });

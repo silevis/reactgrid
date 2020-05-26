@@ -32,7 +32,7 @@ export class CellMatrixBuilder implements ICellMatrixBuilder {
             (rows, row, idx) => {
                 const top = this.getTop(idx, this.cellMatrix.props.stickyTopRows, rows);
                 const height = row.height || CellMatrix.DEFAULT_ROW_HEIGHT;
-                rows.push({ ...row, top, height, idx, bottom: top + height });
+                rows.push({ ...row, top, height, idx, bottom: top + height } as GridRow);
                 this.cellMatrix.height += height;
                 // TODO what with rowIndexLookup?
                 this.cellMatrix.rowIndexLookup[row.rowId] = idx;

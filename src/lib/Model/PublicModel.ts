@@ -56,10 +56,15 @@ export interface Highlight {
     readonly className?: string;
 }
 
+export type DefaultCellTypes = CheckboxCell | DateCell | EmailCell | GroupCell | HeaderCell | NumberCell | TextCell | TimeCell;
+
+type CellTypes<TCell> = TCell extends Cell ? TCell['type'] : never;
+
 // ASK ARCHITECT BEFORE INTRODUCING ANY CHANGE!
-export interface CellChange<TCell extends Cell = Cell> {
+export interface CellChange<TCell extends Cell = DefaultCellTypes> {
     readonly rowId: Id;
     readonly columnId: Id;
+    readonly type: CellTypes<TCell>;
     readonly initialCell: TCell;
     readonly newCell: TCell;
 }
@@ -141,14 +146,10 @@ export type UncertainCompatible<TCell extends Cell> = Uncertain<TCell> & {
     value: number;
 }
 
-export type DefaultCellTypes = CheckboxCell | DateCell | EmailCell | GroupCell | HeaderCell | NumberCell | TextCell | TimeCell;
-
-type Filter<T> = T extends Cell ? T : never;
-
 // ASK ARCHITECT BEFORE INTRODUCING ANY CHANGE!
-export interface Row<TCell extends Cell = DefaultCellTypes | Cell> {
+export interface Row<TCell extends Cell = DefaultCellTypes> {
     readonly rowId: Id;
-    readonly cells: Filter<DefaultCellTypes | TCell>[];
+    readonly cells: TCell[];
     // default: 25 
     readonly height?: number;
     // default: false
