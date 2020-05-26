@@ -153,30 +153,6 @@ export var TestGrid = function (props) {
     var handleFocusLocationChanging = function (location) {
         return true;
     };
-    var rgProps = {
-        rows: state.rows,
-        columns: state.columns,
-        initialFocusLocation: { columnId: 'col-2', rowId: 'row-2' },
-        onCellsChanged: handleChanges,
-        onColumnResized: handleColumnResize,
-        customCellTemplates: { 'flag': new FlagCellTemplate() },
-        highlights: [{ columnId: 'col-1', rowId: 'row-1', borderColor: '#00ff00' }],
-        stickyLeftColumns: props.enableSticky ? props.config.stickyLeft : undefined,
-        stickyRightColumns: props.enableSticky ? props.config.stickyRight : undefined,
-        stickyTopRows: props.enableSticky ? props.config.stickyTop : undefined,
-        stickyBottomRows: props.enableSticky ? props.config.stickyBottom : undefined,
-        canReorderColumns: handleCanReorderColumns,
-        canReorderRows: handleCanReorderRows,
-        onColumnsReordered: handleColumnsReordered,
-        onRowsReordered: handleRowsReordered,
-        onContextMenu: handleContextMenu,
-        onFocusLocationChanged: handleFocusLocationChanged,
-        onFocusLocationChanging: handleFocusLocationChanging,
-        enableRowSelection: props.enableColumnAndRowSelection || false,
-        enableColumnSelection: props.enableColumnAndRowSelection || false,
-        disableRangeSelection: props.config.disableRangeSelection,
-        disableFloatingCellEditor: props.disableFloatingCellEditor || false,
-    };
     var Component = props.component;
     return (React.createElement(React.Fragment, null,
         React.createElement("div", { className: "test-grid-container", "data-cy": "div-scrollable-element", style: __assign(__assign(__assign({}, (!props.config.pinToBody && {
@@ -193,7 +169,7 @@ export var TestGrid = function (props) {
                     React.createElement(Logo, { isPro: props.isPro }),
                     React.createElement(Logo, { isPro: props.isPro }),
                     React.createElement(Logo, { isPro: props.isPro })),
-            React.createElement(Component, __assign({}, rgProps)),
+            React.createElement(Component, { rows: state.rows, columns: state.columns, initialFocusLocation: { columnId: 'col-2', rowId: 'row-2' }, onCellsChanged: handleChanges, onColumnResized: handleColumnResize, customCellTemplates: { 'flag': new FlagCellTemplate() }, highlights: [{ columnId: 'col-1', rowId: 'row-1', borderColor: '#00ff00' }], stickyLeftColumns: props.enableSticky ? props.config.stickyLeft : undefined, stickyRightColumns: props.enableSticky ? props.config.stickyRight : undefined, stickyTopRows: props.enableSticky ? props.config.stickyTop : undefined, stickyBottomRows: props.enableSticky ? props.config.stickyBottom : undefined, canReorderColumns: handleCanReorderColumns, canReorderRows: handleCanReorderRows, onColumnsReordered: handleColumnsReordered, onRowsReordered: handleRowsReordered, onContextMenu: handleContextMenu, onFocusLocationChanged: handleFocusLocationChanged, onFocusLocationChanging: handleFocusLocationChanging, enableRowSelection: props.enableColumnAndRowSelection || false, enableColumnSelection: props.enableColumnAndRowSelection || false, disableRangeSelection: props.config.disableRangeSelection, disableFloatingCellEditor: props.disableFloatingCellEditor || false }),
             props.config.enableAdditionalContent &&
                 React.createElement(React.Fragment, null,
                     React.createElement("h1", { style: { width: 3000 } }, "TEXT"),

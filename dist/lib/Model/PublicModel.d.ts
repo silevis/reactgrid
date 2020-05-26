@@ -17,7 +17,7 @@ export interface ReactGridProps {
     readonly enableRowSelection?: boolean;
     readonly enableColumnSelection?: boolean;
     readonly disableFloatingCellEditor?: boolean;
-    readonly onCellsChanged?: (cellChanges: CellChange<Cell>[]) => void;
+    readonly onCellsChanged?: (cellChanges: CellChange[]) => void;
     readonly onFocusLocationChanged?: (location: CellLocation) => void;
     readonly onFocusLocationChanging?: (location: CellLocation) => boolean;
     readonly onColumnResized?: (columnId: Id, width: number) => void;
