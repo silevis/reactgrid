@@ -160,5 +160,5 @@ export interface Row<TCell extends Cell = DefaultCellTypes> {
 export interface MenuOption {
     id: string;
     label: string;
-    handler: () => void;
+    handler: (selectedRowIds: Id[], selectedColIds: Id[], selectionMode: SelectionMode) => void;
 }

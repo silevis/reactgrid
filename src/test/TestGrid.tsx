@@ -88,23 +88,13 @@ export const TestGrid: React.FunctionComponent<TestGridProps> = (props) => {
         changes.forEach(change => {
             const changeRowIdx = newState.rows.findIndex(el => el.rowId === change.rowId);
             const changeColumnIdx = newState.columns.findIndex(el => el.columnId === change.columnId);
-            //  (change as CellChange<TextCell>).
-            // if (change.newCell.type === 'flag') { // types of `newCell` and `initialCell`  are diffrent
-            // change.newCell.
-            // change.initialCell.type
-            // }
-            /* if (change.type === '') {
-                console.log(change.newCell);
-            } */
             if (change.type === 'text') {
-                console.log(change.newCell);
-                // change.newCell
+                // console.log(change.newCell);
             }
             if (change.type === 'checkbox') {
-                console.log(change.newCell);
-                // change.newCell
+                // console.log(change.newCell);
             }
-            newState.rows[changeRowIdx].cells[changeColumnIdx] = (change.newCell as any);
+            newState.rows[changeRowIdx].cells[changeColumnIdx] = change.newCell;
         });
         setState(newState);
         return true;
@@ -148,18 +138,27 @@ export const TestGrid: React.FunctionComponent<TestGridProps> = (props) => {
         if (selectionMode === 'row') {
             menuOptions = [
                 ...menuOptions,
-                { id: 'rowOption', label: 'Custom menu row option', handler: () => { } },
+                {
+                    id: 'rowOption', label: 'Custom menu row option',
+                    handler: (selectedRowIds: Id[], selectedColIds: Id[], selectionMode: SelectionMode) => { }
+                },
             ]
         }
         if (selectionMode === 'column') {
             menuOptions = [
                 ...menuOptions,
-                { id: 'columnOption', label: 'Custom menu column option', handler: () => { } },
+                {
+                    id: 'columnOption', label: 'Custom menu column option',
+                    handler: (selectedRowIds: Id[], selectedColIds: Id[], selectionMode: SelectionMode) => { }
+                },
             ]
         }
         return [
             ...menuOptions,
-            { id: 'all', label: 'Custom menu option', handler: () => { } },
+            {
+                id: 'all', label: 'Custom menu option',
+                handler: (selectedRowIds: Id[], selectedColIds: Id[], selectionMode: SelectionMode) => { }
+            },
         ];
     }
 
