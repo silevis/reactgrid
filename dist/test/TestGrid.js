@@ -67,7 +67,7 @@ export var TestGrid = function (props) {
                         case 6:
                             return { type: 'checkbox', checked: false, checkedText: 'Zaznaczono', uncheckedText: false };
                         case 7:
-                            return { type: 'flag', text: 'pol' };
+                            return { type: 'flag', text: 'bra' };
                         default:
                             return { type: 'text', text: ri + " - " + ci, validator: function () { } };
                     }
@@ -89,6 +89,10 @@ export var TestGrid = function (props) {
         changes.forEach(function (change) {
             var changeRowIdx = newState.rows.findIndex(function (el) { return el.rowId === change.rowId; });
             var changeColumnIdx = newState.columns.findIndex(function (el) { return el.columnId === change.columnId; });
+            if (change.type === 'text') {
+            }
+            if (change.type === 'checkbox') {
+            }
             newState.rows[changeRowIdx].cells[changeColumnIdx] = change.newCell;
         });
         setState(newState);
@@ -124,39 +128,50 @@ export var TestGrid = function (props) {
     var handleContextMenu = function (selectedRowIds, selectedColIds, selectionMode, menuOptions) {
         if (selectionMode === 'row') {
             menuOptions = __spreadArrays(menuOptions, [
-                { id: 'rowOption', label: 'Custom menu row option', handler: function () { } },
+                {
+                    id: 'rowOption', label: 'Custom menu row option',
+                    handler: function (selectedRowIds, selectedColIds, selectionMode) { }
+                },
             ]);
         }
         if (selectionMode === 'column') {
             menuOptions = __spreadArrays(menuOptions, [
-                { id: 'columnOption', label: 'Custom menu column option', handler: function () { } },
+                {
+                    id: 'columnOption', label: 'Custom menu column option',
+                    handler: function (selectedRowIds, selectedColIds, selectionMode) { }
+                },
             ]);
         }
         return __spreadArrays(menuOptions, [
-            { id: 'all', label: 'Custom menu option', handler: function () { } },
+            {
+                id: 'all', label: 'Custom menu option',
+                handler: function (selectedRowIds, selectedColIds, selectionMode) { }
+            },
         ]);
     };
-    var handleFocusLocationChanged = function (location) {
+    var handleFocusLocationChanged = function (location) { };
+    var handleFocusLocationChanging = function (location) {
         return true;
     };
     var rgProps = {
         rows: state.rows,
         columns: state.columns,
-        focusLocation: { columnId: 'col-2', rowId: 'row-2' },
+        initialFocusLocation: { columnId: 'col-2', rowId: 'row-2' },
         onCellsChanged: handleChanges,
         onColumnResized: handleColumnResize,
         customCellTemplates: { 'flag': new FlagCellTemplate() },
         highlights: [{ columnId: 'col-1', rowId: 'row-1', borderColor: '#00ff00' }],
-        stickyLeftColumns: props.enableSticky && props.config.stickyLeft,
-        stickyRightColumns: props.enableSticky && props.config.stickyRight,
-        stickyTopRows: props.enableSticky && props.config.stickyTop,
-        stickyBottomRows: props.enableSticky && props.config.stickyBottom,
+        stickyLeftColumns: props.enableSticky ? props.config.stickyLeft : undefined,
+        stickyRightColumns: props.enableSticky ? props.config.stickyRight : undefined,
+        stickyTopRows: props.enableSticky ? props.config.stickyTop : undefined,
+        stickyBottomRows: props.enableSticky ? props.config.stickyBottom : undefined,
         canReorderColumns: handleCanReorderColumns,
         canReorderRows: handleCanReorderRows,
         onColumnsReordered: handleColumnsReordered,
         onRowsReordered: handleRowsReordered,
         onContextMenu: handleContextMenu,
         onFocusLocationChanged: handleFocusLocationChanged,
+        onFocusLocationChanging: handleFocusLocationChanging,
         enableRowSelection: props.enableColumnAndRowSelection || false,
         enableColumnSelection: props.enableColumnAndRowSelection || false,
         disableRangeSelection: props.config.disableRangeSelection,

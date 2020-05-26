@@ -7,7 +7,7 @@ export interface HeaderCell extends Cell {
 export declare class HeaderCellTemplate implements CellTemplate<HeaderCell> {
     getCompatibleCell(uncertainCell: Uncertain<HeaderCell>): Compatible<HeaderCell>;
     render(cell: Compatible<HeaderCell>, isInEditMode: boolean, onCellChanged: (cell: Compatible<HeaderCell>, commit: boolean) => void): React.ReactNode;
-    isFocusable: () => boolean;
+    isFocusable: (cell: Compatible<HeaderCell>) => boolean;
     getClassName(cell: Compatible<HeaderCell>, isInEditMode: boolean): string;
     getStyle: (cell: Compatible<HeaderCell>) => {
         background: string;

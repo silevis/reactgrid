@@ -15,7 +15,7 @@ import { CellMatrixBuilder } from '../Model/CellMatrixBuilder';
 export function getDerivedStateFromProps(props, state) {
     var stateDeriverWithProps = stateDeriver(props);
     state = stateDeriverWithProps(state)(updateStateProps);
-    state = stateDeriverWithProps(state)(appendCellTamplatesAndHighlights);
+    state = stateDeriverWithProps(state)(appendCellTemplatesAndHighlights);
     var hasChanged = dataHasChanged(props, state);
     if (hasChanged) {
         state = stateDeriverWithProps(state)(updateCellMatrix);
@@ -25,6 +25,7 @@ export function getDerivedStateFromProps(props, state) {
         state = stateDeriverWithProps(state)(updateVisibleRange);
     }
     state = stateDeriverWithProps(state)(setInitialFocusLocation);
+    state = stateDeriverWithProps(state)(setFocusLocation);
     return state;
 }
 export var stateDeriver = function (props) { return function (state) { return function (fn) { return fn(props, state); }; }; };
@@ -52,14 +53,22 @@ function updateVisibleRange(props, state) {
     }
     return state;
 }
-export function appendCellTamplatesAndHighlights(props, state) {
+export function appendCellTemplatesAndHighlights(props, state) {
     var _a;
     return __assign(__assign({}, state), { highlightLocations: (_a = props.highlights) !== null && _a !== void 0 ? _a : [], cellTemplates: __assign(__assign({}, defaultCellTemplates), props.customCellTemplates) });
 }
 export function setInitialFocusLocation(props, state) {
-    var locationToFocus = props.focusLocation;
+    var locationToFocus = props.initialFocusLocation;
     if (locationToFocus && !state.focusedLocation) {
         return focusLocation(state, state.cellMatrix.getLocationById(locationToFocus.rowId, locationToFocus.columnId));
+    }
+    return state;
+}
+export function setFocusLocation(props, state) {
+    var locationToFocus = props.focusLocation;
+    if (locationToFocus) {
+        var location_1 = state.cellMatrix.getLocationById(locationToFocus.rowId, locationToFocus.columnId);
+        return focusLocation(state, location_1);
     }
     return state;
 }

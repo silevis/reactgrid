@@ -10,7 +10,7 @@ interface TestGridProps {
     disableFloatingCellEditor?: boolean;
     isPro?: boolean;
     config: Config;
-    component?: any;
+    component: React.ComponentClass<any>;
 }
 export declare const TestGrid: React.FunctionComponent<TestGridProps>;
 export declare const withDiv: <T extends object>(Component: React.ComponentType<T>) => React.FC<T & TestGridProps>;

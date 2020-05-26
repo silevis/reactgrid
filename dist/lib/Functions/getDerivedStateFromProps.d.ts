@@ -4,5 +4,6 @@ export declare const stateDeriver: (props: ReactGridProps) => (state: State) => 
 export declare const dataHasChanged: (props: ReactGridProps, state: State) => boolean;
 export declare function updateStateProps(props: ReactGridProps, state: State): State;
 export declare function updateFocusedLocation(props: ReactGridProps, state: State): State;
-export declare function appendCellTamplatesAndHighlights(props: ReactGridProps, state: State): State;
+export declare function appendCellTemplatesAndHighlights(props: ReactGridProps, state: State): State;
 export declare function setInitialFocusLocation(props: ReactGridProps, state: State): State;
+export declare function setFocusLocation(props: ReactGridProps, state: State): State;

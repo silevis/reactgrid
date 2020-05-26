@@ -19,6 +19,7 @@ export function tryAppendChange(state, location, cell) {
         state.queuedCellChanges.push({
             initialCell: initialCell,
             newCell: newCell,
+            type: newCell.type,
             rowId: location.row.rowId,
             columnId: location.column.columnId
         });

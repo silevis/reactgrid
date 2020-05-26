@@ -4,7 +4,7 @@ export interface IndexLookup {
 }
 export interface CellMatrixProps {
     columns: Column[];
-    rows: Row[];
+    rows: Row<Cell>[];
     stickyTopRows?: number;
     stickyLeftColumns?: number;
 }

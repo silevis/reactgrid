@@ -1,10 +1,12 @@
 /// <reference types="react" />
+import { TextCell, HeaderCell, CheckboxCell, DateCell, EmailCell, GroupCell, NumberCell, TimeCell } from './../CellTemplates';
 export declare type SelectionMode = 'row' | 'column' | 'range';
 export interface ReactGridProps {
     readonly columns: Column[];
-    readonly rows: Row[];
+    readonly rows: Row<Cell>[];
     readonly customCellTemplates?: CellTemplates;
     readonly focusLocation?: CellLocation;
+    readonly initialFocusLocation?: CellLocation;
     readonly highlights?: Highlight[];
     readonly stickyTopRows?: number;
     readonly stickyBottomRows?: number;
@@ -15,14 +17,15 @@ export interface ReactGridProps {
     readonly enableRowSelection?: boolean;
     readonly enableColumnSelection?: boolean;
     readonly disableFloatingCellEditor?: boolean;
-    readonly onCellsChanged?: (cellChanges: CellChange<Cell>[]) => boolean;
-    readonly onFocusLocationChanged?: (location: CellLocation) => boolean;
+    readonly onCellsChanged?: (cellChanges: CellChange<Cell>[]) => void;
+    readonly onFocusLocationChanged?: (location: CellLocation) => void;
+    readonly onFocusLocationChanging?: (location: CellLocation) => boolean;
     readonly onColumnResized?: (columnId: Id, width: number) => void;
-    readonly canReorderRows?: (targetRowId: Id, rowIds: Id[], dropPosition: DropPosition) => boolean;
     readonly onRowsReordered?: (targetRowId: Id, rowIds: Id[], dropPosition: DropPosition) => void;
-    readonly canReorderColumns?: (targetColumnId: Id, columnIds: Id[], dropPosition: DropPosition) => boolean;
     readonly onColumnsReordered?: (targetColumnId: Id, columnIds: Id[], dropPosition: DropPosition) => void;
     readonly onContextMenu?: (selectedRowIds: Id[], selectedColIds: Id[], selectionMode: SelectionMode, menuOptions: MenuOption[]) => MenuOption[];
+    readonly canReorderColumns?: (targetColumnId: Id, columnIds: Id[], dropPosition: DropPosition) => boolean;
+    readonly canReorderRows?: (targetRowId: Id, rowIds: Id[], dropPosition: DropPosition) => boolean;
 }
 export interface CellTemplates {
     [key: string]: CellTemplate;
@@ -37,9 +40,12 @@ export interface Highlight {
     readonly borderColor?: string;
     readonly className?: string;
 }
-export interface CellChange<TCell extends Cell = Cell> {
+export declare type DefaultCellTypes = CheckboxCell | DateCell | EmailCell | GroupCell | HeaderCell | NumberCell | TextCell | TimeCell;
+declare type CellTypes<TCell> = TCell extends Cell ? TCell['type'] : never;
+export interface CellChange<TCell extends Cell = DefaultCellTypes> {
     readonly rowId: Id;
     readonly columnId: Id;
+    readonly type: CellTypes<TCell>;
     readonly initialCell: TCell;
     readonly newCell: TCell;
 }
@@ -83,14 +89,15 @@ export declare type UncertainCompatible<TCell extends Cell> = Uncertain<TCell> &
     text: string;
     value: number;
 };
-export interface Row {
+export interface Row<TCell extends Cell = DefaultCellTypes> {
     readonly rowId: Id;
-    readonly cells: Cell[];
+    readonly cells: TCell[];
     readonly height?: number;
     readonly reorderable?: boolean;
 }
 export interface MenuOption {
     id: string;
     label: string;
-    handler: () => void;
+    handler: (selectedRowIds: Id[], selectedColIds: Id[], selectionMode: SelectionMode) => void;
 }
+export {};

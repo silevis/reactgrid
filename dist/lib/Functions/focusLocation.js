@@ -15,11 +15,13 @@ export function focusLocation(state, location) {
     if (state.focusedLocation && state.currentlyEditedCell) {
         state = tryAppendChange(state, state.focusedLocation, state.currentlyEditedCell);
     }
-    var _a = getCompatibleCellAndTemplate(state, location), cell = _a.cell, cellTemplate = _a.cellTemplate;
-    var isFocusable = !cellTemplate.isFocusable || cellTemplate.isFocusable(cell);
+    var _a = state.props, onFocusLocationChanged = _a.onFocusLocationChanged, onFocusLocationChanging = _a.onFocusLocationChanging;
+    var _b = getCompatibleCellAndTemplate(state, location), cell = _b.cell, cellTemplate = _b.cellTemplate;
+    var cellLocation = { rowId: location.row.rowId, columnId: location.column.columnId };
+    var isFocusable = (!cellTemplate.isFocusable || cellTemplate.isFocusable(cell)) &&
+        (!onFocusLocationChanging || onFocusLocationChanging(cellLocation));
     if (!isFocusable)
         return state;
-    var onFocusLocationChanged = state.props.onFocusLocationChanged;
-    onFocusLocationChanged && onFocusLocationChanged({ rowId: location.row.rowId, columnId: location.column.columnId });
+    onFocusLocationChanged && onFocusLocationChanged(cellLocation);
     return __assign(__assign({}, state), { focusedLocation: state.cellMatrix.validateLocation(location), currentlyEditedCell: undefined });
 }

@@ -12,7 +12,7 @@ var __assign = (this && this.__assign) || function () {
 import { getCellProperty } from '../Functions/getCellProperty';
 var HeaderCellTemplate = (function () {
     function HeaderCellTemplate() {
-        this.isFocusable = function () { return false; };
+        this.isFocusable = function (cell) { return false; };
         this.getStyle = function (cell) { return ({ background: 'rgba(0, 0, 0, 0.20)' }); };
     }
     HeaderCellTemplate.prototype.getCompatibleCell = function (uncertainCell) {
