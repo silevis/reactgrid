@@ -1,5 +1,5 @@
 import { Behavior, Range, Location, CellMatrix } from '.';
-import { CellTemplates, Cell, ReactGridProps, Compatible, Highlight, CellChangeEnd } from './PublicModel';
+import { CellTemplates, Cell, ReactGridProps, Compatible, Highlight, CellChange } from './PublicModel';
 import { isBrowserIE, isBrowserEdge } from '../Functions';
 import { DefaultBehavior } from '../Behaviors/DefaultBehavior';
 
@@ -20,7 +20,7 @@ export interface State<TCellMatrix extends CellMatrix = CellMatrix, TBehavior ex
     readonly reactGridElement?: HTMLDivElement;
     readonly scrollableElement?: HTMLElement | (Window & typeof globalThis);
 
-    readonly queuedCellChanges: CellChangeEnd[];
+    readonly queuedCellChanges: CellChange[];
     currentlyEditedCell?: Compatible<Cell>;
 
     readonly disableFloatingCellEditor: boolean;

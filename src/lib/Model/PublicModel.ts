@@ -27,7 +27,7 @@ export interface ReactGridProps {
     readonly enableColumnSelection?: boolean;
     readonly disableFloatingCellEditor?: boolean;
 
-    readonly onCellsChanged?: (cellChanges: CellChangeEnd[]) => void;
+    readonly onCellsChanged?: (cellChanges: CellChange<Cell>[]) => void;
     readonly onFocusLocationChanged?: (location: CellLocation) => boolean;
     readonly onColumnResized?: (columnId: Id, width: number) => void;
     readonly onRowsReordered?: (targetRowId: Id, rowIds: Id[], dropPosition: DropPosition) => void;
@@ -57,13 +57,10 @@ export interface Highlight {
 
 export type DefaultCellTypes = CheckboxCell | DateCell | EmailCell | GroupCell | HeaderCell | NumberCell | TextCell | TimeCell;
 
-type ToCellChange<T> = T extends Cell ? CellChange<T> : never;
-type CellTypes<T> = T extends Cell ? T['type'] : never;
-
-export type CellChangeEnd<T = object> = ToCellChange<DefaultCellTypes | T>; // `object` disallow unknown cell types
+type CellTypes<TCell> = TCell extends Cell ? TCell['type'] : never;
 
 // ASK ARCHITECT BEFORE INTRODUCING ANY CHANGE!
-export interface CellChange<TCell = DefaultCellTypes> {
+export interface CellChange<TCell extends Cell = DefaultCellTypes> {
     readonly rowId: Id;
     readonly columnId: Id;
     readonly type: CellTypes<TCell>;
