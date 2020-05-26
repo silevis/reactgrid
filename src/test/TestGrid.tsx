@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import {
     Column, Row, Id, MenuOption, SelectionMode, DropPosition, CellLocation,
-    NumberCell, GroupCell, ReactGrid, DefaultCellTypes, CellChange
+    NumberCell, GroupCell, DefaultCellTypes, CellChange
 } from '../lib';
 import { Config } from './../test/testEnvConfig';
 import './../lib/assets/core.scss';
