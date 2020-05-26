@@ -19,7 +19,7 @@ export class HeaderCellTemplate implements CellTemplate<HeaderCell> {
         return cell.text;
     }
 
-    isFocusable = () => false;
+    isFocusable = (cell: Compatible<HeaderCell>) => false;
 
     getClassName(cell: Compatible<HeaderCell>, isInEditMode: boolean) {
         return cell.className ? cell.className : '';

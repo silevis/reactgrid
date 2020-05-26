@@ -1,15 +1,17 @@
 import React, { useState } from 'react';
 import {
-    Column, Row, CellChange, Id, MenuOption, SelectionMode, DropPosition, Cell, CellLocation,
-    NumberCell, GroupCell
+    Column, Row, Id, MenuOption, SelectionMode, DropPosition, CellLocation,
+    NumberCell, GroupCell, DefaultCellTypes, CellChange
 } from '../lib';
 import { Config } from './../test/testEnvConfig';
 import './../lib/assets/core.scss';
-import { FlagCellTemplate } from './flagCell/FlagCellTemplate';
+import { FlagCellTemplate, FlagCell } from './flagCell/FlagCellTemplate';
+
+type TestGridRow = Row<DefaultCellTypes | FlagCell>;
 
 interface TestGridState {
     columns: Column[]
-    rows: Row[]
+    rows: TestGridRow[]
 }
 
 interface TestGridProps {
@@ -21,7 +23,7 @@ interface TestGridProps {
     disableFloatingCellEditor?: boolean;
     isPro?: boolean;
     config: Config;
-    component?: any; //TODO check why any?
+    component: React.ComponentClass<any>; //TODO check why any?
 }
 
 const emailValidator = (email: string): boolean => {
@@ -61,12 +63,12 @@ export const TestGrid: React.FunctionComponent<TestGridProps> = (props) => {
                         case 6:
                             return { type: 'checkbox', checked: false, checkedText: 'Zaznaczono', uncheckedText: false }
                         case 7:
-                            return { type: 'flag', text: 'pol' }
+                            return { type: 'flag', text: 'bra' }
                         default:
                             return { type: 'text', text: `${ri} - ${ci}`, validator: () => { } }
                     }
                 })
-            } as Row
+            } as TestGridRow
         });
 
         return { rows, columns }
@@ -81,11 +83,17 @@ export const TestGrid: React.FunctionComponent<TestGridProps> = (props) => {
         setState(newState);
     }
 
-    const handleChanges = (changes: CellChange<any>[]) => {
+    const handleChanges = (changes: CellChange[]) => {
         const newState = { ...state };
         changes.forEach(change => {
             const changeRowIdx = newState.rows.findIndex(el => el.rowId === change.rowId);
             const changeColumnIdx = newState.columns.findIndex(el => el.columnId === change.columnId);
+            if (change.type === 'text') {
+                // console.log(change.newCell);
+            }
+            if (change.type === 'checkbox') {
+                // console.log(change.newCell);
+            }
             newState.rows[changeRowIdx].cells[changeColumnIdx] = change.newCell;
         });
         setState(newState);
@@ -114,59 +122,72 @@ export const TestGrid: React.FunctionComponent<TestGridProps> = (props) => {
         const to = state.columns.findIndex((column: Column) => column.columnId === targetColumnId);
         const columnIdxs = columnIds.map((id: Id, idx: number) => state.columns.findIndex((c: Column) => c.columnId === id));
         setState({
-            columns: reorderArray<Column>(state.columns, columnIdxs, to),
-            rows: state.rows.map(row => ({ ...row, cells: reorderArray<Cell>(row.cells, columnIdxs, to) })),
+            columns: reorderArray(state.columns, columnIdxs, to),
+            rows: state.rows.map(row => ({ ...row, cells: reorderArray(row.cells, columnIdxs, to) })),
         });
     }
 
     const handleRowsReordered = (targetRowId: Id, rowIds: Id[], dropPosition: DropPosition) => {
         const newState = { ...state };
-        const to = state.rows.findIndex((row: Row) => row.rowId === targetRowId);
-        const ids = rowIds.map((id: Id) => state.rows.findIndex(r => r.rowId === id)) as number[];
-        setState({ ...newState, rows: reorderArray<Row>(state.rows, ids, to) });
+        const to = state.rows.findIndex(row => row.rowId === targetRowId);
+        const ids = rowIds.map(id => state.rows.findIndex(r => r.rowId === id));
+        setState({ ...newState, rows: reorderArray(state.rows, ids, to) });
     }
 
     const handleContextMenu = (selectedRowIds: Id[], selectedColIds: Id[], selectionMode: SelectionMode, menuOptions: MenuOption[]): MenuOption[] => {
         if (selectionMode === 'row') {
             menuOptions = [
                 ...menuOptions,
-                { id: 'rowOption', label: 'Custom menu row option', handler: () => { } },
+                {
+                    id: 'rowOption', label: 'Custom menu row option',
+                    handler: (selectedRowIds: Id[], selectedColIds: Id[], selectionMode: SelectionMode) => { }
+                },
             ]
         }
         if (selectionMode === 'column') {
             menuOptions = [
                 ...menuOptions,
-                { id: 'columnOption', label: 'Custom menu column option', handler: () => { } },
+                {
+                    id: 'columnOption', label: 'Custom menu column option',
+                    handler: (selectedRowIds: Id[], selectedColIds: Id[], selectionMode: SelectionMode) => { }
+                },
             ]
         }
         return [
             ...menuOptions,
-            { id: 'all', label: 'Custom menu option', handler: () => { } },
+            {
+                id: 'all', label: 'Custom menu option',
+                handler: (selectedRowIds: Id[], selectedColIds: Id[], selectionMode: SelectionMode) => { }
+            },
         ];
     }
 
-    const handleFocusLocationChanged = (location: CellLocation): boolean => {
+    const handleFocusLocationChanged = (location: CellLocation): void => { }
+
+    const handleFocusLocationChanging = (location: CellLocation): boolean => {
         return true;
     }
 
     const rgProps = {
         rows: state.rows,
         columns: state.columns,
-        focusLocation: { columnId: 'col-2', rowId: 'row-2' },
+        initialFocusLocation: { columnId: 'col-2', rowId: 'row-2' },
+        // focusLocation: { columnId: 'col-1', rowId: 'row-3' },
         onCellsChanged: handleChanges,
         onColumnResized: handleColumnResize,
         customCellTemplates: { 'flag': new FlagCellTemplate() },
         highlights: [{ columnId: 'col-1', rowId: 'row-1', borderColor: '#00ff00' }],
-        stickyLeftColumns: props.enableSticky && props.config.stickyLeft,
-        stickyRightColumns: props.enableSticky && props.config.stickyRight,
-        stickyTopRows: props.enableSticky && props.config.stickyTop,
-        stickyBottomRows: props.enableSticky && props.config.stickyBottom,
+        stickyLeftColumns: props.enableSticky ? props.config.stickyLeft : undefined,
+        stickyRightColumns: props.enableSticky ? props.config.stickyRight : undefined,
+        stickyTopRows: props.enableSticky ? props.config.stickyTop : undefined,
+        stickyBottomRows: props.enableSticky ? props.config.stickyBottom : undefined,
         canReorderColumns: handleCanReorderColumns,
         canReorderRows: handleCanReorderRows,
         onColumnsReordered: handleColumnsReordered,
         onRowsReordered: handleRowsReordered,
         onContextMenu: handleContextMenu,
         onFocusLocationChanged: handleFocusLocationChanged,
+        onFocusLocationChanging: handleFocusLocationChanging,
         enableRowSelection: props.enableColumnAndRowSelection || false,
         enableColumnSelection: props.enableColumnAndRowSelection || false,
         disableRangeSelection: props.config.disableRangeSelection,
