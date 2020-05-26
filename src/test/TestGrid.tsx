@@ -83,6 +83,7 @@ export const TestGrid: React.FunctionComponent<TestGridProps> = (props) => {
         setState(newState);
     }
 
+    // const handleChanges = (changes: CellChange<DefaultCellTypes | FlagCell>[]) => {
     const handleChanges = (changes: CellChange[]) => {
         const newState = { ...state };
         changes.forEach(change => {
@@ -168,34 +169,8 @@ export const TestGrid: React.FunctionComponent<TestGridProps> = (props) => {
         return true;
     }
 
-    const rgProps = {
-        rows: state.rows,
-        columns: state.columns,
-        initialFocusLocation: { columnId: 'col-2', rowId: 'row-2' },
-        // focusLocation: { columnId: 'col-1', rowId: 'row-3' },
-        onCellsChanged: handleChanges,
-        onColumnResized: handleColumnResize,
-        customCellTemplates: { 'flag': new FlagCellTemplate() },
-        highlights: [{ columnId: 'col-1', rowId: 'row-1', borderColor: '#00ff00' }],
-        stickyLeftColumns: props.enableSticky ? props.config.stickyLeft : undefined,
-        stickyRightColumns: props.enableSticky ? props.config.stickyRight : undefined,
-        stickyTopRows: props.enableSticky ? props.config.stickyTop : undefined,
-        stickyBottomRows: props.enableSticky ? props.config.stickyBottom : undefined,
-        canReorderColumns: handleCanReorderColumns,
-        canReorderRows: handleCanReorderRows,
-        onColumnsReordered: handleColumnsReordered,
-        onRowsReordered: handleRowsReordered,
-        onContextMenu: handleContextMenu,
-        onFocusLocationChanged: handleFocusLocationChanged,
-        onFocusLocationChanging: handleFocusLocationChanging,
-        enableRowSelection: props.enableColumnAndRowSelection || false,
-        enableColumnSelection: props.enableColumnAndRowSelection || false,
-        disableRangeSelection: props.config.disableRangeSelection,
-        disableFloatingCellEditor: props.disableFloatingCellEditor || false,
-    }
 
     const Component = props.component;
-
     return (
         <>
             <div className="test-grid-container" data-cy="div-scrollable-element" style={{
@@ -218,7 +193,31 @@ export const TestGrid: React.FunctionComponent<TestGridProps> = (props) => {
                         <Logo isPro={props.isPro} />
                     </>
                 }
-                <Component {...rgProps} />
+                <Component
+                    rows={state.rows}
+                    columns={state.columns}
+                    initialFocusLocation={{ columnId: 'col-2', rowId: 'row-2' }}
+                    // focusLocation={{ columnId: 'col-1', rowId: 'row-3' }}
+                    onCellsChanged={handleChanges}
+                    onColumnResized={handleColumnResize}
+                    customCellTemplates={{ 'flag': new FlagCellTemplate() }}
+                    highlights={[{ columnId: 'col-1', rowId: 'row-1', borderColor: '#00ff00' }]}
+                    stickyLeftColumns={props.enableSticky ? props.config.stickyLeft : undefined}
+                    stickyRightColumns={props.enableSticky ? props.config.stickyRight : undefined}
+                    stickyTopRows={props.enableSticky ? props.config.stickyTop : undefined}
+                    stickyBottomRows={props.enableSticky ? props.config.stickyBottom : undefined}
+                    canReorderColumns={handleCanReorderColumns}
+                    canReorderRows={handleCanReorderRows}
+                    onColumnsReordered={handleColumnsReordered}
+                    onRowsReordered={handleRowsReordered}
+                    onContextMenu={handleContextMenu}
+                    onFocusLocationChanged={handleFocusLocationChanged}
+                    onFocusLocationChanging={handleFocusLocationChanging}
+                    enableRowSelection={props.enableColumnAndRowSelection || false}
+                    enableColumnSelection={props.enableColumnAndRowSelection || false}
+                    disableRangeSelection={props.config.disableRangeSelection}
+                    disableFloatingCellEditor={props.disableFloatingCellEditor || false}
+                />
                 {props.config.enableAdditionalContent &&
                     <>
                         <h1 style={{ width: 3000 }}>TEXT</h1> Test WITH IT
