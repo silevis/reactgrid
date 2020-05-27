@@ -60,7 +60,7 @@ export type DefaultCellTypes = CheckboxCell | DateCell | EmailCell | GroupCell |
 
 type CellTypes<TCell> = TCell extends Cell ? TCell['type'] : never;
 
-export type CellChange<TCell extends Cell = DefaultCellTypes> = TCell extends Cell ? CellChangeOnCellType<TCell> : never;
+export type CellChange<TCell extends Cell = DefaultCellTypes & Cell> = TCell extends Cell ? CellChangeOnCellType<TCell> : never;
 
 // ASK ARCHITECT BEFORE INTRODUCING ANY CHANGE!
 export interface CellChangeOnCellType<TCell extends Cell = DefaultCellTypes> {

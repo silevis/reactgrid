@@ -83,11 +83,25 @@ export const TestGrid: React.FunctionComponent<TestGridProps> = (props) => {
         setState(newState);
     }
 
-    const handleChanges = (changes: CellChange[]) => {
+    const handleChangesTest = (changes: CellChange[]) => {
+        changes.forEach(change => {
+            if (change.type === 'text') {
+                console.log(change.newCell.text);
+            }
+            if (change.type === 'checkbox') {
+                console.log(change.initialCell.checked);
+            }
+        });
+    };
+
+    const handleChanges = (changes: CellChange<DefaultCellTypes | FlagCell>[]) => {
         const newState = { ...state };
         changes.forEach(change => {
             const changeRowIdx = newState.rows.findIndex(el => el.rowId === change.rowId);
             const changeColumnIdx = newState.columns.findIndex(el => el.columnId === change.columnId);
+            if (change.type === 'flag') {
+                console.log(change.newCell.text);
+            }
             if (change.type === 'text') {
                 console.log(change.newCell.text);
             }
