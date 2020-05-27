@@ -42,7 +42,7 @@ export interface Highlight {
 }
 export declare type DefaultCellTypes = CheckboxCell | DateCell | EmailCell | GroupCell | HeaderCell | NumberCell | TextCell | TimeCell;
 declare type CellTypes<TCell> = TCell extends Cell ? TCell['type'] : never;
-export declare type CellChange<TCell extends Cell = DefaultCellTypes> = TCell extends Cell ? CellChangeOnCellType<TCell> : never;
+export declare type CellChange<TCell extends Cell = DefaultCellTypes & Cell> = TCell extends Cell ? CellChangeOnCellType<TCell> : never;
 export interface CellChangeOnCellType<TCell extends Cell = DefaultCellTypes> {
     readonly rowId: Id;
     readonly columnId: Id;

@@ -84,11 +84,24 @@ export var TestGrid = function (props) {
         newState.columns[columnIndex] = updateColumn;
         setState(newState);
     };
+    var handleChangesTest = function (changes) {
+        changes.forEach(function (change) {
+            if (change.type === 'text') {
+                console.log(change.newCell.text);
+            }
+            if (change.type === 'checkbox') {
+                console.log(change.initialCell.checked);
+            }
+        });
+    };
     var handleChanges = function (changes) {
         var newState = __assign({}, state);
         changes.forEach(function (change) {
             var changeRowIdx = newState.rows.findIndex(function (el) { return el.rowId === change.rowId; });
             var changeColumnIdx = newState.columns.findIndex(function (el) { return el.columnId === change.columnId; });
+            if (change.type === 'flag') {
+                console.log(change.newCell.text);
+            }
             if (change.type === 'text') {
                 console.log(change.newCell.text);
             }
