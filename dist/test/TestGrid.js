@@ -90,13 +90,14 @@ export var TestGrid = function (props) {
             var changeRowIdx = newState.rows.findIndex(function (el) { return el.rowId === change.rowId; });
             var changeColumnIdx = newState.columns.findIndex(function (el) { return el.columnId === change.columnId; });
             if (change.type === 'text') {
+                console.log(change.newCell.text);
             }
             if (change.type === 'checkbox') {
+                console.log(change.initialCell.checked);
             }
             newState.rows[changeRowIdx].cells[changeColumnIdx] = change.newCell;
         });
         setState(newState);
-        return true;
     };
     var reorderArray = function (arr, idxs, to) {
         var movedElements = arr.filter(function (_, idx) { return idxs.includes(idx); });
@@ -111,7 +112,7 @@ export var TestGrid = function (props) {
     var handleCanReorderRows = function (targetColumnId, rowIds, dropPosition) {
         return true;
     };
-    var handleColumnsReordered = function (targetColumnId, columnIds, dropPosition) {
+    var handleColumnsReorder = function (targetColumnId, columnIds, dropPosition) {
         var to = state.columns.findIndex(function (column) { return column.columnId === targetColumnId; });
         var columnIdxs = columnIds.map(function (id, idx) { return state.columns.findIndex(function (c) { return c.columnId === id; }); });
         setState({
@@ -119,7 +120,7 @@ export var TestGrid = function (props) {
             rows: state.rows.map(function (row) { return (__assign(__assign({}, row), { cells: reorderArray(row.cells, columnIdxs, to) })); }),
         });
     };
-    var handleRowsReordered = function (targetRowId, rowIds, dropPosition) {
+    var handleRowsReorder = function (targetRowId, rowIds, dropPosition) {
         var newState = __assign({}, state);
         var to = state.rows.findIndex(function (row) { return row.rowId === targetRowId; });
         var ids = rowIds.map(function (id) { return state.rows.findIndex(function (r) { return r.rowId === id; }); });
@@ -169,7 +170,7 @@ export var TestGrid = function (props) {
                     React.createElement(Logo, { isPro: props.isPro }),
                     React.createElement(Logo, { isPro: props.isPro }),
                     React.createElement(Logo, { isPro: props.isPro })),
-            React.createElement(Component, { rows: state.rows, columns: state.columns, initialFocusLocation: { columnId: 'col-2', rowId: 'row-2' }, onCellsChanged: handleChanges, onColumnResized: handleColumnResize, customCellTemplates: { 'flag': new FlagCellTemplate() }, highlights: [{ columnId: 'col-1', rowId: 'row-1', borderColor: '#00ff00' }], stickyLeftColumns: props.enableSticky ? props.config.stickyLeft : undefined, stickyRightColumns: props.enableSticky ? props.config.stickyRight : undefined, stickyTopRows: props.enableSticky ? props.config.stickyTop : undefined, stickyBottomRows: props.enableSticky ? props.config.stickyBottom : undefined, canReorderColumns: handleCanReorderColumns, canReorderRows: handleCanReorderRows, onColumnsReordered: handleColumnsReordered, onRowsReordered: handleRowsReordered, onContextMenu: handleContextMenu, onFocusLocationChanged: handleFocusLocationChanged, onFocusLocationChanging: handleFocusLocationChanging, enableRowSelection: props.enableColumnAndRowSelection || false, enableColumnSelection: props.enableColumnAndRowSelection || false, disableRangeSelection: props.config.disableRangeSelection, disableFloatingCellEditor: props.disableFloatingCellEditor || false }),
+            React.createElement(Component, { rows: state.rows, columns: state.columns, initialFocusLocation: { columnId: 'col-2', rowId: 'row-2' }, onCellsChanged: handleChanges, onColumnResized: handleColumnResize, customCellTemplates: { 'flag': new FlagCellTemplate() }, highlights: [{ columnId: 'col-1', rowId: 'row-1', borderColor: '#00ff00' }], stickyLeftColumns: props.enableSticky ? props.config.stickyLeft : undefined, stickyRightColumns: props.enableSticky ? props.config.stickyRight : undefined, stickyTopRows: props.enableSticky ? props.config.stickyTop : undefined, stickyBottomRows: props.enableSticky ? props.config.stickyBottom : undefined, canReorderColumns: handleCanReorderColumns, canReorderRows: handleCanReorderRows, onColumnsReordered: handleColumnsReorder, onRowsReordered: handleRowsReorder, onContextMenu: handleContextMenu, onFocusLocationChanged: handleFocusLocationChanged, onFocusLocationChanging: handleFocusLocationChanging, enableRowSelection: props.enableColumnAndRowSelection || false, enableColumnSelection: props.enableColumnAndRowSelection || false, disableRangeSelection: props.config.disableRangeSelection, disableFloatingCellEditor: props.disableFloatingCellEditor || false }),
             props.config.enableAdditionalContent &&
                 React.createElement(React.Fragment, null,
                     React.createElement("h1", { style: { width: 3000 } }, "TEXT"),
