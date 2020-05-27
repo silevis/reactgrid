@@ -83,22 +83,20 @@ export const TestGrid: React.FunctionComponent<TestGridProps> = (props) => {
         setState(newState);
     }
 
-    // const handleChanges = (changes: CellChange<DefaultCellTypes | FlagCell>[]) => {
     const handleChanges = (changes: CellChange[]) => {
         const newState = { ...state };
         changes.forEach(change => {
             const changeRowIdx = newState.rows.findIndex(el => el.rowId === change.rowId);
             const changeColumnIdx = newState.columns.findIndex(el => el.columnId === change.columnId);
             if (change.type === 'text') {
-                // console.log(change.newCell);
+                console.log(change.newCell.text);
             }
             if (change.type === 'checkbox') {
-                // console.log(change.newCell);
+                console.log(change.initialCell.checked);
             }
             newState.rows[changeRowIdx].cells[changeColumnIdx] = change.newCell;
         });
         setState(newState);
-        return true;
     };
 
     const reorderArray = <T extends {}>(arr: T[], idxs: number[], to: number) => {
@@ -119,7 +117,7 @@ export const TestGrid: React.FunctionComponent<TestGridProps> = (props) => {
         return true;
     }
 
-    const handleColumnsReordered = (targetColumnId: Id, columnIds: Id[], dropPosition: DropPosition) => {
+    const handleColumnsReorder = (targetColumnId: Id, columnIds: Id[], dropPosition: DropPosition) => {
         const to = state.columns.findIndex((column: Column) => column.columnId === targetColumnId);
         const columnIdxs = columnIds.map((id: Id, idx: number) => state.columns.findIndex((c: Column) => c.columnId === id));
         setState({
@@ -128,7 +126,7 @@ export const TestGrid: React.FunctionComponent<TestGridProps> = (props) => {
         });
     }
 
-    const handleRowsReordered = (targetRowId: Id, rowIds: Id[], dropPosition: DropPosition) => {
+    const handleRowsReorder = (targetRowId: Id, rowIds: Id[], dropPosition: DropPosition) => {
         const newState = { ...state };
         const to = state.rows.findIndex(row => row.rowId === targetRowId);
         const ids = rowIds.map(id => state.rows.findIndex(r => r.rowId === id));
@@ -208,8 +206,8 @@ export const TestGrid: React.FunctionComponent<TestGridProps> = (props) => {
                     stickyBottomRows={props.enableSticky ? props.config.stickyBottom : undefined}
                     canReorderColumns={handleCanReorderColumns}
                     canReorderRows={handleCanReorderRows}
-                    onColumnsReordered={handleColumnsReordered}
-                    onRowsReordered={handleRowsReordered}
+                    onColumnsReordered={handleColumnsReorder}
+                    onRowsReordered={handleRowsReorder}
                     onContextMenu={handleContextMenu}
                     onFocusLocationChanged={handleFocusLocationChanged}
                     onFocusLocationChanging={handleFocusLocationChanging}
