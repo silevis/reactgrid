@@ -58,15 +58,13 @@ export interface Highlight {
 
 export type DefaultCellTypes = CheckboxCell | DateCell | EmailCell | GroupCell | HeaderCell | NumberCell | TextCell | TimeCell;
 
-type CellTypes<TCell> = TCell extends Cell ? TCell['type'] : never;
-
 export type CellChange<TCell extends Cell = DefaultCellTypes & Cell> = TCell extends Cell ? Change<TCell> : never;
 
 // ASK ARCHITECT BEFORE INTRODUCING ANY CHANGE!
 export interface Change<TCell extends Cell = DefaultCellTypes> {
     readonly rowId: Id;
     readonly columnId: Id;
-    readonly type: CellTypes<TCell>;
+    readonly type: TCell['type'];
     readonly initialCell: TCell;
     readonly newCell: TCell;
 }
