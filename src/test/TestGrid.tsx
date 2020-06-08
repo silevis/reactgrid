@@ -228,7 +228,8 @@ export const TestGrid: React.FunctionComponent<TestGridProps> = (props) => {
                     enableRowSelection={props.enableColumnAndRowSelection || false}
                     enableColumnSelection={props.enableColumnAndRowSelection || false}
                     disableRangeSelection={props.config.disableRangeSelection}
-                    disableFloatingCellEditor={props.disableFloatingCellEditor || false}
+                    disableFloatingCellEditor={props.disableFloatingCellEditor || true}
+                    enableFillHandle={props.config.enableFillHandle}
                 />
                 {props.config.enableAdditionalContent &&
                     <>

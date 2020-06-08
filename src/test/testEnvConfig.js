@@ -8,6 +8,7 @@ export const config = {
     rgViewportWidth: 1150,
     margin: '0',
     disableRangeSelection: false,
+    enableFillHandle: true,
 
     cellHeight: 25,
     cellWidth: 150,
