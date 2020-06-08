@@ -1,7 +1,6 @@
-# ReactGrid
+# ReactGrid [![MIT license](https://img.shields.io/badge/License-MIT-blue.svg)](https://lbesson.mit-license.org/) [![npm downloads](https://img.shields.io/npm/dw/@silevis/reactgrid?label=npm%20downloads)](https://www.npmjs.com/package/@silevis/reactgrid)
 
-ReactGrid allows you to create custom data grids inside your ReactJS application while providing a spreadsheet-like 
-look and feel.
+Add spreadsheet-like behavior to your React app.
 
 Before run you need to have installed:
 - react": "^16.13.1"
@@ -70,7 +69,7 @@ function App() {
         ]
       },
       {
-        rowId: 2,
+        rowId: 3,
         cells: [{ type: "text", text: "" }, { type: "text", text: "" }]
       }
     ]
@@ -85,14 +84,35 @@ function App() {
 }
 ```
 
-## 4. Render your component
+Open live demo on [stackblitz.com](https://stackblitz.com/edit/reactgrid-getting-started)
 
-```tsx
-const rootElement = document.getElementById("root");
-ReactDOM.render(<App />, rootElement);
+## Simple handling changes
+
+To be able to change any value inside grid you have to implement your own handler. There is a basic handler code:
+
+```ts
+const handleChanges = (changes: CellChange[]) => {
+  const newState = { ...state };
+  changes.forEach(change => {
+    const changeRowIdx = newState.rows.findIndex(el => el.rowId === change.rowId);
+    const changeColumnIdx = newState.columns.findIndex(el => el.columnId === change.columnId);
+    newState.rows[changeRowIdx].cells[changeColumnIdx] = change.newCell;
+  });
+  setState(newState);
+};
 ```
 
-Open examples on [stackblitz.com](https://stackblitz.com/edit/reactgrid-getting-started)
+Then update ReactGrid's component props:
+
+```tsx
+return (
+  <ReactGrid
+    rows={state.rows}
+    columns={state.columns}
+    onCellsChanged={handleChanges}
+  />  
+)
+```
 
 # Docs
 
@@ -100,7 +120,7 @@ Browse docs: [here](http://reactgrid.com/)
 
 # Licensing
 
-ReactGrid is distributed under [MIT](link) license.
+ReactGrid is distributed under [MIT](https://github.com/silevis/reactgrid/blob/develop/LICENSE) license.
 
 (c) 2020 Silevis Software
 
