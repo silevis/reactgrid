@@ -83,6 +83,7 @@ export const TestGrid: React.FunctionComponent<TestGridProps> = (props) => {
         setState(newState);
     }
 
+    // eslint-disable-next-line
     const handleChangesTest = (changes: CellChange[]) => {
         changes.forEach(change => {
             if (change.type === 'text') {
