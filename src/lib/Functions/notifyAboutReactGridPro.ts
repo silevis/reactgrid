@@ -8,4 +8,5 @@ export const notifyAboutReactGridPro = (state: State) => {
     notification(state.props?.onColumnsReordered!, 'onColumnsReordered');
     notification(state.props?.onContextMenu!, 'onContextMenu');
     notification(state.props?.enableFillHandle, 'fillHandle');
+    notification(state.props?.enableRangeSelection, 'rangeSelection');
 }

@@ -22,7 +22,7 @@ export interface ReactGridProps {
     readonly stickyLeftColumns?: number;
     readonly stickyRightColumns?: number;
     readonly enableFillHandle?: boolean;
-    readonly disableRangeSelection?: boolean;
+    readonly enableRangeSelection?: boolean;
     readonly enableRowSelection?: boolean;
     readonly enableColumnSelection?: boolean;
 
