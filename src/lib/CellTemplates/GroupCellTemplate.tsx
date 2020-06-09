@@ -4,6 +4,7 @@ import { CellTemplate, Cell, Compatible, Uncertain, UncertainCompatible, Id, Cel
 import { isNavigationKey, isAlphaNumericKey } from './keyCodeCheckings';
 import { getCellProperty } from '../Functions/getCellProperty';
 import { getCharFromKeyCode } from './getCharFromKeyCode';
+import { ReactComponent as Icon } from './../assets/chevron.svg';
 
 export interface GroupCell extends Cell {
     type: 'group';
@@ -73,16 +74,18 @@ export class GroupCellTemplate implements CellTemplate<GroupCell> {
         return (
             !isInEditMode ?
                 <>
-                    {cell.hasChildrens &&
+                    {cell.hasChildrens ?
                         <div
-                            className="chevron"
+                            className='chevron'
                             onPointerDown={e => {
                                 e.stopPropagation();
                                 onCellChanged(this.getCompatibleCell({ ...cell, isExpanded: !cell.isExpanded }), true)
                             }}
                         >
-                            <span className="icon">❯</span>
+                            <Icon className='chevron-icon' />
                         </div>
+                        :
+                        <div className='no-child' />
                     }
                     {cell.text}
                 </>
