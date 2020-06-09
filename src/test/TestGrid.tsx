@@ -20,7 +20,6 @@ interface TestGridProps {
     containerMargin?: number;
     enableSticky?: boolean;
     enableColumnAndRowSelection?: boolean;
-    disableFloatingCellEditor?: boolean;
     isPro?: boolean;
     config: Config;
     component: React.ComponentClass<any>; //TODO check why any?
@@ -228,8 +227,8 @@ export const TestGrid: React.FunctionComponent<TestGridProps> = (props) => {
                     onFocusLocationChanging={handleFocusLocationChanging}
                     enableRowSelection={props.enableColumnAndRowSelection || false}
                     enableColumnSelection={props.enableColumnAndRowSelection || false}
-                    disableRangeSelection={props.config.disableRangeSelection}
-                    disableFloatingCellEditor={props.disableFloatingCellEditor || false}
+                    enableRangeSelection={props.config.enableRangeSelection}
+                    enableFillHandle={props.config.enableFillHandle}
                 />
                 {props.config.enableAdditionalContent &&
                     <>

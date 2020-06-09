@@ -11,7 +11,8 @@ export interface Config {
     cellWidth: number;
     minCellWidth: number;
     fillHandleWidth: number;
-    disableRangeSelection: boolean;
+    enableRangeSelection: boolean;
+    enableFillHandle: boolean;
 
     columns: number;
     rows: number;
