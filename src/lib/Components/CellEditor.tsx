@@ -25,7 +25,8 @@ export interface PositionState<TState extends State = State> {
 
 export const CellEditorRenderer: React.FunctionComponent<CellEditorRendererProps> = props => {
     const { state, positionCalculator } = props;
-    const { currentlyEditedCell, disableFloatingCellEditor } = state;
+    const { currentlyEditedCell } = state;
+
     const location = state.focusedLocation!;
 
     const [position, dispatch] = React.useReducer(positionCalculator, { state, location }); // used to lock cell editor position
@@ -41,11 +42,11 @@ export const CellEditorRenderer: React.FunctionComponent<CellEditorRendererProps
     return <CellEditor
         cellType={currentlyEditedCell.type}
         style={{
-            top: position.top && (position.top + (disableFloatingCellEditor ? 0 : -1)),
-            left: position.left && (position.left + (disableFloatingCellEditor ? 0 : -1)),
+            top: position.top && position.top - 1,
+            left: position.left && position.left - 1,
             height: location.row.height + 1,
             width: location.column.width + 1,
-            position: disableFloatingCellEditor ? 'absolute' : 'fixed'
+            position: 'fixed'
         }}
     >
         {cellTemplate.render(state.currentlyEditedCell!, true, (cell: Compatible<Cell>, commit: boolean) => {
