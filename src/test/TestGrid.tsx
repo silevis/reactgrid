@@ -4,7 +4,7 @@ import {
     NumberCell, GroupCell, DefaultCellTypes, CellChange
 } from '../lib';
 import { Config } from './../test/testEnvConfig';
-import './../lib/assets/core.scss';
+import '../styles.scss';
 import { FlagCellTemplate, FlagCell } from './flagCell/FlagCellTemplate';
 
 type TestGridRow = Row<DefaultCellTypes | FlagCell>;
