@@ -13,3 +13,4 @@ azure-pipelines-upgrade-rc-version.yml
 azure-pipelines-upgrade-version-and-publish.yml
 snapshots.js
 .gitignore
+test
