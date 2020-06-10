@@ -53,13 +53,11 @@
         display: flex;
         justify-content: center;
         font-weight: bold;
-        margin-right: $template-font-size * 0.2;
+        margin-right: $template-font-size * 0.1;
         cursor: pointer;
         transition: 200ms all ease-in-out;
-        .chevron-icon {
-            height: $template-font-size;
-            width: $template-font-size;
-        }
+        height: $template-font-size;
+        width: $template-font-size;
     }
     .no-child {
         width: 0.5rem;
