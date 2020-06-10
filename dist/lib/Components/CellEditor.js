@@ -15,7 +15,7 @@ import { getScrollOfScrollableElement, getTopScrollableElement } from './../Func
 import { getStickyOffset, getReactGridOffsets } from '../Functions/elementSizeHelpers';
 export var CellEditorRenderer = function (props) {
     var state = props.state, positionCalculator = props.positionCalculator;
-    var currentlyEditedCell = state.currentlyEditedCell, disableFloatingCellEditor = state.disableFloatingCellEditor;
+    var currentlyEditedCell = state.currentlyEditedCell;
     var location = state.focusedLocation;
     var _a = React.useReducer(positionCalculator, { state: state, location: location }), position = _a[0], dispatch = _a[1];
     React.useLayoutEffect(function () { return dispatch(); }, []);
@@ -24,11 +24,11 @@ export var CellEditorRenderer = function (props) {
     }
     var cellTemplate = state.cellTemplates[currentlyEditedCell.type];
     return React.createElement(CellEditor, { cellType: currentlyEditedCell.type, style: {
-            top: position.top && (position.top + (disableFloatingCellEditor ? 0 : -1)),
-            left: position.left && (position.left + (disableFloatingCellEditor ? 0 : -1)),
+            top: position.top && position.top - 1,
+            left: position.left && position.left - 1,
             height: location.row.height + 1,
             width: location.column.width + 1,
-            position: disableFloatingCellEditor ? 'absolute' : 'fixed'
+            position: 'fixed'
         } }, cellTemplate.render(state.currentlyEditedCell, true, function (cell, commit) {
         state.currentlyEditedCell = commit ? undefined : cell;
         if (commit)

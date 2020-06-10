@@ -12,11 +12,10 @@ export interface ReactGridProps {
     readonly stickyBottomRows?: number;
     readonly stickyLeftColumns?: number;
     readonly stickyRightColumns?: number;
-    readonly disableFillHandle?: boolean;
-    readonly disableRangeSelection?: boolean;
+    readonly enableFillHandle?: boolean;
+    readonly enableRangeSelection?: boolean;
     readonly enableRowSelection?: boolean;
     readonly enableColumnSelection?: boolean;
-    readonly disableFloatingCellEditor?: boolean;
     readonly onCellsChanged?: (cellChanges: CellChange[]) => void;
     readonly onFocusLocationChanged?: (location: CellLocation) => void;
     readonly onFocusLocationChanging?: (location: CellLocation) => boolean;
@@ -41,12 +40,11 @@ export interface Highlight {
     readonly className?: string;
 }
 export declare type DefaultCellTypes = CheckboxCell | DateCell | EmailCell | GroupCell | HeaderCell | NumberCell | TextCell | TimeCell;
-declare type CellTypes<TCell> = TCell extends Cell ? TCell['type'] : never;
 export declare type CellChange<TCell extends Cell = DefaultCellTypes & Cell> = TCell extends Cell ? Change<TCell> : never;
 export interface Change<TCell extends Cell = DefaultCellTypes> {
     readonly rowId: Id;
     readonly columnId: Id;
-    readonly type: CellTypes<TCell>;
+    readonly type: TCell['type'];
     readonly initialCell: TCell;
     readonly newCell: TCell;
 }
@@ -101,4 +99,3 @@ export interface MenuOption {
     label: string;
     handler: (selectedRowIds: Id[], selectedColIds: Id[], selectionMode: SelectionMode) => void;
 }
-export {};

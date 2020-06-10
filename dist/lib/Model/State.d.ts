@@ -16,7 +16,6 @@ export interface State<TCellMatrix extends CellMatrix = CellMatrix, TBehavior ex
     readonly scrollableElement?: HTMLElement | (Window & typeof globalThis);
     readonly queuedCellChanges: CellChange[];
     currentlyEditedCell?: Compatible<Cell>;
-    readonly disableFloatingCellEditor: boolean;
     readonly highlightLocations: Highlight[];
     readonly visibleRange?: Range;
     readonly topScrollBoudary: number;
@@ -34,7 +33,6 @@ export declare const defaultStateFields: {
     scrollableElement: undefined;
     queuedCellChanges: never[];
     currentlyEditedCell: undefined;
-    disableFloatingCellEditor: boolean;
     highlightLocations: never[];
     visibleRange: undefined;
     topScrollBoudary: number;

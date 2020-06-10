@@ -12,6 +12,8 @@ var __assign = (this && this.__assign) || function () {
 export function getCompatibleCellAndTemplate(state, location) {
     try {
         var rawCell = state.cellMatrix.getCell(location);
+        if (!rawCell)
+            throw new TypeError("Cell doesn't exists at location");
         if (!rawCell.type)
             throw new Error('Cell is missing type property');
         var cellTemplate = state.cellTemplates[rawCell.type];

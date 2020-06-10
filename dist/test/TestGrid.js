@@ -28,7 +28,7 @@ var __spreadArrays = (this && this.__spreadArrays) || function () {
     return r;
 };
 import React, { useState } from 'react';
-import './../lib/assets/core.scss';
+import '../styles.scss';
 import { FlagCellTemplate } from './flagCell/FlagCellTemplate';
 var emailValidator = function (email) {
     var email_regex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -183,7 +183,7 @@ export var TestGrid = function (props) {
                     React.createElement(Logo, { isPro: props.isPro }),
                     React.createElement(Logo, { isPro: props.isPro }),
                     React.createElement(Logo, { isPro: props.isPro })),
-            React.createElement(Component, { rows: state.rows, columns: state.columns, initialFocusLocation: { columnId: 'col-2', rowId: 'row-2' }, onCellsChanged: handleChanges, onColumnResized: handleColumnResize, customCellTemplates: { 'flag': new FlagCellTemplate() }, highlights: [{ columnId: 'col-1', rowId: 'row-1', borderColor: '#00ff00' }], stickyLeftColumns: props.enableSticky ? props.config.stickyLeft : undefined, stickyRightColumns: props.enableSticky ? props.config.stickyRight : undefined, stickyTopRows: props.enableSticky ? props.config.stickyTop : undefined, stickyBottomRows: props.enableSticky ? props.config.stickyBottom : undefined, canReorderColumns: handleCanReorderColumns, canReorderRows: handleCanReorderRows, onColumnsReordered: handleColumnsReorder, onRowsReordered: handleRowsReorder, onContextMenu: handleContextMenu, onFocusLocationChanged: handleFocusLocationChanged, onFocusLocationChanging: handleFocusLocationChanging, enableRowSelection: props.enableColumnAndRowSelection || false, enableColumnSelection: props.enableColumnAndRowSelection || false, disableRangeSelection: props.config.disableRangeSelection, disableFloatingCellEditor: props.disableFloatingCellEditor || false }),
+            React.createElement(Component, { rows: state.rows, columns: state.columns, initialFocusLocation: { columnId: 'col-2', rowId: 'row-2' }, onCellsChanged: handleChanges, onColumnResized: handleColumnResize, customCellTemplates: { 'flag': new FlagCellTemplate() }, highlights: [{ columnId: 'col-1', rowId: 'row-1', borderColor: '#00ff00' }], stickyLeftColumns: props.enableSticky ? props.config.stickyLeft : undefined, stickyRightColumns: props.enableSticky ? props.config.stickyRight : undefined, stickyTopRows: props.enableSticky ? props.config.stickyTop : undefined, stickyBottomRows: props.enableSticky ? props.config.stickyBottom : undefined, canReorderColumns: handleCanReorderColumns, canReorderRows: handleCanReorderRows, onColumnsReordered: handleColumnsReorder, onRowsReordered: handleRowsReorder, onContextMenu: handleContextMenu, onFocusLocationChanged: handleFocusLocationChanged, onFocusLocationChanging: handleFocusLocationChanging, enableRowSelection: props.enableColumnAndRowSelection || false, enableColumnSelection: props.enableColumnAndRowSelection || false, enableRangeSelection: props.config.enableRangeSelection, enableFillHandle: props.config.enableFillHandle }),
             props.config.enableAdditionalContent &&
                 React.createElement(React.Fragment, null,
                     React.createElement("h1", { style: { width: 3000 } }, "TEXT"),

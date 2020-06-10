@@ -10,7 +10,6 @@ export var defaultStateFields = {
     scrollableElement: undefined,
     queuedCellChanges: [],
     currentlyEditedCell: undefined,
-    disableFloatingCellEditor: false,
     highlightLocations: [],
     visibleRange: undefined,
     topScrollBoudary: -1,
