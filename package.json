@@ -1,6 +1,6 @@
 {
   "name": "@silevis/reactgrid",
-  "description": "ReactGrid allows you to create custom data grids inside your ReactJS application while providing a spreadsheet-like look and feel.",
+  "description": "Add spreadsheet-like behavior to your React app.",
   "version": "3.0.22-rc.16",
   "homepage": "https://reactgrid.com",
   "license": "MIT",
