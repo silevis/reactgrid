@@ -10,7 +10,7 @@ var __assign = (this && this.__assign) || function () {
     return __assign.apply(this, arguments);
 };
 import * as React from 'react';
-import { isNavigationKey, getCellProperty, isAlphaNumericKey, keyCodes } from '../../lib';
+import { isNavigationKey, getCellProperty, isAlphaNumericKey, keyCodes } from '../../reactgrid';
 import './flag-cell-style.scss';
 var FlagCellTemplate = (function () {
     function FlagCellTemplate() {

@@ -20,7 +20,11 @@ var CellMatrixBuilder = (function () {
             return idx === 0 || idx === stickyLeftColumns ? 0 : cols[idx - 1].left + cols[idx - 1].width;
         };
         this.getScrollableRange = function () {
-            return new Range(_this.cellMatrix.rows.slice(_this.cellMatrix.props.stickyTopRows || 0), _this.cellMatrix.columns.slice(_this.cellMatrix.props.stickyLeftColumns || 0));
+            var stickyTopRows = _this.cellMatrix.props.stickyTopRows;
+            var stickyLeftColumns = _this.cellMatrix.props.stickyLeftColumns;
+            var firstScrollableRowId = (!stickyTopRows || stickyTopRows >= _this.cellMatrix.rows.length ? 0 : stickyTopRows);
+            var firstScrollableColumnId = (!stickyLeftColumns || stickyLeftColumns >= _this.cellMatrix.columns.length ? 0 : stickyLeftColumns);
+            return new Range(_this.cellMatrix.rows.slice(firstScrollableRowId), _this.cellMatrix.columns.slice(firstScrollableColumnId));
         };
         this.reset();
     }

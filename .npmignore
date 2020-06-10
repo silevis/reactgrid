@@ -6,7 +6,6 @@ cypress
 cypress.json
 public
 src
-.vscode
 tsconfig.*json
 package.*json
 github-azure-*.yml

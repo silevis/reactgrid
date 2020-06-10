@@ -75,12 +75,14 @@ var GroupCellTemplate = (function () {
         var _this = this;
         return (!isInEditMode ?
             React.createElement(React.Fragment, null,
-                cell.hasChildrens &&
-                    React.createElement("div", { className: "chevron", onPointerDown: function (e) {
+                cell.hasChildrens ?
+                    React.createElement("div", { className: 'chevron', onPointerDown: function (e) {
                             e.stopPropagation();
                             onCellChanged(_this.getCompatibleCell(__assign(__assign({}, cell), { isExpanded: !cell.isExpanded })), true);
                         } },
-                        React.createElement("span", { className: "icon" }, "\u276F")),
+                        React.createElement("span", { className: 'icon' }, "\u276F"))
+                    :
+                        React.createElement("div", { className: 'no-child' }),
                 cell.text)
             :
                 React.createElement("input", { ref: function (input) {

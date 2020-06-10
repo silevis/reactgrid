@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { CellTemplate, Cell, Compatible, Uncertain, UncertainCompatible } from '../../lib';
+import { CellTemplate, Cell, Compatible, Uncertain, UncertainCompatible } from '../../reactgrid';
 import './flag-cell-style.scss';
 export interface FlagCell extends Cell {
     type: 'flag';

@@ -1,13 +1,12 @@
 import React from 'react';
-import { Config } from './../test/testEnvConfig';
-import './../lib/assets/core.scss';
+import { Config } from './testEnvConfig';
+import '../styles.scss';
 interface TestGridProps {
     containerHeight?: number;
     containerWidth?: number;
     containerMargin?: number;
     enableSticky?: boolean;
     enableColumnAndRowSelection?: boolean;
-    disableFloatingCellEditor?: boolean;
     isPro?: boolean;
     config: Config;
     component: React.ComponentClass<any>;
