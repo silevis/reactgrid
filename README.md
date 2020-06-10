@@ -8,19 +8,19 @@ Before run you need to have installed:
 
 # Installation
 
-## 1. Install ReactGrid from npm repository
-
 ```shell
 npm i @silevis/reactgrid
 ```
 
-## 2. Import ReactGrid component
+# Usage
+
+### Import ReactGrid component
 
 ```tsx
 import { ReactGrid } from "@silevis/reactgrid";
 ```
 
-## 3. Import css styles
+### Import css styles
 
 Import file from `node_modules` directory. This file is necessary to correctly displaying.
 
@@ -28,7 +28,7 @@ Import file from `node_modules` directory. This file is necessary to correctly d
 import "@silevis/reactgrid/styles.css";
 ```
 
-## 4. Create a cell matrix
+### Create a cell matrix
 
 Time to define our data. It will be stored in [React Hook](https://reactjs.org/docs/hooks-intro.html). 
 `useState` hook will be initialized with object that contains two keys - `columns` and `rows`. 
@@ -86,7 +86,7 @@ function App() {
 
 Open live demo on [stackblitz.com](https://stackblitz.com/edit/reactgrid-getting-started)
 
-## Simple handling changes
+### Handling changes
 
 To be able to change any value inside grid you have to implement your own handler. There is a basic handler code:
 
@@ -113,6 +113,8 @@ return (
   />  
 )
 ```
+
+Open live demo on [stackblitz.com](https://stackblitz.com/edit/reactgrid-handling-changes)
 
 # Docs
 
