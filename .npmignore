@@ -6,8 +6,10 @@ cypress
 cypress.json
 public
 src
-tsconfig.*json 
+.vscode
+tsconfig.*json
 package.*json
 github-azure-*.yml
 snapshots.js
 .gitignore
+test

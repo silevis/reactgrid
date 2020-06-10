@@ -73,16 +73,18 @@ export class GroupCellTemplate implements CellTemplate<GroupCell> {
         return (
             !isInEditMode ?
                 <>
-                    {cell.hasChildrens &&
+                    {cell.hasChildrens ?
                         <div
-                            className="chevron"
+                            className='chevron'
                             onPointerDown={e => {
                                 e.stopPropagation();
                                 onCellChanged(this.getCompatibleCell({ ...cell, isExpanded: !cell.isExpanded }), true)
                             }}
                         >
-                            <span className="icon">❯</span>
+                            <span className='icon'>❯</span>
                         </div>
+                        :
+                        <div className='no-child' />
                     }
                     {cell.text}
                 </>

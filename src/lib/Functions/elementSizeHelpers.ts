@@ -32,12 +32,12 @@ export function getVisibleSizeOfReactGrid(state: State): { width: number, height
     const { left, top } = getReactGridOffsets(state);
 
     const scrollBottom = scrollTop + heightOfScrollableElement,
-        reactGridBottom = top + (state.reactGridElement?.offsetHeight ?? 0),
+        reactGridBottom = top + state.cellMatrix.height,
         visibleTop = top < scrollTop ? scrollTop : top,
         visibleBottom = reactGridBottom > scrollBottom ? scrollBottom : reactGridBottom;
 
     const scrollRight = scrollLeft + widthOfScrollableElement,
-        reactGridRight = left + (state.reactGridElement?.offsetWidth ?? 0),
+        reactGridRight = left + state.cellMatrix.width,
         visibleLeft = left < scrollLeft ? scrollLeft : left,
         visibleRight = reactGridRight > scrollRight ? scrollRight : reactGridRight;
 
