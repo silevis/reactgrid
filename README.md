@@ -25,7 +25,7 @@ import { ReactGrid } from "@silevis/reactgrid";
 Import file from `node_modules` directory. This file is necessary to correctly displaying.
 
 ```tsx
-import "@silevis/reactgrid/lib/assets/core.css";
+import "@silevis/reactgrid/styles.css";
 ```
 
 ## 4. Create a cell matrix
@@ -38,7 +38,7 @@ Both of them must be valid ReactGrid objects: `Columns` `Rows`.
 import React, { useState } from "react";
 import ReactDOM from "react-dom";
 import { ReactGrid } from "@silevis/reactgrid";
-import "@silevis/reactgrid/lib/assets/core.css";
+import "@silevis/reactgrid/styles.css";
 
 function App() {
   const [state, setState] = useState(() => ({

@@ -23,7 +23,6 @@ export interface State<TCellMatrix extends CellMatrix = CellMatrix, TBehavior ex
     readonly queuedCellChanges: CellChange[];
     currentlyEditedCell?: Compatible<Cell>;
 
-    readonly disableFloatingCellEditor: boolean;
     readonly highlightLocations: Highlight[];
 
     // VISIBLE RANGE
@@ -47,7 +46,6 @@ export const defaultStateFields = {
     scrollableElement: undefined,
     queuedCellChanges: [],
     currentlyEditedCell: undefined,
-    disableFloatingCellEditor: false,
     highlightLocations: [],
     visibleRange: undefined,
     topScrollBoudary: -1,

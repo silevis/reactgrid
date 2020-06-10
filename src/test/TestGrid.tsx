@@ -2,9 +2,9 @@ import React, { useState } from 'react';
 import {
     Column, Row, Id, MenuOption, SelectionMode, DropPosition, CellLocation,
     NumberCell, GroupCell, DefaultCellTypes, CellChange
-} from '../lib';
-import { Config } from './../test/testEnvConfig';
-import './../lib/assets/core.scss';
+} from './../reactgrid';
+import { Config } from './testEnvConfig';
+import '../styles.scss';
 import { FlagCellTemplate, FlagCell } from './flagCell/FlagCellTemplate';
 
 type TestGridRow = Row<DefaultCellTypes | FlagCell>;
@@ -20,7 +20,6 @@ interface TestGridProps {
     containerMargin?: number;
     enableSticky?: boolean;
     enableColumnAndRowSelection?: boolean;
-    disableFloatingCellEditor?: boolean;
     isPro?: boolean;
     config: Config;
     component: React.ComponentClass<any>; //TODO check why any?
@@ -83,6 +82,7 @@ export const TestGrid: React.FunctionComponent<TestGridProps> = (props) => {
         setState(newState);
     }
 
+    // eslint-disable-next-line
     const handleChangesTest = (changes: CellChange[]) => {
         changes.forEach(change => {
             if (change.type === 'text') {
@@ -227,8 +227,8 @@ export const TestGrid: React.FunctionComponent<TestGridProps> = (props) => {
                     onFocusLocationChanging={handleFocusLocationChanging}
                     enableRowSelection={props.enableColumnAndRowSelection || false}
                     enableColumnSelection={props.enableColumnAndRowSelection || false}
-                    disableRangeSelection={props.config.disableRangeSelection}
-                    disableFloatingCellEditor={props.disableFloatingCellEditor || false}
+                    enableRangeSelection={props.config.enableRangeSelection}
+                    enableFillHandle={props.config.enableFillHandle}
                 />
                 {props.config.enableAdditionalContent &&
                     <>

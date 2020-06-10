@@ -5,7 +5,6 @@ cypress
 cypress.json
 public
 src
-core 
 .vscode
 tsconfig.*json
 package.*json
@@ -13,3 +12,4 @@ azure-pipelines-upgrade-rc-version.yml
 azure-pipelines-upgrade-version-and-publish.yml
 snapshots.js
 .gitignore
+test

@@ -47,25 +47,26 @@
     }
 }
 
-/* GROUP CELL TEMPLATE */
 .rg-group-cell {
     .chevron {
         pointer-events: auto;
         display: flex;
         justify-content: center;
-        height: $template-font-size * 1.4;
-        width: $template-font-size * 1.4;
         font-weight: bold;
+        margin-right: $template-font-size * 0.1;
         cursor: pointer;
-        .icon {
-            transition: 200ms all ease-in-out;
-        }
+        transition: 200ms all ease-in-out;
+        height: $template-font-size;
+        width: $template-font-size;
     }
-    &.expanded .icon {
-        transform: rotate(90deg) ;
+    .no-child {
+        width: 0.5rem;
     }
-    &.collapsed .icon {
-        transform: rotate(0deg) translate($template-font-size * 0.15, $template-font-size * 0.15);
+    &.expanded .chevron {
+        transform: rotate(90deg);
+    }
+    &.collapsed .chevron {
+        transform: rotate(0deg);
     }
 }
 
