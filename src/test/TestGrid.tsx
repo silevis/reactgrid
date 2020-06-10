@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import {
     Column, Row, Id, MenuOption, SelectionMode, DropPosition, CellLocation,
     NumberCell, GroupCell, DefaultCellTypes, CellChange
-} from '../lib';
-import { Config } from './../test/testEnvConfig';
+} from './../reactgrid';
+import { Config } from './testEnvConfig';
 import '../styles.scss';
 import { FlagCellTemplate, FlagCell } from './flagCell/FlagCellTemplate';
 

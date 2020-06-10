@@ -3,7 +3,7 @@
     "runOnSave.commands": [
         {
             "match": ".*",
-            "command": "npm run pre-deploy && rm -rf ../dist && cp -r dist .. && rm -rf ../ReactGrid-Pro/node_modules/@silevis && cd ../ReactGrid-Pro && npm i ./../dist --force --save-dev && npm i react react-dom --no-save && npm run copy:mit:tests && cd ../reactgrid",
+            "command": "npm run pre-deploy && rm -rf ../dist && cp -r dist .. && rm -rf ../ReactGrid-Pro/node_modules/@silevis && cd ../ReactGrid-Pro && npm i ./../dist --force --save-dev && npm i react react-dom --no-save && npm run copy:mit:tests && npm run copy:reactgrid:TestGrid && cd ../reactgrid",
             "runIn": "terminal",
             "runningStatusMessage": "Compiling ${fileBasename}",
             "finishStatusMessage": "${fileBasename} compiled"
