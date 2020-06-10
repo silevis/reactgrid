@@ -1,4 +1,5 @@
 .circleci
+.vscode
 node_modules
 build
 cypress
@@ -8,8 +9,7 @@ src
 .vscode
 tsconfig.*json
 package.*json
-azure-pipelines-upgrade-rc-version.yml
-azure-pipelines-upgrade-version-and-publish.yml
+github-azure-*.yml
 snapshots.js
 .gitignore
 test
