@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import {
     Column, Row, Id, MenuOption, SelectionMode, DropPosition, CellLocation,
-    NumberCell, GroupCell, DefaultCellTypes, CellChange
+    NumberCell, GroupCell, DefaultCellTypes, CellChange, ReactGridProps
 } from './../reactgrid';
 import { Config } from './testEnvConfig';
 import '../styles.scss';
@@ -22,7 +22,7 @@ interface TestGridProps {
     enableColumnAndRowSelection?: boolean;
     isPro?: boolean;
     config: Config;
-    component: React.ComponentClass<any>; //TODO check why any?
+    component: React.ComponentClass<ReactGridProps>;
 }
 
 const emailValidator = (email: string): boolean => {
