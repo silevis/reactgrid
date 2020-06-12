@@ -4,7 +4,9 @@ variables:
 - group: master-branch
 
 trigger:
-- master
+  branches:
+    include:
+      - master
 
 pool:
   vmImage: 'ubuntu-latest'
