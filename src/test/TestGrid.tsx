@@ -229,6 +229,8 @@ export const TestGrid: React.FunctionComponent<TestGridProps> = (props) => {
                     enableColumnSelection={props.enableColumnAndRowSelection || false}
                     enableRangeSelection={props.config.enableRangeSelection}
                     enableFillHandle={props.config.enableFillHandle}
+                    // ref={ref => ref?.state.hiddenFocusElement.focus()}
+                    focusElement={(ref: HTMLElement) => ref.focus()}
                 />
                 {props.config.enableAdditionalContent &&
                     <>
