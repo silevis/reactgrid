@@ -3,7 +3,9 @@ variables:
 - group: develop-branch
 
 trigger:
-- develop
+  branches:
+    include:
+    - develop
 
 pool:
   vmImage: 'ubuntu-latest'
