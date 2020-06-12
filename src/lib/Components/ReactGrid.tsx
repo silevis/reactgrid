@@ -40,7 +40,7 @@ export class ReactGrid extends React.Component<ReactGridProps, State> {
     }
 
     componentWillUnmount() {
-        window.removeEventListener('resize', this.eventHandlers.windowResizeHandler);
+        // window.removeEventListener('resize', this.eventHandlers.windowResizeHandler);
     }
 
     render() {
