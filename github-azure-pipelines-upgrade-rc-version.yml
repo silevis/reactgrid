@@ -7,6 +7,8 @@ trigger:
     include:
     - develop
 
+pr: none
+
 pool:
   vmImage: 'ubuntu-latest'
 
