@@ -65,15 +65,12 @@ export function withMoveFocusPage(fc: FocusCellFn) {
     }
 }
 
-function getVisibleHeight(state: State): number {
-    const { stickyTopRange } = state.cellMatrix.ranges;
-    const wholeStickyHeight = stickyTopRange.height;
-    const visibleScrollAreaHeight = getVisibleScrollAreaHeight(state, wholeStickyHeight);
-    return visibleScrollAreaHeight;
+export function getVisibleHeight(state: State, stickyHeight: number): number {
+    return getVisibleScrollAreaHeight(state, stickyHeight);
 }
 
 function pageUpRowCalc(state: State, location: Location): number {
-    const visibleScrollAreaHeight = getVisibleHeight(state);
+    const visibleScrollAreaHeight = getVisibleHeight(state, state.cellMatrix.ranges.stickyTopRange.height);
     const hasTopSticky = state.cellMatrix.ranges.stickyTopRange.rows.length > 0;
     const isOnTopSticky = hasTopSticky && isFocusLocationOnTopSticky(state, location!);
     const hasScrollableRange = state.cellMatrix.scrollableRange.rows.length > 0;
@@ -106,7 +103,7 @@ function pageDownRowCalc(state: State, location: Location): number {
             rowIdx = hasScrollableRange ? state.cellMatrix.scrollableRange.first.row.idx : state.cellMatrix.ranges.stickyTopRange.last.row.idx;
         }
     } else {
-        const visibleScrollAreaHeight = getVisibleHeight(state);
+        const visibleScrollAreaHeight = getVisibleHeight(state, state.cellMatrix.ranges.stickyTopRange.height);
         const rowsOnScreen = state.cellMatrix.scrollableRange.rows.filter(row => row.top + row.height < visibleScrollAreaHeight)
         rowIdx = location.row.idx + rowsOnScreen.length < state.cellMatrix.rows.length
             ? location.row.idx + rowsOnScreen.length
