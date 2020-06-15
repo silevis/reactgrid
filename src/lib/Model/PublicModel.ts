@@ -25,6 +25,10 @@ export interface ReactGridProps {
     readonly enableRangeSelection?: boolean;
     readonly enableRowSelection?: boolean;
     readonly enableColumnSelection?: boolean;
+    readonly lang?: string;
+    readonly translations?: {
+        [key: string]: TranslationsDictionary;
+    }
 
     readonly onCellsChanged?: (cellChanges: CellChange[]) => void;
     readonly onFocusLocationChanged?: (location: CellLocation) => void;
@@ -35,6 +39,17 @@ export interface ReactGridProps {
     readonly onContextMenu?: (selectedRowIds: Id[], selectedColIds: Id[], selectionMode: SelectionMode, menuOptions: MenuOption[]) => MenuOption[];
     readonly canReorderColumns?: (targetColumnId: Id, columnIds: Id[], dropPosition: DropPosition) => boolean;
     readonly canReorderRows?: (targetRowId: Id, rowIds: Id[], dropPosition: DropPosition) => boolean;
+}
+
+// ASK ARCHITECT BEFORE INTRODUCING ANY CHANGE!
+export interface TranslationsDictionary {
+    legacyBrowserHeader?: string,
+    legacyBrowserParagraph?: string,
+    error?: string,
+    notification?: string,
+    copy?: string,
+    cut?: string,
+    paste?: string,
 }
 
 // ASK ARCHITECT BEFORE INTRODUCING ANY CHANGE!
