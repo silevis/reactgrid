@@ -73,12 +73,23 @@ export const TestGrid: React.FunctionComponent<TestGridProps> = (props) => {
         return { rows, columns }
     })
 
-    const handleColumnResize = (ci: Id, width: number) => {
-        let newState = { ...state };
-        const columnIndex = newState.columns.findIndex((el: Column) => el.columnId === ci);
-        const resizedColumn: Column = newState.columns[columnIndex];
-        const updateColumn: Column = { ...resizedColumn, width };
-        newState.columns[columnIndex] = updateColumn;
+    const handleColumnResize = (columnId: Id, width: number, selectedColIds: Id[]) => {
+        const newState = { ...state };
+
+        const setColumnWidth = (columnIndex: number) => {
+            const resizedColumn = newState.columns[columnIndex];
+            newState.columns[columnIndex] = { ...resizedColumn, width };
+        }
+
+        if (selectedColIds.includes(columnId)) {
+            const stateColumnIndexes = newState.columns
+                .filter(col => selectedColIds.includes(col.columnId))
+                .map(col => newState.columns.findIndex(el => el.columnId === col.columnId));
+            stateColumnIndexes.forEach(setColumnWidth);
+        } else {
+            const columnIndex = newState.columns.findIndex(col => col.columnId === columnId);
+            setColumnWidth(columnIndex);
+        }
         setState(newState);
     }
 
@@ -229,6 +240,17 @@ export const TestGrid: React.FunctionComponent<TestGridProps> = (props) => {
                     enableColumnSelection={props.enableColumnAndRowSelection || false}
                     enableRangeSelection={props.config.enableRangeSelection}
                     enableFillHandle={props.config.enableFillHandle}
+                // lang={'pl'}
+                // translations={
+                //     en: {
+                //         // err: 'fdsfds',
+                //         trands: 'fdsfds',
+                //     },
+                //     pl: {
+                //         err: 'fdsfds',
+                //         // trands: 'fdsfds',
+                //     },
+                // }
                 />
                 {props.config.enableAdditionalContent &&
                     <>
