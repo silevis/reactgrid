@@ -45,11 +45,12 @@ export interface ReactGridProps {
 export interface TranslationsDictionary {
     legacyBrowserHeader?: string,
     legacyBrowserParagraph?: string,
-    error?: string,
-    notification?: string,
-    copy?: string,
-    cut?: string,
-    paste?: string,
+    copyLabel?: string,
+    cutLabel?: string,
+    pasteLabel?: string,
+    macOsAlertText?: string,
+    otherBrowsersText?: string,
+    alert?: string
 }
 
 // ASK ARCHITECT BEFORE INTRODUCING ANY CHANGE!
