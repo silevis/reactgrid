@@ -1,6 +1,6 @@
-import { State, TranslationsDictionary } from "../Model";
+import { State, TextLabels } from "../Model";
 
-const defultTranslations: TranslationsDictionary = {
+const defultTranslations: Required<TextLabels> = {
     legacyBrowserHeader: 'Please update to a modern browser.',
     legacyBrowserParagraph: 'Your current browser cannot run our content, please make sure you browser is fully updated or try adifferent browser. We highly recommend using the most recent release of Google Chrome, Microsoft Edge, Firefox, Safari, and Opera browser',
     copyLabel: 'Copy',
@@ -11,13 +11,9 @@ const defultTranslations: TranslationsDictionary = {
     alert: 'This action is not supported in this browser. Use',
 }
 
-export function i18n(state: State): TranslationsDictionary {
-    const customTranslations = state.props?.translations!;
-    const translationsLang = state.props?.lang!;
-    const translations: TranslationsDictionary = {
+export function i18n(state: State): Required<TextLabels> {
+    return {
         ...defultTranslations,
-        ...customTranslations[translationsLang]
+        ...state.props?.labels
     }
-    return translations;
 }
-

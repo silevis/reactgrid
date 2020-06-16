@@ -25,10 +25,7 @@ export interface ReactGridProps {
     readonly enableRangeSelection?: boolean;
     readonly enableRowSelection?: boolean;
     readonly enableColumnSelection?: boolean;
-    readonly lang?: string;
-    readonly translations?: {
-        [key: string]: TranslationsDictionary;
-    }
+    readonly labels?: TextLabels;
 
     readonly onCellsChanged?: (cellChanges: CellChange[]) => void;
     readonly onFocusLocationChanged?: (location: CellLocation) => void;
@@ -42,7 +39,7 @@ export interface ReactGridProps {
 }
 
 // ASK ARCHITECT BEFORE INTRODUCING ANY CHANGE!
-export interface TranslationsDictionary {
+export interface TextLabels {
     legacyBrowserHeader?: string,
     legacyBrowserParagraph?: string,
     copyLabel?: string,

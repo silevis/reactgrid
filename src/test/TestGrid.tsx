@@ -60,7 +60,7 @@ export const TestGrid: React.FunctionComponent<TestGridProps> = (props) => {
                         case 5:
                             return { type: 'time', format: myTimeFormat, time: new Date(now.setHours(now.getHours() + ri)) }
                         case 6:
-                            return { type: 'checkbox', checked: false, checkedText: 'Zaznaczono', uncheckedText: false }
+                            return { type: 'checkbox', checked: false, checkedText: 'Checked', uncheckedText: false }
                         case 7:
                             return { type: 'flag', text: 'bra' }
                         default:
@@ -240,17 +240,9 @@ export const TestGrid: React.FunctionComponent<TestGridProps> = (props) => {
                     enableColumnSelection={props.enableColumnAndRowSelection || false}
                     enableRangeSelection={props.config.enableRangeSelection}
                     enableFillHandle={props.config.enableFillHandle}
-                // lang={'pl'}
-                // translations={
-                //     en: {
-                //         // err: 'fdsfds',
-                //         trands: 'fdsfds',
-                //     },
-                //     pl: {
-                //         err: 'fdsfds',
-                //         // trands: 'fdsfds',
-                //     },
-                // }
+                    labels={{
+
+                    }}
                 />
                 {props.config.enableAdditionalContent &&
                     <>
