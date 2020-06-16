@@ -41,13 +41,13 @@ export interface ReactGridProps {
 // ASK ARCHITECT BEFORE INTRODUCING ANY CHANGE!
 export interface TextLabels {
     legacyBrowserHeader?: string,
-    legacyBrowserParagraph?: string,
+    legacyBrowserText?: string,
     copyLabel?: string,
     cutLabel?: string,
     pasteLabel?: string,
-    macOsAlertText?: string,
-    otherBrowsersText?: string,
-    alert?: string
+    macOsContextMenuPasteAlert?: string,
+    otherBrowsersContextMenuPasteAlert?: string,
+    contextMenuPasteAlert?: string
 }
 
 // ASK ARCHITECT BEFORE INTRODUCING ANY CHANGE!

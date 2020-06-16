@@ -6,7 +6,7 @@ export const LegacyBrowserGridRenderer: React.FunctionComponent<GridRendererProp
     return (
         <>
             <h3>{i18n(state).legacyBrowserHeader}</h3>
-            <p>{i18n(state).legacyBrowserParagraph}</p>
+            <p>{i18n(state).legacyBrowserText}</p>
         </>
     );
 }
