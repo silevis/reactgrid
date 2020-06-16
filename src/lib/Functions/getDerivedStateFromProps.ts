@@ -24,9 +24,16 @@ export function getDerivedStateFromProps(props: ReactGridProps, state: State): S
     }
     state = stateDeriverWithProps(state)(setInitialFocusLocation);
 
-    state = stateDeriverWithProps(state)(setFocusLocation);
+    if (areFocusesDiff(props, state)) {
+        state = stateDeriverWithProps(state)(setFocusLocation);
+    }
 
     return state;
+}
+
+export const areFocusesDiff = (props: ReactGridProps, state: State): boolean => {
+    return props.focusLocation?.columnId !== state.focusedLocation?.column.columnId
+        || props.focusLocation?.rowId !== state.focusedLocation?.row.rowId;
 }
 
 export const stateDeriver = (props: ReactGridProps) => (state: State) => (fn: (props: ReactGridProps, state: State) => State) => fn(props, state);

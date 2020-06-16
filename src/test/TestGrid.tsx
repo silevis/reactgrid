@@ -111,13 +111,13 @@ export const TestGrid: React.FunctionComponent<TestGridProps> = (props) => {
             const changeRowIdx = newState.rows.findIndex(el => el.rowId === change.rowId);
             const changeColumnIdx = newState.columns.findIndex(el => el.columnId === change.columnId);
             if (change.type === 'flag') {
-                console.log(change.newCell.text);
+                // console.log(change.newCell.text);
             }
             if (change.type === 'text') {
-                console.log(change.newCell.text);
+                // console.log(change.newCell.text);
             }
             if (change.type === 'checkbox') {
-                console.log(change.initialCell.checked);
+                // console.log(change.initialCell.checked);
             }
             newState.rows[changeRowIdx].cells[changeColumnIdx] = change.newCell;
         });
@@ -240,17 +240,6 @@ export const TestGrid: React.FunctionComponent<TestGridProps> = (props) => {
                     enableColumnSelection={props.enableColumnAndRowSelection || false}
                     enableRangeSelection={props.config.enableRangeSelection}
                     enableFillHandle={props.config.enableFillHandle}
-                // lang={'pl'}
-                // translations={
-                //     en: {
-                //         // err: 'fdsfds',
-                //         trands: 'fdsfds',
-                //     },
-                //     pl: {
-                //         err: 'fdsfds',
-                //         // trands: 'fdsfds',
-                //     },
-                // }
                 />
                 {props.config.enableAdditionalContent &&
                     <>
