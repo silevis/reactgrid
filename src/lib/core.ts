@@ -41,3 +41,4 @@ export * from './Functions/handleCopy';
 export * from './Functions/handlePaste';
 export * from './Functions/getDataToCopy';
 export * from './Functions/pasteData';
+export * from './Functions/i18n';
