@@ -18,7 +18,13 @@ export class EventHandlers {
     reactgridRefHandler = (reactGridElement: HTMLDivElement) => {
         this.assignScrollHandlerToReactGridElement(reactGridElement, recalcVisibleRange);
     };
-    hiddenElementRefHandler = (hiddenFocusElement: HTMLInputElement) => this.updateState(state => { state.hiddenFocusElement = hiddenFocusElement; return state });
+    hiddenElementRefHandler = (hiddenFocusElement: HTMLInputElement) => this.updateState(state => {
+        if (state.props?.initialFocusLocation) {
+            hiddenFocusElement.focus({ preventScroll: true });
+        }
+        state.hiddenFocusElement = hiddenFocusElement;
+        return state;
+    });
 
     pasteCaptureHandler = (event: ClipboardEvent) => {
         const htmlData = event.clipboardData!.getData('text/html');
