@@ -17,7 +17,7 @@ body {
         $partial-area-gb-color: gold;
         $partial-area-border-color: gold;
 
-        @import './lib/assets/core.scss';
+        @import './../styles.scss';
     }
     .rg-celleditor input {
         color: white;

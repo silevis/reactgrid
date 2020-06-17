@@ -1,13 +1,12 @@
 import * as React from 'react';
 import { GridRendererProps } from '../Model';
+import { i18n } from '../Functions/i18n';
 
-export const LegacyBrowserGridRenderer: React.FunctionComponent<GridRendererProps> = props => {
+export const LegacyBrowserGridRenderer: React.FunctionComponent<GridRendererProps> = ({ state }) => {
     return (
         <>
-            <h3>Please update to a modern browser.</h3>
-            <p>Your current browser cannot run our content, please make sure you browser is fully updated or try a
-                different browser. We highly recommend using the most recent release of Google Chrome,
-                    Microsoft Edge, Firefox, Safari, and Opera browser</p>
+            <h3>{i18n(state).legacyBrowserHeader}</h3>
+            <p>{i18n(state).legacyBrowserText}</p>
         </>
     );
 }
