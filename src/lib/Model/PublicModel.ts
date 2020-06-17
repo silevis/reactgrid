@@ -25,16 +25,29 @@ export interface ReactGridProps {
     readonly enableRangeSelection?: boolean;
     readonly enableRowSelection?: boolean;
     readonly enableColumnSelection?: boolean;
+    readonly labels?: TextLabels;
 
     readonly onCellsChanged?: (cellChanges: CellChange[]) => void;
     readonly onFocusLocationChanged?: (location: CellLocation) => void;
     readonly onFocusLocationChanging?: (location: CellLocation) => boolean;
-    readonly onColumnResized?: (columnId: Id, width: number) => void;
+    readonly onColumnResized?: (columnId: Id, width: number, selectedColIds: Id[]) => void;
     readonly onRowsReordered?: (targetRowId: Id, rowIds: Id[], dropPosition: DropPosition) => void;
     readonly onColumnsReordered?: (targetColumnId: Id, columnIds: Id[], dropPosition: DropPosition) => void;
     readonly onContextMenu?: (selectedRowIds: Id[], selectedColIds: Id[], selectionMode: SelectionMode, menuOptions: MenuOption[]) => MenuOption[];
     readonly canReorderColumns?: (targetColumnId: Id, columnIds: Id[], dropPosition: DropPosition) => boolean;
     readonly canReorderRows?: (targetRowId: Id, rowIds: Id[], dropPosition: DropPosition) => boolean;
+}
+
+// ASK ARCHITECT BEFORE INTRODUCING ANY CHANGE!
+export interface TextLabels {
+    legacyBrowserHeader?: string,
+    legacyBrowserText?: string,
+    copyLabel?: string,
+    cutLabel?: string,
+    pasteLabel?: string,
+    macOsContextMenuPasteAlert?: string,
+    otherBrowsersContextMenuPasteAlert?: string,
+    contextMenuPasteAlert?: string
 }
 
 // ASK ARCHITECT BEFORE INTRODUCING ANY CHANGE!
