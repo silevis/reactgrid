@@ -1,4 +1,5 @@
 import React from 'react';
+import { ReactGridProps } from './../reactgrid';
 import { Config } from './testEnvConfig';
 import '../styles.scss';
 interface TestGridProps {
@@ -9,7 +10,7 @@ interface TestGridProps {
     enableColumnAndRowSelection?: boolean;
     isPro?: boolean;
     config: Config;
-    component: React.ComponentClass<any>;
+    component: React.ComponentClass<ReactGridProps>;
 }
 export declare const TestGrid: React.FunctionComponent<TestGridProps>;
 export declare const withDiv: <T extends object>(Component: React.ComponentType<T>) => React.FC<T & TestGridProps>;

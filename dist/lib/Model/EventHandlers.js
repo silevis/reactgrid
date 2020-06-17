@@ -27,7 +27,14 @@ var EventHandlers = (function () {
         this.reactgridRefHandler = function (reactGridElement) {
             _this.assignScrollHandlerToReactGridElement(reactGridElement, recalcVisibleRange);
         };
-        this.hiddenElementRefHandler = function (hiddenFocusElement) { return _this.updateState(function (state) { state.hiddenFocusElement = hiddenFocusElement; return state; }); };
+        this.hiddenElementRefHandler = function (hiddenFocusElement) { return _this.updateState(function (state) {
+            var _a;
+            if ((_a = state.props) === null || _a === void 0 ? void 0 : _a.initialFocusLocation) {
+                hiddenFocusElement.focus({ preventScroll: true });
+            }
+            state.hiddenFocusElement = hiddenFocusElement;
+            return state;
+        }); };
         this.pasteCaptureHandler = function (event) {
             var htmlData = event.clipboardData.getData('text/html');
             var parsedData = new DOMParser().parseFromString(htmlData, 'text/html');

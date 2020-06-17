@@ -4,9 +4,7 @@ import { getReactGridOffsets, getStickyOffset } from '../core';
 export function componentDidUpdate(prevProps, prevState, state) {
     var location = state.focusedLocation;
     if (location) {
-        var shouldChangeScroll = !areLocationsEqual(location, prevState.focusedLocation)
-            && !isFocusLocationOnLeftSticky(state, location)
-            && !isFocusLocationOnTopSticky(state, location);
+        var shouldChangeScroll = !areLocationsEqual(location, prevState.focusedLocation);
         if (shouldChangeScroll) {
             var top_1 = getScrollTop(state, location);
             var left = getScrollLeft(state, location);
@@ -21,6 +19,9 @@ function getScrollTop(state, location) {
     var visibleScrollAreaHeight = getVisibleScrollAreaHeight(state, wholeStickyHeight);
     var top = getReactGridOffsets(state).top;
     var topStickyOffset = getStickyOffset(scrollTop, top);
+    if (isFocusLocationOnTopSticky(state, location)) {
+        return scrollTop;
+    }
     if (isBottomCellAllVisible(state, location, visibleScrollAreaHeight)) {
         return getCalculatedScrollTopValueToBottom(location, visibleScrollAreaHeight, scrollTop, topStickyOffset);
     }
@@ -36,6 +37,9 @@ function getScrollLeft(state, location) {
     var visibleScrollAreaWidth = getVisibleScrollAreaWidth(state, wholeStickyWidth);
     var left = getReactGridOffsets(state).left;
     var leftStickyOffset = getStickyOffset(scrollLeft, left);
+    if (isFocusLocationOnLeftSticky(state, location)) {
+        return scrollLeft;
+    }
     if (isRightCellAllVisible(state, location, visibleScrollAreaWidth)) {
         return getCalculatedScrollLeftValueToRight(location, visibleScrollAreaWidth, scrollLeft, leftStickyOffset);
     }

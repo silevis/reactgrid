@@ -65,7 +65,7 @@ export var TestGrid = function (props) {
                         case 5:
                             return { type: 'time', format: myTimeFormat, time: new Date(now.setHours(now.getHours() + ri)) };
                         case 6:
-                            return { type: 'checkbox', checked: false, checkedText: 'Zaznaczono', uncheckedText: false };
+                            return { type: 'checkbox', checked: false, checkedText: 'Checked', uncheckedText: false };
                         case 7:
                             return { type: 'flag', text: 'bra' };
                         default:
@@ -76,12 +76,22 @@ export var TestGrid = function (props) {
         });
         return { rows: rows, columns: columns };
     }), state = _a[0], setState = _a[1];
-    var handleColumnResize = function (ci, width) {
+    var handleColumnResize = function (columnId, width, selectedColIds) {
         var newState = __assign({}, state);
-        var columnIndex = newState.columns.findIndex(function (el) { return el.columnId === ci; });
-        var resizedColumn = newState.columns[columnIndex];
-        var updateColumn = __assign(__assign({}, resizedColumn), { width: width });
-        newState.columns[columnIndex] = updateColumn;
+        var setColumnWidth = function (columnIndex) {
+            var resizedColumn = newState.columns[columnIndex];
+            newState.columns[columnIndex] = __assign(__assign({}, resizedColumn), { width: width });
+        };
+        if (selectedColIds.includes(columnId)) {
+            var stateColumnIndexes = newState.columns
+                .filter(function (col) { return selectedColIds.includes(col.columnId); })
+                .map(function (col) { return newState.columns.findIndex(function (el) { return el.columnId === col.columnId; }); });
+            stateColumnIndexes.forEach(setColumnWidth);
+        }
+        else {
+            var columnIndex = newState.columns.findIndex(function (col) { return col.columnId === columnId; });
+            setColumnWidth(columnIndex);
+        }
         setState(newState);
     };
     var handleChangesTest = function (changes) {
@@ -100,13 +110,10 @@ export var TestGrid = function (props) {
             var changeRowIdx = newState.rows.findIndex(function (el) { return el.rowId === change.rowId; });
             var changeColumnIdx = newState.columns.findIndex(function (el) { return el.columnId === change.columnId; });
             if (change.type === 'flag') {
-                console.log(change.newCell.text);
             }
             if (change.type === 'text') {
-                console.log(change.newCell.text);
             }
             if (change.type === 'checkbox') {
-                console.log(change.initialCell.checked);
             }
             newState.rows[changeRowIdx].cells[changeColumnIdx] = change.newCell;
         });
@@ -183,7 +190,7 @@ export var TestGrid = function (props) {
                     React.createElement(Logo, { isPro: props.isPro }),
                     React.createElement(Logo, { isPro: props.isPro }),
                     React.createElement(Logo, { isPro: props.isPro })),
-            React.createElement(Component, { rows: state.rows, columns: state.columns, initialFocusLocation: { columnId: 'col-2', rowId: 'row-2' }, onCellsChanged: handleChanges, onColumnResized: handleColumnResize, customCellTemplates: { 'flag': new FlagCellTemplate() }, highlights: [{ columnId: 'col-1', rowId: 'row-1', borderColor: '#00ff00' }], stickyLeftColumns: props.enableSticky ? props.config.stickyLeft : undefined, stickyRightColumns: props.enableSticky ? props.config.stickyRight : undefined, stickyTopRows: props.enableSticky ? props.config.stickyTop : undefined, stickyBottomRows: props.enableSticky ? props.config.stickyBottom : undefined, canReorderColumns: handleCanReorderColumns, canReorderRows: handleCanReorderRows, onColumnsReordered: handleColumnsReorder, onRowsReordered: handleRowsReorder, onContextMenu: handleContextMenu, onFocusLocationChanged: handleFocusLocationChanged, onFocusLocationChanging: handleFocusLocationChanging, enableRowSelection: props.enableColumnAndRowSelection || false, enableColumnSelection: props.enableColumnAndRowSelection || false, enableRangeSelection: props.config.enableRangeSelection, enableFillHandle: props.config.enableFillHandle }),
+            React.createElement(Component, { rows: state.rows, columns: state.columns, initialFocusLocation: { columnId: 'col-2', rowId: 'row-2' }, onCellsChanged: handleChanges, onColumnResized: handleColumnResize, customCellTemplates: { 'flag': new FlagCellTemplate() }, highlights: [{ columnId: 'col-1', rowId: 'row-1', borderColor: '#00ff00' }], stickyLeftColumns: props.enableSticky ? props.config.stickyLeft : undefined, stickyRightColumns: props.enableSticky ? props.config.stickyRight : undefined, stickyTopRows: props.enableSticky ? props.config.stickyTop : undefined, stickyBottomRows: props.enableSticky ? props.config.stickyBottom : undefined, canReorderColumns: handleCanReorderColumns, canReorderRows: handleCanReorderRows, onColumnsReordered: handleColumnsReorder, onRowsReordered: handleRowsReorder, onContextMenu: handleContextMenu, onFocusLocationChanged: handleFocusLocationChanged, onFocusLocationChanging: handleFocusLocationChanging, enableRowSelection: props.enableColumnAndRowSelection || false, enableColumnSelection: props.enableColumnAndRowSelection || false, enableRangeSelection: props.config.enableRangeSelection, enableFillHandle: props.config.enableFillHandle, labels: {} }),
             props.config.enableAdditionalContent &&
                 React.createElement(React.Fragment, null,
                     React.createElement("h1", { style: { width: 3000 } }, "TEXT"),

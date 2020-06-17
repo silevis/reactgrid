@@ -25,9 +25,16 @@ export function getDerivedStateFromProps(props, state) {
         state = stateDeriverWithProps(state)(updateVisibleRange);
     }
     state = stateDeriverWithProps(state)(setInitialFocusLocation);
-    state = stateDeriverWithProps(state)(setFocusLocation);
+    if (areFocusesDiff(props, state)) {
+        state = stateDeriverWithProps(state)(setFocusLocation);
+    }
     return state;
 }
+export var areFocusesDiff = function (props, state) {
+    var _a, _b, _c, _d;
+    return ((_a = props.focusLocation) === null || _a === void 0 ? void 0 : _a.columnId) !== ((_b = state.focusedLocation) === null || _b === void 0 ? void 0 : _b.column.columnId)
+        || ((_c = props.focusLocation) === null || _c === void 0 ? void 0 : _c.rowId) !== ((_d = state.focusedLocation) === null || _d === void 0 ? void 0 : _d.row.rowId);
+};
 export var stateDeriver = function (props) { return function (state) { return function (fn) { return fn(props, state); }; }; };
 export var dataHasChanged = function (props, state) { return !state.cellMatrix || props !== state.cellMatrix.props; };
 export function updateStateProps(props, state) {
