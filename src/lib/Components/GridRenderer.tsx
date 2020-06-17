@@ -11,7 +11,7 @@ export const GridRenderer: React.FunctionComponent<GridRendererProps> = props =>
             data-cy="reactgrid"
             style={{
                 position: 'relative',
-                width: cellMatrix.width,
+                width: '100%',
                 height: cellMatrix.height
             }}
             ref={eventHandlers.reactgridRefHandler}
@@ -27,7 +27,7 @@ export const GridRenderer: React.FunctionComponent<GridRendererProps> = props =>
                 onCut={eventHandlers.cutHandler}
                 data-cy="reactgrid-content"
                 style={{
-                    width: cellMatrix.width,
+                    width: '100%',
                     height: cellMatrix.height,
                 }}
             >

@@ -71,7 +71,7 @@ export const PanesRenderer: React.FunctionComponent<PanesProps> = props => {
                 renderChildren={renderTopSticky && renderCenterRange}
                 className={'rg-pane-top'}
                 style={{
-                    width: cellMatrix.scrollableRange.width,
+                    width: `calc(100% - ${cellMatrix.ranges.stickyLeftRange.width}px)`,
                     height: cellMatrix.ranges.stickyTopRange.height,
                     order: 1,
                     ...(isBrowserFirefox() && { zIndex: 1 })

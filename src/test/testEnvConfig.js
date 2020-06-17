@@ -1,6 +1,6 @@
 // TODO is necessary to export this file (export only definition)
 export const config = {
-    pinToBody: false,
+    pinToBody: true,
     enableAdditionalContent: false,
     flexRow: false,
 
@@ -15,17 +15,17 @@ export const config = {
     minCellWidth: 40,
     fillHandleWidth: 18,
 
-    columns: 30,
+    columns: 9,
     rows: 150,
 
     lineWidth: 1,
 
-    stickyTop: 3,
+    stickyTop: 1,
     stickyBottom: 3,
-    stickyLeft: 2,
+    stickyLeft: 1,
     stickyRight: 2,
 
-    firstRowType: 'text'
+    firstRowType: 'header'
 }
 
 if (typeof exports === "object" && typeof module === "object") { // added for backwards compability without ES6 imports
