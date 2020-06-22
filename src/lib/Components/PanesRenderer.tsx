@@ -34,7 +34,7 @@ export const PanesRenderer: React.FunctionComponent<PanesProps> = props => {
                 className={'rg-pane-center-middle'}
                 style={{
                     position: 'relative',
-                    width: cellMatrix.scrollableRange.width,
+                    width: `calc(100% - ${cellMatrix.ranges.stickyLeftRange.width}px)`,
                     height: cellMatrix.scrollableRange.height,
                     order: 3,
                 }}
