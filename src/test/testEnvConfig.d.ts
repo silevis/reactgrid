@@ -13,6 +13,7 @@ export interface Config {
     fillHandleWidth: number;
     enableRangeSelection: boolean;
     enableFillHandle: boolean;
+    enableFullWidthTopStickyPane: boolean;
 
     columns: number;
     rows: number;

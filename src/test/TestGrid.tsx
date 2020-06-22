@@ -20,6 +20,7 @@ interface TestGridProps {
     containerMargin?: number;
     enableSticky?: boolean;
     enableColumnAndRowSelection?: boolean;
+    enableFullWidthTopStickyPane?: boolean;
     isPro?: boolean;
     config: Config;
     component: React.ComponentClass<ReactGridProps>;
@@ -238,6 +239,7 @@ export const TestGrid: React.FunctionComponent<TestGridProps> = (props) => {
                     onFocusLocationChanging={handleFocusLocationChanging}
                     enableRowSelection={props.enableColumnAndRowSelection || false}
                     enableColumnSelection={props.enableColumnAndRowSelection || false}
+                    enableFullWidthTopStickyPane={props.config.enableFullWidthTopStickyPane || false}
                     enableRangeSelection={props.config.enableRangeSelection}
                     enableFillHandle={props.config.enableFillHandle}
                     labels={{
