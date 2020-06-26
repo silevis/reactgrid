@@ -13,14 +13,12 @@ import { CellRenderer, } from './CellRenderer';
 import { notifyAboutReactGridPro } from '../Functions/notifyAboutReactGridPro';
 
 export class ReactGrid extends React.Component<ReactGridProps, State> {
-    // private stateUpdater: StateUpdater<StateModifier<State<AbstractCellMatrix, Behavior>>> = modifier => this.handleStateUpdate(modifier(this.state));
     private stateUpdater: StateUpdater = modifier => this.handleStateUpdate(modifier(this.state));
     private pointerEventsController = new PointerEventsController(this.stateUpdater);
     private eventHandlers: EventHandlers = new EventHandlers(this.stateUpdater, this.pointerEventsController);
     private cellMatrixBuilder = new CellMatrixBuilder();
-    state: State = { // should init state here instead in getDerivedStateFromProps ??
+    state: State = {
         update: this.stateUpdater,
-        props: this.props,
         cellMatrix: this.cellMatrixBuilder.setProps(this.props).fillRowsAndCols().fillSticky().fillScrollableRange()
             .setEdgeLocations().getCellMatrix(),
         ...defaultStateFields
