@@ -12,7 +12,9 @@ import { getReactGridOffsets, getStickyOffset } from '../core';
 export function componentDidUpdate(prevProps: ReactGridProps, prevState: State, state: State) {
     const location = state.focusedLocation;
     if (location) {
+        const { initialFocusLocation } = state.props!;
         const shouldChangeScroll = !areLocationsEqual(location, prevState.focusedLocation)
+            || (initialFocusLocation && areLocationsEqual(location, state.cellMatrix.getLocationById(initialFocusLocation?.rowId, initialFocusLocation?.columnId)));
         if (shouldChangeScroll) {
             const top = getScrollTop(state, location);
             const left = getScrollLeft(state, location);
@@ -20,6 +22,7 @@ export function componentDidUpdate(prevProps: ReactGridProps, prevState: State, 
         }
     }
 }
+
 
 function getScrollTop(state: State, location: Location): number {
     const { stickyTopRange } = state.cellMatrix.ranges;
