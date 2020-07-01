@@ -139,6 +139,7 @@ export interface CellStyle {
 // ASK ARCHITECT BEFORE INTRODUCING ANY CHANGE!
 export interface Cell {
     type: string;
+    groups?: Id[];
     style?: CellStyle;
     className?: string;
 }

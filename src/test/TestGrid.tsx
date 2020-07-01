@@ -48,7 +48,7 @@ export const TestGrid: React.FunctionComponent<TestGridProps> = (props) => {
                     const now = new Date();
                     switch (ci) {
                         case 0:
-                            return { type: 'group', text: `${ri} - ${ci}`, parentId: ri, isExpanded: ri % 4 && undefined, hasChildrens: true } as GroupCell
+                            return { type: 'group', groups: ['A', 'B'], text: `${ri} - ${ci}`, parentId: ri, isExpanded: ri % 4 && undefined, hasChildrens: true } as GroupCell
                         case 1:
                             return { type: 'text', text: `${ri} - ${ci}` }
                         case 2:
