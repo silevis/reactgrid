@@ -45,9 +45,9 @@ export interface TextLabels {
     copyLabel?: string,
     cutLabel?: string,
     pasteLabel?: string,
-    macOsContextMenuPasteAlert?: string,
+    actionNotSupported?: string;
+    appleMobileDeviceContextMenuPasteAlert?: string,
     otherBrowsersContextMenuPasteAlert?: string,
-    contextMenuPasteAlert?: string
 }
 
 // ASK ARCHITECT BEFORE INTRODUCING ANY CHANGE!
