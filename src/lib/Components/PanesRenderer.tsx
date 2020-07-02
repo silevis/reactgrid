@@ -27,6 +27,9 @@ export const PanesRenderer: React.FunctionComponent<PanesProps> = props => {
 
     const visibleScrollableRange = renderMiddleRange && cellMatrix.scrollableRange.slice(state.visibleRange!, 'rows');
 
+    const areOnlyStickyRows = cellMatrix.ranges.stickyTopRange.rows.length === cellMatrix.rows.length;
+    const areOnlyStickyCols = cellMatrix.ranges.stickyLeftRange.columns.length === cellMatrix.columns.length;
+
     return (
         <>
             <Pane
@@ -35,10 +38,7 @@ export const PanesRenderer: React.FunctionComponent<PanesProps> = props => {
                 style={{
                     position: 'relative',
                     width: cellMatrix.scrollableRange.width,
-                    height: (cellMatrix.ranges.stickyTopRange.rows.length === cellMatrix.rows.length ||
-                        cellMatrix.ranges.stickyLeftRange.columns.length === cellMatrix.columns.length)
-                        ? 0
-                        : cellMatrix.scrollableRange.height,
+                    height: (areOnlyStickyRows || areOnlyStickyCols) ? 0 : cellMatrix.scrollableRange.height,
                     order: 3,
                 }}
             >
@@ -55,10 +55,10 @@ export const PanesRenderer: React.FunctionComponent<PanesProps> = props => {
                 renderChildren={renderMiddleRange && renderLeftSticky}
                 className={'rg-pane-left'}
                 style={{
-                    height: cellMatrix.scrollableRange.height,
-                    width: (cellMatrix.ranges.stickyLeftRange.columns.length === cellMatrix.columns.length)
-                        ? cellMatrix.ranges.stickyLeftRange.width
-                        : cellMatrix.width - cellMatrix.scrollableRange.width,
+                    height: areOnlyStickyRows && areOnlyStickyCols ? 0 : cellMatrix.scrollableRange.height,
+                    width: areOnlyStickyRows
+                        ? 0
+                        : areOnlyStickyCols ? cellMatrix.ranges.stickyLeftRange.width : cellMatrix.width - cellMatrix.scrollableRange.width,
                     order: 2,
                     ...(isBrowserFirefox() && { zIndex: 1 })
                 }}
@@ -76,7 +76,7 @@ export const PanesRenderer: React.FunctionComponent<PanesProps> = props => {
                 renderChildren={renderTopSticky && renderCenterRange}
                 className={'rg-pane-top'}
                 style={{
-                    width: cellMatrix.scrollableRange.width,
+                    width: areOnlyStickyRows && areOnlyStickyCols ? 0 : cellMatrix.scrollableRange.width,
                     height: cellMatrix.ranges.stickyTopRange.height,
                     order: 1,
                     ...(isBrowserFirefox() && { zIndex: 1 })
@@ -96,7 +96,9 @@ export const PanesRenderer: React.FunctionComponent<PanesProps> = props => {
                 className={'rg-pane-top rg-pane-left'}
                 style={{
                     height: cellMatrix.ranges.stickyTopRange.height,
-                    width: cellMatrix.width - cellMatrix.scrollableRange.width,
+                    width: (areOnlyStickyRows && areOnlyStickyCols)
+                        ? cellMatrix.ranges.stickyLeftRange.width
+                        : cellMatrix.width - cellMatrix.scrollableRange.width,
                     order: 0,
                     ...(isBrowserFirefox() && { zIndex: 2 })
                 }}
