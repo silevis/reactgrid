@@ -35,7 +35,10 @@ export const PanesRenderer: React.FunctionComponent<PanesProps> = props => {
                 style={{
                     position: 'relative',
                     width: cellMatrix.scrollableRange.width,
-                    height: cellMatrix.scrollableRange.height,
+                    height: (cellMatrix.ranges.stickyTopRange.rows.length === cellMatrix.rows.length ||
+                        cellMatrix.ranges.stickyLeftRange.columns.length === cellMatrix.columns.length)
+                        ? 0
+                        : cellMatrix.scrollableRange.height,
                     order: 3,
                 }}
             >
@@ -53,7 +56,9 @@ export const PanesRenderer: React.FunctionComponent<PanesProps> = props => {
                 className={'rg-pane-left'}
                 style={{
                     height: cellMatrix.scrollableRange.height,
-                    width: cellMatrix.width - cellMatrix.scrollableRange.width,
+                    width: (cellMatrix.ranges.stickyLeftRange.columns.length === cellMatrix.columns.length)
+                        ? cellMatrix.ranges.stickyLeftRange.width
+                        : cellMatrix.width - cellMatrix.scrollableRange.width,
                     order: 2,
                     ...(isBrowserFirefox() && { zIndex: 1 })
                 }}
