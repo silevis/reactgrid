@@ -23,10 +23,6 @@ export class CellMatrixBuilder implements ICellMatrixBuilder {
     }
 
     setProps(props: CellMatrixProps): CellMatrixBuilder {
-
-        console.log(props.columns.length, props.rows.length, props.stickyLeftColumns, props.stickyTopRows);
-
-
         this.cellMatrix.props = props;
         return this;
     }
