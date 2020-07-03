@@ -13,13 +13,11 @@ export function getLocationFromClient(state: State, clientX: number, clientY: nu
 }
 
 function getRow(state: State, viewportY: number, favorScrollableContent: boolean): { cellY: number, row: GridRow } {
-    const result: { cellY: number, row: GridRow } = getStickyTopRow(state, viewportY, favorScrollableContent) || getScrollableContentRow(state, viewportY);
-    return result;
+    return getStickyTopRow(state, viewportY, favorScrollableContent) || getScrollableContentRow(state, viewportY);
 }
 
 function getColumn(state: State, viewportX: number, favorScrollableContent: boolean): { cellX: number, column: GridColumn } {
-    const result: { cellX: number, column: GridColumn } = getLeftStickyColumn(state, viewportX, favorScrollableContent) || getScrollableContentColumn(state, viewportX);
-    return result;
+    return getLeftStickyColumn(state, viewportX, favorScrollableContent) || getScrollableContentColumn(state, viewportX);
 }
 
 export function getStickyTopRow(state: State, viewportY: number, favorScrollableContent: boolean): { cellY: number, row: GridRow } | undefined {
@@ -39,7 +37,7 @@ export function getLeftStickyColumn(state: State, viewportX: number, favorScroll
     const { scrollLeft } = getScrollOfScrollableElement(state.scrollableElement);
     const { left } = getReactGridOffsets(state);
     const leftStickyOffset = getStickyOffset(scrollLeft, left);
-    if (cellMatrix.ranges.stickyLeftRange.columns.find(column => column.right > viewportX - leftStickyOffset) && viewportX < cellMatrix.ranges.stickyLeftRange.height + leftStickyOffset && !(favorScrollableContent && scrollLeft > left)) {
+    if (cellMatrix.ranges.stickyLeftRange.columns.find(column => column.right > viewportX - leftStickyOffset) && viewportX < cellMatrix.ranges.stickyLeftRange.width + leftStickyOffset && !(favorScrollableContent && scrollLeft > left)) {
         const column = cellMatrix.ranges.stickyLeftRange.columns.find(column => column.right > viewportX - leftStickyOffset)!;
         const cellX = viewportX - column.left;
         return { cellX, column };

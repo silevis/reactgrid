@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Range, Borders, State, Highlight, SliceDirection } from '../Model';
+import { Range, Borders, State, Highlight } from '../Model';
 import { CellFocus } from './CellFocus';
 import { RowRenderer } from './RowRenderer';
 import { CellRendererProps } from './CellRenderer';
@@ -19,9 +19,7 @@ interface RowsProps {
 
 export interface PaneContentProps<TState extends State = State> {
     state: TState;
-    range: Range | boolean;
-    rangeToSlice: Range | boolean;
-    direction: SliceDirection;
+    range: () => Range;
     borders: Borders;
     cellRenderer: React.FunctionComponent<CellRendererProps>;
     children?: React.ReactNode;
@@ -77,18 +75,14 @@ export const Pane: React.FunctionComponent<PaneProps> = props => {
 };
 
 export const PaneContent: React.FunctionComponent<PaneContentProps<State>> = props => {
-    const { state, range, rangeToSlice, direction, borders, cellRenderer, children } = props;
+    const { state, range, borders, cellRenderer, children } = props;
 
-    if (!(range instanceof Range) || !(rangeToSlice instanceof Range)) { // TODO cleanup
-        return null;
-    }
-
-    const calculatedRange = range.slice(rangeToSlice, direction);
+    const calculatedRange = range();
 
     const childProps: PaneContentChild = {
         state,
         calculatedRange
-    }
+    };
     return (
         <>
             <PaneGridContent state={state} range={calculatedRange} borders={borders} cellRenderer={cellRenderer} />
