@@ -1,11 +1,12 @@
 import * as React from 'react';
 import { Pane, PaneContent } from './Pane';
-import { State, Range, SliceDirection } from '../Model';
+import { State, Range } from '../Model';
 import { isBrowserFirefox } from '../Functions';
 import { CellRendererProps, } from './CellRenderer';
 import {
     shouldRenderTopSticky, shouldRenderMiddleRange, shouldRenderLeftSticky, shouldRenderCenterRange
 } from '../Functions/paneRendererPredicates';
+import { columnsSlicer, rowsSlicer } from '../Functions/rangeSlicer';
 
 
 export interface PanesProps<TState extends State = State> {
@@ -29,10 +30,6 @@ export const PanesRenderer: React.FunctionComponent<PanesProps> = props => {
 
     const areOnlyStickyRows = cellMatrix.ranges.stickyTopRange.rows.length === cellMatrix.rows.length;
     const areOnlyStickyCols = cellMatrix.ranges.stickyLeftRange.columns.length === cellMatrix.columns.length;
-
-    const rangeSlicer = (direction: SliceDirection) => (range: Range) => (rangeToSlice: Range) => (): Range => range.slice(rangeToSlice, direction);
-    const columnsSlicer = rangeSlicer('columns');
-    const rowsSlicer = rangeSlicer('rows');
 
     return (
         <>
