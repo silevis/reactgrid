@@ -23,7 +23,7 @@ context('Focus', () => {
         Utils.getCellFocus().should('be.visible');
     });
 
-    it('CTRL or META + end should select cell in last row and column', () => { // ✅
+    it('CTRL or META + end should select cell in first row and column ', () => { // ✅
         Utils.selectCell(config.rgViewportWidth - config.cellWidth - Utils.getCellXCenter(), config.cellHeight * 4 + Utils.getCellYCenter());
         Utils.keyDown(Constants.keyCodes.Home, { metaKey: true, ctrlKey: !Utils.isMacOs() && true, force: true });
 
@@ -31,7 +31,7 @@ context('Focus', () => {
         Utils.assertElementTopIsEqual(Utils.getCellFocus(), 0);
     })
 
-    it('CTRL or META + home should select cell in first row and column', () => { // ✅
+    it('CTRL or META + home should select cell in last row and column', () => { // ✅
         Utils.selectCell(config.rgViewportWidth - config.cellWidth - Utils.getCellXCenter(), config.cellHeight * 4 + Utils.getCellYCenter());
         Utils.keyDown(Constants.keyCodes.End, { metaKey: true, ctrlKey: !Utils.isMacOs() && true, force: true });
 
