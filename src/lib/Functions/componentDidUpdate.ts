@@ -9,12 +9,11 @@ import {
 } from '.';
 import { getReactGridOffsets, getStickyOffset } from '../core';
 
+//TODO what about initialFocusLocation and focusLocation set by props
 export function componentDidUpdate(prevProps: ReactGridProps, prevState: State, state: State) {
     const location = state.focusedLocation;
     if (location) {
-        const { initialFocusLocation } = state.props!;
-        const shouldChangeScroll = !areLocationsEqual(location, prevState.focusedLocation)
-            || (initialFocusLocation && areLocationsEqual(location, state.cellMatrix.getLocationById(initialFocusLocation?.rowId, initialFocusLocation?.columnId)));
+        const shouldChangeScroll = !areLocationsEqual(location, prevState.focusedLocation);
         if (shouldChangeScroll) {
             const top = getScrollTop(state, location);
             const left = getScrollLeft(state, location);

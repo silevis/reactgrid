@@ -6,9 +6,9 @@ const defultTranslations: Required<TextLabels> = {
     copyLabel: 'Copy',
     cutLabel: 'Cut',
     pasteLabel: 'Paste',
-    macOsContextMenuPasteAlert: '⌘ + c for copy, ⌘ + x for cut and ⌘ + v for paste.',
-    otherBrowsersContextMenuPasteAlert: 'ctrl + c for copy, ctrl + x for cut and ctrl + v for paste.',
-    contextMenuPasteAlert: 'This action is not supported in this browser. Use',
+    appleMobileDeviceContextMenuPasteAlert: 'Use ⌘ + c for copy, ⌘ + x for cut and ⌘ + v for paste.',
+    otherBrowsersContextMenuPasteAlert: ' Use ctrl + c for copy, ctrl + x for cut and ctrl + v for paste.',
+    actionNotSupported: 'This action is not supported in this browser.'
 }
 
 export function i18n(state: State): Required<TextLabels> {

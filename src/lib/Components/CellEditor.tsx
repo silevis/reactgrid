@@ -23,10 +23,8 @@ export interface PositionState<TState extends State = State> {
     location: Location;
 }
 
-export const CellEditorRenderer: React.FunctionComponent<CellEditorRendererProps> = props => {
-    const { state, positionCalculator } = props;
+export const CellEditorRenderer: React.FunctionComponent<CellEditorRendererProps> = ({ state, positionCalculator }) => {
     const { currentlyEditedCell } = state;
-
     const location = state.focusedLocation!;
 
     const [position, dispatch] = React.useReducer(positionCalculator, { state, location }); // used to lock cell editor position
@@ -56,8 +54,7 @@ export const CellEditorRenderer: React.FunctionComponent<CellEditorRendererProps
     </CellEditor>
 };
 
-const CellEditor: React.FunctionComponent<CellEditorProps> = props => {
-    const { style, cellType, children } = props;
+const CellEditor: React.FunctionComponent<CellEditorProps> = ({ style, cellType, children }) => {
     return (
         <div
             className={`rg-celleditor rg-${cellType}-celleditor`}
@@ -91,13 +88,17 @@ const calculatedYAxisOffset = (location: Location, state: State): number => {
 }
 
 export function getStickyLeftRangeWidth(cellMatrix: CellMatrix, location: Location): number | undefined {
-    if (location.column.idx > (cellMatrix.ranges.stickyLeftRange.last.column ? cellMatrix.ranges.stickyLeftRange.last.column.idx : cellMatrix.first.column.idx) || location.column.idx === cellMatrix.last.column.idx) {
+    if (location.column.idx > (cellMatrix.ranges.stickyLeftRange.last.column ? cellMatrix.ranges.stickyLeftRange.last.column.idx : cellMatrix.first.column.idx)
+        || (location.column.idx === cellMatrix.last.column.idx && location.column.idx !== cellMatrix.ranges.stickyLeftRange.last.column.idx)
+    ) {
         return cellMatrix.ranges.stickyLeftRange.width;
     }
 }
 
 export function getStickyTopRangeWidth(cellMatrix: CellMatrix, location: Location): number | undefined {
-    if (location.row.idx > (cellMatrix.ranges.stickyTopRange.last.row ? cellMatrix.ranges.stickyTopRange.last.row.idx : cellMatrix.first.row.idx) || location.row.idx === cellMatrix.last.row.idx) {
+    if (location.row.idx > (cellMatrix.ranges.stickyTopRange.last.row ? cellMatrix.ranges.stickyTopRange.last.row.idx : cellMatrix.first.row.idx)
+        || (location.row.idx === cellMatrix.last.row.idx && location.row.idx !== cellMatrix.ranges.stickyTopRange.last.row.idx)
+    ) {
         return cellMatrix.ranges.stickyTopRange.height;
     }
 }
