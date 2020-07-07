@@ -62,8 +62,10 @@ export interface CellLocation {
 }
 
 export interface Highlight {
-    readonly rowId: Id;
-    readonly columnId: Id;
+    readonly firstRowId: Id;
+    readonly lastRowId: Id;
+    readonly firstColumnId: Id;
+    readonly lastColumnId: Id;
     readonly borderColor?: string;
     readonly className?: string;
 }

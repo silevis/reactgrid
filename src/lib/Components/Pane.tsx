@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Range, Borders, State, Highlight } from '../Model';
+import { Range, State, Highlight } from '../Model';
 import { CellFocus } from './CellFocus';
 import { RowRenderer } from './RowRenderer';
 import { CellRendererProps } from './CellRenderer';
@@ -13,14 +13,13 @@ export interface PaneProps {
 interface RowsProps {
     state: State;
     range: Range;
-    borders: Borders;
     cellRenderer: React.FunctionComponent<CellRendererProps>;
 }
 
 export interface PaneContentProps<TState extends State = State> {
     state: TState;
     range: () => Range;
-    borders: Borders;
+    // borders: Borders;
     cellRenderer: React.FunctionComponent<CellRendererProps>;
     children?: React.ReactNode;
 }
@@ -45,13 +44,12 @@ class PaneGridContent extends React.Component<RowsProps> {
     }
 
     render() {
-        const { range, state, borders, cellRenderer } = this.props;
+        const { range, state, cellRenderer } = this.props;
         return (
             <>
-                {range.rows.map((row) => <RowRenderer key={row.rowId} state={state} row={row} columns={range.columns} forceUpdate={true} cellRenderer={cellRenderer}
-                    borders={{ ...borders, top: borders.top && row.top === 0, bottom: borders.bottom && row.idx === range.last.row.idx }} />)}
-                {range.rows.map((row) => <div key={row.rowId} className="rg-separator-line rg-separator-line-row" style={{ top: row.top, height: row.height, }} />)}
-                {range.columns.map((col) => <div key={col.columnId} className="rg-separator-line rg-separator-line-col" style={{ left: col.left, width: col.width }} />)}
+                {range.rows.map((row) => <RowRenderer key={row.rowId} state={state} row={row} columns={range.columns} forceUpdate={true} cellRenderer={cellRenderer} />)}
+                {/* {range.rows.map((row) => <div key={row.rowId} className="rg-separator-line rg-separator-line-row" style={{ top: row.top, height: row.height, }} />)} */}
+                {/* {range.columns.map((col) => <div key={col.columnId} className="rg-separator-line rg-separator-line-col" style={{ left: col.left, width: col.width }} />)} */}
             </>
         );
     }
@@ -59,7 +57,10 @@ class PaneGridContent extends React.Component<RowsProps> {
 
 function renderHighlights(state: State, range: Range) {
     return state.highlightLocations.map((highlight: Highlight, id: number) => {
-        const location = state.cellMatrix.getLocationById(highlight.rowId, highlight.columnId);
+        const location = state.cellMatrix.getLocationById(highlight.firstRowId, highlight.lastColumnId);
+        const first = state.cellMatrix.getLocationById(highlight.firstRowId, highlight.firstColumnId);
+        const second = state.cellMatrix.getLocationById(highlight.lastRowId, highlight.lastColumnId);
+        const range = state.cellMatrix.getRange(first, second);
         return location && range.contains(location) &&
             <CellFocus key={id} location={location} borderColor={highlight.borderColor} isHighlight />;
     });
@@ -75,7 +76,7 @@ export const Pane: React.FunctionComponent<PaneProps> = props => {
 };
 
 export const PaneContent: React.FunctionComponent<PaneContentProps<State>> = props => {
-    const { state, range, borders, cellRenderer, children } = props;
+    const { state, range, cellRenderer, children } = props;
 
     const calculatedRange = range();
 
@@ -85,7 +86,7 @@ export const PaneContent: React.FunctionComponent<PaneContentProps<State>> = pro
     };
     return (
         <>
-            <PaneGridContent state={state} range={calculatedRange} borders={borders} cellRenderer={cellRenderer} />
+            <PaneGridContent state={state} range={calculatedRange} cellRenderer={cellRenderer} />
             {renderHighlights(state, calculatedRange)}
             {state.focusedLocation && calculatedRange.contains(state.focusedLocation) &&
                 <CellFocus location={state.focusedLocation} />}

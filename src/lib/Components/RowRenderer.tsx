@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { State, GridRow, GridColumn, Borders } from '../Model';
+import { State, GridRow, GridColumn } from '../Model';
 import { CellRendererProps } from './CellRenderer';
 
 export interface RowRendererProps {
@@ -7,7 +7,7 @@ export interface RowRendererProps {
     row: GridRow;
     columns: GridColumn[];
     forceUpdate: boolean;
-    borders: Borders;
+    // borders: Borders;
     cellRenderer: React.FunctionComponent<CellRendererProps>;
 }
 
@@ -20,16 +20,16 @@ export class RowRenderer extends React.Component<RowRendererProps> {
     }
 
     render() {
-        const { columns, row, cellRenderer, borders, state } = this.props;
-        const lastColIdx = columns[columns.length - 1].idx;
+        const { columns, row, cellRenderer, state } = this.props;
+        // const lastColIdx = columns[columns.length - 1].idx;
         const CellRenderer = cellRenderer;
         return columns.map(column => <CellRenderer
             key={row.idx + '-' + column.idx}
-            borders={{
-                ...borders,
-                left: borders.left && column.left === 0,
-                right: borders.right && column.idx === lastColIdx
-            }}
+            // borders={{
+            //     ...borders,
+            //     left: borders.left && column.left === 0,
+            //     right: borders.right && column.idx === lastColIdx
+            // }}
             state={state}
             location={{ row, column }} />);
     }

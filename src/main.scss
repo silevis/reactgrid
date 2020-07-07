@@ -61,6 +61,9 @@
             padding: $cell-padding;
             outline: none;
             touch-action: auto;
+            border-width: $cell-border-width;
+            border-color: $cell-border-color;
+            // border-style: solid;
             .rg-touch-resize-handle {
                 position: absolute;
                 top: 0;
