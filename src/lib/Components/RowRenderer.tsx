@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { State, GridRow, GridColumn } from '../Model';
+import { State, Borders, GridRow, GridColumn } from '../Model';
 import { CellRendererProps } from './CellRenderer';
 
 export interface RowRendererProps {
@@ -21,7 +21,7 @@ export class RowRenderer extends React.Component<RowRendererProps> {
 
     render() {
         const { columns, row, cellRenderer, state } = this.props;
-        // const lastColIdx = columns[columns.length - 1].idx;
+        const lastColIdx = columns[columns.length - 1].idx;
         const CellRenderer = cellRenderer;
         return columns.map(column => <CellRenderer
             key={row.idx + '-' + column.idx}

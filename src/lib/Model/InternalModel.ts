@@ -25,12 +25,12 @@ export interface GridRow extends Row {
 
 // ASK ARCHITECT BEFORE INTRODUCING ANY CHANGE!
 // INTERNAL
-// export interface Borders {
-//     top?: boolean;
-//     left?: boolean;
-//     bottom?: boolean;
-//     right?: boolean;
-// }
+export interface Borders {
+    top?: boolean;
+    left?: boolean;
+    bottom?: boolean;
+    right?: boolean;
+}
 
 // ASK ARCHITECT BEFORE INTRODUCING ANY CHANGE!
 // INTERNAL

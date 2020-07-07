@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Range, State, Highlight } from '../Model';
+import { Range, State, Borders, Highlight } from '../Model';
 import { CellFocus } from './CellFocus';
 import { RowRenderer } from './RowRenderer';
 import { CellRendererProps } from './CellRenderer';

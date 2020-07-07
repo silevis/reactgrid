@@ -22,10 +22,10 @@ export const CellRenderer: React.FunctionComponent<CellRendererProps> = props =>
         top: location.row.top,
         width: location.column.width,
         height: location.row.height,
-        borderLeft: state.cellMatrix.first.column.idx === location.column.idx ? 'solid' : 'none',
-        borderTop: state.cellMatrix.first.row.idx === location.row.idx ? 'solid' : 'none',
-        borderBottom: 'solid',
-        borderRight: 'solid',
+        borderLeft: state.cellMatrix.first.column.idx === location.column.idx ? '0.1px black solid' : 'none',
+        borderTop: state.cellMatrix.first.row.idx === location.row.idx ? '0.1px black solid' : 'none',
+        borderBottom: '0.1px black solid',
+        borderRight: '0.1px black solid',
         ...((isFocused || cell.type === 'header') && { touchAction: 'none' }) // prevent scrolling
     };
 
