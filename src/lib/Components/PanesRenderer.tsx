@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Pane, PaneContent } from './Pane';
+import { Pane, PaneContent, RowsProps } from './Pane';
 import { State, Range } from '../Model';
 import { isBrowserFirefox } from '../Functions';
 import { CellRendererProps, } from './CellRenderer';
@@ -12,10 +12,10 @@ import { columnsSlicer, rowsSlicer } from '../Functions/rangeSlicer';
 export interface PanesProps<TState extends State = State> {
     state: TState;
     cellRenderer: React.FunctionComponent<CellRendererProps>;
+    paneUpdatePredicate: (prevProps: RowsProps, nextProps: RowsProps) => boolean;
 }
 
-export const PanesRenderer: React.FunctionComponent<PanesProps> = props => {
-    const { state, cellRenderer } = props;
+export const PanesRenderer: React.FunctionComponent<PanesProps> = ({ state, cellRenderer, paneUpdatePredicate }) => {
     const cellMatrix = state.cellMatrix;
     const renderTopSticky = shouldRenderTopSticky(state),
         renderMiddleRange = shouldRenderMiddleRange(state),
@@ -48,6 +48,7 @@ export const PanesRenderer: React.FunctionComponent<PanesProps> = props => {
                     range={columnsSlicer(visibleScrollableRange as Range)(state.visibleRange!)}
                     borders={{ right: false, bottom: false }}
                     cellRenderer={cellRenderer}
+                    paneUpdatePredicate={paneUpdatePredicate}
                 />
             </Pane>
             <Pane
@@ -67,6 +68,7 @@ export const PanesRenderer: React.FunctionComponent<PanesProps> = props => {
                     range={rowsSlicer(cellMatrix.ranges.stickyLeftRange)((visibleScrollableRange as Range))}
                     borders={{ bottom: true, right: true }}
                     cellRenderer={cellRenderer}
+                    paneUpdatePredicate={paneUpdatePredicate}
                 />
             </Pane>
             <Pane
@@ -84,6 +86,7 @@ export const PanesRenderer: React.FunctionComponent<PanesProps> = props => {
                     range={columnsSlicer(cellMatrix.ranges.stickyTopRange)((state.visibleRange!))}
                     borders={{ right: false, bottom: false }}
                     cellRenderer={cellRenderer}
+                    paneUpdatePredicate={paneUpdatePredicate}
                 />
             </Pane>
             <Pane
@@ -103,6 +106,7 @@ export const PanesRenderer: React.FunctionComponent<PanesProps> = props => {
                     range={rowsSlicer(cellMatrix.ranges.stickyLeftRange)(cellMatrix.ranges.stickyTopRange)}
                     borders={{ bottom: true, right: true }}
                     cellRenderer={cellRenderer}
+                    paneUpdatePredicate={paneUpdatePredicate}
                 />
             </Pane>
         </>

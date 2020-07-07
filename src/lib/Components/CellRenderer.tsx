@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { State, Borders, Location } from '../Model';
+import { State, Borders, Location, Compatible, Cell } from '../Model';
 import { tryAppendChange } from '../Functions';
 import { getCompatibleCellAndTemplate } from '../Functions/getCompatibleCellAndTemplate';
 
@@ -7,10 +7,16 @@ export interface CellRendererProps {
     state: State;
     location: Location;
     borders: Borders;
+    children?: React.ReactNode;
 }
 
-export const CellRenderer: React.FunctionComponent<CellRendererProps> = props => {
-    const { state, location, children } = props;
+export interface CellRendererChildProps<TState extends State = State> {
+    location?: Location;
+    cell?: Compatible<Cell>;
+    state?: TState;
+}
+
+export const CellRenderer: React.FunctionComponent<CellRendererProps> = ({ state, location, children }) => {
     const { cell, cellTemplate } = getCompatibleCellAndTemplate(state, location);
     const isFocused = state.focusedLocation !== undefined && (state.focusedLocation.column.idx === location.column.idx &&
         state.focusedLocation.row.idx === location.row.idx);
@@ -27,6 +33,12 @@ export const CellRenderer: React.FunctionComponent<CellRendererProps> = props =>
         ...((isFocused || cell.type === 'header') && { touchAction: 'none' }) // prevent scrolling
     };
 
+    const childProps: CellRendererChildProps = {
+        location,
+        cell,
+        state,
+    };
+
     return (
         <div className={`rg-cell rg-${cell.type}-cell ${customClass}`} style={style}
             data-cell-colidx={location.column.idx} data-cell-rowidx={location.row.idx} >
@@ -34,7 +46,9 @@ export const CellRenderer: React.FunctionComponent<CellRendererProps> = props =>
                 if (!commit) throw new Error('commit should be set to true in this case.');
                 state.update(state => tryAppendChange(state, location, cell));
             })}
-            {children}
+            {children && React.Children.toArray(children).map(element => {
+                return React.cloneElement(element as React.ReactElement<any>, childProps)
+            })}
         </div >
     );
 };
