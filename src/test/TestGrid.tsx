@@ -224,8 +224,7 @@ export const TestGrid: React.FunctionComponent<TestGridProps> = (props) => {
                     onCellsChanged={handleChanges}
                     onColumnResized={handleColumnResize}
                     customCellTemplates={{ 'flag': new FlagCellTemplate() }}
-                    highlights={[{ firstColumnId: 'col-0', lastColumnId: 'col-1', firstRowId: 'row-1', lastRowId: 'row-3', borderColor: '#00ff00' },
-                    { firstColumnId: 'col-3', lastColumnId: 'col-5', firstRowId: 'row-6', lastRowId: 'row-9', borderColor: '#00ff00' }]}
+                    highlights={[{ columnId: 'col-1', rowId: 'row-2', borderColor: '#00ff00' }]}
                     stickyLeftColumns={props.enableSticky ? props.config.stickyLeft : undefined}
                     stickyRightColumns={props.enableSticky ? props.config.stickyRight : undefined}
                     stickyTopRows={props.enableSticky ? props.config.stickyTop : undefined}

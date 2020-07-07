@@ -57,10 +57,7 @@ class PaneGridContent extends React.Component<RowsProps> {
 
 function renderHighlights(state: State, range: Range) {
     return state.highlightLocations.map((highlight: Highlight, id: number) => {
-        const location = state.cellMatrix.getLocationById(highlight.firstRowId, highlight.lastColumnId);
-        const first = state.cellMatrix.getLocationById(highlight.firstRowId, highlight.firstColumnId);
-        const second = state.cellMatrix.getLocationById(highlight.lastRowId, highlight.lastColumnId);
-        const range = state.cellMatrix.getRange(first, second);
+        const location = state.cellMatrix.getLocationById(highlight.rowId, highlight.columnId);
         return location && range.contains(location) &&
             <CellFocus key={id} location={location} borderColor={highlight.borderColor} isHighlight />;
     });

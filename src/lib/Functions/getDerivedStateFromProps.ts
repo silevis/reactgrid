@@ -87,7 +87,7 @@ export function appendCellTemplates(props: ReactGridProps, state: State) {
 }
 
 export function appendHighlights(props: ReactGridProps, state: State) {
-    const highlights = props.highlights?.filter(highlight => state.cellMatrix.rowIndexLookup[highlight.firstRowId] && state.cellMatrix.columnIndexLookup[highlight.lastColumnId]);
+    const highlights = props.highlights?.filter(highlight => state.cellMatrix.rowIndexLookup[highlight.rowId] && state.cellMatrix.columnIndexLookup[highlight.columnId]);
     if (highlights?.length !== props.highlights?.length) {
         console.error('Data inconsistency in ReactGrid "highlights" prop');
     }
