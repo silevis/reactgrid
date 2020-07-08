@@ -16,7 +16,7 @@ export const config = {
     minCellWidth: 40,
     fillHandleWidth: 18,
 
-    columns: 6,
+    columns: 30,
     rows: 150,
 
     lineWidth: 1,
