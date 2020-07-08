@@ -1,6 +1,6 @@
 // TODO is necessary to export this file (export only definition)
 export const config = {
-    pinToBody: true,
+    pinToBody: false,
     enableAdditionalContent: false,
     flexRow: false,
 
@@ -9,7 +9,7 @@ export const config = {
     margin: '0',
     enableRangeSelection: true,
     enableFillHandle: true,
-    enableFullWidthHeader: true,
+    enableFullWidthHeader: false,
 
     cellHeight: 25,
     cellWidth: 150,
