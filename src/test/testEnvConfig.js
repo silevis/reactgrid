@@ -9,7 +9,7 @@ export const config = {
     margin: '0',
     enableRangeSelection: true,
     enableFillHandle: true,
-    enableFullWidthTopStickyPane: true,
+    enableFullWidthHeader: true,
 
     cellHeight: 25,
     cellWidth: 150,
