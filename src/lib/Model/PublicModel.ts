@@ -26,7 +26,7 @@ export interface ReactGridProps {
     readonly enableRowSelection?: boolean;
     readonly enableColumnSelection?: boolean;
     readonly labels?: TextLabels;
-    readonly enableFullWidthTopStickyPane?: boolean;
+    readonly enableFullWidthHeader?: boolean;
 
     readonly onCellsChanged?: (cellChanges: CellChange[]) => void;
     readonly onFocusLocationChanged?: (location: CellLocation) => void;

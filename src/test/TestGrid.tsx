@@ -239,7 +239,7 @@ export const TestGrid: React.FunctionComponent<TestGridProps> = (props) => {
                     onFocusLocationChanging={handleFocusLocationChanging}
                     enableRowSelection={props.enableColumnAndRowSelection || false}
                     enableColumnSelection={props.enableColumnAndRowSelection || false}
-                    enableFullWidthTopStickyPane={props.config.enableFullWidthTopStickyPane || false}
+                    enableFullWidthHeader={props.config.enableFullWidthTopStickyPane || false}
                     enableRangeSelection={props.config.enableRangeSelection}
                     enableFillHandle={props.config.enableFillHandle}
                     labels={{
