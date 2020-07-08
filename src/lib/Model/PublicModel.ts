@@ -26,6 +26,7 @@ export interface ReactGridProps {
     readonly enableRowSelection?: boolean;
     readonly enableColumnSelection?: boolean;
     readonly labels?: TextLabels;
+    readonly enableFullWidthHeader?: boolean;
 
     readonly onCellsChanged?: (cellChanges: CellChange[]) => void;
     readonly onFocusLocationChanged?: (location: CellLocation) => void;
@@ -45,9 +46,9 @@ export interface TextLabels {
     copyLabel?: string,
     cutLabel?: string,
     pasteLabel?: string,
-    macOsContextMenuPasteAlert?: string,
+    actionNotSupported?: string;
+    appleMobileDeviceContextMenuPasteAlert?: string,
     otherBrowsersContextMenuPasteAlert?: string,
-    contextMenuPasteAlert?: string
 }
 
 // ASK ARCHITECT BEFORE INTRODUCING ANY CHANGE!

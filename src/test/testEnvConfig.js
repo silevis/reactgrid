@@ -9,6 +9,7 @@ export const config = {
     margin: '0',
     enableRangeSelection: true,
     enableFillHandle: true,
+    enableFullWidthHeader: false,
 
     cellHeight: 25,
     cellWidth: 150,
@@ -22,10 +23,10 @@ export const config = {
 
     stickyTop: 3,
     stickyBottom: 3,
-    stickyLeft: 2,
+    stickyLeft: 1,
     stickyRight: 2,
 
-    firstRowType: 'text'
+    firstRowType: 'header'
 }
 
 if (typeof exports === "object" && typeof module === "object") { // added for backwards compability without ES6 imports

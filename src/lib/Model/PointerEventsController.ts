@@ -1,13 +1,13 @@
 import { State, PointerEvent } from '.';
 import { getLocationFromClient } from '../Functions';
-import { AbstractPointerEventsController, isReadyToHandleEvent } from '../Model/AbstractPointerEventsController';
+import { AbstractPointerEventsController, isReadyToHandleEvent, isOnClickableArea } from '../Model/AbstractPointerEventsController';
 import { DefaultBehavior } from '../Behaviors/DefaultBehavior';
 
 
 export class PointerEventsController extends AbstractPointerEventsController {
 
     public handlePointerDown = (event: PointerEvent, state: State): State => {
-        if (!isReadyToHandleEvent(event))
+        if (!isReadyToHandleEvent(event) || !isOnClickableArea(event, state))
             return state;
         window.addEventListener('pointerup', this.handlePointerUp as any);
         const currentLocation = getLocationFromClient(state, event.clientX, event.clientY);

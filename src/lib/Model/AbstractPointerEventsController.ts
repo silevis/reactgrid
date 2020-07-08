@@ -51,3 +51,12 @@ export function isReadyToHandleEvent(event: PointerEvent): boolean {
     }
     return true;
 }
+
+export function isOnClickableArea(event: PointerEvent, state: State): boolean {
+    const { left } = state.reactGridElement!.getBoundingClientRect();
+    const viewportX = event.clientX - left;
+    if (viewportX > state.cellMatrix.width) {
+        return false;
+    }
+    return true;
+}
