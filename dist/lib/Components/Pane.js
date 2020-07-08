@@ -23,7 +23,6 @@ var __assign = (this && this.__assign) || function () {
     return __assign.apply(this, arguments);
 };
 import * as React from 'react';
-import { Range } from '../Model';
 import { CellFocus } from './CellFocus';
 import { RowRenderer } from './RowRenderer';
 var PaneGridContent = (function (_super) {
@@ -71,11 +70,8 @@ export var Pane = function (props) {
     }
 };
 export var PaneContent = function (props) {
-    var state = props.state, range = props.range, rangeToSlice = props.rangeToSlice, direction = props.direction, borders = props.borders, cellRenderer = props.cellRenderer, children = props.children;
-    if (!(range instanceof Range) || !(rangeToSlice instanceof Range)) {
-        return null;
-    }
-    var calculatedRange = range.slice(rangeToSlice, direction);
+    var state = props.state, range = props.range, borders = props.borders, cellRenderer = props.cellRenderer, children = props.children;
+    var calculatedRange = range();
     var childProps = {
         state: state,
         calculatedRange: calculatedRange

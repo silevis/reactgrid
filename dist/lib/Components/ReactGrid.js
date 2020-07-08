@@ -50,7 +50,7 @@ var ReactGrid = (function (_super) {
         _this.pointerEventsController = new PointerEventsController(_this.stateUpdater);
         _this.eventHandlers = new EventHandlers(_this.stateUpdater, _this.pointerEventsController);
         _this.cellMatrixBuilder = new CellMatrixBuilder();
-        _this.state = __assign({ update: _this.stateUpdater, props: _this.props, cellMatrix: _this.cellMatrixBuilder.setProps(_this.props).fillRowsAndCols().fillSticky().fillScrollableRange()
+        _this.state = __assign({ update: _this.stateUpdater, cellMatrix: _this.cellMatrixBuilder.setProps(_this.props).fillRowsAndCols().fillSticky().fillScrollableRange()
                 .setEdgeLocations().getCellMatrix() }, defaultStateFields);
         return _this;
     }

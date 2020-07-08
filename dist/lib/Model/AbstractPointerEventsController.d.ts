@@ -13,3 +13,4 @@ export declare abstract class AbstractPointerEventsController {
     protected shouldHandleCellSelectionOnMobile(event: PointerEvent, currentLocation: PointerLocation, currentTimestamp: number): boolean;
 }
 export declare function isReadyToHandleEvent(event: PointerEvent): boolean;
+export declare function isOnClickableArea(event: PointerEvent, state: State): boolean;

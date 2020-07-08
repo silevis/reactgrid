@@ -165,6 +165,12 @@
         opacity: $opacity-10;
         z-index: 4;
     }
+    .rg-column-resize-hint {
+        background-color: $resize-hint-bg-color;
+        position: absolute;
+        padding: 5px;
+        border-radius: 0 5px 5px 0;
+    }
     .rg-line {
         position: absolute;
         background-color: $resize-line-color;

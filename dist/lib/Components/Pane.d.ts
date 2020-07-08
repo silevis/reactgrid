@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Range, Borders, State, SliceDirection } from '../Model';
+import { Range, Borders, State } from '../Model';
 import { CellRendererProps } from './CellRenderer';
 export interface PaneProps {
     renderChildren: boolean;
@@ -8,9 +8,7 @@ export interface PaneProps {
 }
 export interface PaneContentProps<TState extends State = State> {
     state: TState;
-    range: Range | boolean;
-    rangeToSlice: Range | boolean;
-    direction: SliceDirection;
+    range: () => Range;
     borders: Borders;
     cellRenderer: React.FunctionComponent<CellRendererProps>;
     children?: React.ReactNode;

@@ -23,14 +23,14 @@ var __assign = (this && this.__assign) || function () {
     return __assign.apply(this, arguments);
 };
 import { getLocationFromClient } from '../Functions';
-import { AbstractPointerEventsController, isReadyToHandleEvent } from '../Model/AbstractPointerEventsController';
+import { AbstractPointerEventsController, isReadyToHandleEvent, isOnClickableArea } from '../Model/AbstractPointerEventsController';
 import { DefaultBehavior } from '../Behaviors/DefaultBehavior';
 var PointerEventsController = (function (_super) {
     __extends(PointerEventsController, _super);
     function PointerEventsController() {
         var _this = _super !== null && _super.apply(this, arguments) || this;
         _this.handlePointerDown = function (event, state) {
-            if (!isReadyToHandleEvent(event))
+            if (!isReadyToHandleEvent(event) || !isOnClickableArea(event, state))
                 return state;
             window.addEventListener('pointerup', _this.handlePointerUp);
             var currentLocation = getLocationFromClient(state, event.clientX, event.clientY);

@@ -9,12 +9,10 @@ export function getLocationFromClient(state, clientX, clientY, favorScrollableCo
     return { row: row, column: column, viewportX: viewportX, viewportY: viewportY, cellX: cellX, cellY: cellY };
 }
 function getRow(state, viewportY, favorScrollableContent) {
-    var result = getStickyTopRow(state, viewportY, favorScrollableContent) || getScrollableContentRow(state, viewportY);
-    return result;
+    return getStickyTopRow(state, viewportY, favorScrollableContent) || getScrollableContentRow(state, viewportY);
 }
 function getColumn(state, viewportX, favorScrollableContent) {
-    var result = getLeftStickyColumn(state, viewportX, favorScrollableContent) || getScrollableContentColumn(state, viewportX);
-    return result;
+    return getLeftStickyColumn(state, viewportX, favorScrollableContent) || getScrollableContentColumn(state, viewportX);
 }
 export function getStickyTopRow(state, viewportY, favorScrollableContent) {
     var cellMatrix = state.cellMatrix;
@@ -32,7 +30,7 @@ export function getLeftStickyColumn(state, viewportX, favorScrollableContent) {
     var scrollLeft = getScrollOfScrollableElement(state.scrollableElement).scrollLeft;
     var left = getReactGridOffsets(state).left;
     var leftStickyOffset = getStickyOffset(scrollLeft, left);
-    if (cellMatrix.ranges.stickyLeftRange.columns.find(function (column) { return column.right > viewportX - leftStickyOffset; }) && viewportX < cellMatrix.ranges.stickyLeftRange.height + leftStickyOffset && !(favorScrollableContent && scrollLeft > left)) {
+    if (cellMatrix.ranges.stickyLeftRange.columns.find(function (column) { return column.right > viewportX - leftStickyOffset; }) && viewportX < cellMatrix.ranges.stickyLeftRange.width + leftStickyOffset && !(favorScrollableContent && scrollLeft > left)) {
         var column = cellMatrix.ranges.stickyLeftRange.columns.find(function (column) { return column.right > viewportX - leftStickyOffset; });
         var cellX = viewportX - column.left;
         return { cellX: cellX, column: column };

@@ -13,11 +13,11 @@ import * as React from 'react';
 import { tryAppendChange } from '../Functions';
 import { getScrollOfScrollableElement, getTopScrollableElement } from './../Functions/scrollHelpers';
 import { getStickyOffset, getReactGridOffsets } from '../Functions/elementSizeHelpers';
-export var CellEditorRenderer = function (props) {
-    var state = props.state, positionCalculator = props.positionCalculator;
+export var CellEditorRenderer = function (_a) {
+    var state = _a.state, positionCalculator = _a.positionCalculator;
     var currentlyEditedCell = state.currentlyEditedCell;
     var location = state.focusedLocation;
-    var _a = React.useReducer(positionCalculator, { state: state, location: location }), position = _a[0], dispatch = _a[1];
+    var _b = React.useReducer(positionCalculator, { state: state, location: location }), position = _b[0], dispatch = _b[1];
     React.useLayoutEffect(function () { return dispatch(); }, []);
     if (!currentlyEditedCell) {
         return null;
@@ -35,8 +35,8 @@ export var CellEditorRenderer = function (props) {
             state.update(function (state) { return tryAppendChange(state, location, cell); });
     }));
 };
-var CellEditor = function (props) {
-    var style = props.style, cellType = props.cellType, children = props.children;
+var CellEditor = function (_a) {
+    var style = _a.style, cellType = _a.cellType, children = _a.children;
     return (React.createElement("div", { className: "rg-celleditor rg-" + cellType + "-celleditor", "data-cy": "rg-celleditor", style: __assign({}, style) }, children));
 };
 var calculatedXAxisOffset = function (location, state) {
@@ -56,12 +56,14 @@ var calculatedYAxisOffset = function (location, state) {
     return 0;
 };
 export function getStickyLeftRangeWidth(cellMatrix, location) {
-    if (location.column.idx > (cellMatrix.ranges.stickyLeftRange.last.column ? cellMatrix.ranges.stickyLeftRange.last.column.idx : cellMatrix.first.column.idx) || location.column.idx === cellMatrix.last.column.idx) {
+    if (location.column.idx > (cellMatrix.ranges.stickyLeftRange.last.column ? cellMatrix.ranges.stickyLeftRange.last.column.idx : cellMatrix.first.column.idx)
+        || (location.column.idx === cellMatrix.last.column.idx && location.column.idx !== cellMatrix.ranges.stickyLeftRange.last.column.idx)) {
         return cellMatrix.ranges.stickyLeftRange.width;
     }
 }
 export function getStickyTopRangeWidth(cellMatrix, location) {
-    if (location.row.idx > (cellMatrix.ranges.stickyTopRange.last.row ? cellMatrix.ranges.stickyTopRange.last.row.idx : cellMatrix.first.row.idx) || location.row.idx === cellMatrix.last.row.idx) {
+    if (location.row.idx > (cellMatrix.ranges.stickyTopRange.last.row ? cellMatrix.ranges.stickyTopRange.last.row.idx : cellMatrix.first.row.idx)
+        || (location.row.idx === cellMatrix.last.row.idx && location.row.idx !== cellMatrix.ranges.stickyTopRange.last.row.idx)) {
         return cellMatrix.ranges.stickyTopRange.height;
     }
 }

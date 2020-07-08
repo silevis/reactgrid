@@ -40,3 +40,11 @@ export function isReadyToHandleEvent(event) {
     }
     return true;
 }
+export function isOnClickableArea(event, state) {
+    var left = state.reactGridElement.getBoundingClientRect().left;
+    var viewportX = event.clientX - left;
+    if (viewportX > state.cellMatrix.width) {
+        return false;
+    }
+    return true;
+}

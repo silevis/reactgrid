@@ -14,8 +14,12 @@ import { defaultCellTemplates } from './defaultCellTemplates';
 import { CellMatrixBuilder } from '../Model/CellMatrixBuilder';
 export function getDerivedStateFromProps(props, state) {
     var stateDeriverWithProps = stateDeriver(props);
+    var hasHighlightsChanged = highlightsHasChanged(props, state);
+    if (hasHighlightsChanged) {
+        state = stateDeriverWithProps(state)(appendHighlights);
+    }
     state = stateDeriverWithProps(state)(updateStateProps);
-    state = stateDeriverWithProps(state)(appendCellTemplatesAndHighlights);
+    state = stateDeriverWithProps(state)(appendCellTemplates);
     var hasChanged = dataHasChanged(props, state);
     if (hasChanged) {
         state = stateDeriverWithProps(state)(updateCellMatrix);
@@ -37,6 +41,7 @@ export var areFocusesDiff = function (props, state) {
 };
 export var stateDeriver = function (props) { return function (state) { return function (fn) { return fn(props, state); }; }; };
 export var dataHasChanged = function (props, state) { return !state.cellMatrix || props !== state.cellMatrix.props; };
+export var highlightsHasChanged = function (props, state) { var _a; return props.highlights !== ((_a = state.props) === null || _a === void 0 ? void 0 : _a.highlights); };
 export function updateStateProps(props, state) {
     if (state.props !== props) {
         state = __assign(__assign({}, state), { props: props });
@@ -60,13 +65,24 @@ function updateVisibleRange(props, state) {
     }
     return state;
 }
-export function appendCellTemplatesAndHighlights(props, state) {
-    var _a;
-    return __assign(__assign({}, state), { highlightLocations: (_a = props.highlights) !== null && _a !== void 0 ? _a : [], cellTemplates: __assign(__assign({}, defaultCellTemplates), props.customCellTemplates) });
+export function appendCellTemplates(props, state) {
+    return __assign(__assign({}, state), { cellTemplates: __assign(__assign({}, defaultCellTemplates), props.customCellTemplates) });
+}
+export function appendHighlights(props, state) {
+    var _a, _b;
+    var highlights = (_a = props.highlights) === null || _a === void 0 ? void 0 : _a.filter(function (highlight) { return state.cellMatrix.rowIndexLookup[highlight.rowId] && state.cellMatrix.columnIndexLookup[highlight.columnId]; });
+    if ((highlights === null || highlights === void 0 ? void 0 : highlights.length) !== ((_b = props.highlights) === null || _b === void 0 ? void 0 : _b.length)) {
+        console.error('Data inconsistency in ReactGrid "highlights" prop');
+    }
+    return __assign(__assign({}, state), { highlightLocations: highlights || [] });
 }
 export function setInitialFocusLocation(props, state) {
     var locationToFocus = props.initialFocusLocation;
     if (locationToFocus && !state.focusedLocation) {
+        if (!state.cellMatrix.columnIndexLookup[locationToFocus.columnId] || !state.cellMatrix.rowIndexLookup[locationToFocus.rowId]) {
+            console.error('Data inconsistency in ReactGrid "initialFocusLocation" prop');
+            return state;
+        }
         return focusLocation(state, state.cellMatrix.getLocationById(locationToFocus.rowId, locationToFocus.columnId));
     }
     return state;
@@ -74,6 +90,10 @@ export function setInitialFocusLocation(props, state) {
 export function setFocusLocation(props, state) {
     var locationToFocus = props.focusLocation;
     if (locationToFocus) {
+        if (!state.cellMatrix.columnIndexLookup[locationToFocus.columnId] || !state.cellMatrix.rowIndexLookup[locationToFocus.rowId]) {
+            console.error('Data inconsistency in ReactGrid "focusLocation" prop');
+            return state;
+        }
         var location_1 = state.cellMatrix.getLocationById(locationToFocus.rowId, locationToFocus.columnId);
         return focusLocation(state, location_1);
     }

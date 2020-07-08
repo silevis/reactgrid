@@ -34,6 +34,7 @@ export * from './Functions/handleKeyDownOnCellTemplate';
 export * from './Functions/scrollIntoView';
 export * from './Functions/recalcVisibleRange';
 export * from './Functions/emptyCell';
+export * from './Functions/rangeSlicer';
 export * from './Functions/handleCopy';
 export * from './Functions/handlePaste';
 export * from './Functions/getDataToCopy';
