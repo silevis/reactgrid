@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Range, State, Borders, Highlight } from '../Model';
+import { Range, State, Highlight } from '../Model';
 import { CellFocus } from './CellFocus';
 import { RowRenderer } from './RowRenderer';
 import { CellRendererProps } from './CellRenderer';
@@ -19,7 +19,6 @@ interface RowsProps {
 export interface PaneContentProps<TState extends State = State> {
     state: TState;
     range: () => Range;
-    // borders: Borders;
     cellRenderer: React.FunctionComponent<CellRendererProps>;
     children?: React.ReactNode;
 }
@@ -48,8 +47,6 @@ class PaneGridContent extends React.Component<RowsProps> {
         return (
             <>
                 {range.rows.map((row) => <RowRenderer key={row.rowId} state={state} row={row} columns={range.columns} forceUpdate={true} cellRenderer={cellRenderer} />)}
-                {/* {range.rows.map((row) => <div key={row.rowId} className="rg-separator-line rg-separator-line-row" style={{ top: row.top, height: row.height, }} />)} */}
-                {/* {range.columns.map((col) => <div key={col.columnId} className="rg-separator-line rg-separator-line-col" style={{ left: col.left, width: col.width }} />)} */}
             </>
         );
     }

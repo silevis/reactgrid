@@ -61,10 +61,6 @@
             padding: $cell-padding;
             outline: none;
             touch-action: auto;
-            // border-top: $cell-border-width $cell-border-color solid;
-            // border-left: $cell-border-width $cell-border-color solid;
-            // border-bottom: $cell-border-width $cell-border-color solid;
-            // border-right: $cell-border-width $cell-border-color solid;
 
             .rg-touch-resize-handle {
                 position: absolute;
@@ -83,24 +79,6 @@
                     width: $resize-handle-line-width;
                     height: 100%;
                 }
-            }
-        }
-        .rg-separator-line {
-            position: absolute;
-            box-sizing: border-box;
-            pointer-events: none;
-            &-row {
-                width: 100%;
-                border-bottom-width: $row-separator-line-width;
-                border-bottom-color: $row-line-color;
-                border-bottom-style: solid;
-            }
-            &-col {
-                height: 100%;
-                top: 0;
-                border-right-width: $col-separator-line-width;
-                border-right-color: $col-line-color;
-                border-right-style: solid;
             }
         }
         .rg-cell-focus {
