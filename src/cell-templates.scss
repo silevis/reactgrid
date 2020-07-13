@@ -13,6 +13,7 @@
     z-index: 5;
     background-color: $cell-editor-gb-color;
     box-shadow: $cell-editor-shadow $cell-shadow-color;
+    display: flex;
     border-style: solid;
     border-color: $cell-editor-border-color;
     border-width: $celleditor-border-width;

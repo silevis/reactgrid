@@ -1,7 +1,7 @@
 // TODO is necessary to export this file (export only definition)
 export const config = {
     pinToBody: false,
-    enableAdditionalContent: false,
+    enableAdditionalContent: true,
     flexRow: false,
 
     rgViewportHeight: 600,

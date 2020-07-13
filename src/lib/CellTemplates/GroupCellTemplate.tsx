@@ -9,7 +9,7 @@ export interface GroupCell extends Cell {
     type: 'group';
     text: string;
     isExpanded?: boolean;
-    hasChildrens?: boolean;
+    hasChildren?: boolean;
     parentId?: Id;
     indent?: number;
 }
@@ -30,14 +30,14 @@ export class GroupCellTemplate implements CellTemplate<GroupCell> {
         } catch {
             indent = 0;
         }
-        let hasChildrens = false;
+        let hasChildren = false;
         try {
-            hasChildrens = getCellProperty(uncertainCell, 'hasChildrens', 'boolean');
+            hasChildren = getCellProperty(uncertainCell, 'hasChildren', 'boolean');
         } catch {
-            hasChildrens = false;
+            hasChildren = false;
         }
         const value = parseFloat(text);
-        return { ...uncertainCell, text, value, isExpanded, hasChildrens, indent };
+        return { ...uncertainCell, text, value, isExpanded, hasChildren: hasChildren, indent };
     }
 
     update(cell: Compatible<GroupCell>, cellToMerge: UncertainCompatible<GroupCell>): Compatible<GroupCell> {
@@ -58,7 +58,7 @@ export class GroupCellTemplate implements CellTemplate<GroupCell> {
     }
 
     getClassName(cell: Compatible<GroupCell>, isInEditMode: boolean) {
-        const isExpanded = cell.hasChildrens ? cell.isExpanded ? 'expanded' : 'collapsed' : '';
+        const isExpanded = cell.hasChildren ? cell.isExpanded ? 'expanded' : 'collapsed' : '';
         const className = cell.className ?? '';
         return `${isExpanded} ${className}`;
     }
@@ -73,7 +73,7 @@ export class GroupCellTemplate implements CellTemplate<GroupCell> {
         return (
             !isInEditMode ?
                 <>
-                    {cell.hasChildrens ?
+                    {cell.hasChildren ?
                         <div
                             className='chevron'
                             onPointerDown={e => {
