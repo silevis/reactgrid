@@ -4,7 +4,7 @@ export interface GroupCell extends Cell {
     type: 'group';
     text: string;
     isExpanded?: boolean;
-    hasChildrens?: boolean;
+    hasChildren?: boolean;
     parentId?: Id;
     indent?: number;
 }

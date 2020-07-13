@@ -33,15 +33,15 @@ var GroupCellTemplate = (function () {
         catch (_b) {
             indent = 0;
         }
-        var hasChildrens = false;
+        var hasChildren = false;
         try {
-            hasChildrens = getCellProperty(uncertainCell, 'hasChildrens', 'boolean');
+            hasChildren = getCellProperty(uncertainCell, 'hasChildren', 'boolean');
         }
         catch (_c) {
-            hasChildrens = false;
+            hasChildren = false;
         }
         var value = parseFloat(text);
-        return __assign(__assign({}, uncertainCell), { text: text, value: value, isExpanded: isExpanded, hasChildrens: hasChildrens, indent: indent });
+        return __assign(__assign({}, uncertainCell), { text: text, value: value, isExpanded: isExpanded, hasChildren: hasChildren, indent: indent });
     };
     GroupCellTemplate.prototype.update = function (cell, cellToMerge) {
         return this.getCompatibleCell(__assign(__assign({}, cell), { isExpanded: cellToMerge.isExpanded, text: cellToMerge.text }));
@@ -61,7 +61,7 @@ var GroupCellTemplate = (function () {
     };
     GroupCellTemplate.prototype.getClassName = function (cell, isInEditMode) {
         var _a;
-        var isExpanded = cell.hasChildrens ? cell.isExpanded ? 'expanded' : 'collapsed' : '';
+        var isExpanded = cell.hasChildren ? cell.isExpanded ? 'expanded' : 'collapsed' : '';
         var className = (_a = cell.className) !== null && _a !== void 0 ? _a : '';
         return isExpanded + " " + className;
     };
@@ -75,7 +75,7 @@ var GroupCellTemplate = (function () {
         var _this = this;
         return (!isInEditMode ?
             React.createElement(React.Fragment, null,
-                cell.hasChildrens ?
+                cell.hasChildren ?
                     React.createElement("div", { className: 'chevron', onPointerDown: function (e) {
                             e.stopPropagation();
                             onCellChanged(_this.getCompatibleCell(__assign(__assign({}, cell), { isExpanded: !cell.isExpanded })), true);

@@ -53,7 +53,7 @@ export var TestGrid = function (props) {
                     var now = new Date();
                     switch (ci) {
                         case 0:
-                            return { type: 'group', text: ri + " - " + ci, parentId: ri, isExpanded: ri % 4 && undefined, hasChildrens: true };
+                            return { type: 'group', text: ri + " - " + ci, parentId: ri, isExpanded: ri % 4 && undefined, hasChildren: true };
                         case 1:
                             return { type: 'text', text: ri + " - " + ci };
                         case 2:
