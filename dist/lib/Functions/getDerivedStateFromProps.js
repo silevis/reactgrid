@@ -70,7 +70,8 @@ export function appendCellTemplates(props, state) {
 }
 export function appendHighlights(props, state) {
     var _a, _b;
-    var highlights = (_a = props.highlights) === null || _a === void 0 ? void 0 : _a.filter(function (highlight) { return state.cellMatrix.rowIndexLookup[highlight.rowId] && state.cellMatrix.columnIndexLookup[highlight.columnId]; });
+    var highlights = (_a = props.highlights) === null || _a === void 0 ? void 0 : _a.filter(function (highlight) { return state.cellMatrix.rowIndexLookup[highlight.rowId] !== undefined &&
+        state.cellMatrix.columnIndexLookup[highlight.columnId] !== undefined; });
     if ((highlights === null || highlights === void 0 ? void 0 : highlights.length) !== ((_b = props.highlights) === null || _b === void 0 ? void 0 : _b.length)) {
         console.error('Data inconsistency in ReactGrid "highlights" prop');
     }
@@ -79,7 +80,7 @@ export function appendHighlights(props, state) {
 export function setInitialFocusLocation(props, state) {
     var locationToFocus = props.initialFocusLocation;
     if (locationToFocus && !state.focusedLocation) {
-        if (!state.cellMatrix.columnIndexLookup[locationToFocus.columnId] || !state.cellMatrix.rowIndexLookup[locationToFocus.rowId]) {
+        if (!(state.cellMatrix.columnIndexLookup[locationToFocus.columnId] !== undefined) || !(state.cellMatrix.rowIndexLookup[locationToFocus.rowId] !== undefined)) {
             console.error('Data inconsistency in ReactGrid "initialFocusLocation" prop');
             return state;
         }
@@ -90,7 +91,7 @@ export function setInitialFocusLocation(props, state) {
 export function setFocusLocation(props, state) {
     var locationToFocus = props.focusLocation;
     if (locationToFocus) {
-        if (!state.cellMatrix.columnIndexLookup[locationToFocus.columnId] || !state.cellMatrix.rowIndexLookup[locationToFocus.rowId]) {
+        if (!(state.cellMatrix.columnIndexLookup[locationToFocus.columnId] !== undefined) || !(state.cellMatrix.rowIndexLookup[locationToFocus.rowId] !== undefined)) {
             console.error('Data inconsistency in ReactGrid "focusLocation" prop');
             return state;
         }
