@@ -56,14 +56,16 @@ var calculatedYAxisOffset = function (location, state) {
     return 0;
 };
 export function getStickyLeftRangeWidth(cellMatrix, location) {
+    var _a;
     if (location.column.idx > (cellMatrix.ranges.stickyLeftRange.last.column ? cellMatrix.ranges.stickyLeftRange.last.column.idx : cellMatrix.first.column.idx)
-        || (location.column.idx === cellMatrix.last.column.idx && location.column.idx !== cellMatrix.ranges.stickyLeftRange.last.column.idx)) {
+        || (location.column.idx === cellMatrix.last.column.idx && location.column.idx !== ((_a = cellMatrix.ranges.stickyLeftRange.last.column) === null || _a === void 0 ? void 0 : _a.idx))) {
         return cellMatrix.ranges.stickyLeftRange.width;
     }
 }
 export function getStickyTopRangeWidth(cellMatrix, location) {
+    var _a;
     if (location.row.idx > (cellMatrix.ranges.stickyTopRange.last.row ? cellMatrix.ranges.stickyTopRange.last.row.idx : cellMatrix.first.row.idx)
-        || (location.row.idx === cellMatrix.last.row.idx && location.row.idx !== cellMatrix.ranges.stickyTopRange.last.row.idx)) {
+        || (location.row.idx === cellMatrix.last.row.idx && location.row.idx !== ((_a = cellMatrix.ranges.stickyTopRange.last.row) === null || _a === void 0 ? void 0 : _a.idx))) {
         return cellMatrix.ranges.stickyTopRange.height;
     }
 }
