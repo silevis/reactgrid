@@ -89,7 +89,7 @@ const calculatedYAxisOffset = (location: Location, state: State): number => {
 
 export function getStickyLeftRangeWidth(cellMatrix: CellMatrix, location: Location): number | undefined {
     if (location.column.idx > (cellMatrix.ranges.stickyLeftRange.last.column ? cellMatrix.ranges.stickyLeftRange.last.column.idx : cellMatrix.first.column.idx)
-        || (location.column.idx === cellMatrix.last.column.idx && location.column.idx !== cellMatrix.ranges.stickyLeftRange.last.column.idx)
+        || (location.column.idx === cellMatrix.last.column.idx && location.column.idx !== cellMatrix.ranges.stickyLeftRange.last.column?.idx)
     ) {
         return cellMatrix.ranges.stickyLeftRange.width;
     }
@@ -97,7 +97,7 @@ export function getStickyLeftRangeWidth(cellMatrix: CellMatrix, location: Locati
 
 export function getStickyTopRangeWidth(cellMatrix: CellMatrix, location: Location): number | undefined {
     if (location.row.idx > (cellMatrix.ranges.stickyTopRange.last.row ? cellMatrix.ranges.stickyTopRange.last.row.idx : cellMatrix.first.row.idx)
-        || (location.row.idx === cellMatrix.last.row.idx && location.row.idx !== cellMatrix.ranges.stickyTopRange.last.row.idx)
+        || (location.row.idx === cellMatrix.last.row.idx && location.row.idx !== cellMatrix.ranges.stickyTopRange.last.row?.idx)
     ) {
         return cellMatrix.ranges.stickyTopRange.height;
     }
