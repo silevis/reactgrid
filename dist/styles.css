@@ -42,6 +42,7 @@
   pointer-events: auto;
   display: flex;
   justify-content: center;
+  align-items: center;
   font-weight: bold;
   margin-right: 0.1em;
   cursor: pointer;
