@@ -22,7 +22,7 @@ import { ReactGrid } from "@silevis/reactgrid";
 
 ### Import css styles
 
-Import file from `node_modules` directory. This file is necessary to correctly displaying.
+Import basic CSS styles. This file is necessary to correctly display.
 
 ```tsx
 import "@silevis/reactgrid/styles.css";
@@ -31,7 +31,7 @@ import "@silevis/reactgrid/styles.css";
 ### Create a cell matrix
 
 Time to define our data. It will be stored in [React Hook](https://reactjs.org/docs/hooks-intro.html). 
-`useState` hook will be initialized with object that contains two keys - `columns` and `rows`. 
+`useState` hook will be initialized with an object that contains two keys - `columns` and `rows`. 
 Both of them must be valid ReactGrid objects: `Columns` `Rows`.
 
 ```tsx
@@ -86,7 +86,7 @@ function App() {
 
 ### Handling changes
 
-To be able to change any value inside grid you have to implement your own handler. There is a basic handler code:
+To be able to change any value inside the grid you have to implement your own handler. There is a basic handler code:
 
 ```ts
 const handleChanges = (changes: CellChange[]) => {
@@ -120,10 +120,11 @@ Browse docs: [here](http://reactgrid.com/docs/)
 
 # Licensing
 
-ReactGrid is available in two versions, [MIT](https://github.com/silevis/reactgrid/blob/develop/LICENSE) which serve the 
-full interface but is limited in functionality and PRO which is fully functional and paid version. 
+ReactGrid is available in two versions, [MIT](https://github.com/silevis/reactgrid/blob/develop/LICENSE) (this package) which serve 
+the full interface but is limited in functionality and PRO which is fully functional version. You can compare versions
+[here](http://reactgrid.com/feature-comparison/).
 
-(c) 2020 Silevis Software
+(c) 2020 Silevis Software Sp. z o.o.
 
 # Author
 
