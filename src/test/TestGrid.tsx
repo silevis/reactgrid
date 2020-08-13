@@ -243,7 +243,9 @@ export const TestGrid: React.FunctionComponent<TestGridProps> = (props) => {
                     enableRangeSelection={props.config.enableRangeSelection}
                     enableFillHandle={props.config.enableFillHandle}
                     labels={{
-
+                        copyLabel: 'Copy me!',
+                        pasteLabel: 'Paste me!',
+                        cutLabel: 'Cut me!',
                     }}
                 />
                 {props.config.enableAdditionalContent &&
