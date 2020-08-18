@@ -4,7 +4,7 @@ $bg-color:                          #ffffff !default;
 $sticky-bg-color:                   #ffffff !default;
 $shadow-color:                      #000000 !default;
 $resize-line-color:                 #74b9ff !default;
-$resize-hint-bg-color:                 $resize-line-color !default;
+$resize-hint-bg-color:              $resize-line-color !default;
 $resize-handle-gb-color:            $primary-color !default;
 $row-line-color:                    #e5e5e5 !default;
 $col-line-color:                    #e5e5e5 !default;
@@ -20,8 +20,8 @@ $checkbox-mark:                     #ffffff !default;
 
 // SHADOWS
 $shadow-blur-radius:    7px !default; 
-$shadow-spread-radius:  -2px !default; 
-$shadow-length:         0px !default; 
+$shadow-spread-radius:  -3px !default; 
+$shadow-length:         3px !default; 
 $cell-editor-shadow:    1px 1px 6px !default;
 
 // CONTEXT MENU

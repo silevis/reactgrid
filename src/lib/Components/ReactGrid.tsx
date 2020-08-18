@@ -12,9 +12,12 @@ import { CellEditorRenderer, cellEditorCalculator } from './CellEditor';
 import { CellRenderer, } from './CellRenderer';
 import { notifyAboutReactGridPro } from '../Functions/notifyAboutReactGridPro';
 import { paneUpdatePredicate } from '../Functions/paneUpdatePredicate';
+import { handleStateUpdate } from '../Functions/handleStateUpdate';
+
 
 export class ReactGrid extends React.Component<ReactGridProps, State> {
-    private stateUpdater: StateUpdater = modifier => this.handleStateUpdate(modifier(this.state));
+    private updateState = (state: State) => this.setState(state);
+    private stateUpdater: StateUpdater = modifier => handleStateUpdate(modifier(this.state), this.state, this.props, this.updateState);
     private pointerEventsController = new PointerEventsController(this.stateUpdater);
     private eventHandlers: EventHandlers = new EventHandlers(this.stateUpdater, this.pointerEventsController);
     private cellMatrixBuilder = new CellMatrixBuilder();
@@ -57,17 +60,4 @@ export class ReactGrid extends React.Component<ReactGridProps, State> {
         }
     }
 
-    // TODO create function
-    private handleStateUpdate(newState: State) {
-        const changes = [...newState.queuedCellChanges];
-        if (changes.length > 0) {
-            if (this.props.onCellsChanged) {
-                this.props.onCellsChanged([...changes]);
-            };
-            changes.forEach(() => newState.queuedCellChanges.pop());
-        }
-        if (newState !== this.state) {
-            this.setState(newState);
-        }
-    }
 };

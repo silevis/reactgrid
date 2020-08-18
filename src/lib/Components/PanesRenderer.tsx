@@ -38,7 +38,9 @@ export const PanesRenderer: React.FunctionComponent<PanesProps> = ({ state, cell
                 className={'rg-pane-center-middle'}
                 style={{
                     position: 'relative',
-                    width: cellMatrix.scrollableRange.width,
+                    width: state.props?.enableFullWidthHeader
+                        ? `calc(100% - ${cellMatrix.ranges.stickyLeftRange.width}px)`
+                        : cellMatrix.scrollableRange.width,
                     height: (areOnlyStickyRows || areOnlyStickyCols) ? 0 : cellMatrix.scrollableRange.height,
                     order: 3,
                 }}
@@ -75,7 +77,9 @@ export const PanesRenderer: React.FunctionComponent<PanesProps> = ({ state, cell
                 renderChildren={renderTopSticky && renderCenterRange}
                 className={'rg-pane-top'}
                 style={{
-                    width: areOnlyStickyRows && areOnlyStickyCols ? 0 : cellMatrix.scrollableRange.width,
+                    width: state.props?.enableFullWidthHeader
+                        ? `calc(100% - ${cellMatrix.ranges.stickyLeftRange.width}px)`
+                        : areOnlyStickyRows && areOnlyStickyCols ? 0 : cellMatrix.scrollableRange.width,
                     height: cellMatrix.ranges.stickyTopRange.height,
                     order: 1,
                     ...(isBrowserFirefox() && { zIndex: 1 })

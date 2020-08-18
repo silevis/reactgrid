@@ -20,6 +20,7 @@ interface TestGridProps {
     containerMargin?: number;
     enableSticky?: boolean;
     enableColumnAndRowSelection?: boolean;
+    enableFullWidthHeader?: boolean;
     isPro?: boolean;
     config: Config;
     component: React.ComponentClass<ReactGridProps>;
@@ -219,12 +220,12 @@ export const TestGrid: React.FunctionComponent<TestGridProps> = (props) => {
                 <Component
                     rows={state.rows}
                     columns={state.columns}
-                    initialFocusLocation={{ columnId: 'col-2', rowId: 'row-2' }}
+                    initialFocusLocation={{ columnId: 'col-1', rowId: 'row-2' }}
                     // focusLocation={{ columnId: 'col-1', rowId: 'row-3' }}
                     onCellsChanged={handleChanges}
                     onColumnResized={handleColumnResize}
                     customCellTemplates={{ 'flag': new FlagCellTemplate() }}
-                    highlights={[{ columnId: 'col-1', rowId: 'row-1', borderColor: '#00ff00' }]}
+                    highlights={[{ columnId: 'col-1', rowId: 'row-1', borderColor: '#00ff00' }, { columnId: 'col-0', rowId: 'row-1', borderColor: 'red' }]}
                     stickyLeftColumns={props.enableSticky ? props.config.stickyLeft : undefined}
                     stickyRightColumns={props.enableSticky ? props.config.stickyRight : undefined}
                     stickyTopRows={props.enableSticky ? props.config.stickyTop : undefined}
@@ -238,10 +239,13 @@ export const TestGrid: React.FunctionComponent<TestGridProps> = (props) => {
                     onFocusLocationChanging={handleFocusLocationChanging}
                     enableRowSelection={props.enableColumnAndRowSelection || false}
                     enableColumnSelection={props.enableColumnAndRowSelection || false}
+                    enableFullWidthHeader={props.config.enableFullWidthHeader || false}
                     enableRangeSelection={props.config.enableRangeSelection}
                     enableFillHandle={props.config.enableFillHandle}
                     labels={{
-
+                        copyLabel: 'Copy me!',
+                        pasteLabel: 'Paste me!',
+                        cutLabel: 'Cut me!',
                     }}
                 />
                 {props.config.enableAdditionalContent &&

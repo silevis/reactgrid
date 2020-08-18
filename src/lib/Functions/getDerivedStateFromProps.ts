@@ -87,7 +87,9 @@ export function appendCellTemplates(props: ReactGridProps, state: State) {
 }
 
 export function appendHighlights(props: ReactGridProps, state: State) {
-    const highlights = props.highlights?.filter(highlight => state.cellMatrix.rowIndexLookup[highlight.rowId] && state.cellMatrix.columnIndexLookup[highlight.columnId]);
+    const highlights = props.highlights?.filter(highlight => state.cellMatrix.rowIndexLookup[highlight.rowId] !== undefined &&
+        state.cellMatrix.columnIndexLookup[highlight.columnId] !== undefined
+    );
     if (highlights?.length !== props.highlights?.length) {
         console.error('Data inconsistency in ReactGrid "highlights" prop');
     }
@@ -100,7 +102,7 @@ export function appendHighlights(props: ReactGridProps, state: State) {
 export function setInitialFocusLocation(props: ReactGridProps, state: State): State {
     const locationToFocus = props.initialFocusLocation;
     if (locationToFocus && !state.focusedLocation) {
-        if (!state.cellMatrix.columnIndexLookup[locationToFocus.columnId] || !state.cellMatrix.rowIndexLookup[locationToFocus.rowId]) {
+        if (!(state.cellMatrix.columnIndexLookup[locationToFocus.columnId] !== undefined) || !(state.cellMatrix.rowIndexLookup[locationToFocus.rowId] !== undefined)) {
             console.error('Data inconsistency in ReactGrid "initialFocusLocation" prop');
             return state;
         }
@@ -112,7 +114,7 @@ export function setInitialFocusLocation(props: ReactGridProps, state: State): St
 export function setFocusLocation(props: ReactGridProps, state: State): State {
     const locationToFocus = props.focusLocation;
     if (locationToFocus) {
-        if (!state.cellMatrix.columnIndexLookup[locationToFocus.columnId] || !state.cellMatrix.rowIndexLookup[locationToFocus.rowId]) {
+        if (!(state.cellMatrix.columnIndexLookup[locationToFocus.columnId] !== undefined) || !(state.cellMatrix.rowIndexLookup[locationToFocus.rowId] !== undefined)) {
             console.error('Data inconsistency in ReactGrid "focusLocation" prop');
             return state;
         }
