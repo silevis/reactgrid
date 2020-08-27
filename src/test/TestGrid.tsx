@@ -106,10 +106,11 @@ export const TestGrid: React.FunctionComponent<TestGridProps> = (props) => {
         });
     };
 
-    const handleChanges = (changes: CellChange<DefaultCellTypes | FlagCell>[]) => setState(st => {
+    const handleChanges = (changes: CellChange<DefaultCellTypes | FlagCell>[]) => {
+        const newState = { ...state };
         changes.forEach(change => {
-            const changeRowIdx = st.rows.findIndex(el => el.rowId === change.rowId);
-            const changeColumnIdx = st.columns.findIndex(el => el.columnId === change.columnId);
+            const changeRowIdx = newState.rows.findIndex(el => el.rowId === change.rowId);
+            const changeColumnIdx = newState.columns.findIndex(el => el.columnId === change.columnId);
             if (change.type === 'flag') {
                 // console.log(change.newCell.text);
             }
@@ -119,10 +120,10 @@ export const TestGrid: React.FunctionComponent<TestGridProps> = (props) => {
             if (change.type === 'checkbox') {
                 // console.log(change.initialCell.checked);
             }
-            st.rows[changeRowIdx].cells[changeColumnIdx] = change.newCell;
+            newState.rows[changeRowIdx].cells[changeColumnIdx] = change.newCell;
         });
-        return st;
-    });
+        setState(newState);
+    };
 
     const reorderArray = <T extends {}>(arr: T[], idxs: number[], to: number) => {
         const movedElements: T[] = arr.filter((_: T, idx: number) => idxs.includes(idx));
