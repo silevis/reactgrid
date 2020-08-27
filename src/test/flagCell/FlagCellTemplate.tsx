@@ -33,7 +33,7 @@ export class FlagCellTemplate implements CellTemplate<FlagCell> {
             const flagISO = cell.text.toLowerCase(); // ISO 3166-1, 2/3 letters
             const flagURL = `https://restcountries.eu/data/${flagISO}.svg`;
             return <div
-                className="rg-flag-wrapper"
+                className='rg-flag-wrapper'
                 style={{
                     backgroundImage: 'url("' + flagURL + '"), url("https://upload.wikimedia.org/wikipedia/commons/0/04/Nuvola_unknown_flag.svg")',
                 }} />

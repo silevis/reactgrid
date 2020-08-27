@@ -43,8 +43,8 @@ class PaneGridContent extends React.Component<RowsProps> {
             <>
                 {range.rows.map((row) => <RowRenderer key={row.rowId} state={state} row={row} columns={range.columns} forceUpdate={true} cellRenderer={cellRenderer}
                     borders={{ ...borders, top: borders.top && row.top === 0, bottom: borders.bottom && row.idx === range.last.row.idx }} />)}
-                {range.rows.map((row) => <div key={row.rowId} className="rg-separator-line rg-separator-line-row" style={{ top: row.top, height: row.height, }} />)}
-                {range.columns.map((col) => <div key={col.columnId} className="rg-separator-line rg-separator-line-col" style={{ left: col.left, width: col.width }} />)}
+                {range.rows.map((row) => <div key={row.rowId} className='rg-separator-line rg-separator-line-row' style={{ top: row.top, height: row.height, }} />)}
+                {range.columns.map((col) => <div key={col.columnId} className='rg-separator-line rg-separator-line-col' style={{ left: col.left, width: col.width }} />)}
             </>
         );
     }
@@ -68,7 +68,7 @@ export const Pane: React.FunctionComponent<PaneProps> = props => {
 };
 
 export const PaneContent: React.FunctionComponent<PaneContentProps<State>> = props => {
-    const { state, range, borders, cellRenderer, paneUpdatePredicate: shouldPaneGridContentUpdate, children } = props;
+    const { state, range, borders, cellRenderer, paneUpdatePredicate, children } = props;
 
     const calculatedRange = range();
 
@@ -79,7 +79,7 @@ export const PaneContent: React.FunctionComponent<PaneContentProps<State>> = pro
     return (
         <>
             <PaneGridContent state={state} range={calculatedRange} borders={borders} cellRenderer={cellRenderer}
-                paneUpdatePredicate={shouldPaneGridContentUpdate} />
+                paneUpdatePredicate={paneUpdatePredicate} />
             {renderHighlights(state, calculatedRange)}
             {state.focusedLocation && calculatedRange.contains(state.focusedLocation) &&
                 <CellFocus location={state.focusedLocation} />}

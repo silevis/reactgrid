@@ -58,7 +58,7 @@ const CellEditor: React.FunctionComponent<CellEditorProps> = ({ style, cellType,
     return (
         <div
             className={`rg-celleditor rg-${cellType}-celleditor`}
-            data-cy="rg-celleditor"
+            data-cy='rg-celleditor'
             style={{
                 ...style
                 //...customStyle,

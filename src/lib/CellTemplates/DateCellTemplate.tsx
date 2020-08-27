@@ -48,7 +48,7 @@ export class DateCellTemplate implements CellTemplate<DateCell> {
             ref={input => {
                 if (input) input.focus();
             }}
-            type="date"
+            type='date'
             defaultValue={`${year}-${month}-${day}`}
             onChange={e => {
                 const timestamp = getTimestamp(e.currentTarget.value, '');

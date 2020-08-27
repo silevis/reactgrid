@@ -1,5 +1,5 @@
-import { State, Behavior, KeyboardEvent, ClipboardEvent, PointerEvent, Location, PointerLocation } from "../Model";
-import { handleKeyDown } from "../Functions/handleKeyDown";
+import { State, Behavior, KeyboardEvent, ClipboardEvent, PointerEvent, Location, PointerLocation } from '../Model';
+import { handleKeyDown } from '../Functions/handleKeyDown';
 import { CellSelectionBehavior } from './CellSelectionBehavior';
 import { handlePaste } from '../Functions/handlePaste';
 import { handleCopy } from '../Functions/handleCopy';

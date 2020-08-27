@@ -53,7 +53,7 @@ export class TimeCellTemplate implements CellTemplate<TimeCell> {
             ref={input => {
                 if (input) input.focus();
             }}
-            type="time"
+            type='time'
             defaultValue={`${hours}:${minutes}`}
             onChange={e => {
                 const timestamp = getTimestamp(e.currentTarget.value);

@@ -17,7 +17,7 @@ export const GridRenderer: React.FunctionComponent<GridRendererProps> = props =>
             ref={eventHandlers.reactgridRefHandler}
         >
             <div
-                className="reactgrid-content"
+                className='reactgrid-content'
                 onKeyDown={eventHandlers.keyDownHandler}
                 onKeyUp={eventHandlers.keyUpHandler}
                 onPointerDown={eventHandlers.pointerDownHandler}
@@ -25,7 +25,7 @@ export const GridRenderer: React.FunctionComponent<GridRendererProps> = props =>
                 onPaste={eventHandlers.pasteHandler}
                 onCopy={eventHandlers.copyHandler}
                 onCut={eventHandlers.cutHandler}
-                data-cy="reactgrid-content"
+                data-cy='reactgrid-content'
                 style={{
                     width: props.state.props?.enableFullWidthHeader ? '100%' : cellMatrix.width,
                     height: cellMatrix.height,
