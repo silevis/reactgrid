@@ -13,15 +13,16 @@ export function handlePaste(event: ClipboardEvent, state: State) {
     // TODO Do we need selection mode here ?
     //const selectionMode = parsedData.body.firstElementChild && parsedData.body.firstElementChild.getAttribute('data-selection') as SelectionMode;
     // TODO quite insecure! maybe do some checks ?
-    const hasReactGridAttribute = document.body.firstElementChild!.getAttribute('data-reactgrid') === 'reactgrid-content';
+    const hasReactGridAttribute = document.body.firstElementChild?.getAttribute('data-reactgrid') === 'reactgrid-content';
     if (hasReactGridAttribute) {
         const tableRows = document.body.firstElementChild!.firstElementChild!.children;
         const rawData = tableRows[0].children[0].getAttribute('data-reactgrid');
         const data = rawData && JSON.parse(rawData);
-        pastedCell = data ? data : { type: 'text', text: tableRows[0].children[0].innerHTML, value: parseFloat(tableRows[0].children[0].innerHTML) }
+        const text = tableRows[0].children[0].innerHTML;
+        pastedCell = data ? data : { type: 'text', text, value: parseFloat(text) };
     } else {
         const text = event.clipboardData.getData('text/plain');
-        pastedCell = { type: 'text', text, value: parseFloat(text) }
+        pastedCell = { type: 'text', text, value: parseFloat(text) };
     }
     event.preventDefault();
     return { ...pasteData(state, activeSelectedRange, pastedCell) };

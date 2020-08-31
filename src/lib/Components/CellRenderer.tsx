@@ -40,9 +40,6 @@ export const CellRenderer: React.FunctionComponent<CellRendererProps> = ({ state
                 if (!commit) throw new Error('commit should be set to true in this case.');
                 state.update(state => tryAppendChange(state, location, cell));
             })}
-            {/* {children && React.Children.toArray(children).map(element => {
-                return React.cloneElement(element as React.ReactElement<any>, childProps)
-            })} */}
             {cell?.groupId !== undefined && <span className='rg-groupId'>
                 {cell.groupId}
             </span>}
