@@ -34,8 +34,8 @@ export const CellRenderer: React.FunctionComponent<CellRendererProps> = ({ state
     };
 
     return (
-        <div className={`rg-cell rg-${cell.type}-cell ${cell.groupId && `rg-groupId-${cell.groupId}`} ${customClass}`} style={style}
-            data-cell-colidx={location.column.idx} data-cell-rowidx={location.row.idx} >
+        <div className={`rg-cell rg-${cell.type}-cell ${cell.groupId ? `rg-groupId-${cell.groupId}` : ''} ${customClass}`}
+            style={style} data-cell-colidx={location.column.idx} data-cell-rowidx={location.row.idx} >
             {cellTemplate.render(cell, false, (cell, commit) => {
                 if (!commit) throw new Error('commit should be set to true in this case.');
                 state.update(state => tryAppendChange(state, location, cell));
@@ -43,7 +43,7 @@ export const CellRenderer: React.FunctionComponent<CellRendererProps> = ({ state
             {/* {children && React.Children.toArray(children).map(element => {
                 return React.cloneElement(element as React.ReactElement<any>, childProps)
             })} */}
-            {cell?.groupId !== undefined && <span className={`rg-groupId`}>
+            {cell?.groupId !== undefined && <span className='rg-groupId'>
                 {cell.groupId}
             </span>}
             {children}

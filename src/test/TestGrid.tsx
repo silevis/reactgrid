@@ -49,9 +49,9 @@ export const TestGrid: React.FunctionComponent<TestGridProps> = (props) => {
                     const now = new Date();
                     switch (ci) {
                         case 0:
-                            return { type: 'group', groupId: !(ri % 3) && 'A', text: `${ri} - ${ci}`, parentId: ri, isExpanded: ri % 4 && undefined, hasChildren: true } as GroupCell
+                            return { type: 'group', groupId: !(ri % 3) ? 'A' : undefined, text: `${ri} - ${ci}`, parentId: ri, isExpanded: ri % 4 && undefined, hasChildren: true } as GroupCell
                         case 1:
-                            return { type: 'text', groupId: !(ri % 3) && 'B', text: `${ri} - ${ci}` }
+                            return { type: 'text', groupId: !(ri % 3) ? 'B' : undefined, text: `${ri} - ${ci}` }
                         case 2:
                             return { type: 'email', groupId: Math.random() < .66 ? Math.random() < .5 ? 'A' : 'B' : undefined, text: `${ri}.${ci}@bing.pl`, validator: emailValidator }
                         case 3:
