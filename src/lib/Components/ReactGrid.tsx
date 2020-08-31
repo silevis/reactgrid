@@ -11,7 +11,6 @@ import { LegacyBrowserGridRenderer } from './LegacyBrowserGridRenderer';
 import { CellEditorRenderer, cellEditorCalculator } from './CellEditor';
 import { CellRenderer, } from './CellRenderer';
 import { notifyAboutReactGridPro } from '../Functions/notifyAboutReactGridPro';
-import { paneUpdatePredicate } from '../Functions/paneUpdatePredicate';
 import { handleStateUpdate } from '../Functions/handleStateUpdate';
 
 
@@ -53,7 +52,7 @@ export class ReactGrid extends React.Component<ReactGridProps, State> {
         } else {
             return (
                 <GridRenderer state={state} eventHandlers={eventHandlers}>
-                    <PanesRenderer state={state} cellRenderer={CellRenderer} paneUpdatePredicate={paneUpdatePredicate} />
+                    <PanesRenderer state={state} cellRenderer={CellRenderer} />
                     {state.currentlyEditedCell && <CellEditorRenderer state={state} positionCalculator={cellEditorCalculator} />}
                 </GridRenderer>
             )

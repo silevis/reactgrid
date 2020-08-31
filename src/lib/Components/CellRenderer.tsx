@@ -33,12 +33,6 @@ export const CellRenderer: React.FunctionComponent<CellRendererProps> = ({ state
         ...((isFocused || cell.type === 'header') && { touchAction: 'none' }) // prevent scrolling
     };
 
-    const childProps: CellRendererChildProps = {
-        location,
-        cell,
-        state,
-    };
-
     return (
         <div className={`rg-cell rg-${cell.type}-cell ${customClass}`} style={style}
             data-cell-colidx={location.column.idx} data-cell-rowidx={location.row.idx} >
@@ -46,9 +40,13 @@ export const CellRenderer: React.FunctionComponent<CellRendererProps> = ({ state
                 if (!commit) throw new Error('commit should be set to true in this case.');
                 state.update(state => tryAppendChange(state, location, cell));
             })}
-            {children && React.Children.toArray(children).map(element => {
+            {/* {children && React.Children.toArray(children).map(element => {
                 return React.cloneElement(element as React.ReactElement<any>, childProps)
-            })}
+            })} */}
+            {cell?.groupId && <span className={`rg-groupId rg-groupId-${cell.groupId}`}>
+                {cell.groupId}
+            </span>}
+            {children}
         </div >
     );
 };

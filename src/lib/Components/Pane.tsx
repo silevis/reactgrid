@@ -14,7 +14,6 @@ export interface RowsProps {
     state: State;
     range: Range;
     borders: Borders;
-    paneUpdatePredicate: (prevProps: RowsProps, nextProps: RowsProps) => boolean;
     cellRenderer: React.FunctionComponent<CellRendererProps>;
 }
 
@@ -23,7 +22,6 @@ export interface PaneContentProps<TState extends State = State> {
     range: () => Range;
     borders: Borders;
     cellRenderer: React.FunctionComponent<CellRendererProps>;
-    paneUpdatePredicate: (prevProps: RowsProps, nextProps: RowsProps) => boolean;
     children?: React.ReactNode;
 }
 
@@ -34,7 +32,16 @@ export interface PaneContentChild<TState extends State = State> {
 
 class PaneGridContent extends React.Component<RowsProps> {
     shouldComponentUpdate(nextProps: RowsProps) {
-        return this.props.paneUpdatePredicate(this.props, nextProps);
+        const { state } = this.props;
+        if (state.focusedLocation && nextProps.state.focusedLocation) {
+            if (state.focusedLocation.column.columnId !== nextProps.state.focusedLocation.column.columnId || state.focusedLocation.row.rowId !== nextProps.state.focusedLocation.row.rowId)
+                // && // needed when select range by touch
+                //nextProps.state.lastKeyCode !== keyCodes.ENTER && nextProps.state.lastKeyCode !== keyCodes.TAB) // improved performance during moving focus inside range
+                return true;
+        } else {
+            return true; // needed when select range by touch after first focus
+        }
+        return state.visibleRange !== nextProps.state.visibleRange || state.cellMatrix.props !== nextProps.state.cellMatrix.props;
     }
 
     render() {
@@ -68,7 +75,7 @@ export const Pane: React.FunctionComponent<PaneProps> = props => {
 };
 
 export const PaneContent: React.FunctionComponent<PaneContentProps<State>> = props => {
-    const { state, range, borders, cellRenderer, paneUpdatePredicate, children } = props;
+    const { state, range, borders, cellRenderer, children } = props;
 
     const calculatedRange = range();
 
@@ -78,8 +85,7 @@ export const PaneContent: React.FunctionComponent<PaneContentProps<State>> = pro
     };
     return (
         <>
-            <PaneGridContent state={state} range={calculatedRange} borders={borders} cellRenderer={cellRenderer}
-                paneUpdatePredicate={paneUpdatePredicate} />
+            <PaneGridContent state={state} range={calculatedRange} borders={borders} cellRenderer={cellRenderer} />
             {renderHighlights(state, calculatedRange)}
             {state.focusedLocation && calculatedRange.contains(state.focusedLocation) &&
                 <CellFocus location={state.focusedLocation} />}
