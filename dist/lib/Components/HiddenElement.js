@@ -18,5 +18,5 @@ export var HiddenElement = function (props) {
             left: scrollLeft > left ? scrollLeft - left : 0,
         };
     }
-    return React.createElement("input", { className: "rg-hidden-element", style: styles, ref: hiddenElementRefHandler, inputMode: "none" });
+    return React.createElement("input", { className: 'rg-hidden-element', style: styles, ref: hiddenElementRefHandler, inputMode: 'none' });
 };

@@ -18,6 +18,7 @@ export interface ReactGridProps {
     readonly enableColumnSelection?: boolean;
     readonly labels?: TextLabels;
     readonly enableFullWidthHeader?: boolean;
+    readonly enableGroupIdRender?: boolean;
     readonly onCellsChanged?: (cellChanges: CellChange[]) => void;
     readonly onFocusLocationChanged?: (location: CellLocation) => void;
     readonly onFocusLocationChanging?: (location: CellLocation) => boolean;
@@ -88,6 +89,7 @@ export interface CellStyle {
 }
 export interface Cell {
     type: string;
+    groupId?: Id;
     style?: CellStyle;
     className?: string;
 }

@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { ReactGridProps, State } from '../Model';
 export declare class ReactGrid extends React.Component<ReactGridProps, State> {
+    private updateState;
     private stateUpdater;
     private pointerEventsController;
     private eventHandlers;
@@ -11,5 +12,4 @@ export declare class ReactGrid extends React.Component<ReactGridProps, State> {
     componentDidMount(): void;
     componentWillUnmount(): void;
     render(): JSX.Element;
-    private handleStateUpdate;
 }

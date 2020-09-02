@@ -37,7 +37,7 @@ export var CellEditorRenderer = function (_a) {
 };
 var CellEditor = function (_a) {
     var style = _a.style, cellType = _a.cellType, children = _a.children;
-    return (React.createElement("div", { className: "rg-celleditor rg-" + cellType + "-celleditor", "data-cy": "rg-celleditor", style: __assign({}, style) }, children));
+    return (React.createElement("div", { className: "rg-celleditor rg-" + cellType + "-celleditor", "data-cy": 'rg-celleditor', style: __assign({}, style) }, children));
 };
 var calculatedXAxisOffset = function (location, state) {
     var cellMatrix = state.cellMatrix;

@@ -45,8 +45,8 @@ var PaneGridContent = (function (_super) {
         var _a = this.props, range = _a.range, state = _a.state, borders = _a.borders, cellRenderer = _a.cellRenderer;
         return (React.createElement(React.Fragment, null,
             range.rows.map(function (row) { return React.createElement(RowRenderer, { key: row.rowId, state: state, row: row, columns: range.columns, forceUpdate: true, cellRenderer: cellRenderer, borders: __assign(__assign({}, borders), { top: borders.top && row.top === 0, bottom: borders.bottom && row.idx === range.last.row.idx }) }); }),
-            range.rows.map(function (row) { return React.createElement("div", { key: row.rowId, className: "rg-separator-line rg-separator-line-row", style: { top: row.top, height: row.height, } }); }),
-            range.columns.map(function (col) { return React.createElement("div", { key: col.columnId, className: "rg-separator-line rg-separator-line-col", style: { left: col.left, width: col.width } }); })));
+            range.rows.map(function (row) { return React.createElement("div", { key: row.rowId, className: 'rg-separator-line rg-separator-line-row', style: { top: row.top, height: row.height, } }); }),
+            range.columns.map(function (col) { return React.createElement("div", { key: col.columnId, className: 'rg-separator-line rg-separator-line-col', style: { left: col.left, width: col.width } }); })));
     };
     return PaneGridContent;
 }(React.Component));

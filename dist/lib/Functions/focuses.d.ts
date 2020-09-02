@@ -1,4 +1,4 @@
-import { State, Location } from "../Model";
+import { State, Location } from '../Model';
 export declare type FocusLocationFn = (state: State, location: Location) => State;
 export declare type FocusCellFn = (colIdx: number, rowIdx: number, state: State) => State;
 export declare type RowCalcFn = (state: State, location: Location) => number;

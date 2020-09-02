@@ -53,11 +53,11 @@ export var TestGrid = function (props) {
                     var now = new Date();
                     switch (ci) {
                         case 0:
-                            return { type: 'group', text: ri + " - " + ci, parentId: ri, isExpanded: ri % 4 && undefined, hasChildren: true };
+                            return { type: 'group', groupId: !(ri % 3) ? 'A' : undefined, text: ri + " - " + ci, parentId: ri, isExpanded: ri % 4 && undefined, hasChildren: true };
                         case 1:
-                            return { type: 'text', text: ri + " - " + ci };
+                            return { type: 'text', groupId: !(ri % 3) ? 'B' : undefined, text: ri + " - " + ci };
                         case 2:
-                            return { type: 'email', text: ri + "." + ci + "@bing.pl", validator: emailValidator };
+                            return { type: 'email', groupId: Math.random() < .66 ? Math.random() < .5 ? 'A' : 'B' : undefined, text: ri + "." + ci + "@bing.pl", validator: emailValidator };
                         case 3:
                             return { type: 'number', format: myNumberFormat, value: parseFloat(ri + "." + ci), nanToZero: false, hideZero: true };
                         case 4:
@@ -67,7 +67,7 @@ export var TestGrid = function (props) {
                         case 6:
                             return { type: 'checkbox', checked: false, checkedText: 'Checked', uncheckedText: false };
                         case 7:
-                            return { type: 'flag', text: 'bra' };
+                            return { type: 'flag', group: 'B', text: 'bra' };
                         default:
                             return { type: 'text', text: ri + " - " + ci, validator: function () { } };
                     }
@@ -176,7 +176,7 @@ export var TestGrid = function (props) {
     };
     var Component = props.component;
     return (React.createElement(React.Fragment, null,
-        React.createElement("div", { className: "test-grid-container", "data-cy": "div-scrollable-element", style: __assign(__assign(__assign({}, (!props.config.pinToBody && {
+        React.createElement("div", { className: 'test-grid-container', "data-cy": 'div-scrollable-element', style: __assign(__assign(__assign({}, (!props.config.pinToBody && {
                 height: props.containerHeight || props.config.rgViewportHeight,
                 width: props.containerWidth || props.config.rgViewportWidth,
                 margin: props.containerMargin || props.config.margin,
@@ -190,7 +190,11 @@ export var TestGrid = function (props) {
                     React.createElement(Logo, { isPro: props.isPro }),
                     React.createElement(Logo, { isPro: props.isPro }),
                     React.createElement(Logo, { isPro: props.isPro })),
-            React.createElement(Component, { rows: state.rows, columns: state.columns, initialFocusLocation: { columnId: 'col-1', rowId: 'row-2' }, onCellsChanged: handleChanges, onColumnResized: handleColumnResize, customCellTemplates: { 'flag': new FlagCellTemplate() }, highlights: [{ columnId: 'col-1', rowId: 'row-1', borderColor: '#00ff00' }, { columnId: 'col-0', rowId: 'row-1', borderColor: 'red' }], stickyLeftColumns: props.enableSticky ? props.config.stickyLeft : undefined, stickyRightColumns: props.enableSticky ? props.config.stickyRight : undefined, stickyTopRows: props.enableSticky ? props.config.stickyTop : undefined, stickyBottomRows: props.enableSticky ? props.config.stickyBottom : undefined, canReorderColumns: handleCanReorderColumns, canReorderRows: handleCanReorderRows, onColumnsReordered: handleColumnsReorder, onRowsReordered: handleRowsReorder, onContextMenu: handleContextMenu, onFocusLocationChanged: handleFocusLocationChanged, onFocusLocationChanging: handleFocusLocationChanging, enableRowSelection: props.enableColumnAndRowSelection || false, enableColumnSelection: props.enableColumnAndRowSelection || false, enableFullWidthHeader: props.config.enableFullWidthHeader || false, enableRangeSelection: props.config.enableRangeSelection, enableFillHandle: props.config.enableFillHandle, labels: {} }),
+            React.createElement(Component, { rows: state.rows, columns: state.columns, initialFocusLocation: { columnId: 'col-1', rowId: 'row-2' }, onCellsChanged: handleChanges, onColumnResized: handleColumnResize, customCellTemplates: { 'flag': new FlagCellTemplate() }, highlights: [{ columnId: 'col-1', rowId: 'row-1', borderColor: '#00ff00' }, { columnId: 'col-0', rowId: 'row-1', borderColor: 'red' }], stickyLeftColumns: props.enableSticky ? props.config.stickyLeft : undefined, stickyRightColumns: props.enableSticky ? props.config.stickyRight : undefined, stickyTopRows: props.enableSticky ? props.config.stickyTop : undefined, stickyBottomRows: props.enableSticky ? props.config.stickyBottom : undefined, canReorderColumns: handleCanReorderColumns, canReorderRows: handleCanReorderRows, onColumnsReordered: handleColumnsReorder, onRowsReordered: handleRowsReorder, onContextMenu: handleContextMenu, onFocusLocationChanged: handleFocusLocationChanged, onFocusLocationChanging: handleFocusLocationChanging, enableRowSelection: props.enableColumnAndRowSelection || false, enableColumnSelection: props.enableColumnAndRowSelection || false, enableFullWidthHeader: props.config.enableFullWidthHeader || false, enableRangeSelection: props.config.enableRangeSelection, enableFillHandle: props.config.enableFillHandle, enableGroupIdRender: props.config.enableGroupIdRender, labels: {
+                    copyLabel: 'Copy me!',
+                    pasteLabel: 'Paste me!',
+                    cutLabel: 'Cut me!',
+                } }),
             props.config.enableAdditionalContent &&
                 React.createElement(React.Fragment, null,
                     React.createElement("h1", { style: { width: 3000 } }, "TEXT"),
@@ -217,7 +221,7 @@ export var TestGrid = function (props) {
                     " Test WITH IT",
                     React.createElement("h1", null, "TEXT"),
                     " Test WITH IT")),
-        React.createElement("input", { type: 'text', "data-cy": "outer-input" }),
+        React.createElement("input", { type: 'text', "data-cy": 'outer-input' }),
         React.createElement(Logo, { isPro: props.isPro }),
         props.config.enableAdditionalContent &&
             React.createElement(React.Fragment, null,

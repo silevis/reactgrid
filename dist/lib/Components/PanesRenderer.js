@@ -14,9 +14,9 @@ import { Pane, PaneContent } from './Pane';
 import { isBrowserFirefox } from '../Functions';
 import { shouldRenderTopSticky, shouldRenderMiddleRange, shouldRenderLeftSticky, shouldRenderCenterRange } from '../Functions/paneRendererPredicates';
 import { columnsSlicer, rowsSlicer } from '../Functions/rangeSlicer';
-export var PanesRenderer = function (props) {
-    var _a, _b;
-    var state = props.state, cellRenderer = props.cellRenderer;
+export var PanesRenderer = function (_a) {
+    var _b, _c;
+    var state = _a.state, cellRenderer = _a.cellRenderer;
     var cellMatrix = state.cellMatrix;
     var renderTopSticky = shouldRenderTopSticky(state), renderMiddleRange = shouldRenderMiddleRange(state), renderLeftSticky = shouldRenderLeftSticky(state), renderCenterRange = shouldRenderCenterRange(state);
     if (!renderTopSticky && !renderMiddleRange && !renderLeftSticky && !renderCenterRange) {
@@ -28,7 +28,7 @@ export var PanesRenderer = function (props) {
     return (React.createElement(React.Fragment, null,
         React.createElement(Pane, { renderChildren: renderMiddleRange && renderCenterRange, className: 'rg-pane-center-middle', style: {
                 position: 'relative',
-                width: ((_a = state.props) === null || _a === void 0 ? void 0 : _a.enableFullWidthHeader) ? "calc(100% - " + cellMatrix.ranges.stickyLeftRange.width + "px)"
+                width: ((_b = state.props) === null || _b === void 0 ? void 0 : _b.enableFullWidthHeader) ? "calc(100% - " + cellMatrix.ranges.stickyLeftRange.width + "px)"
                     : cellMatrix.scrollableRange.width,
                 height: (areOnlyStickyRows || areOnlyStickyCols) ? 0 : cellMatrix.scrollableRange.height,
                 order: 3,
@@ -38,7 +38,7 @@ export var PanesRenderer = function (props) {
                     ? 0
                     : areOnlyStickyCols ? cellMatrix.ranges.stickyLeftRange.width : cellMatrix.width - cellMatrix.scrollableRange.width, order: 2 }, (isBrowserFirefox() && { zIndex: 1 })) },
             React.createElement(PaneContent, { state: state, range: rowsSlicer(cellMatrix.ranges.stickyLeftRange)(visibleScrollableRange), borders: { bottom: true, right: true }, cellRenderer: cellRenderer })),
-        React.createElement(Pane, { renderChildren: renderTopSticky && renderCenterRange, className: 'rg-pane-top', style: __assign({ width: ((_b = state.props) === null || _b === void 0 ? void 0 : _b.enableFullWidthHeader) ? "calc(100% - " + cellMatrix.ranges.stickyLeftRange.width + "px)"
+        React.createElement(Pane, { renderChildren: renderTopSticky && renderCenterRange, className: 'rg-pane-top', style: __assign({ width: ((_c = state.props) === null || _c === void 0 ? void 0 : _c.enableFullWidthHeader) ? "calc(100% - " + cellMatrix.ranges.stickyLeftRange.width + "px)"
                     : areOnlyStickyRows && areOnlyStickyCols ? 0 : cellMatrix.scrollableRange.width, height: cellMatrix.ranges.stickyTopRange.height, order: 1 }, (isBrowserFirefox() && { zIndex: 1 })) },
             React.createElement(PaneContent, { state: state, range: columnsSlicer(cellMatrix.ranges.stickyTopRange)((state.visibleRange)), borders: { right: false, bottom: false }, cellRenderer: cellRenderer })),
         React.createElement(Pane, { renderChildren: renderTopSticky && renderLeftSticky, className: 'rg-pane-top rg-pane-left', style: __assign({ height: cellMatrix.ranges.stickyTopRange.height, width: (areOnlyStickyRows && areOnlyStickyCols)

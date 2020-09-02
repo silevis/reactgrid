@@ -16,4 +16,5 @@ export var defaultStateFields = {
     bottomScrollBoudary: -1,
     leftScrollBoudary: -1,
     rightScrollBoudary: -1,
+    enableGroupIdRender: false,
 };

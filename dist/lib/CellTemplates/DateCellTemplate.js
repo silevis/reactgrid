@@ -45,7 +45,7 @@ var DateCellTemplate = (function () {
         return React.createElement("input", { ref: function (input) {
                 if (input)
                     input.focus();
-            }, type: "date", defaultValue: year + "-" + month + "-" + day, onChange: function (e) {
+            }, type: 'date', defaultValue: year + "-" + month + "-" + day, onChange: function (e) {
                 var timestamp = getTimestamp(e.currentTarget.value, '');
                 if (!Number.isNaN(timestamp)) {
                     onCellChanged(_this.getCompatibleCell(__assign(__assign({}, cell), { date: new Date(timestamp) })), false);

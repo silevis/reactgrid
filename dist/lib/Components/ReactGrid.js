@@ -22,13 +22,6 @@ var __assign = (this && this.__assign) || function () {
     };
     return __assign.apply(this, arguments);
 };
-var __spreadArrays = (this && this.__spreadArrays) || function () {
-    for (var s = 0, i = 0, il = arguments.length; i < il; i++) s += arguments[i].length;
-    for (var r = Array(s), k = 0, i = 0; i < il; i++)
-        for (var a = arguments[i], j = 0, jl = a.length; j < jl; j++, k++)
-            r[k] = a[j];
-    return r;
-};
 import * as React from 'react';
 import { defaultStateFields } from '../Model';
 import { CellMatrixBuilder } from '../Model/CellMatrixBuilder';
@@ -42,11 +35,13 @@ import { LegacyBrowserGridRenderer } from './LegacyBrowserGridRenderer';
 import { CellEditorRenderer, cellEditorCalculator } from './CellEditor';
 import { CellRenderer, } from './CellRenderer';
 import { notifyAboutReactGridPro } from '../Functions/notifyAboutReactGridPro';
+import { handleStateUpdate } from '../Functions/handleStateUpdate';
 var ReactGrid = (function (_super) {
     __extends(ReactGrid, _super);
     function ReactGrid() {
         var _this = _super !== null && _super.apply(this, arguments) || this;
-        _this.stateUpdater = function (modifier) { return _this.handleStateUpdate(modifier(_this.state)); };
+        _this.updateState = function (state) { return _this.setState(state); };
+        _this.stateUpdater = function (modifier) { return handleStateUpdate(modifier(_this.state), _this.state, _this.props, _this.updateState); };
         _this.pointerEventsController = new PointerEventsController(_this.stateUpdater);
         _this.eventHandlers = new EventHandlers(_this.stateUpdater, _this.pointerEventsController);
         _this.cellMatrixBuilder = new CellMatrixBuilder();
@@ -76,19 +71,6 @@ var ReactGrid = (function (_super) {
             return (React.createElement(GridRenderer, { state: state, eventHandlers: eventHandlers },
                 React.createElement(PanesRenderer, { state: state, cellRenderer: CellRenderer }),
                 state.currentlyEditedCell && React.createElement(CellEditorRenderer, { state: state, positionCalculator: cellEditorCalculator })));
-        }
-    };
-    ReactGrid.prototype.handleStateUpdate = function (newState) {
-        var changes = __spreadArrays(newState.queuedCellChanges);
-        if (changes.length > 0) {
-            if (this.props.onCellsChanged) {
-                this.props.onCellsChanged(__spreadArrays(changes));
-            }
-            ;
-            changes.forEach(function () { return newState.queuedCellChanges.pop(); });
-        }
-        if (newState !== this.state) {
-            this.setState(newState);
         }
     };
     return ReactGrid;

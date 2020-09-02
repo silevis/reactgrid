@@ -6,6 +6,12 @@ export interface PaneProps {
     style: React.CSSProperties;
     className: string;
 }
+export interface RowsProps {
+    state: State;
+    range: Range;
+    borders: Borders;
+    cellRenderer: React.FunctionComponent<CellRendererProps>;
+}
 export interface PaneContentProps<TState extends State = State> {
     state: TState;
     range: () => Range;

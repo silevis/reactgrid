@@ -169,6 +169,11 @@
         .reactgrid-content .rg-pane .rg-cell .rg-touch-resize-handle .rg-resize-handle:hover {
           cursor: col-resize;
           background-color: #3579f8; }
+    .reactgrid-content .rg-pane .rg-cell .rg-groupId {
+      font-size: 0.8em;
+      position: absolute;
+      right: 4px;
+      top: 4px; }
   .reactgrid-content .rg-pane .rg-separator-line {
     position: absolute;
     box-sizing: border-box;

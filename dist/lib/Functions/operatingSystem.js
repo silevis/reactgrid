@@ -1,6 +1,6 @@
 export function isMacOs() {
     if (typeof window !== 'undefined') {
-        return window.navigator.appVersion.indexOf("Mac") !== -1;
+        return window.navigator.appVersion.indexOf('Mac') !== -1;
     }
     return false;
 }

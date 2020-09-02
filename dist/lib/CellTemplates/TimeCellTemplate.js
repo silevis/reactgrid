@@ -47,7 +47,7 @@ var TimeCellTemplate = (function () {
         return React.createElement("input", { ref: function (input) {
                 if (input)
                     input.focus();
-            }, type: "time", defaultValue: hours + ":" + minutes, onChange: function (e) {
+            }, type: 'time', defaultValue: hours + ":" + minutes, onChange: function (e) {
                 var timestamp = getTimestamp(e.currentTarget.value);
                 if (!Number.isNaN(timestamp))
                     onCellChanged(_this.getCompatibleCell(__assign(__assign({}, cell), { time: new Date(timestamp) })), false);

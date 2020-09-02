@@ -33,7 +33,7 @@ var FlagCellTemplate = (function () {
         if (!isInEditMode) {
             var flagISO = cell.text.toLowerCase();
             var flagURL = "https://restcountries.eu/data/" + flagISO + ".svg";
-            return React.createElement("div", { className: "rg-flag-wrapper", style: {
+            return React.createElement("div", { className: 'rg-flag-wrapper', style: {
                     backgroundImage: 'url("' + flagURL + '"), url("https://upload.wikimedia.org/wikipedia/commons/0/04/Nuvola_unknown_flag.svg")',
                 } });
         }

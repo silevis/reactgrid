@@ -1,5 +1,5 @@
-import { tryAppendChange } from '.';
-export function pasteData(state, activeSelectedRange, cell) {
+import { tryAppendChangeHavingGroupId } from './tryAppendChangeHavingGroupId';
+export function pasteData(state, activeSelectedRange, cellToPaste) {
     var location = { row: activeSelectedRange.first.row, column: activeSelectedRange.first.column };
-    return tryAppendChange(state, location, cell);
+    return tryAppendChangeHavingGroupId(state, location, cellToPaste);
 }

@@ -22,8 +22,8 @@ var __assign = (this && this.__assign) || function () {
     };
     return __assign.apply(this, arguments);
 };
-import { Behavior } from "../Model";
-import { handleKeyDown } from "../Functions/handleKeyDown";
+import { Behavior } from '../Model';
+import { handleKeyDown } from '../Functions/handleKeyDown';
 import { CellSelectionBehavior } from './CellSelectionBehavior';
 import { handlePaste } from '../Functions/handlePaste';
 import { handleCopy } from '../Functions/handleCopy';
