@@ -18,6 +18,8 @@ export function getDerivedStateFromProps(props: ReactGridProps, state: State): S
 
     state = stateDeriverWithProps(state)(appendCellTemplates);
 
+    state = stateDeriverWithProps(state)(appendGroupIdRender);
+
     const hasChanged = dataHasChanged(props, state);
 
     if (hasChanged) {
@@ -79,14 +81,21 @@ function updateVisibleRange(props: ReactGridProps, state: State): State {
     return state;
 }
 
-export function appendCellTemplates(props: ReactGridProps, state: State) {
+export function appendCellTemplates(props: ReactGridProps, state: State): State {
     return {
         ...state,
         cellTemplates: { ...defaultCellTemplates, ...props.customCellTemplates }
     }
 }
 
-export function appendHighlights(props: ReactGridProps, state: State) {
+export function appendGroupIdRender(props: ReactGridProps, state: State): State {
+    return {
+        ...state,
+        enableGroupIdRender: !!props.enableGroupIdRender
+    }
+}
+
+export function appendHighlights(props: ReactGridProps, state: State): State {
     const highlights = props.highlights?.filter(highlight => state.cellMatrix.rowIndexLookup[highlight.rowId] !== undefined &&
         state.cellMatrix.columnIndexLookup[highlight.columnId] !== undefined
     );

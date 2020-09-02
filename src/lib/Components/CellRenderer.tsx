@@ -40,10 +40,12 @@ export const CellRenderer: React.FunctionComponent<CellRendererProps> = ({ state
                 if (!commit) throw new Error('commit should be set to true in this case.');
                 state.update(state => tryAppendChange(state, location, cell));
             })}
-            {cell?.groupId !== undefined && <span className='rg-groupId'>
-                {cell.groupId}
-            </span>}
             {children}
+            {state.enableGroupIdRender && cell?.groupId !== undefined &&
+                <span className='rg-groupId'>
+                    {cell.groupId}
+                </span>
+            }
         </div >
     );
 };

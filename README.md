@@ -37,11 +37,16 @@ Both of them must be valid ReactGrid objects: `Columns` `Rows`.
 ```tsx
 import React, { useState } from "react";
 import ReactDOM from "react-dom";
-import { ReactGrid } from "@silevis/reactgrid";
+import { ReactGrid, Column, Row } from "@silevis/reactgrid";
 import "@silevis/reactgrid/styles.css";
 
+interface IApp {
+    columns: Column[];
+    rows: Row[];
+}
+
 function App() {
-  const [state, setState] = useState(() => ({
+  const [state, setState] = useState<IApp>(() => ({
     columns: [
       { columnId: "Name", width: 100 },
       { columnId: "Surname", width: 100 }

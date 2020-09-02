@@ -242,6 +242,7 @@ export const TestGrid: React.FunctionComponent<TestGridProps> = (props) => {
                     enableFullWidthHeader={props.config.enableFullWidthHeader || false}
                     enableRangeSelection={props.config.enableRangeSelection}
                     enableFillHandle={props.config.enableFillHandle}
+                    enableGroupIdRender={props.config.enableGroupIdRender}
                     labels={{
                         copyLabel: 'Copy me!',
                         pasteLabel: 'Paste me!',

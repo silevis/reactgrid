@@ -11,7 +11,7 @@ export const GridRenderer: React.FunctionComponent<GridRendererProps> = props =>
             data-cy="reactgrid"
             style={{
                 position: 'relative',
-                width: props.state.props?.enableFullWidthHeader ? '100%' : cellMatrix.width,
+                width: state.props?.enableFullWidthHeader ? '100%' : cellMatrix.width,
                 height: cellMatrix.height
             }}
             ref={eventHandlers.reactgridRefHandler}
@@ -27,7 +27,7 @@ export const GridRenderer: React.FunctionComponent<GridRendererProps> = props =>
                 onCut={eventHandlers.cutHandler}
                 data-cy='reactgrid-content'
                 style={{
-                    width: props.state.props?.enableFullWidthHeader ? '100%' : cellMatrix.width,
+                    width: state.props?.enableFullWidthHeader ? '100%' : cellMatrix.width,
                     height: cellMatrix.height,
                 }}
             >
