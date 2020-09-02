@@ -1,6 +1,7 @@
 import { State, Location } from '../Model';
 import { tryAppendChange } from './tryAppendChange';
 import { getCompatibleCellAndTemplate } from './getCompatibleCellAndTemplate';
+import { areLocationsEqual } from './areLocationsEqual';
 
 
 export function focusLocation(state: State, location: Location): State {
@@ -8,21 +9,31 @@ export function focusLocation(state: State, location: Location): State {
         state = tryAppendChange(state, state.focusedLocation, state.currentlyEditedCell);
     }
 
-    const { onFocusLocationChanged, onFocusLocationChanging } = state.props!;
+    const { onFocusLocationChanged, onFocusLocationChanging, focusLocation } = state.props!;
+
+    if (focusLocation) {
+        location = state.cellMatrix.getLocationById(focusLocation.rowId, focusLocation.columnId);
+    }
+
     const { cell, cellTemplate } = getCompatibleCellAndTemplate(state, location);
     const cellLocation = { rowId: location.row.rowId, columnId: location.column.columnId };
 
-    const isFocusable = (!cellTemplate.isFocusable || cellTemplate.isFocusable(cell)) &&
-        (!onFocusLocationChanging || onFocusLocationChanging(cellLocation));
+    const wasChangePrevented = !onFocusLocationChanging || onFocusLocationChanging(cellLocation);
 
-    if (!isFocusable)
+    const isFocusable = (!cellTemplate.isFocusable || cellTemplate.isFocusable(cell)) && wasChangePrevented;
+
+    const validatedFocusLocation = state.cellMatrix.validateLocation(location);
+
+    if (!isFocusable) {
         return state;
+    }
 
-    onFocusLocationChanged && onFocusLocationChanged(cellLocation);
+    onFocusLocationChanged && (!focusLocation && areLocationsEqual(location, validatedFocusLocation)) 
+    && onFocusLocationChanged(cellLocation);
 
     return {
         ...state,
-        focusedLocation: state.cellMatrix.validateLocation(location),
+        focusedLocation: validatedFocusLocation,
         currentlyEditedCell: undefined // TODO disable in derived state from props
     };
 }
