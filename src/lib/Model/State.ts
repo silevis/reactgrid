@@ -34,6 +34,7 @@ export interface State<TCellMatrix extends CellMatrix = CellMatrix, TBehavior ex
     readonly leftScrollBoudary: number;
     readonly rightScrollBoudary: number;
 
+    readonly enableGroupIdRender: boolean;
 }
 
 export const defaultStateFields = {
@@ -52,4 +53,5 @@ export const defaultStateFields = {
     bottomScrollBoudary: -1,
     leftScrollBoudary: -1,
     rightScrollBoudary: -1,
+    enableGroupIdRender: false,
 }

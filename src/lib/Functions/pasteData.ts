@@ -1,8 +1,7 @@
 import { State, Compatible, Cell, Range } from '../Model';
-import { tryAppendChange } from '.';
+import { tryAppendChangeHavingGroupId } from './tryAppendChangeHavingGroupId';
 
-export function pasteData(state: State, activeSelectedRange: Range, cell: Compatible<Cell>): State {
+export function pasteData(state: State, activeSelectedRange: Range, cellToPaste: Compatible<Cell>): State {
     const location = { row: activeSelectedRange.first.row, column: activeSelectedRange.first.column };
-    return tryAppendChange(state, location, cell)
+    return tryAppendChangeHavingGroupId(state, location, cellToPaste);
 }
-

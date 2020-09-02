@@ -1,4 +1,4 @@
-import { ReactGridProps, State } from '../Model';
+import { ReactGridProps, State, CellLocation } from '../Model';
 import { recalcVisibleRange, focusLocation } from '.';
 import { defaultCellTemplates } from './defaultCellTemplates';
 import { CellMatrixBuilder } from '../Model/CellMatrixBuilder';
@@ -17,6 +17,8 @@ export function getDerivedStateFromProps(props: ReactGridProps, state: State): S
     state = stateDeriverWithProps(state)(updateStateProps);
 
     state = stateDeriverWithProps(state)(appendCellTemplates);
+
+    state = stateDeriverWithProps(state)(appendGroupIdRender);
 
     const hasChanged = dataHasChanged(props, state);
 
@@ -79,14 +81,21 @@ function updateVisibleRange(props: ReactGridProps, state: State): State {
     return state;
 }
 
-export function appendCellTemplates(props: ReactGridProps, state: State) {
+export function appendCellTemplates(props: ReactGridProps, state: State): State {
     return {
         ...state,
         cellTemplates: { ...defaultCellTemplates, ...props.customCellTemplates }
     }
 }
 
-export function appendHighlights(props: ReactGridProps, state: State) {
+export function appendGroupIdRender(props: ReactGridProps, state: State): State {
+    return {
+        ...state,
+        enableGroupIdRender: !!props.enableGroupIdRender
+    }
+}
+
+export function appendHighlights(props: ReactGridProps, state: State): State {
     const highlights = props.highlights?.filter(highlight => state.cellMatrix.rowIndexLookup[highlight.rowId] !== undefined &&
         state.cellMatrix.columnIndexLookup[highlight.columnId] !== undefined
     );
@@ -102,11 +111,12 @@ export function appendHighlights(props: ReactGridProps, state: State) {
 export function setInitialFocusLocation(props: ReactGridProps, state: State): State {
     const locationToFocus = props.initialFocusLocation;
     if (locationToFocus && !state.focusedLocation) {
-        if (!(state.cellMatrix.columnIndexLookup[locationToFocus.columnId] !== undefined) || !(state.cellMatrix.rowIndexLookup[locationToFocus.rowId] !== undefined)) {
+        if (isLocationToFocusCorrect(state, locationToFocus)) {
             console.error('Data inconsistency in ReactGrid "initialFocusLocation" prop');
             return state;
         }
-        return focusLocation(state, state.cellMatrix.getLocationById(locationToFocus.rowId, locationToFocus.columnId));
+        const location = state.cellMatrix.getLocationById(locationToFocus.rowId, locationToFocus.columnId);
+        return focusLocation(state, location);
     }
     return state;
 }
@@ -114,7 +124,7 @@ export function setInitialFocusLocation(props: ReactGridProps, state: State): St
 export function setFocusLocation(props: ReactGridProps, state: State): State {
     const locationToFocus = props.focusLocation;
     if (locationToFocus) {
-        if (!(state.cellMatrix.columnIndexLookup[locationToFocus.columnId] !== undefined) || !(state.cellMatrix.rowIndexLookup[locationToFocus.rowId] !== undefined)) {
+        if (isLocationToFocusCorrect(state, locationToFocus)) {
             console.error('Data inconsistency in ReactGrid "focusLocation" prop');
             return state;
         }
@@ -122,4 +132,9 @@ export function setFocusLocation(props: ReactGridProps, state: State): State {
         return focusLocation(state, location)
     }
     return state;
+}
+
+function isLocationToFocusCorrect(state: State, location: CellLocation) {
+    return !(state.cellMatrix.columnIndexLookup[location.columnId] !== undefined)
+        || !(state.cellMatrix.rowIndexLookup[location.rowId] !== undefined)
 }

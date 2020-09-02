@@ -49,11 +49,11 @@ export const TestGrid: React.FunctionComponent<TestGridProps> = (props) => {
                     const now = new Date();
                     switch (ci) {
                         case 0:
-                            return { type: 'group', text: `${ri} - ${ci}`, parentId: ri, isExpanded: ri % 4 && undefined, hasChildren: true } as GroupCell
+                            return { type: 'group', groupId: !(ri % 3) ? 'A' : undefined, text: `${ri} - ${ci}`, parentId: ri, isExpanded: ri % 4 && undefined, hasChildren: true } as GroupCell
                         case 1:
-                            return { type: 'text', text: `${ri} - ${ci}` }
+                            return { type: 'text', groupId: !(ri % 3) ? 'B' : undefined, text: `${ri} - ${ci}` }
                         case 2:
-                            return { type: 'email', text: `${ri}.${ci}@bing.pl`, validator: emailValidator }
+                            return { type: 'email', groupId: Math.random() < .66 ? Math.random() < .5 ? 'A' : 'B' : undefined, text: `${ri}.${ci}@bing.pl`, validator: emailValidator }
                         case 3:
                             return { type: 'number', format: myNumberFormat, value: parseFloat(`${ri}.${ci}`), nanToZero: false, hideZero: true } as NumberCell
                         case 4:
@@ -63,7 +63,7 @@ export const TestGrid: React.FunctionComponent<TestGridProps> = (props) => {
                         case 6:
                             return { type: 'checkbox', checked: false, checkedText: 'Checked', uncheckedText: false }
                         case 7:
-                            return { type: 'flag', text: 'bra' }
+                            return { type: 'flag', group: 'B', text: 'bra' }
                         default:
                             return { type: 'text', text: `${ri} - ${ci}`, validator: () => { } }
                     }
@@ -197,7 +197,7 @@ export const TestGrid: React.FunctionComponent<TestGridProps> = (props) => {
     const Component = props.component;
     return (
         <>
-            <div className="test-grid-container" data-cy="div-scrollable-element" style={{
+            <div className='test-grid-container' data-cy='div-scrollable-element' style={{
                 ...(!props.config.pinToBody && {
                     height: props.containerHeight || props.config.rgViewportHeight,
                     width: props.containerWidth || props.config.rgViewportWidth,
@@ -242,8 +242,11 @@ export const TestGrid: React.FunctionComponent<TestGridProps> = (props) => {
                     enableFullWidthHeader={props.config.enableFullWidthHeader || false}
                     enableRangeSelection={props.config.enableRangeSelection}
                     enableFillHandle={props.config.enableFillHandle}
+                    enableGroupIdRender={props.config.enableGroupIdRender}
                     labels={{
-
+                        copyLabel: 'Copy me!',
+                        pasteLabel: 'Paste me!',
+                        cutLabel: 'Cut me!',
                     }}
                 />
                 {props.config.enableAdditionalContent &&
@@ -263,7 +266,7 @@ export const TestGrid: React.FunctionComponent<TestGridProps> = (props) => {
                     </>
                 }
             </div>
-            <input type='text' data-cy="outer-input" />
+            <input type='text' data-cy='outer-input' />
             <Logo isPro={props.isPro} />
             {props.config.enableAdditionalContent &&
                 <>

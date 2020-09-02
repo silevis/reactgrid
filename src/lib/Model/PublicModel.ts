@@ -27,6 +27,7 @@ export interface ReactGridProps {
     readonly enableColumnSelection?: boolean;
     readonly labels?: TextLabels;
     readonly enableFullWidthHeader?: boolean;
+    readonly enableGroupIdRender?: boolean;
 
     readonly onCellsChanged?: (cellChanges: CellChange[]) => void;
     readonly onFocusLocationChanged?: (location: CellLocation) => void;
@@ -62,6 +63,8 @@ export interface CellLocation {
     readonly columnId: Id;
 }
 
+
+// ASK ARCHITECT BEFORE INTRODUCING ANY CHANGE!
 export interface Highlight {
     readonly rowId: Id;
     readonly columnId: Id;
@@ -69,8 +72,12 @@ export interface Highlight {
     readonly className?: string;
 }
 
+
+// ASK ARCHITECT BEFORE INTRODUCING ANY CHANGE!
 export type DefaultCellTypes = CheckboxCell | DateCell | EmailCell | GroupCell | HeaderCell | NumberCell | TextCell | TimeCell;
 
+
+// ASK ARCHITECT BEFORE INTRODUCING ANY CHANGE!
 export type CellChange<TCell extends Cell = DefaultCellTypes & Cell> = TCell extends Cell ? Change<TCell> : never;
 
 // ASK ARCHITECT BEFORE INTRODUCING ANY CHANGE!
@@ -140,6 +147,7 @@ export interface CellStyle {
 // ASK ARCHITECT BEFORE INTRODUCING ANY CHANGE!
 export interface Cell {
     type: string;
+    groupId?: Id;
     style?: CellStyle;
     className?: string;
 }

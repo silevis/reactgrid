@@ -14,6 +14,7 @@ export interface Config {
     enableRangeSelection: boolean;
     enableFillHandle: boolean;
     enableFullWidthHeader: boolean;
+    enableGroupIdRender: boolean;
 
     columns: number;
     rows: number;

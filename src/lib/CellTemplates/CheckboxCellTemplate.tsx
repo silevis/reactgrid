@@ -43,7 +43,7 @@ export class CheckboxCellTemplate implements CellTemplate<CheckboxCell> {
         return (
             <label>
                 <input
-                    type="checkbox"
+                    type='checkbox'
                     checked={cell.checked}
                     onChange={e => onCellChanged(this.toggleCheckboxCell(cell), true)}
                 />

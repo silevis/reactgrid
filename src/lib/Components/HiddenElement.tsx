@@ -26,8 +26,8 @@ export const HiddenElement: React.FunctionComponent<HiddenElementProps> = props 
         }
     }
 
-    return <input className="rg-hidden-element" style={styles} ref={hiddenElementRefHandler}
-        inputMode="none"
+    return <input className='rg-hidden-element' style={styles} ref={hiddenElementRefHandler}
+        inputMode='none'
     // onBlur={e => !e.relatedTarget && state.hiddenFocusElement?.focus()}
     />
 }
