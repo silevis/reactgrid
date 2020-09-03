@@ -37,6 +37,24 @@ export const TestGrid: React.FunctionComponent<TestGridProps> = (props) => {
     const myDateFormat = new Intl.DateTimeFormat('pl', { weekday: 'short', year: 'numeric', month: 'long', day: 'numeric' })
     const myTimeFormat = new Intl.DateTimeFormat('pl', { hour: '2-digit', minute: '2-digit' })
 
+    const [columns, setColumns] = React.useState<Column[]>(() => new Array(props.config.columns).fill(0)
+        .map((_, ci) => ({ columnId: `col-${ci}`, resizable: true, reorderable: true, width: props.config.cellWidth })));
+
+    // let a: DefaultCellTypes['type'] | FlagCell['type'] = props.config.firstRowType;
+
+    const [rows, setRows] = React.useState<TestGridRow[]>(() => new Array(props.config.rows).fill(0).map((_, ri) => ({
+        rowId: `row-${ri}`,
+        reorderable: true,
+        height: props.config.cellHeight,
+        cells: columns.map((_, ci) => {
+            if (ri === 0) return { type: 'text', text: 'asds' };
+            return { type: 'group', text: 'asds' };
+            // const ret = { type: 'group', text: `${ri} - ${ci}` };
+
+            // return return;
+        })
+    })));
+
     const [state, setState] = useState<TestGridState>(() => {
         const columns = new Array(props.config.columns).fill(0).map((_, ci) => ({
             columnId: `col-${ci}`, resizable: true, reorderable: true, width: props.config.cellWidth,
@@ -75,23 +93,23 @@ export const TestGrid: React.FunctionComponent<TestGridProps> = (props) => {
     })
 
     const handleColumnResize = (columnId: Id, width: number, selectedColIds: Id[]) => {
-        const newState = { ...state };
+        setColumns((prevColumns) => {
+            const setColumnWidth = (columnIndex: number) => {
+                const resizedColumn = prevColumns[columnIndex];
+                prevColumns[columnIndex] = { ...resizedColumn, width };
+            }
 
-        const setColumnWidth = (columnIndex: number) => {
-            const resizedColumn = newState.columns[columnIndex];
-            newState.columns[columnIndex] = { ...resizedColumn, width };
-        }
-
-        if (selectedColIds.includes(columnId)) {
-            const stateColumnIndexes = newState.columns
-                .filter(col => selectedColIds.includes(col.columnId))
-                .map(col => newState.columns.findIndex(el => el.columnId === col.columnId));
-            stateColumnIndexes.forEach(setColumnWidth);
-        } else {
-            const columnIndex = newState.columns.findIndex(col => col.columnId === columnId);
-            setColumnWidth(columnIndex);
-        }
-        setState(newState);
+            if (selectedColIds.includes(columnId)) {
+                const stateColumnIndexes = prevColumns
+                    .filter(col => selectedColIds.includes(col.columnId))
+                    .map(col => prevColumns.findIndex(el => el.columnId === col.columnId));
+                stateColumnIndexes.forEach(setColumnWidth);
+            } else {
+                const columnIndex = prevColumns.findIndex(col => col.columnId === columnId);
+                setColumnWidth(columnIndex);
+            }
+            return [...prevColumns];
+        });
     }
 
     // eslint-disable-next-line
@@ -107,22 +125,27 @@ export const TestGrid: React.FunctionComponent<TestGridProps> = (props) => {
     };
 
     const handleChanges = (changes: CellChange<DefaultCellTypes | FlagCell>[]) => {
-        const newState = { ...state };
-        changes.forEach(change => {
-            const changeRowIdx = newState.rows.findIndex(el => el.rowId === change.rowId);
-            const changeColumnIdx = newState.columns.findIndex(el => el.columnId === change.columnId);
-            if (change.type === 'flag') {
-                // console.log(change.newCell.text);
-            }
-            if (change.type === 'text') {
-                // console.log(change.newCell.text);
-            }
-            if (change.type === 'checkbox') {
-                // console.log(change.initialCell.checked);
-            }
-            newState.rows[changeRowIdx].cells[changeColumnIdx] = change.newCell;
+        setRows((prevRows) => {
+            changes.forEach((change) => {
+                const changeRowIdx = prevRows.findIndex(
+                    (el) => el.rowId === change.rowId
+                );
+                const changeColumnIdx = columns.findIndex(
+                    (el) => el.columnId === change.columnId
+                );
+                if (change.type === 'flag') {
+                    // console.log(change.newCell.text);
+                }
+                if (change.type === 'text') {
+                    // console.log(change.newCell.text);
+                }
+                if (change.type === 'checkbox') {
+                    // console.log(change.initialCell.checked);
+                }
+                prevRows[changeRowIdx].cells[changeColumnIdx] = change.newCell;
+            });
+            return [...prevRows];
         });
-        setState(newState);
     };
 
     const reorderArray = <T extends {}>(arr: T[], idxs: number[], to: number) => {
@@ -144,19 +167,18 @@ export const TestGrid: React.FunctionComponent<TestGridProps> = (props) => {
     }
 
     const handleColumnsReorder = (targetColumnId: Id, columnIds: Id[], dropPosition: DropPosition) => {
-        const to = state.columns.findIndex((column: Column) => column.columnId === targetColumnId);
-        const columnIdxs = columnIds.map((id: Id, idx: number) => state.columns.findIndex((c: Column) => c.columnId === id));
-        setState({
-            columns: reorderArray(state.columns, columnIdxs, to),
-            rows: state.rows.map(row => ({ ...row, cells: reorderArray(row.cells, columnIdxs, to) })),
-        });
+        const to = columns.findIndex((column: Column) => column.columnId === targetColumnId);
+        const columnIdxs = columnIds.map((id: Id, idx: number) => columns.findIndex((c: Column) => c.columnId === id));
+        setRows(rows.map(row => ({ ...row, cells: reorderArray(row.cells, columnIdxs, to) })));
+        setColumns(reorderArray(columns, columnIdxs, to));
     }
 
     const handleRowsReorder = (targetRowId: Id, rowIds: Id[], dropPosition: DropPosition) => {
-        const newState = { ...state };
-        const to = state.rows.findIndex(row => row.rowId === targetRowId);
-        const ids = rowIds.map(id => state.rows.findIndex(r => r.rowId === id));
-        setState({ ...newState, rows: reorderArray(state.rows, ids, to) });
+        setRows((prevRows) => {
+            const to = rows.findIndex(row => row.rowId === targetRowId);
+            const columnIdxs = rowIds.map(id => rows.findIndex(r => r.rowId === id));
+            return reorderArray(prevRows, columnIdxs, to);
+        });
     }
 
     const handleContextMenu = (selectedRowIds: Id[], selectedColIds: Id[], selectionMode: SelectionMode, menuOptions: MenuOption[]): MenuOption[] => {
@@ -218,8 +240,8 @@ export const TestGrid: React.FunctionComponent<TestGridProps> = (props) => {
                     </>
                 }
                 <Component
-                    rows={state.rows}
-                    columns={state.columns}
+                    rows={rows}
+                    columns={columns}
                     initialFocusLocation={{ columnId: 'col-1', rowId: 'row-2' }}
                     // focusLocation={{ columnId: 'col-1', rowId: 'row-3' }}
                     onCellsChanged={handleChanges}

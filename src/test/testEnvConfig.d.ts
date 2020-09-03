@@ -1,4 +1,5 @@
 import { DefaultCellTypes } from './../core';
+import { FlagCell } from './flagCell/FlagCellTemplate';
 
 export interface Config {
     pinToBody: boolean;
@@ -28,7 +29,7 @@ export interface Config {
     stickyLeft: number;
     stickyRight: number;
 
-    firstRowType: DefaultCellTypes['type'];
+    firstRowType: DefaultCellTypes['type'] | FlagCell['type'];
 }
 
 export declare const config: Config;
