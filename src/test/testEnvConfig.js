@@ -10,6 +10,7 @@ export const config = {
     enableRangeSelection: true,
     enableFillHandle: true,
     enableFullWidthHeader: false,
+    enableGroupIdRender: true,
 
     cellHeight: 25,
     cellWidth: 150,

@@ -27,7 +27,7 @@ export class NumberCellTemplate implements CellTemplate<NumberCell> {
         return { ...uncertainCell, value: displayValue, text }
     }
 
-    handleKeyDown(cell: Compatible<NumberCell>, keyCode: number, ctrl: boolean, shift: boolean, alt: boolean) {
+    handleKeyDown(cell: Compatible<NumberCell>, keyCode: number, ctrl: boolean, shift: boolean, alt: boolean): { cell: Compatible<NumberCell>; enableEditMode: boolean } {
         if (isNumpadNumericKey(keyCode)) keyCode -= 48;
         const char = String.fromCharCode(keyCode);
         if (!ctrl && !alt && !shift && (inNumericKey(keyCode) || isAllowedOnNumberTypingKey(keyCode))) {

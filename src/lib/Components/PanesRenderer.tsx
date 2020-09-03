@@ -14,8 +14,7 @@ export interface PanesProps<TState extends State = State> {
     cellRenderer: React.FunctionComponent<CellRendererProps>;
 }
 
-export const PanesRenderer: React.FunctionComponent<PanesProps> = props => {
-    const { state, cellRenderer } = props;
+export const PanesRenderer: React.FunctionComponent<PanesProps> = ({ state, cellRenderer }) => {
     const cellMatrix = state.cellMatrix;
     const renderTopSticky = shouldRenderTopSticky(state),
         renderMiddleRange = shouldRenderMiddleRange(state),

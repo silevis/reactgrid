@@ -1,3 +1,5 @@
+import { DefaultCellTypes } from './../core';
+
 export interface Config {
     pinToBody: boolean;
     enableAdditionalContent: boolean;
@@ -14,6 +16,7 @@ export interface Config {
     enableRangeSelection: boolean;
     enableFillHandle: boolean;
     enableFullWidthHeader: boolean;
+    enableGroupIdRender: boolean;
 
     columns: number;
     rows: number;
@@ -25,7 +28,7 @@ export interface Config {
     stickyLeft: number;
     stickyRight: number;
 
-    firstRowType: string;
+    firstRowType: DefaultCellTypes['type'];
 }
 
 export declare const config: Config;

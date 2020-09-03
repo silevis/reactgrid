@@ -37,6 +37,8 @@ export * from './Functions/scrollIntoView';
 export * from './Functions/recalcVisibleRange';
 export * from './Functions/emptyCell';
 export * from './Functions/rangeSlicer';
+export * from './Functions/handleStateUpdate';
+export * from './Functions/tryAppendChangeHavingGroupId';
 
 export * from './Functions/handleCopy';
 export * from './Functions/handlePaste';

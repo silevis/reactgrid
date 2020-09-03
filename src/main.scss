@@ -80,6 +80,12 @@
                     height: 100%;
                 }
             }
+            .rg-groupId {
+                font-size: 0.8em;
+                position: absolute; 
+                right: 4px;
+                top: 4px;
+            }
         }
         .rg-cell-focus {
             position: absolute;

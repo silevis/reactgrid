@@ -10,7 +10,7 @@ export interface PaneProps {
     className: string;
 }
 
-interface RowsProps {
+export interface RowsProps {
     state: State;
     range: Range;
     cellRenderer: React.FunctionComponent<CellRendererProps>;

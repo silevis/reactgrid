@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { State, Location } from '../Model';
+import { State, Location, Compatible, Cell } from '../Model';
 import { tryAppendChange } from '../Functions';
 import { getCompatibleCellAndTemplate } from '../Functions/getCompatibleCellAndTemplate';
 
@@ -8,8 +8,13 @@ export interface CellRendererProps {
     location: Location;
 }
 
-export const CellRenderer: React.FunctionComponent<CellRendererProps> = props => {
-    const { state, location, children } = props;
+export interface CellRendererChildProps<TState extends State = State> {
+    location?: Location;
+    cell?: Compatible<Cell>;
+    state?: TState;
+}
+
+export const CellRenderer: React.FunctionComponent<CellRendererProps> = ({ state, location, children }) => {
     const { cell, cellTemplate } = getCompatibleCellAndTemplate(state, location);
     const isFocused = state.focusedLocation !== undefined && (state.focusedLocation.column.idx === location.column.idx &&
         state.focusedLocation.row.idx === location.row.idx);
@@ -30,13 +35,18 @@ export const CellRenderer: React.FunctionComponent<CellRendererProps> = props =>
     };
 
     return (
-        <div className={`rg-cell rg-${cell.type}-cell ${customClass}`} style={style}
-            data-cell-colidx={location.column.idx} data-cell-rowidx={location.row.idx} >
+        <div className={`rg-cell rg-${cell.type}-cell ${cell.groupId ? `rg-groupId-${cell.groupId}` : ''} ${customClass}`}
+            style={style} data-cell-colidx={location.column.idx} data-cell-rowidx={location.row.idx} >
             {cellTemplate.render(cell, false, (cell, commit) => {
                 if (!commit) throw new Error('commit should be set to true in this case.');
                 state.update(state => tryAppendChange(state, location, cell));
             })}
             {children}
+            {state.enableGroupIdRender && cell?.groupId !== undefined &&
+                <span className='rg-groupId'>
+                    {cell.groupId}
+                </span>
+            }
         </div >
     );
 };

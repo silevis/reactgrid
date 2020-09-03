@@ -4,12 +4,12 @@ $shadow-on-left:        (-$shadow-length) 0 $shadow-blur-radius $shadow-spread-r
 $shadow-on-right:       $shadow-length 0 $shadow-blur-radius $shadow-spread-radius !default;
 
 $white-with-heavy-opacity:      rgba($bg-color, $opacity-01);
-$black-with-light-opacity:      rgba($shadow-color, $opacity-80);
+$black-with-medium-opacity:     rgba($shadow-color, $opacity-35);
 
 $main-bg-color:                 $bg-color;
 $shadow-bg:                     $shadow-color;
-$cell-shadow-color:             $black-with-light-opacity;
-$pane-shadow-color:             $black-with-light-opacity;
+$cell-shadow-color:             $black-with-medium-opacity;
+$pane-shadow-color:             $black-with-medium-opacity;
 $fill-handle-bg-color:          $white-with-heavy-opacity;
 $fill-handle-border-color:      $bg-color;
 $cell-editor-gb-color:          $cell-editor-bg-color;
