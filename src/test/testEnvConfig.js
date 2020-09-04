@@ -27,7 +27,7 @@ export const config = {
     stickyLeft: 1,
     stickyRight: 2,
 
-    firstRowType: 'header'
+    firstRowType: 'text'
 }
 
 if (typeof exports === "object" && typeof module === "object") { // added for backwards compability without ES6 imports

@@ -61,7 +61,9 @@ export const TestGrid: React.FunctionComponent<TestGridProps> = (props) => {
                 case 6:
                     return { type: 'checkbox', checked: false, checkedText: 'Checked', uncheckedText: 'Unchecked' }
                 case 7:
-                    return { type: '', group: 'B', text: 'bra' }
+                    return { type: 'flag', group: 'B', text: 'bra' }
+                case 8:
+                    return { type: 'header', text: `${ri} - ${ci}` }
                 default:
                     return { type: 'text', text: `${ri} - ${ci}`, validator: (text: string): boolean => true }
             }
