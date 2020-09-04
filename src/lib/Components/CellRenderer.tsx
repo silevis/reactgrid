@@ -1,7 +1,8 @@
 import * as React from 'react';
-import { State, Location, Compatible, Cell, CellStyle } from '../Model';
+import { State, Location, Compatible, Cell } from '../Model';
 import { tryAppendChange } from '../Functions';
 import { getCompatibleCellAndTemplate } from '../Functions/getCompatibleCellAndTemplate';
+import { noBorderColors } from '../Functions/excludeObjectProperties';
 
 export interface CellRendererProps {
     state: State;
@@ -13,8 +14,6 @@ export interface CellRendererChildProps<TState extends State = State> {
     cell?: Compatible<Cell>;
     state?: TState;
 }
-
-const noBorderColors = ({ borderColors, ...rest }: CellStyle) => rest;
 
 export const CellRenderer: React.FunctionComponent<CellRendererProps> = ({ state, location, children }) => {
     const { cell, cellTemplate } = getCompatibleCellAndTemplate(state, location);
