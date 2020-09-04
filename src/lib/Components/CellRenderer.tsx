@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { State, Location, Compatible, Cell } from '../Model';
+import { State, Location, Compatible, Cell, CellStyle } from '../Model';
 import { tryAppendChange } from '../Functions';
 import { getCompatibleCellAndTemplate } from '../Functions/getCompatibleCellAndTemplate';
 
@@ -14,23 +14,35 @@ export interface CellRendererChildProps<TState extends State = State> {
     state?: TState;
 }
 
+const noBorderColors = ({ borderColors, ...rest }: CellStyle) => rest;
+
 export const CellRenderer: React.FunctionComponent<CellRendererProps> = ({ state, location, children }) => {
     const { cell, cellTemplate } = getCompatibleCellAndTemplate(state, location);
     const isFocused = state.focusedLocation !== undefined && (state.focusedLocation.column.idx === location.column.idx &&
         state.focusedLocation.row.idx === location.row.idx);
     const customClass = (cellTemplate.getClassName && cellTemplate.getClassName(cell, false)) ?? '';
+    const bordersColors = {
+        borderColorLeft:  cell.style?.borderColors?.left ? cell.style.borderColors.left : state.cellMatrix.first.column.idx === location.column.idx ? '#999' : 'none',
+        borderColorRight: cell.style?.borderColors?.right ? cell.style.borderColors.right: '#999',
+        borderColorTop: cell.style?.borderColors?.top ? cell.style.borderColors.top: state.cellMatrix.first.row.idx === location.row.idx ? '#999' : 'none',
+        borderColorBottom: cell.style?.borderColors?.bottom ? cell.style.borderColors.bottom: '#999',
+    }
+    const borders = { 
+        borderLeft: '1px solid ' + bordersColors.borderColorLeft,
+        borderRight: '1px solid ' + bordersColors.borderColorRight,
+        borderTop: '1px solid ' + bordersColors.borderColorTop,
+        borderBottom: '1px solid ' + bordersColors.borderColorBottom,
+    }
+
     // TODO custom style
     const style: React.CSSProperties = {
         ...(cellTemplate.getStyle && (cellTemplate.getStyle(cell, false) || {})),
-        ...cell.style,
+        ...(cell.style && noBorderColors(cell.style)),
         left: location.column.left,
         top: location.row.top,
         width: location.column.width,
         height: location.row.height,
-        borderLeft: state.cellMatrix.first.column.idx === location.column.idx ? '1px solid' : 'none',
-        borderTop: state.cellMatrix.first.row.idx === location.row.idx ? '1px solid' : 'none',
-        borderBottom: '1px solid',
-        borderRight: '1px solid',
+        ...borders,
         ...((isFocused || cell.type === 'header') && { touchAction: 'none' }) // prevent scrolling
     };
 

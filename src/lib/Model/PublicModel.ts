@@ -137,11 +137,12 @@ export interface CellStyle {
     readonly background?: string;
     readonly overflow?: string;
     readonly paddingLeft?: string;
-    // TODO
-    //readonly borderLeft
-    //readonly borderRight
-    //readonly borderTop
-    //readonly borderBottom
+    readonly borderColors?: {
+        readonly left?: string;
+        readonly right?: string;
+        readonly top?: string;
+        readonly bottom?: string;
+    }
 }
 
 // ASK ARCHITECT BEFORE INTRODUCING ANY CHANGE!
