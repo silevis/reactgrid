@@ -1,18 +1,16 @@
-import React, { useState } from 'react';
+import React from 'react';
 import {
     Column, Row, Id, MenuOption, SelectionMode, DropPosition, CellLocation,
-    NumberCell, GroupCell, DefaultCellTypes, CellChange, ReactGridProps
+    DefaultCellTypes, CellChange, ReactGridProps, TextCell
 } from './../reactgrid';
 import { Config } from './testEnvConfig';
 import '../styles.scss';
 import { FlagCellTemplate, FlagCell } from './flagCell/FlagCellTemplate';
+import { Cell } from '../lib';
 
-type TestGridRow = Row<DefaultCellTypes | FlagCell>;
+type TestGridCells = DefaultCellTypes | FlagCell;
 
-interface TestGridState {
-    columns: Column[]
-    rows: TestGridRow[]
-}
+type TestGridRow = Row<TestGridCells>;
 
 interface TestGridProps {
     containerHeight?: number;
@@ -26,7 +24,7 @@ interface TestGridProps {
     component: React.ComponentClass<ReactGridProps>;
 }
 
-const emailValidator = (email: string): boolean => {
+const emailValidator: TextCell['validator'] = (email) => {
     const email_regex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     return email_regex.test(email.replace(/\s+/g, ''));
 }
@@ -37,60 +35,38 @@ export const TestGrid: React.FunctionComponent<TestGridProps> = (props) => {
     const myDateFormat = new Intl.DateTimeFormat('pl', { weekday: 'short', year: 'numeric', month: 'long', day: 'numeric' })
     const myTimeFormat = new Intl.DateTimeFormat('pl', { hour: '2-digit', minute: '2-digit' })
 
-    const [columns, setColumns] = React.useState<Column[]>(() => new Array(props.config.columns).fill(0)
-        .map((_, ci) => ({ columnId: `col-${ci}`, resizable: true, reorderable: true, width: props.config.cellWidth })));
+    const [columns, setColumns] = React.useState(() => new Array(props.config.columns).fill({ columnId: 0, resizable: true, reorderable: true, width: -1 })
+        .map<Column>((_, ci) => ({ columnId: `col-${ci}`, resizable: true, reorderable: true, width: props.config.cellWidth })));
 
-    // let a: DefaultCellTypes['type'] | FlagCell['type'] = props.config.firstRowType;
-
-    const [rows, setRows] = React.useState<TestGridRow[]>(() => new Array(props.config.rows).fill(0).map((_, ri) => ({
+    const [rows, setRows] = React.useState(() => new Array(props.config.rows).fill(0).map<TestGridRow>((_, ri) => ({
         rowId: `row-${ri}`,
         reorderable: true,
         height: props.config.cellHeight,
-        cells: columns.map((_, ci) => {
-            if (ri === 0) return { type: 'text', text: 'asds' };
-            return { type: 'group', text: 'asds' };
-            // const ret = { type: 'group', text: `${ri} - ${ci}` };
-
-            // return return;
+        cells: columns.map<TestGridCells | Cell>((_, ci) => {
+            if (ri === 0) return { type: props.config.firstRowType, text: `${ri} - ${ci}` }
+            const now = new Date();
+            switch (ci) {
+                case 0:
+                    return { type: 'group', groupId: !(ri % 3) ? 'A' : undefined, text: `${ri} - ${ci}`, parentId: ri, isExpanded: ri % 4 ? true : undefined, hasChildren: true }
+                case 1:
+                    return { type: 'text', groupId: !(ri % 3) ? 'B' : undefined, text: `${ri} - ${ci}` }
+                case 2:
+                    return { type: 'email', groupId: Math.random() < .66 ? Math.random() < .5 ? 'A' : 'B' : undefined, text: `${ri}.${ci}@bing.pl`, validator: emailValidator }
+                case 3:
+                    return { type: 'number', format: myNumberFormat, value: parseFloat(`${ri}.${ci}`), nanToZero: false, hideZero: true }
+                case 4:
+                    return { type: 'date', format: myDateFormat, date: new Date(now.setHours((ri * 24), 0, 0, 0)) }
+                case 5:
+                    return { type: 'time', format: myTimeFormat, time: new Date(now.setHours(now.getHours() + ri)) }
+                case 6:
+                    return { type: 'checkbox', checked: false, checkedText: 'Checked', uncheckedText: 'Unchecked' }
+                case 7:
+                    return { type: '', group: 'B', text: 'bra' }
+                default:
+                    return { type: 'text', text: `${ri} - ${ci}`, validator: (text: string): boolean => true }
+            }
         })
     })));
-
-    const [state, setState] = useState<TestGridState>(() => {
-        const columns = new Array(props.config.columns).fill(0).map((_, ci) => ({
-            columnId: `col-${ci}`, resizable: true, reorderable: true, width: props.config.cellWidth,
-        } as Column));
-
-        const rows = new Array(props.config.rows).fill(0).map((_, ri) => {
-            return {
-                rowId: `row-${ri}`, reorderable: true, height: props.config.cellHeight, cells: columns.map((_, ci) => {
-                    if (ri === 0) return { type: props.config.firstRowType, text: `${ri} - ${ci}` }
-                    const now = new Date();
-                    switch (ci) {
-                        case 0:
-                            return { type: 'group', groupId: !(ri % 3) ? 'A' : undefined, text: `${ri} - ${ci}`, parentId: ri, isExpanded: ri % 4 && undefined, hasChildren: true } as GroupCell
-                        case 1:
-                            return { type: 'text', groupId: !(ri % 3) ? 'B' : undefined, text: `${ri} - ${ci}` }
-                        case 2:
-                            return { type: 'email', groupId: Math.random() < .66 ? Math.random() < .5 ? 'A' : 'B' : undefined, text: `${ri}.${ci}@bing.pl`, validator: emailValidator }
-                        case 3:
-                            return { type: 'number', format: myNumberFormat, value: parseFloat(`${ri}.${ci}`), nanToZero: false, hideZero: true } as NumberCell
-                        case 4:
-                            return { type: 'date', format: myDateFormat, date: new Date(now.setHours((ri * 24), 0, 0, 0)) }
-                        case 5:
-                            return { type: 'time', format: myTimeFormat, time: new Date(now.setHours(now.getHours() + ri)) }
-                        case 6:
-                            return { type: 'checkbox', checked: false, checkedText: 'Checked', uncheckedText: false }
-                        case 7:
-                            return { type: 'flag', group: 'B', text: 'bra' }
-                        default:
-                            return { type: 'text', text: `${ri} - ${ci}`, validator: () => { } }
-                    }
-                })
-            } as TestGridRow
-        });
-
-        return { rows, columns }
-    })
 
     const handleColumnResize = (columnId: Id, width: number, selectedColIds: Id[]) => {
         setColumns((prevColumns) => {
@@ -124,7 +100,7 @@ export const TestGrid: React.FunctionComponent<TestGridProps> = (props) => {
         });
     };
 
-    const handleChanges = (changes: CellChange<DefaultCellTypes | FlagCell>[]) => {
+    const handleChanges = (changes: CellChange<TestGridCells>[]) => {
         setRows((prevRows) => {
             changes.forEach((change) => {
                 const changeRowIdx = prevRows.findIndex(
