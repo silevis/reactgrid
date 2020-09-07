@@ -1,4 +1,4 @@
-import { DefaultCellTypes } from './../core';
+import { TextCell, HeaderCell } from './../core';
 
 export interface Config {
     pinToBody: boolean;
@@ -28,7 +28,7 @@ export interface Config {
     stickyLeft: number;
     stickyRight: number;
 
-    firstRowType: DefaultCellTypes['type'];
+    firstRowType: TextCell['type'] | HeaderCell['type'];
 }
 
 export declare const config: Config;

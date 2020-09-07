@@ -19,7 +19,7 @@ export class EventHandlers {
         this.assignScrollHandlerToReactGridElement(reactGridElement, recalcVisibleRange);
     };
     hiddenElementRefHandler = (hiddenFocusElement: HTMLInputElement) => this.updateState(state => {
-        if (state.props?.initialFocusLocation) {
+        if (state.props?.initialFocusLocation && hiddenFocusElement) {
             hiddenFocusElement.focus({ preventScroll: true });
         }
         state.hiddenFocusElement = hiddenFocusElement;
