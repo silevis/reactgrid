@@ -46,7 +46,7 @@ export const TestGrid: React.FunctionComponent<TestGridProps> = (props) => {
             const now = new Date();
             switch (ci) {
                 case 0:
-                    return { type: 'group', groupId: !(ri % 3) ? 'A' : undefined, text: `${ri} - ${ci}`, parentId: ri, isExpanded: ri % 4 ? true : undefined, hasChildren: true }
+                    return { type: 'chevron', groupId: !(ri % 3) ? 'A' : undefined, text: `${ri} - ${ci}`, parentId: ri, isExpanded: ri % 4 ? true : undefined, hasChildren: true }
                 case 1:
                     return { type: 'text', groupId: !(ri % 3) ? 'B' : undefined, text: `${ri} - ${ci}` }
                 case 2:
@@ -60,7 +60,7 @@ export const TestGrid: React.FunctionComponent<TestGridProps> = (props) => {
                 case 6:
                     return { type: 'checkbox', checked: false, checkedText: 'Checked', uncheckedText: 'Unchecked' }
                 case 7:
-                    return { type: 'flag', group: 'B', text: 'bra' }
+                    return { type: 'flag', groupId: 'B', text: 'bra' }
                 // case 8: // TODO allow user to pass non focusable cell (header cell) with arrows
                 //     return { type: 'header', text: `${ri} - ${ci}` }
                 default:
@@ -96,7 +96,7 @@ export const TestGrid: React.FunctionComponent<TestGridProps> = (props) => {
                 console.log(change.newCell.text);
             }
             if (change.type === 'checkbox') {
-                console.log(change.initialCell.checked);
+                console.log(change.previousCell.checked);
             }
         });
     };
@@ -117,7 +117,7 @@ export const TestGrid: React.FunctionComponent<TestGridProps> = (props) => {
                     // console.log(change.newCell.text);
                 }
                 if (change.type === 'checkbox') {
-                    // console.log(change.initialCell.checked);
+                    // console.log(change.previousCell.checked);
                 }
                 prevRows[changeRowIdx].cells[changeColumnIdx] = change.newCell;
             });

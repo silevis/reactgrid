@@ -5,8 +5,8 @@ import { isNavigationKey, isAlphaNumericKey } from './keyCodeCheckings';
 import { getCellProperty } from '../Functions/getCellProperty';
 import { getCharFromKeyCode } from './getCharFromKeyCode';
 
-export interface GroupCell extends Cell {
-    type: 'group';
+export interface ChevronCell extends Cell {
+    type: 'chevron';
     text: string;
     isExpanded?: boolean;
     hasChildren?: boolean;
@@ -14,9 +14,9 @@ export interface GroupCell extends Cell {
     indent?: number;
 }
 
-export class GroupCellTemplate implements CellTemplate<GroupCell> {
+export class ChevronCellTemplate implements CellTemplate<ChevronCell> {
 
-    getCompatibleCell(uncertainCell: Uncertain<GroupCell>): Compatible<GroupCell> {
+    getCompatibleCell(uncertainCell: Uncertain<ChevronCell>): Compatible<ChevronCell> {
         const text = getCellProperty(uncertainCell, 'text', 'string');
         let isExpanded = false;
         try {
@@ -40,11 +40,11 @@ export class GroupCellTemplate implements CellTemplate<GroupCell> {
         return { ...uncertainCell, text, value, isExpanded, hasChildren: hasChildren, indent };
     }
 
-    update(cell: Compatible<GroupCell>, cellToMerge: UncertainCompatible<GroupCell>): Compatible<GroupCell> {
+    update(cell: Compatible<ChevronCell>, cellToMerge: UncertainCompatible<ChevronCell>): Compatible<ChevronCell> {
         return this.getCompatibleCell({ ...cell, isExpanded: cellToMerge.isExpanded, text: cellToMerge.text })
     }
 
-    handleKeyDown(cell: Compatible<GroupCell>, keyCode: number, ctrl: boolean, shift: boolean, alt: boolean): { cell: Compatible<GroupCell>, enableEditMode: boolean } {
+    handleKeyDown(cell: Compatible<ChevronCell>, keyCode: number, ctrl: boolean, shift: boolean, alt: boolean): { cell: Compatible<ChevronCell>, enableEditMode: boolean } {
         let enableEditMode = keyCode === keyCodes.POINTER || keyCode === keyCodes.ENTER;
         const cellCopy = { ...cell };
         const char = getCharFromKeyCode(keyCode, shift);
@@ -57,19 +57,19 @@ export class GroupCellTemplate implements CellTemplate<GroupCell> {
         return { cell: cellCopy, enableEditMode };
     }
 
-    getClassName(cell: Compatible<GroupCell>, isInEditMode: boolean) {
+    getClassName(cell: Compatible<ChevronCell>, isInEditMode: boolean) {
         const isExpanded = cell.hasChildren ? cell.isExpanded ? 'expanded' : 'collapsed' : '';
         const className = cell.className ?? '';
         return `${isExpanded} ${className}`;
     }
 
-    getStyle(cell: Compatible<GroupCell>, isInEditMode: boolean): CellStyle {
+    getStyle(cell: Compatible<ChevronCell>, isInEditMode: boolean): CellStyle {
         const indent = cell.indent ?? 0;
         const elementMarginMultiplier = indent * 1.4;
         return { paddingLeft: `calc(${elementMarginMultiplier}em + 2px)` };
     }
 
-    render(cell: Compatible<GroupCell>, isInEditMode: boolean, onCellChanged: (cell: Compatible<GroupCell>, commit: boolean) => void): React.ReactNode {
+    render(cell: Compatible<ChevronCell>, isInEditMode: boolean, onCellChanged: (cell: Compatible<ChevronCell>, commit: boolean) => void): React.ReactNode {
         return (
             !isInEditMode ?
                 <>
