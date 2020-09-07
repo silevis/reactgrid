@@ -3,6 +3,7 @@ import { State, Location, Compatible, Cell } from '../Model';
 import { tryAppendChange } from '../Functions';
 import { getCompatibleCellAndTemplate } from '../Functions/getCompatibleCellAndTemplate';
 import { noBorderColors } from '../Functions/excludeObjectProperties';
+import { areLocationsEqual } from '../../core';
 
 export interface CellRendererProps {
     state: State;
@@ -17,23 +18,22 @@ export interface CellRendererChildProps<TState extends State = State> {
 
 export const CellRenderer: React.FunctionComponent<CellRendererProps> = ({ state, location, children }) => {
     const { cell, cellTemplate } = getCompatibleCellAndTemplate(state, location);
-    const isFocused = state.focusedLocation !== undefined && (state.focusedLocation.column.idx === location.column.idx &&
-        state.focusedLocation.row.idx === location.row.idx);
+    const isFocused = state.focusedLocation !== undefined && areLocationsEqual(state.focusedLocation, location);
     const customClass = (cellTemplate.getClassName && cellTemplate.getClassName(cell, false)) ?? '';
+    const defaultBorderColor = '#ccc';
     const bordersColors = {
-        borderColorLeft:  cell.style?.borderColors?.left ? cell.style.borderColors.left : state.cellMatrix.first.column.idx === location.column.idx ? '#999' : 'none',
-        borderColorRight: cell.style?.borderColors?.right ? cell.style.borderColors.right: '#999',
-        borderColorTop: cell.style?.borderColors?.top ? cell.style.borderColors.top: state.cellMatrix.first.row.idx === location.row.idx ? '#999' : 'none',
-        borderColorBottom: cell.style?.borderColors?.bottom ? cell.style.borderColors.bottom: '#999',
+        borderColorLeft: cell.style?.borderColors?.left || (state.cellMatrix.first.column.idx === location.column.idx ? defaultBorderColor : 'none'),
+        borderColorRight: cell.style?.borderColors?.right || defaultBorderColor,
+        borderColorTop: cell.style?.borderColors?.top || (state.cellMatrix.first.row.idx === location.row.idx ? defaultBorderColor : 'none'),
+        borderColorBottom: cell.style?.borderColors?.bottom || defaultBorderColor,
     }
-    const borders = { 
+    const borders = {
         borderLeft: '1px solid ' + bordersColors.borderColorLeft,
         borderRight: '1px solid ' + bordersColors.borderColorRight,
         borderTop: '1px solid ' + bordersColors.borderColorTop,
         borderBottom: '1px solid ' + bordersColors.borderColorBottom,
     }
 
-    // TODO custom style
     const style: React.CSSProperties = {
         ...(cellTemplate.getStyle && (cellTemplate.getStyle(cell, false) || {})),
         ...(cell.style && noBorderColors(cell.style)),
