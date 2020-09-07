@@ -3,7 +3,7 @@ import { State, Location, Compatible, Cell } from '../Model';
 import { tryAppendChange } from '../Functions';
 import { getCompatibleCellAndTemplate } from '../Functions/getCompatibleCellAndTemplate';
 import { noBorderColors } from '../Functions/excludeObjectProperties';
-import { areLocationsEqual } from '../../core';
+import { areLocationsEqual } from '../Functions/areLocationsEqual';
 
 export interface CellRendererProps {
     state: State;
