@@ -5,7 +5,7 @@ import { CheckboxCellTemplate } from '../CellTemplates/CheckboxCellTemplate';
 import { DateCellTemplate } from '../CellTemplates/DateCellTemplate';
 import { EmailCellTemplate } from '../CellTemplates/EmailCellTemplate';
 import { TimeCellTemplate } from '../CellTemplates/TimeCellTemplate';
-import { GroupCellTemplate } from '../CellTemplates/GroupCellTemplate';
+import { ChevronCellTemplate } from '../CellTemplates/ChevronCellTemplate';
 export var defaultCellTemplates = {
     text: new TextCellTemplate(),
     number: new NumberCellTemplate(),
@@ -14,5 +14,5 @@ export var defaultCellTemplates = {
     date: new DateCellTemplate(),
     email: new EmailCellTemplate(),
     time: new TimeCellTemplate(),
-    group: new GroupCellTemplate()
+    chevron: new ChevronCellTemplate()
 };

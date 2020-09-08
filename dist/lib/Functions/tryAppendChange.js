@@ -11,13 +11,13 @@ var __assign = (this && this.__assign) || function () {
 };
 import { getCompatibleCellAndTemplate } from './getCompatibleCellAndTemplate';
 export function tryAppendChange(state, location, cell) {
-    var _a = getCompatibleCellAndTemplate(state, location), initialCell = _a.cell, cellTemplate = _a.cellTemplate;
-    if (initialCell === cell || JSON.stringify(initialCell) === JSON.stringify(cell) || cellTemplate.update === undefined)
+    var _a = getCompatibleCellAndTemplate(state, location), previousCell = _a.cell, cellTemplate = _a.cellTemplate;
+    if (previousCell === cell || JSON.stringify(previousCell) === JSON.stringify(cell) || cellTemplate.update === undefined)
         return state;
-    var newCell = cellTemplate.update(initialCell, cell);
-    if (newCell !== initialCell || JSON.stringify(newCell) !== JSON.stringify(initialCell))
+    var newCell = cellTemplate.update(previousCell, cell);
+    if (newCell !== previousCell || JSON.stringify(newCell) !== JSON.stringify(previousCell))
         state.queuedCellChanges.push({
-            initialCell: initialCell,
+            previousCell: previousCell,
             newCell: newCell,
             type: newCell.type,
             rowId: location.row.rowId,

@@ -6,7 +6,7 @@ export function tryAppendChangeHavingGroupId(state, location, cell) {
         return tryAppendChange(state, location, cell);
     }
     else {
-        console.warn("New cells data can't be appended into location: (" + location.column.columnId + ", " + location.row.rowId + "). Cell's 'groupId' field doesn't match!");
+        console.warn("New cells data can't be appended into location: ('" + location.column.columnId + "', '" + location.row.rowId + "'). Cell's 'groupId' field doesn't match!");
     }
     return state;
 }

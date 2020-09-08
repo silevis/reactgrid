@@ -1,5 +1,5 @@
 /// <reference types="react" />
-import { TextCell, HeaderCell, CheckboxCell, DateCell, EmailCell, GroupCell, NumberCell, TimeCell } from './../CellTemplates';
+import { TextCell, HeaderCell, CheckboxCell, DateCell, EmailCell, ChevronCell, NumberCell, TimeCell } from './../CellTemplates';
 export declare type SelectionMode = 'row' | 'column' | 'range';
 export interface ReactGridProps {
     readonly columns: Column[];
@@ -52,13 +52,13 @@ export interface Highlight {
     readonly borderColor?: string;
     readonly className?: string;
 }
-export declare type DefaultCellTypes = CheckboxCell | DateCell | EmailCell | GroupCell | HeaderCell | NumberCell | TextCell | TimeCell;
+export declare type DefaultCellTypes = CheckboxCell | DateCell | EmailCell | ChevronCell | HeaderCell | NumberCell | TextCell | TimeCell;
 export declare type CellChange<TCell extends Cell = DefaultCellTypes & Cell> = TCell extends Cell ? Change<TCell> : never;
 export interface Change<TCell extends Cell = DefaultCellTypes> {
     readonly rowId: Id;
     readonly columnId: Id;
     readonly type: TCell['type'];
-    readonly initialCell: TCell;
+    readonly previousCell: TCell;
     readonly newCell: TCell;
 }
 export interface CellTemplate<TCell extends Cell = Cell> {
@@ -104,7 +104,7 @@ export declare type UncertainCompatible<TCell extends Cell> = Uncertain<TCell> &
 };
 export interface Row<TCell extends Cell = DefaultCellTypes> {
     readonly rowId: Id;
-    readonly cells: TCell[];
+    readonly cells: Cell[] | TCell[];
     readonly height?: number;
     readonly reorderable?: boolean;
 }

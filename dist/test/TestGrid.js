@@ -27,7 +27,7 @@ var __spreadArrays = (this && this.__spreadArrays) || function () {
             r[k] = a[j];
     return r;
 };
-import React, { useState } from 'react';
+import React from 'react';
 import '../styles.scss';
 import { FlagCellTemplate } from './flagCell/FlagCellTemplate';
 var emailValidator = function (email) {
@@ -35,64 +35,60 @@ var emailValidator = function (email) {
     return email_regex.test(email.replace(/\s+/g, ''));
 };
 export var TestGrid = function (props) {
+    var config = props.config, containerHeight = props.containerHeight, containerWidth = props.containerWidth, containerMargin = props.containerMargin, isPro = props.isPro, component = props.component, enableSticky = props.enableSticky, enableColumnAndRowSelection = props.enableColumnAndRowSelection;
     var myNumberFormat = new Intl.NumberFormat('pl', { style: 'currency', minimumFractionDigits: 2, maximumFractionDigits: 2, currency: 'PLN' });
     var myDateFormat = new Intl.DateTimeFormat('pl', { weekday: 'short', year: 'numeric', month: 'long', day: 'numeric' });
     var myTimeFormat = new Intl.DateTimeFormat('pl', { hour: '2-digit', minute: '2-digit' });
-    var _a = useState(function () {
-        var columns = new Array(props.config.columns).fill(0).map(function (_, ci) { return ({
-            columnId: "col-" + ci,
-            resizable: true, reorderable: true, width: props.config.cellWidth,
-        }); });
-        var rows = new Array(props.config.rows).fill(0).map(function (_, ri) {
-            return {
-                rowId: "row-" + ri,
-                reorderable: true, height: props.config.cellHeight,
-                cells: columns.map(function (_, ci) {
-                    if (ri === 0)
-                        return { type: props.config.firstRowType, text: ri + " - " + ci };
-                    var now = new Date();
-                    switch (ci) {
-                        case 0:
-                            return { type: 'group', groupId: !(ri % 3) ? 'A' : undefined, text: ri + " - " + ci, parentId: ri, isExpanded: ri % 4 && undefined, hasChildren: true };
-                        case 1:
-                            return { type: 'text', groupId: !(ri % 3) ? 'B' : undefined, text: ri + " - " + ci };
-                        case 2:
-                            return { type: 'email', groupId: Math.random() < .66 ? Math.random() < .5 ? 'A' : 'B' : undefined, text: ri + "." + ci + "@bing.pl", validator: emailValidator };
-                        case 3:
-                            return { type: 'number', format: myNumberFormat, value: parseFloat(ri + "." + ci), nanToZero: false, hideZero: true };
-                        case 4:
-                            return { type: 'date', format: myDateFormat, date: new Date(now.setHours((ri * 24), 0, 0, 0)) };
-                        case 5:
-                            return { type: 'time', format: myTimeFormat, time: new Date(now.setHours(now.getHours() + ri)) };
-                        case 6:
-                            return { type: 'checkbox', checked: false, checkedText: 'Checked', uncheckedText: false };
-                        case 7:
-                            return { type: 'flag', group: 'B', text: 'bra' };
-                        default:
-                            return { type: 'text', text: ri + " - " + ci, validator: function () { } };
-                    }
-                })
-            };
-        });
-        return { rows: rows, columns: columns };
-    }), state = _a[0], setState = _a[1];
+    var _a = React.useState(function () { return new Array(config.columns).fill({ columnId: 0, resizable: true, reorderable: true, width: -1 })
+        .map(function (_, ci) { return ({ columnId: "col-" + ci, resizable: true, reorderable: true, width: config.cellWidth }); }); }), columns = _a[0], setColumns = _a[1];
+    var _b = React.useState(function () { return new Array(config.rows).fill(0).map(function (_, ri) { return ({
+        rowId: "row-" + ri,
+        reorderable: true,
+        height: config.cellHeight,
+        cells: columns.map(function (_, ci) {
+            if (ri === 0)
+                return { type: config.firstRowType, text: ri + " - " + ci };
+            var now = new Date();
+            switch (ci) {
+                case 0:
+                    return { type: 'chevron', groupId: !(ri % 3) ? 'A' : undefined, text: ri + " - " + ci, parentId: ri, isExpanded: ri % 4 ? true : undefined, hasChildren: true };
+                case 1:
+                    return { type: 'text', groupId: !(ri % 3) ? 'B' : undefined, text: ri + " - " + ci };
+                case 2:
+                    return { type: 'email', groupId: Math.random() < .66 ? Math.random() < .5 ? 'A' : 'B' : undefined, text: ri + "." + ci + "@bing.pl", validator: emailValidator };
+                case 3:
+                    return { type: 'number', format: myNumberFormat, value: parseFloat(ri + "." + ci), nanToZero: false, hideZero: true };
+                case 4:
+                    return { type: 'date', format: myDateFormat, date: new Date(now.setHours((ri * 24), 0, 0, 0)) };
+                case 5:
+                    return { type: 'time', format: myTimeFormat, time: new Date(now.setHours(now.getHours() + ri)) };
+                case 6:
+                    return { type: 'checkbox', checked: false, checkedText: 'Checked', uncheckedText: 'Unchecked' };
+                case 7:
+                    return { type: 'flag', groupId: 'B', text: 'bra' };
+                default:
+                    return { type: 'text', text: ri + " - " + ci, validator: function (text) { return true; } };
+            }
+        })
+    }); }); }), rows = _b[0], setRows = _b[1];
     var handleColumnResize = function (columnId, width, selectedColIds) {
-        var newState = __assign({}, state);
-        var setColumnWidth = function (columnIndex) {
-            var resizedColumn = newState.columns[columnIndex];
-            newState.columns[columnIndex] = __assign(__assign({}, resizedColumn), { width: width });
-        };
-        if (selectedColIds.includes(columnId)) {
-            var stateColumnIndexes = newState.columns
-                .filter(function (col) { return selectedColIds.includes(col.columnId); })
-                .map(function (col) { return newState.columns.findIndex(function (el) { return el.columnId === col.columnId; }); });
-            stateColumnIndexes.forEach(setColumnWidth);
-        }
-        else {
-            var columnIndex = newState.columns.findIndex(function (col) { return col.columnId === columnId; });
-            setColumnWidth(columnIndex);
-        }
-        setState(newState);
+        setColumns(function (prevColumns) {
+            var setColumnWidth = function (columnIndex) {
+                var resizedColumn = prevColumns[columnIndex];
+                prevColumns[columnIndex] = __assign(__assign({}, resizedColumn), { width: width });
+            };
+            if (selectedColIds.includes(columnId)) {
+                var stateColumnIndexes = prevColumns
+                    .filter(function (col) { return selectedColIds.includes(col.columnId); })
+                    .map(function (col) { return prevColumns.findIndex(function (el) { return el.columnId === col.columnId; }); });
+                stateColumnIndexes.forEach(setColumnWidth);
+            }
+            else {
+                var columnIndex = prevColumns.findIndex(function (col) { return col.columnId === columnId; });
+                setColumnWidth(columnIndex);
+            }
+            return __spreadArrays(prevColumns);
+        });
     };
     var handleChangesTest = function (changes) {
         changes.forEach(function (change) {
@@ -100,24 +96,25 @@ export var TestGrid = function (props) {
                 console.log(change.newCell.text);
             }
             if (change.type === 'checkbox') {
-                console.log(change.initialCell.checked);
+                console.log(change.previousCell.checked);
             }
         });
     };
     var handleChanges = function (changes) {
-        var newState = __assign({}, state);
-        changes.forEach(function (change) {
-            var changeRowIdx = newState.rows.findIndex(function (el) { return el.rowId === change.rowId; });
-            var changeColumnIdx = newState.columns.findIndex(function (el) { return el.columnId === change.columnId; });
-            if (change.type === 'flag') {
-            }
-            if (change.type === 'text') {
-            }
-            if (change.type === 'checkbox') {
-            }
-            newState.rows[changeRowIdx].cells[changeColumnIdx] = change.newCell;
+        setRows(function (prevRows) {
+            changes.forEach(function (change) {
+                var changeRowIdx = prevRows.findIndex(function (el) { return el.rowId === change.rowId; });
+                var changeColumnIdx = columns.findIndex(function (el) { return el.columnId === change.columnId; });
+                if (change.type === 'flag') {
+                }
+                if (change.type === 'text') {
+                }
+                if (change.type === 'checkbox') {
+                }
+                prevRows[changeRowIdx].cells[changeColumnIdx] = change.newCell;
+            });
+            return __spreadArrays(prevRows);
         });
-        setState(newState);
     };
     var reorderArray = function (arr, idxs, to) {
         var movedElements = arr.filter(function (_, idx) { return idxs.includes(idx); });
@@ -133,18 +130,17 @@ export var TestGrid = function (props) {
         return true;
     };
     var handleColumnsReorder = function (targetColumnId, columnIds, dropPosition) {
-        var to = state.columns.findIndex(function (column) { return column.columnId === targetColumnId; });
-        var columnIdxs = columnIds.map(function (id, idx) { return state.columns.findIndex(function (c) { return c.columnId === id; }); });
-        setState({
-            columns: reorderArray(state.columns, columnIdxs, to),
-            rows: state.rows.map(function (row) { return (__assign(__assign({}, row), { cells: reorderArray(row.cells, columnIdxs, to) })); }),
-        });
+        var to = columns.findIndex(function (column) { return column.columnId === targetColumnId; });
+        var columnIdxs = columnIds.map(function (id, idx) { return columns.findIndex(function (c) { return c.columnId === id; }); });
+        setRows(rows.map(function (row) { return (__assign(__assign({}, row), { cells: reorderArray(row.cells, columnIdxs, to) })); }));
+        setColumns(reorderArray(columns, columnIdxs, to));
     };
     var handleRowsReorder = function (targetRowId, rowIds, dropPosition) {
-        var newState = __assign({}, state);
-        var to = state.rows.findIndex(function (row) { return row.rowId === targetRowId; });
-        var ids = rowIds.map(function (id) { return state.rows.findIndex(function (r) { return r.rowId === id; }); });
-        setState(__assign(__assign({}, newState), { rows: reorderArray(state.rows, ids, to) }));
+        setRows(function (prevRows) {
+            var to = rows.findIndex(function (row) { return row.rowId === targetRowId; });
+            var columnIdxs = rowIds.map(function (id) { return rows.findIndex(function (r) { return r.rowId === id; }); });
+            return reorderArray(prevRows, columnIdxs, to);
+        });
     };
     var handleContextMenu = function (selectedRowIds, selectedColIds, selectionMode, menuOptions) {
         if (selectionMode === 'row') {
@@ -174,28 +170,31 @@ export var TestGrid = function (props) {
     var handleFocusLocationChanging = function (location) {
         return true;
     };
-    var Component = props.component;
+    var Component = component;
     return (React.createElement(React.Fragment, null,
-        React.createElement("div", { className: 'test-grid-container', "data-cy": 'div-scrollable-element', style: __assign(__assign(__assign({}, (!props.config.pinToBody && {
-                height: props.containerHeight || props.config.rgViewportHeight,
-                width: props.containerWidth || props.config.rgViewportWidth,
-                margin: props.containerMargin || props.config.margin,
+        React.createElement("div", { className: 'test-grid-container', "data-cy": 'div-scrollable-element', style: __assign(__assign(__assign({}, (!config.pinToBody && {
+                height: containerHeight || config.rgViewportHeight,
+                width: containerWidth || config.rgViewportWidth,
+                margin: containerMargin || config.margin,
                 overflow: 'auto',
-            })), { position: 'relative' }), (props.config.flexRow && {
+            })), { position: 'relative' }), (config.flexRow && {
                 display: 'flex',
                 flexDirection: 'row'
             })) },
-            props.config.enableAdditionalContent &&
+            config.enableAdditionalContent &&
                 React.createElement(React.Fragment, null,
-                    React.createElement(Logo, { isPro: props.isPro }),
-                    React.createElement(Logo, { isPro: props.isPro }),
-                    React.createElement(Logo, { isPro: props.isPro })),
-            React.createElement(Component, { rows: state.rows, columns: state.columns, initialFocusLocation: { columnId: 'col-1', rowId: 'row-2' }, onCellsChanged: handleChanges, onColumnResized: handleColumnResize, customCellTemplates: { 'flag': new FlagCellTemplate() }, highlights: [{ columnId: 'col-1', rowId: 'row-1', borderColor: '#00ff00' }, { columnId: 'col-0', rowId: 'row-1', borderColor: 'red' }], stickyLeftColumns: props.enableSticky ? props.config.stickyLeft : undefined, stickyRightColumns: props.enableSticky ? props.config.stickyRight : undefined, stickyTopRows: props.enableSticky ? props.config.stickyTop : undefined, stickyBottomRows: props.enableSticky ? props.config.stickyBottom : undefined, canReorderColumns: handleCanReorderColumns, canReorderRows: handleCanReorderRows, onColumnsReordered: handleColumnsReorder, onRowsReordered: handleRowsReorder, onContextMenu: handleContextMenu, onFocusLocationChanged: handleFocusLocationChanged, onFocusLocationChanging: handleFocusLocationChanging, enableRowSelection: props.enableColumnAndRowSelection || false, enableColumnSelection: props.enableColumnAndRowSelection || false, enableFullWidthHeader: props.config.enableFullWidthHeader || false, enableRangeSelection: props.config.enableRangeSelection, enableFillHandle: props.config.enableFillHandle, enableGroupIdRender: props.config.enableGroupIdRender, labels: {
+                    React.createElement(Logo, { isPro: isPro }),
+                    React.createElement(Logo, { isPro: isPro }),
+                    React.createElement(Logo, { isPro: isPro })),
+            React.createElement(Component, { rows: rows, columns: columns, initialFocusLocation: { columnId: 'col-1', rowId: 'row-2' }, onCellsChanged: handleChanges, onColumnResized: handleColumnResize, customCellTemplates: { 'flag': new FlagCellTemplate() }, highlights: [
+                    { columnId: 'col-1', rowId: 'row-1', borderColor: '#00ff00' },
+                    { columnId: 'col-0', rowId: 'row-1', borderColor: 'red' }
+                ], stickyLeftColumns: enableSticky ? config.stickyLeft : undefined, stickyRightColumns: enableSticky ? config.stickyRight : undefined, stickyTopRows: enableSticky ? config.stickyTop : undefined, stickyBottomRows: enableSticky ? config.stickyBottom : undefined, canReorderColumns: handleCanReorderColumns, canReorderRows: handleCanReorderRows, onColumnsReordered: handleColumnsReorder, onRowsReordered: handleRowsReorder, onContextMenu: handleContextMenu, onFocusLocationChanged: handleFocusLocationChanged, onFocusLocationChanging: handleFocusLocationChanging, enableRowSelection: enableColumnAndRowSelection || false, enableColumnSelection: enableColumnAndRowSelection || false, enableFullWidthHeader: config.enableFullWidthHeader || false, enableRangeSelection: config.enableRangeSelection, enableFillHandle: config.enableFillHandle, enableGroupIdRender: config.enableGroupIdRender, labels: {
                     copyLabel: 'Copy me!',
                     pasteLabel: 'Paste me!',
                     cutLabel: 'Cut me!',
                 } }),
-            props.config.enableAdditionalContent &&
+            config.enableAdditionalContent &&
                 React.createElement(React.Fragment, null,
                     React.createElement("h1", { style: { width: 3000 } }, "TEXT"),
                     " Test WITH IT",
@@ -222,8 +221,8 @@ export var TestGrid = function (props) {
                     React.createElement("h1", null, "TEXT"),
                     " Test WITH IT")),
         React.createElement("input", { type: 'text', "data-cy": 'outer-input' }),
-        React.createElement(Logo, { isPro: props.isPro }),
-        props.config.enableAdditionalContent &&
+        React.createElement(Logo, { isPro: isPro }),
+        config.enableAdditionalContent &&
             React.createElement(React.Fragment, null,
                 React.createElement("h1", { style: { width: 3000 } }, "TEXT"),
                 " Test WITH IT",

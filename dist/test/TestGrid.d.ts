@@ -8,7 +8,6 @@ interface TestGridProps {
     containerMargin?: number;
     enableSticky?: boolean;
     enableColumnAndRowSelection?: boolean;
-    enableFullWidthHeader?: boolean;
     isPro?: boolean;
     config: Config;
     component: React.ComponentClass<ReactGridProps>;

@@ -14,10 +14,10 @@ import { keyCodes } from '../Functions/keyCodes';
 import { isNavigationKey, isAlphaNumericKey } from './keyCodeCheckings';
 import { getCellProperty } from '../Functions/getCellProperty';
 import { getCharFromKeyCode } from './getCharFromKeyCode';
-var GroupCellTemplate = (function () {
-    function GroupCellTemplate() {
+var ChevronCellTemplate = (function () {
+    function ChevronCellTemplate() {
     }
-    GroupCellTemplate.prototype.getCompatibleCell = function (uncertainCell) {
+    ChevronCellTemplate.prototype.getCompatibleCell = function (uncertainCell) {
         var text = getCellProperty(uncertainCell, 'text', 'string');
         var isExpanded = false;
         try {
@@ -43,10 +43,10 @@ var GroupCellTemplate = (function () {
         var value = parseFloat(text);
         return __assign(__assign({}, uncertainCell), { text: text, value: value, isExpanded: isExpanded, hasChildren: hasChildren, indent: indent });
     };
-    GroupCellTemplate.prototype.update = function (cell, cellToMerge) {
+    ChevronCellTemplate.prototype.update = function (cell, cellToMerge) {
         return this.getCompatibleCell(__assign(__assign({}, cell), { isExpanded: cellToMerge.isExpanded, text: cellToMerge.text }));
     };
-    GroupCellTemplate.prototype.handleKeyDown = function (cell, keyCode, ctrl, shift, alt) {
+    ChevronCellTemplate.prototype.handleKeyDown = function (cell, keyCode, ctrl, shift, alt) {
         var enableEditMode = keyCode === keyCodes.POINTER || keyCode === keyCodes.ENTER;
         var cellCopy = __assign({}, cell);
         var char = getCharFromKeyCode(keyCode, shift);
@@ -59,19 +59,19 @@ var GroupCellTemplate = (function () {
         }
         return { cell: cellCopy, enableEditMode: enableEditMode };
     };
-    GroupCellTemplate.prototype.getClassName = function (cell, isInEditMode) {
+    ChevronCellTemplate.prototype.getClassName = function (cell, isInEditMode) {
         var _a;
         var isExpanded = cell.hasChildren ? cell.isExpanded ? 'expanded' : 'collapsed' : '';
         var className = (_a = cell.className) !== null && _a !== void 0 ? _a : '';
         return isExpanded + " " + className;
     };
-    GroupCellTemplate.prototype.getStyle = function (cell, isInEditMode) {
+    ChevronCellTemplate.prototype.getStyle = function (cell, isInEditMode) {
         var _a;
         var indent = (_a = cell.indent) !== null && _a !== void 0 ? _a : 0;
         var elementMarginMultiplier = indent * 1.4;
         return { paddingLeft: "calc(" + elementMarginMultiplier + "em + 2px)" };
     };
-    GroupCellTemplate.prototype.render = function (cell, isInEditMode, onCellChanged) {
+    ChevronCellTemplate.prototype.render = function (cell, isInEditMode, onCellChanged) {
         var _this = this;
         return (!isInEditMode ?
             React.createElement(React.Fragment, null,
@@ -95,6 +95,6 @@ var GroupCellTemplate = (function () {
                             e.stopPropagation();
                     } }));
     };
-    return GroupCellTemplate;
+    return ChevronCellTemplate;
 }());
-export { GroupCellTemplate };
+export { ChevronCellTemplate };

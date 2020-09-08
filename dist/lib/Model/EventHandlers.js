@@ -29,7 +29,7 @@ var EventHandlers = (function () {
         };
         this.hiddenElementRefHandler = function (hiddenFocusElement) { return _this.updateState(function (state) {
             var _a;
-            if ((_a = state.props) === null || _a === void 0 ? void 0 : _a.initialFocusLocation) {
+            if (((_a = state.props) === null || _a === void 0 ? void 0 : _a.initialFocusLocation) && hiddenFocusElement) {
                 hiddenFocusElement.focus({ preventScroll: true });
             }
             state.hiddenFocusElement = hiddenFocusElement;

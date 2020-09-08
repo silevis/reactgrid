@@ -38,7 +38,7 @@
     width: 20px;
     height: 20px; }
 
-.rg-group-cell .chevron {
+.rg-chevron-cell .chevron {
   pointer-events: auto;
   display: flex;
   justify-content: center;
@@ -50,13 +50,13 @@
   height: 1em;
   width: 1em; }
 
-.rg-group-cell .no-child {
+.rg-chevron-cell .no-child {
   width: 0.5em; }
 
-.rg-group-cell.expanded .chevron {
+.rg-chevron-cell.expanded .chevron {
   transform: rotate(90deg); }
 
-.rg-group-cell.collapsed .chevron {
+.rg-chevron-cell.collapsed .chevron {
   transform: rotate(0deg); }
 
 .rg-checkbox-cell {
