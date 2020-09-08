@@ -1,4 +1,6 @@
 import * as React from 'react';
+
+// NOTE: all modules imported below may be imported from '@silevis/reactgrid'
 import { keyCodes } from '../Functions/keyCodes';
 import { CellTemplate, Cell, Compatible, Uncertain, UncertainCompatible, Id, CellStyle } from '../Model';
 import { isNavigationKey, isAlphaNumericKey } from './keyCodeCheckings';
