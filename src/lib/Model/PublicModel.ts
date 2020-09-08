@@ -170,7 +170,7 @@ export type UncertainCompatible<TCell extends Cell> = Uncertain<TCell> & {
 // ASK ARCHITECT BEFORE INTRODUCING ANY CHANGE!
 export interface Row<TCell extends Cell = DefaultCellTypes> {
     readonly rowId: Id;
-    readonly cells: Cell[] | TCell[];
+    readonly cells: TCell[];
     // default: 25 
     readonly height?: number;
     // default: false
