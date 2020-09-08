@@ -92,6 +92,10 @@ export var TestGrid = function (props) {
     };
     var handleChangesTest = function (changes) {
         changes.forEach(function (change) {
+            var ax = Math.random() > .5 ? 'text' : 'number';
+            if (change.newCell.type === ax) {
+                console.log(change.newCell.type);
+            }
             if (change.type === 'text') {
                 console.log(change.newCell.text);
             }
@@ -100,6 +104,7 @@ export var TestGrid = function (props) {
             }
         });
     };
+    rows[0].cells.find(function (cell) { return cell.type === "text" && cell.text; });
     var handleChanges = function (changes) {
         setRows(function (prevRows) {
             changes.forEach(function (change) {

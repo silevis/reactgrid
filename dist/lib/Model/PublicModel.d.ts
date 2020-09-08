@@ -104,7 +104,7 @@ export declare type UncertainCompatible<TCell extends Cell> = Uncertain<TCell> &
 };
 export interface Row<TCell extends Cell = DefaultCellTypes> {
     readonly rowId: Id;
-    readonly cells: Cell[] | TCell[];
+    readonly cells: TCell[];
     readonly height?: number;
     readonly reorderable?: boolean;
 }
