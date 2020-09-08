@@ -6,6 +6,7 @@ import {
 import { Config } from './testEnvConfig';
 import '../styles.scss';
 import { FlagCellTemplate, FlagCell } from './flagCell/FlagCellTemplate';
+import { NumberCell } from '../lib';
 
 type TestGridCells = DefaultCellTypes | FlagCell;
 
@@ -41,7 +42,7 @@ export const TestGrid: React.FunctionComponent<TestGridProps> = (props) => {
         rowId: `row-${ri}`,
         reorderable: true,
         height: config.cellHeight,
-        cells: columns.map<TestGridCells | Cell>((_, ci) => { // TestGridCells | Cell - allow to use variables containing cell type eg. config.firstRowType
+        cells: columns.map<TestGridCells>((_, ci) => {
             if (ri === 0) return { type: config.firstRowType, text: `${ri} - ${ci}` }
             const now = new Date();
             switch (ci) {
@@ -92,6 +93,10 @@ export const TestGrid: React.FunctionComponent<TestGridProps> = (props) => {
     // eslint-disable-next-line
     const handleChangesTest = (changes: CellChange[]) => {
         changes.forEach(change => {
+            const ax: TextCell['type'] | NumberCell['type'] = Math.random() > .5 ? 'text' : 'number';
+            if (change.newCell.type === ax) {
+                console.log(change.newCell.type);
+            }
             if (change.type === 'text') {
                 console.log(change.newCell.text);
             }
@@ -100,6 +105,9 @@ export const TestGrid: React.FunctionComponent<TestGridProps> = (props) => {
             }
         });
     };
+
+    // eslint-disable-next-line
+    rows[0].cells.find((cell) => cell.type === "text" && cell.text);
 
     const handleChanges = (changes: CellChange<TestGridCells>[]) => {
         setRows((prevRows) => {
