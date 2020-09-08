@@ -1,12 +1,11 @@
 import React from 'react';
 import {
     Column, Row, Id, MenuOption, SelectionMode, DropPosition, CellLocation,
-    DefaultCellTypes, CellChange, ReactGridProps, TextCell, Cell
+    DefaultCellTypes, CellChange, ReactGridProps, TextCell, NumberCell
 } from './../reactgrid';
 import { Config } from './testEnvConfig';
 import '../styles.scss';
 import { FlagCellTemplate, FlagCell } from './flagCell/FlagCellTemplate';
-import { NumberCell } from '../lib';
 
 type TestGridCells = DefaultCellTypes | FlagCell;
 
