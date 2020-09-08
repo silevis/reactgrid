@@ -1,18 +1,15 @@
-import React, { useState } from 'react';
+import React from 'react';
 import {
     Column, Row, Id, MenuOption, SelectionMode, DropPosition, CellLocation,
-    NumberCell, GroupCell, DefaultCellTypes, CellChange, ReactGridProps
+    DefaultCellTypes, CellChange, ReactGridProps, TextCell, Cell
 } from './../reactgrid';
 import { Config } from './testEnvConfig';
 import '../styles.scss';
 import { FlagCellTemplate, FlagCell } from './flagCell/FlagCellTemplate';
 
-type TestGridRow = Row<DefaultCellTypes | FlagCell>;
+type TestGridCells = DefaultCellTypes | FlagCell;
 
-interface TestGridState {
-    columns: Column[]
-    rows: TestGridRow[]
-}
+type TestGridRow = Row<TestGridCells>;
 
 interface TestGridProps {
     containerHeight?: number;
@@ -20,78 +17,76 @@ interface TestGridProps {
     containerMargin?: number;
     enableSticky?: boolean;
     enableColumnAndRowSelection?: boolean;
-    enableFullWidthHeader?: boolean;
     isPro?: boolean;
     config: Config;
     component: React.ComponentClass<ReactGridProps>;
 }
 
-const emailValidator = (email: string): boolean => {
+const emailValidator: TextCell['validator'] = (email) => {
     const email_regex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     return email_regex.test(email.replace(/\s+/g, ''));
 }
 
 export const TestGrid: React.FunctionComponent<TestGridProps> = (props) => {
+    const { config, containerHeight, containerWidth, containerMargin, isPro, component, enableSticky, enableColumnAndRowSelection } = props;
 
     const myNumberFormat = new Intl.NumberFormat('pl', { style: 'currency', minimumFractionDigits: 2, maximumFractionDigits: 2, currency: 'PLN' });
     const myDateFormat = new Intl.DateTimeFormat('pl', { weekday: 'short', year: 'numeric', month: 'long', day: 'numeric' })
     const myTimeFormat = new Intl.DateTimeFormat('pl', { hour: '2-digit', minute: '2-digit' })
 
-    const [state, setState] = useState<TestGridState>(() => {
-        const columns = new Array(props.config.columns).fill(0).map((_, ci) => ({
-            columnId: `col-${ci}`, resizable: true, reorderable: true, width: props.config.cellWidth,
-        } as Column));
+    const [columns, setColumns] = React.useState(() => new Array(config.columns).fill({ columnId: 0, resizable: true, reorderable: true, width: -1 })
+        .map<Column>((_, ci) => ({ columnId: `col-${ci}`, resizable: true, reorderable: true, width: config.cellWidth })));
 
-        const rows = new Array(props.config.rows).fill(0).map((_, ri) => {
-            return {
-                rowId: `row-${ri}`, reorderable: true, height: props.config.cellHeight, cells: columns.map((_, ci) => {
-                    if (ri === 0) return { type: props.config.firstRowType, text: `${ri} - ${ci}` }
-                    const now = new Date();
-                    switch (ci) {
-                        case 0:
-                            return { type: 'group', groupId: !(ri % 3) ? 'A' : undefined, text: `${ri} - ${ci}`, parentId: ri, isExpanded: ri % 4 && undefined, hasChildren: true } as GroupCell
-                        case 1:
-                            return { type: 'text', groupId: !(ri % 3) ? 'B' : undefined, text: `${ri} - ${ci}` }
-                        case 2:
-                            return { type: 'email', groupId: Math.random() < .66 ? Math.random() < .5 ? 'A' : 'B' : undefined, text: `${ri}.${ci}@bing.pl`, validator: emailValidator }
-                        case 3:
-                            return { type: 'number', format: myNumberFormat, value: parseFloat(`${ri}.${ci}`), nanToZero: false, hideZero: true } as NumberCell
-                        case 4:
-                            return { type: 'date', format: myDateFormat, date: new Date(now.setHours((ri * 24), 0, 0, 0)) }
-                        case 5:
-                            return { type: 'time', format: myTimeFormat, time: new Date(now.setHours(now.getHours() + ri)) }
-                        case 6:
-                            return { type: 'checkbox', checked: false, checkedText: 'Checked', uncheckedText: false }
-                        case 7:
-                            return { type: 'flag', group: 'B', text: 'bra' }
-                        default:
-                            return { type: 'text', text: `${ri} - ${ci}`, validator: () => { } }
-                    }
-                })
-            } as TestGridRow
-        });
-
-        return { rows, columns }
-    })
+    const [rows, setRows] = React.useState(() => new Array(config.rows).fill(0).map<TestGridRow>((_, ri) => ({
+        rowId: `row-${ri}`,
+        reorderable: true,
+        height: config.cellHeight,
+        cells: columns.map<TestGridCells | Cell>((_, ci) => { // TestGridCells | Cell - allow to use variables containing cell type eg. config.firstRowType
+            if (ri === 0) return { type: config.firstRowType, text: `${ri} - ${ci}` }
+            const now = new Date();
+            switch (ci) {
+                case 0:
+                    return { type: 'chevron', groupId: !(ri % 3) ? 'A' : undefined, text: `${ri} - ${ci}`, parentId: ri, isExpanded: ri % 4 ? true : undefined, hasChildren: true }
+                case 1:
+                    return { type: 'text', groupId: !(ri % 3) ? 'B' : undefined, text: `${ri} - ${ci}` }
+                case 2:
+                    return { type: 'email', groupId: Math.random() < .66 ? Math.random() < .5 ? 'A' : 'B' : undefined, text: `${ri}.${ci}@bing.pl`, validator: emailValidator }
+                case 3:
+                    return { type: 'number', format: myNumberFormat, value: parseFloat(`${ri}.${ci}`), nanToZero: false, hideZero: true }
+                case 4:
+                    return { type: 'date', format: myDateFormat, date: new Date(now.setHours((ri * 24), 0, 0, 0)) }
+                case 5:
+                    return { type: 'time', format: myTimeFormat, time: new Date(now.setHours(now.getHours() + ri)) }
+                case 6:
+                    return { type: 'checkbox', checked: false, checkedText: 'Checked', uncheckedText: 'Unchecked' }
+                case 7:
+                    return { type: 'flag', groupId: 'B', text: 'bra' }
+                // case 8: // TODO allow user to pass non focusable cell (header cell) with arrows
+                //     return { type: 'header', text: `${ri} - ${ci}` }
+                default:
+                    return { type: 'text', text: `${ri} - ${ci}`, validator: (text: string): boolean => true }
+            }
+        })
+    })));
 
     const handleColumnResize = (columnId: Id, width: number, selectedColIds: Id[]) => {
-        const newState = { ...state };
+        setColumns((prevColumns) => {
+            const setColumnWidth = (columnIndex: number) => {
+                const resizedColumn = prevColumns[columnIndex];
+                prevColumns[columnIndex] = { ...resizedColumn, width };
+            }
 
-        const setColumnWidth = (columnIndex: number) => {
-            const resizedColumn = newState.columns[columnIndex];
-            newState.columns[columnIndex] = { ...resizedColumn, width };
-        }
-
-        if (selectedColIds.includes(columnId)) {
-            const stateColumnIndexes = newState.columns
-                .filter(col => selectedColIds.includes(col.columnId))
-                .map(col => newState.columns.findIndex(el => el.columnId === col.columnId));
-            stateColumnIndexes.forEach(setColumnWidth);
-        } else {
-            const columnIndex = newState.columns.findIndex(col => col.columnId === columnId);
-            setColumnWidth(columnIndex);
-        }
-        setState(newState);
+            if (selectedColIds.includes(columnId)) {
+                const stateColumnIndexes = prevColumns
+                    .filter(col => selectedColIds.includes(col.columnId))
+                    .map(col => prevColumns.findIndex(el => el.columnId === col.columnId));
+                stateColumnIndexes.forEach(setColumnWidth);
+            } else {
+                const columnIndex = prevColumns.findIndex(col => col.columnId === columnId);
+                setColumnWidth(columnIndex);
+            }
+            return [...prevColumns];
+        });
     }
 
     // eslint-disable-next-line
@@ -101,28 +96,33 @@ export const TestGrid: React.FunctionComponent<TestGridProps> = (props) => {
                 console.log(change.newCell.text);
             }
             if (change.type === 'checkbox') {
-                console.log(change.initialCell.checked);
+                console.log(change.previousCell.checked);
             }
         });
     };
 
-    const handleChanges = (changes: CellChange<DefaultCellTypes | FlagCell>[]) => {
-        const newState = { ...state };
-        changes.forEach(change => {
-            const changeRowIdx = newState.rows.findIndex(el => el.rowId === change.rowId);
-            const changeColumnIdx = newState.columns.findIndex(el => el.columnId === change.columnId);
-            if (change.type === 'flag') {
-                // console.log(change.newCell.text);
-            }
-            if (change.type === 'text') {
-                // console.log(change.newCell.text);
-            }
-            if (change.type === 'checkbox') {
-                // console.log(change.initialCell.checked);
-            }
-            newState.rows[changeRowIdx].cells[changeColumnIdx] = change.newCell;
+    const handleChanges = (changes: CellChange<TestGridCells>[]) => {
+        setRows((prevRows) => {
+            changes.forEach((change) => {
+                const changeRowIdx = prevRows.findIndex(
+                    (el) => el.rowId === change.rowId
+                );
+                const changeColumnIdx = columns.findIndex(
+                    (el) => el.columnId === change.columnId
+                );
+                if (change.type === 'flag') {
+                    // console.log(change.newCell.text);
+                }
+                if (change.type === 'text') {
+                    // console.log(change.newCell.text);
+                }
+                if (change.type === 'checkbox') {
+                    // console.log(change.previousCell.checked);
+                }
+                prevRows[changeRowIdx].cells[changeColumnIdx] = change.newCell;
+            });
+            return [...prevRows];
         });
-        setState(newState);
     };
 
     const reorderArray = <T extends {}>(arr: T[], idxs: number[], to: number) => {
@@ -144,19 +144,18 @@ export const TestGrid: React.FunctionComponent<TestGridProps> = (props) => {
     }
 
     const handleColumnsReorder = (targetColumnId: Id, columnIds: Id[], dropPosition: DropPosition) => {
-        const to = state.columns.findIndex((column: Column) => column.columnId === targetColumnId);
-        const columnIdxs = columnIds.map((id: Id, idx: number) => state.columns.findIndex((c: Column) => c.columnId === id));
-        setState({
-            columns: reorderArray(state.columns, columnIdxs, to),
-            rows: state.rows.map(row => ({ ...row, cells: reorderArray(row.cells, columnIdxs, to) })),
-        });
+        const to = columns.findIndex((column: Column) => column.columnId === targetColumnId);
+        const columnIdxs = columnIds.map((id: Id, idx: number) => columns.findIndex((c: Column) => c.columnId === id));
+        setRows(rows.map(row => ({ ...row, cells: reorderArray(row.cells, columnIdxs, to) })));
+        setColumns(reorderArray(columns, columnIdxs, to));
     }
 
     const handleRowsReorder = (targetRowId: Id, rowIds: Id[], dropPosition: DropPosition) => {
-        const newState = { ...state };
-        const to = state.rows.findIndex(row => row.rowId === targetRowId);
-        const ids = rowIds.map(id => state.rows.findIndex(r => r.rowId === id));
-        setState({ ...newState, rows: reorderArray(state.rows, ids, to) });
+        setRows((prevRows) => {
+            const to = rows.findIndex(row => row.rowId === targetRowId);
+            const columnIdxs = rowIds.map(id => rows.findIndex(r => r.rowId === id));
+            return reorderArray(prevRows, columnIdxs, to);
+        });
     }
 
     const handleContextMenu = (selectedRowIds: Id[], selectedColIds: Id[], selectionMode: SelectionMode, menuOptions: MenuOption[]): MenuOption[] => {
@@ -193,43 +192,45 @@ export const TestGrid: React.FunctionComponent<TestGridProps> = (props) => {
         return true;
     }
 
-
-    const Component = props.component;
+    const Component = component;
     return (
         <>
             <div className='test-grid-container' data-cy='div-scrollable-element' style={{
-                ...(!props.config.pinToBody && {
-                    height: props.containerHeight || props.config.rgViewportHeight,
-                    width: props.containerWidth || props.config.rgViewportWidth,
-                    margin: props.containerMargin || props.config.margin,
+                ...(!config.pinToBody && {
+                    height: containerHeight || config.rgViewportHeight,
+                    width: containerWidth || config.rgViewportWidth,
+                    margin: containerMargin || config.margin,
                     overflow: 'auto',
                 }),
                 position: 'relative',
-                ...(props.config.flexRow && {
+                ...(config.flexRow && {
                     display: 'flex',
                     flexDirection: 'row'
                 }),
             }}>
-                {props.config.enableAdditionalContent &&
+                {config.enableAdditionalContent &&
                     <>
-                        <Logo isPro={props.isPro} />
-                        <Logo isPro={props.isPro} />
-                        <Logo isPro={props.isPro} />
+                        <Logo isPro={isPro} />
+                        <Logo isPro={isPro} />
+                        <Logo isPro={isPro} />
                     </>
                 }
                 <Component
-                    rows={state.rows}
-                    columns={state.columns}
+                    rows={rows}
+                    columns={columns}
                     initialFocusLocation={{ columnId: 'col-1', rowId: 'row-2' }}
                     // focusLocation={{ columnId: 'col-1', rowId: 'row-3' }}
                     onCellsChanged={handleChanges}
                     onColumnResized={handleColumnResize}
                     customCellTemplates={{ 'flag': new FlagCellTemplate() }}
-                    highlights={[{ columnId: 'col-1', rowId: 'row-1', borderColor: '#00ff00' }, { columnId: 'col-0', rowId: 'row-1', borderColor: 'red' }]}
-                    stickyLeftColumns={props.enableSticky ? props.config.stickyLeft : undefined}
-                    stickyRightColumns={props.enableSticky ? props.config.stickyRight : undefined}
-                    stickyTopRows={props.enableSticky ? props.config.stickyTop : undefined}
-                    stickyBottomRows={props.enableSticky ? props.config.stickyBottom : undefined}
+                    highlights={[
+                        { columnId: 'col-1', rowId: 'row-1', borderColor: '#00ff00' },
+                        { columnId: 'col-0', rowId: 'row-1', borderColor: 'red' }
+                    ]}
+                    stickyLeftColumns={enableSticky ? config.stickyLeft : undefined}
+                    stickyRightColumns={enableSticky ? config.stickyRight : undefined}
+                    stickyTopRows={enableSticky ? config.stickyTop : undefined}
+                    stickyBottomRows={enableSticky ? config.stickyBottom : undefined}
                     canReorderColumns={handleCanReorderColumns}
                     canReorderRows={handleCanReorderRows}
                     onColumnsReordered={handleColumnsReorder}
@@ -237,19 +238,19 @@ export const TestGrid: React.FunctionComponent<TestGridProps> = (props) => {
                     onContextMenu={handleContextMenu}
                     onFocusLocationChanged={handleFocusLocationChanged}
                     onFocusLocationChanging={handleFocusLocationChanging}
-                    enableRowSelection={props.enableColumnAndRowSelection || false}
-                    enableColumnSelection={props.enableColumnAndRowSelection || false}
-                    enableFullWidthHeader={props.config.enableFullWidthHeader || false}
-                    enableRangeSelection={props.config.enableRangeSelection}
-                    enableFillHandle={props.config.enableFillHandle}
-                    enableGroupIdRender={props.config.enableGroupIdRender}
+                    enableRowSelection={enableColumnAndRowSelection || false}
+                    enableColumnSelection={enableColumnAndRowSelection || false}
+                    enableFullWidthHeader={config.enableFullWidthHeader || false}
+                    enableRangeSelection={config.enableRangeSelection}
+                    enableFillHandle={config.enableFillHandle}
+                    enableGroupIdRender={config.enableGroupIdRender}
                     labels={{
                         copyLabel: 'Copy me!',
                         pasteLabel: 'Paste me!',
                         cutLabel: 'Cut me!',
                     }}
                 />
-                {props.config.enableAdditionalContent &&
+                {config.enableAdditionalContent &&
                     <>
                         <h1 style={{ width: 3000 }}>TEXT</h1> Test WITH IT
                         <h1>TEXT</h1> Test WITH IT
@@ -267,8 +268,8 @@ export const TestGrid: React.FunctionComponent<TestGridProps> = (props) => {
                 }
             </div>
             <input type='text' data-cy='outer-input' />
-            <Logo isPro={props.isPro} />
-            {props.config.enableAdditionalContent &&
+            <Logo isPro={isPro} />
+            {config.enableAdditionalContent &&
                 <>
                     <h1 style={{ width: 3000 }}>TEXT</h1> Test WITH IT
                     <h1>TEXT</h1> Test WITH IT
