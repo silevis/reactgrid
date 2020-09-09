@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Range, State, Highlight } from '../Model';
+import { Range, State, Highlight, Borders } from '../Model';
 import { CellFocus } from './CellFocus';
 import { RowRenderer } from './RowRenderer';
 import { CellRendererProps } from './CellRenderer';
@@ -13,12 +13,14 @@ export interface PaneProps {
 export interface RowsProps {
     state: State;
     range: Range;
+    borders: Borders;	
     cellRenderer: React.FunctionComponent<CellRendererProps>;
 }
 
 export interface PaneContentProps<TState extends State = State> {
     state: TState;
     range: () => Range;
+    borders: Borders;	
     cellRenderer: React.FunctionComponent<CellRendererProps>;
     children?: React.ReactNode;
 }
@@ -43,10 +45,11 @@ class PaneGridContent extends React.Component<RowsProps> {
     }
 
     render() {
-        const { range, state, cellRenderer } = this.props;
+        const { range, state, borders, cellRenderer } = this.props;
         return (
             <>
-                {range.rows.map((row) => <RowRenderer key={row.rowId} state={state} row={row} columns={range.columns} forceUpdate={true} cellRenderer={cellRenderer} />)}
+                {range.rows.map((row) => <RowRenderer key={row.rowId} state={state} row={row} columns={range.columns} forceUpdate={true} cellRenderer={cellRenderer} 
+                borders={{ ...borders, top: borders.top && row.top === 0, bottom: borders.bottom && row.idx === range.last.row.idx }} />)}	
             </>
         );
     }
@@ -70,7 +73,7 @@ export const Pane: React.FunctionComponent<PaneProps> = props => {
 };
 
 export const PaneContent: React.FunctionComponent<PaneContentProps<State>> = props => {
-    const { state, range, cellRenderer, children } = props;
+    const { state, range, borders, cellRenderer, children } = props;
 
     const calculatedRange = range();
 
@@ -80,7 +83,7 @@ export const PaneContent: React.FunctionComponent<PaneContentProps<State>> = pro
     };
     return (
         <>
-            <PaneGridContent state={state} range={calculatedRange} cellRenderer={cellRenderer} />
+            <PaneGridContent state={state} range={calculatedRange} borders={borders} cellRenderer={cellRenderer} />
             {renderHighlights(state, calculatedRange)}
             {state.focusedLocation && calculatedRange.contains(state.focusedLocation) &&
                 <CellFocus location={state.focusedLocation} />}

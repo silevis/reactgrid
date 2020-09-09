@@ -47,6 +47,12 @@ export const PanesRenderer: React.FunctionComponent<PanesProps> = ({ state, cell
                 <PaneContent
                     state={state}
                     range={columnsSlicer(visibleScrollableRange as Range)(state.visibleRange!)}
+                    borders={{ 
+                        bottom: true, 
+                        right: true, 
+                        left: renderLeftSticky ? false : true,
+                        top: renderTopSticky ? false : true 
+                    }}
                     cellRenderer={cellRenderer}
                 />
             </Pane>
@@ -65,6 +71,11 @@ export const PanesRenderer: React.FunctionComponent<PanesProps> = ({ state, cell
                 <PaneContent
                     state={state}
                     range={rowsSlicer(cellMatrix.ranges.stickyLeftRange)((visibleScrollableRange as Range))}
+                    borders={{ 
+                        bottom: true, 
+                        left: true,
+                        top: renderTopSticky ? false : true
+                    }}	
                     cellRenderer={cellRenderer}
                 />
             </Pane>
@@ -83,6 +94,12 @@ export const PanesRenderer: React.FunctionComponent<PanesProps> = ({ state, cell
                 <PaneContent
                     state={state}
                     range={columnsSlicer(cellMatrix.ranges.stickyTopRange)((state.visibleRange!))}
+                    borders={{ 
+                        right: true, 
+                        top: true, 
+                        bottom: true, 
+                        left: renderLeftSticky ? false : true 
+                    }}
                     cellRenderer={cellRenderer}
                 />
             </Pane>
@@ -101,6 +118,12 @@ export const PanesRenderer: React.FunctionComponent<PanesProps> = ({ state, cell
                 <PaneContent
                     state={state}
                     range={rowsSlicer(cellMatrix.ranges.stickyLeftRange)(cellMatrix.ranges.stickyTopRange)}
+                    borders={{ 
+                        left: true, 
+                        top: true, 
+                        right: true, 
+                        bottom: true 
+                    }}	
                     cellRenderer={cellRenderer}
                 />
             </Pane>
