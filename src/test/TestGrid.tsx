@@ -1,7 +1,7 @@
 import React from 'react';
 import {
     Column, Row, Id, MenuOption, SelectionMode, DropPosition, CellLocation,
-    DefaultCellTypes, CellChange, ReactGridProps, TextCell, Cell
+    DefaultCellTypes, CellChange, ReactGridProps, TextCell, NumberCell
 } from './../reactgrid';
 import { Config } from './testEnvConfig';
 import '../styles.scss';
@@ -41,12 +41,12 @@ export const TestGrid: React.FunctionComponent<TestGridProps> = (props) => {
         rowId: `row-${ri}`,
         reorderable: true,
         height: config.cellHeight,
-        cells: columns.map<TestGridCells | Cell>((_, ci) => { // TestGridCells | Cell - allow to use variables containing cell type eg. config.firstRowType
+        cells: columns.map<TestGridCells>((_, ci) => {
             if (ri === 0) return { type: config.firstRowType, text: `${ri} - ${ci}` }
             const now = new Date();
             switch (ci) {
                 case 0:
-                    return { type: 'group', groupId: !(ri % 3) ? 'A' : undefined, text: `${ri} - ${ci}`, parentId: ri, isExpanded: ri % 4 ? true : undefined, hasChildren: true }
+                    return { type: 'chevron', groupId: !(ri % 3) ? 'A' : undefined, text: `${ri} - ${ci}`, parentId: ri, isExpanded: ri % 4 ? true : undefined, hasChildren: true }
                 case 1:
                     return { type: 'text', groupId: !(ri % 3) ? 'B' : undefined, text: `${ri} - ${ci}`,
                     style: { 
@@ -73,9 +73,7 @@ export const TestGrid: React.FunctionComponent<TestGridProps> = (props) => {
                 case 6:
                     return { type: 'checkbox', checked: false, checkedText: 'Checked', uncheckedText: 'Unchecked' }
                 case 7:
-                    return { type: 'flag', group: 'B', text: 'bra' 
-                    
-                }
+                    return { type: 'flag', groupId: 'B', text: 'bra' }
                 // case 8: // TODO allow user to pass non focusable cell (header cell) with arrows
                 //     return { type: 'header', text: `${ri} - ${ci}` }
                 default:
@@ -107,14 +105,21 @@ export const TestGrid: React.FunctionComponent<TestGridProps> = (props) => {
     // eslint-disable-next-line
     const handleChangesTest = (changes: CellChange[]) => {
         changes.forEach(change => {
+            const ax: TextCell['type'] | NumberCell['type'] = Math.random() > .5 ? 'text' : 'number';
+            if (change.newCell.type === ax) {
+                console.log(change.newCell.type);
+            }
             if (change.type === 'text') {
                 console.log(change.newCell.text);
             }
             if (change.type === 'checkbox') {
-                console.log(change.initialCell.checked);
+                console.log(change.previousCell.checked);
             }
         });
     };
+
+    // eslint-disable-next-line
+    rows[0].cells.find((cell) => cell.type === "text" && cell.text);
 
     const handleChanges = (changes: CellChange<TestGridCells>[]) => {
         setRows((prevRows) => {
@@ -132,7 +137,7 @@ export const TestGrid: React.FunctionComponent<TestGridProps> = (props) => {
                     // console.log(change.newCell.text);
                 }
                 if (change.type === 'checkbox') {
-                    // console.log(change.initialCell.checked);
+                    // console.log(change.previousCell.checked);
                 }
                 prevRows[changeRowIdx].cells[changeColumnIdx] = change.newCell;
             });

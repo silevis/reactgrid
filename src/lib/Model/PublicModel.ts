@@ -5,7 +5,7 @@
 //  THANKS!
 
 //  Michael Matejko
-import { TextCell, HeaderCell, CheckboxCell, DateCell, EmailCell, GroupCell, NumberCell, TimeCell } from './../CellTemplates';
+import { TextCell, HeaderCell, CheckboxCell, DateCell, EmailCell, ChevronCell, NumberCell, TimeCell } from './../CellTemplates';
 
 export type SelectionMode = 'row' | 'column' | 'range';
 
@@ -74,7 +74,7 @@ export interface Highlight {
 
 
 // ASK ARCHITECT BEFORE INTRODUCING ANY CHANGE!
-export type DefaultCellTypes = CheckboxCell | DateCell | EmailCell | GroupCell | HeaderCell | NumberCell | TextCell | TimeCell;
+export type DefaultCellTypes = CheckboxCell | DateCell | EmailCell | ChevronCell | HeaderCell | NumberCell | TextCell | TimeCell;
 
 
 // ASK ARCHITECT BEFORE INTRODUCING ANY CHANGE!
@@ -85,7 +85,7 @@ export interface Change<TCell extends Cell = DefaultCellTypes> {
     readonly rowId: Id;
     readonly columnId: Id;
     readonly type: TCell['type'];
-    readonly initialCell: TCell;
+    readonly previousCell: TCell;
     readonly newCell: TCell;
 }
 
@@ -186,7 +186,7 @@ export type UncertainCompatible<TCell extends Cell> = Uncertain<TCell> & {
 // ASK ARCHITECT BEFORE INTRODUCING ANY CHANGE!
 export interface Row<TCell extends Cell = DefaultCellTypes> {
     readonly rowId: Id;
-    readonly cells: Cell[] | TCell[];
+    readonly cells: TCell[];
     // default: 25 
     readonly height?: number;
     // default: false
