@@ -57,7 +57,7 @@ export const TestGrid: React.FunctionComponent<TestGridProps> = (props) => {
                             style: {
                                 left: 'dotted', right: 'dotted', bottom: 'dotted', top: 'dotted'
                             },
-                            thickness: {
+                            width: {
                                 left: '2px', right: '2px', bottom: '2px', top: '2px'
                             }
                         }

@@ -151,7 +151,7 @@ export interface CellStyle {
             readonly right?: string,
             readonly bottom?: string
         }
-        readonly thickness?: {
+        readonly width?: {
             readonly left?: string,
             readonly top?: string,
             readonly right?: string,

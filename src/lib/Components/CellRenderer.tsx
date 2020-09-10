@@ -18,7 +18,7 @@ export interface CellRendererChildProps<TState extends State = State> {
     state?: TState;
 }
 
-function getPropValBegin(borders: Borders, defaultBorderProp: string, cell : Compatible<Cell>, defaultValue: string, prop: 'color' | 'style' | 'thickness', borderEdge: 'left' | 'top') {
+function getPropValBegin(borders: Borders, defaultBorderProp: string, cell : Compatible<Cell>, defaultValue: string, prop: 'color' | 'style' | 'width', borderEdge: 'left' | 'top') {
     if (borders[borderEdge]) {
         return cell.style?.border?.[prop]?.[borderEdge] ? cell.style.border[prop]?.[borderEdge] : defaultBorderProp;
     } else if (cell.style?.border?.[prop]?.[borderEdge]) {
@@ -26,7 +26,7 @@ function getPropValBegin(borders: Borders, defaultBorderProp: string, cell : Com
     } return defaultValue;
 }
 
-function getPropValEnd(borders: Borders, state: State, location: Location, cell : Compatible<Cell>, defaultBorderColor: string, defaultValue: string, prop: 'color' | 'style' | 'thickness',  axis: 'row' | 'column', borderEdge: 'right' | 'bottom') {
+function getPropValEnd(borders: Borders, state: State, location: Location, cell : Compatible<Cell>, defaultBorderColor: string, defaultValue: string, prop: 'color' | 'style' | 'width',  axis: 'row' | 'column', borderEdge: 'right' | 'bottom') {
     if (borders[borderEdge] || !(state.cellMatrix.scrollableRange.last[axis].idx === location[axis].idx)) {
         return cell.style?.border?.[prop]?.[borderEdge] ? cell.style.border[prop]?.[borderEdge] : defaultBorderColor;
     } else if (cell.style?.border?.[prop]?.[borderEdge]) {
@@ -39,7 +39,7 @@ export const CellRenderer: React.FunctionComponent<CellRendererProps> = ({ state
     const isFocused = state.focusedLocation !== undefined && areLocationsEqual(state.focusedLocation, location);
     const customClass = (cellTemplate.getClassName && cellTemplate.getClassName(cell, false)) ?? '';
     const defaultBorderColor = '#E8E8E8';
-    const defaultBorderThickness = '1px';
+    const defaultBorderWidth = '1px';
     const defaultBorderStyle = 'solid';
     const bordersColors = {
         left: getPropValBegin(borders, defaultBorderColor, cell, 'none', 'color', 'left'),
@@ -47,11 +47,11 @@ export const CellRenderer: React.FunctionComponent<CellRendererProps> = ({ state
         top: getPropValBegin(borders, defaultBorderColor,  cell, 'none', 'color', 'top'),
         bottom: getPropValEnd(borders, state, location, cell, defaultBorderColor, 'none', 'color', 'row', 'bottom'),
     }
-    const bordersThickness = {
-        left: getPropValBegin(borders, defaultBorderThickness, cell, 'unset', 'thickness', 'left'),
-        right: getPropValEnd(borders, state, location, cell, defaultBorderThickness, 'unset', 'thickness', 'column', 'right'),
-        top: getPropValBegin(borders, defaultBorderThickness, cell, 'unset', 'thickness', 'top'),
-        bottom: getPropValEnd(borders, state, location, cell, defaultBorderThickness, 'unset', 'thickness', 'row', 'bottom'),
+    const bordersWidth = {
+        left: getPropValBegin(borders, defaultBorderWidth, cell, 'unset', 'width', 'left'),
+        right: getPropValEnd(borders, state, location, cell, defaultBorderWidth, 'unset', 'width', 'column', 'right'),
+        top: getPropValBegin(borders, defaultBorderWidth, cell, 'unset', 'width', 'top'),
+        bottom: getPropValEnd(borders, state, location, cell, defaultBorderWidth, 'unset', 'width', 'row', 'bottom'),
 
     }
     const bordersStyle = {
@@ -61,10 +61,10 @@ export const CellRenderer: React.FunctionComponent<CellRendererProps> = ({ state
         bottom: getPropValEnd(borders, state, location, cell, defaultBorderStyle, 'unset', 'style', 'row', 'bottom'),
     }
     const bordersProps = {
-        borderLeft: `${bordersThickness.left} ${bordersStyle.left} ${bordersColors.left}`,
-        borderRight: `${bordersThickness.right} ${bordersStyle.right} ${bordersColors.right}`,
-        borderTop: `${bordersThickness.top} ${bordersStyle.top} ${bordersColors.top}`,
-        borderBottom: `${bordersThickness.bottom} ${bordersStyle.bottom} ${bordersColors.bottom}`,
+        borderLeft: `${bordersWidth.left} ${bordersStyle.left} ${bordersColors.left}`,
+        borderRight: `${bordersWidth.right} ${bordersStyle.right} ${bordersColors.right}`,
+        borderTop: `${bordersWidth.top} ${bordersStyle.top} ${bordersColors.top}`,
+        borderBottom: `${bordersWidth.bottom} ${bordersStyle.bottom} ${bordersColors.bottom}`,
     }
     const style = {
         ...(cellTemplate.getStyle && (cellTemplate.getStyle(cell, false) || {})),
