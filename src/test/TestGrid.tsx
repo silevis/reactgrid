@@ -51,17 +51,21 @@ export const TestGrid: React.FunctionComponent<TestGridProps> = (props) => {
                     return { type: 'text', groupId: !(ri % 3) ? 'B' : undefined, text: `${ri} - ${ci}`,
                     style: { 
                         border: { 
-                            color: {
-                                left: 'red', right: 'red', bottom: 'red', top: 'red'
+                            left: {
+                                color: 'red', style: 'dotted', width: '2px'
                             },
-                            style: {
-                                left: 'dotted', right: 'dotted', bottom: 'dotted', top: 'dotted'
+                            top: {
+                                color: 'red', style: 'dotted', width: '2px'
                             },
-                            width: {
-                                left: '2px', right: '2px', bottom: '2px', top: '2px'
+                            right: {
+                                color: 'red', style: 'dotted', width: '2px'
+                            },
+                            bottom: {
+                                color: 'red', style: 'dotted', width: '2px'
                             }
                         }
-                    }  }
+                    }  
+                }
                 case 2:
                     return { type: 'email', groupId: Math.random() < .66 ? Math.random() < .5 ? 'A' : 'B' : undefined, text: `${ri}.${ci}@bing.pl`, validator: emailValidator }
                 case 3:

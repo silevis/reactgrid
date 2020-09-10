@@ -20,17 +20,17 @@ export interface CellRendererChildProps<TState extends State = State> {
 
 function getPropValBegin(borders: Borders, defaultBorderProp: string, cell : Compatible<Cell>, defaultValue: string, prop: 'color' | 'style' | 'width', borderEdge: 'left' | 'top') {
     if (borders[borderEdge]) {
-        return cell.style?.border?.[prop]?.[borderEdge] ? cell.style.border[prop]?.[borderEdge] : defaultBorderProp;
-    } else if (cell.style?.border?.[prop]?.[borderEdge]) {
-        return cell.style.border[prop]?.[borderEdge];
+        return cell.style?.border?.[borderEdge]?.[prop] ? cell.style.border[borderEdge]?.[prop] : defaultBorderProp;
+    } else if (cell.style?.border?.[borderEdge]?.[prop]) {
+        return cell.style.border[borderEdge]?.[prop];
     } return defaultValue;
 }
 
 function getPropValEnd(borders: Borders, state: State, location: Location, cell : Compatible<Cell>, defaultBorderColor: string, defaultValue: string, prop: 'color' | 'style' | 'width',  axis: 'row' | 'column', borderEdge: 'right' | 'bottom') {
     if (borders[borderEdge] || !(state.cellMatrix.scrollableRange.last[axis].idx === location[axis].idx)) {
-        return cell.style?.border?.[prop]?.[borderEdge] ? cell.style.border[prop]?.[borderEdge] : defaultBorderColor;
-    } else if (cell.style?.border?.[prop]?.[borderEdge]) {
-        return cell.style?.border?.[prop]?.[borderEdge];
+        return cell.style?.border?.[borderEdge]?.[prop] ? cell.style.border[borderEdge]?.[prop] : defaultBorderColor;
+    } else if (cell.style?.border?.[borderEdge]?.[prop]) {
+        return cell.style?.border?.[borderEdge]?.[prop];
     } return defaultValue;
 }
 
@@ -41,24 +41,25 @@ export const CellRenderer: React.FunctionComponent<CellRendererProps> = ({ state
     const defaultBorderColor = '#E8E8E8';
     const defaultBorderWidth = '1px';
     const defaultBorderStyle = 'solid';
+    const defaultValue = 'unset';
     const bordersColors = {
-        left: getPropValBegin(borders, defaultBorderColor, cell, 'none', 'color', 'left'),
-        right: getPropValEnd(borders, state, location, cell, defaultBorderColor, 'none', 'color', 'column', 'right'),
-        top: getPropValBegin(borders, defaultBorderColor,  cell, 'none', 'color', 'top'),
-        bottom: getPropValEnd(borders, state, location, cell, defaultBorderColor, 'none', 'color', 'row', 'bottom'),
+        left: getPropValBegin(borders, defaultBorderColor, cell, defaultValue, 'color', 'left'),
+        right: getPropValEnd(borders, state, location, cell, defaultBorderColor, defaultValue, 'color', 'column', 'right'),
+        top: getPropValBegin(borders, defaultBorderColor,  cell, defaultValue, 'color', 'top'),
+        bottom: getPropValEnd(borders, state, location, cell, defaultBorderColor, defaultValue, 'color', 'row', 'bottom'),
     }
     const bordersWidth = {
-        left: getPropValBegin(borders, defaultBorderWidth, cell, 'unset', 'width', 'left'),
-        right: getPropValEnd(borders, state, location, cell, defaultBorderWidth, 'unset', 'width', 'column', 'right'),
-        top: getPropValBegin(borders, defaultBorderWidth, cell, 'unset', 'width', 'top'),
-        bottom: getPropValEnd(borders, state, location, cell, defaultBorderWidth, 'unset', 'width', 'row', 'bottom'),
+        left: getPropValBegin(borders, defaultBorderWidth, cell, defaultValue, 'width', 'left'),
+        right: getPropValEnd(borders, state, location, cell, defaultBorderWidth, defaultValue, 'width', 'column', 'right'),
+        top: getPropValBegin(borders, defaultBorderWidth, cell, defaultValue, 'width', 'top'),
+        bottom: getPropValEnd(borders, state, location, cell, defaultBorderWidth, defaultValue, 'width', 'row', 'bottom'),
 
     }
     const bordersStyle = {
-        left: getPropValBegin(borders, defaultBorderStyle, cell, 'unset', 'style', 'left'),
-        right: getPropValEnd(borders, state, location, cell, defaultBorderStyle, 'unset', 'style', 'column', 'right'),
-        top: getPropValBegin(borders, defaultBorderStyle,  cell, 'unset', 'style', 'top'),
-        bottom: getPropValEnd(borders, state, location, cell, defaultBorderStyle, 'unset', 'style', 'row', 'bottom'),
+        left: getPropValBegin(borders, defaultBorderStyle, cell, defaultValue, 'style', 'left'),
+        right: getPropValEnd(borders, state, location, cell, defaultBorderStyle, defaultValue, 'style', 'column', 'right'),
+        top: getPropValBegin(borders, defaultBorderStyle,  cell, defaultValue, 'style', 'top'),
+        bottom: getPropValEnd(borders, state, location, cell, defaultBorderStyle, defaultValue, 'style', 'row', 'bottom'),
     }
     const bordersProps = {
         borderLeft: `${bordersWidth.left} ${bordersStyle.left} ${bordersColors.left}`,

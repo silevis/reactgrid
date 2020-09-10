@@ -6,7 +6,6 @@
 
 //  Michael Matejko
 import { TextCell, HeaderCell, CheckboxCell, DateCell, EmailCell, ChevronCell, NumberCell, TimeCell } from './../CellTemplates';
-
 export type SelectionMode = 'row' | 'column' | 'range';
 
 // ASK ARCHITECT BEFORE INTRODUCING ANY CHANGE!
@@ -139,23 +138,25 @@ export interface CellStyle {
     readonly overflow?: string;
     readonly paddingLeft?: string;
     readonly border?: {
-        readonly color?: {
-            readonly left?: string,
-            readonly top?: string,
-            readonly right?: string,
-            readonly bottom?: string
+        readonly left?: {
+            readonly color?: string,
+            readonly style?: string,
+            readonly width?: string
         }
-        readonly style?: {
-            readonly left?: string,
-            readonly top?: string,
-            readonly right?: string,
-            readonly bottom?: string
+        readonly top?: {
+            readonly color?: string,
+            readonly style?: string,
+            readonly width?: string
         }
-        readonly width?: {
-            readonly left?: string,
-            readonly top?: string,
-            readonly right?: string,
-            readonly bottom?: string
+        readonly right?: {
+            readonly color?: string,
+            readonly style?: string,
+            readonly width?: string
+        }
+        readonly bottom?: {
+            readonly color?: string,
+            readonly style?: string,
+            readonly width?: string
         }
     }
 }
