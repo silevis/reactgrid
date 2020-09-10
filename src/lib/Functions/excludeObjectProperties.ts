@@ -1,3 +1,3 @@
 import { CellStyle } from "../Model/PublicModel";
 
-export const noBorderColors = ({ borderColors, ...rest }: CellStyle) => rest;
+export const noBorder = ({ border, ...rest }: CellStyle): Omit<CellStyle, 'border'>  => rest;

@@ -48,7 +48,20 @@ export const TestGrid: React.FunctionComponent<TestGridProps> = (props) => {
                 case 0:
                     return { type: 'group', groupId: !(ri % 3) ? 'A' : undefined, text: `${ri} - ${ci}`, parentId: ri, isExpanded: ri % 4 ? true : undefined, hasChildren: true }
                 case 1:
-                    return { type: 'text', groupId: !(ri % 3) ? 'B' : undefined, text: `${ri} - ${ci}` }
+                    return { type: 'text', groupId: !(ri % 3) ? 'B' : undefined, text: `${ri} - ${ci}`,
+                    style: { 
+                        border: { 
+                            color: {
+                                left: 'red', right: 'red', bottom: 'red', top: 'red'
+                            },
+                            style: {
+                                left: 'dotted', right: 'dotted', bottom: 'dotted', top: 'dotted'
+                            },
+                            thickness: {
+                                left: '2px', right: '2px', bottom: '2px', top: '2px'
+                            }
+                        }
+                    }  }
                 case 2:
                     return { type: 'email', groupId: Math.random() < .66 ? Math.random() < .5 ? 'A' : 'B' : undefined, text: `${ri}.${ci}@bing.pl`, validator: emailValidator }
                 case 3:
@@ -60,7 +73,9 @@ export const TestGrid: React.FunctionComponent<TestGridProps> = (props) => {
                 case 6:
                     return { type: 'checkbox', checked: false, checkedText: 'Checked', uncheckedText: 'Unchecked' }
                 case 7:
-                    return { type: 'flag', group: 'B', text: 'bra', style: { borderColors: { left: 'red', right: 'red', bottom: 'red', top: 'red' } } }
+                    return { type: 'flag', group: 'B', text: 'bra' 
+                    
+                }
                 // case 8: // TODO allow user to pass non focusable cell (header cell) with arrows
                 //     return { type: 'header', text: `${ri} - ${ci}` }
                 default:

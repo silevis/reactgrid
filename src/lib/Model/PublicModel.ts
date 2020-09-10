@@ -132,16 +132,31 @@ export interface Column {
     //readonly onResize?: (newWidth: number) => void;
 }
 
+// ASK ARCHITECT BEFORE INTRODUCING ANY CHANGE!
 export interface CellStyle {
     readonly color?: string;
     readonly background?: string;
     readonly overflow?: string;
     readonly paddingLeft?: string;
-    readonly borderColors?: {
-        readonly left?: string;
-        readonly right?: string;
-        readonly top?: string;
-        readonly bottom?: string;
+    readonly border?: {
+        readonly color?: {
+            readonly left?: string,
+            readonly top?: string,
+            readonly right?: string,
+            readonly bottom?: string
+        }
+        readonly style?: {
+            readonly left?: string,
+            readonly top?: string,
+            readonly right?: string,
+            readonly bottom?: string
+        }
+        readonly thickness?: {
+            readonly left?: string,
+            readonly top?: string,
+            readonly right?: string,
+            readonly bottom?: string
+        }
     }
 }
 
