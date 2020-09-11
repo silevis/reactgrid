@@ -132,32 +132,23 @@ export interface Column {
 }
 
 // ASK ARCHITECT BEFORE INTRODUCING ANY CHANGE!
+export interface BorderProps {
+    readonly color?: string;
+    readonly style?: string;
+    readonly width?: string;
+}
+
+// ASK ARCHITECT BEFORE INTRODUCING ANY CHANGE!
 export interface CellStyle {
     readonly color?: string;
     readonly background?: string;
     readonly overflow?: string;
     readonly paddingLeft?: string;
     readonly border?: {
-        readonly left?: {
-            readonly color?: string,
-            readonly style?: string,
-            readonly width?: string
-        }
-        readonly top?: {
-            readonly color?: string,
-            readonly style?: string,
-            readonly width?: string
-        }
-        readonly right?: {
-            readonly color?: string,
-            readonly style?: string,
-            readonly width?: string
-        }
-        readonly bottom?: {
-            readonly color?: string,
-            readonly style?: string,
-            readonly width?: string
-        }
+        readonly left?: BorderProps;
+        readonly top?: BorderProps;
+        readonly right?: BorderProps;
+        readonly bottom?: BorderProps;
     }
 }
 

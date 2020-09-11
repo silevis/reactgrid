@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { State, GridRow, GridColumn, Borders } from '../Model';
+import { State, GridRow, GridColumn, Borders, Location } from '../Model';
 import { CellRendererProps } from './CellRenderer';
 
 export interface RowRendererProps {
@@ -7,8 +7,8 @@ export interface RowRendererProps {
     row: GridRow;
     columns: GridColumn[];
     forceUpdate: boolean;
-    borders: Borders;	
-    cellRenderer: React.FunctionComponent<CellRendererProps>;
+    borders: Borders;
+    cellRenderer: React.FC<CellRendererProps>;
 }
 
 export class RowRenderer extends React.Component<RowRendererProps> {
@@ -21,16 +21,19 @@ export class RowRenderer extends React.Component<RowRendererProps> {
 
     render() {
         const { columns, row, cellRenderer, borders, state } = this.props;
-        const lastColIdx = columns[columns.length - 1].idx;	
+        const lastColIdx = columns[columns.length - 1].idx;
         const CellRenderer = cellRenderer;
-        return columns.map(column => <CellRenderer
-            key={row.idx + '-' + column.idx}
-            borders={{	
-                ...borders,	
-                left: borders.left && column.left === 0,	
-                right: borders.right && column.idx === lastColIdx	
-            }}
-            state={state}
-            location={{ row, column }} />);
+        return columns.map(column => {
+            const location: Location = { row, column };
+            return <CellRenderer
+                key={row.idx + '-' + column.idx}
+                borders={{
+                    ...borders,
+                    left: borders.left && column.left === 0,
+                    right: (borders.right && column.idx === lastColIdx) || !(state.cellMatrix.scrollableRange.last.column.idx === location.column.idx)
+                }}
+                state={state}
+                location={location} />
+        });
     }
 }

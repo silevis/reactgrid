@@ -13,14 +13,14 @@ export interface PaneProps {
 export interface RowsProps {
     state: State;
     range: Range;
-    borders: Borders;	
+    borders: Borders;
     cellRenderer: React.FunctionComponent<CellRendererProps>;
 }
 
 export interface PaneContentProps<TState extends State = State> {
     state: TState;
     range: () => Range;
-    borders: Borders;	
+    borders: Borders;
     cellRenderer: React.FunctionComponent<CellRendererProps>;
     children?: React.ReactNode;
 }
@@ -34,7 +34,8 @@ class PaneGridContent extends React.Component<RowsProps> {
     shouldComponentUpdate(nextProps: RowsProps) {
         const { state } = this.props;
         if (state.focusedLocation && nextProps.state.focusedLocation) {
-            if (state.focusedLocation.column.columnId !== nextProps.state.focusedLocation.column.columnId || state.focusedLocation.row.rowId !== nextProps.state.focusedLocation.row.rowId)
+            if (state.focusedLocation.column.columnId !== nextProps.state.focusedLocation.column.columnId
+                || state.focusedLocation.row.rowId !== nextProps.state.focusedLocation.row.rowId)
                 // && // needed when select range by touch
                 //nextProps.state.lastKeyCode !== keyCodes.ENTER && nextProps.state.lastKeyCode !== keyCodes.TAB) // improved performance during moving focus inside range
                 return true;
@@ -48,8 +49,14 @@ class PaneGridContent extends React.Component<RowsProps> {
         const { range, state, borders, cellRenderer } = this.props;
         return (
             <>
-                {range.rows.map((row) => <RowRenderer key={row.rowId} state={state} row={row} columns={range.columns} forceUpdate={true} cellRenderer={cellRenderer} 
-                borders={{ ...borders, top: borders.top && row.top === 0, bottom: borders.bottom && row.idx === range.last.row.idx }} />)}	
+                {range.rows.map(row => <RowRenderer key={row.rowId} state={state} row={row} columns={range.columns}
+                    forceUpdate={true} cellRenderer={cellRenderer}
+                    borders={{
+                        ...borders,
+                        top: borders.top && row.top === 0,
+                        bottom: (borders.bottom && row.idx === range.last.row.idx) || !(state.cellMatrix.scrollableRange.last.row.idx === row.idx)
+                    }} />
+                )}
             </>
         );
     }
