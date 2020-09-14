@@ -238,7 +238,7 @@ export const TestGrid: React.FunctionComponent<TestGridProps> = (props) => {
                     // focusLocation={{ columnId: 'col-1', rowId: 'row-3' }}
                     onCellsChanged={handleChanges}
                     onColumnResized={handleColumnResize}
-                    customCellTemplates={{ 'flag': new FlagCellTemplate() }}
+                    // customCellTemplates={{ 'flag': new FlagCellTemplate() }}
                     highlights={[
                         { columnId: 'col-1', rowId: 'row-1', borderColor: '#00ff00' },
                         { columnId: 'col-0', rowId: 'row-1', borderColor: 'red' }

@@ -12,6 +12,7 @@ import { CellEditorRenderer, cellEditorCalculator } from './CellEditor';
 import { CellRenderer, } from './CellRenderer';
 import { notifyAboutReactGridPro } from '../Functions/notifyAboutReactGridPro';
 import { handleStateUpdate } from '../Functions/handleStateUpdate';
+import { ErrorBoundary } from './ErrorBoundary';
 
 
 export class ReactGrid extends React.Component<ReactGridProps, State> {
@@ -51,10 +52,12 @@ export class ReactGrid extends React.Component<ReactGridProps, State> {
             return <LegacyBrowserGridRenderer state={state} eventHandlers={eventHandlers} />
         } else {
             return (
-                <GridRenderer state={state} eventHandlers={eventHandlers}>
-                    <PanesRenderer state={state} cellRenderer={CellRenderer} />
-                    {state.currentlyEditedCell && <CellEditorRenderer state={state} positionCalculator={cellEditorCalculator} />}
-                </GridRenderer>
+                <ErrorBoundary>
+                    <GridRenderer state={state} eventHandlers={eventHandlers}>
+                        <PanesRenderer state={state} cellRenderer={CellRenderer} />
+                        {state.currentlyEditedCell && <CellEditorRenderer state={state} positionCalculator={cellEditorCalculator} />}
+                    </GridRenderer>
+                </ErrorBoundary>
             )
         }
     }
