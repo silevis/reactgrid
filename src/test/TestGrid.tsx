@@ -33,18 +33,10 @@ const myTimeFormat = new Intl.DateTimeFormat('pl', { hour: '2-digit', minute: '2
 
 const style: CellStyle = {
     border: {
-        left: {
-            color: '', style: 'dashed', width: '2px'
-        },
-        top: {
-            color: 'green', style: 'dashed', width: '2px'
-        },
-        right: {
-            color: 'red', style: 'dashed', width: '2px'
-        },
-        bottom: {
-            color: 'red', style: 'dashed', width: '2px'
-        }
+        left: { color: 'red', style: 'dashed', width: '2px' },
+        top: { color: 'red', style: 'dashed', width: '2px' },
+        right: { color: 'red', style: 'dashed', width: '2px' },
+        bottom: { color: 'red', style: 'dashed', width: '2px' }
     }
 } as CellStyle;
 
