@@ -1,7 +1,7 @@
 import React from 'react';
 import {
     Column, Row, Id, MenuOption, SelectionMode, DropPosition, CellLocation,
-    DefaultCellTypes, CellChange, ReactGridProps, TextCell, NumberCell
+    DefaultCellTypes, CellChange, ReactGridProps, TextCell, NumberCell, CellStyle
 } from './../reactgrid';
 import { Config } from './testEnvConfig';
 import '../styles.scss';
@@ -27,12 +27,21 @@ const emailValidator: TextCell['validator'] = (email) => {
     return email_regex.test(email.replace(/\s+/g, ''));
 }
 
+const myNumberFormat = new Intl.NumberFormat('pl', { style: 'currency', minimumFractionDigits: 2, maximumFractionDigits: 2, currency: 'PLN' });
+const myDateFormat = new Intl.DateTimeFormat('pl', { weekday: 'short', year: 'numeric', month: 'long', day: 'numeric' });
+const myTimeFormat = new Intl.DateTimeFormat('pl', { hour: '2-digit', minute: '2-digit' });
+
+const style: CellStyle = {
+    border: {
+        left: { color: 'red', style: 'dashed', width: '2px' },
+        top: { color: 'red', style: 'dashed', width: '2px' },
+        right: { color: 'red', style: 'dashed', width: '2px' },
+        bottom: { color: 'red', style: 'dashed', width: '2px' }
+    }
+} as CellStyle;
+
 export const TestGrid: React.FunctionComponent<TestGridProps> = (props) => {
     const { config, containerHeight, containerWidth, containerMargin, isPro, component, enableSticky, enableColumnAndRowSelection } = props;
-
-    const myNumberFormat = new Intl.NumberFormat('pl', { style: 'currency', minimumFractionDigits: 2, maximumFractionDigits: 2, currency: 'PLN' });
-    const myDateFormat = new Intl.DateTimeFormat('pl', { weekday: 'short', year: 'numeric', month: 'long', day: 'numeric' })
-    const myTimeFormat = new Intl.DateTimeFormat('pl', { hour: '2-digit', minute: '2-digit' })
 
     const [columns, setColumns] = React.useState(() => new Array(config.columns).fill({ columnId: 0, resizable: true, reorderable: true, width: -1 })
         .map<Column>((_, ci) => ({ columnId: `col-${ci}`, resizable: true, reorderable: true, width: config.cellWidth })));
@@ -48,7 +57,7 @@ export const TestGrid: React.FunctionComponent<TestGridProps> = (props) => {
                 case 0:
                     return { type: 'chevron', groupId: !(ri % 3) ? 'A' : undefined, text: `${ri} - ${ci}`, parentId: ri, isExpanded: ri % 4 ? true : undefined, hasChildren: true }
                 case 1:
-                    return { type: 'text', groupId: !(ri % 3) ? 'B' : undefined, text: `${ri} - ${ci}` }
+                    return { type: 'text', groupId: !(ri % 3) ? 'B' : undefined, text: `${ri} - ${ci}`, style }
                 case 2:
                     return { type: 'email', groupId: Math.random() < .66 ? Math.random() < .5 ? 'A' : 'B' : undefined, text: `${ri}.${ci}@bing.pl`, validator: emailValidator }
                 case 3:
