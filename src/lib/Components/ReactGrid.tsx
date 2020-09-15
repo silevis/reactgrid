@@ -29,7 +29,12 @@ export class ReactGrid extends React.Component<ReactGridProps, State> {
     }
 
     static getDerivedStateFromProps(props: ReactGridProps, state: State) {
-        return getDerivedStateFromProps(props, state);
+        try {
+            return getDerivedStateFromProps(props, state);
+        } catch (error) {
+            console.error(error);
+            return null;
+        }
     }
 
     componentDidUpdate(prevProps: ReactGridProps, prevState: State) {
@@ -47,19 +52,17 @@ export class ReactGrid extends React.Component<ReactGridProps, State> {
 
     render() {
         const { state, eventHandlers } = this;
-
-        if (state.legacyBrowserMode) {
-            return <LegacyBrowserGridRenderer state={state} eventHandlers={eventHandlers} />
-        } else {
-            return (
-                <ErrorBoundary>
-                    <GridRenderer state={state} eventHandlers={eventHandlers}>
+        return (
+            <ErrorBoundary>
+                {state.legacyBrowserMode
+                    ? <LegacyBrowserGridRenderer state={state} eventHandlers={eventHandlers} />
+                    : <GridRenderer state={state} eventHandlers={eventHandlers}>
                         <PanesRenderer state={state} cellRenderer={CellRenderer} />
                         {state.currentlyEditedCell && <CellEditorRenderer state={state} positionCalculator={cellEditorCalculator} />}
                     </GridRenderer>
-                </ErrorBoundary>
-            )
-        }
+                }
+            </ErrorBoundary>
+        )
     }
 
 };

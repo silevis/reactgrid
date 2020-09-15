@@ -34,6 +34,15 @@ function storeBorderAndCell(borders: Borders, cell: Compatible<Cell>) {
 
 export const CellRenderer: React.FC<CellRendererProps> = ({ state, location, children, borders }) => {
     const { cell, cellTemplate } = getCompatibleCellAndTemplate(state, location);
+    // let cell, cellTemplate;
+    // try {
+    //     const ax = getCompatibleCellAndTemplate(state, location);
+    //     cell = ax.cell;
+    //     cellTemplate = ax.cellTemplate;
+    // } catch (error) {
+    //     console.error((error as Error).message);
+    //     return null;
+    // }
     const isFocused = state.focusedLocation !== undefined && areLocationsEqual(state.focusedLocation, location);
     const customClass = (cellTemplate.getClassName && cellTemplate.getClassName(cell, false)) ?? '';
 

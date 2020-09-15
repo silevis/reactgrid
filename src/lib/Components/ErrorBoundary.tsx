@@ -18,20 +18,20 @@ export class ErrorBoundary extends Component<any, ErrorBoundaryState> {
     }
 
     componentDidCatch(error: Error, errorInfo: ErrorInfo) {
-        console.log({ error, errorInfo });
         this.setState({ errorInfo });
     }
 
     render() {
-        const { hasError, errorInfo } = this.state;
+        const { hasError, errorInfo, error } = this.state;
 
         if (hasError) {
-            return (
+            return (<>
+                <h1>{error?.message}</h1> <br /><br />
                 <details>
-                    {errorInfo?.componentStack.toString()}
-                    {errorInfo?.toString()}
+                    {error?.stack}
+                    {errorInfo?.componentStack}
                 </details>
-            )
+            </>)
         } else {
             return this.props.children;
         }
