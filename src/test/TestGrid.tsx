@@ -5,7 +5,7 @@ import {
 } from './../reactgrid';
 import { Config } from './testEnvConfig';
 import '../styles.scss';
-import { FlagCellTemplate, FlagCell } from './flagCell/FlagCellTemplate';
+import { FlagCell, FlagCellTemplate } from './flagCell/FlagCellTemplate';
 
 type TestGridCells = DefaultCellTypes | FlagCell;
 
@@ -38,7 +38,7 @@ const style: CellStyle = {
         right: { color: 'red', style: 'dashed', width: '2px' },
         bottom: { color: 'red', style: 'dashed', width: '2px' }
     }
-} as CellStyle;
+};
 
 export const TestGrid: React.FunctionComponent<TestGridProps> = (props) => {
     const { config, containerHeight, containerWidth, containerMargin, isPro, component, enableSticky, enableColumnAndRowSelection } = props;
@@ -238,7 +238,7 @@ export const TestGrid: React.FunctionComponent<TestGridProps> = (props) => {
                     // focusLocation={{ columnId: 'col-1', rowId: 'row-3' }}
                     onCellsChanged={handleChanges}
                     onColumnResized={handleColumnResize}
-                    // customCellTemplates={{ 'flag': new FlagCellTemplate() }}
+                    customCellTemplates={{ 'flag': new FlagCellTemplate() }}
                     highlights={[
                         { columnId: 'col-1', rowId: 'row-1', borderColor: '#00ff00' },
                         { columnId: 'col-0', rowId: 'row-1', borderColor: 'red' }

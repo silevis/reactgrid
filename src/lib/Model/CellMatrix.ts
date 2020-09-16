@@ -49,9 +49,13 @@ export class CellMatrix<TStickyRanges extends StickyRanges = StickyRanges, TCell
     }
 
     getLocationById(rowId: Id, columnId: Id): Location {
-        const row = this.rows[this.rowIndexLookup[rowId]];
-        const column = this.columns[this.columnIndexLookup[columnId]];
-        return this.validateLocation({ row, column });
+        try {
+            const row = this.rows[this.rowIndexLookup[rowId]];
+            const column = this.columns[this.columnIndexLookup[columnId]];
+            return this.validateLocation({ row, column });
+        } catch (error) {
+            throw new EvalError(`column: '${columnId}', row: '${rowId}'`)
+        }
     }
 
     validateLocation(location: Location): Location {
