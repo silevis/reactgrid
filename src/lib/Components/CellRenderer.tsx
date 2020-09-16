@@ -32,33 +32,24 @@ function storeBorderAndCell(borders: Borders, cell: Compatible<Cell>) {
     }
 }
 
+function getBorderProperties(getPropertyOnBorderFn: (borderEdge: keyof Borders) => string | undefined) {
+    return {
+        left: getPropertyOnBorderFn('left'),
+        right: getPropertyOnBorderFn('right'),
+        top: getPropertyOnBorderFn('top'),
+        bottom: getPropertyOnBorderFn('bottom'),
+    }
+}
+
 export const CellRenderer: React.FC<CellRendererProps> = ({ state, location, children, borders }) => {
     const { cell, cellTemplate } = getCompatibleCellAndTemplate(state, location);
     const isFocused = state.focusedLocation !== undefined && areLocationsEqual(state.focusedLocation, location);
     const customClass = (cellTemplate.getClassName && cellTemplate.getClassName(cell, false)) ?? '';
 
-    const getPropertyValue = storeBorderAndCell(borders, cell);
-    const getColorOnBorder = getPropertyValue('color', '#E8E8E8');
-    const getWidthOnBorder = getPropertyValue('width', '1px');
-    const getStyleOnBorder = getPropertyValue('style', 'solid');
-    const bordersColors = {
-        left: getColorOnBorder('left'),
-        right: getColorOnBorder('right'),
-        top: getColorOnBorder('top'),
-        bottom: getColorOnBorder('bottom'),
-    };
-    const bordersWidth = {
-        left: getWidthOnBorder('left'),
-        right: getWidthOnBorder('right'),
-        top: getWidthOnBorder('top'),
-        bottom: getWidthOnBorder('bottom'),
-    };
-    const bordersStyle = {
-        left: getStyleOnBorder('left'),
-        right: getStyleOnBorder('right'),
-        top: getStyleOnBorder('top'),
-        bottom: getStyleOnBorder('bottom'),
-    };
+    const storePropertyAndDefaultValue = storeBorderAndCell(borders, cell);
+    const bordersColors = getBorderProperties(storePropertyAndDefaultValue('color', '#E8E8E8'));
+    const bordersWidth = getBorderProperties(storePropertyAndDefaultValue('width', '1px'));
+    const bordersStyle = getBorderProperties(storePropertyAndDefaultValue('style', 'solid'));
     const bordersProps = {
         borderLeft: `${bordersWidth.left} ${bordersStyle.left} ${bordersColors.left}`,
         borderRight: `${bordersWidth.right} ${bordersStyle.right} ${bordersColors.right}`,
@@ -78,7 +69,8 @@ export const CellRenderer: React.FC<CellRendererProps> = ({ state, location, chi
 
     return (
         <div className={`rg-cell rg-${cell.type}-cell ${cell.groupId ? `rg-groupId-${cell.groupId}` : ''} ${customClass}`}
-            style={style} data-cell-colidx={location.column.idx} data-cell-rowidx={location.row.idx} >
+            style={style} data-cell-colidx={process.env.NODE_ENV === "development" ? location.column.idx : null}
+            data-cell-rowidx={process.env.NODE_ENV === "development" ? location.row.idx : null} >
             {cellTemplate.render(cell, false, (cell, commit) => {
                 if (!commit) throw new Error('commit should be set to true in this case.');
                 state.update(state => tryAppendChange(state, location, cell));

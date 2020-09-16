@@ -15,9 +15,7 @@ export class EventHandlers {
     pasteHandler = (event: ClipboardEvent) => this.updateState(state => state.currentBehavior.handlePaste(event, state));
     cutHandler = (event: ClipboardEvent) => this.updateState(state => state.currentBehavior.handleCut(event, state));
     windowResizeHandler = () => this.updateState(recalcVisibleRange);
-    reactgridRefHandler = (reactGridElement: HTMLDivElement) => {
-        this.assignScrollHandlerToReactGridElement(reactGridElement, recalcVisibleRange);
-    };
+    reactgridRefHandler = (reactGridElement: HTMLDivElement) => this.assignScrollHandler(reactGridElement, recalcVisibleRange);
     hiddenElementRefHandler = (hiddenFocusElement: HTMLInputElement) => this.updateState(state => {
         if (state.props?.initialFocusLocation && hiddenFocusElement) {
             hiddenFocusElement.focus({ preventScroll: true });
@@ -36,7 +34,7 @@ export class EventHandlers {
 
     scrollHandler = (visibleRangeCalculator: StateModifier) => this.updateOnScrollChange(visibleRangeCalculator);
 
-    protected assignScrollHandlerToReactGridElement = (reactGridElement: HTMLDivElement, visibleRangeCalculator: StateModifier) => {
+    protected assignScrollHandler = (reactGridElement: HTMLDivElement, visibleRangeCalculator: StateModifier) => {
         if (reactGridElement) {
             this.updateState(state => {
                 const scrollableElement = getScrollableParent(reactGridElement, true);

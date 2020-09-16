@@ -1,11 +1,11 @@
 import * as React from 'react';
 import { GridRendererProps } from '../Model';
 import { HiddenElement } from './HiddenElement';
+import { ErrorBoundary } from './ErrorBoundary';
 
-export const GridRenderer: React.FunctionComponent<GridRendererProps> = props => {
-    const { state, eventHandlers, children } = props;
+export const GridRenderer: React.FC<GridRendererProps> = ({ state, eventHandlers, children }) => {
     const { cellMatrix } = state;
-    return (
+    return (<ErrorBoundary>
         <div
             className='reactgrid'
             data-cy="reactgrid"
@@ -34,5 +34,6 @@ export const GridRenderer: React.FunctionComponent<GridRendererProps> = props =>
                 {children}
                 <HiddenElement hiddenElementRefHandler={eventHandlers.hiddenElementRefHandler} state={state} />
             </div>
-        </div>)
+        </div>
+    </ErrorBoundary>)
 }

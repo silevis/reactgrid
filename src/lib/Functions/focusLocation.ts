@@ -28,8 +28,8 @@ export function focusLocation(state: State, location: Location): State {
         return state;
     }
 
-    onFocusLocationChanged && (!focusLocation && areLocationsEqual(location, validatedFocusLocation)) 
-    && onFocusLocationChanged(cellLocation);
+    onFocusLocationChanged && (!focusLocation && areLocationsEqual(location, validatedFocusLocation))
+        && onFocusLocationChanged(cellLocation);
 
     return {
         ...state,

@@ -56,9 +56,14 @@ export const PaneGridContent: React.NamedExoticComponent<RowsProps> = React.memo
 
 function renderHighlights(state: State, range: Range) {
     return state.highlightLocations.map((highlight: Highlight, id: number) => {
-        const location = state.cellMatrix.getLocationById(highlight.rowId, highlight.columnId);
-        return location && range.contains(location) &&
-            <CellFocus key={id} location={location} borderColor={highlight.borderColor} isHighlight />;
+        try {
+            const location = state.cellMatrix.getLocationById(highlight.rowId, highlight.columnId);
+            return location && range.contains(location) &&
+                <CellFocus key={id} location={location} borderColor={highlight.borderColor} isHighlight />;
+        } catch (error) {
+            console.error(`Cell location fot found while rendering highlights at: ${(error as Error).message}`);
+            return null;
+        }
     });
 }
 
