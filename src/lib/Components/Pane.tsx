@@ -22,7 +22,7 @@ export interface PaneContentProps<TState extends State = State> {
     range: () => Range;
     borders: Borders;
     cellRenderer: React.FunctionComponent<CellRendererProps>;
-    children?: React.ReactNode;
+    children?: (state: TState, range: Range) => React.ReactNode;
 }
 
 export interface PaneContentChild<TState extends State = State> {
@@ -67,7 +67,7 @@ function renderHighlights(state: State, range: Range) {
     });
 }
 
-export const Pane: React.FunctionComponent<PaneProps> = ({ className, style, renderChildren, children }) => {
+export const Pane: React.FC<PaneProps> = ({ className, style, renderChildren, children }) => {
     if (!style.width || !style.height) {
         return null;
     } else {
@@ -75,28 +75,22 @@ export const Pane: React.FunctionComponent<PaneProps> = ({ className, style, ren
     }
 };
 
-export const PaneContent: React.FunctionComponent<PaneContentProps<State>> = (props) => {
+export const PaneContent: React.FC<PaneContentProps<State>> = (props) => {
     const { state, range, borders, cellRenderer, children } = props;
 
     const calculatedRange = range();
 
-    const childProps: PaneContentChild = {
-        state,
-        calculatedRange
-    };
     return (
         <>
             <PaneGridContent state={state} range={calculatedRange} borders={borders} cellRenderer={cellRenderer} />
             {renderHighlights(state, calculatedRange)}
             {state.focusedLocation && calculatedRange.contains(state.focusedLocation) &&
                 <CellFocus location={state.focusedLocation} />}
-            {children && React.Children.toArray(children).map(element => {
-                return React.cloneElement(element as React.ReactElement<any>, childProps)
-            })}
+            {children && children(state, calculatedRange)}
         </>
     )
 }
 
-const PaneContentWrapper: React.FunctionComponent<{ className: string, style: React.CSSProperties }> = props => {
+const PaneContentWrapper: React.FC<{ className: string, style: React.CSSProperties }> = props => {
     return <div className={`rg-pane ${props.className}`} style={props.style}> {props.children} </div>
 }
