@@ -118,27 +118,35 @@ export const TestGrid: React.FunctionComponent<TestGridProps> = (props) => {
     rows[0].cells.find((cell) => cell.type === "text" && cell.text);
 
     const handleChanges = (changes: CellChange<TestGridCells>[]) => {
-        setRows((prevRows) => {
-            changes.forEach((change) => {
-                const changeRowIdx = prevRows.findIndex(
-                    (el) => el.rowId === change.rowId
-                );
-                const changeColumnIdx = columns.findIndex(
-                    (el) => el.columnId === change.columnId
-                );
-                if (change.type === 'flag') {
-                    // console.log(change.newCell.text);
-                }
-                if (change.type === 'text') {
-                    // console.log(change.newCell.text);
-                }
-                if (change.type === 'checkbox') {
-                    // console.log(change.previousCell.checked);
-                }
-                prevRows[changeRowIdx].cells[changeColumnIdx] = change.newCell;
-            });
-            return [...prevRows];
-        });
+        const targetColumnId = 'col-0';
+        const columnIds = ['col-1'];
+
+        const to = columns.findIndex((column: Column) => column.columnId === targetColumnId);
+        const columnIdxs = columnIds.map((id: Id, idx: number) => columns.findIndex((c: Column) => c.columnId === id));
+        setRows(rows.map(row => ({ ...row, cells: reorderArray(row.cells, columnIdxs, to) })));
+        setColumns(reorderArray(columns, columnIdxs, to));
+
+        // setRows((prevRows) => {
+        //     changes.forEach((change) => {
+        //         const changeRowIdx = prevRows.findIndex(
+        //             (el) => el.rowId === change.rowId
+        //         );
+        //         const changeColumnIdx = columns.findIndex(
+        //             (el) => el.columnId === change.columnId
+        //         );
+        //         if (change.type === 'flag') {
+        //             // console.log(change.newCell.text);
+        //         }
+        //         if (change.type === 'text') {
+        //             // console.log(change.newCell.text);
+        //         }
+        //         if (change.type === 'checkbox') {
+        //             // console.log(change.previousCell.checked);
+        //         }
+        //         prevRows[changeRowIdx].cells[changeColumnIdx] = change.newCell;
+        //     });
+        //     return [...prevRows];
+        // });
     };
 
     const reorderArray = <T extends {}>(arr: T[], idxs: number[], to: number) => {

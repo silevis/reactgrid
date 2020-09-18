@@ -50,12 +50,28 @@ export const CellRenderer: React.FC<CellRendererProps> = ({ state, location, chi
     const bordersColors = getBorderProperties(storePropertyAndDefaultValue('color', '#E8E8E8'));
     const bordersWidth = getBorderProperties(storePropertyAndDefaultValue('width', '1px'));
     const bordersStyle = getBorderProperties(storePropertyAndDefaultValue('style', 'solid'));
-    const bordersProps = {
+    let bordersProps = {
         borderLeft: `${bordersWidth.left} ${bordersStyle.left} ${bordersColors.left}`,
         borderRight: `${bordersWidth.right} ${bordersStyle.right} ${bordersColors.right}`,
         borderTop: `${bordersWidth.top} ${bordersStyle.top} ${bordersColors.top}`,
         borderBottom: `${bordersWidth.bottom} ${bordersStyle.bottom} ${bordersColors.bottom}`,
     };
+
+    if (cell.text === '4 - 0') {
+        bordersProps = {
+            ...bordersProps,
+            borderTop: '4px dotted blue'
+        }
+        console.log('4 - 0', borders, bordersProps);
+    }
+    // if (cell.text === '4 - 1') {
+    //     bordersProps = {
+    //         ...bordersProps,
+    //         borderTop: '4px dotted green'
+    //     }
+    //     console.log('4 - 1', borders, bordersProps);
+    // }
+
     const style = {
         ...(cellTemplate.getStyle && (cellTemplate.getStyle(cell, false) || {})),
         ...(cell.style && noBorder(cell.style)),

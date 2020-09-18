@@ -11,11 +11,13 @@ const props = {
   config
 }
 let component = <TestGrid {...props} />;
+TestGrid.displayName = 'TestGrid';
 switch (window.location.pathname) {
   case '/enableSticky':
     component = <TestGrid {...props}
       enableSticky
     />;
+    TestGrid.displayName = 'TestGridWithEnabledSticky';
     break;
   default:
     break;
