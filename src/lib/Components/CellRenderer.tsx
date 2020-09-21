@@ -18,7 +18,7 @@ export interface CellRendererChildProps<TState extends State = State> {
     state?: TState;
 }
 
-const defaultValue = 'unset';
+const unset = 'unset';
 
 function storeBorderAndCell(borders: Borders, cell: Compatible<Cell>) {
     return (property: keyof BorderProps, defaultProp: string) => {
@@ -27,7 +27,7 @@ function storeBorderAndCell(borders: Borders, cell: Compatible<Cell>) {
                 return cell.style?.border?.[borderEdge]?.[property] ? cell.style.border[borderEdge]?.[property] : defaultProp;
             } else if (cell.style?.border?.[borderEdge]?.[property]) {
                 return cell.style.border[borderEdge]?.[property];
-            } return defaultValue;
+            } return unset;
         }
     }
 }
@@ -47,30 +47,19 @@ export const CellRenderer: React.FC<CellRendererProps> = ({ state, location, chi
     const customClass = (cellTemplate.getClassName && cellTemplate.getClassName(cell, false)) ?? '';
 
     const storePropertyAndDefaultValue = storeBorderAndCell(borders, cell);
-    const bordersColors = getBorderProperties(storePropertyAndDefaultValue('color', '#E8E8E8'));
-    const bordersWidth = getBorderProperties(storePropertyAndDefaultValue('width', '1px'));
-    const bordersStyle = getBorderProperties(storePropertyAndDefaultValue('style', 'solid'));
-    let bordersProps = {
-        borderLeft: `${bordersWidth.left} ${bordersStyle.left} ${bordersColors.left}`,
-        borderRight: `${bordersWidth.right} ${bordersStyle.right} ${bordersColors.right}`,
-        borderTop: `${bordersWidth.top} ${bordersStyle.top} ${bordersColors.top}`,
-        borderBottom: `${bordersWidth.bottom} ${bordersStyle.bottom} ${bordersColors.bottom}`,
+    const bordersColor = getBorderProperties(storePropertyAndDefaultValue('color', '#E8E8E8')),
+        bordersWidth = getBorderProperties(storePropertyAndDefaultValue('width', '1px')),
+        bordersStyle = getBorderProperties(storePropertyAndDefaultValue('style', 'solid'));
+    const bordersProps = {
+        borderLeft: bordersWidth.left === unset && bordersStyle.left === unset && bordersColor.left === unset ? unset
+            : `${bordersWidth.left} ${bordersStyle.left} ${bordersColor.left}`,
+        borderRight: bordersWidth.right === unset && bordersStyle.right === unset && bordersColor.right === unset ? unset
+            : `${bordersWidth.right} ${bordersStyle.right} ${bordersColor.right}`,
+        borderTop: bordersWidth.top === unset && bordersStyle.top === unset && bordersColor.top === unset ? unset
+            : `${bordersWidth.top} ${bordersStyle.top} ${bordersColor.top}`,
+        borderBottom: bordersWidth.bottom === unset && bordersStyle.bottom === unset && bordersColor.bottom === unset ? unset
+            : `${bordersWidth.bottom} ${bordersStyle.bottom} ${bordersColor.bottom}`,
     };
-
-    if (cell.text === '4 - 0') {
-        bordersProps = {
-            ...bordersProps,
-            borderTop: '4px dotted blue'
-        }
-        console.log('4 - 0', borders, bordersProps);
-    }
-    // if (cell.text === '4 - 1') {
-    //     bordersProps = {
-    //         ...bordersProps,
-    //         borderTop: '4px dotted green'
-    //     }
-    //     console.log('4 - 1', borders, bordersProps);
-    // }
 
     const style = {
         ...(cellTemplate.getStyle && (cellTemplate.getStyle(cell, false) || {})),
