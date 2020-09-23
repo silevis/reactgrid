@@ -3,6 +3,13 @@
     user-select: text;
 }
 
+.shadow {
+    position: sticky;
+    top: 0;
+    left: 0;
+    box-shadow: 10px 10px 10px #555;
+}
+
 .reactgrid-content {
     user-select: none; 
     -moz-user-select: none;

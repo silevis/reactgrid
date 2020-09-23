@@ -79,6 +79,22 @@ export const PanesRenderer: React.FC<PanesProps> = ({ state, cellRenderer }) => 
                     cellRenderer={cellRenderer}
                 />
             </Pane>
+            { renderLeftSticky && <div className={'shadow'} style={{
+                width: cellMatrix.ranges.stickyLeftRange.width,
+                height: cellMatrix.height,
+                marginLeft: -cellMatrix.ranges.stickyLeftRange.width,
+                marginTop: -cellMatrix.ranges.stickyTopRange.height,
+                order: 2,
+                zIndex: 1,
+            }} ></div>}
+            { renderTopSticky && <div className={'shadow'} style={{
+                width: cellMatrix.width,
+                height: cellMatrix.ranges.stickyTopRange.height,
+                marginLeft: -cellMatrix.ranges.stickyLeftRange.width,
+                marginTop: -cellMatrix.ranges.stickyTopRange.height,
+                order: 2,
+                zIndex: 0,
+            }} ></div>}
             <Pane
                 renderChildren={renderTopSticky && renderCenterRange}
                 className={'rg-pane-top'}
