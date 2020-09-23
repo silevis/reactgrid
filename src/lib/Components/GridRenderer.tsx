@@ -32,7 +32,7 @@ export const GridRenderer: React.FC<GridRendererProps> = ({ state, eventHandlers
                 }}
             >
                 {children}
-                <HiddenElement hiddenElementRefHandler={eventHandlers.hiddenElementRefHandler} state={state} />
+                <HiddenElement hiddenElementRefHandler={eventHandlers.hiddenElementRefHandler} />
             </div>
         </div>
     </ErrorBoundary>)

@@ -34,9 +34,9 @@ export function getVisibleScrollableSize(state: State, heights: number[], widths
 export function getVisibleColumns(state: State, scrollableWidth: number): GridColumn[] {
     const { left } = getReactGridOffsets(state);
     const { scrollLeft } = getScrollOfScrollableElement(state.scrollableElement);
-    const firstIndex = colBinarySearch(state.cellMatrix.scrollableRange.columns, scrollLeft - left - VS_PAGE_HEIGHT);
+    const firstIndex = colBinarySearch(state.cellMatrix.scrollableRange.columns, scrollLeft - left - VS_PAGE_WIDTH);
     const lastIndex = colBinarySearch(state.cellMatrix.scrollableRange.columns,
-        scrollableWidth + getStickyOffset(scrollLeft, left) + VS_PAGE_HEIGHT, firstIndex);
+        scrollableWidth + getStickyOffset(scrollLeft, left) + VS_PAGE_WIDTH, firstIndex);
     return state.cellMatrix.scrollableRange.columns.slice(firstIndex, lastIndex + 1);
 }
 
