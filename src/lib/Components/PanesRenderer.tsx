@@ -41,8 +41,8 @@ export const PanesRenderer: React.FC<PanesProps> = ({ state, cellRenderer }) => 
                         ? `calc(100% - ${cellMatrix.ranges.stickyLeftRange.width}px)`
                         : cellMatrix.scrollableRange.width,
                     height: (areOnlyStickyRows || areOnlyStickyCols) ? 0 : cellMatrix.scrollableRange.height,
-                    marginLeft: cellMatrix.ranges.stickyLeftRange.width,
-                    marginTop: -cellMatrix.height + cellMatrix.ranges.stickyTopRange.height,
+                    marginLeft: renderLeftSticky && renderTopSticky ? cellMatrix.ranges.stickyLeftRange.width : 'unset',
+                    marginTop: renderLeftSticky && renderTopSticky ? -cellMatrix.height + cellMatrix.ranges.stickyTopRange.height : 'unset',
                     order: 4,
                 }}
             >
@@ -105,19 +105,21 @@ export const PanesRenderer: React.FC<PanesProps> = ({ state, cellRenderer }) => 
                     cellRenderer={cellRenderer}
                 />
             </Pane>
-            {renderLeftSticky && <div className={'shadow left'} style={{
+            {renderLeftSticky && <div className={'shadow shadow-left'} style={{
                 width: cellMatrix.ranges.stickyLeftRange.width,
                 height: cellMatrix.height,
                 marginLeft: -cellMatrix.ranges.stickyLeftRange.width,
                 marginTop: -cellMatrix.ranges.stickyTopRange.height,
                 order: 3,
+                ...(isBrowserFirefox() && { zIndex: 1 })
             }} ></div>}
-            {renderTopSticky && <div className={'shadow top'} style={{
+            {renderTopSticky && <div className={'shadow shadow-top'} style={{
                 width: cellMatrix.width,
                 height: cellMatrix.ranges.stickyTopRange.height,
                 marginLeft: -cellMatrix.ranges.stickyLeftRange.width,
                 marginTop: -cellMatrix.ranges.stickyTopRange.height,
                 order: 3,
+                ...(isBrowserFirefox() && { zIndex: 1 })
             }} ></div>}
             <Pane
                 renderChildren={renderTopSticky && renderLeftSticky}

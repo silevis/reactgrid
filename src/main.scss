@@ -5,9 +5,26 @@
 
 .shadow {
     position: sticky;
-    top: 0;
-    left: 0;
-    box-shadow: 10px 10px 10px #555;
+    &.shadow-top, &.shadow-left {
+        top: 0;
+        left: 0;
+    }
+    &.shadow-bottom, &.shadow-right {
+        right: 0; 
+        bottom: 0;
+    }
+    &.shadow-top {
+        box-shadow: $shadow-on-bottom $cell-shadow-color;
+    }
+    &.shadow-left {
+        box-shadow: $shadow-on-right $cell-shadow-color; 
+    }
+    &.shadow-bottom {
+        box-shadow: $shadow-on-top $cell-shadow-color;
+    }
+    &.shadow-right {
+        box-shadow: $shadow-on-left $cell-shadow-color;
+    }
 }
 
 .reactgrid-content {
@@ -26,35 +43,15 @@
         }
         &.rg-pane-top {
             top: 0; 
-            box-shadow: $shadow-on-bottom $cell-shadow-color;
-            &.rg-pane-left {
-                box-shadow: $shadow-on-bottom $cell-shadow-color,
-                $shadow-on-right $cell-shadow-color;
-            }
-            &.rg-pane-right {
-                box-shadow: $shadow-on-bottom $cell-shadow-color,
-                $shadow-on-left $cell-shadow-color;
-            }
         }
         &.rg-pane-bottom {
             bottom: 0;
-            box-shadow: $shadow-on-top $cell-shadow-color;
-            &.rg-pane-left {
-                box-shadow: $shadow-on-top $cell-shadow-color,
-                $shadow-on-right $cell-shadow-color;
-            }
-            &.rg-pane-right {
-                box-shadow: $shadow-on-top $cell-shadow-color,
-                $shadow-on-left $cell-shadow-color;
-            }
         }
         &.rg-pane-left {
             left: 0; 
-            box-shadow: $shadow-on-right $cell-shadow-color; 
         }
         &.rg-pane-right {
             right: 0; 
-            box-shadow: $shadow-on-left $cell-shadow-color;
         }
         .rg-cell {
             font-size: $cell-font-size;
