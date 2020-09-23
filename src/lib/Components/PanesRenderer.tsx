@@ -41,7 +41,9 @@ export const PanesRenderer: React.FC<PanesProps> = ({ state, cellRenderer }) => 
                         ? `calc(100% - ${cellMatrix.ranges.stickyLeftRange.width}px)`
                         : cellMatrix.scrollableRange.width,
                     height: (areOnlyStickyRows || areOnlyStickyCols) ? 0 : cellMatrix.scrollableRange.height,
-                    order: 3,
+                    marginLeft: cellMatrix.ranges.stickyLeftRange.width,
+                    marginTop: -cellMatrix.height + cellMatrix.ranges.stickyTopRange.height,
+                    order: 4,
                 }}
             >
                 <PaneContent
@@ -79,22 +81,6 @@ export const PanesRenderer: React.FC<PanesProps> = ({ state, cellRenderer }) => 
                     cellRenderer={cellRenderer}
                 />
             </Pane>
-            { renderLeftSticky && <div className={'shadow'} style={{
-                width: cellMatrix.ranges.stickyLeftRange.width,
-                height: cellMatrix.height,
-                marginLeft: -cellMatrix.ranges.stickyLeftRange.width,
-                marginTop: -cellMatrix.ranges.stickyTopRange.height,
-                order: 2,
-                zIndex: 1,
-            }} ></div>}
-            { renderTopSticky && <div className={'shadow'} style={{
-                width: cellMatrix.width,
-                height: cellMatrix.ranges.stickyTopRange.height,
-                marginLeft: -cellMatrix.ranges.stickyLeftRange.width,
-                marginTop: -cellMatrix.ranges.stickyTopRange.height,
-                order: 2,
-                zIndex: 0,
-            }} ></div>}
             <Pane
                 renderChildren={renderTopSticky && renderCenterRange}
                 className={'rg-pane-top'}
@@ -119,6 +105,20 @@ export const PanesRenderer: React.FC<PanesProps> = ({ state, cellRenderer }) => 
                     cellRenderer={cellRenderer}
                 />
             </Pane>
+            {renderLeftSticky && <div className={'shadow left'} style={{
+                width: cellMatrix.ranges.stickyLeftRange.width,
+                height: cellMatrix.height,
+                marginLeft: -cellMatrix.ranges.stickyLeftRange.width,
+                marginTop: -cellMatrix.ranges.stickyTopRange.height,
+                order: 3,
+            }} ></div>}
+            {renderTopSticky && <div className={'shadow top'} style={{
+                width: cellMatrix.width,
+                height: cellMatrix.ranges.stickyTopRange.height,
+                marginLeft: -cellMatrix.ranges.stickyLeftRange.width,
+                marginTop: -cellMatrix.ranges.stickyTopRange.height,
+                order: 3,
+            }} ></div>}
             <Pane
                 renderChildren={renderTopSticky && renderLeftSticky}
                 className={'rg-pane-top rg-pane-left'}
