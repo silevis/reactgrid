@@ -59,11 +59,11 @@ import { ReactGrid, Column, Row } from "@silevis/reactgrid";
 import "@silevis/reactgrid/styles.css";
 
 function App() {
-  const [columns] = React.useState<Column[]>(() => [
+  const [columns] = useState<Column[]>(() => [
     { columnId: "Name", width: 100 },
     { columnId: "Surname", width: 100 }
   ]);
-  const [rows] = React.useState<Row[]>(() => [
+  const [rows] = useState<Row[]>(() => [
     {
       rowId: 0,
       cells: [
@@ -96,8 +96,8 @@ function App() {
 
   return (
     <ReactGrid
-      rows={state.rows}
-      columns={state.columns}
+      rows={rows}
+      columns={columns}
     />
   );
 }
