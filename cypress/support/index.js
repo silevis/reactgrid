@@ -15,6 +15,7 @@
 
 // Alternatively you can use CommonJS syntax:
 // require('./commands')
+require('cypress-plugin-tab')
 
 Cypress.on('uncaught:exception', (err, runnable) => {
     // returning false here prevents Cypress from

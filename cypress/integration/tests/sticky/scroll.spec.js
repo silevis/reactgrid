@@ -7,7 +7,7 @@ context('Scroll', () => {
         Utils.visitSticky();
     });
 
-    it('should scroll viewport when cell is not fully visible vertically', () => { // ✅
+    it.skip('should scroll viewport when cell is partially visible and focused', () => { // ✅
         Utils.scrollTo(0, Utils.getCellYCenter());
         Utils.selectCell(config.cellWidth + 5, config.cellHeight * config.stickyTop + 5);
         Utils.assertIsElementInScrollable(Utils.getCellFocus());
@@ -17,6 +17,21 @@ context('Scroll', () => {
         Utils.scrollTo(0, Utils.getCellYCenter());
 
         Utils.selectCell((config.cellWidth * config.stickyLeft) + 5, config.cellHeight * config.stickyTop + 5);
+        Utils.assertIsElementInScrollable(Utils.getCellFocus());
+
+        Utils.assertElementTopIsEqual(Utils.getCellFocus(), 0);
+    });
+
+    it('should scroll viewport when cell is not fully visible vertically', () => { // ✅
+        Utils.scrollTo(0, Utils.getCellYCenter());
+        Utils.selectCell(config.cellWidth + 5, config.cellHeight * config.stickyTop + 5);
+        Utils.assertIsElementInScrollable(Utils.getCellFocus());
+
+        Utils.assertElementTopIsEqual(Utils.getCellFocus(), 0);
+
+        Utils.scrollTo(0, Utils.getCellYCenter());
+
+        Utils.selectCell((config.cellWidth * config.stickyLeft) + (config.cellWidth * 2), config.cellHeight * config.stickyTop + 5);
         Utils.assertIsElementInScrollable(Utils.getCellFocus());
 
         Utils.assertElementTopIsEqual(Utils.getCellFocus(), 0);
@@ -56,4 +71,5 @@ context('Scroll', () => {
         };
         Utils.assertScrolledToLeft();
     });
-})
+
+});
