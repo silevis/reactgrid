@@ -1,7 +1,7 @@
 <p align="center">
   <h1>ReactGrid MIT</h1>
 
-  ### Add spreadsheet-like behavior to your React app. 
+  ### Add spreadsheet-like behavior to your React app 🚀
 </p>
 <p align="center">
 
@@ -24,13 +24,13 @@ Before run you need to have installed:
 - react": "^16.13.1"
 - react-dom: "^16.13.1"
 
-# 💾 Install
+# Install
 
 ```shell
 npm i @silevis/reactgrid
 ```
 
-# 🧩 Usage
+# Usage
 
 ### Import ReactGrid component
 
@@ -154,11 +154,17 @@ Open live demo on [codesandbox.io](https://codesandbox.io/s/reactgrid-handling-c
 * [Custom styles](https://codesandbox.io/s/reactgrid-custom-styling-buwuw)
 * [and a lot more here](https://reactgrid.com/docs/3.1/2-implementing-core-features/)
 
-# 📗 Docs
+# Browser support
+
+| [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/edge/edge_48x48.png" alt="IE / Edge"  />](http://godban.github.io/browsers-support-badges/) Edge | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/firefox/firefox_48x48.png" alt="Firefox"  />](http://godban.github.io/browsers-support-badges/) Firefox | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/chrome/chrome_48x48.png" alt="Chrome"  />](http://godban.github.io/browsers-support-badges/) Chrome | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/safari/safari_48x48.png" alt="Safari" />](http://godban.github.io/browsers-support-badges/) Safari | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/safari-ios/safari-ios_48x48.png" alt="iOS Safari" />](http://godban.github.io/browsers-support-badges/) iOS/iPadOs Safari | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/samsung-internet/samsung-internet_48x48.png" alt="Samsung"/>](http://godban.github.io/browsers-support-badges/) Samsung internet | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/opera/opera_48x48.png" alt="Opera" />](http://godban.github.io/browsers-support-badges/) Opera |
+| :-: | :-: | :-: | :-: | :-: | :-: | :-:|
+| 80+ | 61+ | 57+ | 13.1+ | 13+ | 9+ | 45+ |
+
+# Docs
 
 Explore ReactGrid docs: [here](http://reactgrid.com/docs/)
 
-# 📝 Licensing
+# Licensing
 
 ReactGrid is available in two versions, [MIT](https://github.com/silevis/reactgrid/blob/develop/LICENSE) (this package) which serve 
 the full interface but is limited in functionality and PRO which is fully functional version. You can compare versions
@@ -166,7 +172,7 @@ the full interface but is limited in functionality and PRO which is fully functi
 
 (c) 2020 Silevis Software Sp. z o.o.
 
-# 🏢 Authors
+# Authors
 
 [Silevis Software](https://www.silevis.com/)
 
