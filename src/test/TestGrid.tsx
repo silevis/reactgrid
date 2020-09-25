@@ -17,7 +17,6 @@ interface TestGridProps {
     containerMargin?: number;
     enableSticky?: boolean;
     enableColumnAndRowSelection?: boolean;
-    isPro?: boolean;
     config: Config;
     component: React.ComponentClass<ReactGridProps>;
 }
@@ -41,7 +40,7 @@ const style: CellStyle = {
 };
 
 export const TestGrid: React.FC<TestGridProps> = (props) => {
-    const { config, containerHeight, containerWidth, containerMargin, isPro, component, enableSticky, enableColumnAndRowSelection } = props;
+    const { config, containerHeight, containerWidth, containerMargin, component, enableSticky, enableColumnAndRowSelection } = props;
 
     const [columns, setColumns] = React.useState(() => new Array(config.columns).fill({ columnId: 0, resizable: true, reorderable: true, width: -1 })
         .map<Column>((_, ci) => ({ columnId: `col-${ci}`, resizable: true, reorderable: true, width: config.cellWidth })));
@@ -226,9 +225,9 @@ export const TestGrid: React.FC<TestGridProps> = (props) => {
             }}>
                 {config.enableAdditionalContent &&
                     <>
-                        <Logo isPro={isPro} />
-                        <Logo isPro={isPro} />
-                        <Logo isPro={isPro} />
+                        <Logo isPro={config.isPro} />
+                        <Logo isPro={config.isPro} />
+                        <Logo isPro={config.isPro} />
                     </>
                 }
                 <Component
@@ -284,7 +283,7 @@ export const TestGrid: React.FC<TestGridProps> = (props) => {
                 }
             </div>
             <input type='text' data-cy='outer-input' />
-            <Logo isPro={isPro} />
+            <Logo isPro={config.isPro} />
             {config.enableAdditionalContent &&
                 <>
                     <h1 style={{ width: 3000 }}>TEXT</h1> Test WITH IT

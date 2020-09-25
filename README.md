@@ -1,24 +1,16 @@
-<p align="center">
-  <h1>ReactGrid MIT</h1>
 
-  ### Add spreadsheet-like behavior to your React app 🚀
-</p>
-<p align="center">
+# ReactGrid MIT
+
+### Add spreadsheet-like behavior to your React app 🚀
 
 [![MIT license](https://img.shields.io/badge/License-MIT-blue.svg)](https://github.com/silevis/reactgrid/blob/develop/LICENSE) 
 [![Build Status](https://dev.azure.com/Silevis/ReactGrid/_apis/build/status/GitHub-MIT/Upgrade%20version%20and%20publish?branchName=master)](https://dev.azure.com/Silevis/ReactGrid/_build/latest?definitionId=17&branchName=master) 
 [![reactgrid](https://img.shields.io/endpoint?url=https://dashboard.cypress.io/badge/simple/hwrqiy&style=flat&logo=cypress)](https://dashboard.cypress.io/projects/hwrqiy/runs)
 
-[![npm downloads](https://img.shields.io/npm/dw/@silevis/reactgrid?label=npm%20downloads)](https://www.npmjs.com/package/@silevis/reactgrid) 
 [![Gitter](https://badges.gitter.im/silevis-reactgrid/community.svg)](https://gitter.im/silevis-reactgrid/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge) 
 [![MIT license](https://david-dm.org/silevis/reactgrid/dev-status.svg)](https://david-dm.org/silevis/reactgrid?type=dev)   [![npm version](https://badge.fury.io/js/%40silevis%2Freactgrid.svg)](https://badge.fury.io/js/%40silevis%2Freactgrid)
 
-</p>
-
-
-<p align="center">
-  <img alt="Sample app" src="https://reactgrid.com/sample.gif" height="240px" />
-</p>
+<img alt="Sample app" src="https://reactgrid.com/sample.gif" height="240px" />
 
 Before run you need to have installed:
 - react": "^16.13.1"
