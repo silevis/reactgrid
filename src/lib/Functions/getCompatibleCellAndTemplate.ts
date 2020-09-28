@@ -11,6 +11,6 @@ export function getCompatibleCellAndTemplate(state: State, location: Location): 
         if (!cell) throw new Error('Cell validation failed');
         return { cell, cellTemplate };
     } catch (e) {
-        throw new Error(`${e} (rowId: '${location.row.rowId}', columnId: '${location.column.columnId}')`);
+        throw new Error(`${(e as Error).message} (rowId: '${location.row.rowId}', columnId: '${location.column.columnId}')`);
     }
 }

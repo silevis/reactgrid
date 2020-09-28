@@ -4,6 +4,7 @@ export interface Config {
     pinToBody: boolean;
     enableAdditionalContent: boolean;
     flexRow: boolean;
+    isPro: boolean;
 
     rgViewportHeight: number;
     rgViewportWidth: number;

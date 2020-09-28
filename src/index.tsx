@@ -7,15 +7,16 @@ import { config } from './test/testEnvConfig';
 
 const props = {
   component: ReactGrid,
-  isPro: false,
   config
 }
 let component = <TestGrid {...props} />;
+TestGrid.displayName = 'TestGrid';
 switch (window.location.pathname) {
   case '/enableSticky':
     component = <TestGrid {...props}
       enableSticky
     />;
+    TestGrid.displayName = 'TestGridWithEnabledSticky';
     break;
   default:
     break;

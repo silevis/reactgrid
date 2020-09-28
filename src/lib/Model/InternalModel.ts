@@ -23,8 +23,8 @@ export interface GridRow extends Row {
     readonly height: number;
 }
 
-// ASK ARCHITECT BEFORE INTRODUCING ANY CHANGE!
-// INTERNAL
+// ASK ARCHITECT BEFORE INTRODUCING ANY CHANGE!	
+// INTERNAL	
 export interface Borders {
     top?: boolean;
     left?: boolean;
@@ -54,4 +54,3 @@ export interface GridRendererProps {
     state: State;
     eventHandlers: EventHandlers;
 }
-

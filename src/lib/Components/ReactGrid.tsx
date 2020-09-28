@@ -28,7 +28,12 @@ export class ReactGrid extends React.Component<ReactGridProps, State> {
     }
 
     static getDerivedStateFromProps(props: ReactGridProps, state: State) {
-        return getDerivedStateFromProps(props, state);
+        try {
+            return getDerivedStateFromProps(props, state);
+        } catch (error) {
+            console.error(error);
+            return null;
+        }
     }
 
     componentDidUpdate(prevProps: ReactGridProps, prevState: State) {
@@ -46,7 +51,6 @@ export class ReactGrid extends React.Component<ReactGridProps, State> {
 
     render() {
         const { state, eventHandlers } = this;
-
         if (state.legacyBrowserMode) {
             return <LegacyBrowserGridRenderer state={state} eventHandlers={eventHandlers} />
         } else {

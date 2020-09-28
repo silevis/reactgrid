@@ -28,6 +28,12 @@ export class CellMatrixBuilder implements ICellMatrixBuilder {
     }
 
     fillRowsAndCols(): CellMatrixBuilder {
+        if (!Array.isArray(this.cellMatrix.props.rows)) {
+            throw new Error('Feeded ReactGrids "rows" property is not an array!')
+        }
+        if (!Array.isArray(this.cellMatrix.props.columns)) {
+            throw new Error('Feeded ReactGrids "columns" property is not an array!')
+        }
         this.cellMatrix.rows = this.cellMatrix.props.rows.reduce(
             (rows, row, idx) => {
                 const top = this.getTop(idx, this.cellMatrix.props.stickyTopRows, rows);

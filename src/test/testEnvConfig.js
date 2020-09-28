@@ -3,6 +3,7 @@ export const config = {
     pinToBody: false,
     enableAdditionalContent: false,
     flexRow: false,
+    isPro: false,
 
     rgViewportHeight: 600,
     rgViewportWidth: 1150,
@@ -27,7 +28,7 @@ export const config = {
     stickyLeft: 1,
     stickyRight: 2,
 
-    firstRowType: 'text'
+    firstRowType: 'text',
 }
 
 if (typeof exports === "object" && typeof module === "object") { // added for backwards compability without ES6 imports
