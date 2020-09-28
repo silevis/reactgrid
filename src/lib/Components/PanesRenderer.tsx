@@ -43,7 +43,7 @@ export const PanesRenderer: React.FC<PanesProps> = ({ state, cellRenderer }) => 
                     height: (areOnlyStickyRows || areOnlyStickyCols) ? 0 : cellMatrix.scrollableRange.height,
                     marginLeft: renderLeftSticky && renderTopSticky ? cellMatrix.ranges.stickyLeftRange.width : 'unset',
                     marginTop: renderLeftSticky && renderTopSticky ? -cellMatrix.height + cellMatrix.ranges.stickyTopRange.height : 'unset',
-                    order: 4,
+                    order: 5,
                 }}
             >
                 <PaneContent
@@ -118,7 +118,7 @@ export const PanesRenderer: React.FC<PanesProps> = ({ state, cellRenderer }) => 
                 height: cellMatrix.ranges.stickyTopRange.height,
                 marginLeft: -cellMatrix.ranges.stickyLeftRange.width,
                 marginTop: -cellMatrix.ranges.stickyTopRange.height,
-                order: 3,
+                order: 4,
                 ...(isBrowserFirefox() && { zIndex: 1 })
             }} ></div>}
             <Pane
