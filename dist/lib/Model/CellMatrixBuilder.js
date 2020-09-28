@@ -38,6 +38,12 @@ var CellMatrixBuilder = (function () {
     };
     CellMatrixBuilder.prototype.fillRowsAndCols = function () {
         var _this = this;
+        if (!Array.isArray(this.cellMatrix.props.rows)) {
+            throw new Error('Feeded ReactGrids "rows" property is not an array!');
+        }
+        if (!Array.isArray(this.cellMatrix.props.columns)) {
+            throw new Error('Feeded ReactGrids "columns" property is not an array!');
+        }
         this.cellMatrix.rows = this.cellMatrix.props.rows.reduce(function (rows, row, idx) {
             var top = _this.getTop(idx, _this.cellMatrix.props.stickyTopRows, rows);
             var height = row.height || CellMatrix.DEFAULT_ROW_HEIGHT;

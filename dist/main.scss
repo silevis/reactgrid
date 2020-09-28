@@ -61,6 +61,7 @@
             padding: $cell-padding;
             outline: none;
             touch-action: auto;
+
             .rg-touch-resize-handle {
                 position: absolute;
                 top: 0;
@@ -84,24 +85,6 @@
                 position: absolute; 
                 right: 4px;
                 top: 4px;
-            }
-        }
-        .rg-separator-line {
-            position: absolute;
-            box-sizing: border-box;
-            pointer-events: none;
-            &-row {
-                width: 100%;
-                border-bottom-width: $row-separator-line-width;
-                border-bottom-color: $row-line-color;
-                border-bottom-style: solid;
-            }
-            &-col {
-                height: 100%;
-                top: 0;
-                border-right-width: $col-separator-line-width;
-                border-right-color: $col-line-color;
-                border-right-style: solid;
             }
         }
         .rg-cell-focus {

@@ -16,9 +16,14 @@ var CellMatrix = (function () {
         return { row: this.rows[rowIdx], column: this.columns[columnIdx] };
     };
     CellMatrix.prototype.getLocationById = function (rowId, columnId) {
-        var row = this.rows[this.rowIndexLookup[rowId]];
-        var column = this.columns[this.columnIndexLookup[columnId]];
-        return this.validateLocation({ row: row, column: column });
+        try {
+            var row = this.rows[this.rowIndexLookup[rowId]];
+            var column = this.columns[this.columnIndexLookup[columnId]];
+            return this.validateLocation({ row: row, column: column });
+        }
+        catch (error) {
+            throw new EvalError("column: '" + columnId + "', row: '" + rowId + "'");
+        }
     };
     CellMatrix.prototype.validateLocation = function (location) {
         var colIdx = this.columnIndexLookup[location.column.columnId] !== undefined ? this.columnIndexLookup[location.column.columnId] : location.column.idx < this.last.column.idx ? location.column.idx : this.last.column.idx;

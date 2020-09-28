@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { State, Borders, Location, Compatible, Cell } from '../Model';
+import { State, Location, Compatible, Cell, Borders } from '../Model';
 export interface CellRendererProps {
     state: State;
     location: Location;
@@ -11,4 +11,4 @@ export interface CellRendererChildProps<TState extends State = State> {
     cell?: Compatible<Cell>;
     state?: TState;
 }
-export declare const CellRenderer: React.FunctionComponent<CellRendererProps>;
+export declare const CellRenderer: React.FC<CellRendererProps>;

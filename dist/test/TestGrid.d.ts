@@ -8,11 +8,10 @@ interface TestGridProps {
     containerMargin?: number;
     enableSticky?: boolean;
     enableColumnAndRowSelection?: boolean;
-    isPro?: boolean;
     config: Config;
     component: React.ComponentClass<ReactGridProps>;
 }
-export declare const TestGrid: React.FunctionComponent<TestGridProps>;
+export declare const TestGrid: React.FC<TestGridProps>;
 export declare const withDiv: <T extends object>(Component: React.ComponentType<T>) => React.FC<T & TestGridProps>;
 export declare const ExtTestGrid: React.FC<TestGridProps>;
 export {};

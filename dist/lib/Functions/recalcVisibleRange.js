@@ -14,6 +14,7 @@ import { getScrollOfScrollableElement } from './scrollHelpers';
 import { getVisibleSizeOfReactGrid, getReactGridOffsets, getStickyOffset } from './elementSizeHelpers';
 export var VS_PAGE_HEIGHT = 400;
 export var VS_PAGE_WIDTH = 300;
+var ADDITONAL_INDEX = 1;
 export function recalcVisibleRange(state) {
     var _a = getScrollOfScrollableElement(state.scrollableElement), scrollTop = _a.scrollTop, scrollLeft = _a.scrollLeft;
     var _b = getVisibleScrollableSize(state, [-state.cellMatrix.ranges.stickyTopRange.height], [-state.cellMatrix.ranges.stickyLeftRange.width]), width = _b.width, height = _b.height;
@@ -31,18 +32,20 @@ export function getVisibleScrollableSize(state, heights, widths) {
     };
 }
 export function getVisibleColumns(state, scrollableWidth) {
+    var columns = state.cellMatrix.scrollableRange.columns;
     var left = getReactGridOffsets(state).left;
     var scrollLeft = getScrollOfScrollableElement(state.scrollableElement).scrollLeft;
-    var firstIndex = colBinarySearch(state.cellMatrix.scrollableRange.columns, scrollLeft - left - VS_PAGE_HEIGHT);
-    var lastIndex = colBinarySearch(state.cellMatrix.scrollableRange.columns, scrollableWidth + getStickyOffset(scrollLeft, left) + VS_PAGE_HEIGHT, firstIndex);
-    return state.cellMatrix.scrollableRange.columns.slice(firstIndex, lastIndex + 1);
+    var firstIndex = Math.max(colBinarySearch(columns, scrollLeft - left - VS_PAGE_WIDTH) - ADDITONAL_INDEX - 1, 0);
+    var lastIndex = colBinarySearch(columns, scrollableWidth + getStickyOffset(scrollLeft, left) + VS_PAGE_WIDTH, firstIndex);
+    return columns.slice(firstIndex, lastIndex + ADDITONAL_INDEX);
 }
 export function getVisibleRows(state, scrollableHeight) {
+    var rows = state.cellMatrix.scrollableRange.rows;
     var top = getReactGridOffsets(state).top;
     var scrollTop = getScrollOfScrollableElement(state.scrollableElement).scrollTop;
-    var firstIndex = rowBinarySearch(state.cellMatrix.scrollableRange.rows, scrollTop - top - VS_PAGE_HEIGHT);
-    var lastIndex = rowBinarySearch(state.cellMatrix.scrollableRange.rows, scrollableHeight + getStickyOffset(scrollTop, top) + VS_PAGE_HEIGHT, firstIndex);
-    return state.cellMatrix.scrollableRange.rows.slice(firstIndex, lastIndex + 1);
+    var firstIndex = Math.max(rowBinarySearch(rows, scrollTop - top - VS_PAGE_HEIGHT) - ADDITONAL_INDEX - 1, 0);
+    var lastIndex = rowBinarySearch(rows, scrollableHeight + getStickyOffset(scrollTop, top) + VS_PAGE_HEIGHT, firstIndex);
+    return rows.slice(firstIndex, lastIndex + ADDITONAL_INDEX);
 }
 function rowBinarySearch(arr, val, start, end) {
     if (start === void 0) { start = 0; }

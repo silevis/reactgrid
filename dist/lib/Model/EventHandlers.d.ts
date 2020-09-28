@@ -15,6 +15,6 @@ export declare class EventHandlers {
     hiddenElementRefHandler: (hiddenFocusElement: HTMLInputElement) => void;
     pasteCaptureHandler: (event: ClipboardEvent) => void;
     scrollHandler: (visibleRangeCalculator: StateModifier) => void;
-    protected assignScrollHandlerToReactGridElement: (reactGridElement: HTMLDivElement, visibleRangeCalculator: StateModifier) => void;
+    protected assignScrollHandler: (reactGridElement: HTMLDivElement, visibleRangeCalculator: StateModifier) => void;
     protected updateOnScrollChange: (visibleRangeCalculator: StateModifier) => void;
 }

@@ -24,9 +24,7 @@ var EventHandlers = (function () {
         this.pasteHandler = function (event) { return _this.updateState(function (state) { return state.currentBehavior.handlePaste(event, state); }); };
         this.cutHandler = function (event) { return _this.updateState(function (state) { return state.currentBehavior.handleCut(event, state); }); };
         this.windowResizeHandler = function () { return _this.updateState(recalcVisibleRange); };
-        this.reactgridRefHandler = function (reactGridElement) {
-            _this.assignScrollHandlerToReactGridElement(reactGridElement, recalcVisibleRange);
-        };
+        this.reactgridRefHandler = function (reactGridElement) { return _this.assignScrollHandler(reactGridElement, recalcVisibleRange); };
         this.hiddenElementRefHandler = function (hiddenFocusElement) { return _this.updateState(function (state) {
             var _a;
             if (((_a = state.props) === null || _a === void 0 ? void 0 : _a.initialFocusLocation) && hiddenFocusElement) {
@@ -43,7 +41,7 @@ var EventHandlers = (function () {
             }
         };
         this.scrollHandler = function (visibleRangeCalculator) { return _this.updateOnScrollChange(visibleRangeCalculator); };
-        this.assignScrollHandlerToReactGridElement = function (reactGridElement, visibleRangeCalculator) {
+        this.assignScrollHandler = function (reactGridElement, visibleRangeCalculator) {
             if (reactGridElement) {
                 _this.updateState(function (state) {
                     var scrollableElement = getScrollableParent(reactGridElement, true);
@@ -58,7 +56,7 @@ var EventHandlers = (function () {
                 var _a = getScrollOfScrollableElement(state.scrollableElement), scrollTop = _a.scrollTop, scrollLeft = _a.scrollLeft;
                 var _b = getVisibleSizeOfReactGrid(state), width = _b.width, height = _b.height;
                 var shouldBeVisibleRangeRecalc = width > 0 && height > 0 && (scrollTop >= state.bottomScrollBoudary - PAGE_UPDATE_OFFSET || scrollTop <= state.topScrollBoudary + PAGE_UPDATE_OFFSET ||
-                    scrollLeft >= state.rightScrollBoudary || scrollLeft <= state.leftScrollBoudary);
+                    scrollLeft >= state.rightScrollBoudary - PAGE_UPDATE_OFFSET || scrollLeft <= state.leftScrollBoudary + PAGE_UPDATE_OFFSET);
                 return shouldBeVisibleRangeRecalc ? visibleRangeCalculator(state) : state;
             });
         };

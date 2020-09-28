@@ -25,6 +25,6 @@ export function getCompatibleCellAndTemplate(state, location) {
         return { cell: cell, cellTemplate: cellTemplate };
     }
     catch (e) {
-        throw new Error(e + " (rowId: '" + location.row.rowId + "', columnId: '" + location.column.columnId + "')");
+        throw new Error(e.message + " (rowId: '" + location.row.rowId + "', columnId: '" + location.column.columnId + "')");
     }
 }

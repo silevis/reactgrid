@@ -174,21 +174,6 @@
       position: absolute;
       right: 4px;
       top: 4px; }
-  .reactgrid-content .rg-pane .rg-separator-line {
-    position: absolute;
-    box-sizing: border-box;
-    pointer-events: none; }
-    .reactgrid-content .rg-pane .rg-separator-line-row {
-      width: 100%;
-      border-bottom-width: 1px;
-      border-bottom-color: #e5e5e5;
-      border-bottom-style: solid; }
-    .reactgrid-content .rg-pane .rg-separator-line-col {
-      height: 100%;
-      top: 0;
-      border-right-width: 1px;
-      border-right-color: #e5e5e5;
-      border-right-style: solid; }
   .reactgrid-content .rg-pane .rg-cell-focus {
     position: absolute;
     pointer-events: none;

@@ -7,9 +7,6 @@ export interface RowRendererProps {
     columns: GridColumn[];
     forceUpdate: boolean;
     borders: Borders;
-    cellRenderer: React.FunctionComponent<CellRendererProps>;
+    cellRenderer: React.FC<CellRendererProps>;
 }
-export declare class RowRenderer extends React.Component<RowRendererProps> {
-    shouldComponentUpdate(nextProps: RowRendererProps): boolean;
-    render(): JSX.Element[];
-}
+export declare const RowRenderer: React.NamedExoticComponent<RowRendererProps>;

@@ -81,11 +81,22 @@ export interface Column {
     readonly reorderable?: boolean;
     readonly resizable?: boolean;
 }
+export interface BorderProps {
+    readonly color?: string;
+    readonly style?: string;
+    readonly width?: string;
+}
 export interface CellStyle {
     readonly color?: string;
     readonly background?: string;
     readonly overflow?: string;
     readonly paddingLeft?: string;
+    readonly border?: {
+        readonly left?: BorderProps;
+        readonly top?: BorderProps;
+        readonly right?: BorderProps;
+        readonly bottom?: BorderProps;
+    };
 }
 export interface Cell {
     type: string;

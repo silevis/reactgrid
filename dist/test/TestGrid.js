@@ -34,11 +34,19 @@ var emailValidator = function (email) {
     var email_regex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     return email_regex.test(email.replace(/\s+/g, ''));
 };
+var myNumberFormat = new Intl.NumberFormat('pl', { style: 'currency', minimumFractionDigits: 2, maximumFractionDigits: 2, currency: 'PLN' });
+var myDateFormat = new Intl.DateTimeFormat('pl', { weekday: 'short', year: 'numeric', month: 'long', day: 'numeric' });
+var myTimeFormat = new Intl.DateTimeFormat('pl', { hour: '2-digit', minute: '2-digit' });
+var style = {
+    border: {
+        left: { color: 'red', style: 'dashed', width: '2px' },
+        top: { color: 'red', style: 'dashed', width: '2px' },
+        right: { color: 'red', style: 'dashed', width: '2px' },
+        bottom: { color: 'red', style: 'dashed', width: '2px' }
+    }
+};
 export var TestGrid = function (props) {
-    var config = props.config, containerHeight = props.containerHeight, containerWidth = props.containerWidth, containerMargin = props.containerMargin, isPro = props.isPro, component = props.component, enableSticky = props.enableSticky, enableColumnAndRowSelection = props.enableColumnAndRowSelection;
-    var myNumberFormat = new Intl.NumberFormat('pl', { style: 'currency', minimumFractionDigits: 2, maximumFractionDigits: 2, currency: 'PLN' });
-    var myDateFormat = new Intl.DateTimeFormat('pl', { weekday: 'short', year: 'numeric', month: 'long', day: 'numeric' });
-    var myTimeFormat = new Intl.DateTimeFormat('pl', { hour: '2-digit', minute: '2-digit' });
+    var config = props.config, containerHeight = props.containerHeight, containerWidth = props.containerWidth, containerMargin = props.containerMargin, component = props.component, enableSticky = props.enableSticky, enableColumnAndRowSelection = props.enableColumnAndRowSelection;
     var _a = React.useState(function () { return new Array(config.columns).fill({ columnId: 0, resizable: true, reorderable: true, width: -1 })
         .map(function (_, ci) { return ({ columnId: "col-" + ci, resizable: true, reorderable: true, width: config.cellWidth }); }); }), columns = _a[0], setColumns = _a[1];
     var _b = React.useState(function () { return new Array(config.rows).fill(0).map(function (_, ri) { return ({
@@ -53,9 +61,9 @@ export var TestGrid = function (props) {
                 case 0:
                     return { type: 'chevron', groupId: !(ri % 3) ? 'A' : undefined, text: ri + " - " + ci, parentId: ri, isExpanded: ri % 4 ? true : undefined, hasChildren: true };
                 case 1:
-                    return { type: 'text', groupId: !(ri % 3) ? 'B' : undefined, text: ri + " - " + ci };
+                    return { type: 'text', groupId: !(ri % 3) ? 'B' : undefined, text: ri + " - " + ci, style: style };
                 case 2:
-                    return { type: 'email', groupId: Math.random() < .66 ? Math.random() < .5 ? 'A' : 'B' : undefined, text: ri + "." + ci + "@bing.pl", validator: emailValidator };
+                    return { type: 'email', text: ri + "." + ci + "@bing.pl", validator: emailValidator };
                 case 3:
                     return { type: 'number', format: myNumberFormat, value: parseFloat(ri + "." + ci), nanToZero: false, hideZero: true };
                 case 4:
@@ -65,7 +73,7 @@ export var TestGrid = function (props) {
                 case 6:
                     return { type: 'checkbox', checked: false, checkedText: 'Checked', uncheckedText: 'Unchecked' };
                 case 7:
-                    return { type: 'flag', groupId: 'B', text: 'bra' };
+                    return { type: 'flag', groupId: Math.random() < .66 ? Math.random() < .5 ? 'A' : 'B' : undefined, text: 'bra' };
                 default:
                     return { type: 'text', text: ri + " - " + ci, validator: function (text) { return true; } };
             }
@@ -188,9 +196,9 @@ export var TestGrid = function (props) {
             })) },
             config.enableAdditionalContent &&
                 React.createElement(React.Fragment, null,
-                    React.createElement(Logo, { isPro: isPro }),
-                    React.createElement(Logo, { isPro: isPro }),
-                    React.createElement(Logo, { isPro: isPro })),
+                    React.createElement(Logo, { isPro: config.isPro }),
+                    React.createElement(Logo, { isPro: config.isPro }),
+                    React.createElement(Logo, { isPro: config.isPro })),
             React.createElement(Component, { rows: rows, columns: columns, initialFocusLocation: { columnId: 'col-1', rowId: 'row-2' }, onCellsChanged: handleChanges, onColumnResized: handleColumnResize, customCellTemplates: { 'flag': new FlagCellTemplate() }, highlights: [
                     { columnId: 'col-1', rowId: 'row-1', borderColor: '#00ff00' },
                     { columnId: 'col-0', rowId: 'row-1', borderColor: 'red' }
@@ -226,7 +234,7 @@ export var TestGrid = function (props) {
                     React.createElement("h1", null, "TEXT"),
                     " Test WITH IT")),
         React.createElement("input", { type: 'text', "data-cy": 'outer-input' }),
-        React.createElement(Logo, { isPro: isPro }),
+        React.createElement(Logo, { isPro: config.isPro }),
         config.enableAdditionalContent &&
             React.createElement(React.Fragment, null,
                 React.createElement("h1", { style: { width: 3000 } }, "TEXT"),

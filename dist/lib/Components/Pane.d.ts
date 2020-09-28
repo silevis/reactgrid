@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Range, Borders, State } from '../Model';
+import { Range, State, Borders } from '../Model';
 import { CellRendererProps } from './CellRenderer';
 export interface PaneProps {
     renderChildren: boolean;
@@ -17,11 +17,12 @@ export interface PaneContentProps<TState extends State = State> {
     range: () => Range;
     borders: Borders;
     cellRenderer: React.FunctionComponent<CellRendererProps>;
-    children?: React.ReactNode;
+    children?: (state: TState, range: Range) => React.ReactNode;
 }
 export interface PaneContentChild<TState extends State = State> {
     state: TState;
     calculatedRange?: Range;
 }
-export declare const Pane: React.FunctionComponent<PaneProps>;
-export declare const PaneContent: React.FunctionComponent<PaneContentProps<State>>;
+export declare const PaneGridContent: React.NamedExoticComponent<RowsProps>;
+export declare const Pane: React.FC<PaneProps>;
+export declare const PaneContent: React.FC<PaneContentProps<State>>;
