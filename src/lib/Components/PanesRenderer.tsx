@@ -41,9 +41,7 @@ export const PanesRenderer: React.FC<PanesProps> = ({ state, cellRenderer }) => 
                         ? `calc(100% - ${cellMatrix.ranges.stickyLeftRange.width}px)`
                         : cellMatrix.scrollableRange.width,
                     height: (areOnlyStickyRows || areOnlyStickyCols) ? 0 : cellMatrix.scrollableRange.height,
-                    marginLeft: renderLeftSticky && renderTopSticky ? cellMatrix.ranges.stickyLeftRange.width : 'unset',
-                    marginTop: renderLeftSticky && renderTopSticky ? -cellMatrix.height + cellMatrix.ranges.stickyTopRange.height : 'unset',
-                    order: 5,
+                    order: 3,
                 }}
             >
                 <PaneContent
@@ -108,16 +106,14 @@ export const PanesRenderer: React.FC<PanesProps> = ({ state, cellRenderer }) => 
             {renderLeftSticky && <div className={'shadow shadow-left'} style={{
                 width: cellMatrix.ranges.stickyLeftRange.width,
                 height: cellMatrix.height,
-                marginLeft: -cellMatrix.ranges.stickyLeftRange.width,
-                marginTop: -cellMatrix.ranges.stickyTopRange.height,
-                order: 3,
+                marginTop: -cellMatrix.height,
+                order: 5,
                 ...(isBrowserFirefox() && { zIndex: 1 })
             }} ></div>}
             {renderTopSticky && <div className={'shadow shadow-top'} style={{
                 width: cellMatrix.width,
                 height: cellMatrix.ranges.stickyTopRange.height,
-                marginLeft: -cellMatrix.ranges.stickyLeftRange.width,
-                marginTop: -cellMatrix.ranges.stickyTopRange.height,
+                marginTop: -cellMatrix.height,
                 order: 4,
                 ...(isBrowserFirefox() && { zIndex: 1 })
             }} ></div>}

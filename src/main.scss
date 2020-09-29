@@ -5,24 +5,20 @@
 
 .shadow {
     position: sticky;
-    &.shadow-top, &.shadow-left {
-        top: 0;
-        left: 0;
-    }
-    &.shadow-bottom, &.shadow-right {
-        right: 0; 
-        bottom: 0;
-    }
     &.shadow-top {
+        top: 0;
         box-shadow: $shadow-on-bottom $cell-shadow-color;
     }
     &.shadow-left {
+        left: 0;
         box-shadow: $shadow-on-right $cell-shadow-color; 
     }
     &.shadow-bottom {
+        bottom: 0;
         box-shadow: $shadow-on-top $cell-shadow-color;
     }
     &.shadow-right {
+        right: 0;
         box-shadow: $shadow-on-left $cell-shadow-color;
     }
 }
