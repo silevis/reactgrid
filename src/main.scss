@@ -21,6 +21,18 @@
         right: 0;
         box-shadow: $shadow-on-left $cell-shadow-color;
     }
+    &.shadow-top-corner {
+        box-shadow: $shadow-on-bottom $cell-shadow-color;
+    }
+    &.shadow-left-corner {
+        box-shadow: $shadow-on-right $cell-shadow-color; 
+    }
+    &.shadow-bottom-corner {
+        box-shadow: $shadow-on-top $cell-shadow-color;
+    }
+    &.shadow-right-corner {
+        box-shadow: $shadow-on-left $cell-shadow-color;
+    }
 }
 
 .reactgrid-content {
