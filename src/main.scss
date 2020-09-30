@@ -19,35 +19,15 @@
         }
         &.rg-pane-top {
             top: 0; 
-            box-shadow: $shadow-on-bottom $cell-shadow-color;
-            &.rg-pane-left {
-                box-shadow: $shadow-on-bottom $cell-shadow-color,
-                $shadow-on-right $cell-shadow-color;
-            }
-            &.rg-pane-right {
-                box-shadow: $shadow-on-bottom $cell-shadow-color,
-                $shadow-on-left $cell-shadow-color;
-            }
         }
         &.rg-pane-bottom {
             bottom: 0;
-            box-shadow: $shadow-on-top $cell-shadow-color;
-            &.rg-pane-left {
-                box-shadow: $shadow-on-top $cell-shadow-color,
-                $shadow-on-right $cell-shadow-color;
-            }
-            &.rg-pane-right {
-                box-shadow: $shadow-on-top $cell-shadow-color,
-                $shadow-on-left $cell-shadow-color;
-            }
         }
         &.rg-pane-left {
             left: 0; 
-            box-shadow: $shadow-on-right $cell-shadow-color; 
         }
         &.rg-pane-right {
             right: 0; 
-            box-shadow: $shadow-on-left $cell-shadow-color;
         }
         .rg-cell {
             font-size: $cell-font-size;
@@ -132,6 +112,37 @@
                 border-color: $partial-area-border-color;
                 background-color: $partial-area-background-color;
             }
+        }
+    }
+    .shadow {
+        position: sticky;
+        &.shadow-top {
+            top: 0;
+            box-shadow: $shadow-on-bottom $cell-shadow-color;
+        }
+        &.shadow-left {
+            left: 0;
+            box-shadow: $shadow-on-right $cell-shadow-color; 
+        }
+        &.shadow-bottom {
+            bottom: 0;
+            box-shadow: $shadow-on-top $cell-shadow-color;
+        }
+        &.shadow-right {
+            right: 0;
+            box-shadow: $shadow-on-left $cell-shadow-color;
+        }
+        &.shadow-top-corner {
+            box-shadow: $shadow-on-bottom $cell-shadow-color;
+        }
+        &.shadow-left-corner {
+            box-shadow: $shadow-on-right $cell-shadow-color; 
+        }
+        &.shadow-bottom-corner {
+            box-shadow: $shadow-on-top $cell-shadow-color;
+        }
+        &.shadow-right-corner {
+            box-shadow: $shadow-on-left $cell-shadow-color;
         }
     }
     .rg-context-menu {
