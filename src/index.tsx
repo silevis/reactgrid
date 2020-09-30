@@ -7,7 +7,6 @@ import { config } from './test/testEnvConfig';
 
 const props = {
   component: ReactGrid,
-  isPro: false,
   config
 }
 let component = <TestGrid {...props} />;

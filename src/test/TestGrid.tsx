@@ -17,7 +17,6 @@ interface TestGridProps {
     containerMargin?: number;
     enableSticky?: boolean;
     enableColumnAndRowSelection?: boolean;
-    isPro?: boolean;
     config: Config;
     component: React.ComponentClass<ReactGridProps>;
 }
@@ -40,8 +39,8 @@ const style: CellStyle = {
     }
 };
 
-export const TestGrid: React.FunctionComponent<TestGridProps> = (props) => {
-    const { config, containerHeight, containerWidth, containerMargin, isPro, component, enableSticky, enableColumnAndRowSelection } = props;
+export const TestGrid: React.FC<TestGridProps> = (props) => {
+    const { config, containerHeight, containerWidth, containerMargin, component, enableSticky, enableColumnAndRowSelection } = props;
 
     const [columns, setColumns] = React.useState(() => new Array(config.columns).fill({ columnId: 0, resizable: true, reorderable: true, width: -1 })
         .map<Column>((_, ci) => ({ columnId: `col-${ci}`, resizable: true, reorderable: true, width: config.cellWidth })));
@@ -59,7 +58,7 @@ export const TestGrid: React.FunctionComponent<TestGridProps> = (props) => {
                 case 1:
                     return { type: 'text', groupId: !(ri % 3) ? 'B' : undefined, text: `${ri} - ${ci}`, style }
                 case 2:
-                    return { type: 'email', groupId: Math.random() < .66 ? Math.random() < .5 ? 'A' : 'B' : undefined, text: `${ri}.${ci}@bing.pl`, validator: emailValidator }
+                    return { type: 'email', text: `${ri}.${ci}@bing.pl`, validator: emailValidator }
                 case 3:
                     return { type: 'number', format: myNumberFormat, value: parseFloat(`${ri}.${ci}`), nanToZero: false, hideZero: true }
                 case 4:
@@ -69,7 +68,7 @@ export const TestGrid: React.FunctionComponent<TestGridProps> = (props) => {
                 case 6:
                     return { type: 'checkbox', checked: false, checkedText: 'Checked', uncheckedText: 'Unchecked' }
                 case 7:
-                    return { type: 'flag', groupId: 'B', text: 'bra' }
+                    return { type: 'flag', groupId: Math.random() < .66 ? Math.random() < .5 ? 'A' : 'B' : undefined, text: 'bra' }
                 // case 8: // TODO allow user to pass non focusable cell (header cell) with arrows
                 //     return { type: 'header', text: `${ri} - ${ci}` }
                 default:
@@ -226,9 +225,9 @@ export const TestGrid: React.FunctionComponent<TestGridProps> = (props) => {
             }}>
                 {config.enableAdditionalContent &&
                     <>
-                        <Logo isPro={isPro} />
-                        <Logo isPro={isPro} />
-                        <Logo isPro={isPro} />
+                        <Logo isPro={config.isPro} />
+                        <Logo isPro={config.isPro} />
+                        <Logo isPro={config.isPro} />
                     </>
                 }
                 <Component
@@ -284,7 +283,7 @@ export const TestGrid: React.FunctionComponent<TestGridProps> = (props) => {
                 }
             </div>
             <input type='text' data-cy='outer-input' />
-            <Logo isPro={isPro} />
+            <Logo isPro={config.isPro} />
             {config.enableAdditionalContent &&
                 <>
                     <h1 style={{ width: 3000 }}>TEXT</h1> Test WITH IT

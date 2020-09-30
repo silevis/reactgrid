@@ -11,23 +11,17 @@ context('Hidden focus', () => {
 
     it('should capture text typing after cell selection', () => { // ✅
         cy.wait(300);
-        Utils.selectCell(200, 100);
+        Utils.selectCell(config.cellWidth + (config.cellWidth / 2), config.cellHeight * 4);
         cy.wait(300);
         Utils.keyDown(Constants.keyCodes.Enter, { force: true }, 200, true);
         cy.wait(300);
         cy.focused().type(Utils.randomText(), { force: true });
     });
 
-    it.skip('focus should back to grid on Shift + TAB key', () => {//  🔶
-        // 🔶 test passing when browser window in blurred
-        Utils.selectCell(200, 100);
+    it('focus should back to grid on Shift + TAB key', () => {//  ✅
+        Utils.selectCell(config.cellWidth + (config.cellWidth / 2), config.cellHeight * 4);
         Utils.getOuterInput().focus().wait(200);
-
-        cy.focused()
-            .type('text', { force: true })
-            .trigger('keydown', { keyCode: Constants.keyCodes.Tab, shiftKey: true, force: true })
-            .wait(500)
-            .trigger('keyup', { shiftKey: true, force: true });
+        cy.focused().type('text', { force: true }).tab({ shift: true });
         cy.wait(300);
         cy.focused().should('have.class', 'rg-hidden-element');
     });

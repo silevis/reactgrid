@@ -47,7 +47,7 @@ context('Scroll', () => {
         Utils.selectCell(Utils.getCellXCenter(), (config.cellHeight * 5) + 10);
         for (let i = 0; i < config.columns; i++) Utils.keyDown(Constants.keyCodes.ArrowRight, { force: true }, 10, false);
         Utils.assertIsElementInScrollable(Utils.getCellFocus());
-        Utils.assertScrolledToRight();
+        Utils.assertScrolledToRight(config.isPro);
     });
 
     it('should scroll to left on arrow left keydown', () => { // ✅

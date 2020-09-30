@@ -51,7 +51,7 @@ export class EventHandlers {
             const { width, height } = getVisibleSizeOfReactGrid(state);
             const shouldBeVisibleRangeRecalc = width > 0 && height > 0 && (
                 scrollTop >= state.bottomScrollBoudary - PAGE_UPDATE_OFFSET || scrollTop <= state.topScrollBoudary + PAGE_UPDATE_OFFSET ||
-                scrollLeft >= state.rightScrollBoudary || scrollLeft <= state.leftScrollBoudary
+                scrollLeft >= state.rightScrollBoudary - PAGE_UPDATE_OFFSET || scrollLeft <= state.leftScrollBoudary + PAGE_UPDATE_OFFSET
             );
             return shouldBeVisibleRangeRecalc ? visibleRangeCalculator(state) : state;
         });

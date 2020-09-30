@@ -7,7 +7,7 @@ context('Scroll', () => {
         Utils.visitSticky();
     });
 
-    it('should scroll viewport when cell is not fully visible vertically', () => { // ✅
+    it.skip('should scroll viewport when cell is partially visible and focused', () => { // ✅
         Utils.scrollTo(0, Utils.getCellYCenter());
         Utils.selectCell(config.cellWidth + 5, config.cellHeight * config.stickyTop + 5);
         Utils.assertIsElementInScrollable(Utils.getCellFocus());
@@ -22,6 +22,21 @@ context('Scroll', () => {
         Utils.assertElementTopIsEqual(Utils.getCellFocus(), 0);
     });
 
+    it('should scroll viewport when cell is not fully visible vertically', () => { // ✅
+        Utils.scrollTo(0, Utils.getCellYCenter());
+        Utils.selectCell(config.cellWidth + 5, config.cellHeight * config.stickyTop + 5);
+        Utils.assertIsElementInScrollable(Utils.getCellFocus());
+
+        Utils.assertElementTopIsEqual(Utils.getCellFocus(), 0);
+
+        Utils.scrollTo(0, Utils.getCellYCenter());
+
+        Utils.selectCell((config.cellWidth * config.stickyLeft) + (config.cellWidth * 2), config.cellHeight * config.stickyTop + 5);
+        Utils.assertIsElementInScrollable(Utils.getCellFocus());
+
+        Utils.assertElementTopIsEqual(Utils.getCellFocus(), 0);
+    });
+
     it('should scroll viewport when cell is not fully visible horizontally', () => { // ✅
         Utils.scrollTo(Utils.getCellXCenter(), 0);
         Utils.selectCell(config.cellWidth * config.stickyLeft + 5, config.cellHeight + 5);
@@ -31,11 +46,12 @@ context('Scroll', () => {
 
         Utils.getScrollableElement().then($viewport => {
             const v = $viewport[0];
-            Utils.selectCell(v.clientWidth - 5, config.cellHeight + Utils.getCellYCenter());
+            const stickyRightSize = config.isPro ? config.stickyRight * config.cellWidth : 0;
+            Utils.selectCell(v.clientWidth - stickyRightSize - 5, config.cellHeight + Utils.getCellYCenter());
 
             Utils.assertIsElementInScrollable(Utils.getCellFocus());
-            const stickySize = config.stickyLeft * config.cellWidth;
-            Utils.assertElementLeftIsEqual(Utils.getCellFocus(), v.clientWidth - stickySize - (v.clientWidth) % config.cellWidth - config.lineWidth)
+            const stickyLeftSize = config.stickyLeft * config.cellWidth;
+            Utils.assertElementLeftIsEqual(Utils.getCellFocus(), v.clientWidth - stickyLeftSize - stickyRightSize - (v.clientWidth) % config.cellWidth - config.lineWidth)
         });
     });
 
@@ -56,4 +72,5 @@ context('Scroll', () => {
         };
         Utils.assertScrolledToLeft();
     });
-})
+
+});
