@@ -21,16 +21,16 @@ export type SelectionMode =
     | 'range'
 
 /**
- * `ReactGrid`s component props
+ * `ReactGrid`'s component props
  * 
  * @see https://reactgrid.com/docs/3.1/7-api/0-interfaces/1-reactgrid-props/
  */
 export interface ReactGridProps {
-    /** `Column`’s data */
+    /** Array of `Column`s */
     readonly columns: Column[];
-    /** `Row`’s data */
+    /** Array of `Row`s  */
     readonly rows: Row<Cell>[];
-    /** Set of available custom cell templates */
+    /** Object that contains available custom cell templates */
     readonly customCellTemplates?: CellTemplates;
     /** Focus position (managed constantly by outer app) */
     readonly focusLocation?: CellLocation;
@@ -42,11 +42,11 @@ export interface ReactGridProps {
     readonly stickyTopRows?: number;
     /** Amount of rows which are sticky at the bottom */
     readonly stickyBottomRows?: number;
-    /** Amount of columns which are sticky on the left side  */
+    /** Amount of columns which are sticky on the left side */
     readonly stickyLeftColumns?: number;
-    /** Amount of columns which are sticky on the right side  */
+    /** Amount of columns which are sticky on the right side */
     readonly stickyRightColumns?: number;
-    /** Set `true` to enable cell fill feature (by default `false`) */
+    /** Set `true` to enable cell fill handle feature (by default `false`) */
     readonly enableFillHandle?: boolean;
     /** Set `true` to enable range selection feature (by default `false`) */
     readonly enableRangeSelection?: boolean;
@@ -62,7 +62,7 @@ export interface ReactGridProps {
     readonly enableGroupIdRender?: boolean;
 
     /** 
-     * Called when cell property (e.g. `value`) was changed
+     * Called when cell was changed (e.g. property `value`)
      * 
      * @param {CellChange[]} cellChanges Array of cell changes
      * @returns {void}
@@ -78,7 +78,8 @@ export interface ReactGridProps {
     readonly onFocusLocationChanged?: (location: CellLocation) => void;
 
     /** 
-     * Called when trying to change focus location
+     * Called when trying to change focus location.
+     * You are able to prevent position changing.
      * 
      * @param {CellLocation} location New focus location
      * @returns {boolean} Return `false` to prevent position changing
@@ -86,9 +87,9 @@ export interface ReactGridProps {
     readonly onFocusLocationChanging?: (location: CellLocation) => boolean;
 
     /** 
-     * Called when column resize action was ended
+     * Called when column resize action was finished
      * 
-     * @param {Id} columnId Resized column
+     * @param {Id} columnId Resized column `Id`
      * @param {number} width New column width
      * @param {Id[]} selectedColIds Array of selected column `Id`s
      * @returns {void}
@@ -96,9 +97,9 @@ export interface ReactGridProps {
     readonly onColumnResized?: (columnId: Id, width: number, selectedColIds: Id[]) => void;
 
     /** 
-     * Called when row reorder action was ended
+     * Called when row reorder action was finished
      * 
-     * @param {Id} targetRowId Row's `Id` on which action was ended
+     * @param {Id} targetRowId Row's `Id` on which action was finished
      * @param {Id[]} rowIds Array of reordered row's `Id`s  
      * @param {DropPosition} dropPosition Indicated where row was dropped relatively to it's origin position
      * @returns {void}
@@ -106,9 +107,9 @@ export interface ReactGridProps {
     readonly onRowsReordered?: (targetRowId: Id, rowIds: Id[], dropPosition: DropPosition) => void;
 
     /** 
-     * Called when column reorder action was ended
+     * Called when column reorder action was finished
      * 
-     * @param {Id} targetRowId Column's `Id` on which action was ended
+     * @param {Id} targetRowId Column's `Id` on which action was finished
      * @param {Id[]} columnIds Array of reordered column's `Id`s  
      * @param {DropPosition} dropPosition Indicated where row was dropped relatively to it's origin position
      * @returns {void}
@@ -122,7 +123,7 @@ export interface ReactGridProps {
      * @param {Id[]} selectedColIds Array of selected rows's `Id`s
      * @param {SelectionMode} selectionMode Current selection mode
      * @param {MenuOption[]} menuOptions Array of built-in menu options e.g. copy/cut/paste
-     * @returns {MenuOption[]}
+     * @returns {MenuOption[]} Returns array of context menu options
      */
     readonly onContextMenu?: (selectedRowIds: Id[], selectedColIds: Id[], selectionMode: SelectionMode, menuOptions: MenuOption[]) => MenuOption[];
 
@@ -234,7 +235,6 @@ export interface Highlight {
     readonly className?: string;
 }
 
-
 /**
  * Union of basic cells usually used for consuming changes and marking cells array inside the data row
  * 
@@ -248,28 +248,26 @@ export type DefaultCellTypes =
     | HeaderCell
     | NumberCell
     | TextCell
-    | TimeCell;
-
+    | TimeCell
 
 /**
- * `CellChange` type is used by `onCellsChanged` callback in `ReactGrid` component. 
- * It represents mutually exclusive changes to a single cell.
+ * `CellChange` type is used by `onCellsChanged`. It represents mutually exclusive changes on a single cell.
  * 
  * @see https://reactgrid.com/docs/3.1/7-api/1-types/2-cell-change/
  */
 export type CellChange<TCell extends Cell = DefaultCellTypes & Cell> = TCell extends Cell ? Change<TCell> : never;
 
 /**
- * `Change` interface represents a particullar change on single cell on concrete cell template
+ * `Change` interface represents a particullar change on a single cell on the cell template.
  * 
  * @see https://reactgrid.com/docs/3.1/7-api/1-types/2-cell-change/
  */
 export interface Change<TCell extends Cell = DefaultCellTypes> {
-    /** Row `Id` where the change ocurred */
+    /** Row's `Id` where the change ocurred */
     readonly rowId: Id;
-    /** Column `Id` where the change ocurred */
+    /** Column's `Id` where the change ocurred */
     readonly columnId: Id;
-    /** Extracted cell type of `TCell` e.g. `text`, `chevron` */
+    /** Extracted cell type of `TCell` (e.g. `text`, `chevron` and so on) */
     readonly type: TCell['type'];
     /** Previous content of the cell */
     readonly previousCell: TCell;
@@ -280,14 +278,14 @@ export interface Change<TCell extends Cell = DefaultCellTypes> {
 /**
  * This interface is used for the communication between ReactGrid and a cell
  * 
- * Creating cell template:
+ * How to create new cell template:
  * @see https://reactgrid.com/docs/3.1/5-create-your-own-cell-template/
  * 
  * @see https://reactgrid.com/docs/3.1/7-api/0-interfaces/5-cell-template/
  */
 export interface CellTemplate<TCell extends Cell = Cell> {
     /** 
-     * Validate and convert to compatible cell type
+     * Validates and converts `uncertainCell` to compatible cell type
      * 
      * @param uncertainCell Cell with all optional fields of its base (`TCell`)
      * @returns Compatible cell of its base (`TCell`)
@@ -295,7 +293,7 @@ export interface CellTemplate<TCell extends Cell = Cell> {
     getCompatibleCell(uncertainCell: Uncertain<TCell>): Compatible<TCell>;
 
     /**
-     * Returns true if the data in the cell is focusable
+     * Returns `true` if the cell is focusable
      * 
      * @param cell Current cell as `Compatible` cell 
      * @returns `true` if cell should be focusable, by default returns `true`
@@ -303,7 +301,7 @@ export interface CellTemplate<TCell extends Cell = Cell> {
     isFocusable?(cell: Compatible<TCell>): boolean;
 
     /**
-     * Update cell based on new props. If not implemented, cell will be read-only
+     * Updates cell based on new props. If not implemented, cell will be read-only
      * 
      * @param cell Current cell
      * @param cellToMerge Incoming cell
@@ -312,15 +310,15 @@ export interface CellTemplate<TCell extends Cell = Cell> {
     update?(cell: Compatible<TCell>, cellToMerge: UncertainCompatible<TCell>): Compatible<TCell>;
 
     /** 
-     * Handles keydown event on cell template
+     * Handles keydown event on cell template and double click (opening cell in edit mode)
      * Default: cell => { cell, enableEditMode: false }
      * 
      * @param cell Incoming `Compatible` cell
      * @param keyCode Represents the key pressed on the keyboard, or 1 for a pointer event (double click).
-     * @param ctrl Is `ctrl` pressed when event is called
+     * @param ctrl Is `ctrl` pressed when event is called ()
      * @param shift Is `shift` pressed when event is called
      * @param alt Is `alt` pressed when event is called
-     * @returns Cell data either affected by the event or not
+     * @returns Cell data and edit mode either affected by the event or not
     */
     handleKeyDown?(
         cell: Compatible<TCell>,
@@ -331,17 +329,17 @@ export interface CellTemplate<TCell extends Cell = Cell> {
     ): { cell: Compatible<TCell>; enableEditMode: boolean };
 
     /**
-     * Return custom styles based on cell data applied to the cells `div` element
+     * Returns custom styles based on cell data applied to the cells `div` element
      * Default: _ => cell.style | {}
      * 
      * @param cell Incoming `Compatible` cell
      * @param isInEditMode Flag is set to `true`, if cell is rendered in edit mode
-     * @returns Custom cell styling
+     * @returns Custom cell styling properties
      */
     getStyle?(cell: Compatible<TCell>, isInEditMode: boolean): CellStyle;
 
     /**
-     *  Return CSS classes based on cell data applied to the cells `div` element
+     *  Returns CSS classes based on cell data applied to the cells `div` element
      * 
      * @param cell Incoming `Compatible` cell
      * @param isInEditMode Flag is set to `true`, if cell is rendered in edit mode
@@ -372,14 +370,14 @@ export interface CellTemplate<TCell extends Cell = Cell> {
 export type Id = number | string;
 
 /**
- * Indicates where row/column was dropped relatively to its origin
+ * Indicates where row/column was dropped relatively to its origin and target object
  * 
  * @see https://reactgrid.com/docs/3.1/7-api/1-types/5-drop-position/
  */
 export type DropPosition =
     | 'before'
     | 'on'
-    | 'after';
+    | 'after'
 
 /**
  * Represents column in the grid
@@ -387,7 +385,7 @@ export type DropPosition =
  * @see https://reactgrid.com/docs/3.1/7-api/0-interfaces/3-column/
  */
 export interface Column {
-    /** Unique Id in all columns array */
+    /** Unique `Id` in all columns array */
     readonly columnId: Id;
     /** Width of each grid column (in default set to `150px`) */
     readonly width?: number;
@@ -399,6 +397,8 @@ export interface Column {
 
 /**
  * This interface styles single cells border
+ * 
+ * @see https://reactgrid.com/docs/3.1/7-api/0-interfaces/7-cell-style/
  */
 export interface BorderProps {
     /** Color of border - e.g. `#eee`/`red` */
@@ -410,7 +410,7 @@ export interface BorderProps {
 }
 
 /**
- * Styles single cell and prevents passing unwanted CSS properties that could break down grid rendering
+ * This interface styles single cell and prevents passing unwanted CSS properties that could break down grid rendering
  * 
  * @see https://reactgrid.com/docs/3.1/7-api/0-interfaces/7-cell-style/
  */
@@ -433,7 +433,7 @@ export interface CellStyle {
 }
 
 /**
- * A base for built-in cell templates and your own
+ * A base for built-in cell types (e.g. `HeaderCell`) and your own
  * 
  * @see https://reactgrid.com/docs/3.1/7-api/0-interfaces/4-cell/
  */
@@ -483,7 +483,7 @@ export type UncertainCompatible<TCell extends Cell> = Uncertain<TCell> & {
 
 /**
  * `Row` contains essential information about the grid row. 
- * `cells` field allows you to declare an array of objects that extends Cell base interface.
+ * `cells` field allows you to declare an array of objects that extends `Cell` base interface.
  * 
  * @see https://reactgrid.com/docs/3.1/7-api/0-interfaces/2-row/
  */
@@ -492,7 +492,7 @@ export interface Row<TCell extends Cell = DefaultCellTypes> {
     readonly rowId: Id;
     /** Array of `Cell` objects */
     readonly cells: TCell[];
-    /** Height of each grid row (in default set to `25`[px]) */
+    /** Height of each grid row (in default set to `25` in px) */
     readonly height?: number;
     /** 
      * Property that allows row to change is position in grid, 
@@ -509,7 +509,7 @@ export interface Row<TCell extends Cell = DefaultCellTypes> {
 export interface MenuOption {
     /** Text that identifies each menu option */
     id: string;
-    /** Label displayed in menu */
+    /** Text label displayed as its title */
     label: string;
     /** 
      * Function that is called when an option is clicked
@@ -517,7 +517,7 @@ export interface MenuOption {
      * @param selectedRowIds `Id`s of selected rows.
      * @param selectedColIds `Id`s of selected columns.
      * @param selectionMode Current selection mode.
-     * @returns void
+     * @returns {void}
      */
     handler: (selectedRowIds: Id[], selectedColIds: Id[], selectionMode: SelectionMode) => void;
 }

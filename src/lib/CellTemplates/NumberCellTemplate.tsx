@@ -17,7 +17,7 @@ export interface NumberCell extends Cell {
 export class NumberCellTemplate implements CellTemplate<NumberCell> {
 
     getCompatibleCell(uncertainCell: Uncertain<NumberCell>): Compatible<NumberCell> {
-        let value;
+        let value: number;
         try {
             value = getCellProperty(uncertainCell, 'value', 'number');
         } catch (error) {

@@ -13,7 +13,7 @@ export const isAlphaNumericKey = (keyCode: number): boolean =>
     isNumpadNumericKey(keyCode) ||
     (keyCode >= keyCodes.MULTIPLY && keyCode <= keyCodes.DIVIDE) ||
     (keyCode >= keyCodes.SEMICOLON && keyCode <= keyCodes.SINGLE_QUOTE) ||
-    (keyCode === keyCodes.SPACE);
+    keyCode === keyCodes.SPACE;
 
 /**
  * Checks that the pressed key's `keyCode` is one of numeric keys
