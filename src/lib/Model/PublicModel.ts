@@ -155,6 +155,7 @@ export interface CellStyle {
 // ASK ARCHITECT BEFORE INTRODUCING ANY CHANGE!
 export interface Cell {
     type: string;
+    nonEditable?: boolean;
     groupId?: Id;
     style?: CellStyle;
     className?: string;

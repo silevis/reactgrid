@@ -47,7 +47,7 @@ export const CellEditorRenderer: React.FunctionComponent<CellEditorRendererProps
             position: 'fixed'
         }}
     >
-        {cellTemplate.render(state.currentlyEditedCell!, true, (cell: Compatible<Cell>, commit: boolean) => {
+        {cellTemplate.render(currentlyEditedCell, true, (cell: Compatible<Cell>, commit: boolean) => {
             state.currentlyEditedCell = commit ? undefined : cell;
             if (commit) state.update(state => tryAppendChange(state, location, cell));
         })}
