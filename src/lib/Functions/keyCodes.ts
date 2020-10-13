@@ -1,3 +1,9 @@
+/**
+ * Set of key codes.
+ * `POINTER` is a ReactGrid addon
+ * 
+ * @enum {number}
+ */
 export enum keyCodes {
     POINTER = 1, // a react-grid addon :)
     BACKSPACE = 8,
