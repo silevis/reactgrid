@@ -258,7 +258,7 @@ export type DefaultCellTypes =
 export type CellChange<TCell extends Cell = DefaultCellTypes & Cell> = TCell extends Cell ? Change<TCell> : never;
 
 /**
- * `Change` interface represents a particullar change on a single cell on the cell template.
+ * `Change` interface represents a particular change on a single cell on the cell template.
  * 
  * @see https://reactgrid.com/docs/3.1/7-api/1-types/2-cell-change/
  */
@@ -287,25 +287,25 @@ export interface CellTemplate<TCell extends Cell = Cell> {
     /** 
      * Validates and converts `uncertainCell` to compatible cell type
      * 
-     * @param uncertainCell Cell with all optional fields of its base (`TCell`)
-     * @returns Compatible cell of its base (`TCell`)
+     * @param {Uncertain<TCell>} uncertainCell Cell with all optional fields of its base (`TCell`)
+     * @returns {Compatible<TCell>} Compatible cell of its base (`TCell`)
      */
     getCompatibleCell(uncertainCell: Uncertain<TCell>): Compatible<TCell>;
 
     /**
      * Returns `true` if the cell is focusable
      * 
-     * @param cell Current cell as `Compatible` cell 
-     * @returns `true` if cell should be focusable, by default returns `true`
+     * @param {Compatible<TCell>} cell Current cell as `Compatible` cell 
+     * @returns {boolean} `true` if cell should be focusable, by default returns `true`
      */
     isFocusable?(cell: Compatible<TCell>): boolean;
 
     /**
      * Updates cell based on new props. If not implemented, cell will be read-only
      * 
-     * @param cell Current cell
-     * @param cellToMerge Incoming cell
-     * @returns Merged cell as `Compatible` cell
+     * @param {Compatible<TCell>} cell Current cell
+     * @param {UncertainCompatible<TCell>} cellToMerge Incoming cell
+     * @returns {Compatible<TCell>} Merged cell as `Compatible` cell
      */
     update?(cell: Compatible<TCell>, cellToMerge: UncertainCompatible<TCell>): Compatible<TCell>;
 
@@ -313,12 +313,12 @@ export interface CellTemplate<TCell extends Cell = Cell> {
      * Handles keydown event on cell template and double click (opening cell in edit mode)
      * Default: cell => { cell, enableEditMode: false }
      * 
-     * @param cell Incoming `Compatible` cell
-     * @param keyCode Represents the key pressed on the keyboard, or 1 for a pointer event (double click).
-     * @param ctrl Is `ctrl` pressed when event is called ()
-     * @param shift Is `shift` pressed when event is called
-     * @param alt Is `alt` pressed when event is called
-     * @returns Cell data and edit mode either affected by the event or not
+     * @param {Compatible<TCell>} cell Incoming `Compatible` cell
+     * @param {number} keyCode Represents the key pressed on the keyboard, or 1 for a pointer event (double click).
+     * @param {boolean} ctrl Is `ctrl` pressed when event is called ()
+     * @param {boolean} shift Is `shift` pressed when event is called
+     * @param {boolean} alt Is `alt` pressed when event is called
+     * @returns {{ cell: Compatible<TCell>; enableEditMode: boolean }} Cell data and edit mode either affected by the event or not
     */
     handleKeyDown?(
         cell: Compatible<TCell>,
@@ -332,28 +332,28 @@ export interface CellTemplate<TCell extends Cell = Cell> {
      * Returns custom styles based on cell data applied to the cells `div` element
      * Default: _ => cell.style | {}
      * 
-     * @param cell Incoming `Compatible` cell
-     * @param isInEditMode Flag is set to `true`, if cell is rendered in edit mode
-     * @returns Custom cell styling properties
+     * @param {Compatible<TCell>} cell Incoming `Compatible` cell
+     * @param {boolean} isInEditMode Flag is set to `true`, if cell is rendered in edit mode
+     * @returns {CellStyle} Custom cell styling properties
      */
     getStyle?(cell: Compatible<TCell>, isInEditMode: boolean): CellStyle;
 
     /**
      *  Returns CSS classes based on cell data applied to the cells `div` element
      * 
-     * @param cell Incoming `Compatible` cell
-     * @param isInEditMode Flag is set to `true`, if cell is rendered in edit mode
-     * @returns Cells CSS class names
+     * @param {Compatible<TCell>} cell Incoming `Compatible` cell
+     * @param {boolean} isInEditMode Flag is set to `true`, if cell is rendered in edit mode
+     * @returns {string} Cells CSS class names
      */
     getClassName?(cell: Compatible<TCell>, isInEditMode: boolean): string;
 
     /** 
      * Renders the cell content
      * 
-     * @param cell Incoming `Compatible` cell
-     * @param isInEditMode Flag is set to `true`,if cell is rendered in edit mode
-     * @param onCellChanged Callback used for commiting changes on a cell. For example: typing on html `input` element 
-     * @returns Content of a cell
+     * @param {Compatible<TCell>} cell Incoming `Compatible` cell
+     * @param {boolean} isInEditMode Flag is set to `true`, if cell is rendered in edit mode
+     * @param {(cell: Compatible<TCell>, commit: boolean) => void} onCellChanged Callback used for commiting changes on a cell. For example: typing on html `input` element 
+     * @returns {React.ReactNode} Content of a cell
     */
     render(
         cell: Compatible<TCell>,
@@ -389,9 +389,13 @@ export interface Column {
     readonly columnId: Id;
     /** Width of each grid column (in default set to `150px`) */
     readonly width?: number;
-    /** Allow column to change its position in grid, default: `false` (row reorder implementation is on the developers side) */
+    /** Allow column to change its position in grid, 
+     * default: `false` (row reorder implementation is on the developers side) 
+     */
     readonly reorderable?: boolean;
-    /** Allow column to change is width in grid, default: `false` (row resize implementation is on the developers side) */
+    /** Allow column to change is width in grid, 
+     * default: `false` (row resize implementation is on the developers side) 
+     */
     readonly resizable?: boolean;
 }
 
@@ -514,9 +518,9 @@ export interface MenuOption {
     /** 
      * Function that is called when an option is clicked
      * 
-     * @param selectedRowIds `Id`s of selected rows.
-     * @param selectedColIds `Id`s of selected columns.
-     * @param selectionMode Current selection mode.
+     * @param {Id[]} selectedRowIds `Id`s of selected rows.
+     * @param {Id[]} selectedColIds `Id`s of selected columns.
+     * @param {SelectionMode} selectionMode Current selection mode.
      * @returns {void}
      */
     handler: (selectedRowIds: Id[], selectedColIds: Id[], selectionMode: SelectionMode) => void;

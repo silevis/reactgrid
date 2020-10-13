@@ -1,7 +1,7 @@
 import { keyCodes } from '../Functions/keyCodes';
 
 /**
- * Checks that the pressed key's `keyCode` is is one of alphanumeric keys 
+ * Checks that the pressed key's `keyCode` is one of alphanumeric keys 
  * 
  * @param {number} keyCode `keyCode` field from `KeyboardEvent` interface 
  * @returns {boolean} Returns `true` if `keyCode` is one of alpha numeric keys
