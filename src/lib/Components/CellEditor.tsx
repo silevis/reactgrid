@@ -35,8 +35,6 @@ export const CellEditorRenderer: React.FunctionComponent<CellEditorRendererProps
     }
 
     const cellTemplate = state.cellTemplates![currentlyEditedCell.type];
-    // TODO custom style
-    //const customStyle = cellTemplate.getCustomStyle ? cellTemplate.getCustomStyle(cell.data, true) : {};
     return <CellEditor
         cellType={currentlyEditedCell.type}
         style={{
@@ -54,15 +52,12 @@ export const CellEditorRenderer: React.FunctionComponent<CellEditorRendererProps
     </CellEditor>
 };
 
-const CellEditor: React.FunctionComponent<CellEditorProps> = ({ style, cellType, children }) => {
+const CellEditor: React.FC<CellEditorProps> = ({ style, cellType, children }) => {
     return (
         <div
             className={`rg-celleditor rg-${cellType}-celleditor`}
             data-cy='rg-celleditor'
-            style={{
-                ...style
-                //...customStyle,
-            }}
+            style={style}
         >
             {children}
         </div>
