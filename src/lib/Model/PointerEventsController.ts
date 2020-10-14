@@ -1,7 +1,7 @@
 import { PointerEvent } from './domEventsTypes';
 import { getLocationFromClient } from '../Functions';
 import { AbstractPointerEventsController, isReadyToHandleEvent, isOnClickableArea, State } from '../Model';
-import { DefaultBehavior } from '../Behaviors/DefaultBehavior';
+import { DefaultBehavior } from '../Behaviors';
 
 
 export class PointerEventsController extends AbstractPointerEventsController {
