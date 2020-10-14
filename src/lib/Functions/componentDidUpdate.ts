@@ -1,10 +1,13 @@
 import { ReactGridProps, Location, State } from './../Model';
+import { areLocationsEqual } from './areLocationsEqual';
+import { getReactGridOffsets, getStickyOffset } from './elementSizeHelpers';
+import { getScrollOfScrollableElement } from './scrollHelpers';
 import {
-    scrollIntoView, getScrollOfScrollableElement, getVisibleScrollAreaHeight, getCalculatedScrollTopValueToBottom,
-    getCalculatedScrollTopValueToTop, isBottomCellAllVisible, isTopCellAllVisible, isFocusLocationOnTopSticky,
-    getVisibleScrollAreaWidth, isFocusLocationOnLeftSticky, isRightCellAllVisible, getCalculatedScrollLeftValueToRight,
-    isLeftCellAllVisible, getCalculatedScrollLeftValueToLeft, areLocationsEqual, getReactGridOffsets, getStickyOffset
-} from '.';
+    getCalculatedScrollLeftValueToLeft, getCalculatedScrollLeftValueToRight, getCalculatedScrollTopValueToBottom,
+    getCalculatedScrollTopValueToTop, getVisibleScrollAreaHeight, getVisibleScrollAreaWidth, isBottomCellAllVisible,
+    isFocusLocationOnLeftSticky, isFocusLocationOnTopSticky, isLeftCellAllVisible, isRightCellAllVisible,
+    isTopCellAllVisible, scrollIntoView
+} from './scrollIntoView';
 
 //TODO what about initialFocusLocation and focusLocation set by props
 export function componentDidUpdate(prevProps: ReactGridProps, prevState: State, state: State) {
