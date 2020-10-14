@@ -1,5 +1,5 @@
-import { focusLocation, PointerEvent } from '../Functions';
-import { State, Location, Behavior } from '../Model';
+import { focusLocation } from '../Functions';
+import { State, Location, Behavior, PointerEvent } from '../Model';
 
 export class CellSelectionBehavior extends Behavior {
 

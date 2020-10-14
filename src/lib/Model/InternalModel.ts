@@ -1,5 +1,7 @@
-import { Row, Column, State } from '.';
+
 import { EventHandlers } from './EventHandlers';
+import { Column, Row } from './PublicModel';
+import { State } from './State';
 
 export type Orientation = 'horizontal' | 'vertical';
 

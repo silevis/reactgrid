@@ -1,7 +1,7 @@
-import { ReactGridProps, State, CellLocation } from '../Model';
-import { recalcVisibleRange, focusLocation } from '.';
+import { ReactGridProps, State, CellLocation, CellMatrixBuilder } from '../Model';
 import { defaultCellTemplates } from './defaultCellTemplates';
-import { CellMatrixBuilder } from '../Model/CellMatrixBuilder';
+import { focusLocation } from './focusLocation';
+import { recalcVisibleRange } from './recalcVisibleRange';
 
 
 export function getDerivedStateFromProps(props: ReactGridProps, state: State): State {

@@ -1,6 +1,6 @@
-import { State, PointerEvent } from '.';
+import { PointerEvent } from './domEventsTypes';
 import { getLocationFromClient } from '../Functions';
-import { AbstractPointerEventsController, isReadyToHandleEvent, isOnClickableArea } from '../Model/AbstractPointerEventsController';
+import { AbstractPointerEventsController, isReadyToHandleEvent, isOnClickableArea, State } from '../Model';
 import { DefaultBehavior } from '../Behaviors/DefaultBehavior';
 
 

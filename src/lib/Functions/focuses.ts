@@ -1,6 +1,6 @@
 import { State, Location } from '../Model';
 import { focusLocation } from './focusLocation';
-import { getVisibleScrollAreaHeight, isFocusLocationOnTopSticky } from '.';
+import { getVisibleScrollAreaHeight, isFocusLocationOnTopSticky } from './scrollIntoView';
 
 
 export type FocusLocationFn = (state: State, location: Location) => State;

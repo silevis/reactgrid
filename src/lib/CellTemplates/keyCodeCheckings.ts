@@ -1,4 +1,4 @@
-import { keyCodes } from '../Functions/keyCodes';
+import { keyCodes } from '../Functions';
 
 /**
  * Checks that the pressed key's `keyCode` is one of alphanumeric keys 

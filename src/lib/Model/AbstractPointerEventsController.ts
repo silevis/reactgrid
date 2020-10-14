@@ -1,6 +1,7 @@
-import { StateUpdater, Location, PointerLocation } from '.';
-import { State, PointerEvent } from '.';
-import { areLocationsEqual } from '../Functions/areLocationsEqual';
+import { areLocationsEqual } from '../Functions';
+import { PointerLocation, Location } from './InternalModel';
+import { State, StateUpdater } from './State';
+import { PointerEvent } from './domEventsTypes';
 
 
 export abstract class AbstractPointerEventsController {

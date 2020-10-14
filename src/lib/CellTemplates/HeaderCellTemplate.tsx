@@ -2,7 +2,7 @@ import * as React from 'react';
 
 // NOTE: all modules imported below may be imported from '@silevis/reactgrid'
 import { CellTemplate, Cell, Compatible, Uncertain } from '../Model';
-import { getCellProperty } from '../Functions/getCellProperty';
+import { getCellProperty } from '../Functions';
 
 export interface HeaderCell extends Cell {
     type: 'header',

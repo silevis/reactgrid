@@ -1,6 +1,5 @@
-import { getScrollOfScrollableElement } from './scrollHelpers';
-import { getTopScrollableElement } from '.';
 import { State } from '../Model';
+import { getScrollOfScrollableElement, getTopScrollableElement } from './scrollHelpers';
 import { isIOS } from './operatingSystem';
 
 export function getSizeOfElement(element: any): { width: number, height: number } {

@@ -1,10 +1,6 @@
 import { State, Behavior, KeyboardEvent, ClipboardEvent, PointerEvent, Location, PointerLocation } from '../Model';
-import { handleKeyDown } from '../Functions/handleKeyDown';
+import { handleKeyDown, handleKeyUp, handlePaste, handleCopy, handleDoubleClick } from '../Functions';
 import { CellSelectionBehavior } from './CellSelectionBehavior';
-import { handlePaste } from '../Functions/handlePaste';
-import { handleCopy } from '../Functions/handleCopy';
-import { handleDoubleClick } from '../Functions/handleDoubleClick';
-import { handleKeyUp } from '../Functions/handleKeyUp';
 
 export class DefaultBehavior extends Behavior {
 

@@ -1,4 +1,4 @@
-import { isIOS, isIpadOS } from '../Functions/operatingSystem';
+import { isIOS, isIpadOS } from '../Functions';
 
 export const getTimestamp = (time: string, defaultDate?: string): number => {
     if (defaultDate !== '') {

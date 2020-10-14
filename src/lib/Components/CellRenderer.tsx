@@ -1,9 +1,6 @@
 import * as React from 'react';
 import { State, Location, Compatible, Cell, Borders, BorderProps } from '../Model';
-import { tryAppendChange } from '../Functions';
-import { getCompatibleCellAndTemplate } from '../Functions/getCompatibleCellAndTemplate';
-import { noBorder } from '../Functions/excludeObjectProperties';
-import { areLocationsEqual } from '../Functions/areLocationsEqual';
+import { noBorder, areLocationsEqual, getCompatibleCellAndTemplate, tryAppendChange } from '../Functions';
 
 export interface CellRendererProps {
     state: State;

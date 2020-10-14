@@ -1,7 +1,8 @@
 import { State, KeyboardEvent } from '../Model';
-import { focusLocation, keyCodes } from '.';
 import { isSelectionKey } from './isSelectionKey';
-import { focusCell, moveFocusUp, moveFocusDown, moveFocusLeft, moveFocusRight, moveFocusPageDown, moveFocusPageUp } from '../Functions/focuses';
+import {
+    focusCell, moveFocusUp, moveFocusDown, moveFocusLeft, moveFocusRight, moveFocusPageDown, moveFocusPageUp, focusLocation, keyCodes
+} from '../Functions';
 import { wipeSelectedRanges } from './wipeSelectedRanges';
 import { handleKeyDownOnCellTemplate } from './handleKeyDownOnCellTemplate';
 

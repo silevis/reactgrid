@@ -1,10 +1,9 @@
 import * as React from 'react';
 
 // NOTE: all modules imported below may be imported from '@silevis/reactgrid'
-import { keyCodes } from '../Functions/keyCodes';
 import { CellTemplate, Cell, Compatible, Uncertain, UncertainCompatible } from '../Model';
 import { isAlphaNumericKey, isNavigationKey } from './keyCodeCheckings';
-import { getCellProperty } from '../Functions/getCellProperty';
+import { getCellProperty, keyCodes } from '../Functions';
 import { getCharFromKeyCode } from './getCharFromKeyCode';
 
 export interface EmailCell extends Cell {

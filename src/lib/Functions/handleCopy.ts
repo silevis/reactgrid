@@ -1,7 +1,7 @@
 import { State, ClipboardEvent } from '../Model';
 import { getDataToCopy } from './getDataToCopy';
-import { isBrowserSafari } from '.';
 import { getActiveSelectedRange } from './getActiveSelectedRange';
+import { isBrowserSafari } from './safari';
 
 export function handleCopy(event: ClipboardEvent, state: State, removeValues = false): State {
     const activeSelectedRange = getActiveSelectedRange(state);

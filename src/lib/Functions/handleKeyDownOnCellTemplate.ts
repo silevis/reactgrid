@@ -1,7 +1,7 @@
 import { State, KeyboardEvent } from '../Model';
 import { getCompatibleCellAndTemplate } from './getCompatibleCellAndTemplate';
-import { tryAppendChange } from '.';
 import { isSelectionKey } from './isSelectionKey';
+import { tryAppendChange } from './tryAppendChange';
 
 export function handleKeyDownOnCellTemplate(state: State, event: KeyboardEvent): State {
     const location = state.focusedLocation!;

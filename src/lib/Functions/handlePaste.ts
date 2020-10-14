@@ -1,5 +1,6 @@
 import { State, ClipboardEvent, Compatible, Cell } from '../Model';
-import { getActiveSelectedRange, emptyCell } from '.';
+import { emptyCell } from './emptyCell';
+import { getActiveSelectedRange } from './getActiveSelectedRange';
 import { pasteData } from './pasteData';
 
 export function handlePaste(event: ClipboardEvent, state: State) {

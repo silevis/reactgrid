@@ -1,12 +1,11 @@
 import * as React from 'react';
 import { Pane, PaneContent } from './Pane';
 import { State, Range } from '../Model';
-import { isBrowserFirefox } from '../Functions';
-import { CellRendererProps, } from './CellRenderer';
 import {
-    shouldRenderTopSticky, shouldRenderMiddleRange, shouldRenderLeftSticky, shouldRenderCenterRange
-} from '../Functions/paneRendererPredicates';
-import { columnsSlicer, rowsSlicer } from '../Functions/rangeSlicer';
+    isBrowserFirefox, columnsSlicer, rowsSlicer, shouldRenderTopSticky, shouldRenderMiddleRange, shouldRenderLeftSticky,
+    shouldRenderCenterRange
+} from '../Functions';
+import { CellRendererProps } from './CellRenderer';
 import { PaneShadow } from './PaneShadow';
 
 

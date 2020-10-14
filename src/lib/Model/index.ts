@@ -8,4 +8,4 @@ export * from './State';
 export * from './domEventsTypes';
 export * from './AbstractPointerEventsController';
 export * from './EventHandlers';
-
+export * from './PointerEventsController';

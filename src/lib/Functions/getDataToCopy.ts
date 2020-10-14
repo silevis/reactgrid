@@ -1,6 +1,7 @@
 import { State, Range, Location } from '../Model';
+import { emptyCell } from './emptyCell';
 import { getCompatibleCellAndTemplate } from './getCompatibleCellAndTemplate';
-import { tryAppendChange, emptyCell } from '.';
+import { tryAppendChange } from './tryAppendChange';
 
 export function getDataToCopy(state: State, activeSelectedRange: Range, removeValues = false): { div: HTMLDivElement } {
     const { div, table, location } = createHTMLElements(activeSelectedRange);

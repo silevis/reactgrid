@@ -1,10 +1,9 @@
 import * as React from 'react';
 
 // NOTE: all modules imported below may be imported from '@silevis/reactgrid'
-import { keyCodes } from '../Functions/keyCodes';
 import { CellTemplate, Cell, Compatible, Uncertain, UncertainCompatible } from '../Model';
 import { inNumericKey, isNavigationKey, isNumpadNumericKey, isAllowedOnNumberTypingKey } from './keyCodeCheckings';
-import { getCellProperty } from '../Functions/getCellProperty';
+import { getCellProperty, keyCodes } from '../Functions';
 
 export interface NumberCell extends Cell {
     type: 'number';

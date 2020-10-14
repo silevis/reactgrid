@@ -1,5 +1,5 @@
 import { State, KeyboardEvent } from '../Model';
-import { keyCodes } from '.';
+import { keyCodes } from './keyCodes';
 
 export function handleKeyUp(event: KeyboardEvent, state: State): State {
     if (event.keyCode === keyCodes.TAB || event.keyCode === keyCodes.ENTER) {

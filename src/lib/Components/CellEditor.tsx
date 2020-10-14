@@ -1,8 +1,8 @@
 import * as React from 'react';
 import { State, Location, Compatible, Cell, CellMatrix } from '../Model';
-import { tryAppendChange } from '../Functions';
-import { getScrollOfScrollableElement, getTopScrollableElement } from './../Functions/scrollHelpers';
-import { getStickyOffset, getReactGridOffsets } from '../Functions/elementSizeHelpers';
+import {
+    getScrollOfScrollableElement, getTopScrollableElement, getStickyOffset, getReactGridOffsets, tryAppendChange
+} from './../Functions';
 
 export interface CellEditorOffset {
     top: number;
