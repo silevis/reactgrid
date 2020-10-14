@@ -1,10 +1,10 @@
 import { State, KeyboardEvent } from '../Model';
 import { isSelectionKey } from './isSelectionKey';
-import {
-    focusCell, moveFocusUp, moveFocusDown, moveFocusLeft, moveFocusRight, moveFocusPageDown, moveFocusPageUp, focusLocation, keyCodes
-} from '../Functions';
 import { wipeSelectedRanges } from './wipeSelectedRanges';
 import { handleKeyDownOnCellTemplate } from './handleKeyDownOnCellTemplate';
+import { keyCodes } from './keyCodes';
+import { focusCell, moveFocusDown, moveFocusLeft, moveFocusPageDown, moveFocusPageUp, moveFocusRight, moveFocusUp } from './focuses';
+import { focusLocation } from './focusLocation';
 
 export function handleKeyDown(state: State, event: KeyboardEvent): State {
     const newState = handleKeyDownInternal(state, event);
