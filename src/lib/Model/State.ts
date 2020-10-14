@@ -1,6 +1,6 @@
 import { CellTemplates, Cell, ReactGridProps, Compatible, Highlight, CellChange } from './PublicModel';
 import { isBrowserIE, isBrowserEdge } from '../Functions';
-import { DefaultBehavior } from '../Behaviors';
+import { DefaultBehavior } from '../Behaviors/DefaultBehavior';
 import { CellMatrix } from './CellMatrix';
 import { Behavior } from './Behavior';
 import { Location } from './InternalModel';
