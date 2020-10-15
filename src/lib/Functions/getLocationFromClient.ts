@@ -1,4 +1,5 @@
-import { PointerLocation, GridRow, GridColumn, Direction, State } from '../Model';
+import { Direction, GridColumn, GridRow, PointerLocation } from '../Model/InternalModel';
+import { State } from '../Model/State';
 import { getScrollOfScrollableElement } from './scrollHelpers';
 import { getReactGridOffsets, getStickyOffset } from './elementSizeHelpers';
 

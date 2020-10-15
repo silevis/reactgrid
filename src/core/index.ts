@@ -1,4 +1,13 @@
-export * from './../lib/Model';
+export * from './../lib/Model/PublicModel';
+export * from './../lib/Model/InternalModel';
+export * from './../lib/Model/Range';
+export * from './../lib/Model/domEventsTypes';
+export * from './../lib/Model/CellMatrix';
+export * from './../lib/Model/AbstractPointerEventsController';
+export * from './../lib/Model/State';
+export * from './../lib/Model/Behavior';
+export * from './../lib/Model/CellMatrixBuilder';
+export * from './../lib/Model/EventHandlers';
 
 export * from './../lib/Components/CellEditor';
 export * from './../lib/Components/GridRenderer';

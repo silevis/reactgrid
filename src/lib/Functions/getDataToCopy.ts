@@ -1,4 +1,6 @@
-import { State, Range, Location } from '../Model';
+import { State } from '../Model/State';
+import { Range } from '../Model/Range';
+import { Location } from '../Model/InternalModel';
 import { emptyCell } from './emptyCell';
 import { getCompatibleCellAndTemplate } from './getCompatibleCellAndTemplate';
 import { tryAppendChange } from './tryAppendChange';

@@ -1,4 +1,5 @@
-import { State, KeyboardEvent } from '../Model';
+import { KeyboardEvent } from '../Model/domEventsTypes';
+import { State } from '../Model/State';
 import { getCompatibleCellAndTemplate } from './getCompatibleCellAndTemplate';
 import { isSelectionKey } from './isSelectionKey';
 import { tryAppendChange } from './tryAppendChange';

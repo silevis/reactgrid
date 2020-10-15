@@ -1,8 +1,11 @@
 import * as React from 'react';
-import { State, Location, Compatible, Cell, CellMatrix } from '../Model';
-import {
-    getScrollOfScrollableElement, getTopScrollableElement, getStickyOffset, getReactGridOffsets, tryAppendChange
-} from './../Functions';
+import { getReactGridOffsets, getStickyOffset } from '../Functions/elementSizeHelpers';
+import { getScrollOfScrollableElement, getTopScrollableElement } from '../Functions/scrollHelpers';
+import { tryAppendChange } from '../Functions/tryAppendChange';
+import { Location } from '../Model/InternalModel';
+import { CellMatrix } from '../Model/CellMatrix';
+import { Compatible, Cell } from '../Model/PublicModel';
+import { State } from '../Model/State';
 
 export interface CellEditorOffset {
     top: number;

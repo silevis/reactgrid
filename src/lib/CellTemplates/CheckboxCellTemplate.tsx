@@ -1,8 +1,9 @@
 import * as React from 'react';
 
 // NOTE: all modules imported below may be imported from '@silevis/reactgrid'
-import { CellTemplate, Compatible, Cell, Uncertain, UncertainCompatible } from '../Model';
-import { getCellProperty, keyCodes } from '../Functions';
+import { getCellProperty } from '../Functions/getCellProperty';
+import { keyCodes } from '../Functions/keyCodes';
+import { Cell, CellTemplate, Compatible, Uncertain, UncertainCompatible } from '../Model/PublicModel';
 
 export interface CheckboxCell extends Cell {
     type: 'checkbox';

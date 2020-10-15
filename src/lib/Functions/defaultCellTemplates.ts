@@ -2,7 +2,7 @@ import {
     ChevronCellTemplate, TimeCellTemplate, EmailCellTemplate, DateCellTemplate, CheckboxCellTemplate,
     HeaderCellTemplate, NumberCellTemplate, TextCellTemplate
 } from '../CellTemplates';
-import { CellTemplates } from '../Model';
+import { CellTemplates } from '../Model/PublicModel';
 
 export const defaultCellTemplates: CellTemplates = {
     text: new TextCellTemplate(),

@@ -1,4 +1,5 @@
-import { State, KeyboardEvent } from '../Model';
+import { KeyboardEvent } from '../Model/domEventsTypes';
+import { State } from '../Model/State';
 import { keyCodes } from './keyCodes';
 
 export function handleKeyUp(event: KeyboardEvent, state: State): State {

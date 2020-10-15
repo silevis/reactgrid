@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { isBrowserFirefox } from '../Functions';
+import { isBrowserFirefox } from '../Functions/firefox';
 
 interface PaneShadowProps {
     renderCondition: boolean;

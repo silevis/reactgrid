@@ -1,4 +1,6 @@
-import { ReactGridProps, Location, State } from './../Model';
+import { Location } from './../Model/InternalModel';
+import { State } from './../Model/State';
+import { ReactGridProps } from './../Model/PublicModel';
 import { areLocationsEqual } from './areLocationsEqual';
 import { getReactGridOffsets, getStickyOffset } from './elementSizeHelpers';
 import { getScrollOfScrollableElement } from './scrollHelpers';

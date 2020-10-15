@@ -1,4 +1,4 @@
-import { State } from '../Model';
+import { State } from '../Model/State';
 import { emptyCell } from './emptyCell';
 import { tryAppendChange } from './tryAppendChange';
 

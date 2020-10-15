@@ -1,4 +1,5 @@
-import { State, KeyboardEvent } from '../Model';
+import { State } from '../Model/State';
+import { KeyboardEvent } from '../Model/domEventsTypes';
 import { isSelectionKey } from './isSelectionKey';
 import { wipeSelectedRanges } from './wipeSelectedRanges';
 import { handleKeyDownOnCellTemplate } from './handleKeyDownOnCellTemplate';

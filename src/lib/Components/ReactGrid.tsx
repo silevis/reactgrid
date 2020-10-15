@@ -1,12 +1,15 @@
 import * as React from 'react';
-import {
-    ReactGridProps, State, StateUpdater, defaultStateFields, CellMatrixBuilder, PointerEventsController, EventHandlers
-} from '../Model';
 import { GridRenderer } from './GridRenderer';
 import { PanesRenderer } from './PanesRenderer';
-import {
-    getDerivedStateFromProps, componentDidUpdate, notifyAboutReactGridPro, handleStateUpdate
-} from '../Functions';
+import { handleStateUpdate } from '../Functions/handleStateUpdate';
+import { getDerivedStateFromProps } from '../Functions/getDerivedStateFromProps';
+import { notifyAboutReactGridPro } from '../Functions/notifyAboutReactGridPro';
+import { componentDidUpdate } from '../Functions/componentDidUpdate';
+import { EventHandlers } from '../Model/EventHandlers';
+import { ReactGridProps } from '../Model/PublicModel';
+import { defaultStateFields, State, StateUpdater } from '../Model/State';
+import { PointerEventsController } from '../Model/PointerEventsController';
+import { CellMatrixBuilder } from '../Model/CellMatrixBuilder';
 import { LegacyBrowserGridRenderer } from './LegacyBrowserGridRenderer';
 import { CellEditorRenderer, cellEditorCalculator } from './CellEditor';
 import { CellRenderer } from './CellRenderer';

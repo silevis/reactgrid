@@ -1,4 +1,4 @@
-import { areLocationsEqual } from '../Functions';
+import { areLocationsEqual } from '../Functions/areLocationsEqual';
 import { PointerLocation, Location } from './InternalModel';
 import { State, StateUpdater } from './State';
 import { PointerEvent } from './domEventsTypes';
@@ -45,6 +45,7 @@ export abstract class AbstractPointerEventsController {
 
 }
 
+// TODO think about create as saparate function
 export function isReadyToHandleEvent(event: PointerEvent): boolean {
     if ((event.button !== 0 && event.button !== undefined) ||
         ((event.target as HTMLDivElement).className === 'reactgrid-content' && event.pointerType !== undefined)) {
@@ -53,6 +54,7 @@ export function isReadyToHandleEvent(event: PointerEvent): boolean {
     return true;
 }
 
+// TODO think about create as saparate function
 export function isOnClickableArea(event: PointerEvent, state: State): boolean {
     const { left } = state.reactGridElement!.getBoundingClientRect();
     const viewportX = event.clientX - left;

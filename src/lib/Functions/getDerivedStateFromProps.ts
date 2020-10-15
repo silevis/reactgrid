@@ -1,4 +1,6 @@
-import { ReactGridProps, State, CellLocation, CellMatrixBuilder } from '../Model';
+import { State } from '../Model/State';
+import { ReactGridProps, CellLocation } from '../Model/PublicModel';
+import { CellMatrixBuilder } from '../Model/CellMatrixBuilder';
 import { defaultCellTemplates } from './defaultCellTemplates';
 import { focusLocation } from './focusLocation';
 import { recalcVisibleRange } from './recalcVisibleRange';

@@ -1,4 +1,5 @@
-import { State, Location } from '../Model';
+import { State, } from '../Model/State';
+import { Location } from '../Model/InternalModel';
 import { tryAppendChange } from './tryAppendChange';
 import { getCompatibleCellAndTemplate } from './getCompatibleCellAndTemplate';
 import { areLocationsEqual } from './areLocationsEqual';
