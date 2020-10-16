@@ -19,7 +19,7 @@ export function getCalculatedScrollTopValueToBottom(location: Location, visibleS
 }
 
 export function getCalculatedScrollTopValueToTop(location: Location, scrollTop: number, topStickyOffset: number): number {
-    return scrollTop - topStickyOffset - location.row.top - 1;
+    return scrollTop - topStickyOffset + location.row.top - 1;
 }
 
 export function isBottomCellAllVisible(state: State, location: Location, visibleScrollAreaHeight: number) {
@@ -52,7 +52,7 @@ export function getCalculatedScrollLeftValueToRight(location: Location, visibleS
 }
 
 export function getCalculatedScrollLeftValueToLeft(location: Location, scrollLeft: number, leftStickyOffset: number): number {
-    return scrollLeft - leftStickyOffset - location.column.left - 1;
+    return scrollLeft - leftStickyOffset + location.column.left - 1;
 }
 
 export function isRightCellAllVisible(state: State, location: Location, visibleScrollAreaWidth: number) {
