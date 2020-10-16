@@ -1,4 +1,5 @@
 import * as React from 'react';
+// TODO make HOC for highlights 
 export var CellFocus = function (props) { return (React.createElement("div", { key: props.borderColor, "data-cy": !props.isHighlight ? 'rg-cell-focus' : 'rg-cell-highlight', className: "rg-cell-focus " + (props.className || ''), style: {
         top: props.location.row.top - (props.location.row.top === 0 ? 0 : 1),
         left: props.location.column.left - (props.location.column.left === 0 ? 0 : 1),

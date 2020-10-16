@@ -1,4 +1,6 @@
-import { State, Range, Location } from '../Model';
+import { State } from '../Model/State';
+import { Range } from '../Model/Range';
+import { Location } from '../Model/InternalModel';
 export declare function getDataToCopy(state: State, activeSelectedRange: Range, removeValues?: boolean): {
     div: HTMLDivElement;
 };

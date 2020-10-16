@@ -1,4 +1,4 @@
-import { State } from '../Model';
+import { State } from '../Model/State';
 export declare function getSizeOfElement(element: any): {
     width: number;
     height: number;

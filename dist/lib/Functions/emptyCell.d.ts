@@ -1,2 +1,2 @@
-import { Compatible, Cell } from '../Model';
+import { Compatible, Cell } from '../Model/PublicModel';
 export declare const emptyCell: Compatible<Cell>;

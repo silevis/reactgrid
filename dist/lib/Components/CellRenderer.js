@@ -10,10 +10,10 @@ var __assign = (this && this.__assign) || function () {
     return __assign.apply(this, arguments);
 };
 import * as React from 'react';
-import { tryAppendChange } from '../Functions';
-import { getCompatibleCellAndTemplate } from '../Functions/getCompatibleCellAndTemplate';
-import { noBorder } from '../Functions/excludeObjectProperties';
 import { areLocationsEqual } from '../Functions/areLocationsEqual';
+import { noBorder } from '../Functions/excludeObjectProperties';
+import { getCompatibleCellAndTemplate } from '../Functions/getCompatibleCellAndTemplate';
+import { tryAppendChange } from '../Functions/tryAppendChange';
 var unset = 'unset';
 function storeBorderAndCell(borders, cell) {
     return function (property, defaultProp) {
@@ -55,7 +55,8 @@ export var CellRenderer = function (_a) {
         borderBottom: bordersWidth.bottom === unset && bordersStyle.bottom === unset && bordersColor.bottom === unset ? unset
             : bordersWidth.bottom + " " + bordersStyle.bottom + " " + bordersColor.bottom,
     };
-    var style = __assign(__assign(__assign(__assign(__assign({}, (cellTemplate.getStyle && (cellTemplate.getStyle(cell, false) || {}))), (cell.style && noBorder(cell.style))), { left: location.column.left, top: location.row.top, width: location.column.width, height: location.row.height }), bordersProps), ((isFocused || cell.type === 'header') && { touchAction: 'none' }));
+    var style = __assign(__assign(__assign(__assign(__assign({}, (cellTemplate.getStyle && (cellTemplate.getStyle(cell, false) || {}))), (cell.style && noBorder(cell.style))), { left: location.column.left, top: location.row.top, width: location.column.width, height: location.row.height }), bordersProps), ((isFocused || cell.type === 'header') && { touchAction: 'none' }) // prevent scrolling
+    );
     return (React.createElement("div", { className: "rg-cell rg-" + cell.type + "-cell " + (cell.groupId ? "rg-groupId-" + cell.groupId : '') + " " + customClass, style: style, "data-cell-colidx": process.env.NODE_ENV === "development" ? location.column.idx : null, "data-cell-rowidx": process.env.NODE_ENV === "development" ? location.row.idx : null },
         cellTemplate.render(cell, false, function (cell, commit) {
             if (!commit)

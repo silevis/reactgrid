@@ -12,7 +12,7 @@ var __assign = (this && this.__assign) || function () {
 import * as React from 'react';
 import { isNavigationKey, getCellProperty, isAlphaNumericKey, keyCodes } from '../../reactgrid';
 import './flag-cell-style.scss';
-var FlagCellTemplate = (function () {
+var FlagCellTemplate = /** @class */ (function () {
     function FlagCellTemplate() {
     }
     FlagCellTemplate.prototype.getCompatibleCell = function (uncertainCell) {
@@ -31,7 +31,7 @@ var FlagCellTemplate = (function () {
     FlagCellTemplate.prototype.render = function (cell, isInEditMode, onCellChanged) {
         var _this = this;
         if (!isInEditMode) {
-            var flagISO = cell.text.toLowerCase();
+            var flagISO = cell.text.toLowerCase(); // ISO 3166-1, 2/3 letters
             var flagURL = "https://restcountries.eu/data/" + flagISO + ".svg";
             return React.createElement("div", { className: 'rg-flag-wrapper', style: {
                     backgroundImage: 'url("' + flagURL + '"), url("https://upload.wikimedia.org/wikipedia/commons/0/04/Nuvola_unknown_flag.svg")',
@@ -43,7 +43,7 @@ var FlagCellTemplate = (function () {
                 if (isAlphaNumericKey(e.keyCode) || isNavigationKey(e.keyCode))
                     e.stopPropagation();
                 if (e.keyCode === keyCodes.ESCAPE)
-                    e.currentTarget.value = cell.text;
+                    e.currentTarget.value = cell.text; // reset
             } });
     };
     return FlagCellTemplate;

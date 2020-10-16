@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { State } from '../Model';
+import { State } from '../Model/State';
 import { CellRendererProps } from './CellRenderer';
 export interface PanesProps<TState extends State = State> {
     state: TState;

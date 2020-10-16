@@ -11,9 +11,10 @@ var __assign = (this && this.__assign) || function () {
 };
 import * as React from 'react';
 import { Pane, PaneContent } from './Pane';
-import { isBrowserFirefox } from '../Functions';
-import { shouldRenderTopSticky, shouldRenderMiddleRange, shouldRenderLeftSticky, shouldRenderCenterRange } from '../Functions/paneRendererPredicates';
+import { shouldRenderCenterRange, shouldRenderLeftSticky, shouldRenderMiddleRange, shouldRenderTopSticky } from '../Functions/paneRendererPredicates';
+import { isBrowserFirefox } from '../Functions/firefox';
 import { columnsSlicer, rowsSlicer } from '../Functions/rangeSlicer';
+import { PaneShadow } from './PaneShadow';
 export var PanesRenderer = function (_a) {
     var _b, _c;
     var state = _a.state, cellRenderer = _a.cellRenderer;
@@ -22,7 +23,10 @@ export var PanesRenderer = function (_a) {
     if (!renderTopSticky && !renderMiddleRange && !renderLeftSticky && !renderCenterRange) {
         return null;
     }
-    var visibleScrollableRange = renderMiddleRange && cellMatrix.scrollableRange.slice(state.visibleRange, 'rows');
+    var visibleScrollableRange = undefined;
+    if (renderMiddleRange) {
+        visibleScrollableRange = cellMatrix.scrollableRange.slice(state.visibleRange, 'rows');
+    }
     var areOnlyStickyRows = cellMatrix.ranges.stickyTopRange.rows.length === cellMatrix.rows.length;
     var areOnlyStickyCols = cellMatrix.ranges.stickyLeftRange.columns.length === cellMatrix.columns.length;
     return (React.createElement(React.Fragment, null,
@@ -55,6 +59,18 @@ export var PanesRenderer = function (_a) {
                     bottom: true,
                     left: !renderLeftSticky
                 }, cellRenderer: cellRenderer })),
+        React.createElement(PaneShadow, { renderCondition: renderLeftSticky, className: 'shadow-left', zIndex: 1, style: {
+                width: cellMatrix.ranges.stickyLeftRange.width,
+                height: cellMatrix.height,
+                marginTop: -cellMatrix.height,
+                order: 5,
+            } }),
+        React.createElement(PaneShadow, { renderCondition: renderTopSticky, className: 'shadow-top', zIndex: 1, style: {
+                width: cellMatrix.width,
+                height: cellMatrix.ranges.stickyTopRange.height,
+                marginTop: -cellMatrix.height,
+                order: 4,
+            } }),
         React.createElement(Pane, { renderChildren: renderTopSticky && renderLeftSticky, className: 'rg-pane-top rg-pane-left', style: __assign({ height: cellMatrix.ranges.stickyTopRange.height, width: (areOnlyStickyRows && areOnlyStickyCols)
                     ? cellMatrix.ranges.stickyLeftRange.width
                     : cellMatrix.width - cellMatrix.scrollableRange.width, order: 0 }, (isBrowserFirefox() && { zIndex: 2 })) },

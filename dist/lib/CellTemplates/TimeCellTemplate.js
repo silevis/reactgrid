@@ -10,17 +10,18 @@ var __assign = (this && this.__assign) || function () {
     return __assign.apply(this, arguments);
 };
 import * as React from 'react';
+// NOTE: all modules imported below may be imported from '@silevis/reactgrid'
+import { getCellProperty } from '../Functions/getCellProperty';
 import { keyCodes } from '../Functions/keyCodes';
 import { inNumericKey, isNavigationKey, isAlphaNumericKey } from './keyCodeCheckings';
-import { getCellProperty } from '../Functions/getCellProperty';
 import { getTimestamp, getFormattedTimeUnit, getDefaultDate } from './timeUtils';
-var TimeCellTemplate = (function () {
+var TimeCellTemplate = /** @class */ (function () {
     function TimeCellTemplate() {
     }
     TimeCellTemplate.prototype.getCompatibleCell = function (uncertainCell) {
         var time = uncertainCell.time ? getCellProperty(uncertainCell, 'time', 'object') : new Date(NaN);
         var timeFormat = uncertainCell.format || new Intl.DateTimeFormat(window.navigator.language);
-        var value = time.getTime() % TimeCellTemplate.dayInMillis;
+        var value = time.getTime() % TimeCellTemplate.dayInMillis; // each day has 86400000 millis
         var text = !Number.isNaN(value) ? timeFormat.format(time) : '';
         return __assign(__assign({}, uncertainCell), { time: time, value: value, text: text });
     };

@@ -1,4 +1,8 @@
-import { State, Behavior, KeyboardEvent, ClipboardEvent, PointerEvent, Location, PointerLocation } from '../Model';
+import { Behavior } from '../Model/Behavior';
+import { PointerLocation } from '../Model/InternalModel';
+import { State } from '../Model/State';
+import { PointerEvent, KeyboardEvent, ClipboardEvent } from '../Model/domEventsTypes';
+import { Location } from '../Model/InternalModel';
 export declare class DefaultBehavior extends Behavior {
     handlePointerDown(event: PointerEvent, location: PointerLocation, state: State): State;
     handleDoubleClick(event: PointerEvent, location: Location, state: State): State;

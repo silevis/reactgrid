@@ -10,9 +10,10 @@ var __assign = (this && this.__assign) || function () {
     return __assign.apply(this, arguments);
 };
 import * as React from 'react';
-import { keyCodes } from '../Functions/keyCodes';
+// NOTE: all modules imported below may be imported from '@silevis/reactgrid'
 import { getCellProperty } from '../Functions/getCellProperty';
-var CheckboxCellTemplate = (function () {
+import { keyCodes } from '../Functions/keyCodes';
+var CheckboxCellTemplate = /** @class */ (function () {
     function CheckboxCellTemplate() {
     }
     CheckboxCellTemplate.prototype.getCompatibleCell = function (uncertainCell) {

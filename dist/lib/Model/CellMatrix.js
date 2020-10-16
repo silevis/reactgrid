@@ -1,5 +1,6 @@
-import { Range } from '.';
-var CellMatrix = (function () {
+import { Range } from './Range';
+// INTERNAL
+var CellMatrix = /** @class */ (function () {
     function CellMatrix(ranges) {
         this.ranges = ranges;
         this.width = 0;

@@ -1,6 +1,6 @@
 import { getDataToCopy } from './getDataToCopy';
-import { isBrowserSafari } from '.';
 import { getActiveSelectedRange } from './getActiveSelectedRange';
+import { isBrowserSafari } from './safari';
 export function handleCopy(event, state, removeValues) {
     if (removeValues === void 0) { removeValues = false; }
     var activeSelectedRange = getActiveSelectedRange(state);

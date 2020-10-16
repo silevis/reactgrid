@@ -1,4 +1,4 @@
-var Range = (function () {
+var Range = /** @class */ (function () {
     function Range(rows, columns) {
         this.rows = rows;
         this.columns = columns;

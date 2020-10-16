@@ -21,7 +21,7 @@ function shouldMemoPaneGridContent(prevProps, nextProps) {
             return false;
     }
     else {
-        return false;
+        return false; // needed when select range by touch after first focus
     }
     return !(prevState.visibleRange !== nextState.visibleRange || prevState.cellMatrix.props !== nextState.cellMatrix.props);
 }

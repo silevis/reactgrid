@@ -30,5 +30,6 @@ export function focusLocation(state, location) {
     }
     onFocusLocationChanged && (!focusLocation && areLocationsEqual(location, validatedFocusLocation))
         && onFocusLocationChanged(cellLocation);
-    return __assign(__assign({}, state), { focusedLocation: validatedFocusLocation, currentlyEditedCell: undefined });
+    return __assign(__assign({}, state), { focusedLocation: validatedFocusLocation, currentlyEditedCell: undefined // TODO disable in derived state from props
+     });
 }

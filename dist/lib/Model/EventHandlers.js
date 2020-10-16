@@ -9,10 +9,10 @@ var __assign = (this && this.__assign) || function () {
     };
     return __assign.apply(this, arguments);
 };
-import { recalcVisibleRange, getScrollableParent } from '../Functions';
-import { getScrollOfScrollableElement } from '../Functions/scrollHelpers';
+import { recalcVisibleRange } from '../Functions/recalcVisibleRange';
+import { getScrollableParent, getScrollOfScrollableElement } from '../Functions/scrollHelpers';
 import { getVisibleSizeOfReactGrid } from '../Functions/elementSizeHelpers';
-var EventHandlers = (function () {
+var EventHandlers = /** @class */ (function () {
     function EventHandlers(updateState, pointerEventsController) {
         var _this = this;
         this.updateState = updateState;

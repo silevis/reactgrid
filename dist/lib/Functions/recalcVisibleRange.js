@@ -9,12 +9,12 @@ var __assign = (this && this.__assign) || function () {
     };
     return __assign.apply(this, arguments);
 };
-import { Range } from '../Model';
+import { Range } from '../Model/Range';
 import { getScrollOfScrollableElement } from './scrollHelpers';
 import { getVisibleSizeOfReactGrid, getReactGridOffsets, getStickyOffset } from './elementSizeHelpers';
 export var VS_PAGE_HEIGHT = 400;
 export var VS_PAGE_WIDTH = 300;
-var ADDITONAL_INDEX = 1;
+var ADDITONAL_INDEX = 1; // is needed for getting last element in array
 export function recalcVisibleRange(state) {
     var _a = getScrollOfScrollableElement(state.scrollableElement), scrollTop = _a.scrollTop, scrollLeft = _a.scrollLeft;
     var _b = getVisibleScrollableSize(state, [-state.cellMatrix.ranges.stickyTopRange.height], [-state.cellMatrix.ranges.stickyLeftRange.width]), width = _b.width, height = _b.height;

@@ -10,16 +10,17 @@ var __assign = (this && this.__assign) || function () {
     return __assign.apply(this, arguments);
 };
 import * as React from 'react';
-import { keyCodes } from '../Functions/keyCodes';
+// NOTE: all modules imported below may be imported from '@silevis/reactgrid'
 import { isAlphaNumericKey, isNavigationKey } from './keyCodeCheckings';
 import { getCellProperty } from '../Functions/getCellProperty';
+import { keyCodes } from '../Functions/keyCodes';
 import { getCharFromKeyCode } from './getCharFromKeyCode';
-var TextCellTemplate = (function () {
+var TextCellTemplate = /** @class */ (function () {
     function TextCellTemplate() {
     }
     TextCellTemplate.prototype.getCompatibleCell = function (uncertainCell) {
         var text = getCellProperty(uncertainCell, 'text', 'string');
-        var value = parseFloat(text);
+        var value = parseFloat(text); // TODO more advanced parsing for all text based cells
         return __assign(__assign({}, uncertainCell), { text: text, value: value });
     };
     TextCellTemplate.prototype.update = function (cell, cellToMerge) {

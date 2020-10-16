@@ -1,6 +1,9 @@
-import { Behavior, Range, Location, CellMatrix } from '.';
 import { CellTemplates, Cell, ReactGridProps, Compatible, Highlight, CellChange } from './PublicModel';
 import { DefaultBehavior } from '../Behaviors/DefaultBehavior';
+import { CellMatrix } from './CellMatrix';
+import { Behavior } from './Behavior';
+import { Location } from './InternalModel';
+import { Range } from './Range';
 export declare type StateModifier<TState extends State = State> = (state: TState) => TState;
 export declare type StateUpdater = (modifier: StateModifier) => void;
 export interface State<TCellMatrix extends CellMatrix = CellMatrix, TBehavior extends Behavior = Behavior> {

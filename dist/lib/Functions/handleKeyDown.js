@@ -9,11 +9,12 @@ var __assign = (this && this.__assign) || function () {
     };
     return __assign.apply(this, arguments);
 };
-import { focusLocation, keyCodes } from '.';
 import { isSelectionKey } from './isSelectionKey';
-import { focusCell, moveFocusUp, moveFocusDown, moveFocusLeft, moveFocusRight, moveFocusPageDown, moveFocusPageUp } from '../Functions/focuses';
 import { wipeSelectedRanges } from './wipeSelectedRanges';
 import { handleKeyDownOnCellTemplate } from './handleKeyDownOnCellTemplate';
+import { keyCodes } from './keyCodes';
+import { focusCell, moveFocusDown, moveFocusLeft, moveFocusPageDown, moveFocusPageUp, moveFocusRight, moveFocusUp } from './focuses';
+import { focusLocation } from './focusLocation';
 export function handleKeyDown(state, event) {
     var newState = handleKeyDownInternal(state, event);
     if (newState !== state) {
@@ -37,7 +38,7 @@ function handleKeyDownInternal(state, event) {
     if (event.shiftKey) {
         switch (event.keyCode) {
             case keyCodes.TAB:
-                event.preventDefault();
+                event.preventDefault(); // prevent from leaving HFE
                 return moveFocusLeft(state);
             case keyCodes.ENTER:
                 (_a = state.hiddenFocusElement) === null || _a === void 0 ? void 0 : _a.focus({ preventScroll: true });
@@ -53,6 +54,7 @@ function handleKeyDownInternal(state, event) {
         }
     }
     else {
+        // === NO SHIFT OR CONTROL ===
         switch (event.keyCode) {
             case keyCodes.DELETE:
             case keyCodes.BACKSPACE:
@@ -72,7 +74,7 @@ function handleKeyDownInternal(state, event) {
                 return moveFocusRight(state);
             case keyCodes.TAB:
                 (_g = state.hiddenFocusElement) === null || _g === void 0 ? void 0 : _g.focus({ preventScroll: true });
-                event.preventDefault();
+                event.preventDefault(); // prevent from leaving HFE
                 return moveFocusRight(state);
             case keyCodes.HOME:
                 (_h = state.hiddenFocusElement) === null || _h === void 0 ? void 0 : _h.focus({ preventScroll: true });

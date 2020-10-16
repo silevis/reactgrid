@@ -1,5 +1,6 @@
-import { Row, Column, State } from '.';
 import { EventHandlers } from './EventHandlers';
+import { Column, Row } from './PublicModel';
+import { State } from './State';
 export declare type Orientation = 'horizontal' | 'vertical';
 export declare type Direction = 'horizontal' | 'vertical' | 'both';
 export interface GridColumn extends Column {

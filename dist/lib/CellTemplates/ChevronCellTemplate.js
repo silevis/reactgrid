@@ -10,11 +10,12 @@ var __assign = (this && this.__assign) || function () {
     return __assign.apply(this, arguments);
 };
 import * as React from 'react';
+// NOTE: all modules imported below may be imported from '@silevis/reactgrid'
+import { getCellProperty } from '../Functions/getCellProperty';
 import { keyCodes } from '../Functions/keyCodes';
 import { isNavigationKey, isAlphaNumericKey } from './keyCodeCheckings';
-import { getCellProperty } from '../Functions/getCellProperty';
 import { getCharFromKeyCode } from './getCharFromKeyCode';
-var ChevronCellTemplate = (function () {
+var ChevronCellTemplate = /** @class */ (function () {
     function ChevronCellTemplate() {
     }
     ChevronCellTemplate.prototype.getCompatibleCell = function (uncertainCell) {

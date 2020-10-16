@@ -1,5 +1,6 @@
-import { StateUpdater, Location, PointerLocation } from '.';
-import { State, PointerEvent } from '.';
+import { PointerLocation, Location } from './InternalModel';
+import { State, StateUpdater } from './State';
+import { PointerEvent } from './domEventsTypes';
 export declare abstract class AbstractPointerEventsController {
     readonly updateState: StateUpdater;
     constructor(updateState: StateUpdater);

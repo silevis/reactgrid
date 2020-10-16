@@ -10,19 +10,21 @@ var __assign = (this && this.__assign) || function () {
     return __assign.apply(this, arguments);
 };
 import * as React from 'react';
-import { tryAppendChange } from '../Functions';
-import { getScrollOfScrollableElement, getTopScrollableElement } from './../Functions/scrollHelpers';
-import { getStickyOffset, getReactGridOffsets } from '../Functions/elementSizeHelpers';
+import { getReactGridOffsets, getStickyOffset } from '../Functions/elementSizeHelpers';
+import { getScrollOfScrollableElement, getTopScrollableElement } from '../Functions/scrollHelpers';
+import { tryAppendChange } from '../Functions/tryAppendChange';
 export var CellEditorRenderer = function (_a) {
     var state = _a.state, positionCalculator = _a.positionCalculator;
     var currentlyEditedCell = state.currentlyEditedCell;
     var location = state.focusedLocation;
-    var _b = React.useReducer(positionCalculator, { state: state, location: location }), position = _b[0], dispatch = _b[1];
+    var _b = React.useReducer(positionCalculator, { state: state, location: location }), position = _b[0], dispatch = _b[1]; // used to lock cell editor position
     React.useLayoutEffect(function () { return dispatch(); }, []);
-    if (!currentlyEditedCell) {
+    if (!currentlyEditedCell) { // prevents to unexpectly opening cell editor on cypress
         return null;
     }
     var cellTemplate = state.cellTemplates[currentlyEditedCell.type];
+    // TODO custom style
+    //const customStyle = cellTemplate.getCustomStyle ? cellTemplate.getCustomStyle(cell.data, true) : {};
     return React.createElement(CellEditor, { cellType: currentlyEditedCell.type, style: {
             top: position.top && position.top - 1,
             left: position.left && position.left - 1,
@@ -37,7 +39,9 @@ export var CellEditorRenderer = function (_a) {
 };
 var CellEditor = function (_a) {
     var style = _a.style, cellType = _a.cellType, children = _a.children;
-    return (React.createElement("div", { className: "rg-celleditor rg-" + cellType + "-celleditor", "data-cy": 'rg-celleditor', style: __assign({}, style) }, children));
+    return (React.createElement("div", { className: "rg-celleditor rg-" + cellType + "-celleditor", "data-cy": 'rg-celleditor', style: __assign({}, style
+        //...customStyle,
+        ) }, children));
 };
 var calculatedXAxisOffset = function (location, state) {
     var cellMatrix = state.cellMatrix;

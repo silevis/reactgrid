@@ -9,8 +9,9 @@ var __assign = (this && this.__assign) || function () {
     };
     return __assign.apply(this, arguments);
 };
-import { CellMatrix, Range } from '.';
-var CellMatrixBuilder = (function () {
+import { CellMatrix } from './CellMatrix';
+import { Range } from './Range';
+var CellMatrixBuilder = /** @class */ (function () {
     function CellMatrixBuilder() {
         var _this = this;
         this.getTop = function (idx, stickyTopRows, rows) {
@@ -49,6 +50,7 @@ var CellMatrixBuilder = (function () {
             var height = row.height || CellMatrix.DEFAULT_ROW_HEIGHT;
             rows.push(__assign(__assign({}, row), { top: top, height: height, idx: idx, bottom: top + height }));
             _this.cellMatrix.height += height;
+            // TODO what with rowIndexLookup?
             _this.cellMatrix.rowIndexLookup[row.rowId] = idx;
             return rows;
         }, []);
@@ -57,6 +59,7 @@ var CellMatrixBuilder = (function () {
             var width = column.width || CellMatrix.DEFAULT_COLUMN_WIDTH;
             cols.push(__assign(__assign({}, column), { idx: idx, left: left, width: width, right: left + width }));
             _this.cellMatrix.width += width;
+            // TODO what with columnIndexLookup?
             _this.cellMatrix.columnIndexLookup[column.columnId] = idx;
             return cols;
         }, []);

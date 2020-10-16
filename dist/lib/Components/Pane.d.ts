@@ -1,5 +1,7 @@
 import * as React from 'react';
-import { Range, State, Borders } from '../Model';
+import { Range } from '../Model/Range';
+import { State } from '../Model/State';
+import { Borders } from '../Model/InternalModel';
 import { CellRendererProps } from './CellRenderer';
 export interface PaneProps {
     renderChildren: boolean;

@@ -74,6 +74,8 @@ export var TestGrid = function (props) {
                     return { type: 'checkbox', checked: false, checkedText: 'Checked', uncheckedText: 'Unchecked' };
                 case 7:
                     return { type: 'flag', groupId: Math.random() < .66 ? Math.random() < .5 ? 'A' : 'B' : undefined, text: 'bra' };
+                // case 8: // TODO allow user to pass non focusable cell (header cell) with arrows
+                //     return { type: 'header', text: `${ri} - ${ci}` }
                 default:
                     return { type: 'text', text: ri + " - " + ci, validator: function (text) { return true; } };
             }
@@ -98,6 +100,7 @@ export var TestGrid = function (props) {
             return __spreadArrays(prevColumns);
         });
     };
+    // eslint-disable-next-line
     var handleChangesTest = function (changes) {
         changes.forEach(function (change) {
             var ax = Math.random() > .5 ? 'text' : 'number';
@@ -112,6 +115,7 @@ export var TestGrid = function (props) {
             }
         });
     };
+    // eslint-disable-next-line
     rows[0].cells.find(function (cell) { return cell.type === "text" && cell.text; });
     var handleChanges = function (changes) {
         setRows(function (prevRows) {
@@ -119,10 +123,13 @@ export var TestGrid = function (props) {
                 var changeRowIdx = prevRows.findIndex(function (el) { return el.rowId === change.rowId; });
                 var changeColumnIdx = columns.findIndex(function (el) { return el.columnId === change.columnId; });
                 if (change.type === 'flag') {
+                    // console.log(change.newCell.text);
                 }
                 if (change.type === 'text') {
+                    // console.log(change.newCell.text);
                 }
                 if (change.type === 'checkbox') {
+                    // console.log(change.previousCell.checked);
                 }
                 prevRows[changeRowIdx].cells[changeColumnIdx] = change.newCell;
             });
@@ -140,6 +147,8 @@ export var TestGrid = function (props) {
         return true;
     };
     var handleCanReorderRows = function (targetColumnId, rowIds, dropPosition) {
+        // const rowIndex = state.rows.findIndex((row: Row) => row.rowId === targetColumnId);
+        // if (rowIndex === 0) return false;
         return true;
     };
     var handleColumnsReorder = function (targetColumnId, columnIds, dropPosition) {
@@ -199,7 +208,9 @@ export var TestGrid = function (props) {
                     React.createElement(Logo, { isPro: config.isPro }),
                     React.createElement(Logo, { isPro: config.isPro }),
                     React.createElement(Logo, { isPro: config.isPro })),
-            React.createElement(Component, { rows: rows, columns: columns, initialFocusLocation: { columnId: 'col-1', rowId: 'row-2' }, onCellsChanged: handleChanges, onColumnResized: handleColumnResize, customCellTemplates: { 'flag': new FlagCellTemplate() }, highlights: [
+            React.createElement(Component, { rows: rows, columns: columns, initialFocusLocation: { columnId: 'col-1', rowId: 'row-2' }, 
+                // focusLocation={{ columnId: 'col-1', rowId: 'row-3' }}
+                onCellsChanged: handleChanges, onColumnResized: handleColumnResize, customCellTemplates: { 'flag': new FlagCellTemplate() }, highlights: [
                     { columnId: 'col-1', rowId: 'row-1', borderColor: '#00ff00' },
                     { columnId: 'col-0', rowId: 'row-1', borderColor: 'red' }
                 ], stickyLeftColumns: enableSticky ? config.stickyLeft : undefined, stickyRightColumns: enableSticky ? config.stickyRight : undefined, stickyTopRows: enableSticky ? config.stickyTop : undefined, stickyBottomRows: enableSticky ? config.stickyBottom : undefined, canReorderColumns: handleCanReorderColumns, canReorderRows: handleCanReorderRows, onColumnsReordered: handleColumnsReorder, onRowsReordered: handleRowsReorder, onContextMenu: handleContextMenu, onFocusLocationChanged: handleFocusLocationChanged, onFocusLocationChanging: handleFocusLocationChanging, enableRowSelection: enableColumnAndRowSelection || false, enableColumnSelection: enableColumnAndRowSelection || false, enableFullWidthHeader: config.enableFullWidthHeader || false, enableRangeSelection: config.enableRangeSelection, enableFillHandle: config.enableFillHandle, enableGroupIdRender: config.enableGroupIdRender, labels: {

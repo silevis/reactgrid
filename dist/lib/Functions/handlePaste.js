@@ -9,7 +9,8 @@ var __assign = (this && this.__assign) || function () {
     };
     return __assign.apply(this, arguments);
 };
-import { getActiveSelectedRange, emptyCell } from '.';
+import { emptyCell } from './emptyCell';
+import { getActiveSelectedRange } from './getActiveSelectedRange';
 import { pasteData } from './pasteData';
 export function handlePaste(event, state) {
     var _a;
@@ -20,6 +21,9 @@ export function handlePaste(event, state) {
     var pastedCell = emptyCell;
     var htmlData = event.clipboardData.getData('text/html');
     var document = new DOMParser().parseFromString(htmlData, 'text/html');
+    // TODO Do we need selection mode here ?
+    //const selectionMode = parsedData.body.firstElementChild && parsedData.body.firstElementChild.getAttribute('data-selection') as SelectionMode;
+    // TODO quite insecure! maybe do some checks ?
     var hasReactGridAttribute = ((_a = document.body.firstElementChild) === null || _a === void 0 ? void 0 : _a.getAttribute('data-reactgrid')) === 'reactgrid-content';
     if (hasReactGridAttribute) {
         var tableRows = document.body.firstElementChild.firstElementChild.children;

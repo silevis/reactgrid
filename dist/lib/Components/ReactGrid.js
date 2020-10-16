@@ -2,7 +2,7 @@ var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {
         extendStatics = Object.setPrototypeOf ||
             ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
+            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
         return extendStatics(d, b);
     };
     return function (d, b) {
@@ -23,20 +23,20 @@ var __assign = (this && this.__assign) || function () {
     return __assign.apply(this, arguments);
 };
 import * as React from 'react';
-import { defaultStateFields } from '../Model';
-import { CellMatrixBuilder } from '../Model/CellMatrixBuilder';
 import { GridRenderer } from './GridRenderer';
 import { PanesRenderer } from './PanesRenderer';
-import { EventHandlers } from '../Model/EventHandlers';
+import { handleStateUpdate } from '../Functions/handleStateUpdate';
 import { getDerivedStateFromProps } from '../Functions/getDerivedStateFromProps';
-import { PointerEventsController } from '../Model/PointerEventsController';
+import { notifyAboutReactGridPro } from '../Functions/notifyAboutReactGridPro';
 import { componentDidUpdate } from '../Functions/componentDidUpdate';
+import { EventHandlers } from '../Model/EventHandlers';
+import { defaultStateFields } from '../Model/State';
+import { PointerEventsController } from '../Model/PointerEventsController';
+import { CellMatrixBuilder } from '../Model/CellMatrixBuilder';
 import { LegacyBrowserGridRenderer } from './LegacyBrowserGridRenderer';
 import { CellEditorRenderer, cellEditorCalculator } from './CellEditor';
-import { CellRenderer, } from './CellRenderer';
-import { notifyAboutReactGridPro } from '../Functions/notifyAboutReactGridPro';
-import { handleStateUpdate } from '../Functions/handleStateUpdate';
-var ReactGrid = (function (_super) {
+import { CellRenderer } from './CellRenderer';
+var ReactGrid = /** @class */ (function (_super) {
     __extends(ReactGrid, _super);
     function ReactGrid() {
         var _this = _super !== null && _super.apply(this, arguments) || this;

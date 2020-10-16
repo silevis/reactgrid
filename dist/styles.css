@@ -123,25 +123,13 @@
     position: -webkit-sticky;
     background-color: #ffffff; }
   .reactgrid-content .rg-pane.rg-pane-top {
-    top: 0;
-    box-shadow: 0 3px 7px -3px rgba(0, 0, 0, 0.35); }
-    .reactgrid-content .rg-pane.rg-pane-top.rg-pane-left {
-      box-shadow: 0 3px 7px -3px rgba(0, 0, 0, 0.35), 3px 0 7px -3px rgba(0, 0, 0, 0.35); }
-    .reactgrid-content .rg-pane.rg-pane-top.rg-pane-right {
-      box-shadow: 0 3px 7px -3px rgba(0, 0, 0, 0.35), -3px 0 7px -3px rgba(0, 0, 0, 0.35); }
+    top: 0; }
   .reactgrid-content .rg-pane.rg-pane-bottom {
-    bottom: 0;
-    box-shadow: 0 -3px 7px -3px rgba(0, 0, 0, 0.35); }
-    .reactgrid-content .rg-pane.rg-pane-bottom.rg-pane-left {
-      box-shadow: 0 -3px 7px -3px rgba(0, 0, 0, 0.35), 3px 0 7px -3px rgba(0, 0, 0, 0.35); }
-    .reactgrid-content .rg-pane.rg-pane-bottom.rg-pane-right {
-      box-shadow: 0 -3px 7px -3px rgba(0, 0, 0, 0.35), -3px 0 7px -3px rgba(0, 0, 0, 0.35); }
+    bottom: 0; }
   .reactgrid-content .rg-pane.rg-pane-left {
-    left: 0;
-    box-shadow: 3px 0 7px -3px rgba(0, 0, 0, 0.35); }
+    left: 0; }
   .reactgrid-content .rg-pane.rg-pane-right {
-    right: 0;
-    box-shadow: -3px 0 7px -3px rgba(0, 0, 0, 0.35); }
+    right: 0; }
   .reactgrid-content .rg-pane .rg-cell {
     font-size: 1em;
     box-sizing: border-box;
@@ -213,6 +201,28 @@
       border-style: solid;
       border-color: #3579f8;
       background-color: rgba(53, 121, 248, 0.35); }
+  .reactgrid-content .shadow {
+    position: sticky; }
+    .reactgrid-content .shadow.shadow-top {
+      top: 0;
+      box-shadow: 0 3px 7px -3px rgba(0, 0, 0, 0.35); }
+    .reactgrid-content .shadow.shadow-left {
+      left: 0;
+      box-shadow: 3px 0 7px -3px rgba(0, 0, 0, 0.35); }
+    .reactgrid-content .shadow.shadow-bottom {
+      bottom: 0;
+      box-shadow: 0 -3px 7px -3px rgba(0, 0, 0, 0.35); }
+    .reactgrid-content .shadow.shadow-right {
+      right: 0;
+      box-shadow: -3px 0 7px -3px rgba(0, 0, 0, 0.35); }
+    .reactgrid-content .shadow.shadow-top-corner {
+      box-shadow: 0 3px 7px -3px rgba(0, 0, 0, 0.35); }
+    .reactgrid-content .shadow.shadow-left-corner {
+      box-shadow: 3px 0 7px -3px rgba(0, 0, 0, 0.35); }
+    .reactgrid-content .shadow.shadow-bottom-corner {
+      box-shadow: 0 -3px 7px -3px rgba(0, 0, 0, 0.35); }
+    .reactgrid-content .shadow.shadow-right-corner {
+      box-shadow: -3px 0 7px -3px rgba(0, 0, 0, 0.35); }
   .reactgrid-content .rg-context-menu {
     position: fixed;
     z-index: 1000;

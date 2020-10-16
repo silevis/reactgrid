@@ -1,4 +1,5 @@
-import { State, GridColumn, GridRow } from '../Model';
+import { State } from '../Model/State';
+import { GridColumn, GridRow } from '../Model/InternalModel';
 export declare const VS_PAGE_HEIGHT = 400;
 export declare const VS_PAGE_WIDTH = 300;
 export declare function recalcVisibleRange(state: State): State;

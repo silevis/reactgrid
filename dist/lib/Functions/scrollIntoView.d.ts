@@ -1,4 +1,5 @@
-import { State, Location } from '../Model';
+import { Location } from '../Model/InternalModel';
+import { State } from '../Model/State';
 export declare function scrollIntoView(state: State, top: number, left: number): void;
 export declare function getVisibleScrollAreaHeight(state: State, wholeStickyHeight: number): number;
 export declare function getCalculatedScrollTopValueToBottom(location: Location, visibleScrollAreaHeight: number, scrollTop: number, topStickyOffset: number): number;

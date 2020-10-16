@@ -1,3 +1,9 @@
+/**
+ * Set of key codes.
+ * `POINTER` is a ReactGrid addon
+ *
+ * @enum {number}
+ */
 export var keyCodes;
 (function (keyCodes) {
     keyCodes[keyCodes["POINTER"] = 1] = "POINTER";

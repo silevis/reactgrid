@@ -2,7 +2,7 @@ var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {
         extendStatics = Object.setPrototypeOf ||
             ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
+            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
         return extendStatics(d, b);
     };
     return function (d, b) {
@@ -22,14 +22,14 @@ var __assign = (this && this.__assign) || function () {
     };
     return __assign.apply(this, arguments);
 };
-import { Behavior } from '../Model';
-import { handleKeyDown } from '../Functions/handleKeyDown';
-import { CellSelectionBehavior } from './CellSelectionBehavior';
-import { handlePaste } from '../Functions/handlePaste';
 import { handleCopy } from '../Functions/handleCopy';
 import { handleDoubleClick } from '../Functions/handleDoubleClick';
+import { handleKeyDown } from '../Functions/handleKeyDown';
 import { handleKeyUp } from '../Functions/handleKeyUp';
-var DefaultBehavior = (function (_super) {
+import { handlePaste } from '../Functions/handlePaste';
+import { Behavior } from '../Model/Behavior';
+import { CellSelectionBehavior } from './CellSelectionBehavior';
+var DefaultBehavior = /** @class */ (function (_super) {
     __extends(DefaultBehavior, _super);
     function DefaultBehavior() {
         return _super !== null && _super.apply(this, arguments) || this;

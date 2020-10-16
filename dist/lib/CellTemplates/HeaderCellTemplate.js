@@ -9,8 +9,9 @@ var __assign = (this && this.__assign) || function () {
     };
     return __assign.apply(this, arguments);
 };
+// NOTE: all modules imported below may be imported from '@silevis/reactgrid'
 import { getCellProperty } from '../Functions/getCellProperty';
-var HeaderCellTemplate = (function () {
+var HeaderCellTemplate = /** @class */ (function () {
     function HeaderCellTemplate() {
         this.isFocusable = function (cell) { return false; };
         this.getStyle = function (cell) { return ({ background: 'rgba(128, 128, 128, 0.1)' }); };

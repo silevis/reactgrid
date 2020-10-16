@@ -1,6 +1,8 @@
-import { areLocationsEqual } from './../Functions/areLocationsEqual';
-import { scrollIntoView, getScrollOfScrollableElement, getVisibleScrollAreaHeight, getCalculatedScrollTopValueToBottom, getCalculatedScrollTopValueToTop, isBottomCellAllVisible, isTopCellAllVisible, isFocusLocationOnTopSticky, getVisibleScrollAreaWidth, isFocusLocationOnLeftSticky, isRightCellAllVisible, getCalculatedScrollLeftValueToRight, isLeftCellAllVisible, getCalculatedScrollLeftValueToLeft } from '.';
-import { getReactGridOffsets, getStickyOffset } from '../core';
+import { areLocationsEqual } from './areLocationsEqual';
+import { getReactGridOffsets, getStickyOffset } from './elementSizeHelpers';
+import { getScrollOfScrollableElement } from './scrollHelpers';
+import { getCalculatedScrollLeftValueToLeft, getCalculatedScrollLeftValueToRight, getCalculatedScrollTopValueToBottom, getCalculatedScrollTopValueToTop, getVisibleScrollAreaHeight, getVisibleScrollAreaWidth, isBottomCellAllVisible, isFocusLocationOnLeftSticky, isFocusLocationOnTopSticky, isLeftCellAllVisible, isRightCellAllVisible, isTopCellAllVisible, scrollIntoView } from './scrollIntoView';
+//TODO what about initialFocusLocation and focusLocation set by props
 export function componentDidUpdate(prevProps, prevState, state) {
     var location = state.focusedLocation;
     if (location) {

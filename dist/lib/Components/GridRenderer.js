@@ -16,5 +16,5 @@ export var GridRenderer = function (_a) {
                     height: cellMatrix.height,
                 } },
                 children,
-                React.createElement(HiddenElement, { hiddenElementRefHandler: eventHandlers.hiddenElementRefHandler })))));
+                React.createElement(HiddenElement, { state: state, hiddenElementRefHandler: eventHandlers.hiddenElementRefHandler })))));
 };

@@ -1,4 +1,4 @@
-import { State } from '../Model';
+import { State } from '../Model/State';
 export declare function shouldRenderTopSticky(state: State): boolean;
 export declare function shouldRenderLeftSticky(state: State): boolean;
 export declare function shouldRenderCenterRange(state: State): boolean;

@@ -10,12 +10,12 @@ var __assign = (this && this.__assign) || function () {
     return __assign.apply(this, arguments);
 };
 import { getCompatibleCellAndTemplate } from './getCompatibleCellAndTemplate';
-import { tryAppendChange } from '.';
 import { isSelectionKey } from './isSelectionKey';
+import { tryAppendChange } from './tryAppendChange';
 export function handleKeyDownOnCellTemplate(state, event) {
     var location = state.focusedLocation;
     var _a = getCompatibleCellAndTemplate(state, location), cell = _a.cell, cellTemplate = _a.cellTemplate;
-    if (cellTemplate.handleKeyDown && !state.currentlyEditedCell) {
+    if (cellTemplate.handleKeyDown && !state.currentlyEditedCell) { // TODO need add !(event.shiftKey && event.keyCode === keyCodes.SPACE) to working keycodes (shift + space) in a lower condition
         var _b = cellTemplate.handleKeyDown(cell, event.keyCode, isSelectionKey(event), event.shiftKey, event.altKey), newCell = _b.cell, enableEditMode = _b.enableEditMode;
         if (JSON.stringify(newCell) !== JSON.stringify(cell) || enableEditMode) {
             if (enableEditMode) {

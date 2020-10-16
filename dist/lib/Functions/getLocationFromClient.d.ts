@@ -1,4 +1,5 @@
-import { PointerLocation, GridRow, GridColumn, Direction, State } from '../Model';
+import { Direction, GridColumn, GridRow, PointerLocation } from '../Model/InternalModel';
+import { State } from '../Model/State';
 export declare function getLocationFromClient(state: State, clientX: number, clientY: number, favorScrollableContent?: Direction): PointerLocation;
 export declare function getStickyTopRow(state: State, viewportY: number, favorScrollableContent: boolean): {
     cellY: number;

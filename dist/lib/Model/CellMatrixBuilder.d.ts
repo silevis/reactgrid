@@ -1,4 +1,6 @@
-import { CellMatrix, CellMatrixProps, GridRow, GridColumn, Range } from '.';
+import { CellMatrix, CellMatrixProps } from './CellMatrix';
+import { GridColumn, GridRow } from './InternalModel';
+import { Range } from './Range';
 export interface ICellMatrixBuilder<TCellMatrixBuilder = CellMatrixBuilder> {
     setProps(props: CellMatrixProps): TCellMatrixBuilder;
     fillRowsAndCols(): TCellMatrixBuilder;

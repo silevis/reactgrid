@@ -1,5 +1,7 @@
 import * as React from 'react';
-import { State, Location, CellMatrix } from '../Model';
+import { Location } from '../Model/InternalModel';
+import { CellMatrix } from '../Model/CellMatrix';
+import { State } from '../Model/State';
 export interface CellEditorOffset {
     top: number;
     left: number;

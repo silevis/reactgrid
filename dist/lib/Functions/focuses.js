@@ -1,5 +1,5 @@
 import { focusLocation } from './focusLocation';
-import { getVisibleScrollAreaHeight, isFocusLocationOnTopSticky } from '.';
+import { getVisibleScrollAreaHeight, isFocusLocationOnTopSticky } from './scrollIntoView';
 export var focusCell = withFocusLocation(focusLocation);
 export var moveFocusLeft = withMoveFocusLeft(focusCell);
 export var moveFocusRight = withMoveFocusRight(focusCell);

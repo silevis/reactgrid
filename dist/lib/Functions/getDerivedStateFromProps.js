@@ -9,9 +9,10 @@ var __assign = (this && this.__assign) || function () {
     };
     return __assign.apply(this, arguments);
 };
-import { recalcVisibleRange, focusLocation } from '.';
-import { defaultCellTemplates } from './defaultCellTemplates';
 import { CellMatrixBuilder } from '../Model/CellMatrixBuilder';
+import { defaultCellTemplates } from './defaultCellTemplates';
+import { focusLocation } from './focusLocation';
+import { recalcVisibleRange } from './recalcVisibleRange';
 export function getDerivedStateFromProps(props, state) {
     var stateDeriverWithProps = stateDeriver(props);
     var hasHighlightsChanged = highlightsHasChanged(props, state);

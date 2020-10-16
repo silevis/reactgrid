@@ -1,5 +1,6 @@
 import * as React from 'react';
-import { State, GridRow, GridColumn, Borders } from '../Model';
+import { GridRow, GridColumn, Borders } from '../Model/InternalModel';
+import { State } from '../Model/State';
 import { CellRendererProps } from './CellRenderer';
 export interface RowRendererProps {
     state: State;

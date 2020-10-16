@@ -10,10 +10,11 @@ var __assign = (this && this.__assign) || function () {
     return __assign.apply(this, arguments);
 };
 import * as React from 'react';
+// NOTE: all modules imported below may be imported from '@silevis/reactgrid'
+import { getCellProperty } from '../Functions/getCellProperty';
 import { keyCodes } from '../Functions/keyCodes';
 import { inNumericKey, isNavigationKey, isNumpadNumericKey, isAllowedOnNumberTypingKey } from './keyCodeCheckings';
-import { getCellProperty } from '../Functions/getCellProperty';
-var NumberCellTemplate = (function () {
+var NumberCellTemplate = /** @class */ (function () {
     function NumberCellTemplate() {
         this.getTextFromCharCode = function (cellText) {
             switch (cellText.charCodeAt(0)) {

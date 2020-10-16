@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { CellTemplate, Cell, Compatible, Uncertain, UncertainCompatible } from '../Model';
+import { Cell, CellTemplate, Compatible, Uncertain, UncertainCompatible } from '../Model/PublicModel';
 export interface EmailCell extends Cell {
     type: 'email';
     text: string;

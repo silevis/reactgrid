@@ -1,4 +1,5 @@
-import { isBrowserIE, isBrowserEdge } from '../Functions';
+import { isBrowserIE } from '../Functions/internetExplorer';
+import { isBrowserEdge } from '../Functions/microsoftEdge';
 import { DefaultBehavior } from '../Behaviors/DefaultBehavior';
 export var defaultStateFields = {
     legacyBrowserMode: isBrowserIE() || isBrowserEdge(),

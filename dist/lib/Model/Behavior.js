@@ -1,4 +1,5 @@
-var Behavior = (function () {
+// ASK ARCHITECT BEFORE INTRODUCING ANY CHANGE!
+var Behavior = /** @class */ (function () {
     function Behavior() {
     }
     Behavior.prototype.handleKeyDown = function (event, state) {

@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { CellTemplate, Cell, Compatible, Uncertain, UncertainCompatible, Id, CellStyle } from '../Model';
+import { Cell, CellStyle, CellTemplate, Compatible, Id, Uncertain, UncertainCompatible } from '../Model/PublicModel';
 export interface ChevronCell extends Cell {
     type: 'chevron';
     text: string;

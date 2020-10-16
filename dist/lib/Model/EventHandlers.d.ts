@@ -1,5 +1,6 @@
-import { StateUpdater, PointerEvent, ClipboardEvent, KeyboardEvent, StateModifier } from '.';
 import { AbstractPointerEventsController } from './AbstractPointerEventsController';
+import { StateModifier, StateUpdater } from './State';
+import { PointerEvent, KeyboardEvent, ClipboardEvent } from './domEventsTypes';
 export declare class EventHandlers {
     updateState: StateUpdater;
     pointerEventsController: AbstractPointerEventsController;

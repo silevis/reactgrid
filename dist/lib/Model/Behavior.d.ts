@@ -1,5 +1,6 @@
-import { PointerLocation, State } from '.';
+import { PointerLocation } from './InternalModel';
 import { KeyboardEvent, ClipboardEvent, PointerEvent } from './domEventsTypes';
+import { State } from './State';
 export declare abstract class Behavior {
     handleKeyDown(event: KeyboardEvent, state: State): State;
     handlePointerUp(event: PointerEvent, location: PointerLocation, state: State): State;

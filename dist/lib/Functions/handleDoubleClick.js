@@ -15,6 +15,7 @@ import { isSelectionKey } from './isSelectionKey';
 export function handleDoubleClick(event, location, state) {
     if (areLocationsEqual(location, state.focusedLocation)) {
         var _a = getCompatibleCellAndTemplate(state, location), cell = _a.cell, cellTemplate = _a.cellTemplate;
+        //const cellTemplate = state.cellTemplates[location.cell.type];
         if (cellTemplate.handleKeyDown) {
             var _b = cellTemplate.handleKeyDown(cell, 1, isSelectionKey(event), event.shiftKey, event.altKey), newCell = _b.cell, enableEditMode = _b.enableEditMode;
             if (enableEditMode) {

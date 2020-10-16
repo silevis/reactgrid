@@ -1,8 +1,9 @@
-import { getScrollOfScrollableElement } from '../Functions';
+import { getScrollOfScrollableElement } from './scrollHelpers';
 import { getVisibleSizeOfReactGrid, getReactGridOffsets, getStickyOffset } from './elementSizeHelpers';
 export function scrollIntoView(state, top, left) {
-    state.scrollableElement.scrollTop !== undefined ? state.scrollableElement.scrollTop = top : state.scrollableElement.scrollTo({ top: top });
-    state.scrollableElement.scrollLeft !== undefined ? state.scrollableElement.scrollLeft = left : state.scrollableElement.scrollTo({ left: left });
+    var scrollableElement = state.scrollableElement;
+    scrollableElement.scrollTop !== undefined ? scrollableElement.scrollTop = top : scrollableElement.scrollTo({ top: top });
+    scrollableElement.scrollLeft !== undefined ? scrollableElement.scrollLeft = left : scrollableElement.scrollTo({ left: left });
 }
 export function getVisibleScrollAreaHeight(state, wholeStickyHeight) {
     var visibleContentHeight = getVisibleSizeOfReactGrid(state).height;
@@ -12,7 +13,7 @@ export function getCalculatedScrollTopValueToBottom(location, visibleScrollAreaH
     return scrollTop + location.row.bottom - visibleScrollAreaHeight - topStickyOffset;
 }
 export function getCalculatedScrollTopValueToTop(location, scrollTop, topStickyOffset) {
-    return scrollTop - (topStickyOffset - location.row.top) - 1;
+    return scrollTop - topStickyOffset + location.row.top - 1;
 }
 export function isBottomCellAllVisible(state, location, visibleScrollAreaHeight) {
     var scrollTop = getScrollOfScrollableElement(state.scrollableElement).scrollTop;
@@ -25,7 +26,6 @@ export function isTopCellAllVisible(state, location) {
     var top = getReactGridOffsets(state).top;
     var topStickyOffset = getStickyOffset(scrollTop, top);
     return location.row.top < topStickyOffset;
-    ;
 }
 export function isFocusLocationOnTopSticky(state, location) {
     var stickyTopRange = state.cellMatrix.ranges.stickyTopRange;
@@ -40,7 +40,7 @@ export function getCalculatedScrollLeftValueToRight(location, visibleScrollAreaW
     return scrollLeft + location.column.right - visibleScrollAreaWidth - leftStickyOffset;
 }
 export function getCalculatedScrollLeftValueToLeft(location, scrollLeft, leftStickyOffset) {
-    return scrollLeft - (leftStickyOffset - location.column.left) - 1;
+    return scrollLeft - leftStickyOffset + location.column.left - 1;
 }
 export function isRightCellAllVisible(state, location, visibleScrollAreaWidth) {
     var scrollLeft = getScrollOfScrollableElement(state.scrollableElement).scrollLeft;
