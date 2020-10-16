@@ -12,9 +12,7 @@
 
 <img alt="Sample app" src="https://reactgrid.com/sample.gif" height="240px" />
 
-<h4>
-  <a href="https://www.reactgrid.com/">Browse our website & docs</a>
-</h4>
+### [Browse our website & docs](https://www.reactgrid.com/)
 
 Before run you need to have installed:
 - react": "^16.13.1"
