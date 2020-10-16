@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { State } from '../Model';
+import { State } from '../Model/State';
 
 interface HiddenElementProps {
     state: State;

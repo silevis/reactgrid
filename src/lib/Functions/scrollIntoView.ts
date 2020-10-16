@@ -1,5 +1,6 @@
-import { State, Location } from '../Model';
-import { getScrollOfScrollableElement } from '../Functions';
+import { Location } from '../Model/InternalModel';
+import { State } from '../Model/State';
+import { getScrollOfScrollableElement } from './scrollHelpers';
 import { getVisibleSizeOfReactGrid, getReactGridOffsets, getStickyOffset } from './elementSizeHelpers';
 
 export function scrollIntoView(state: State, top: number, left: number) {

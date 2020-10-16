@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { GridRendererProps } from '../Model';
+import { GridRendererProps } from '../Model/InternalModel';
 import { HiddenElement } from './HiddenElement';
 import { ErrorBoundary } from './ErrorBoundary';
 

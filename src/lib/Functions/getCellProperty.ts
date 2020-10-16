@@ -1,4 +1,4 @@
-import { Cell, Uncertain } from '..';
+import { Cell, Uncertain } from '../Model/PublicModel';
 
 /**
  * Gets property cell's value
