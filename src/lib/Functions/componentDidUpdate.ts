@@ -1,13 +1,15 @@
-import { ReactGridProps, Location } from './../Model';
+import { Location } from './../Model/InternalModel';
 import { State } from './../Model/State';
-import { areLocationsEqual } from './../Functions/areLocationsEqual';
+import { ReactGridProps } from './../Model/PublicModel';
+import { areLocationsEqual } from './areLocationsEqual';
+import { getReactGridOffsets, getStickyOffset } from './elementSizeHelpers';
+import { getScrollOfScrollableElement } from './scrollHelpers';
 import {
-    scrollIntoView, getScrollOfScrollableElement, getVisibleScrollAreaHeight, getCalculatedScrollTopValueToBottom,
-    getCalculatedScrollTopValueToTop, isBottomCellAllVisible, isTopCellAllVisible, isFocusLocationOnTopSticky,
-    getVisibleScrollAreaWidth, isFocusLocationOnLeftSticky, isRightCellAllVisible, getCalculatedScrollLeftValueToRight,
-    isLeftCellAllVisible, getCalculatedScrollLeftValueToLeft
-} from '.';
-import { getReactGridOffsets, getStickyOffset } from '../core';
+    getCalculatedScrollLeftValueToLeft, getCalculatedScrollLeftValueToRight, getCalculatedScrollTopValueToBottom,
+    getCalculatedScrollTopValueToTop, getVisibleScrollAreaHeight, getVisibleScrollAreaWidth, isBottomCellAllVisible,
+    isFocusLocationOnLeftSticky, isFocusLocationOnTopSticky, isLeftCellAllVisible, isRightCellAllVisible,
+    isTopCellAllVisible, scrollIntoView
+} from './scrollIntoView';
 
 //TODO what about initialFocusLocation and focusLocation set by props
 export function componentDidUpdate(prevProps: ReactGridProps, prevState: State, state: State) {

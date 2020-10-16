@@ -1,4 +1,5 @@
-import { State, TextLabels } from '../Model';
+import { TextLabels } from '../Model/PublicModel'
+import { State } from '../Model/State'
 
 const defultTranslations: Required<TextLabels> = {
     legacyBrowserHeader: 'Please update to a modern browser.',

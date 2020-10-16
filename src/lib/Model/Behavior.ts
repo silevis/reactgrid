@@ -1,5 +1,6 @@
-import { PointerLocation, State } from '.';
+import { PointerLocation } from './InternalModel';
 import { KeyboardEvent, ClipboardEvent, PointerEvent } from './domEventsTypes';
+import { State } from './State';
 
 // ASK ARCHITECT BEFORE INTRODUCING ANY CHANGE!
 export abstract class Behavior {

@@ -1,10 +1,14 @@
-import { State, Behavior, KeyboardEvent, ClipboardEvent, PointerEvent, Location, PointerLocation } from '../Model';
-import { handleKeyDown } from '../Functions/handleKeyDown';
-import { CellSelectionBehavior } from './CellSelectionBehavior';
-import { handlePaste } from '../Functions/handlePaste';
 import { handleCopy } from '../Functions/handleCopy';
 import { handleDoubleClick } from '../Functions/handleDoubleClick';
+import { handleKeyDown } from '../Functions/handleKeyDown';
 import { handleKeyUp } from '../Functions/handleKeyUp';
+import { handlePaste } from '../Functions/handlePaste';
+import { Behavior } from '../Model/Behavior';
+import { PointerLocation } from '../Model/InternalModel';
+import { State } from '../Model/State';
+import { PointerEvent, KeyboardEvent, ClipboardEvent } from '../Model/domEventsTypes';
+import { Location } from '../Model/InternalModel';
+import { CellSelectionBehavior } from './CellSelectionBehavior';
 
 export class DefaultBehavior extends Behavior {
 

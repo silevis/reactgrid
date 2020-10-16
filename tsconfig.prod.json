@@ -5,7 +5,7 @@
     "outDir": "./dist",
     "jsx": "react",
     "declaration": true,
-    "removeComments": true, // TODO is needed?
+    "removeComments": false,
     "isolatedModules": false,
     "noEmit": false
   }

@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { GridRendererProps } from '../Model';
+import { GridRendererProps } from '../Model/InternalModel';
 import { HiddenElement } from './HiddenElement';
 import { ErrorBoundary } from './ErrorBoundary';
 
@@ -32,7 +32,7 @@ export const GridRenderer: React.FC<GridRendererProps> = ({ state, eventHandlers
                 }}
             >
                 {children}
-                <HiddenElement hiddenElementRefHandler={eventHandlers.hiddenElementRefHandler} />
+                <HiddenElement state={state} hiddenElementRefHandler={eventHandlers.hiddenElementRefHandler} />
             </div>
         </div>
     </ErrorBoundary>)

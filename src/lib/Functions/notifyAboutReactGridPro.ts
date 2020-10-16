@@ -1,4 +1,4 @@
-import { State } from '../Model';
+import { State } from '../Model/State';
 
 const notification = (prop: any, name: string) => (prop || prop === false || typeof prop === 'number') &&
     console.warn(`Sorry, ${prop?.name || name} isn't implemented in MIT version, buy ReactGrid Pro`);

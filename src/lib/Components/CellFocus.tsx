@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Location } from '../Model';
+import { Location } from '../Model/InternalModel';
 
 interface CellFocusProps {
     location: Location;

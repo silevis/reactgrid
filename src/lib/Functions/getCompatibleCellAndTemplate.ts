@@ -1,4 +1,6 @@
-import { State, Location, Compatible, Cell, CellTemplate } from '../Model';
+import { Cell, CellTemplate, Compatible } from '../Model/PublicModel';
+import { State } from '../Model/State';
+import { Location } from '../Model/InternalModel';
 
 export function getCompatibleCellAndTemplate(state: State, location: Location): { cell: Compatible<Cell>, cellTemplate: CellTemplate } {
     try {

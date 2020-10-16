@@ -1,12 +1,14 @@
 import * as React from 'react';
 import { Pane, PaneContent } from './Pane';
-import { State, Range } from '../Model';
-import { isBrowserFirefox } from '../Functions';
-import { CellRendererProps, } from './CellRenderer';
 import {
-    shouldRenderTopSticky, shouldRenderMiddleRange, shouldRenderLeftSticky, shouldRenderCenterRange
+    shouldRenderCenterRange, shouldRenderLeftSticky, shouldRenderMiddleRange, shouldRenderTopSticky
 } from '../Functions/paneRendererPredicates';
+import { Range } from '../Model/Range';
+import { isBrowserFirefox } from '../Functions/firefox';
 import { columnsSlicer, rowsSlicer } from '../Functions/rangeSlicer';
+import { State } from '../Model/State';
+import { CellRendererProps } from './CellRenderer';
+import { PaneShadow } from './PaneShadow';
 
 
 export interface PanesProps<TState extends State = State> {
@@ -25,7 +27,10 @@ export const PanesRenderer: React.FC<PanesProps> = ({ state, cellRenderer }) => 
         return null;
     }
 
-    const visibleScrollableRange = renderMiddleRange && cellMatrix.scrollableRange.slice(state.visibleRange!, 'rows');
+    let visibleScrollableRange: Range | undefined = undefined;
+    if (renderMiddleRange) {
+        visibleScrollableRange = cellMatrix.scrollableRange.slice(state.visibleRange!, 'rows');
+    }
 
     const areOnlyStickyRows = cellMatrix.ranges.stickyTopRange.rows.length === cellMatrix.rows.length;
     const areOnlyStickyCols = cellMatrix.ranges.stickyLeftRange.columns.length === cellMatrix.columns.length;
@@ -103,6 +108,18 @@ export const PanesRenderer: React.FC<PanesProps> = ({ state, cellRenderer }) => 
                     cellRenderer={cellRenderer}
                 />
             </Pane>
+            <PaneShadow renderCondition={renderLeftSticky} className={'shadow-left'} zIndex={1} style={{
+                width: cellMatrix.ranges.stickyLeftRange.width,
+                height: cellMatrix.height,
+                marginTop: -cellMatrix.height,
+                order: 5,
+            }} />
+            <PaneShadow renderCondition={renderTopSticky} className={'shadow-top'} zIndex={1} style={{
+                width: cellMatrix.width,
+                height: cellMatrix.ranges.stickyTopRange.height,
+                marginTop: -cellMatrix.height,
+                order: 4,
+            }} />
             <Pane
                 renderChildren={renderTopSticky && renderLeftSticky}
                 className={'rg-pane-top rg-pane-left'}
@@ -130,4 +147,3 @@ export const PanesRenderer: React.FC<PanesProps> = ({ state, cellRenderer }) => 
         </>
     )
 }
-

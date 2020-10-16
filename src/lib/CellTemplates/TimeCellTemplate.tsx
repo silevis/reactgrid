@@ -1,10 +1,10 @@
 import * as React from 'react';
 
 // NOTE: all modules imported below may be imported from '@silevis/reactgrid'
-import { keyCodes } from '../Functions/keyCodes';
-import { CellTemplate, Cell, Compatible, Uncertain, UncertainCompatible } from '../Model';
-import { inNumericKey, isNavigationKey, isAlphaNumericKey } from './keyCodeCheckings'
 import { getCellProperty } from '../Functions/getCellProperty';
+import { keyCodes } from '../Functions/keyCodes';
+import { Cell, CellTemplate, Compatible, Uncertain, UncertainCompatible } from '../Model/PublicModel';
+import { inNumericKey, isNavigationKey, isAlphaNumericKey } from './keyCodeCheckings'
 import { getTimestamp, getFormattedTimeUnit, getDefaultDate } from './timeUtils';
 
 export interface TimeCell extends Cell {

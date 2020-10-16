@@ -1,7 +1,6 @@
-import { GridColumn, GridRow, Location } from '.';
+import { GridColumn, GridRow, Location } from './InternalModel';
 
 export type SliceDirection = 'columns' | 'rows' | 'both';
-
 
 export class Range {
     readonly width: number;

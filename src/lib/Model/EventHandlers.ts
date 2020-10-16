@@ -1,8 +1,9 @@
-import { StateUpdater, PointerEvent, ClipboardEvent, KeyboardEvent, StateModifier } from '.';
-import { recalcVisibleRange, getScrollableParent } from '../Functions';
-import { getScrollOfScrollableElement } from '../Functions/scrollHelpers';
+import { recalcVisibleRange } from '../Functions/recalcVisibleRange';
+import { getScrollableParent, getScrollOfScrollableElement } from '../Functions/scrollHelpers';
 import { getVisibleSizeOfReactGrid } from '../Functions/elementSizeHelpers';
 import { AbstractPointerEventsController } from './AbstractPointerEventsController';
+import { StateModifier, StateUpdater } from './State';
+import { PointerEvent, KeyboardEvent, ClipboardEvent } from './domEventsTypes';
 
 export class EventHandlers {
 

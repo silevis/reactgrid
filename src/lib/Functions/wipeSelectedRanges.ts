@@ -1,5 +1,6 @@
-import { State } from '../Model';
-import { tryAppendChange, emptyCell } from '.';
+import { State } from '../Model/State';
+import { emptyCell } from './emptyCell';
+import { tryAppendChange } from './tryAppendChange';
 
 export function wipeSelectedRanges(state: State): State {
     const location = state.focusedLocation;

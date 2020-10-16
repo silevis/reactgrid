@@ -1,11 +1,7 @@
-import { TextCellTemplate } from '../CellTemplates/TextCellTemplate';
-import { NumberCellTemplate } from '../CellTemplates/NumberCellTemplate';
-import { HeaderCellTemplate } from '../CellTemplates/HeaderCellTemplate';
-import { CheckboxCellTemplate } from '../CellTemplates/CheckboxCellTemplate';
-import { DateCellTemplate } from '../CellTemplates/DateCellTemplate';
-import { EmailCellTemplate } from '../CellTemplates/EmailCellTemplate';
-import { TimeCellTemplate } from '../CellTemplates/TimeCellTemplate';
-import { ChevronCellTemplate } from '../CellTemplates/ChevronCellTemplate';
+import {
+    ChevronCellTemplate, TimeCellTemplate, EmailCellTemplate, DateCellTemplate, CheckboxCellTemplate,
+    HeaderCellTemplate, NumberCellTemplate, TextCellTemplate
+} from '../CellTemplates';
 import { CellTemplates } from '../Model/PublicModel';
 
 export const defaultCellTemplates: CellTemplates = {
