@@ -1,7 +1,12 @@
-$shadow-on-bottom:      0 $shadow-length $shadow-blur-radius $shadow-spread-radius !default;
-$shadow-on-top:         0 (-$shadow-length) $shadow-blur-radius $shadow-spread-radius !default;
-$shadow-on-left:        (-$shadow-length) 0 $shadow-blur-radius $shadow-spread-radius !default;
-$shadow-on-right:       $shadow-length 0 $shadow-blur-radius $shadow-spread-radius !default;
+$shadow-on-bottom:              0 $shadow-length $shadow-blur-radius $shadow-spread-radius !default;
+$shadow-on-top:                 0 (-$shadow-length) $shadow-blur-radius $shadow-spread-radius !default;
+$shadow-on-left:                (-$shadow-length) 0 $shadow-blur-radius $shadow-spread-radius !default;
+$shadow-on-right:               $shadow-length 0 $shadow-blur-radius $shadow-spread-radius !default;
+$shadow-on-top-left-corner:     $shadow-length $shadow-length $shadow-blur-radius $shadow-spread-radius !default;
+$shadow-on-top-right-corner:    (-$shadow-length) $shadow-length $shadow-blur-radius $shadow-spread-radius !default;
+$shadow-on-bottom-left-corner:  $shadow-length (-$shadow-length) $shadow-blur-radius $shadow-spread-radius !default;
+$shadow-on-bottom-right-corner: (-$shadow-length) (-$shadow-length) $shadow-blur-radius $shadow-spread-radius !default;
+
 
 $white-with-heavy-opacity:      rgba($bg-color, $opacity-01);
 $black-with-medium-opacity:     rgba($shadow-color, $opacity-35);
