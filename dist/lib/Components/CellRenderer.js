@@ -57,7 +57,10 @@ export var CellRenderer = function (_a) {
     };
     var style = __assign(__assign(__assign(__assign(__assign({}, (cellTemplate.getStyle && (cellTemplate.getStyle(cell, false) || {}))), (cell.style && noBorder(cell.style))), { left: location.column.left, top: location.row.top, width: location.column.width, height: location.row.height }), bordersProps), ((isFocused || cell.type === 'header') && { touchAction: 'none' }) // prevent scrolling
     );
-    return (React.createElement("div", { className: "rg-cell rg-" + cell.type + "-cell " + (cell.groupId ? "rg-groupId-" + cell.groupId : '') + " " + customClass, style: style, "data-cell-colidx": process.env.NODE_ENV === "development" ? location.column.idx : null, "data-cell-rowidx": process.env.NODE_ENV === "development" ? location.row.idx : null },
+    var groupIdClassName = cell.groupId ? "rg-groupId-" + cell.groupId : '';
+    var nonEditableClassName = cell.nonEditable ? 'rg-cell-nonEditable' : '';
+    var classNames = "rg-cell rg-" + cell.type + "-cell " + groupIdClassName + " " + nonEditableClassName + " " + customClass;
+    return (React.createElement("div", { className: classNames, style: style, "data-cell-colidx": process.env.NODE_ENV === "development" ? location.column.idx : null, "data-cell-rowidx": process.env.NODE_ENV === "development" ? location.row.idx : null },
         cellTemplate.render(cell, false, function (cell, commit) {
             if (!commit)
                 throw new Error('commit should be set to true in this case.');

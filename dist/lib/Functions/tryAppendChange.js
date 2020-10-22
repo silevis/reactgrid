@@ -15,7 +15,7 @@ export function tryAppendChange(state, location, cell) {
     if (previousCell === cell || JSON.stringify(previousCell) === JSON.stringify(cell) || cellTemplate.update === undefined)
         return state;
     var newCell = cellTemplate.update(previousCell, cell);
-    if (newCell !== previousCell || JSON.stringify(newCell) !== JSON.stringify(previousCell))
+    if ((newCell !== previousCell || JSON.stringify(newCell) !== JSON.stringify(previousCell)) && !newCell.nonEditable)
         state.queuedCellChanges.push({
             previousCell: previousCell,
             newCell: newCell,

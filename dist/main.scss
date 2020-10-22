@@ -116,6 +116,7 @@
     }
     .shadow {
         position: sticky;
+        pointer-events: none;
         &.shadow-top {
             top: 0;
             box-shadow: $shadow-on-bottom $cell-shadow-color;
@@ -132,17 +133,17 @@
             right: 0;
             box-shadow: $shadow-on-left $cell-shadow-color;
         }
-        &.shadow-top-corner {
-            box-shadow: $shadow-on-bottom $cell-shadow-color;
+        &.shadow-top-left-corner {
+            box-shadow: $shadow-on-top-left-corner $cell-shadow-color;
         }
-        &.shadow-left-corner {
-            box-shadow: $shadow-on-right $cell-shadow-color; 
+        &.shadow-top-right-corner {
+            box-shadow: $shadow-on-top-right-corner $cell-shadow-color; 
         }
-        &.shadow-bottom-corner {
-            box-shadow: $shadow-on-top $cell-shadow-color;
+        &.shadow-bottom-left-corner {
+            box-shadow: $shadow-on-bottom-left-corner $cell-shadow-color;
         }
-        &.shadow-right-corner {
-            box-shadow: $shadow-on-left $cell-shadow-color;
+        &.shadow-bottom-right-corner {
+            box-shadow: $shadow-on-bottom-right-corner $cell-shadow-color;
         }
     }
     .rg-context-menu {

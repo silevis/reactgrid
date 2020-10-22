@@ -56,6 +56,8 @@ export var TestGrid = function (props) {
         cells: columns.map(function (_, ci) {
             if (ri === 0)
                 return { type: config.firstRowType, text: ri + " - " + ci };
+            if (ri === 2 && ci === 8)
+                return { type: 'text', text: "non-editable", nonEditable: true, validator: function (text) { return true; } };
             var now = new Date();
             switch (ci) {
                 case 0:

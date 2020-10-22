@@ -18,7 +18,7 @@ export function handleKeyDownOnCellTemplate(state, event) {
     if (cellTemplate.handleKeyDown && !state.currentlyEditedCell) { // TODO need add !(event.shiftKey && event.keyCode === keyCodes.SPACE) to working keycodes (shift + space) in a lower condition
         var _b = cellTemplate.handleKeyDown(cell, event.keyCode, isSelectionKey(event), event.shiftKey, event.altKey), newCell = _b.cell, enableEditMode = _b.enableEditMode;
         if (JSON.stringify(newCell) !== JSON.stringify(cell) || enableEditMode) {
-            if (enableEditMode) {
+            if (enableEditMode && !cell.nonEditable) {
                 return __assign(__assign({}, state), { currentlyEditedCell: newCell });
             }
             else {

@@ -202,7 +202,8 @@
       border-color: #3579f8;
       background-color: rgba(53, 121, 248, 0.35); }
   .reactgrid-content .shadow {
-    position: sticky; }
+    position: sticky;
+    pointer-events: none; }
     .reactgrid-content .shadow.shadow-top {
       top: 0;
       box-shadow: 0 3px 7px -3px rgba(0, 0, 0, 0.35); }
@@ -215,14 +216,14 @@
     .reactgrid-content .shadow.shadow-right {
       right: 0;
       box-shadow: -3px 0 7px -3px rgba(0, 0, 0, 0.35); }
-    .reactgrid-content .shadow.shadow-top-corner {
-      box-shadow: 0 3px 7px -3px rgba(0, 0, 0, 0.35); }
-    .reactgrid-content .shadow.shadow-left-corner {
-      box-shadow: 3px 0 7px -3px rgba(0, 0, 0, 0.35); }
-    .reactgrid-content .shadow.shadow-bottom-corner {
-      box-shadow: 0 -3px 7px -3px rgba(0, 0, 0, 0.35); }
-    .reactgrid-content .shadow.shadow-right-corner {
-      box-shadow: -3px 0 7px -3px rgba(0, 0, 0, 0.35); }
+    .reactgrid-content .shadow.shadow-top-left-corner {
+      box-shadow: 3px 3px 7px -3px rgba(0, 0, 0, 0.35); }
+    .reactgrid-content .shadow.shadow-top-right-corner {
+      box-shadow: -3px 3px 7px -3px rgba(0, 0, 0, 0.35); }
+    .reactgrid-content .shadow.shadow-bottom-left-corner {
+      box-shadow: 3px -3px 7px -3px rgba(0, 0, 0, 0.35); }
+    .reactgrid-content .shadow.shadow-bottom-right-corner {
+      box-shadow: -3px -3px 7px -3px rgba(0, 0, 0, 0.35); }
   .reactgrid-content .rg-context-menu {
     position: fixed;
     z-index: 1000;
