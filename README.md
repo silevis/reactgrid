@@ -10,11 +10,9 @@
 [![Gitter](https://badges.gitter.im/silevis-reactgrid/community.svg)](https://gitter.im/silevis-reactgrid/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge) 
 [![MIT license](https://david-dm.org/silevis/reactgrid/dev-status.svg)](https://david-dm.org/silevis/reactgrid?type=dev)   [![npm version](https://badge.fury.io/js/%40silevis%2Freactgrid.svg)](https://badge.fury.io/js/%40silevis%2Freactgrid)
 
-<img alt="Sample app" src="https://reactgrid.com/sample.gif" height="240px" />
+<img alt="Sample app" src="https://reactgrid.com/sample.gif"/>
 
-<h4>
-  <a href="https://www.reactgrid.com/">Browse our website & docs</a>
-</h4>
+Browse our examples & docs: 👉 [reactgrid.com](https://reactgrid.com/?utm_source=github&utm_medium=reactgridmit&utm_campaign=readme)
 
 Before run you need to have installed:
 - react": "^16.13.1"
@@ -148,7 +146,7 @@ Open live demo on [codesandbox.io](https://codesandbox.io/s/reactgrid-handling-c
 * [Chevron cell example](https://codesandbox.io/s/reactgrid-group-cell-example-fh1di?file=/src/index.tsx)
 * [Cell highlights](https://codesandbox.io/s/reactgrid-highlights-8o8gq)
 * [Custom styles](https://codesandbox.io/s/reactgrid-custom-styling-buwuw)
-* [and a lot more here](https://reactgrid.com/docs/3.1/2-implementing-core-features/)
+* [and a lot more here](https://reactgrid.com/docs/3.1/2-implementing-core-features/?utm_source=github&utm_medium=reactgriddocs&utm_campaign=docs)
 
 # Browser support
 
@@ -176,22 +174,22 @@ Open live demo on [codesandbox.io](https://codesandbox.io/s/reactgrid-handling-c
 
 # Docs
 
-Explore ReactGrid docs: [here](http://reactgrid.com/docs/)
+Explore ReactGrid docs: [here](https://reactgrid.com/docs?utm_source=github&utm_medium=reactgriddocs&utm_campaign=docs)
 
 # Licensing
 
 ReactGrid is available in two versions, [MIT](https://github.com/silevis/reactgrid/blob/develop/LICENSE) (this package) which serve 
 the full interface but is limited in functionality and PRO which is fully functional version. You can compare versions
-[here](http://reactgrid.com/feature-comparison/).
+[here](https://reactgrid.com/feature-comparison/?utm_source=github&utm_medium=reactgridfeatures&utm_campaign=licensing).
 
 (c) 2020 Silevis Software Sp. z o.o.
 
 # Authors
 
-[Silevis Software](https://www.silevis.com/)
+[Silevis Software](https://www.silevis.com/?utm_source=github&utm_medium=reactgrdigit&utm_campaign=github)
 
 <p align="center">
-  <a href="https://www.silevis.com/">
+  <a href="https://www.silevis.com/?utm_source=github&utm_medium=reactgrdigit&utm_campaign=github">
     <img alt="Silevis" src="https://media.licdn.com/dms/image/C4D0BAQGgkonm5f80mA/company-logo_200_200/0?e=2159024400&v=beta&t=l5Nw-CF55OIxVORSAXOw79DlgSiDakhnYLlkBOMj7s8" width="200" />
   </a>
 </p>
