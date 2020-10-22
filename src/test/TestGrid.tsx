@@ -51,6 +51,7 @@ export const TestGrid: React.FC<TestGridProps> = (props) => {
         height: config.cellHeight,
         cells: columns.map<TestGridCells>((_, ci) => {
             if (ri === 0) return { type: config.firstRowType, text: `${ri} - ${ci}` }
+            if (ri === 2 && ci === 8) return { type: 'text', text: `non-editable`, nonEditable: true, validator: (text: string): boolean => true }
             const now = new Date();
             switch (ci) {
                 case 0:

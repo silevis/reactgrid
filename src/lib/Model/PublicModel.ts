@@ -444,6 +444,8 @@ export interface CellStyle {
 export interface Cell {
     /** Name of cell type, must be unique */
     type: string;
+    /** Marks cell as non editable (by default: `false`) */
+    nonEditable?: boolean;
     /** `Id` of group to which this cell belongs to */
     groupId?: Id;
     /** Allowed style properties contained in `CellStyle` interface */
