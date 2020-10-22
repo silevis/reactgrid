@@ -75,10 +75,14 @@ export const CellRenderer: React.FC<CellRendererProps> = ({ state, location, chi
         ...((isFocused || cell.type === 'header') && { touchAction: 'none' }) // prevent scrolling
     } as React.CSSProperties;
 
+    const groupIdClassName = cell.groupId ? `rg-groupId-${cell.groupId}` : '';
+    const nonEditableClassName = cell.nonEditable ? 'rg-cell-nonEditable' : '';
+    const classNames = `rg-cell rg-${cell.type}-cell ${groupIdClassName} ${nonEditableClassName} ${customClass}`;
+
     return (
-        <div className={`rg-cell rg-${cell.type}-cell ${cell.groupId ? `rg-groupId-${cell.groupId}` : ''} ${customClass}`}
-            style={style} data-cell-colidx={process.env.NODE_ENV === "development" ? location.column.idx : null}
-            data-cell-rowidx={process.env.NODE_ENV === "development" ? location.row.idx : null} >
+        <div className={classNames} style={style}
+            data-cell-colidx={process.env.NODE_ENV === "development" ? location.column.idx : null}
+            data-cell-rowidx={process.env.NODE_ENV === "development" ? location.row.idx : null}>
             {cellTemplate.render(cell, false, (cell, commit) => {
                 if (!commit) throw new Error('commit should be set to true in this case.');
                 state.update(state => tryAppendChange(state, location, cell));

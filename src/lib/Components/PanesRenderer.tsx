@@ -61,6 +61,18 @@ export const PanesRenderer: React.FC<PanesProps> = ({ state, cellRenderer }) => 
                     cellRenderer={cellRenderer}
                 />
             </Pane>
+            <PaneShadow renderCondition={renderLeftSticky} className={'shadow-left'} zIndex={1} style={{
+                width: cellMatrix.ranges.stickyLeftRange.width,
+                height: cellMatrix.height,
+                marginTop: -cellMatrix.height,
+                order: 5,
+            }} />
+            <PaneShadow renderCondition={renderTopSticky} className={'shadow-top'} zIndex={1} style={{
+                width: cellMatrix.width,
+                height: cellMatrix.ranges.stickyTopRange.height,
+                marginTop: -cellMatrix.height,
+                order: 4,
+            }} />
             <Pane
                 renderChildren={renderMiddleRange && renderLeftSticky}
                 className={'rg-pane-left'}
@@ -108,21 +120,9 @@ export const PanesRenderer: React.FC<PanesProps> = ({ state, cellRenderer }) => 
                     cellRenderer={cellRenderer}
                 />
             </Pane>
-            <PaneShadow renderCondition={renderLeftSticky} className={'shadow-left'} zIndex={1} style={{
-                width: cellMatrix.ranges.stickyLeftRange.width,
-                height: cellMatrix.height,
-                marginTop: -cellMatrix.height,
-                order: 5,
-            }} />
-            <PaneShadow renderCondition={renderTopSticky} className={'shadow-top'} zIndex={1} style={{
-                width: cellMatrix.width,
-                height: cellMatrix.ranges.stickyTopRange.height,
-                marginTop: -cellMatrix.height,
-                order: 4,
-            }} />
             <Pane
                 renderChildren={renderTopSticky && renderLeftSticky}
-                className={'rg-pane-top rg-pane-left'}
+                className={'rg-pane-top rg-pane-left shadow shadow-top-left-corner'}
                 style={{
                     height: cellMatrix.ranges.stickyTopRange.height,
                     width: (areOnlyStickyRows && areOnlyStickyCols)
