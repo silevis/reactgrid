@@ -1,4 +1,6 @@
-import { Range, State, GridColumn, GridRow } from '../Model';
+import { Range } from '../Model/Range';
+import { State } from '../Model/State';
+import { GridColumn, GridRow } from '../Model/InternalModel';
 import { getScrollOfScrollableElement } from './scrollHelpers';
 import { getVisibleSizeOfReactGrid, getReactGridOffsets, getStickyOffset } from './elementSizeHelpers';
 

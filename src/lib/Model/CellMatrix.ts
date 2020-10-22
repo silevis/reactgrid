@@ -1,4 +1,7 @@
-import { Location, GridRow, GridColumn, Id, Range, Cell, Column, Row } from '.';
+import { GridColumn, GridRow, Location } from './InternalModel';
+import { Cell, Column, Id, Row } from './PublicModel';
+import { Range } from './Range';
+
 
 export interface IndexLookup {
     [id: string]: number;

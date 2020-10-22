@@ -12,6 +12,8 @@
 
 <img alt="Sample app" src="https://reactgrid.com/sample.gif" height="240px" />
 
+### [Browse our website & docs](https://www.reactgrid.com/)
+
 Before run you need to have installed:
 - react": "^16.13.1"
 - react-dom: "^16.13.1"
@@ -151,6 +153,24 @@ Open live demo on [codesandbox.io](https://codesandbox.io/s/reactgrid-handling-c
 | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/edge/edge_48x48.png" alt="IE / Edge"  />](http://godban.github.io/browsers-support-badges/) Edge | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/firefox/firefox_48x48.png" alt="Firefox"  />](http://godban.github.io/browsers-support-badges/) Firefox | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/chrome/chrome_48x48.png" alt="Chrome"  />](http://godban.github.io/browsers-support-badges/) Chrome | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/safari/safari_48x48.png" alt="Safari" />](http://godban.github.io/browsers-support-badges/) Safari | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/safari-ios/safari-ios_48x48.png" alt="iOS Safari" />](http://godban.github.io/browsers-support-badges/) iOS/iPadOs Safari | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/samsung-internet/samsung-internet_48x48.png" alt="Samsung"/>](http://godban.github.io/browsers-support-badges/) Samsung internet | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/opera/opera_48x48.png" alt="Opera" />](http://godban.github.io/browsers-support-badges/) Opera |
 | :-: | :-: | :-: | :-: | :-: | :-: | :-:|
 | 80+ | 61+ | 57+ | 13.1+ | 13+ | 9+ | 45+ |
+
+# Integrations
+
+  - Next.js
+
+  At the moment we propose to use `next-transpile-modules` plugin ([docs](https://www.npmjs.com/package/next-transpile-modules#usage)).
+  Your `next.config.js` file should looks like on the listing below:
+
+  ```ts
+    const withCSS = require("@zeit/next-css");
+
+    const withTM = require("next-transpile-modules")([
+      "@silevis/reactgrid",
+      "@silevis/reactgrid/styles.css"
+    ]);
+
+    module.exports = withTM(withCSS());  
+  ```
 
 # Docs
 

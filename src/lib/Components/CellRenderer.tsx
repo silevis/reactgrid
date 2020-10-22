@@ -1,9 +1,12 @@
 import * as React from 'react';
-import { State, Location, Compatible, Cell, Borders, BorderProps } from '../Model';
-import { tryAppendChange } from '../Functions';
-import { getCompatibleCellAndTemplate } from '../Functions/getCompatibleCellAndTemplate';
-import { noBorder } from '../Functions/excludeObjectProperties';
 import { areLocationsEqual } from '../Functions/areLocationsEqual';
+import { noBorder } from '../Functions/excludeObjectProperties';
+import { getCompatibleCellAndTemplate } from '../Functions/getCompatibleCellAndTemplate';
+import { tryAppendChange } from '../Functions/tryAppendChange';
+import { Borders } from '../Model/InternalModel';
+import { BorderProps, Cell, Compatible } from '../Model/PublicModel';
+import { State } from '../Model/State';
+import { Location } from '../Model/InternalModel';
 
 export interface CellRendererProps {
     state: State;

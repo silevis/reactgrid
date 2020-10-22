@@ -1,4 +1,6 @@
-import { State, Location, PointerEvent } from '../Model';
+import { Location } from '../Model/InternalModel';
+import { PointerEvent } from '../Model/domEventsTypes';
+import { State } from '../Model/State';
 import { areLocationsEqual } from './areLocationsEqual';
 import { getCompatibleCellAndTemplate } from './getCompatibleCellAndTemplate';
 import { isSelectionKey } from './isSelectionKey';

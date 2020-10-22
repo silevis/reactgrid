@@ -1,4 +1,5 @@
-import { State, ReactGridProps } from '../Model';
+import { ReactGridProps } from '../Model/PublicModel';
+import { State } from '../Model/State';
 
 
 export function handleStateUpdate<TState extends State = State>(newState: TState, state: TState, props: ReactGridProps, setState: (state: TState) => void) {

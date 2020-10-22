@@ -1,10 +1,10 @@
 import * as React from 'react';
 
 // NOTE: all modules imported below may be imported from '@silevis/reactgrid'
-import { keyCodes } from '../Functions/keyCodes';
-import { CellTemplate, Cell, Compatible, Uncertain, UncertainCompatible } from '../Model';
-import { inNumericKey, isNavigationKey, isNumpadNumericKey, isAllowedOnNumberTypingKey } from './keyCodeCheckings';
 import { getCellProperty } from '../Functions/getCellProperty';
+import { keyCodes } from '../Functions/keyCodes';
+import { Cell, CellTemplate, Compatible, Uncertain, UncertainCompatible } from '../Model/PublicModel';
+import { inNumericKey, isNavigationKey, isNumpadNumericKey, isAllowedOnNumberTypingKey } from './keyCodeCheckings';
 
 export interface NumberCell extends Cell {
     type: 'number';
@@ -79,7 +79,7 @@ export class NumberCellTemplate implements CellTemplate<NumberCell> {
                     input.setSelectionRange(input.value.length, input.value.length);
                 }
             }}
-            defaultValue={(!Number.isNaN(cell.value) && !cell.nanToZero) ? format.format(cell.value) : this.getTextFromCharCode(cell.text)}
+            defaultValue={Number.isNaN(cell.value) ? this.getTextFromCharCode(cell.text) : format.format(cell.value)}
             onChange={e => onCellChanged(this.getCompatibleCell({ ...cell, value: parseFloat(e.currentTarget.value.replace(/,/g, '.')) }), false)}
             onBlur={e => onCellChanged(this.getCompatibleCell({ ...cell, value: parseFloat(e.currentTarget.value.replace(/,/g, '.')) }), true)}
             onKeyDown={e => {
