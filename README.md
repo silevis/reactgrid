@@ -12,7 +12,7 @@
 
 <img alt="Sample app" src="https://reactgrid.com/sample.gif"/>
 
-Browse our website & docs: [reactgrid.com](https://reactgrid.com/?utm_source=github&utm_medium=reactgridmit&utm_campaign=readme)
+Browse our examples & docs: 👉 [reactgrid.com](https://reactgrid.com/?utm_source=github&utm_medium=reactgridmit&utm_campaign=readme)
 
 Before run you need to have installed:
 - react": "^16.13.1"
