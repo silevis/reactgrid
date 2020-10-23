@@ -14,7 +14,7 @@
 
 Browse our examples & docs: 👉 [reactgrid.com](https://reactgrid.com/?utm_source=github&utm_medium=reactgridmit&utm_campaign=readme)
 
-Before run you need to have installed:
+Before running ReactGrid you need to have installed:
 - react": "^16.13.1"
 - react-dom: "^16.13.1"
 
@@ -37,7 +37,7 @@ import { ReactGrid, Column, Row } from "@silevis/reactgrid";
 
 ###  Import CSS styles
 
-Import basic CSS styles. This file is necessary to correctly display.
+Import basic CSS styles. This file is necessary to correctly display ReactGrid.
 
 ```tsx
 import "@silevis/reactgrid/styles.css";
@@ -46,7 +46,7 @@ import "@silevis/reactgrid/styles.css";
 ### Create a cell matrix
 
 It's a good idea to separate up our data (people list) from ReactGrid interface (especially `Row` and `Column`).
-We encourage you to use Typescript features to prevent you from the possibly data incosistencies.  
+We encourage you to use Typescript features to prevent you from the possibly inconsistent data.  
 
 ```tsx
 interface Person {
@@ -64,10 +64,10 @@ In the next step we have defined an array of ReactGrid's `Column`s stored in `co
 If you are interested how to do more complex operations related with columns like resizing or
 reordering, please browse our [👉 docs](https://reactgrid.com/docs?utm_source=github&utm_medium=reactgriddocs&utm_campaign=docs) 
 
-At the top of the datatable we going to display static cells that contains `Name` and `Surname` so we can define them now. 
+At the top of the datatable we are going to display static cells that contain `Name` and `Surname` so we can define them now. 
 
 ```tsx
-const columns: Column[] = [
+const getColumns = (): Column[] => [
   { columnId: "name", width: 150 },
   { columnId: "surname", width: 150 }
 ];
@@ -82,7 +82,7 @@ const headerRow: Row<HeaderCell> = {
 ```
 
 ReactGrid `rows` prop expects an array of rows that are compatible with imported `Row`s interface.
-As you see function returns header row and mapped people array to ReactGrid's `Row`s.
+As you see the function returns the header row and mapped people array to ReactGrid's `Rows`.
 Given that information, we find the row and the column affected by each change,
 and then replace an appropriate cell text with a new one.
 
@@ -100,13 +100,14 @@ const getRows = (people: Person[]): Row[] => [
 ```
 
 The last step is wrapping it all up in the `App` component. People were stored inside `people` variable as React hook.
-ReactGrid component was feeded with generated `rows` structure and previously defined `columns`
+ReactGrid component was fed with generated `rows` structure and previously defined `columns`
 
 ```tsx
 function App() {
   const [people] = React.useState<Person[]>(getPeople());
   
   const rows = getRows(people);
+  const columns = getColumns();
 
   return <ReactGrid rows={rows} columns={columns} />;
 }
@@ -114,17 +115,17 @@ function App() {
 
 ### Handling changes
 
-Currently example from previous is read-only.
+Our code is currently read-only.
 To be able to change any value inside the grid you have to implement your own handler.
 
-Lets start with updating imports:
+Let's start with updating imports:
 
 ```ts
 import { ReactGrid, Column, Row, CellChange, TextCell} from "@silevis/reactgrid";
 ```
 
-Then define function that applies changes to data and returns its copy.
-We expect that incoming changes affect on `TextCell` so the changes were marked by a following interface: `CellChange<TextCell>[]`.
+Then define the function that applies changes to data and returns its copy.
+We expect that incoming changes affect `TextCell`, so the changes were marked by a following interface: `CellChange<TextCell>[]`.
 
 ```ts
 const applyChangesToPeople = (
@@ -148,6 +149,7 @@ function App() {
   const [people, setPeople] = React.useState<Person[]>(getPeople());
 
   const rows = getRows(people);
+  const columns = getColumns();
 
   const handleChanges = (changes: CellChange<TextCell>[]) => {
     setPeople((prevPeople) => applyChangesToPeople(changes, prevPeople));
@@ -180,7 +182,7 @@ Open live demo on [codesandbox.io](https://codesandbox.io/s/reactgrid-handling-c
   - Next.js
 
   At the moment we propose to use `next-transpile-modules` plugin ([docs](https://www.npmjs.com/package/next-transpile-modules#usage)).
-  Your `next.config.js` file should looks like on the listing below:
+  Your `next.config.js` file should look like on the listing below:
 
   ```ts
     const withCSS = require("@zeit/next-css");
@@ -200,7 +202,7 @@ Explore ReactGrid docs: [here](https://reactgrid.com/docs?utm_source=github&utm_
 # Licensing
 
 ReactGrid is available in two versions, [MIT](https://github.com/silevis/reactgrid/blob/develop/LICENSE) (this package) which serve 
-the full interface but is limited in functionality and PRO which is fully functional version. You can compare versions
+the full interface but is limited in functionality and PRO which is a fully functional version. You can compare versions
 [here](https://reactgrid.com/feature-comparison/?utm_source=github&utm_medium=reactgridfeatures&utm_campaign=licensing).
 
 (c) 2020 Silevis Software Sp. z o.o.
