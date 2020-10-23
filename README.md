@@ -112,7 +112,7 @@ function App() {
 
 ### Handling changes
 
-Currenctly example from previous is read-only.
+Currently example from previous is read-only.
 To be able to change any value inside the grid you have to implement your own handler.
 
 Lets start with updating imports:
