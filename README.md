@@ -26,13 +26,16 @@ npm i @silevis/reactgrid
 
 # Usage
 
+In this particullar example we will display data in the same way like in a standard datatable.
+Of course you can still **place yours cells anywhere**, but now we will focus on the basics.
+
 ### Import ReactGrid component
 
 ```tsx
 import { ReactGrid, Column, Row } from "@silevis/reactgrid";
 ```
 
-###  Import css styles
+###  Import CSS styles
 
 Import basic CSS styles. This file is necessary to correctly display.
 
@@ -42,100 +45,116 @@ import "@silevis/reactgrid/styles.css";
 
 ### Create a cell matrix
 
-Time to define our data. It will be stored in [React Hook](https://reactjs.org/docs/hooks-intro.html). 
-`useState` hook will be initialized with an object that contains two keys - `columns` and `rows`. 
-Both of them must be valid ReactGrid objects: `Columns` `Rows`.
+It's a good idea to separate up our data (people list) from ReactGrid interface (especially `Row` and `Column`).
+We encourage you to use Typescript features to prevent you from the possibly data incosistencies.  
 
 ```tsx
-import React, { useState } from "react";
-import ReactDOM from "react-dom";
-import { ReactGrid, Column, Row } from "@silevis/reactgrid";
-import "@silevis/reactgrid/styles.css";
+interface Person {
+  name: string;
+  surname: string;
+}
 
+const getPeople = (): Person[] => [
+  { name: "Thomas", surname: "Goldman" },
+  { name: "Susie", surname: "Quattro" },
+  { name: "", surname: "" }
+];
+```
+In the next step we have defined an array of ReactGrid's `Column`s stored in `columns` variable.
+If you are interested how to do more complex operations related with columns like resizing or
+reordering, please browse our [👉 docs](https://reactgrid.com/docs?utm_source=github&utm_medium=reactgriddocs&utm_campaign=docs) 
+
+At the top of datatable we going to display static cells that contanins `Name` and `Surname` so we can define them now. 
+
+```tsx
+const columns: Column[] = [
+  { columnId: "name", width: 150 },
+  { columnId: "surname", width: 150 }
+];
+
+const headerRow: Row<HeaderCell> = {
+  rowId: "header",
+  cells: [
+    { type: "header", text: "Name" },
+    { type: "header", text: "Surname" }
+  ]
+};
+```
+
+ReactGrid `rows` prop expects an array of rows that are compatible with imported `Row`s interface.
+As you see function returns header row and mapped people array to ReactGrid's `Row`s.
+
+```tsx
+const getRows = (people: Person[]): Row[] => [
+  headerRow,
+  ...people.map<Row>((person, idx) => ({
+    rowId: idx,
+    cells: [
+      { type: "text", text: person.name },
+      { type: "text", text: person.surname }
+    ]
+  }))
+];
+```
+
+The last step is wrapping it all up in the `App` component. People were stored inside `people` variable as React hook.
+ReactGrid component was feeded with generated `rows` structure and previously defined `columns`
+
+```tsx
 function App() {
-  const [columns] = useState<Column[]>(() => [
-    { columnId: "Name", width: 100 },
-    { columnId: "Surname", width: 100 }
-  ]);
-  const [rows] = useState<Row[]>(() => [
-    {
-      rowId: 0,
-      cells: [
-        { type: "header", text: "Name" },
-        { type: "header", text: "Surname" }
-      ]
-    },
-    {
-      rowId: 1,
-      cells: [
-        { type: "text", text: "Thomas" },
-        { type: "text", text: "Goldman" }
-      ]
-    },
-    {
-      rowId: 2,
-      cells: [
-        { type: "text", text: "Susie" },
-        { type: "text", text: "Spencer" }
-      ]
-    },
-    {
-      rowId: 3,
-      cells: [
-        { type: "text", text: "" },
-        { type: "text", text: "" }
-      ]
-    }
-  ]);
+  const [people] = React.useState<Person[]>(getPeople());
+  
+  const rows = getRows(people);
 
-  return (
-    <ReactGrid
-      rows={rows}
-      columns={columns}
-    />
-  );
+  return <ReactGrid rows={rows} columns={columns} />;
 }
 ```
 
 ### Handling changes
 
-To be able to change any value inside the grid you have to implement your own handler. 
+Currenctly example from previous is read-only.
+To be able to change any value inside the grid you have to implement your own handler.
 
-Add `CellChange` interface to your imports:
+Lets start with updating imports:
 
 ```ts
-import { ReactGrid, Column, Row, CellChange } from "@silevis/reactgrid";
+import { ReactGrid, Column, Row, CellChange, TextCell} from "@silevis/reactgrid";
 ```
 
-There is a basic handler code:
+Then define function that applies changes to data and returns its copy.
+We expect that incoming changes affect on `TextCell` so the changes were marked by a following interface: `CellChange<TextCell>[]`.
 
 ```ts
-const handleChanges = (changes: CellChange[]) => {
-  setRows((prevRows) => {
-    changes.forEach((change) => {
-      const changeRowIdx = prevRows.findIndex(
-        (el) => el.rowId === change.rowId
-      );
-      const changeColumnIdx = columns.findIndex(
-        (el) => el.columnId === change.columnId
-      );
-      prevRows[changeRowIdx].cells[changeColumnIdx] = change.newCell;
-    });
-    return [...prevRows];
+const applyChangesToPeople = (
+  changes: CellChange<TextCell>[],
+  prevPeople: Person[]
+): Person[] => {
+  changes.forEach((change) => {
+    const personIndex = change.rowId;
+    const fieldName = change.columnId;
+    prevPeople[personIndex][fieldName] = change.newCell.text;
   });
+  return [...prevPeople];
 };
 ```
 
-Then update ReactGrid's component props:
+It's time to update the `App` component. As you see the `handleChanges` function updates only data by setting
+updated people from `applyChangesToPeople` function.
 
 ```tsx
-return (
-  <ReactGrid
-    rows={rows}
-    columns={columns}
-    onCellsChanged={handleChanges}
-  />  
-)
+function App() {
+  const [people, setPeople] = React.useState<Person[]>(getPeople());
+
+  const rows = getRows(people);
+
+  const handleChanges = (changes: CellChange<TextCell>[]) => {
+    setPeople((prevPeople) => applyChangesToPeople(changes, prevPeople));
+  };
+
+  return (
+    <ReactGrid rows={rows} columns={columns} onCellsChanged={handleChanges} />
+  );
+}
 ```
 
 Open live demo on [codesandbox.io](https://codesandbox.io/s/reactgrid-handling-changes-crzfx?file=/src/index.tsx)
