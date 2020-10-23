@@ -64,7 +64,7 @@ In the next step we have defined an array of ReactGrid's `Column`s stored in `co
 If you are interested how to do more complex operations related with columns like resizing or
 reordering, please browse our [👉 docs](https://reactgrid.com/docs?utm_source=github&utm_medium=reactgriddocs&utm_campaign=docs) 
 
-At the top of datatable we going to display static cells that contanins `Name` and `Surname` so we can define them now. 
+At the top of the datatable we going to display static cells that contains `Name` and `Surname` so we can define them now. 
 
 ```tsx
 const columns: Column[] = [
@@ -83,6 +83,8 @@ const headerRow: Row<HeaderCell> = {
 
 ReactGrid `rows` prop expects an array of rows that are compatible with imported `Row`s interface.
 As you see function returns header row and mapped people array to ReactGrid's `Row`s.
+Given that information, we find the row and the column affected by each change,
+and then replace an appropriate cell text with a new one.
 
 ```tsx
 const getRows = (people: Person[]): Row[] => [
