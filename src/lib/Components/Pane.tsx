@@ -57,6 +57,8 @@ export const PaneGridContent: React.NamedExoticComponent<RowsProps> = React.memo
     )}
 </>, shouldMemoPaneGridContent);
 
+PaneGridContent.displayName = 'PaneGridContent';
+
 function renderHighlights(state: State, range: Range) {
     return state.highlightLocations.map((highlight: Highlight, id: number) => {
         try {
