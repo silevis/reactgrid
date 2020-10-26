@@ -60,18 +60,19 @@ const getPeople = (): Person[] => [
   { name: "", surname: "" }
 ];
 ```
-In the next step we have defined an array of ReactGrid's `Column`s stored in `columns` variable.
+In the next step we have defined an array of ReactGrid's `Column`s stored in `getColumns` function.
 If you are interested how to do more complex operations related with columns like resizing or
 reordering, please browse our [👉 docs](https://reactgrid.com/docs?utm_source=github&utm_medium=reactgriddocs&utm_campaign=docs) 
-
-At the top of the datatable we are going to display static cells that contain `Name` and `Surname` so we can define them now. 
 
 ```tsx
 const getColumns = (): Column[] => [
   { columnId: "name", width: 150 },
   { columnId: "surname", width: 150 }
 ];
+```
+At the top of the datatable we are going to display static cells that contain `Name` and `Surname` so we can define them now. 
 
+```tsx
 const headerRow: Row<HeaderCell> = {
   rowId: "header",
   cells: [
@@ -83,8 +84,6 @@ const headerRow: Row<HeaderCell> = {
 
 ReactGrid `rows` prop expects an array of rows that are compatible with imported `Row`s interface.
 As you see the function returns the header row and mapped people array to ReactGrid's `Rows`.
-Given that information, we find the row and the column affected by each change,
-and then replace an appropriate cell text with a new one.
 
 ```tsx
 const getRows = (people: Person[]): Row[] => [
@@ -113,6 +112,8 @@ function App() {
 }
 ```
 
+Open live demo on [codesandbox.io](https://codesandbox.io/s/reactgrid-getting-started-0754c?file=/src/index.tsx)
+
 ### Handling changes
 
 Our code is currently read-only.
@@ -126,6 +127,8 @@ import { ReactGrid, Column, Row, CellChange, TextCell} from "@silevis/reactgrid"
 
 Then define the function that applies changes to data and returns its copy.
 We expect that incoming changes affect `TextCell`, so the changes were marked by a following interface: `CellChange<TextCell>[]`.
+Given that information, we find the row and the column affected by each change,
+and then replace an appropriate cell text with a new one.
 
 ```ts
 const applyChangesToPeople = (
@@ -173,7 +176,7 @@ Open live demo on [codesandbox.io](https://codesandbox.io/s/reactgrid-handling-c
 
 # Browser support
 
-| [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/edge/edge_48x48.png" alt="IE / Edge"  />](http://godban.github.io/browsers-support-badges/) Edge | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/firefox/firefox_48x48.png" alt="Firefox"  />](http://godban.github.io/browsers-support-badges/) Firefox | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/chrome/chrome_48x48.png" alt="Chrome"  />](http://godban.github.io/browsers-support-badges/) Chrome | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/safari/safari_48x48.png" alt="Safari" />](http://godban.github.io/browsers-support-badges/) Safari | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/safari-ios/safari-ios_48x48.png" alt="iOS Safari" />](http://godban.github.io/browsers-support-badges/) iOS/iPadOs Safari | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/samsung-internet/samsung-internet_48x48.png" alt="Samsung"/>](http://godban.github.io/browsers-support-badges/) Samsung internet | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/opera/opera_48x48.png" alt="Opera" />](http://godban.github.io/browsers-support-badges/) Opera |
+| [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/edge/edge_48x48.png" alt="Edge"  />](http://godban.github.io/browsers-support-badges/) Edge | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/firefox/firefox_48x48.png" alt="Firefox"  />](http://godban.github.io/browsers-support-badges/) Firefox | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/chrome/chrome_48x48.png" alt="Chrome"  />](http://godban.github.io/browsers-support-badges/) Chrome | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/safari/safari_48x48.png" alt="Safari" />](http://godban.github.io/browsers-support-badges/) Safari | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/safari-ios/safari-ios_48x48.png" alt="iOS Safari" />](http://godban.github.io/browsers-support-badges/) iOS/iPadOs Safari | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/samsung-internet/samsung-internet_48x48.png" alt="Samsung"/>](http://godban.github.io/browsers-support-badges/) Samsung internet | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/opera/opera_48x48.png" alt="Opera" />](http://godban.github.io/browsers-support-badges/) Opera |
 | :-: | :-: | :-: | :-: | :-: | :-: | :-:|
 | 80+ | 61+ | 57+ | 13.1+ | 13+ | 9+ | 45+ |
 
@@ -185,14 +188,14 @@ Open live demo on [codesandbox.io](https://codesandbox.io/s/reactgrid-handling-c
   Your `next.config.js` file should look like on the listing below:
 
   ```ts
-    const withCSS = require("@zeit/next-css");
+  const withCSS = require("@zeit/next-css");
 
-    const withTM = require("next-transpile-modules")([
-      "@silevis/reactgrid",
-      "@silevis/reactgrid/styles.css"
-    ]);
+  const withTM = require("next-transpile-modules")([
+    "@silevis/reactgrid",
+    "@silevis/reactgrid/styles.css"
+  ]);
 
-    module.exports = withTM(withCSS());  
+  module.exports = withTM(withCSS());  
   ```
 
 # Docs
