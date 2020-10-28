@@ -68,7 +68,9 @@ export const PanesRenderer: React.FC<PanesProps> = ({ state, cellRenderer }) => 
                 order: 5,
             }} />
             <PaneShadow renderCondition={renderTopSticky} className={'shadow-top'} zIndex={1} style={{
-                width: cellMatrix.width,
+                width: state.props?.enableFullWidthHeader
+                    ? `calc(100%)`
+                    : cellMatrix.width,
                 height: cellMatrix.ranges.stickyTopRange.height,
                 marginTop: -cellMatrix.height,
                 order: 4,
