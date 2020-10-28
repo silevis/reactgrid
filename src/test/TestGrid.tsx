@@ -114,6 +114,10 @@ export const TestGrid: React.FC<TestGridProps> = (props) => {
         });
     };
 
+    // TODO ReactGrid should be able to handle this function
+    // eslint-disable-next-line
+    const handleChangesTest2 = (changes: CellChange<TextCell>[]) => { };
+
     // eslint-disable-next-line
     rows[0].cells.find((cell) => cell.type === "text" && cell.text);
 
@@ -236,6 +240,7 @@ export const TestGrid: React.FC<TestGridProps> = (props) => {
                     columns={columns}
                     initialFocusLocation={{ columnId: 'col-1', rowId: 'row-2' }}
                     // focusLocation={{ columnId: 'col-1', rowId: 'row-3' }}
+                    // onCellsChanged={handleChangesTest2} // This handler should be allowed
                     onCellsChanged={handleChanges}
                     onColumnResized={handleColumnResize}
                     customCellTemplates={{ 'flag': new FlagCellTemplate() }}
