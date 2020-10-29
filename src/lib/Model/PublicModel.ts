@@ -7,7 +7,7 @@
  */
 
 import {
-    TextCell, HeaderCell, CheckboxCell, DateCell, EmailCell, ChevronCell, NumberCell, TimeCell
+    TextCell, HeaderCell, CheckboxCell, DateCell, EmailCell, ChevronCell, NumberCell, TimeCell, DropdownCell
 } from './../CellTemplates';
 
 /**
@@ -249,6 +249,7 @@ export type DefaultCellTypes =
     | NumberCell
     | TextCell
     | TimeCell
+    | DropdownCell
 
 /**
  * `CellChange` type is used by `onCellsChanged`. It represents mutually exclusive changes on a single cell.

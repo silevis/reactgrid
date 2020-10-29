@@ -60,3 +60,14 @@ export const isNavigationKey = (keyCode: number): boolean =>
     keyCode === keyCodes.UP_ARROW || keyCode === keyCodes.DOWN_ARROW ||
     keyCode === keyCodes.END || keyCode === keyCodes.HOME ||
     keyCode === keyCodes.BACKSPACE || keyCode === keyCodes.DELETE;
+
+/**
+* Checks that the pressed key's `keyCode` is space key
+* 
+* @param {number} keyCode `keyCode` field from `KeyboardEvent` interface
+* @returns {boolean} Returns `true` if `keyCode` is space key
+* 
+* @see https://reactgrid.com/docs/3.1/7-api/2-functions/
+*/
+export const isSpaceKey = (keyCode: number): boolean =>
+    keyCode === keyCodes.SPACE;
