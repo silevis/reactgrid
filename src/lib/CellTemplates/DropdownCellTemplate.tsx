@@ -1,12 +1,8 @@
 import * as React from 'react';
-import { isSpaceKey } from '../../core';
 
 // NOTE: all modules imported below may be imported from '@silevis/reactgrid'
 import { getCellProperty } from '../Functions/getCellProperty';
 import { Cell, CellTemplate, Compatible, Uncertain, UncertainCompatible } from '../Model/PublicModel';
-import { keyCodes } from '../Functions/keyCodes';
-import { getCharFromKeyCode } from './getCharFromKeyCode';
-
 
 export interface DropdownCell extends Cell {
     type: 'dropdown';
@@ -28,17 +24,6 @@ export class DropdownCellTemplate implements CellTemplate<DropdownCell> {
             disabled = false;
         }
         return { ...uncertainCell, key, text: key, value, values, disabled }
-    }
-
-    handleKeyDown(cell: Compatible<DropdownCell>, keyCode: number, ctrl: boolean, shift: boolean, alt: boolean): { cell: Compatible<DropdownCell>, enableEditMode: boolean } {
-        let enableEditMode = keyCode === keyCodes.POINTER || keyCode === keyCodes.ENTER;
-        const cellCopy = { ...cell };
-        const char = getCharFromKeyCode(keyCode, shift);
-        if (keyCode === keyCodes.SPACE && !shift) {
-            return { cell: cellCopy, enableEditMode: true };
-
-        }
-        return { cell: cellCopy, enableEditMode: false };
     }
 
     update(cell: Compatible<DropdownCell>, cellToMerge: UncertainCompatible<DropdownCell>): Compatible<DropdownCell> {
