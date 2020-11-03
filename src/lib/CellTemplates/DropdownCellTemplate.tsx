@@ -39,12 +39,13 @@ export class DropdownCellTemplate implements CellTemplate<DropdownCell> {
     }
 
     getClassName(cell: Compatible<DropdownCell>, isInEditMode: boolean) {
-        return cell.className ? cell.className : '';
+        const isOpen = cell.isOpen ? 'open' : 'closed';
+        return `${cell.className ? cell.className : ''} ${isOpen}`;
     }
 
     handleKeyDown(cell: Compatible<DropdownCell>, keyCode: number, ctrl: boolean, shift: boolean, alt: boolean): { cell: Compatible<DropdownCell>, enableEditMode: boolean } {
         if (keyCode === keyCodes.SPACE && !shift) {
-            return { cell: { ...cell, isOpen: true }, enableEditMode: false };
+            return { cell: { ...cell, isOpen: !cell.isOpen }, enableEditMode: false };
         }
         return { cell, enableEditMode: false };
     }
@@ -54,8 +55,7 @@ export class DropdownCellTemplate implements CellTemplate<DropdownCell> {
         isInEditMode: boolean,
         onCellChanged: (cell: Compatible<DropdownCell>, commit: boolean) => void
     ): React.ReactNode {
-        const dropdownRef = React.useRef<any>(null);
-        console.log(cell.isOpen);
+        const dropdownRef = React.useRef<HTMLDivElement>(null);
 
         React.useEffect(() => {
             const pageClickEvent = (e: any) => {
@@ -73,28 +73,29 @@ export class DropdownCellTemplate implements CellTemplate<DropdownCell> {
         }, [cell.isOpen, cell, onCellChanged]);
 
         return (<>
-            <button className="menu-trigger"
-                onPointerDown={e => {
-                    e.stopPropagation();
-                    onCellChanged(this.getCompatibleCell({ ...cell, isOpen: !cell.isOpen }), true);
-                }}
+            <button
+                onPointerDown={e => onCellChanged(this.getCompatibleCell({ ...cell, isOpen: !cell.isOpen }), true)}
             >
                 <span>{cell.key}</span>
             </button>
-            <div
-                ref={dropdownRef}
-                className={`dropdown-container ${cell.isOpen ? 'open' : 'closed'}`}
-                onPointerDown={e => e.stopPropagation()}
-            >
-                <ul>
-                    {cell.values.map((value, idx) => <li key={idx} onPointerDown={e => {
-                        // setIsActive(false);
-                        onCellChanged(this.getCompatibleCell({ ...cell, isOpen: false, key: cell.values[idx] }), true)
-                    }}>
-                        {value}
-                    </li>)}
-                </ul>
-            </div >
+            {cell.isOpen &&
+                <div
+                    ref={dropdownRef}
+                    onKeyDown={e => e.stopPropagation()}
+                    onBlur={e => e.stopPropagation()}
+                >
+                    <ul>
+                        {cell.values.map((value, idx) => <li key={idx}
+                            className={`${cell.values[idx] === cell.key && 'selected'}`}
+                            onPointerDown={e => {
+                                e.stopPropagation();
+                                onCellChanged(this.getCompatibleCell({ ...cell, isOpen: false, key: cell.values[idx] }), true)
+                            }}>
+                            {value}
+                        </li>)}
+                    </ul>
+                </div >
+            }
         </>);
     }
 }

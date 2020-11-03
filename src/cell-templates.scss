@@ -1,4 +1,4 @@
-.rg-celleditor-input{
+.rg-celleditor-input {
     width: 100%;
     height: 100%;
     padding: $template-padding;
@@ -28,14 +28,16 @@
 }
 
 .reactgrid-content .rg-pane .rg-cell {
-    &.rg-number-cell, .rg-time-cell, .rg-date-cell { 
+    &.rg-number-cell,
+    .rg-time-cell,
+    .rg-date-cell {
         justify-content: flex-end;
     }
-    
+
     &.rg-email-cell.invalid {
         color: $template-content-invalid;
     }
-    
+
     &.rg-checkbox-cell {
         align-items: center;
         justify-content: center;
@@ -48,7 +50,7 @@
             height: $template-checkbox-size;
         }
     }
-    
+
     &.rg-chevron-cell {
         .chevron {
             pointer-events: auto;
@@ -74,7 +76,7 @@
     }
     &.rg-checkbox-cell {
         justify-content: center;
-    
+
         label {
             position: relative;
             height: $checkbox-size;
@@ -86,7 +88,7 @@
             user-select: none;
             margin: 0;
         }
-        
+
         label input {
             position: absolute;
             opacity: 0;
@@ -95,7 +97,7 @@
             height: $checkbox-size;
             width: $checkbox-size;
         }
-        
+
         span {
             position: absolute;
             top: 0;
@@ -104,25 +106,25 @@
             width: $checkbox-size;
             background-color: $checkbox-unchecked;
         }
-        
+
         label:hover input ~ span {
             background-color: $checkbox-hover;
         }
-        
+
         label input:checked ~ span {
             background-color: $checkbox-checked;
         }
-        
+
         span:after {
             content: "";
             position: absolute;
             display: none;
         }
-        
+
         label input:checked ~ span:after {
             display: block;
         }
-        
+
         label span:after {
             left: 5px;
             top: 0px;
@@ -150,46 +152,56 @@
             border: none;
             font-size: $template-font-size;
 
-            &:after{
+            &:after {
                 font-size: 1.5em;
-                margin-top: -.2em;
-                content: '☰';
+                margin-top: -0.2em;
+                content: "☰";
             }
         }
 
-        .dropdown-container{
+        &.open {
+            button:after {
+                content: "";
+            }
+            div {
+                opacity: 1;
+                visibility: visible;
+            }
+        }
+
+        div {
             z-index: 2;
-            background: $template-bg-color;
+            background: white;
             border-radius: 3px;
             position: absolute;
-            top: 0;
+            top: 100%;
             right: 0;
             opacity: 0;
             visibility: hidden;
             width: 100%;
+            box-shadow: $cell-editor-shadow $cell-shadow-color;
 
-            &.open {
-                opacity: 1;
-                visibility: visible;
-            }
-                
             ul {
                 list-style: none;
                 padding: 0;
                 margin: 0;
                 border: 1px solid #dddddd;
                 border-radius: 3px;
+                cursor: pointer;
                 li {
                     padding: 5px 10px;
                     font-size: $template-font-size;
+                    &.selected {
+                        background-color: lighten($color: $primary-color, $amount: 30);
+                    }
+                    &:hover:not(.selected) {
+                        background-color: #efefef;
+                    }
                     &:not(:last-child) {
                         border-bottom: 1px solid #dddddd;
                     }
                 }
             }
-                
-        }  
+        }
     }
 }
-
-
