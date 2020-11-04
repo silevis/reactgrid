@@ -56,25 +56,13 @@ export class DropdownCellTemplate implements CellTemplate<DropdownCell> {
         onCellChanged: (cell: Compatible<DropdownCell>, commit: boolean) => void
     ): React.ReactNode {
         const dropdownRef = React.useRef<HTMLDivElement>(null);
-
-        React.useEffect(() => {
-            const pageClickEvent = (e: any) => {
-                if (dropdownRef.current !== null && !dropdownRef.current.contains(e.target)) {
-                    onCellChanged(this.getCompatibleCell({ ...cell, isOpen: !cell.isOpen }), true);
-                }
-            };
-
-            if (cell.isOpen) {
-                window.addEventListener('pointerdown', pageClickEvent);
-            }
-
-            return () => window.removeEventListener('pointerdown', pageClickEvent);
-
-        }, [cell.isOpen, cell, onCellChanged]);
-
+        const [isActive, setIsActive] = useDetectOutsideClick(dropdownRef, { initialState: cell.isOpen || false, onCellChanged, cell });
         return (<>
             <button
-                onPointerDown={e => onCellChanged(this.getCompatibleCell({ ...cell, isOpen: !cell.isOpen }), true)}
+                onPointerDown={e => {
+                    setIsActive(() => !isActive);
+                    onCellChanged(this.getCompatibleCell({ ...cell, isOpen: !cell.isOpen }), true)
+                }}
             >
                 <span>{cell.key}</span>
             </button>
@@ -82,14 +70,14 @@ export class DropdownCellTemplate implements CellTemplate<DropdownCell> {
                 <div
                     ref={dropdownRef}
                     onKeyDown={e => e.stopPropagation()}
-                    onBlur={e => e.stopPropagation()}
                 >
                     <ul>
                         {cell.values.map((value, idx) => <li key={idx}
                             className={`${cell.values[idx] === cell.key && 'selected'}`}
                             onPointerDown={e => {
                                 e.stopPropagation();
-                                onCellChanged(this.getCompatibleCell({ ...cell, isOpen: false, key: cell.values[idx] }), true)
+                                setIsActive(false);
+                                onCellChanged(this.getCompatibleCell({ ...cell, isOpen: false, key: cell.values[idx] }), true);
                             }}>
                             {value}
                         </li>)}
@@ -98,4 +86,29 @@ export class DropdownCellTemplate implements CellTemplate<DropdownCell> {
             }
         </>);
     }
+}
+
+function useDetectOutsideClick(
+    el: React.RefObject<HTMLDivElement>,
+    options: {
+        initialState: boolean,
+        onCellChanged: (cell: Compatible<DropdownCell>, commit: boolean) => void,
+        cell: Compatible<DropdownCell>
+    }
+) {
+    const [isActive, setIsActive] = React.useState<any>(options.initialState);
+    React.useEffect(() => {
+        const pageClickEvent = (e: any) => {
+            if (el.current !== null && !el.current.contains(e.target)) {
+                options.onCellChanged({ ...options.cell, isOpen: !options.cell.isOpen }, true);
+                setIsActive(!isActive);
+            }
+        };
+        if (isActive) {
+            window.addEventListener('pointerdown', pageClickEvent);
+        }
+        return () => window.removeEventListener('pointerdown', pageClickEvent);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [isActive, el]);
+    return [isActive, setIsActive];
 }

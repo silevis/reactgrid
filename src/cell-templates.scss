@@ -151,9 +151,8 @@
             outline: none;
             border: none;
             font-size: $template-font-size;
-
             &:after {
-                font-size: 1.5em;
+                color: #888;
                 margin-top: -0.2em;
                 content: "☰";
             }
@@ -161,11 +160,7 @@
 
         &.open {
             button:after {
-                content: "";
-            }
-            div {
-                opacity: 1;
-                visibility: visible;
+                content: "x";
             }
         }
 
@@ -176,8 +171,6 @@
             position: absolute;
             top: 100%;
             right: 0;
-            opacity: 0;
-            visibility: hidden;
             width: 100%;
             box-shadow: $cell-editor-shadow $cell-shadow-color;
 
