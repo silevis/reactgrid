@@ -4,11 +4,12 @@ import * as React from 'react';
 import { getCellProperty } from '../Functions/getCellProperty';
 import { keyCodes } from '../Functions/keyCodes';
 import { Cell, CellTemplate, Compatible, Uncertain, UncertainCompatible } from '../Model/PublicModel';
+import Select from 'react-select';
 
 export interface DropdownCell extends Cell {
     type: 'dropdown';
-    key: string;
-    values: string[];
+    currentValue: string;
+    values: { label: string, value: string }[];
     disabled?: boolean;
     isOpen?: boolean;
 }
@@ -16,9 +17,9 @@ export interface DropdownCell extends Cell {
 export class DropdownCellTemplate implements CellTemplate<DropdownCell> {
 
     getCompatibleCell(uncertainCell: Uncertain<DropdownCell>): Compatible<DropdownCell> {
-        const key = getCellProperty(uncertainCell, 'key', 'string');
+        const currentValue = getCellProperty(uncertainCell, 'currentValue', 'string');
         const values = getCellProperty(uncertainCell, 'values', 'object');
-        const value = parseFloat(key);
+        const value = parseFloat(currentValue);
         let disabled = true;
         try {
             disabled = getCellProperty(uncertainCell, 'disabled', 'boolean');
@@ -31,11 +32,11 @@ export class DropdownCellTemplate implements CellTemplate<DropdownCell> {
         } catch {
             isOpen = false;
         }
-        return { ...uncertainCell, key, text: key, value, values, disabled, isOpen };
+        return { ...uncertainCell, currentValue, text: currentValue, value, values, disabled, isOpen };
     }
 
     update(cell: Compatible<DropdownCell>, cellToMerge: UncertainCompatible<DropdownCell>): Compatible<DropdownCell> {
-        return this.getCompatibleCell({ ...cell, key: cellToMerge.key, isOpen: cellToMerge.isOpen });
+        return this.getCompatibleCell({ ...cell, currentValue: cellToMerge.currentValue, isOpen: cellToMerge.isOpen });
     }
 
     getClassName(cell: Compatible<DropdownCell>, isInEditMode: boolean) {
@@ -44,7 +45,7 @@ export class DropdownCellTemplate implements CellTemplate<DropdownCell> {
     }
 
     handleKeyDown(cell: Compatible<DropdownCell>, keyCode: number, ctrl: boolean, shift: boolean, alt: boolean): { cell: Compatible<DropdownCell>, enableEditMode: boolean } {
-        if (keyCode === keyCodes.SPACE && !shift) {
+        if ((keyCode === keyCodes.SPACE || keyCode === keyCodes.ENTER) && !shift) {
             return { cell: { ...cell, isOpen: !cell.isOpen }, enableEditMode: false };
         }
         return { cell, enableEditMode: false };
@@ -55,60 +56,72 @@ export class DropdownCellTemplate implements CellTemplate<DropdownCell> {
         isInEditMode: boolean,
         onCellChanged: (cell: Compatible<DropdownCell>, commit: boolean) => void
     ): React.ReactNode {
-        const dropdownRef = React.useRef<HTMLDivElement>(null);
-        const [isActive, setIsActive] = useDetectOutsideClick(dropdownRef, { initialState: cell.isOpen || false, onCellChanged, cell });
-        return (<>
-            <button
-                onPointerDown={e => {
-                    setIsActive(() => !isActive);
-                    onCellChanged(this.getCompatibleCell({ ...cell, isOpen: !cell.isOpen }), true)
-                }}
-            >
-                <span>{cell.key}</span>
-            </button>
-            {cell.isOpen &&
-                <div
-                    ref={dropdownRef}
-                    onKeyDown={e => e.stopPropagation()}
-                >
-                    <ul>
-                        {cell.values.map((value, idx) => <li key={idx}
-                            className={`${cell.values[idx] === cell.key && 'selected'}`}
-                            onPointerDown={e => {
-                                e.stopPropagation();
-                                setIsActive(false);
-                                onCellChanged(this.getCompatibleCell({ ...cell, isOpen: false, key: cell.values[idx] }), true);
-                            }}>
-                            {value}
-                        </li>)}
-                    </ul>
-                </div >
-            }
-        </>);
-    }
-}
+        const ref = React.useRef<any>(null);
 
-function useDetectOutsideClick(
-    el: React.RefObject<HTMLDivElement>,
-    options: {
-        initialState: boolean,
-        onCellChanged: (cell: Compatible<DropdownCell>, commit: boolean) => void,
-        cell: Compatible<DropdownCell>
-    }
-) {
-    const [isActive, setIsActive] = React.useState<any>(options.initialState);
-    React.useEffect(() => {
-        const pageClickEvent = (e: any) => {
-            if (el.current !== null && !el.current.contains(e.target)) {
-                options.onCellChanged({ ...options.cell, isOpen: !options.cell.isOpen }, true);
-                setIsActive(!isActive);
+        React.useEffect(() => {
+            if (cell.isOpen && ref.current) {
+                ref.current.focus();
             }
-        };
-        if (isActive) {
-            window.addEventListener('pointerdown', pageClickEvent);
-        }
-        return () => window.removeEventListener('pointerdown', pageClickEvent);
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [isActive, el]);
-    return [isActive, setIsActive];
+        }, [cell.isOpen]);
+
+        return (
+            <div
+                onPointerDown={e => {
+                    // TODO fix focusing cell
+                    e.stopPropagation();
+                }}
+                style={{ width: '100%' }}
+            >
+                <Select
+                    ref={ref}
+                    {...(cell.isOpen !== undefined && { menuIsOpen: cell.isOpen })}
+                    onMenuClose={() => onCellChanged(this.getCompatibleCell({ ...cell, isOpen: false }), true)}
+                    onMenuOpen={() => onCellChanged(this.getCompatibleCell({ ...cell, isOpen: true }), true)}
+                    onChange={(e) => {
+                        ref.current.blur();
+                        onCellChanged(this.getCompatibleCell({ ...cell, currentValue: (e as { value: string }).value, isOpen: !cell.isOpen }), true);
+                    }}
+                    defaultValue={cell.values.find(val => val.value === cell.currentValue)}
+                    onBlur={e => {
+                        onCellChanged(this.getCompatibleCell({ ...cell, isOpen: false }), true);
+                        // TODO move focus back to HiddenElement
+
+                    }}
+                    options={cell.values}
+                    onKeyDown={e => e.stopPropagation()}
+                    styles={{
+                        container: (provided, state) => ({
+                            ...provided,
+                            width: '100%',
+                            height: '100%',
+                        }),
+                        control: (provided, state) => ({
+                            ...provided,
+                            border: 'none',
+                            borderColor: 'transparent',
+                            minHeight: '25px',
+                            background: 'transparent',
+                            boxShadow: 'none',
+                        }),
+                        indicatorsContainer: (provided, state) => ({
+                            ...provided,
+                            paddingTop: '0px',
+                        }),
+                        dropdownIndicator: (provided, state) => ({
+                            ...provided,
+                            padding: '0px 4px',
+                        }),
+                        input: (provided, state) => ({
+                            ...provided,
+                            padding: 0
+                        }),
+                        valueContainer: (provided, state) => ({
+                            ...provided,
+                            padding: '0 8px'
+                        }),
+                    }}
+                />
+            </div>
+        );
+    }
 }
