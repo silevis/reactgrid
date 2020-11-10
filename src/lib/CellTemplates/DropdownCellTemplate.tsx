@@ -5,12 +5,17 @@ import { getCellProperty } from '../Functions/getCellProperty';
 import { keyCodes } from '../Functions/keyCodes';
 import { Cell, CellTemplate, Compatible, Uncertain, UncertainCompatible } from '../Model/PublicModel';
 
-import Select, { OptionProps } from 'react-select';
+import Select, { OptionProps, MenuProps } from 'react-select';
+
+export type OptionType = {
+    label: string;
+    value: string;
+}
 
 export interface DropdownCell extends Cell {
     type: 'dropdown';
     currentValue: string;
-    values: { label: string, value: string }[];
+    values: OptionType[];
     isDisabled?: boolean;
     isOpen?: boolean;
 }
@@ -67,26 +72,26 @@ export class DropdownCellTemplate implements CellTemplate<DropdownCell> {
 
         return (
             <div
-                onPointerUp={e => e.stopPropagation()}
                 style={{ width: '100%' }}
+                onPointerDown={e => onCellChanged(this.getCompatibleCell({ ...cell, isOpen: true }), true)}
             >
                 <Select
+                    // TODO move focus back to HiddenElement
                     ref={selectRef}
                     {...(cell.isOpen !== undefined && { menuIsOpen: cell.isOpen })}
-                    onMenuClose={() => onCellChanged(this.getCompatibleCell({ ...cell, isOpen: false }), true)}
+                    onMenuClose={() => onCellChanged(this.getCompatibleCell({ ...cell, isOpen: !cell.isOpen }), true)}
                     onMenuOpen={() => onCellChanged(this.getCompatibleCell({ ...cell, isOpen: true }), true)}
                     onChange={(e) => {
                         selectRef.current.blur();
                         onCellChanged(this.getCompatibleCell({ ...cell, currentValue: (e as { value: string }).value, isOpen: false }), true);
                     }}
                     defaultValue={cell.values.find(val => val.value === cell.currentValue)}
-                    // TODO move focus back to HiddenElement
-                    onBlur={e => onCellChanged(this.getCompatibleCell({ ...cell, isOpen: false }), true)}
                     isDisabled={cell.isDisabled}
                     options={cell.values}
                     onKeyDown={e => e.stopPropagation()}
                     components={{
                         Option: CustomOption,
+                        Menu: CustomMenu,
                     }}
                     styles={{
                         container: (provided) => ({
@@ -110,6 +115,10 @@ export class DropdownCellTemplate implements CellTemplate<DropdownCell> {
                             ...provided,
                             padding: '0px 4px',
                         }),
+                        singleValue: (provided) => ({
+                            ...provided,
+                            color: 'inherit'
+                        }),
                         indicatorSeparator: (provided) => ({
                             ...provided,
                             marginTop: '4px',
@@ -125,19 +134,21 @@ export class DropdownCellTemplate implements CellTemplate<DropdownCell> {
                         }),
                     }}
                 />
-            </div>
+            </div >
         );
     }
 }
 
-const CustomOption: React.FC<OptionProps<{ label: string; value: string; }>> = ({
-    innerProps, label, isSelected, isFocused,
-}) => (
-        <div
-            {...innerProps}
-            onPointerUp={e => e.stopPropagation()}
-            className={`dropdown-option${isSelected ? ' selected' : ''}${isFocused ? ' focused' : ''}`}
-        >
-            {label}
-        </div>
-    );
+const CustomOption: React.FC<OptionProps<OptionType>> = ({ innerProps, label, isSelected, isFocused }) => (
+    <div
+        {...innerProps}
+        onPointerDown={e => e.stopPropagation()}
+        className={`dropdown-option${isSelected ? ' selected' : ''}${isFocused ? ' focused' : ''}`}
+    >
+        {label}
+    </div>
+);
+
+const CustomMenu: React.FC<MenuProps<OptionType>> = ({ innerProps, children }) => (
+    <div {...innerProps} className={`dropdown-menu`}>{children}</div>
+);

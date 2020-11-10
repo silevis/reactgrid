@@ -140,6 +140,18 @@
     &.rg-dropdown-cell {
         padding: 0;
         overflow: visible;
+        .dropdown-menu {
+            top: 100%;
+            background-color: $dropdown-menu-bg-color;
+            border-radius: 4px;
+            box-shadow: 0px 0px 7px rgba(0, 0, 0, 0.5);
+            margin-bottom: 8px;
+            margin-top: 2px;
+            position: absolute;
+            width: 100%;
+            z-index: 1;
+            box-sizing: border-box;
+        }
         .dropdown-option {
             padding: 3px 0.5em;
             height: 1.5em;
@@ -151,7 +163,7 @@
             }
             &.focused {
                 color: black;
-                background-color: lighten($color: $primary-color, $amount: 35);
+                background-color: $dropdown-focused-item-bg-color;
             }
         }
     }
