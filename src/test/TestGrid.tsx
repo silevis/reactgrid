@@ -73,10 +73,10 @@ export const TestGrid: React.FC<TestGridProps> = (props) => {
                 case 8:
                     return {
                         type: 'dropdown', values: [
-                            { value: 'chocolate', label: 'Chocolate' },
-                            { value: 'strawberry', label: 'Strawberry' },
-                            { value: 'vanilla', label: 'Vanilla' }
-                        ], currentValue: 'chocolate'
+                            { value: 'react', label: 'React' },
+                            { value: 'vue', label: 'Vue' },
+                            { value: 'angular', label: 'Angular' }
+                        ], currentValue: 'react', isDisabled: false
                     }
                 // case 9: // TODO allow user to pass non focusable cell (header cell) with arrows
                 //     return { type: 'header', text: `${ri} - ${ci}` }

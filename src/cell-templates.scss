@@ -140,5 +140,19 @@
     &.rg-dropdown-cell {
         padding: 0;
         overflow: visible;
+        .dropdown-option {
+            padding: 3px 0.5em;
+            height: 1.5em;
+            display: flex;
+            align-items: center;
+            &.selected::before {
+                content: "✓";
+                padding-right: 0.2em;
+            }
+            &.focused {
+                color: black;
+                background-color: lighten($color: $primary-color, $amount: 35);
+            }
+        }
     }
 }

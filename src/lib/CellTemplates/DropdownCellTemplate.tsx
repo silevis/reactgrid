@@ -4,13 +4,14 @@ import * as React from 'react';
 import { getCellProperty } from '../Functions/getCellProperty';
 import { keyCodes } from '../Functions/keyCodes';
 import { Cell, CellTemplate, Compatible, Uncertain, UncertainCompatible } from '../Model/PublicModel';
-import Select from 'react-select';
+
+import Select, { OptionProps } from 'react-select';
 
 export interface DropdownCell extends Cell {
     type: 'dropdown';
     currentValue: string;
     values: { label: string, value: string }[];
-    disabled?: boolean;
+    isDisabled?: boolean;
     isOpen?: boolean;
 }
 
@@ -20,11 +21,11 @@ export class DropdownCellTemplate implements CellTemplate<DropdownCell> {
         const currentValue = getCellProperty(uncertainCell, 'currentValue', 'string');
         const values = getCellProperty(uncertainCell, 'values', 'object');
         const value = parseFloat(currentValue);
-        let disabled = true;
+        let isDisabled = true;
         try {
-            disabled = getCellProperty(uncertainCell, 'disabled', 'boolean');
+            isDisabled = getCellProperty(uncertainCell, 'isDisabled', 'boolean');
         } catch {
-            disabled = false;
+            isDisabled = false;
         }
         let isOpen: boolean;
         try {
@@ -32,7 +33,7 @@ export class DropdownCellTemplate implements CellTemplate<DropdownCell> {
         } catch {
             isOpen = false;
         }
-        return { ...uncertainCell, currentValue, text: currentValue, value, values, disabled, isOpen };
+        return { ...uncertainCell, currentValue, text: currentValue, value, values, isDisabled: isDisabled, isOpen };
     }
 
     update(cell: Compatible<DropdownCell>, cellToMerge: UncertainCompatible<DropdownCell>): Compatible<DropdownCell> {
@@ -41,7 +42,7 @@ export class DropdownCellTemplate implements CellTemplate<DropdownCell> {
 
     getClassName(cell: Compatible<DropdownCell>, isInEditMode: boolean) {
         const isOpen = cell.isOpen ? 'open' : 'closed';
-        return `${cell.className ? cell.className : ''} ${isOpen}`;
+        return `${cell.className ? cell.className : ''}${isOpen}`;
     }
 
     handleKeyDown(cell: Compatible<DropdownCell>, keyCode: number, ctrl: boolean, shift: boolean, alt: boolean): { cell: Compatible<DropdownCell>, enableEditMode: boolean } {
@@ -56,46 +57,44 @@ export class DropdownCellTemplate implements CellTemplate<DropdownCell> {
         isInEditMode: boolean,
         onCellChanged: (cell: Compatible<DropdownCell>, commit: boolean) => void
     ): React.ReactNode {
-        const ref = React.useRef<any>(null);
+        const selectRef = React.useRef<any>(null);
 
         React.useEffect(() => {
-            if (cell.isOpen && ref.current) {
-                ref.current.focus();
+            if (cell.isOpen && selectRef.current) {
+                selectRef.current.focus();
             }
         }, [cell.isOpen]);
 
         return (
             <div
-                onPointerDown={e => {
-                    // TODO fix focusing cell
-                    e.stopPropagation();
-                }}
+                onPointerUp={e => e.stopPropagation()}
                 style={{ width: '100%' }}
             >
                 <Select
-                    ref={ref}
+                    ref={selectRef}
                     {...(cell.isOpen !== undefined && { menuIsOpen: cell.isOpen })}
                     onMenuClose={() => onCellChanged(this.getCompatibleCell({ ...cell, isOpen: false }), true)}
                     onMenuOpen={() => onCellChanged(this.getCompatibleCell({ ...cell, isOpen: true }), true)}
                     onChange={(e) => {
-                        ref.current.blur();
-                        onCellChanged(this.getCompatibleCell({ ...cell, currentValue: (e as { value: string }).value, isOpen: !cell.isOpen }), true);
+                        selectRef.current.blur();
+                        onCellChanged(this.getCompatibleCell({ ...cell, currentValue: (e as { value: string }).value, isOpen: false }), true);
                     }}
                     defaultValue={cell.values.find(val => val.value === cell.currentValue)}
-                    onBlur={e => {
-                        onCellChanged(this.getCompatibleCell({ ...cell, isOpen: false }), true);
-                        // TODO move focus back to HiddenElement
-
-                    }}
+                    // TODO move focus back to HiddenElement
+                    onBlur={e => onCellChanged(this.getCompatibleCell({ ...cell, isOpen: false }), true)}
+                    isDisabled={cell.isDisabled}
                     options={cell.values}
                     onKeyDown={e => e.stopPropagation()}
+                    components={{
+                        Option: CustomOption,
+                    }}
                     styles={{
-                        container: (provided, state) => ({
+                        container: (provided) => ({
                             ...provided,
                             width: '100%',
                             height: '100%',
                         }),
-                        control: (provided, state) => ({
+                        control: (provided) => ({
                             ...provided,
                             border: 'none',
                             borderColor: 'transparent',
@@ -103,21 +102,26 @@ export class DropdownCellTemplate implements CellTemplate<DropdownCell> {
                             background: 'transparent',
                             boxShadow: 'none',
                         }),
-                        indicatorsContainer: (provided, state) => ({
+                        indicatorsContainer: (provided) => ({
                             ...provided,
                             paddingTop: '0px',
                         }),
-                        dropdownIndicator: (provided, state) => ({
+                        dropdownIndicator: (provided) => ({
                             ...provided,
                             padding: '0px 4px',
                         }),
-                        input: (provided, state) => ({
+                        indicatorSeparator: (provided) => ({
                             ...provided,
-                            padding: 0
+                            marginTop: '4px',
+                            marginBottom: '4px',
                         }),
-                        valueContainer: (provided, state) => ({
+                        input: (provided) => ({
                             ...provided,
-                            padding: '0 8px'
+                            padding: 0,
+                        }),
+                        valueContainer: (provided) => ({
+                            ...provided,
+                            padding: '0 8px',
                         }),
                     }}
                 />
@@ -125,3 +129,15 @@ export class DropdownCellTemplate implements CellTemplate<DropdownCell> {
         );
     }
 }
+
+const CustomOption: React.FC<OptionProps<{ label: string; value: string; }>> = ({
+    innerProps, label, isSelected, isFocused,
+}) => (
+        <div
+            {...innerProps}
+            onPointerUp={e => e.stopPropagation()}
+            className={`dropdown-option${isSelected ? ' selected' : ''}${isFocused ? ' focused' : ''}`}
+        >
+            {label}
+        </div>
+    );
