@@ -7,6 +7,7 @@ import { Borders } from '../Model/InternalModel';
 import { BorderProps, Cell, Compatible } from '../Model/PublicModel';
 import { State } from '../Model/State';
 import { Location } from '../Model/InternalModel';
+import { isMobileDevice } from '../Functions/isMobileDevice';
 
 export interface CellRendererProps {
     state: State;
@@ -71,22 +72,34 @@ export const CellRenderer: React.FC<CellRendererProps> = ({ state, location, chi
         top: location.row.top,
         width: location.column.width,
         height: location.row.height,
+        zIndex: isMobileDevice() ? 0 : unset, //need to cellEditor properly display on mobile devices
         ...bordersProps,
         ...((isFocused || cell.type === 'header') && { touchAction: 'none' }) // prevent scrolling
     } as React.CSSProperties;
 
+    const isInEditMode = !!(state.currentlyEditedCell && isFocused);
+
     const groupIdClassName = cell.groupId ? `rg-groupId-${cell.groupId}` : '';
     const nonEditableClassName = cell.nonEditable ? 'rg-cell-nonEditable' : '';
-    const classNames = `rg-cell rg-${cell.type}-cell ${groupIdClassName} ${nonEditableClassName} ${customClass}`;
+    const cellStyle = isMobileDevice() && isInEditMode ? `rg-celleditor` : `rg-${cell.type}-cell`;
+    const classNames = `rg-cell ${cellStyle} ${groupIdClassName} ${nonEditableClassName} ${customClass}`;
+    const cellToRender = isInEditMode ? state.currentlyEditedCell : cell;
+    const cellFn = (cell: Compatible<Cell>, commit: boolean) => {
+        if (!commit) throw new Error('commit should be set to true in this case.');
+        state.update(state => tryAppendChange(state, location, cell));
+    }
+    const cellEditorFn = (cell: Compatible<Cell>, commit: boolean) => {
+        state.currentlyEditedCell = commit ? undefined : cell;
+        if (commit) state.update(state => tryAppendChange(state, location, cell));
+    }
+    const renderCell = isMobileDevice() ? cellTemplate.render(cellToRender!, isInEditMode!, isInEditMode ? cellEditorFn : cellFn)
+        : cellTemplate.render(cell, false, cellFn)
 
     return (
         <div className={classNames} style={style}
             data-cell-colidx={process.env.NODE_ENV === "development" ? location.column.idx : null}
             data-cell-rowidx={process.env.NODE_ENV === "development" ? location.row.idx : null}>
-            {cellTemplate.render(cell, false, (cell, commit) => {
-                if (!commit) throw new Error('commit should be set to true in this case.');
-                state.update(state => tryAppendChange(state, location, cell));
-            })}
+            {renderCell}
             {children}
             {state.enableGroupIdRender && cell?.groupId !== undefined &&
                 <span className='rg-groupId'>

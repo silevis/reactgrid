@@ -36,7 +36,7 @@ export interface PaneContentChild<TState extends State = State> {
 function shouldMemoPaneGridContent(prevProps: RowsProps, nextProps: RowsProps): boolean {
     const { state: prevState } = prevProps;
     const { state: nextState } = nextProps;
-    if (prevState.focusedLocation && nextState.focusedLocation) {
+    if (prevState.focusedLocation && nextState.focusedLocation && prevState.currentlyEditedCell === nextState.currentlyEditedCell) {
         if (prevState.focusedLocation.column.columnId !== nextState.focusedLocation.column.columnId
             || prevState.focusedLocation.row.rowId !== nextState.focusedLocation.row.rowId)
             return false;
