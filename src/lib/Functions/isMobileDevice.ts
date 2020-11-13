@@ -1,3 +1,6 @@
 export function isMobileDevice() {
-    return (typeof window.orientation !== "undefined") || (navigator.userAgent.indexOf('IEMobile') !== -1);
+    if (typeof window !== 'undefined') { // condition needed for circle ci compiler
+        return (typeof window.orientation !== "undefined") || (navigator.userAgent.indexOf('IEMobile') !== -1);
+    }
+    return false;
 };

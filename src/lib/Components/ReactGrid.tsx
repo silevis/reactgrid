@@ -59,7 +59,8 @@ export class ReactGrid extends React.Component<ReactGridProps, State> {
             return (
                 <GridRenderer state={state} eventHandlers={eventHandlers}>
                     <PanesRenderer state={state} cellRenderer={CellRenderer} />
-                    { !isMobileDevice() && state.currentlyEditedCell && <CellEditorRenderer state={state} positionCalculator={cellEditorCalculator} />}
+                    {state.currentlyEditedCell && !isMobileDevice() &&
+                        <CellEditorRenderer state={state} positionCalculator={cellEditorCalculator} />}
                 </GridRenderer>
             )
         }

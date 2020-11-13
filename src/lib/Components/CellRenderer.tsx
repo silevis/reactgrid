@@ -3,10 +3,9 @@ import { areLocationsEqual } from '../Functions/areLocationsEqual';
 import { noBorder } from '../Functions/excludeObjectProperties';
 import { getCompatibleCellAndTemplate } from '../Functions/getCompatibleCellAndTemplate';
 import { tryAppendChange } from '../Functions/tryAppendChange';
-import { Borders } from '../Model/InternalModel';
+import { Borders, Location } from '../Model/InternalModel';
 import { BorderProps, Cell, Compatible } from '../Model/PublicModel';
 import { State } from '../Model/State';
-import { Location } from '../Model/InternalModel';
 import { isMobileDevice } from '../Functions/isMobileDevice';
 
 export interface CellRendererProps {
@@ -65,6 +64,8 @@ export const CellRenderer: React.FC<CellRendererProps> = ({ state, location, chi
             : `${bordersWidth.bottom} ${bordersStyle.bottom} ${bordersColor.bottom}`,
     };
 
+    const isMobile = isMobileDevice();
+
     const style = {
         ...(cellTemplate.getStyle && (cellTemplate.getStyle(cell, false) || {})),
         ...(cell.style && noBorder(cell.style)),
@@ -72,34 +73,32 @@ export const CellRenderer: React.FC<CellRendererProps> = ({ state, location, chi
         top: location.row.top,
         width: location.column.width,
         height: location.row.height,
-        zIndex: isMobileDevice() ? 0 : unset, //need to cellEditor properly display on mobile devices
         ...bordersProps,
         ...((isFocused || cell.type === 'header') && { touchAction: 'none' }) // prevent scrolling
     } as React.CSSProperties;
 
-    const isInEditMode = !!(state.currentlyEditedCell && isFocused);
+    const isInEditMode = !!(state.currentlyEditedCell) && isFocused;
 
-    const groupIdClassName = cell.groupId ? `rg-groupId-${cell.groupId}` : '';
-    const nonEditableClassName = cell.nonEditable ? 'rg-cell-nonEditable' : '';
-    const cellStyle = isMobileDevice() && isInEditMode ? `rg-celleditor` : `rg-${cell.type}-cell`;
-    const classNames = `rg-cell ${cellStyle} ${groupIdClassName} ${nonEditableClassName} ${customClass}`;
-    const cellToRender = isInEditMode ? state.currentlyEditedCell : cell;
-    const cellFn = (cell: Compatible<Cell>, commit: boolean) => {
-        if (!commit) throw new Error('commit should be set to true in this case.');
-        state.update(state => tryAppendChange(state, location, cell));
-    }
-    const cellEditorFn = (cell: Compatible<Cell>, commit: boolean) => {
-        state.currentlyEditedCell = commit ? undefined : cell;
-        if (commit) state.update(state => tryAppendChange(state, location, cell));
-    }
-    const renderCell = isMobileDevice() ? cellTemplate.render(cellToRender!, isInEditMode!, isInEditMode ? cellEditorFn : cellFn)
-        : cellTemplate.render(cell, false, cellFn)
+    const groupIdClassName = cell.groupId ? ` rg-groupId-${cell.groupId}` : '';
+    const nonEditableClassName = cell.nonEditable ? ' rg-cell-nonEditable' : '';
+    const cellClassNames = isInEditMode && isMobile ? ` rg-celleditor rg-${cell.type}-celleditor` : ` rg-${cell.type}-cell`;
+    const classNames = `rg-cell${cellClassNames}${groupIdClassName}${nonEditableClassName} ${customClass}`;
+    const cellToRender = state.currentlyEditedCell && isFocused ? state.currentlyEditedCell : cell;
 
+    const onCellChangedFn = (cell: Compatible<Cell>, commit: boolean) => {
+        if (isInEditMode) {
+            state.currentlyEditedCell = commit ? undefined : cell;
+            if (commit) state.update(state => tryAppendChange(state, location, cell));
+        } else {
+            if (!commit) throw new Error('commit should be set to true in this case.');
+            state.update(state => tryAppendChange(state, location, cell));
+        }
+    }
     return (
         <div className={classNames} style={style}
             data-cell-colidx={process.env.NODE_ENV === "development" ? location.column.idx : null}
             data-cell-rowidx={process.env.NODE_ENV === "development" ? location.row.idx : null}>
-            {renderCell}
+            {cellTemplate.render(isMobile ? cellToRender : cell, isMobile ? isInEditMode : false, onCellChangedFn)}
             {children}
             {state.enableGroupIdRender && cell?.groupId !== undefined &&
                 <span className='rg-groupId'>
