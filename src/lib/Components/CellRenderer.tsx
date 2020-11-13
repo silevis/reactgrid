@@ -73,19 +73,19 @@ export const CellRenderer: React.FC<CellRendererProps> = ({ state, location, chi
         top: location.row.top,
         width: location.column.width,
         height: location.row.height,
-        ...bordersProps,
+        ...(!(isFocused && state.currentlyEditedCell) && bordersProps),
         ...((isFocused || cell.type === 'header') && { touchAction: 'none' }) // prevent scrolling
     } as React.CSSProperties;
 
-    const isInEditMode = !!(state.currentlyEditedCell) && isFocused;
+    const isInEditMode = isFocused && !!(state.currentlyEditedCell);
 
     const groupIdClassName = cell.groupId ? ` rg-groupId-${cell.groupId}` : '';
     const nonEditableClassName = cell.nonEditable ? ' rg-cell-nonEditable' : '';
     const cellClassNames = isInEditMode && isMobile ? ` rg-celleditor rg-${cell.type}-celleditor` : ` rg-${cell.type}-cell`;
     const classNames = `rg-cell${cellClassNames}${groupIdClassName}${nonEditableClassName} ${customClass}`;
-    const cellToRender = state.currentlyEditedCell && isFocused ? state.currentlyEditedCell : cell;
+    const cellToRender = isFocused && state.currentlyEditedCell && isMobile ? state.currentlyEditedCell : cell;
 
-    const onCellChangedFn = (cell: Compatible<Cell>, commit: boolean) => {
+    const onCellChanged = (cell: Compatible<Cell>, commit: boolean) => {
         if (isInEditMode) {
             state.currentlyEditedCell = commit ? undefined : cell;
             if (commit) state.update(state => tryAppendChange(state, location, cell));
@@ -98,9 +98,9 @@ export const CellRenderer: React.FC<CellRendererProps> = ({ state, location, chi
         <div className={classNames} style={style}
             data-cell-colidx={process.env.NODE_ENV === "development" ? location.column.idx : null}
             data-cell-rowidx={process.env.NODE_ENV === "development" ? location.row.idx : null}>
-            {cellTemplate.render(isMobile ? cellToRender : cell, isMobile ? isInEditMode : false, onCellChangedFn)}
+            {cellTemplate.render(cellToRender, isMobile ? isInEditMode : false, onCellChanged)}
             {children}
-            {state.enableGroupIdRender && cell?.groupId !== undefined &&
+            {state.enableGroupIdRender && cell?.groupId !== undefined && !(isInEditMode && isMobile) &&
                 <span className='rg-groupId'>
                     {cell.groupId}
                 </span>

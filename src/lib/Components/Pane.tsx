@@ -6,6 +6,7 @@ import { Highlight } from '../Model/PublicModel';
 import { CellFocus } from './CellFocus';
 import { RowRenderer } from './RowRenderer';
 import { CellRendererProps } from './CellRenderer';
+import { isMobileDevice } from '../../core';
 
 export interface PaneProps {
     renderChildren: boolean;
@@ -17,14 +18,14 @@ export interface RowsProps {
     state: State;
     range: Range;
     borders: Borders;
-    cellRenderer: React.FunctionComponent<CellRendererProps>;
+    cellRenderer: React.FC<CellRendererProps>;
 }
 
 export interface PaneContentProps<TState extends State = State> {
     state: TState;
     range: () => Range;
     borders: Borders;
-    cellRenderer: React.FunctionComponent<CellRendererProps>;
+    cellRenderer: React.FC<CellRendererProps>;
     children?: (state: TState, range: Range) => React.ReactNode;
 }
 
@@ -89,7 +90,7 @@ export const PaneContent: React.FC<PaneContentProps<State>> = (props) => {
         <>
             <PaneGridContent state={state} range={calculatedRange} borders={borders} cellRenderer={cellRenderer} />
             {renderHighlights(state, calculatedRange)}
-            {state.focusedLocation && calculatedRange.contains(state.focusedLocation) &&
+            {state.focusedLocation && !(state.currentlyEditedCell && isMobileDevice()) && calculatedRange.contains(state.focusedLocation) &&
                 <CellFocus location={state.focusedLocation} />}
             {children && children(state, calculatedRange)}
         </>
