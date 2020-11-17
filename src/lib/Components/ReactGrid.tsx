@@ -13,6 +13,7 @@ import { CellMatrixBuilder } from '../Model/CellMatrixBuilder';
 import { LegacyBrowserGridRenderer } from './LegacyBrowserGridRenderer';
 import { CellEditorRenderer, cellEditorCalculator } from './CellEditor';
 import { CellRenderer } from './CellRenderer';
+import { isMobileDevice } from '../Functions/isMobileDevice';
 
 
 export class ReactGrid extends React.Component<ReactGridProps, State> {
@@ -58,7 +59,8 @@ export class ReactGrid extends React.Component<ReactGridProps, State> {
             return (
                 <GridRenderer state={state} eventHandlers={eventHandlers}>
                     <PanesRenderer state={state} cellRenderer={CellRenderer} />
-                    {state.currentlyEditedCell && <CellEditorRenderer state={state} positionCalculator={cellEditorCalculator} />}
+                    {state.currentlyEditedCell && !isMobileDevice() &&
+                        <CellEditorRenderer state={state} positionCalculator={cellEditorCalculator} />}
                 </GridRenderer>
             )
         }
