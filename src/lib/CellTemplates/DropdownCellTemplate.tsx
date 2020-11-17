@@ -76,15 +76,14 @@ export class DropdownCellTemplate implements CellTemplate<DropdownCell> {
                 onPointerDown={e => onCellChanged(this.getCompatibleCell({ ...cell, isOpen: true }), true)}
             >
                 <Select
-                    // TODO move focus back to HiddenElement
+                    // add typing new value
+                    isSearchable={false}
                     ref={selectRef}
                     {...(cell.isOpen !== undefined && { menuIsOpen: cell.isOpen })}
                     onMenuClose={() => onCellChanged(this.getCompatibleCell({ ...cell, isOpen: !cell.isOpen }), true)}
                     onMenuOpen={() => onCellChanged(this.getCompatibleCell({ ...cell, isOpen: true }), true)}
-                    onChange={(e) => {
-                        selectRef.current.blur();
-                        onCellChanged(this.getCompatibleCell({ ...cell, currentValue: (e as { value: string }).value, isOpen: false }), true);
-                    }}
+                    onChange={(e) => onCellChanged(this.getCompatibleCell({ ...cell, currentValue: (e as { value: string }).value, isOpen: false }), true)}
+                    blurInputOnSelect={true}
                     defaultValue={cell.values.find(val => val.value === cell.currentValue)}
                     isDisabled={cell.isDisabled}
                     options={cell.values}
@@ -150,5 +149,5 @@ const CustomOption: React.FC<OptionProps<OptionType>> = ({ innerProps, label, is
 );
 
 const CustomMenu: React.FC<MenuProps<OptionType>> = ({ innerProps, children }) => (
-    <div {...innerProps} className={`dropdown-menu`}>{children}</div>
+    <div {...innerProps} className='dropdown-menu'>{children}</div>
 );
