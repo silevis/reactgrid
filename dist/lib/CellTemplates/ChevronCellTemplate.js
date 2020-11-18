@@ -42,7 +42,7 @@ var ChevronCellTemplate = /** @class */ (function () {
             hasChildren = false;
         }
         var value = parseFloat(text);
-        return __assign(__assign({}, uncertainCell), { text: text, value: value, isExpanded: isExpanded, hasChildren: hasChildren, indent: indent });
+        return __assign(__assign({}, uncertainCell), { text: text, value: value, isExpanded: isExpanded, indent: indent, hasChildren: hasChildren });
     };
     ChevronCellTemplate.prototype.update = function (cell, cellToMerge) {
         return this.getCompatibleCell(__assign(__assign({}, cell), { isExpanded: cellToMerge.isExpanded, text: cellToMerge.text }));

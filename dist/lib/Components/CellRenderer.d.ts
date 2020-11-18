@@ -1,8 +1,7 @@
 import * as React from 'react';
-import { Borders } from '../Model/InternalModel';
+import { Borders, Location } from '../Model/InternalModel';
 import { Cell, Compatible } from '../Model/PublicModel';
 import { State } from '../Model/State';
-import { Location } from '../Model/InternalModel';
 export interface CellRendererProps {
     state: State;
     location: Location;

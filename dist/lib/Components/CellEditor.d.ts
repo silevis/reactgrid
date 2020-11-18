@@ -14,7 +14,7 @@ export interface PositionState<TState extends State = State> {
     state: TState;
     location: Location;
 }
-export declare const CellEditorRenderer: React.FunctionComponent<CellEditorRendererProps>;
+export declare const CellEditorRenderer: React.FC<CellEditorRendererProps>;
 export declare function getStickyLeftRangeWidth(cellMatrix: CellMatrix, location: Location): number | undefined;
 export declare function getStickyTopRangeWidth(cellMatrix: CellMatrix, location: Location): number | undefined;
 export declare function getLeftStickyOffset(cellMatrix: CellMatrix, location: Location, state: State): number | undefined;

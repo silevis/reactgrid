@@ -1,3 +1,4 @@
+@charset "UTF-8";
 .rg-celleditor-input, .rg-celleditor input {
   width: 100%;
   height: 100%;
@@ -21,24 +22,30 @@
 .rg-number-celleditor input {
   text-align: right; }
 
-.rg-number-cell, .rg-time-cell, .rg-date-cell {
+.reactgrid-content .rg-pane .rg-cell.rg-number-cell,
+.reactgrid-content .rg-pane .rg-cell .rg-time-cell,
+.reactgrid-content .rg-pane .rg-cell .rg-date-cell {
   justify-content: flex-end; }
 
-.rg-email-cell.invalid {
+.reactgrid-content .rg-pane .rg-cell.rg-email-cell.invalid {
   color: red; }
 
-.rg-checkbox-cell {
+.reactgrid-content .rg-pane .rg-cell.rg-text-cell.placeholder {
+  color: #999;
+  font-size: 0.8em; }
+
+.reactgrid-content .rg-pane .rg-cell.rg-checkbox-cell {
   align-items: center;
   justify-content: center;
   padding: 0;
   border: 0;
   background: transparent;
   pointer-events: auto; }
-  .rg-checkbox-cell input {
+  .reactgrid-content .rg-pane .rg-cell.rg-checkbox-cell input {
     width: 20px;
     height: 20px; }
 
-.rg-chevron-cell .chevron {
+.reactgrid-content .rg-pane .rg-cell.rg-chevron-cell .chevron {
   pointer-events: auto;
   display: flex;
   justify-content: center;
@@ -50,18 +57,18 @@
   height: 1em;
   width: 1em; }
 
-.rg-chevron-cell .no-child {
+.reactgrid-content .rg-pane .rg-cell.rg-chevron-cell .no-child {
   width: 0.5em; }
 
-.rg-chevron-cell.expanded .chevron {
+.reactgrid-content .rg-pane .rg-cell.rg-chevron-cell.expanded .chevron {
   transform: rotate(90deg); }
 
-.rg-chevron-cell.collapsed .chevron {
+.reactgrid-content .rg-pane .rg-cell.rg-chevron-cell.collapsed .chevron {
   transform: rotate(0deg); }
 
-.rg-checkbox-cell {
+.reactgrid-content .rg-pane .rg-cell.rg-checkbox-cell {
   justify-content: center; }
-  .rg-checkbox-cell label {
+  .reactgrid-content .rg-pane .rg-cell.rg-checkbox-cell label {
     position: relative;
     height: 18px;
     width: 18px;
@@ -71,31 +78,31 @@
     -ms-user-select: none;
     user-select: none;
     margin: 0; }
-  .rg-checkbox-cell label input {
+  .reactgrid-content .rg-pane .rg-cell.rg-checkbox-cell label input {
     position: absolute;
     opacity: 0;
     cursor: pointer;
     margin: 0;
     height: 18px;
     width: 18px; }
-  .rg-checkbox-cell span {
+  .reactgrid-content .rg-pane .rg-cell.rg-checkbox-cell span {
     position: absolute;
     top: 0;
     left: 0;
     height: 18px;
     width: 18px;
     background-color: #eeeeee; }
-  .rg-checkbox-cell label:hover input ~ span {
+  .reactgrid-content .rg-pane .rg-cell.rg-checkbox-cell label:hover input ~ span {
     background-color: #cccccc; }
-  .rg-checkbox-cell label input:checked ~ span {
+  .reactgrid-content .rg-pane .rg-cell.rg-checkbox-cell label input:checked ~ span {
     background-color: #3579f8; }
-  .rg-checkbox-cell span:after {
+  .reactgrid-content .rg-pane .rg-cell.rg-checkbox-cell span:after {
     content: "";
     position: absolute;
     display: none; }
-  .rg-checkbox-cell label input:checked ~ span:after {
+  .reactgrid-content .rg-pane .rg-cell.rg-checkbox-cell label input:checked ~ span:after {
     display: block; }
-  .rg-checkbox-cell label span:after {
+  .reactgrid-content .rg-pane .rg-cell.rg-checkbox-cell label span:after {
     left: 5px;
     top: 0px;
     width: 4px;
@@ -105,6 +112,32 @@
     -webkit-transform: rotate(45deg);
     -ms-transform: rotate(45deg);
     transform: rotate(45deg); }
+
+.reactgrid-content .rg-pane .rg-cell.rg-dropdown-cell {
+  padding: 0;
+  overflow: visible; }
+  .reactgrid-content .rg-pane .rg-cell.rg-dropdown-cell .dropdown-menu {
+    top: 100%;
+    background-color: #ffffff;
+    border-radius: 4px;
+    box-shadow: 0px 0px 7px rgba(0, 0, 0, 0.5);
+    margin-bottom: 8px;
+    margin-top: 2px;
+    position: absolute;
+    width: 100%;
+    z-index: 1;
+    box-sizing: border-box; }
+  .reactgrid-content .rg-pane .rg-cell.rg-dropdown-cell .dropdown-option {
+    padding: 3px 0.5em;
+    height: 1.5em;
+    display: flex;
+    align-items: center; }
+    .reactgrid-content .rg-pane .rg-cell.rg-dropdown-cell .dropdown-option.selected::before {
+      content: "✓";
+      padding-right: 0.2em; }
+    .reactgrid-content .rg-pane .rg-cell.rg-dropdown-cell .dropdown-option.focused {
+      color: black;
+      background-color: #e2ebfe; }
 
 [contenteditable] {
   -webkit-user-select: text;
@@ -202,8 +235,7 @@
       border-color: #3579f8;
       background-color: rgba(53, 121, 248, 0.35); }
   .reactgrid-content .shadow {
-    position: sticky;
-    pointer-events: none; }
+    position: sticky; }
     .reactgrid-content .shadow.shadow-top {
       top: 0;
       box-shadow: 0 3px 7px -3px rgba(0, 0, 0, 0.35); }

@@ -39,6 +39,7 @@ var CellMatrix = /** @class */ (function () {
     };
     CellMatrix.DEFAULT_ROW_HEIGHT = 25;
     CellMatrix.DEFAULT_COLUMN_WIDTH = 150;
+    CellMatrix.MIN_COLUMN_WIDTH = 40;
     return CellMatrix;
 }());
 export { CellMatrix };

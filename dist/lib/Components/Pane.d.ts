@@ -12,13 +12,13 @@ export interface RowsProps {
     state: State;
     range: Range;
     borders: Borders;
-    cellRenderer: React.FunctionComponent<CellRendererProps>;
+    cellRenderer: React.FC<CellRendererProps>;
 }
 export interface PaneContentProps<TState extends State = State> {
     state: TState;
     range: () => Range;
     borders: Borders;
-    cellRenderer: React.FunctionComponent<CellRendererProps>;
+    cellRenderer: React.FC<CellRendererProps>;
     children?: (state: TState, range: Range) => React.ReactNode;
 }
 export interface PaneContentChild<TState extends State = State> {

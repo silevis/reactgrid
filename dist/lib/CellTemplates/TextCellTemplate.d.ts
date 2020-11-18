@@ -3,6 +3,7 @@ import { Cell, CellTemplate, Compatible, Uncertain, UncertainCompatible } from '
 export interface TextCell extends Cell {
     type: 'text';
     text: string;
+    placeholder?: string;
     validator?: (text: string) => boolean;
     renderer?: (text: string) => React.ReactNode;
 }

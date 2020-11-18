@@ -23,8 +23,8 @@ var CellMatrixBuilder = /** @class */ (function () {
         this.getScrollableRange = function () {
             var stickyTopRows = _this.cellMatrix.props.stickyTopRows;
             var stickyLeftColumns = _this.cellMatrix.props.stickyLeftColumns;
-            var firstScrollableRowId = (!stickyTopRows || stickyTopRows >= _this.cellMatrix.rows.length ? 0 : stickyTopRows);
-            var firstScrollableColumnId = (!stickyLeftColumns || stickyLeftColumns >= _this.cellMatrix.columns.length ? 0 : stickyLeftColumns);
+            var firstScrollableRowId = !stickyTopRows || stickyTopRows >= _this.cellMatrix.rows.length ? 0 : stickyTopRows;
+            var firstScrollableColumnId = !stickyLeftColumns || stickyLeftColumns >= _this.cellMatrix.columns.length ? 0 : stickyLeftColumns;
             return new Range(_this.cellMatrix.rows.slice(firstScrollableRowId), _this.cellMatrix.columns.slice(firstScrollableColumnId));
         };
         this.reset();
@@ -56,7 +56,9 @@ var CellMatrixBuilder = /** @class */ (function () {
         }, []);
         this.cellMatrix.columns = this.cellMatrix.props.columns.reduce(function (cols, column, idx) {
             var left = _this.getLeft(idx, _this.cellMatrix.props.stickyLeftColumns, cols);
-            var width = column.width || CellMatrix.DEFAULT_COLUMN_WIDTH;
+            var width = column.width
+                ? (column.width < CellMatrix.MIN_COLUMN_WIDTH ? CellMatrix.MIN_COLUMN_WIDTH : column.width)
+                : CellMatrix.DEFAULT_COLUMN_WIDTH;
             cols.push(__assign(__assign({}, column), { idx: idx, left: left, width: width, right: left + width }));
             _this.cellMatrix.width += width;
             // TODO what with columnIndexLookup?

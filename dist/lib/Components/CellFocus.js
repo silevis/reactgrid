@@ -1,9 +1,12 @@
 import * as React from 'react';
 // TODO make HOC for highlights 
-export var CellFocus = function (props) { return (React.createElement("div", { key: props.borderColor, "data-cy": !props.isHighlight ? 'rg-cell-focus' : 'rg-cell-highlight', className: "rg-cell-focus " + (props.className || ''), style: {
-        top: props.location.row.top - (props.location.row.top === 0 ? 0 : 1),
-        left: props.location.column.left - (props.location.column.left === 0 ? 0 : 1),
-        width: props.location.column.width + (props.location.column.left === 0 ? 0 : 1),
-        height: props.location.row.height + (props.location.row.top === 0 ? 0 : 1),
-        borderColor: "" + props.borderColor,
-    } })); };
+export var CellFocus = function (_a) {
+    var borderColor = _a.borderColor, isHighlight = _a.isHighlight, location = _a.location, className = _a.className;
+    return (React.createElement("div", { key: borderColor, "data-cy": !isHighlight ? 'rg-cell-focus' : 'rg-cell-highlight', className: "rg-cell-focus " + (className || ''), style: {
+            top: location.row.top - (location.row.top === 0 ? 0 : 1),
+            left: location.column.left - (location.column.left === 0 ? 0 : 1),
+            width: location.column.width + (location.column.left === 0 ? 0 : 1),
+            height: location.row.height + (location.row.top === 0 ? 0 : 1),
+            borderColor: "" + borderColor,
+        } }));
+};

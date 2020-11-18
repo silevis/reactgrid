@@ -14,6 +14,7 @@ import { areLocationsEqual } from '../Functions/areLocationsEqual';
 import { noBorder } from '../Functions/excludeObjectProperties';
 import { getCompatibleCellAndTemplate } from '../Functions/getCompatibleCellAndTemplate';
 import { tryAppendChange } from '../Functions/tryAppendChange';
+import { isMobileDevice } from '../Functions/isMobileDevice';
 var unset = 'unset';
 function storeBorderAndCell(borders, cell) {
     return function (property, defaultProp) {
@@ -55,18 +56,30 @@ export var CellRenderer = function (_a) {
         borderBottom: bordersWidth.bottom === unset && bordersStyle.bottom === unset && bordersColor.bottom === unset ? unset
             : bordersWidth.bottom + " " + bordersStyle.bottom + " " + bordersColor.bottom,
     };
-    var style = __assign(__assign(__assign(__assign(__assign({}, (cellTemplate.getStyle && (cellTemplate.getStyle(cell, false) || {}))), (cell.style && noBorder(cell.style))), { left: location.column.left, top: location.row.top, width: location.column.width, height: location.row.height }), bordersProps), ((isFocused || cell.type === 'header') && { touchAction: 'none' }) // prevent scrolling
+    var isMobile = isMobileDevice();
+    var style = __assign(__assign(__assign(__assign(__assign({}, (cellTemplate.getStyle && (cellTemplate.getStyle(cell, false) || {}))), (cell.style && noBorder(cell.style))), { left: location.column.left, top: location.row.top, width: location.column.width, height: location.row.height }), (!(isFocused && state.currentlyEditedCell) && bordersProps)), ((isFocused || cell.type === 'header') && { touchAction: 'none' }) // prevent scrolling
     );
-    var groupIdClassName = cell.groupId ? "rg-groupId-" + cell.groupId : '';
-    var nonEditableClassName = cell.nonEditable ? 'rg-cell-nonEditable' : '';
-    var classNames = "rg-cell rg-" + cell.type + "-cell " + groupIdClassName + " " + nonEditableClassName + " " + customClass;
-    return (React.createElement("div", { className: classNames, style: style, "data-cell-colidx": process.env.NODE_ENV === "development" ? location.column.idx : null, "data-cell-rowidx": process.env.NODE_ENV === "development" ? location.row.idx : null },
-        cellTemplate.render(cell, false, function (cell, commit) {
+    var isInEditMode = isFocused && !!(state.currentlyEditedCell);
+    var groupIdClassName = cell.groupId ? " rg-groupId-" + cell.groupId : '';
+    var nonEditableClassName = cell.nonEditable ? ' rg-cell-nonEditable' : '';
+    var cellClassNames = isInEditMode && isMobile ? " rg-celleditor rg-" + cell.type + "-celleditor" : " rg-" + cell.type + "-cell";
+    var classNames = "rg-cell" + cellClassNames + groupIdClassName + nonEditableClassName + " " + customClass;
+    var cellToRender = isFocused && state.currentlyEditedCell && isMobile ? state.currentlyEditedCell : cell;
+    var onCellChanged = function (cell, commit) {
+        if (isInEditMode) {
+            state.currentlyEditedCell = commit ? undefined : cell;
+            if (commit)
+                state.update(function (state) { return tryAppendChange(state, location, cell); });
+        }
+        else {
             if (!commit)
                 throw new Error('commit should be set to true in this case.');
             state.update(function (state) { return tryAppendChange(state, location, cell); });
-        }),
+        }
+    };
+    return (React.createElement("div", { className: classNames, style: style, "data-cell-colidx": process.env.NODE_ENV === "development" ? location.column.idx : null, "data-cell-rowidx": process.env.NODE_ENV === "development" ? location.row.idx : null },
+        cellTemplate.render(cellToRender, isMobile ? isInEditMode : false, onCellChanged),
         children,
-        state.enableGroupIdRender && (cell === null || cell === void 0 ? void 0 : cell.groupId) !== undefined &&
+        state.enableGroupIdRender && (cell === null || cell === void 0 ? void 0 : cell.groupId) !== undefined && !(isInEditMode && isMobile) &&
             React.createElement("span", { className: 'rg-groupId' }, cell.groupId)));
 };

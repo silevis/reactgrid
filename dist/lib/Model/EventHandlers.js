@@ -23,6 +23,13 @@ var EventHandlers = /** @class */ (function () {
         this.copyHandler = function (event) { return _this.updateState(function (state) { return state.currentBehavior.handleCopy(event, state); }); };
         this.pasteHandler = function (event) { return _this.updateState(function (state) { return state.currentBehavior.handlePaste(event, state); }); };
         this.cutHandler = function (event) { return _this.updateState(function (state) { return state.currentBehavior.handleCut(event, state); }); };
+        this.blurHandler = function (event) { return _this.updateState(function (state) {
+            var _a, _b;
+            if ((_a = event.target) === null || _a === void 0 ? void 0 : _a.id.startsWith('react-select-')) { // give back focus on react-select dropdown blur
+                (_b = state.hiddenFocusElement) === null || _b === void 0 ? void 0 : _b.focus({ preventScroll: true });
+            }
+            return state;
+        }); };
         this.windowResizeHandler = function () { return _this.updateState(recalcVisibleRange); };
         this.reactgridRefHandler = function (reactGridElement) { return _this.assignScrollHandler(reactGridElement, recalcVisibleRange); };
         this.hiddenElementRefHandler = function (hiddenFocusElement) { return _this.updateState(function (state) {

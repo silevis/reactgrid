@@ -16,7 +16,7 @@ import { isBrowserFirefox } from '../Functions/firefox';
 import { columnsSlicer, rowsSlicer } from '../Functions/rangeSlicer';
 import { PaneShadow } from './PaneShadow';
 export var PanesRenderer = function (_a) {
-    var _b, _c;
+    var _b, _c, _d;
     var state = _a.state, cellRenderer = _a.cellRenderer;
     var cellMatrix = state.cellMatrix;
     var renderTopSticky = shouldRenderTopSticky(state), renderMiddleRange = shouldRenderMiddleRange(state), renderLeftSticky = shouldRenderLeftSticky(state), renderCenterRange = shouldRenderCenterRange(state);
@@ -50,7 +50,8 @@ export var PanesRenderer = function (_a) {
                 order: 5,
             } }),
         React.createElement(PaneShadow, { renderCondition: renderTopSticky, className: 'shadow-top', zIndex: 1, style: {
-                width: cellMatrix.width,
+                width: ((_c = state.props) === null || _c === void 0 ? void 0 : _c.enableFullWidthHeader) ? "calc(100%)"
+                    : cellMatrix.width,
                 height: cellMatrix.ranges.stickyTopRange.height,
                 marginTop: -cellMatrix.height,
                 order: 4,
@@ -63,7 +64,7 @@ export var PanesRenderer = function (_a) {
                     left: true,
                     top: !renderTopSticky
                 }, cellRenderer: cellRenderer })),
-        React.createElement(Pane, { renderChildren: renderTopSticky && renderCenterRange, className: 'rg-pane-top', style: __assign({ width: ((_c = state.props) === null || _c === void 0 ? void 0 : _c.enableFullWidthHeader) ? "calc(100% - " + cellMatrix.ranges.stickyLeftRange.width + "px)"
+        React.createElement(Pane, { renderChildren: renderTopSticky && renderCenterRange, className: 'rg-pane-top', style: __assign({ width: ((_d = state.props) === null || _d === void 0 ? void 0 : _d.enableFullWidthHeader) ? "calc(100% - " + cellMatrix.ranges.stickyLeftRange.width + "px)"
                     : areOnlyStickyRows && areOnlyStickyCols ? 0 : cellMatrix.scrollableRange.width, height: cellMatrix.ranges.stickyTopRange.height, order: 1 }, (isBrowserFirefox() && { zIndex: 1 })) },
             React.createElement(PaneContent, { state: state, range: columnsSlicer(cellMatrix.ranges.stickyTopRange)(state.visibleRange), borders: {
                     right: true,

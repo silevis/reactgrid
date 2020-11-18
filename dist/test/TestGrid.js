@@ -58,6 +58,8 @@ export var TestGrid = function (props) {
                 return { type: config.firstRowType, text: ri + " - " + ci };
             if (ri === 2 && ci === 8)
                 return { type: 'text', text: "non-editable", nonEditable: true, validator: function (text) { return true; } };
+            if (ri === 3 && ci === 8)
+                return { type: 'text', text: '', placeholder: 'placeholder', validator: function (text) { return true; } };
             var now = new Date();
             switch (ci) {
                 case 0:
@@ -76,7 +78,15 @@ export var TestGrid = function (props) {
                     return { type: 'checkbox', checked: false, checkedText: 'Checked', uncheckedText: 'Unchecked' };
                 case 7:
                     return { type: 'flag', groupId: Math.random() < .66 ? Math.random() < .5 ? 'A' : 'B' : undefined, text: 'bra' };
-                // case 8: // TODO allow user to pass non focusable cell (header cell) with arrows
+                case 8:
+                    return {
+                        type: 'dropdown', values: [
+                            { value: 'react', label: 'React' },
+                            { value: 'vue', label: 'Vue' },
+                            { value: 'angular', label: 'Angular' }
+                        ], currentValue: 'react', isDisabled: false
+                    };
+                // case 9: // TODO allow user to pass non focusable cell (header cell) with arrows
                 //     return { type: 'header', text: `${ri} - ${ci}` }
                 default:
                     return { type: 'text', text: ri + " - " + ci, validator: function (text) { return true; } };
@@ -117,6 +127,9 @@ export var TestGrid = function (props) {
             }
         });
     };
+    // TODO ReactGrid should be able to handle this function
+    // eslint-disable-next-line
+    var handleChangesTest2 = function (changes) { };
     // eslint-disable-next-line
     rows[0].cells.find(function (cell) { return cell.type === "text" && cell.text; });
     var handleChanges = function (changes) {
@@ -212,6 +225,7 @@ export var TestGrid = function (props) {
                     React.createElement(Logo, { isPro: config.isPro })),
             React.createElement(Component, { rows: rows, columns: columns, initialFocusLocation: { columnId: 'col-1', rowId: 'row-2' }, 
                 // focusLocation={{ columnId: 'col-1', rowId: 'row-3' }}
+                // onCellsChanged={handleChangesTest2} // This handler should be allowed
                 onCellsChanged: handleChanges, onColumnResized: handleColumnResize, customCellTemplates: { 'flag': new FlagCellTemplate() }, highlights: [
                     { columnId: 'col-1', rowId: 'row-1', borderColor: '#00ff00' },
                     { columnId: 'col-0', rowId: 'row-1', borderColor: 'red' }

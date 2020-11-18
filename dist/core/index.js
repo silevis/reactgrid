@@ -52,3 +52,4 @@ export * from './../lib/Functions/handlePaste';
 export * from './../lib/Functions/getDataToCopy';
 export * from './../lib/Functions/pasteData';
 export * from './../lib/Functions/i18n';
+export * from './../lib/Functions/isMobileDevice';

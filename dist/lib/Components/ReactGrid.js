@@ -36,6 +36,7 @@ import { CellMatrixBuilder } from '../Model/CellMatrixBuilder';
 import { LegacyBrowserGridRenderer } from './LegacyBrowserGridRenderer';
 import { CellEditorRenderer, cellEditorCalculator } from './CellEditor';
 import { CellRenderer } from './CellRenderer';
+import { isMobileDevice } from '../Functions/isMobileDevice';
 var ReactGrid = /** @class */ (function (_super) {
     __extends(ReactGrid, _super);
     function ReactGrid() {
@@ -76,7 +77,8 @@ var ReactGrid = /** @class */ (function (_super) {
         else {
             return (React.createElement(GridRenderer, { state: state, eventHandlers: eventHandlers },
                 React.createElement(PanesRenderer, { state: state, cellRenderer: CellRenderer }),
-                state.currentlyEditedCell && React.createElement(CellEditorRenderer, { state: state, positionCalculator: cellEditorCalculator })));
+                state.currentlyEditedCell && !isMobileDevice() &&
+                    React.createElement(CellEditorRenderer, { state: state, positionCalculator: cellEditorCalculator })));
         }
     };
     return ReactGrid;

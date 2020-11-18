@@ -20,11 +20,18 @@ var TextCellTemplate = /** @class */ (function () {
     }
     TextCellTemplate.prototype.getCompatibleCell = function (uncertainCell) {
         var text = getCellProperty(uncertainCell, 'text', 'string');
+        var placeholder;
+        try {
+            placeholder = getCellProperty(uncertainCell, 'placeholder', 'string');
+        }
+        catch (_a) {
+            placeholder = '';
+        }
         var value = parseFloat(text); // TODO more advanced parsing for all text based cells
-        return __assign(__assign({}, uncertainCell), { text: text, value: value });
+        return __assign(__assign({}, uncertainCell), { text: text, value: value, placeholder: placeholder });
     };
     TextCellTemplate.prototype.update = function (cell, cellToMerge) {
-        return this.getCompatibleCell(__assign(__assign({}, cell), { text: cellToMerge.text }));
+        return this.getCompatibleCell(__assign(__assign({}, cell), { text: cellToMerge.text, placeholder: cellToMerge.placeholder }));
     };
     TextCellTemplate.prototype.handleKeyDown = function (cell, keyCode, ctrl, shift, alt) {
         var char = getCharFromKeyCode(keyCode, shift);
@@ -35,18 +42,20 @@ var TextCellTemplate = /** @class */ (function () {
     TextCellTemplate.prototype.getClassName = function (cell, isInEditMode) {
         var isValid = cell.validator ? cell.validator(cell.text) : true;
         var className = cell.className ? cell.className : '';
-        return (isValid ? 'valid' : 'invalid') + " " + className;
+        return (isValid ? 'valid' : 'invalid') + " " + (cell.placeholder && cell.text === '' ? 'placeholder' : '') + " " + className;
     };
     TextCellTemplate.prototype.render = function (cell, isInEditMode, onCellChanged) {
         var _this = this;
-        if (!isInEditMode)
-            return cell.renderer ? cell.renderer(cell.text) : cell.text;
+        if (!isInEditMode) {
+            var textToDisplay = cell.text === '' ? (cell.placeholder || '') : cell.text;
+            return cell.renderer ? cell.renderer(textToDisplay) : textToDisplay;
+        }
         return React.createElement("input", { ref: function (input) {
                 if (input) {
                     input.focus();
                     input.setSelectionRange(input.value.length, input.value.length);
                 }
-            }, defaultValue: cell.text, onChange: function (e) { return onCellChanged(_this.getCompatibleCell(__assign(__assign({}, cell), { text: e.currentTarget.value })), false); }, onBlur: function (e) { return onCellChanged(_this.getCompatibleCell(__assign(__assign({}, cell), { text: e.currentTarget.value })), true); }, onCopy: function (e) { return e.stopPropagation(); }, onCut: function (e) { return e.stopPropagation(); }, onPaste: function (e) { return e.stopPropagation(); }, onPointerDown: function (e) { return e.stopPropagation(); }, onKeyDown: function (e) {
+            }, defaultValue: cell.text, onChange: function (e) { return onCellChanged(_this.getCompatibleCell(__assign(__assign({}, cell), { text: e.currentTarget.value })), false); }, onBlur: function (e) { return onCellChanged(_this.getCompatibleCell(__assign(__assign({}, cell), { text: e.currentTarget.value })), true); }, onCopy: function (e) { return e.stopPropagation(); }, onCut: function (e) { return e.stopPropagation(); }, onPaste: function (e) { return e.stopPropagation(); }, onPointerDown: function (e) { return e.stopPropagation(); }, placeholder: cell.placeholder, onKeyDown: function (e) {
                 if (isAlphaNumericKey(e.keyCode) || (isNavigationKey(e.keyCode)))
                     e.stopPropagation();
             } });

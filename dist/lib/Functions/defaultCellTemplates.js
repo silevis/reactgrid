@@ -1,4 +1,4 @@
-import { ChevronCellTemplate, TimeCellTemplate, EmailCellTemplate, DateCellTemplate, CheckboxCellTemplate, HeaderCellTemplate, NumberCellTemplate, TextCellTemplate } from '../CellTemplates';
+import { ChevronCellTemplate, TimeCellTemplate, EmailCellTemplate, DateCellTemplate, CheckboxCellTemplate, HeaderCellTemplate, NumberCellTemplate, TextCellTemplate, DropdownCellTemplate } from '../CellTemplates';
 export var defaultCellTemplates = {
     text: new TextCellTemplate(),
     number: new NumberCellTemplate(),
@@ -7,5 +7,6 @@ export var defaultCellTemplates = {
     date: new DateCellTemplate(),
     email: new EmailCellTemplate(),
     time: new TimeCellTemplate(),
-    chevron: new ChevronCellTemplate()
+    chevron: new ChevronCellTemplate(),
+    dropdown: new DropdownCellTemplate()
 };

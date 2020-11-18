@@ -6,5 +6,5 @@ interface CellFocusProps {
     borderColor?: string;
     className?: string;
 }
-export declare const CellFocus: React.FunctionComponent<CellFocusProps>;
+export declare const CellFocus: React.FC<CellFocusProps>;
 export {};

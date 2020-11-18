@@ -1,6 +1,6 @@
 import { AbstractPointerEventsController } from './AbstractPointerEventsController';
 import { StateModifier, StateUpdater } from './State';
-import { PointerEvent, KeyboardEvent, ClipboardEvent } from './domEventsTypes';
+import { PointerEvent, KeyboardEvent, ClipboardEvent, FocusEvent } from './domEventsTypes';
 export declare class EventHandlers {
     updateState: StateUpdater;
     pointerEventsController: AbstractPointerEventsController;
@@ -11,6 +11,7 @@ export declare class EventHandlers {
     copyHandler: (event: ClipboardEvent) => void;
     pasteHandler: (event: ClipboardEvent) => void;
     cutHandler: (event: ClipboardEvent) => void;
+    blurHandler: (event: FocusEvent) => void;
     windowResizeHandler: () => void;
     reactgridRefHandler: (reactGridElement: HTMLDivElement) => void;
     hiddenElementRefHandler: (hiddenFocusElement: HTMLInputElement) => void;

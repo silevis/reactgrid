@@ -12,10 +12,13 @@ var __assign = (this && this.__assign) || function () {
 import * as React from 'react';
 import { CellFocus } from './CellFocus';
 import { RowRenderer } from './RowRenderer';
+import { isMobileDevice } from '../Functions/isMobileDevice';
 function shouldMemoPaneGridContent(prevProps, nextProps) {
     var prevState = prevProps.state;
     var nextState = nextProps.state;
-    if (prevState.focusedLocation && nextState.focusedLocation) {
+    if (prevState.focusedLocation && nextState.focusedLocation
+        && prevState.currentlyEditedCell === nextState.currentlyEditedCell // used for opening cell editor in cell
+    ) {
         if (prevState.focusedLocation.column.columnId !== nextState.focusedLocation.column.columnId
             || prevState.focusedLocation.row.rowId !== nextState.focusedLocation.row.rowId)
             return false;
@@ -60,7 +63,7 @@ export var PaneContent = function (props) {
     return (React.createElement(React.Fragment, null,
         React.createElement(PaneGridContent, { state: state, range: calculatedRange, borders: borders, cellRenderer: cellRenderer }),
         renderHighlights(state, calculatedRange),
-        state.focusedLocation && calculatedRange.contains(state.focusedLocation) &&
+        state.focusedLocation && !(state.currentlyEditedCell && isMobileDevice()) && calculatedRange.contains(state.focusedLocation) &&
             React.createElement(CellFocus, { location: state.focusedLocation }),
         children && children(state, calculatedRange)));
 };

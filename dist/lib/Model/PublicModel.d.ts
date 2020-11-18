@@ -6,7 +6,7 @@
  * Michael Matejko
  */
 /// <reference types="react" />
-import { TextCell, HeaderCell, CheckboxCell, DateCell, EmailCell, ChevronCell, NumberCell, TimeCell } from './../CellTemplates';
+import { TextCell, HeaderCell, CheckboxCell, DateCell, EmailCell, ChevronCell, NumberCell, TimeCell, DropdownCell } from './../CellTemplates';
 /**
  * `SelectionMode` is a marker for currect selection mode
  *
@@ -219,7 +219,7 @@ export interface Highlight {
  *
  * @see https://reactgrid.com/docs/3.1/7-api/1-types/6-default-cells/
  */
-export declare type DefaultCellTypes = CheckboxCell | DateCell | EmailCell | ChevronCell | HeaderCell | NumberCell | TextCell | TimeCell;
+export declare type DefaultCellTypes = CheckboxCell | DateCell | EmailCell | ChevronCell | HeaderCell | NumberCell | TextCell | TimeCell | DropdownCell;
 /**
  * `CellChange` type is used by `onCellsChanged`. It represents mutually exclusive changes on a single cell.
  *
