@@ -39,7 +39,7 @@ export class ChevronCellTemplate implements CellTemplate<ChevronCell> {
             hasChildren = false;
         }
         const value = parseFloat(text);
-        return { ...uncertainCell, text, value, isExpanded, hasChildren: hasChildren, indent };
+        return { ...uncertainCell, text, value, isExpanded, indent, hasChildren };
     }
 
     update(cell: Compatible<ChevronCell>, cellToMerge: UncertainCompatible<ChevronCell>): Compatible<ChevronCell> {

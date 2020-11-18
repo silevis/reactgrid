@@ -116,7 +116,6 @@
     }
     .shadow {
         position: sticky;
-        pointer-events: none;
         &.shadow-top {
             top: 0;
             box-shadow: $shadow-on-bottom $cell-shadow-color;

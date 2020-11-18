@@ -52,6 +52,7 @@ export const TestGrid: React.FC<TestGridProps> = (props) => {
         cells: columns.map<TestGridCells>((_, ci) => {
             if (ri === 0) return { type: config.firstRowType, text: `${ri} - ${ci}` }
             if (ri === 2 && ci === 8) return { type: 'text', text: `non-editable`, nonEditable: true, validator: (text: string): boolean => true }
+            if (ri === 3 && ci === 8) return { type: 'text', text: '', placeholder: 'placeholder', validator: (text: string): boolean => true }
             const now = new Date();
             switch (ci) {
                 case 0:
@@ -70,7 +71,15 @@ export const TestGrid: React.FC<TestGridProps> = (props) => {
                     return { type: 'checkbox', checked: false, checkedText: 'Checked', uncheckedText: 'Unchecked' }
                 case 7:
                     return { type: 'flag', groupId: Math.random() < .66 ? Math.random() < .5 ? 'A' : 'B' : undefined, text: 'bra' }
-                // case 8: // TODO allow user to pass non focusable cell (header cell) with arrows
+                case 8:
+                    return {
+                        type: 'dropdown', values: [
+                            { value: 'react', label: 'React' },
+                            { value: 'vue', label: 'Vue' },
+                            { value: 'angular', label: 'Angular' }
+                        ], currentValue: 'react', isDisabled: false
+                    }
+                // case 9: // TODO allow user to pass non focusable cell (header cell) with arrows
                 //     return { type: 'header', text: `${ri} - ${ci}` }
                 default:
                     return { type: 'text', text: `${ri} - ${ci}`, validator: (text: string): boolean => true }
@@ -113,6 +122,10 @@ export const TestGrid: React.FC<TestGridProps> = (props) => {
             }
         });
     };
+
+    // TODO ReactGrid should be able to handle this function
+    // eslint-disable-next-line
+    const handleChangesTest2 = (changes: CellChange<TextCell>[]) => { };
 
     // eslint-disable-next-line
     rows[0].cells.find((cell) => cell.type === "text" && cell.text);
@@ -236,6 +249,7 @@ export const TestGrid: React.FC<TestGridProps> = (props) => {
                     columns={columns}
                     initialFocusLocation={{ columnId: 'col-1', rowId: 'row-2' }}
                     // focusLocation={{ columnId: 'col-1', rowId: 'row-3' }}
+                    // onCellsChanged={handleChangesTest2} // This handler should be allowed
                     onCellsChanged={handleChanges}
                     onColumnResized={handleColumnResize}
                     customCellTemplates={{ 'flag': new FlagCellTemplate() }}

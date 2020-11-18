@@ -10,6 +10,7 @@ import { getCharFromKeyCode } from './getCharFromKeyCode';
 export interface TextCell extends Cell {
     type: 'text',
     text: string,
+    placeholder?: string;
     validator?: (text: string) => boolean,
     renderer?: (text: string) => React.ReactNode
 }
@@ -18,12 +19,18 @@ export class TextCellTemplate implements CellTemplate<TextCell> {
 
     getCompatibleCell(uncertainCell: Uncertain<TextCell>): Compatible<TextCell> {
         const text = getCellProperty(uncertainCell, 'text', 'string');
+        let placeholder: string | undefined;
+        try {
+            placeholder = getCellProperty(uncertainCell, 'placeholder', 'string');
+        } catch {
+            placeholder = '';
+        }
         const value = parseFloat(text); // TODO more advanced parsing for all text based cells
-        return { ...uncertainCell, text, value };
+        return { ...uncertainCell, text, value, placeholder };
     }
 
     update(cell: Compatible<TextCell>, cellToMerge: UncertainCompatible<TextCell>): Compatible<TextCell> {
-        return this.getCompatibleCell({ ...cell, text: cellToMerge.text })
+        return this.getCompatibleCell({ ...cell, text: cellToMerge.text, placeholder: cellToMerge.placeholder })
     }
 
     handleKeyDown(cell: Compatible<TextCell>, keyCode: number, ctrl: boolean, shift: boolean, alt: boolean): { cell: Compatible<TextCell>, enableEditMode: boolean } {
@@ -36,13 +43,15 @@ export class TextCellTemplate implements CellTemplate<TextCell> {
     getClassName(cell: Compatible<TextCell>, isInEditMode: boolean) {
         const isValid = cell.validator ? cell.validator(cell.text) : true;
         const className = cell.className ? cell.className : '';
-        return `${isValid ? 'valid' : 'invalid'} ${className}`;
+        return `${isValid ? 'valid' : 'invalid'} ${cell.placeholder && cell.text === '' ? 'placeholder' : ''} ${className}`;
     }
 
     render(cell: Compatible<TextCell>, isInEditMode: boolean, onCellChanged: (cell: Compatible<TextCell>, commit: boolean) => void): React.ReactNode {
 
-        if (!isInEditMode)
-            return cell.renderer ? cell.renderer(cell.text) : cell.text;
+        if (!isInEditMode) {
+            const textToDisplay = cell.text === '' ? (cell.placeholder || '') : cell.text;
+            return cell.renderer ? cell.renderer(textToDisplay) : textToDisplay;
+        }
 
         return <input
             ref={input => {
@@ -58,6 +67,7 @@ export class TextCellTemplate implements CellTemplate<TextCell> {
             onCut={e => e.stopPropagation()}
             onPaste={e => e.stopPropagation()}
             onPointerDown={e => e.stopPropagation()}
+            placeholder={cell.placeholder}
             onKeyDown={e => {
                 if (isAlphaNumericKey(e.keyCode) || (isNavigationKey(e.keyCode))) e.stopPropagation();
             }}

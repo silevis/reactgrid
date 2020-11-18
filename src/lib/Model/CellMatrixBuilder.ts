@@ -51,7 +51,9 @@ export class CellMatrixBuilder implements ICellMatrixBuilder {
         this.cellMatrix.columns = this.cellMatrix.props.columns.reduce(
             (cols, column, idx) => {
                 const left = this.getLeft(idx, this.cellMatrix.props.stickyLeftColumns, cols);
-                const width = column.width || CellMatrix.DEFAULT_COLUMN_WIDTH;
+                const width = column.width 
+                    ? (column.width < CellMatrix.MIN_COLUMN_WIDTH ? CellMatrix.MIN_COLUMN_WIDTH : column.width) 
+                    : CellMatrix.DEFAULT_COLUMN_WIDTH;
                 cols.push({ ...column, idx, left, width, right: left + width });
                 this.cellMatrix.width += width;
                 // TODO what with columnIndexLookup?
@@ -92,8 +94,8 @@ export class CellMatrixBuilder implements ICellMatrixBuilder {
     getScrollableRange = (): Range => {
         const { stickyTopRows } = this.cellMatrix.props;
         const { stickyLeftColumns } = this.cellMatrix.props;
-        const firstScrollableRowId = (!stickyTopRows || stickyTopRows >= this.cellMatrix.rows.length ? 0 : stickyTopRows);
-        const firstScrollableColumnId = (!stickyLeftColumns || stickyLeftColumns >= this.cellMatrix.columns.length ? 0 : stickyLeftColumns);
+        const firstScrollableRowId = !stickyTopRows || stickyTopRows >= this.cellMatrix.rows.length ? 0 : stickyTopRows;
+        const firstScrollableColumnId = !stickyLeftColumns || stickyLeftColumns >= this.cellMatrix.columns.length ? 0 : stickyLeftColumns;
         return new Range(this.cellMatrix.rows.slice(firstScrollableRowId), this.cellMatrix.columns.slice(firstScrollableColumnId));
     }
 

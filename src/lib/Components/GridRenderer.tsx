@@ -25,6 +25,7 @@ export const GridRenderer: React.FC<GridRendererProps> = ({ state, eventHandlers
                 onPaste={eventHandlers.pasteHandler}
                 onCopy={eventHandlers.copyHandler}
                 onCut={eventHandlers.cutHandler}
+                onBlur={eventHandlers.blurHandler}
                 data-cy='reactgrid-content'
                 style={{
                     width: state.props?.enableFullWidthHeader ? '100%' : cellMatrix.width,

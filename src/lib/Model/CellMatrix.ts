@@ -25,6 +25,7 @@ export class CellMatrix<TStickyRanges extends StickyRanges = StickyRanges, TCell
 
     static DEFAULT_ROW_HEIGHT = 25;
     static DEFAULT_COLUMN_WIDTH = 150;
+    static MIN_COLUMN_WIDTH = 40;
 
     props!: TCellMatrixProps;
     scrollableRange!: Range;
