@@ -33,11 +33,13 @@
     .rg-date-cell {
         justify-content: flex-end;
     }
-
     &.rg-email-cell.invalid {
         color: $template-content-invalid;
     }
-
+    &.rg-text-cell.placeholder {
+        color: #999;
+        font-size: 0.8em;
+    }
     &.rg-checkbox-cell {
         align-items: center;
         justify-content: center;

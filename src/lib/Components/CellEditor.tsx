@@ -26,7 +26,7 @@ export interface PositionState<TState extends State = State> {
     location: Location;
 }
 
-export const CellEditorRenderer: React.FunctionComponent<CellEditorRendererProps> = ({ state, positionCalculator }) => {
+export const CellEditorRenderer: React.FC<CellEditorRendererProps> = ({ state, positionCalculator }) => {
     const { currentlyEditedCell } = state;
     const location = state.focusedLocation!;
 
