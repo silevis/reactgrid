@@ -6,7 +6,7 @@ import { Highlight } from '../Model/PublicModel';
 import { CellFocus } from './CellFocus';
 import { RowRenderer } from './RowRenderer';
 import { CellRendererProps } from './CellRenderer';
-import { isMobileDevice } from '../../core';
+import { isMobileDevice } from '../Functions/isMobileDevice';
 
 export interface PaneProps {
     renderChildren: boolean;
