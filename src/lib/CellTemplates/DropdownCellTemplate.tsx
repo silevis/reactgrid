@@ -2,10 +2,12 @@ import * as React from 'react';
 
 // NOTE: all modules imported below may be imported from '@silevis/reactgrid'
 import { getCellProperty } from '../Functions/getCellProperty';
-import { keyCodes } from '../Functions/keyCodes';
+import { getCharFromKeyCode } from './getCharFromKeyCode';
+import { isAlphaNumericKey } from './keyCodeCheckings';
 import { Cell, CellTemplate, Compatible, Uncertain, UncertainCompatible } from '../Model/PublicModel';
 
 import Select, { OptionProps, MenuProps } from 'react-select';
+import { keyCodes } from '../Functions/keyCodes';
 
 export type OptionType = {
     label: string;
@@ -14,23 +16,35 @@ export type OptionType = {
 
 export interface DropdownCell extends Cell {
     type: 'dropdown';
-    currentValue: string;
+    selectedValue?: string;
     values: OptionType[];
     isDisabled?: boolean;
     isOpen?: boolean;
+    inputValue?: string;
 }
 
 export class DropdownCellTemplate implements CellTemplate<DropdownCell> {
 
     getCompatibleCell(uncertainCell: Uncertain<DropdownCell>): Compatible<DropdownCell> {
-        const currentValue = getCellProperty(uncertainCell, 'currentValue', 'string');
+        let selectedValue: string | undefined;
+        try {
+            selectedValue = getCellProperty(uncertainCell, 'selectedValue', 'string')
+        } catch {
+            selectedValue = undefined;
+        }
         const values = getCellProperty(uncertainCell, 'values', 'object');
-        const value = parseFloat(currentValue);
+        const value = selectedValue ? parseFloat(selectedValue) : NaN;
         let isDisabled = true;
         try {
             isDisabled = getCellProperty(uncertainCell, 'isDisabled', 'boolean');
         } catch {
             isDisabled = false;
+        }
+        let inputValue: string | undefined;
+        try {
+            inputValue = getCellProperty(uncertainCell, 'inputValue', 'string');
+        } catch {
+            inputValue = undefined;
         }
         let isOpen: boolean;
         try {
@@ -38,11 +52,12 @@ export class DropdownCellTemplate implements CellTemplate<DropdownCell> {
         } catch {
             isOpen = false;
         }
-        return { ...uncertainCell, currentValue, text: currentValue, value, values, isDisabled: isDisabled, isOpen };
+        const text = selectedValue || '';
+        return { ...uncertainCell, selectedValue, text, value, values, isDisabled, isOpen, inputValue };
     }
 
     update(cell: Compatible<DropdownCell>, cellToMerge: UncertainCompatible<DropdownCell>): Compatible<DropdownCell> {
-        return this.getCompatibleCell({ ...cell, currentValue: cellToMerge.currentValue, isOpen: cellToMerge.isOpen });
+        return this.getCompatibleCell({ ...cell, selectedValue: cellToMerge.selectedValue, isOpen: cellToMerge.isOpen, inputValue: cellToMerge.inputValue });
     }
 
     getClassName(cell: Compatible<DropdownCell>, isInEditMode: boolean) {
@@ -52,8 +67,11 @@ export class DropdownCellTemplate implements CellTemplate<DropdownCell> {
 
     handleKeyDown(cell: Compatible<DropdownCell>, keyCode: number, ctrl: boolean, shift: boolean, alt: boolean): { cell: Compatible<DropdownCell>, enableEditMode: boolean } {
         if ((keyCode === keyCodes.SPACE || keyCode === keyCodes.ENTER) && !shift) {
-            return { cell: { ...cell, isOpen: !cell.isOpen }, enableEditMode: false };
+            return { cell: this.getCompatibleCell({ ...cell, isOpen: !cell.isOpen }), enableEditMode: false };
         }
+        const char = getCharFromKeyCode(keyCode, shift);
+        if (!ctrl && !alt && isAlphaNumericKey(keyCode))
+            return { cell: this.getCompatibleCell({ ...cell, inputValue: shift ? char : char.toLowerCase(), isOpen: !cell.isOpen }), enableEditMode: false }
         return { cell, enableEditMode: false };
     }
 
@@ -64,11 +82,14 @@ export class DropdownCellTemplate implements CellTemplate<DropdownCell> {
     ): React.ReactNode {
         const selectRef = React.useRef<any>(null);
 
+        const [inputValue, setInputValue] = React.useState<string | undefined>(cell.inputValue);
+
         React.useEffect(() => {
             if (cell.isOpen && selectRef.current) {
                 selectRef.current.focus();
+                setInputValue(cell.inputValue);
             }
-        }, [cell.isOpen]);
+        }, [cell.isOpen, cell.inputValue]);
 
         return (
             <div
@@ -76,15 +97,19 @@ export class DropdownCellTemplate implements CellTemplate<DropdownCell> {
                 onPointerDown={e => onCellChanged(this.getCompatibleCell({ ...cell, isOpen: true }), true)}
             >
                 <Select
-                    // add typing new value
-                    isSearchable={false}
+                    {...(cell.inputValue && {
+                        inputValue,
+                        defaultInputValue: inputValue,
+                        onInputChange: e => setInputValue(e),
+                    })}
+                    isSearchable={true}
                     ref={selectRef}
                     {...(cell.isOpen !== undefined && { menuIsOpen: cell.isOpen })}
-                    onMenuClose={() => onCellChanged(this.getCompatibleCell({ ...cell, isOpen: !cell.isOpen }), true)}
+                    onMenuClose={() => onCellChanged(this.getCompatibleCell({ ...cell, isOpen: !cell.isOpen, inputValue: undefined }), true)}
                     onMenuOpen={() => onCellChanged(this.getCompatibleCell({ ...cell, isOpen: true }), true)}
-                    onChange={(e) => onCellChanged(this.getCompatibleCell({ ...cell, currentValue: (e as { value: string }).value, isOpen: false }), true)}
+                    onChange={(e) => onCellChanged(this.getCompatibleCell({ ...cell, selectedValue: (e as { value: string }).value, isOpen: false, inputValue: undefined }), true)}
                     blurInputOnSelect={true}
-                    defaultValue={cell.values.find(val => val.value === cell.currentValue)}
+                    defaultValue={cell.values.find(val => val.value === cell.selectedValue)}
                     isDisabled={cell.isDisabled}
                     options={cell.values}
                     onKeyDown={e => e.stopPropagation()}
