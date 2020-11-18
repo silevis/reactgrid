@@ -71,7 +71,15 @@ export const TestGrid: React.FC<TestGridProps> = (props) => {
                     return { type: 'checkbox', checked: false, checkedText: 'Checked', uncheckedText: 'Unchecked' }
                 case 7:
                     return { type: 'flag', groupId: Math.random() < .66 ? Math.random() < .5 ? 'A' : 'B' : undefined, text: 'bra' }
-                // case 8: // TODO allow user to pass non focusable cell (header cell) with arrows
+                case 8:
+                    return {
+                        type: 'dropdown', values: [
+                            { value: 'react', label: 'React' },
+                            { value: 'vue', label: 'Vue' },
+                            { value: 'angular', label: 'Angular' }
+                        ], currentValue: 'react', isDisabled: false
+                    }
+                // case 9: // TODO allow user to pass non focusable cell (header cell) with arrows
                 //     return { type: 'header', text: `${ri} - ${ci}` }
                 default:
                     return { type: 'text', text: `${ri} - ${ci}`, validator: (text: string): boolean => true }
