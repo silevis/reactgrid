@@ -117,18 +117,22 @@
     .shadow {
         position: sticky;
         &.shadow-top {
+            pointer-events: none; //Needed for Firefox 
             top: 0;
             box-shadow: $shadow-on-bottom $cell-shadow-color;
         }
         &.shadow-left {
+            pointer-events: none; //Needed for Firefox 
             left: 0;
             box-shadow: $shadow-on-right $cell-shadow-color; 
         }
         &.shadow-bottom {
+            pointer-events: none; //Needed for Firefox 
             bottom: 0;
             box-shadow: $shadow-on-top $cell-shadow-color;
         }
         &.shadow-right {
+            pointer-events: none; //Needed for Firefox 
             right: 0;
             box-shadow: $shadow-on-left $cell-shadow-color;
         }
