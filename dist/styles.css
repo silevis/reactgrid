@@ -237,15 +237,19 @@
   .reactgrid-content .shadow {
     position: sticky; }
     .reactgrid-content .shadow.shadow-top {
+      pointer-events: none;
       top: 0;
       box-shadow: 0 3px 7px -3px rgba(0, 0, 0, 0.35); }
     .reactgrid-content .shadow.shadow-left {
+      pointer-events: none;
       left: 0;
       box-shadow: 3px 0 7px -3px rgba(0, 0, 0, 0.35); }
     .reactgrid-content .shadow.shadow-bottom {
+      pointer-events: none;
       bottom: 0;
       box-shadow: 0 -3px 7px -3px rgba(0, 0, 0, 0.35); }
     .reactgrid-content .shadow.shadow-right {
+      pointer-events: none;
       right: 0;
       box-shadow: -3px 0 7px -3px rgba(0, 0, 0, 0.35); }
     .reactgrid-content .shadow.shadow-top-left-corner {
