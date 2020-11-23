@@ -27,9 +27,11 @@
     "cross-env": "^7.0.2",
     "cypress": "^5.2.0",
     "cypress-plugin-tab": "^1.0.5",
+    "husky": "^5.0.4",
     "node-sass": "^4.14.1",
     "npm-run-all": "^4.1.5",
     "npm-version-suffix": "^0.2.0",
+    "pinst": "^2.1.1",
     "react-scripts": "^3.4.3",
     "typescript": "^3.9.7"
   },
@@ -44,6 +46,9 @@
     "build:tsc": "rm -rf ./dist && tsc -p tsconfig.prod.json",
     "copy:assets": "cp -r src/*.scss dist",
     "build:assets": "node-sass src/styles.scss --output dist",
+    "postinstall": "husky install",
+    "prepublish": "pinst --disable",
+    "postpublish": "pinst --enable",
     "copy:package.json": "cp -r package.json dist",
     "copy:testEnvConfig.d.ts": "cp -r src/test/testEnvConfig.d.ts dist/test",
     "copy:theming-test.scss": "cp -r src/test/theming-test.scss dist/test",
@@ -71,8 +76,5 @@
   "browserslist": [
     ">0.2%",
     "not dead"
-  ],
-  "dependencies": {
-    "react-select": "^3.1.0"
-  }
+  ]
 }
