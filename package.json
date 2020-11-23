@@ -27,7 +27,7 @@
     "cross-env": "^7.0.2",
     "cypress": "^5.2.0",
     "cypress-plugin-tab": "^1.0.5",
-    "husky": "^5.0.4",
+    "husky": "^4.3.0",
     "is-ci": "^2.0.0",
     "node-sass": "^4.14.1",
     "npm-run-all": "^4.1.5",
@@ -67,6 +67,12 @@
     "cypress:headless:standard": "npx cypress run --headless --quiet --browser chrome -s 'cypress/integration/tests/standard/*'",
     "cypress:headless:sticky": "npx cypress run --headless --quiet --browser chrome -s 'cypress/integration/tests/sticky/*'",
     "remove-suffix": "cross-env SUFFIX=rc node ./node_modules/npm-version-suffix/run-remove-suffix.js"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "npm test",
+      "pre-push": "npm run run:all:tests"
+    }
   },
   "eslintConfig": {
     "extends": "react-app",
