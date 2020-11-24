@@ -48,7 +48,7 @@
     "build:tsc": "rm -rf ./dist && tsc -p tsconfig.prod.json",
     "copy:assets": "cp -r src/*.scss dist",
     "build:assets": "node-sass src/styles.scss --output dist",
-    "postinstall": "is-ci || husky install",
+    "postinstall": "is-ci || npx husky install",
     "prepublishOnly": "node ./../node_modules/pinst/bin.js --disable",
     "postpublish": "node ./../node_modules/pinst/bin.js --enable",
     "copy:package.json": "cp -r package.json dist",
