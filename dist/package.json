@@ -1,7 +1,7 @@
 {
   "name": "@silevis/reactgrid",
   "description": "Add spreadsheet-like behavior to your React app.",
-  "version": "3.1.8",
+  "version": "3.1.9",
   "homepage": "https://reactgrid.com",
   "license": "MIT",
   "author": "Silevis Software",
@@ -27,16 +27,20 @@
     "cross-env": "^7.0.2",
     "cypress": "^5.2.0",
     "cypress-plugin-tab": "^1.0.5",
+    "husky": "^4.3.0",
     "node-sass": "^4.14.1",
     "npm-run-all": "^4.1.5",
     "npm-version-suffix": "^0.2.0",
+    "pinst": "^2.1.1",
     "react-scripts": "^3.4.3",
     "typescript": "^3.9.7"
   },
   "peerDependencies": {
     "react": "^16.13.1",
-    "react-dom": "^16.13.1",
-    "react-select": "3.1.0"
+    "react-dom": "^16.13.1"
+  },
+  "dependencies": {
+    "react-select": "^3.1.0"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -44,6 +48,9 @@
     "build:tsc": "rm -rf ./dist && tsc -p tsconfig.prod.json",
     "copy:assets": "cp -r src/*.scss dist",
     "build:assets": "node-sass src/styles.scss --output dist",
+    "postinstall": "is-ci || husky install",
+    "prepublishOnly": "node ./../node_modules/pinst/bin.js --disable",
+    "postpublish": "node ./../node_modules/pinst/bin.js --enable",
     "copy:package.json": "cp -r package.json dist",
     "copy:testEnvConfig.d.ts": "cp -r src/test/testEnvConfig.d.ts dist/test",
     "copy:theming-test.scss": "cp -r src/test/theming-test.scss dist/test",
@@ -54,11 +61,16 @@
     "copy:flag-cell-style.scss": "cp -r src/test/flagCell/flag-cell-style.scss dist/test/flagCell",
     "pre-deploy": "npm-run-all build:tsc copy:assets build:assets copy:package.json copy:testEnvConfig.d.ts copy:theming-test.scss copy:flag-cell-style.scss copy:README.md copy:LICENSE copy:tests copy:.npmignore",
     "deploy": "npm publish dist --access=public && echo 'Finished publishing NPM package'",
-    "test:cypress": "node_modules\\.bin\\cypress open",
+    "test:cypress": "npx cypress open",
     "run:all:tests": "run-p --continue-on-error cypress:headless:standard cypress:headless:sticky",
-    "cypress:headless:standard": "node_modules\\.bin\\cypress run --headless --browser chrome -s 'cypress/integration/tests/standard/*'",
-    "cypress:headless:sticky": "node_modules\\.bin\\cypress run --headless --browser chrome -s 'cypress/integration/tests/sticky/*'",
+    "cypress:headless:standard": "npx cypress run --headless --quiet --browser chrome -s 'cypress/integration/tests/standard/*'",
+    "cypress:headless:sticky": "npx cypress run --headless --quiet --browser chrome -s 'cypress/integration/tests/sticky/*'",
     "remove-suffix": "cross-env SUFFIX=rc node ./node_modules/npm-version-suffix/run-remove-suffix.js"
+  },
+  "husky": {
+    "hooks": {
+      "pre-push": "npm run run:all:tests"
+    }
   },
   "eslintConfig": {
     "extends": "react-app",
@@ -71,8 +83,5 @@
   "browserslist": [
     ">0.2%",
     "not dead"
-  ],
-  "dependencies": {
-    "react-select": "^3.1.0"
-  }
+  ]
 }
