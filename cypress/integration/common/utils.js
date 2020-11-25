@@ -68,7 +68,7 @@ class Utils {
             scrollableElement.trigger('pointerdown', clientX, clientY, { pointerType: 'mouse' });
         }
         scrollableElement.trigger('pointerup', clientX, clientY, { force: true, pointerType: 'mouse' });
-        cy.wait(200);
+        cy.wait(500);
     }
 
     scrollTo(left, top) {
@@ -152,14 +152,14 @@ class Utils {
     assertScrolledToTop() {
         this.getScrollableElement().then($scrollable => {
             const v = $scrollable[0];
-            expect(v.scrollTop, 'Scroll top').to.be.eq(0)
+            expect(Math.round((v.scrollTop)), 'Scroll top').to.be.eq(0)
         });
     }
 
     assertScrolledToBottom(includeLineWidth = false) {
         this.getScrollableElement().then($scrollable => {
             const v = $scrollable[0];
-            expect(v.scrollTop + v.clientHeight + (includeLineWidth ? -config.lineWidth : 0), 'Scroll bottom')
+            expect(Math.round((v.scrollTop + v.clientHeight + (includeLineWidth ? -config.lineWidth : 0)) + 1), 'Scroll bottom')
                 .to.be.least(config.rows * config.cellHeight)
         });
     }
@@ -167,15 +167,15 @@ class Utils {
     assertScrolledToLeft() {
         this.getScrollableElement().then($scrollable => {
             const v = $scrollable[0];
-            expect(v.scrollLeft, 'Scroll left').to.be.eq(0);
+            expect(Math.round((v.scrollLeft)), 'Scroll left').to.be.eq(0);
         });
     }
 
     assertScrolledToRight(includeLineWidth = false) {
         this.getScrollableElement().then($scrollable => {
             const v = $scrollable[0];
-            expect(v.scrollLeft + v.clientWidth + (includeLineWidth ? -config.lineWidth : 0), 'Scroll Right')
-                .to.be.eq(config.columns * config.cellWidth);
+            expect(Math.round((v.scrollLeft + v.clientWidth + (includeLineWidth ? -config.lineWidth : 0)) + 1), 'Scroll Right')
+                .to.be.least(config.columns * config.cellWidth);
         });
     }
 

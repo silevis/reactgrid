@@ -19,7 +19,7 @@ context('Other', () => {
 
     it('should dont open cell editor on non editable cell', () => { // ✅
         Utils.scrollTo(config.cellWidth * 8, 0);
-        cy.wait(200);
+        cy.wait(500);
         Utils.selectCellInEditMode(Utils.getCellXCenter(), config.cellHeight * 2 + Utils.getCellYCenter());
         Utils.getCellEditor().should('not.be.visible');
     });
