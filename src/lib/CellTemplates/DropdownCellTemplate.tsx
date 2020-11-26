@@ -80,10 +80,11 @@ export class DropdownCellTemplate implements CellTemplate<DropdownCell> {
         isInEditMode: boolean,
         onCellChanged: (cell: Compatible<DropdownCell>, commit: boolean) => void
     ): React.ReactNode {
+        //eslint-disable-next-line
         const selectRef = React.useRef<any>(null);
-
+        //eslint-disable-next-line
         const [inputValue, setInputValue] = React.useState<string | undefined>(cell.inputValue);
-
+        //eslint-disable-next-line
         React.useEffect(() => {
             if (cell.isOpen && selectRef.current) {
                 selectRef.current.focus();

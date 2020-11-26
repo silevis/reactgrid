@@ -20,20 +20,20 @@
   "typings": "reactgrid.d.ts",
   "devDependencies": {
     "@cypress/snapshot": "^2.1.7",
-    "@types/node": "^14.11.2",
-    "@types/react": "^16.9.49",
-    "@types/react-dom": "^16.9.8",
+    "@types/node": "^14.14.10",
+    "@types/react": "^17.0.0",
+    "@types/react-dom": "^17.0.0",
     "@types/react-select": "^3.0.26",
     "cross-env": "^7.0.2",
-    "cypress": "^5.2.0",
+    "cypress": "^6.0.0",
     "cypress-plugin-tab": "^1.0.5",
     "git-branch-is": "^4.0.0",
     "husky": "^4.3.0",
     "node-sass": "^4.14.1",
     "npm-run-all": "^4.1.5",
     "npm-version-suffix": "^0.2.0",
-    "react-scripts": "^3.4.3",
-    "typescript": "^3.9.7"
+    "react-scripts": "^4.0.1",
+    "typescript": "^4.1.2"
   },
   "peerDependencies": {
     "react": "^16.13.1",

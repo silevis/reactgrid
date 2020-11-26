@@ -8,5 +8,6 @@
             "runningStatusMessage": "Compiling ${fileBasename}",
             "finishStatusMessage": "${fileBasename} compiled"
         }
-    ]
+    ],
+    "typescript.tsdk": "node_modules\\typescript\\lib"
 }
