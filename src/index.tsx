@@ -1,22 +1,30 @@
 import * as React from 'react'
 import * as ReactDOM from 'react-dom';
-import { ExtTestGrid as TestGrid } from './test/TestGrid';
+import { ExtTestGrid } from './test/TestGrid';
 import { ReactGrid } from './lib/Components/ReactGrid';
-// import './theming-test.scss';
+// import './test/theming-test.scss';
 import { config } from './test/testEnvConfig';
 
 const props = {
   component: ReactGrid,
   config
 }
-let component = <TestGrid {...props} />;
-TestGrid.displayName = 'TestGrid';
+let component = <ExtTestGrid {...props} />;
+ExtTestGrid.displayName = 'TestGrid';
 switch (window.location.pathname) {
   case '/enableSticky':
-    component = <TestGrid {...props}
+    component = <ExtTestGrid
+      {...props}
       enableSticky
     />;
-    TestGrid.displayName = 'TestGridWithEnabledSticky';
+    ExtTestGrid.displayName = 'TestGridWithEnabledSticky';
+    break;
+  case '/enableFrozenFocus':
+    component = <ExtTestGrid
+      {...props}
+      enableFrozenFocus
+    />;
+    ExtTestGrid.displayName = 'TestGridWithEnabledFrozenFocus';
     break;
   default:
     break;

@@ -8,7 +8,6 @@ export const GridRenderer: React.FC<GridRendererProps> = ({ state, eventHandlers
     return (<ErrorBoundary>
         <div
             className='reactgrid'
-            data-cy="reactgrid"
             style={{
                 position: 'relative',
                 width: state.props?.enableFullWidthHeader ? '100%' : cellMatrix.width,
@@ -26,7 +25,6 @@ export const GridRenderer: React.FC<GridRendererProps> = ({ state, eventHandlers
                 onCopy={eventHandlers.copyHandler}
                 onCut={eventHandlers.cutHandler}
                 onBlur={eventHandlers.blurHandler}
-                data-cy='reactgrid-content'
                 style={{
                     width: state.props?.enableFullWidthHeader ? '100%' : cellMatrix.width,
                     height: cellMatrix.height,

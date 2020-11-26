@@ -3,7 +3,7 @@ import {
     Column, Row, Id, MenuOption, SelectionMode, DropPosition, CellLocation,
     DefaultCellTypes, CellChange, ReactGridProps, TextCell, NumberCell, CellStyle
 } from './../reactgrid';
-import { Config } from './testEnvConfig';
+import { TestConfig } from './testEnvConfig';
 import '../styles.scss';
 import { FlagCell, FlagCellTemplate } from './flagCell/FlagCellTemplate';
 
@@ -12,12 +12,10 @@ type TestGridCells = DefaultCellTypes | FlagCell;
 type TestGridRow = Row<TestGridCells>;
 
 interface TestGridProps {
-    containerHeight?: number;
-    containerWidth?: number;
-    containerMargin?: number;
     enableSticky?: boolean;
     enableColumnAndRowSelection?: boolean;
-    config: Config;
+    enableFrozenFocus?: boolean;
+    config: TestConfig;
     component: React.ComponentClass<ReactGridProps>;
 }
 
@@ -40,7 +38,7 @@ const style: CellStyle = {
 };
 
 export const TestGrid: React.FC<TestGridProps> = (props) => {
-    const { config, containerHeight, containerWidth, containerMargin, component, enableSticky, enableColumnAndRowSelection } = props;
+    const { config, component, enableSticky, enableColumnAndRowSelection, enableFrozenFocus } = props;
 
     const [columns, setColumns] = React.useState(() => new Array(config.columns).fill({ columnId: 0, resizable: true, reorderable: true, width: -1 })
         .map<Column>((_, ci) => ({ columnId: `col-${ci}`, resizable: true, reorderable: true, width: config.cellWidth })));
@@ -226,9 +224,9 @@ export const TestGrid: React.FC<TestGridProps> = (props) => {
         <>
             <div className='test-grid-container' data-cy='div-scrollable-element' style={{
                 ...(!config.pinToBody && {
-                    height: containerHeight || config.rgViewportHeight,
-                    width: containerWidth || config.rgViewportWidth,
-                    margin: containerMargin || config.margin,
+                    height: config.rgViewportHeight,
+                    width: config.rgViewportWidth,
+                    margin: config.margin,
                     overflow: 'auto',
                 }),
                 position: 'relative',
@@ -247,16 +245,13 @@ export const TestGrid: React.FC<TestGridProps> = (props) => {
                 <Component
                     rows={rows}
                     columns={columns}
-                    initialFocusLocation={{ columnId: 'col-1', rowId: 'row-2' }}
-                    // focusLocation={{ columnId: 'col-1', rowId: 'row-3' }}
-                    // onCellsChanged={handleChangesTest2} // This handler should be allowed
+                    initialFocusLocation={config.initialFocusLocation}
+                    focusLocation={enableFrozenFocus ? config.focusLocation : undefined}
+                    // onCellsChanged={handleChangesTest2} // TODO This handler should be allowed
                     onCellsChanged={handleChanges}
                     onColumnResized={handleColumnResize}
                     customCellTemplates={{ 'flag': new FlagCellTemplate() }}
-                    highlights={[
-                        { columnId: 'col-1', rowId: 'row-1', borderColor: '#00ff00' },
-                        { columnId: 'col-0', rowId: 'row-1', borderColor: 'red' }
-                    ]}
+                    highlights={config.highlights}
                     stickyLeftColumns={enableSticky ? config.stickyLeft : undefined}
                     stickyRightColumns={enableSticky ? config.stickyRight : undefined}
                     stickyTopRows={enableSticky ? config.stickyTop : undefined}
@@ -274,11 +269,7 @@ export const TestGrid: React.FC<TestGridProps> = (props) => {
                     enableRangeSelection={config.enableRangeSelection}
                     enableFillHandle={config.enableFillHandle}
                     enableGroupIdRender={config.enableGroupIdRender}
-                    labels={{
-                        copyLabel: 'Copy me!',
-                        pasteLabel: 'Paste me!',
-                        cutLabel: 'Cut me!',
-                    }}
+                    labels={config.labels}
                 />
                 {config.enableAdditionalContent &&
                     <>
@@ -338,6 +329,9 @@ const Logo: React.FC<{ isPro?: boolean }> = props => {
                 }}>
                 PRO</div>}
         </h1>
+        <a href={'/'} style={{ padding: '3px', color: window.location.pathname === '/' ? 'gold' : 'gray' }}>standard</a>
+        <a href={'/enableSticky'} style={{ padding: '3px', color: window.location.pathname === '/enableSticky' ? 'gold' : 'gray' }}>enableSticky</a>
+        <a href={'/enableFrozenFocus'} style={{ padding: '3px', color: window.location.pathname === '/enableFrozenFocus' ? 'gold' : 'gray' }}>enableFrozenFocus</a>
     </div>
 }
 

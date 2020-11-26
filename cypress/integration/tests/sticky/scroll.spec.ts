@@ -1,57 +1,65 @@
-const Utils = require('../../common/utils');
-const config = require('../../../../src/test/testEnvConfig');
-const Constants = require('../../common/constants');
+/// <reference types="Cypress" />
+
+import { visitSticky } from '../../common/visit';
+import { constants } from '../../common/constants';
+import { Utils } from '../../common/utils';
+import { getCellFocus, getScrollableElement } from '../../common/DOMElements';
+import {
+    assertIsElementInScrollable, assertElementTopIsEqual, assertElementLeftIsEqual, assertScrolledToTop, assertScrolledToLeft
+} from '../../common/assert';
+import { config } from '../../../../src/test/testEnvConfig';
 
 context('Scroll', () => {
+
     beforeEach(() => {
-        Utils.visitSticky();
+        visitSticky();
     });
 
     it.skip('should scroll viewport when cell is partially visible and focused', () => { // ✅
         Utils.scrollTo(0, Utils.getCellYCenter());
         Utils.selectCell(config.cellWidth + 5, config.cellHeight * config.stickyTop + 5);
-        Utils.assertIsElementInScrollable(Utils.getCellFocus());
+        assertIsElementInScrollable(getCellFocus());
 
-        Utils.assertElementTopIsEqual(Utils.getCellFocus(), 0);
+        assertElementTopIsEqual(getCellFocus(), 0);
 
         Utils.scrollTo(0, Utils.getCellYCenter());
 
         Utils.selectCell((config.cellWidth * config.stickyLeft) + 5, config.cellHeight * config.stickyTop + 5);
-        Utils.assertIsElementInScrollable(Utils.getCellFocus());
+        assertIsElementInScrollable(getCellFocus());
 
-        Utils.assertElementTopIsEqual(Utils.getCellFocus(), 0);
+        assertElementTopIsEqual(getCellFocus(), 0);
     });
 
     it('should scroll viewport when cell is not fully visible vertically', () => { // ✅
         Utils.scrollTo(0, Utils.getCellYCenter());
         Utils.selectCell(config.cellWidth + 5, config.cellHeight * config.stickyTop + 5);
-        Utils.assertIsElementInScrollable(Utils.getCellFocus());
+        assertIsElementInScrollable(getCellFocus());
 
-        Utils.assertElementTopIsEqual(Utils.getCellFocus(), 0);
+        assertElementTopIsEqual(getCellFocus(), 0);
 
         Utils.scrollTo(0, Utils.getCellYCenter());
 
         Utils.selectCell((config.cellWidth * config.stickyLeft) + (config.cellWidth * 2), config.cellHeight * config.stickyTop + 5);
-        Utils.assertIsElementInScrollable(Utils.getCellFocus());
+        assertIsElementInScrollable(getCellFocus());
 
-        Utils.assertElementTopIsEqual(Utils.getCellFocus(), 0);
+        assertElementTopIsEqual(getCellFocus(), 0);
     });
 
     it('should scroll viewport when cell is not fully visible horizontally', () => { // ✅
         Utils.scrollTo(Utils.getCellXCenter(), 0);
         Utils.selectCell(config.cellWidth * config.stickyLeft + 5, config.cellHeight + 5);
-        Utils.assertIsElementInScrollable(Utils.getCellFocus());
+        assertIsElementInScrollable(getCellFocus());
 
-        Utils.assertElementLeftIsEqual(Utils.getCellFocus(), 0);
+        assertElementLeftIsEqual(getCellFocus(), 0);
 
-        Utils.getScrollableElement().then($viewport => {
+        getScrollableElement().then($viewport => {
             const v = $viewport[0];
             const stickyRightSize = config.isPro ? config.stickyRight * config.cellWidth : 0;
             Utils.selectCell(v.clientWidth - stickyRightSize - 5, config.cellHeight + Utils.getCellYCenter());
 
-            Utils.assertIsElementInScrollable(Utils.getCellFocus());
+            assertIsElementInScrollable(getCellFocus());
             const stickyLeftSize = config.stickyLeft * config.cellWidth;
-            Utils.assertElementLeftIsEqual(Utils.getCellFocus(), v.clientWidth - stickyLeftSize - stickyRightSize - (v.clientWidth) % config.cellWidth - config.lineWidth)
+            assertElementLeftIsEqual(getCellFocus(), v.clientWidth - stickyLeftSize - stickyRightSize - (v.clientWidth) % config.cellWidth - config.lineWidth)
         });
     });
 
@@ -59,18 +67,18 @@ context('Scroll', () => {
         Utils.scrollToBottom();
         Utils.selectCell(config.cellWidth * 2 + Utils.getCellXCenter(), Utils.getCellYCenter());
         for (let i = 0; i < config.stickyTop; i++) {
-            Utils.keyDown(Constants.keyCodes.ArrowDown, { force: true });
+            Utils.keyDown(constants.keyCodes.ArrowDown, { force: true });
         };
-        Utils.assertScrolledToTop();
+        assertScrolledToTop();
     });
 
     it('should scroll to left on arrow right and focus enter scrollable area', () => { // ✅
         Utils.scrollToRight();
         Utils.selectCell(Utils.getCellXCenter(), config.cellHeight * 5 + Utils.getCellYCenter());
         for (let i = 0; i < config.stickyLeft; i++) {
-            Utils.keyDown(Constants.keyCodes.ArrowRight, { force: true });
+            Utils.keyDown(constants.keyCodes.ArrowRight, { force: true });
         };
-        Utils.assertScrolledToLeft();
+        assertScrolledToLeft();
     });
 
 });
