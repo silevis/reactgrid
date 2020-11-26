@@ -1,4 +1,3 @@
-/// <reference types="cypress" />
 
 import { getScrollableElement } from './DOMElements';
 import { Utils } from './utils';
@@ -51,22 +50,23 @@ export function assertScrolledToTop(): void {
 export function assertScrolledToBottom(includeLineWidth = false): void {
     getScrollableElement().then($scrollable => {
         const v = $scrollable[0];
-        expect(Utils.round(v.scrollTop + v.clientHeight + (includeLineWidth ? -config.lineWidth : 0)) + 1, 'Scroll bottom')
-            .to.be.least(config.rows * config.cellHeight)
+        const expectedValue = Utils.round(v.scrollTop + v.clientHeight + (includeLineWidth ? -config.lineWidth : 0)) + 1;
+        expect(expectedValue, 'Scroll bottom').to.be.least(config.rows * config.cellHeight);
     });
 }
 
 export function assertScrolledToLeft(): void {
     getScrollableElement().then($scrollable => {
         const v = $scrollable[0];
-        expect(Utils.round(v.scrollLeft), 'Scroll left').to.be.eq(0);
+        const expectedValue = Utils.round(v.scrollLeft);
+        expect(expectedValue, 'Scroll left').to.be.eq(0);
     });
 }
 
 export function assertScrolledToRight(includeLineWidth = false): void {
     getScrollableElement().then($scrollable => {
         const v = $scrollable[0];
-        expect(Utils.round(v.scrollLeft + v.clientWidth + (includeLineWidth ? -config.lineWidth : 0)) + 1, 'Scroll Right')
-            .to.be.least(config.columns * config.cellWidth);
+        const expectedValue = Utils.round(v.scrollLeft + v.clientWidth + (includeLineWidth ? -config.lineWidth : 0)) + 1;
+        expect(expectedValue, 'Scroll Right').to.be.least(config.columns * config.cellWidth);
     });
 }

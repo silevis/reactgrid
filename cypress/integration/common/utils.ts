@@ -25,6 +25,10 @@ class Utilities {
         return getScrollableElement().scrollTo(left, top, { duration });
     }
 
+    wait() {
+        return this.isMacOs() ? 50 : 500;
+    }
+
     scrollToBottom(left = 0) {
         return this.scrollTo(left, config.rows * config.cellHeight);
     }
@@ -61,7 +65,7 @@ class Utilities {
         this.selectCell(x, y);
     }
 
-    keyDown(keyCode, customEventArgs, timeout = 200, log = true) {
+    keyDown(keyCode: number, customEventArgs: {} | undefined, timeout = 200, log = true) {
         const rg = getReactGridContent();
         if (customEventArgs !== undefined) {
             rg.trigger('keydown', Object.assign({}, { keyCode, log, force: true }, customEventArgs));

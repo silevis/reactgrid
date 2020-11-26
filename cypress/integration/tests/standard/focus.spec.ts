@@ -30,9 +30,9 @@ context('Focus', () => {
         Utils.selectCell(config.rgViewportWidth - config.cellWidth - Utils.getCellXCenter(), config.cellHeight * 4 + Utils.getCellYCenter());
         Utils.keyDown(constants.keyCodes.Home, { metaKey: true, ctrlKey: !Utils.isMacOs() && true, force: true });
 
-        cy.wait(500);
+        cy.wait(Utils.wait());
         assertElementLeftIsEqual(getCellFocus(), 0);
-        cy.wait(500);
+        cy.wait(Utils.wait());
         assertElementTopIsEqual(getCellFocus(), 0);
     })
 
@@ -40,9 +40,9 @@ context('Focus', () => {
         Utils.selectCell(config.rgViewportWidth - config.cellWidth - Utils.getCellXCenter(), config.cellHeight * 4 + Utils.getCellYCenter());
         Utils.keyDown(constants.keyCodes.End, { metaKey: true, ctrlKey: !Utils.isMacOs() && true, force: true });
 
-        cy.wait(500);
+        cy.wait(Utils.wait());
         assertElementLeftIsEqual(getCellFocus(), config.cellWidth * (config.columns - 1) - config.lineWidth);
-        cy.wait(500);
+        cy.wait(Utils.wait());
         assertElementTopIsEqual(getCellFocus(), config.cellHeight * (config.rows - 1) - config.lineWidth);
     })
 

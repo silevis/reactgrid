@@ -58,7 +58,7 @@
     "pre-deploy": "npm-run-all build:tsc copy:assets build:assets copy:package.json copy:theming-test.scss copy:flag-cell-style.scss copy:README.md copy:LICENSE copy:tests copy:.npmignore",
     "deploy": "npm publish dist --access=public && echo 'Finished publishing NPM package'",
     "test:cypress": "npx cypress open",
-    "run:all:tests": "run-p --continue-on-error cypress:headless:standard cypress:headless:sticky cypress:headless:frozenFocus",
+    "run:all:tests": "run-p cypress:headless:standard cypress:headless:sticky cypress:headless:frozenFocus",
     "cypress:headless:standard": "npx cypress run --headless --quiet --browser firefox -s 'cypress/integration/tests/standard/*'",
     "cypress:headless:sticky": "npx cypress run --headless --quiet --browser firefox -s 'cypress/integration/tests/sticky/*'",
     "cypress:headless:frozenFocus": "npx cypress run --headless --quiet --browser firefox -s 'cypress/integration/tests/frozenFocus/*'",

@@ -1,4 +1,3 @@
-/// <reference types="Cypress" />
 
 import { visit } from '../../common/visit';
 import { getCellEditor, getCell } from '../../common/DOMElements';
@@ -23,9 +22,9 @@ context('Other', () => {
 
     it('should dont open cell editor on non editable cell', () => { // ✅
         Utils.scrollTo(config.cellWidth * 8, 0);
-        cy.wait(500);
+        cy.wait(Utils.wait());
         Utils.selectCellInEditMode(Utils.getCellXCenter(), config.cellHeight * 2 + Utils.getCellYCenter());
-        getCellEditor().should('not.be.visible');
+        getCellEditor().should('not.exist');
     });
 
 });

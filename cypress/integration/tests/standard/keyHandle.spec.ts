@@ -1,11 +1,9 @@
-/// <reference types="Cypress" />
 
 import { visit } from '../../common/visit';
 import { constants } from '../../common/constants';
 import { getCellFocus, getCellEditor, getReactGrid } from '../../common/DOMElements';
 import {
     assertElementLeftIsEqual, assertScrolledToLeft, assertScrolledToRight, assertElementTopIsEqual, assertIsElementInScrollable,
-
 } from '../../common/assert';
 import { Utils } from '../../common/utils';
 import { config } from '../../../../src/test/testEnvConfig';
@@ -65,7 +63,7 @@ context('Keyboard', () => {
         Utils.selectCell(initFocusLeft + Utils.getCellXCenter(), initFocusTop + Utils.getCellYCenter());
         for (let i = 0; i < keyDownCount; i++) {
             getCellFocus().then($focus => {
-                expect(Utils.round(($focus.position().top))).to.be.equal(initFocusTop - 1 - (i * config.cellHeight));
+                expect(Utils.round($focus.position().top)).to.be.equal(initFocusTop - 1 - (i * config.cellHeight));
             });
             cy.wait(200);
             Utils.keyDown(constants.keyCodes.ArrowUp, { force: true });
@@ -74,7 +72,7 @@ context('Keyboard', () => {
         Utils.selectCell(initFocusLeft + Utils.getCellXCenter(), initFocusTop + Utils.getCellYCenter());
         for (let i = 0; i < keyDownCount; i++) {
             getCellFocus().then($focus => {
-                expect(Utils.round(($focus.position().top))).to.be.equal(initFocusTop - 1 + (i * config.cellHeight));
+                expect(Utils.round($focus.position().top)).to.be.equal(initFocusTop - 1 + (i * config.cellHeight));
             });
             cy.wait(200);
             Utils.keyDown(constants.keyCodes.ArrowDown, { force: true });
@@ -83,7 +81,7 @@ context('Keyboard', () => {
         Utils.selectCell(initFocusLeft + Utils.getCellXCenter(), initFocusTop + Utils.getCellYCenter());
         for (let i = 0; i < keyDownCount; i++) {
             getCellFocus().then($focus => {
-                expect(Utils.round(($focus.position().left))).to.be.equal(initFocusLeft - 1 + (i * config.cellWidth));
+                expect(Utils.round($focus.position().left)).to.be.equal(initFocusLeft - 1 + (i * config.cellWidth));
             });
             cy.wait(200);
             Utils.keyDown(constants.keyCodes.ArrowRight, { force: true });
@@ -92,7 +90,7 @@ context('Keyboard', () => {
         Utils.selectCell(initFocusLeft + Utils.getCellXCenter(), initFocusTop + Utils.getCellYCenter());
         for (let i = 0; i < keyDownCount - 1; i++) {
             getCellFocus().then($focus => {
-                expect(Utils.round(($focus.position().left))).to.be.equal(initFocusLeft - 1 - (i * config.cellWidth));
+                expect(Utils.round($focus.position().left)).to.be.equal(initFocusLeft - 1 - (i * config.cellWidth));
             });
             cy.wait(200);
             Utils.keyDown(constants.keyCodes.ArrowLeft, { force: true });
@@ -107,7 +105,7 @@ context('Keyboard', () => {
         Utils.selectCell(initFocusLeft + Utils.getCellXCenter(), initFocusTop + Utils.getCellYCenter());
         for (let i = 0; i < keyDownCount; i++) {
             getCellFocus().then($focus => {
-                expect(Utils.round(($focus.position().left))).to.be.equal(initFocusLeft - 1 + (i * config.cellWidth));
+                expect(Utils.round($focus.position().left)).to.be.equal(initFocusLeft - 1 + (i * config.cellWidth));
             });
             cy.wait(200);
             Utils.keyDown(constants.keyCodes.Tab, { force: true });
@@ -116,18 +114,16 @@ context('Keyboard', () => {
         Utils.selectCell(initFocusLeft + Utils.getCellXCenter(), initFocusTop + Utils.getCellYCenter());
         for (let i = 0; i < keyDownCount; i++) {
             getCellFocus().then($focus => {
-                expect(Utils.round(($focus.position().left))).to.be.equal(initFocusLeft - 1 - (i * config.cellWidth));
+                expect(Utils.round($focus.position().left)).to.be.equal(initFocusLeft - 1 - (i * config.cellWidth));
             });
             cy.wait(200);
             Utils.keyDown(constants.keyCodes.Tab, { shiftKey: true, force: true });
         };
     });
 
-    it('Enter key pressed should activate cell edit mode', () => { // 🔶
-        // 🔶 test passes if browser is focused
-
+    it('Enter key pressed should activate cell edit mode', () => { // ✅
         Utils.selectCellInEditMode(config.cellWidth + Utils.getCellXCenter(), config.cellHeight * 4 + Utils.getCellYCenter());
-        cy.wait(1000);
+        cy.wait(Utils.wait());
         getCellEditor().should('be.visible').and('have.length', 1);
     });
 
@@ -135,7 +131,7 @@ context('Keyboard', () => {
         // TODO FIX THIS FEATURE
 
         Utils.selectCellInEditMode(config.cellWidth + Utils.getCellXCenter(), config.cellHeight * 4 + Utils.getCellYCenter());
-        cy.wait(500);
+        cy.wait(Utils.wait());
         getCellEditor().should('be.visible').and('have.length', 1);
 
         const randomText = Utils.randomText();
@@ -145,7 +141,7 @@ context('Keyboard', () => {
         getCellEditor().should('be.visible').and('have.length', 1);
 
         Utils.keyDown(constants.keyCodes.Esc, { force: true });
-        cy.wait(500);
+        cy.wait(Utils.wait());
 
         getReactGrid().should('not.contain.text', randomText);
     });
@@ -155,25 +151,25 @@ context('Keyboard', () => {
 
         const randomText = Utils.randomText();
         cy.focused().type(randomText, { force: true });
-        cy.wait(500);
+        cy.wait(Utils.wait());
         Utils.keyDown(constants.keyCodes.Enter, { force: true });
 
-        cy.wait(500);
+        cy.wait(Utils.wait());
         Utils.selectCellInEditMode(config.cellWidth + Utils.getCellXCenter(), config.cellHeight * 4 + Utils.getCellYCenter());
         Utils.keyDown(constants.keyCodes.Delete, { force: true });
 
-        cy.wait(500);
+        cy.wait(Utils.wait());
         getReactGrid().should('not.contain.text', randomText);
     });
 
     it('Backspace key pressed should delete data from the cell', () => { // ✅
         Utils.selectCell(config.cellWidth + Utils.getCellXCenter(), config.cellHeight * 4 + Utils.getCellYCenter());
         Utils.keyDown(constants.keyCodes.Backspace, { force: true });
-        cy.wait(500);
+        cy.wait(Utils.wait());
         cy.focused().type('{leftarrow}', { force: true });
-        cy.wait(500);
+        cy.wait(Utils.wait());
         Utils.selectCellInEditMode(config.cellWidth + Utils.getCellXCenter(), config.cellHeight * 4 + Utils.getCellYCenter());
-        cy.wait(500);
+        cy.wait(Utils.wait());
         getCellEditor().should('have.text', '');
     });
 
@@ -184,10 +180,10 @@ context('Keyboard', () => {
         cy.focused().type(randomText, { force: true });
         Utils.keyDown(constants.keyCodes.Tab, { force: true });
 
-        cy.wait(500);
-        getCellEditor().should('not.be.visible');
+        cy.wait(Utils.wait());
+        getCellEditor().should('not.exist');
         assertElementLeftIsEqual(getCellFocus(), config.cellWidth * 2 - config.lineWidth);
-        cy.wait(500);
+        cy.wait(Utils.wait());
         getReactGrid().should('contain.text', randomText);
     });
 
@@ -196,12 +192,12 @@ context('Keyboard', () => {
         const randomText = Utils.randomText();
         cy.focused().type(randomText, { force: true });
         Utils.keyDown(constants.keyCodes.Tab, { shiftKey: true, force: true });
-        cy.wait(500);
+        cy.wait(Utils.wait());
 
-        getCellEditor().should('not.be.visible');
-        cy.wait(500);
+        getCellEditor().should('not.exist');
+        cy.wait(Utils.wait());
         assertElementLeftIsEqual(getCellFocus(), 0);
-        cy.wait(500);
+        cy.wait(Utils.wait());
         getReactGrid().should('contain.text', randomText);
     });
 
@@ -211,11 +207,11 @@ context('Keyboard', () => {
         cy.focused().type(randomText, { force: true });
 
         Utils.keyDown(constants.keyCodes.Enter, { force: true });
-        cy.wait(500);
-        getCellEditor().should('not.be.visible');
-        cy.wait(500);
+        cy.wait(Utils.wait());
+        getCellEditor().should('not.exist');
+        cy.wait(Utils.wait());
         assertElementTopIsEqual(getCellFocus(), config.cellHeight * 5 - config.lineWidth);
-        cy.wait(500);
+        cy.wait(Utils.wait());
         getReactGrid().should('contain.text', randomText);
     });
 
@@ -225,11 +221,11 @@ context('Keyboard', () => {
         cy.focused().type(randomText, { force: true });
 
         Utils.keyDown(constants.keyCodes.Enter, { shiftKey: true, force: true });
-        cy.wait(500);
-        getCellEditor().should('not.be.visible');
-        cy.wait(500);
+        cy.wait(Utils.wait());
+        getCellEditor().should('not.exist');
+        cy.wait(Utils.wait());
         assertElementTopIsEqual(getCellFocus(), config.cellHeight * 3 - config.lineWidth);
-        cy.wait(500);
+        cy.wait(Utils.wait());
         getReactGrid().should('contain.text', randomText);
     });
 

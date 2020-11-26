@@ -29,3 +29,5 @@ yarn-error.log*
 
 /cypress/screenshots
 /cypress/snapshots
+
+.eslintcache

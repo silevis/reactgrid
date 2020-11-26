@@ -55,10 +55,12 @@ context('Scroll', () => {
         getScrollableElement().then($viewport => {
             const v = $viewport[0];
             const stickyRightSize = config.isPro ? config.stickyRight * config.cellWidth : 0;
-            Utils.selectCell(v.clientWidth - stickyRightSize - 5, config.cellHeight + Utils.getCellYCenter());
+            Utils.selectCell(v.clientWidth - stickyRightSize - 20, config.cellHeight + Utils.getCellYCenter());
 
             assertIsElementInScrollable(getCellFocus());
             const stickyLeftSize = config.stickyLeft * config.cellWidth;
+
+            cy.wait(Utils.wait());
             assertElementLeftIsEqual(getCellFocus(), v.clientWidth - stickyLeftSize - stickyRightSize - (v.clientWidth) % config.cellWidth - config.lineWidth)
         });
     });
