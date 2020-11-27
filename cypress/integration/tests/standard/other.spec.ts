@@ -1,8 +1,8 @@
-
 import { visit } from '../../common/visit';
-import { getCellEditor, getCell } from '../../common/DOMElements';
-import { Utils } from '../../common/utils';
+import { Utilities } from '../../common/utils';
 import { config } from '../../../../src/test/testEnvConfig';
+
+const utils = new Utilities(config);
 
 context('Other', () => {
 
@@ -11,20 +11,20 @@ context('Other', () => {
     });
 
     it('should dont not copy values between cells after change focus position', () => { // ✅
-        const x = Utils.getCellXCenter();
-        const y = Utils.getCellYCenter() + (config.cellHeight * 2);
-        getCell(1, 2).invoke('text').then(text => {
-            Utils.selectCellInEditMode(x, y);
-            Utils.selectCell(x + config.cellWidth, y);
-            getCell(1, 2).contains(text);
+        const x = utils.getCellXCenter();
+        const y = utils.getCellYCenter() + (config.cellHeight * 2);
+        utils.getCell(1, 2).invoke('text').then(text => {
+            utils.selectCellInEditMode(x, y);
+            utils.selectCell(x + config.cellWidth, y);
+            utils.getCell(1, 2).contains(text);
         });
     });
 
     it('should dont open cell editor on non editable cell', () => { // ✅
-        Utils.scrollTo(config.cellWidth * 8, 0);
-        cy.wait(Utils.wait());
-        Utils.selectCellInEditMode(Utils.getCellXCenter(), config.cellHeight * 2 + Utils.getCellYCenter());
-        getCellEditor().should('not.exist');
+        utils.scrollTo(config.cellWidth * 8, 0);
+        cy.wait(utils.wait());
+        utils.selectCellInEditMode(utils.getCellXCenter(), config.cellHeight * 2 + utils.getCellYCenter());
+        utils.getCellEditor().should('not.exist');
     });
 
 });

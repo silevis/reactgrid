@@ -58,10 +58,13 @@
     "pre-deploy": "npm-run-all build:tsc copy:assets build:assets copy:package.json copy:theming-test.scss copy:flag-cell-style.scss copy:README.md copy:LICENSE copy:tests copy:.npmignore",
     "deploy": "npm publish dist --access=public && echo 'Finished publishing NPM package'",
     "test:cypress": "npx cypress open",
-    "run:all:tests": "run-p cypress:headless:standard cypress:headless:sticky cypress:headless:frozenFocus",
-    "cypress:headless:standard": "npx cypress run --headless --quiet --browser firefox -s 'cypress/integration/tests/standard/*'",
-    "cypress:headless:sticky": "npx cypress run --headless --quiet --browser firefox -s 'cypress/integration/tests/sticky/*'",
-    "cypress:headless:frozenFocus": "npx cypress run --headless --quiet --browser firefox -s 'cypress/integration/tests/frozenFocus/*'",
+    "run:all:tests": "run-p --print-label cy:**",
+    "cy:standard": "npx cypress run --headless --quiet --browser firefox -s 'cypress/integration/tests/standard/*'",
+    "cy:sticky": "npx cypress run --headless --quiet --browser firefox -s 'cypress/integration/tests/sticky/*'",
+    "cy:frozenFocus": "npx cypress run --headless --quiet --browser firefox -s 'cypress/integration/tests/frozenFocus/*'",
+    "cy:headerRow": "npx cypress run --headless --quiet --browser firefox -s 'cypress/integration/tests/headerRow/*'",
+    "cy:pinnedToBody": "npx cypress run --headless --quiet --browser firefox -s 'cypress/integration/tests/pinnedToBody/*'",
+    "cy:stickyPinnedToBody": "npx cypress run --headless --quiet --browser firefox -s 'cypress/integration/tests/stickyPinnedToBody/*'",
     "remove-suffix": "cross-env SUFFIX=rc node ./node_modules/npm-version-suffix/run-remove-suffix.js"
   },
   "husky": {

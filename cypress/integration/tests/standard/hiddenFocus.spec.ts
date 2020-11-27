@@ -2,9 +2,10 @@
 
 import { visit } from '../../common/visit';
 import { constants } from '../../common/constants';
-import { getOuterInput } from '../../common/DOMElements';
-import { Utils } from '../../common/utils';
+import { Utilities } from '../../common/utils';
 import { config } from '../../../../src/test/testEnvConfig';
+
+const utils = new Utilities(config);
 
 context('Hidden focus', () => {
 
@@ -13,32 +14,32 @@ context('Hidden focus', () => {
     });
 
     it('should capture text typing after cell selection', () => { // ✅
-        cy.wait(Utils.wait());
-        Utils.selectCell(config.cellWidth + (config.cellWidth / 2), config.cellHeight * 4);
-        cy.wait(Utils.wait());
-        Utils.keyDown(constants.keyCodes.Enter, { force: true }, 500, true);
-        cy.wait(Utils.wait());
-        cy.focused().type(Utils.randomText(), { force: true });
+        cy.wait(utils.wait());
+        utils.selectCell(config.cellWidth + (config.cellWidth / 2), config.cellHeight * 4);
+        cy.wait(utils.wait());
+        utils.keyDown(constants.keyCodes.Enter, { force: true }, 500, true);
+        cy.wait(utils.wait());
+        cy.focused().type(utils.randomText(), { force: true });
     });
 
     it('focus should back to grid on Shift + TAB key', () => {//  ✅
-        Utils.selectCell(config.cellWidth + (config.cellWidth / 2), config.cellHeight * 4);
-        getOuterInput().focus();
-        cy.wait(Utils.wait());
+        utils.selectCell(config.cellWidth + (config.cellWidth / 2), config.cellHeight * 4);
+        utils.getOuterInput().focus();
+        cy.wait(utils.wait());
         (cy.focused().type('text', { force: true }) as any).tab({ shift: true });
-        cy.wait(Utils.wait());
+        cy.wait(utils.wait());
         cy.focused().should('have.class', 'rg-hidden-element');
     });
 
     it('should be able to type text outside grid', () => { // ✅
-        getOuterInput().focus();
-        cy.wait(Utils.wait())
+        utils.getOuterInput().focus();
+        cy.wait(utils.wait())
         cy.focused().invoke('val').should('be.empty');
-        cy.focused().type(Utils.randomText(), { force: true });
-        cy.wait(Utils.wait());
+        cy.focused().type(utils.randomText(), { force: true });
+        cy.wait(utils.wait());
         cy.focused().invoke('val').should('not.be.empty');
-        Utils.selectCell(200, 100);
-        cy.wait(Utils.wait());
+        utils.selectCell(200, 100);
+        cy.wait(utils.wait());
         cy.focused().should('have.class', 'rg-hidden-element');
     });
 
