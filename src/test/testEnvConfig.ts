@@ -1,8 +1,11 @@
-import { TextCell, HeaderCell, CellLocation, Highlight, TextLabels } from './../core';
+import { CellLocation, Highlight, TextLabels } from './../core';
 
+/**
+ * All of the properties that cypress tests files can read
+ */
 export const config: TestConfig = {
     pinToBody: false,
-    enableAdditionalContent: false,
+    additionalContent: false,
     flexRow: false,
     isPro: false,
 
@@ -29,8 +32,6 @@ export const config: TestConfig = {
     stickyLeft: 1,
     stickyRight: 2,
 
-    firstRowType: 'text',
-
     focusLocation: { columnId: 'col-1', rowId: 'row-3' },
     initialFocusLocation: { columnId: 'col-1', rowId: 'row-2' },
 
@@ -46,9 +47,21 @@ export const config: TestConfig = {
     }
 }
 
+/**
+ * Optional properties to override main config
+ */
+export const enablePinnedToBodyConfig: TestConfig = {
+    ...config,
+    pinToBody: true,
+    stickyTop: 5,
+    stickyBottom: 5,
+    stickyLeft: 3,
+    stickyRight: 3,
+}
+
 export interface TestConfig {
     pinToBody: boolean;
-    enableAdditionalContent: boolean;
+    additionalContent: boolean;
     flexRow: boolean;
     isPro: boolean;
 
@@ -75,12 +88,9 @@ export interface TestConfig {
     stickyLeft: number;
     stickyRight: number;
 
-    focusLocation: CellLocation | undefined;
-    initialFocusLocation: CellLocation | undefined;
+    focusLocation: CellLocation;
+    initialFocusLocation: CellLocation;
+    highlights: Highlight[];
 
-    highlights: Highlight[] | undefined;
-
-    labels: TextLabels | undefined;
-
-    firstRowType: TextCell['type'] | HeaderCell['type'];
+    labels: TextLabels;
 }

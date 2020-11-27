@@ -1,7 +1,7 @@
 import React from 'react';
 import {
     Column, Row, Id, MenuOption, SelectionMode, DropPosition, CellLocation,
-    DefaultCellTypes, CellChange, ReactGridProps, TextCell, NumberCell, CellStyle
+    DefaultCellTypes, CellChange, ReactGridProps, TextCell, NumberCell, CellStyle, HeaderCell
 } from './../reactgrid';
 import { TestConfig } from './testEnvConfig';
 import '../styles.scss';
@@ -15,6 +15,7 @@ interface TestGridProps {
     enableSticky?: boolean;
     enableColumnAndRowSelection?: boolean;
     enableFrozenFocus?: boolean;
+    firstRowType?: TextCell['type'] | HeaderCell['type']; // 'text' if undefined
     config: TestConfig;
     component: React.ComponentClass<ReactGridProps>;
 }
@@ -38,7 +39,9 @@ const style: CellStyle = {
 };
 
 export const TestGrid: React.FC<TestGridProps> = (props) => {
-    const { config, component, enableSticky, enableColumnAndRowSelection, enableFrozenFocus } = props;
+    const {
+        config, component, enableSticky, enableColumnAndRowSelection, enableFrozenFocus, firstRowType
+    } = props;
 
     const [columns, setColumns] = React.useState(() => new Array(config.columns).fill({ columnId: 0, resizable: true, reorderable: true, width: -1 })
         .map<Column>((_, ci) => ({ columnId: `col-${ci}`, resizable: true, reorderable: true, width: config.cellWidth })));
@@ -48,7 +51,7 @@ export const TestGrid: React.FC<TestGridProps> = (props) => {
         reorderable: true,
         height: config.cellHeight,
         cells: columns.map<TestGridCells>((_, ci) => {
-            if (ri === 0) return { type: config.firstRowType, text: `${ri} - ${ci}` }
+            if (ri === 0) return { type: firstRowType || 'text', text: `${ri} - ${ci}` }
             if (ri === 2 && ci === 8) return { type: 'text', text: `non-editable`, nonEditable: true, validator: (text: string): boolean => true }
             if (ri === 3 && ci === 8) return { type: 'text', text: '', placeholder: 'placeholder', validator: (text: string): boolean => true }
             const now = new Date();
@@ -235,7 +238,7 @@ export const TestGrid: React.FC<TestGridProps> = (props) => {
                     flexDirection: 'row'
                 }),
             }}>
-                {config.enableAdditionalContent &&
+                {config.additionalContent &&
                     <>
                         <Logo isPro={config.isPro} />
                         <Logo isPro={config.isPro} />
@@ -271,7 +274,7 @@ export const TestGrid: React.FC<TestGridProps> = (props) => {
                     enableGroupIdRender={config.enableGroupIdRender}
                     labels={config.labels}
                 />
-                {config.enableAdditionalContent &&
+                {config.additionalContent &&
                     <>
                         <h1 style={{ width: 3000 }}>TEXT</h1> Test WITH IT
                         <h1>TEXT</h1> Test WITH IT
@@ -291,7 +294,7 @@ export const TestGrid: React.FC<TestGridProps> = (props) => {
             </div>
             <input type='text' data-cy='outer-input' />
             <Logo isPro={config.isPro} />
-            {config.enableAdditionalContent &&
+            {config.additionalContent &&
                 <>
                     <h1 style={{ width: 3000 }}>TEXT</h1> Test WITH IT
                     <h1>TEXT</h1> Test WITH IT
@@ -330,10 +333,19 @@ const Logo: React.FC<{ isPro?: boolean }> = props => {
                 }}>
                 PRO</div>}
         </h1>
-        <a href={'/'} style={{ padding: '3px', color: window.location.pathname === '/' ? 'gold' : 'gray' }}>standard</a>
-        <a href={'/enableSticky'} style={{ padding: '3px', color: window.location.pathname === '/enableSticky' ? 'gold' : 'gray' }}>enableSticky</a>
-        <a href={'/enableFrozenFocus'} style={{ padding: '3px', color: window.location.pathname === '/enableFrozenFocus' ? 'gold' : 'gray' }}>enableFrozenFocus</a>
+        <TestLink href={''} />
+        <TestLink href={'enableHeaderRow'} />
+        <TestLink href={'enableSticky'} />
+        <TestLink href={'enableFrozenFocus'} />
+        <TestLink href={'enablePinnedToBody'} />
+        <TestLink href={'enableStickyPinnedToBody'} />
     </div>
+}
+
+const TestLink: React.FC<{ href: string }> = ({ href }) => {
+    return (
+        <a href={`/${href}`} style={{ padding: '3px', color: window.location.pathname === `/${href}` ? 'gold' : 'gray' }}>/{href}</a>
+    )
 }
 
 export const withDiv = <T extends object>(Component: React.ComponentType<T>): React.FC<T & TestGridProps> => {

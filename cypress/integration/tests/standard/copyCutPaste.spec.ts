@@ -12,4 +12,8 @@ context('Copy / Cut / Paste', () => {
 
     });
 
+    it('should not update selection after change is not handled', () => {
+
+    });
+
 });

@@ -44,7 +44,7 @@ context('Scroll', () => {
         cy.wait(Utils.wait());
         assertIsElementInScrollable(getCellFocus());
         cy.wait(Utils.wait());
-        assertScrolledToBottom(false);
+        assertScrolledToBottom();
     });
 
     it('should scroll to top on arrow up keydown', () => { // ✅

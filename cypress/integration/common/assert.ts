@@ -1,4 +1,3 @@
-
 import { getScrollableElement } from './DOMElements';
 import { Utils } from './utils';
 import { config } from '../../../src/test/testEnvConfig';
@@ -47,10 +46,10 @@ export function assertScrolledToTop(): void {
     });
 }
 
-export function assertScrolledToBottom(includeLineWidth = false): void {
+export function assertScrolledToBottom(): void {
     getScrollableElement().then($scrollable => {
         const v = $scrollable[0];
-        const expectedValue = Utils.round(v.scrollTop + v.clientHeight + (includeLineWidth ? -config.lineWidth : 0)) + 1;
+        const expectedValue = Utils.round(v.scrollTop + v.clientHeight) + 1;
         expect(expectedValue, 'Scroll bottom').to.be.least(config.rows * config.cellHeight);
     });
 }

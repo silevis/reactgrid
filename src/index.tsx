@@ -3,28 +3,52 @@ import * as ReactDOM from 'react-dom';
 import { ExtTestGrid } from './test/TestGrid';
 import { ReactGrid } from './lib/Components/ReactGrid';
 // import './test/theming-test.scss';
-import { config } from './test/testEnvConfig';
+import { config, enablePinnedToBodyConfig } from './test/testEnvConfig';
 
-const props = {
-  component: ReactGrid,
-  config
-}
-let component = <ExtTestGrid {...props} />;
+let component = <ExtTestGrid
+  component={ReactGrid}
+  config={config}
+/>;
 ExtTestGrid.displayName = 'TestGrid';
 switch (window.location.pathname) {
   case '/enableSticky':
     component = <ExtTestGrid
-      {...props}
+      component={ReactGrid}
+      config={config}
       enableSticky
     />;
     ExtTestGrid.displayName = 'TestGridWithEnabledSticky';
     break;
+  case '/enableHeaderRow':
+    component = <ExtTestGrid
+      component={ReactGrid}
+      config={config}
+      firstRowType={'header'}
+    />;
+    ExtTestGrid.displayName = 'TestGridWithHeaderRow';
+    break;
   case '/enableFrozenFocus':
     component = <ExtTestGrid
-      {...props}
+      component={ReactGrid}
+      config={config}
       enableFrozenFocus
     />;
     ExtTestGrid.displayName = 'TestGridWithEnabledFrozenFocus';
+    break;
+  case '/enablePinnedToBody':
+    component = <ExtTestGrid
+      component={ReactGrid}
+      config={enablePinnedToBodyConfig}
+    />;
+    ExtTestGrid.displayName = 'TestGridWithEnabledPinnedToBody';
+    break;
+  case '/enableStickyPinnedToBody':
+    component = <ExtTestGrid
+      component={ReactGrid}
+      config={enablePinnedToBodyConfig}
+      enableSticky
+    />;
+    ExtTestGrid.displayName = 'TestGridWithEnabledStickyPinnedToBody';
     break;
   default:
     break;
