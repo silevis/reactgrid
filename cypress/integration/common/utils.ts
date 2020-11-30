@@ -5,7 +5,11 @@ import { config, TestConfig } from '../../../src/test/testEnvConfig';
 
 export class Utilities {
 
-    constructor(public config: TestConfig) { }
+    constructor(private config: TestConfig) { }
+
+    getConfig(): TestConfig {
+        return this.config;
+    }
 
     isMacOs() {
         return Cypress.platform === 'darwin';
@@ -66,10 +70,10 @@ export class Utilities {
         this.selectCell(x, y);
     }
 
-    keyDown(keyCode: number, customEventArgs: {} | undefined, timeout = 200, log = true) {
+    keyDown(keyCode: number, customEventArgs?: {}, timeout = 200, log = true) {
         const rg = this.getReactGridContent();
         if (customEventArgs !== undefined) {
-            rg.trigger('keydown', Object.assign({}, { keyCode, log, force: true }, customEventArgs));
+            rg.trigger('keydown', { ...customEventArgs, keyCode, log, force: true });
         } else {
             rg.trigger('keydown', { keyCode, log, force: true });
         }

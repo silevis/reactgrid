@@ -1,3 +1,5 @@
+/// <reference types="cypress" />
+
 export function visit() {
     cy.visit('/');
 }
@@ -20,4 +22,12 @@ export function visitStickyPinnedToBody() {
 
 export function visitHeaderRow() {
     cy.visit('/enableHeaderRow');
+}
+
+export function visitColumnAndRowSelections() {
+    cy.visit('/enableColumnAndRowSelection');
+}
+
+export function visitColumnAndRowSelectionsWithSticky() {
+    cy.visit('/enableColumnAndRowSelectionWithSticky');
 }
