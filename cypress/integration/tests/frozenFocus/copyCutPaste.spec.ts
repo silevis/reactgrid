@@ -2,13 +2,13 @@
 
 import { visitFrozenFocus } from '../../common/visit';
 
-context('Frozen focus', () => {
+context('Copy / Cut / Paste', () => {
 
     beforeEach(() => {
         visitFrozenFocus();
     });
 
-    it('should stay in place', () => {
+    it('copy and paste into the same frozen focus', () => {
 
     });
 

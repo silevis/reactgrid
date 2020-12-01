@@ -8,11 +8,11 @@ context('Copy / Cut / Paste', () => {
         visit();
     });
 
-    it('', () => {
+    it('should copy values between the same cell types', () => {
 
     });
 
-    it('should not update selection after change is not handled', () => {
+    it('should not update selection after paste is not handled', () => {
 
     });
 
