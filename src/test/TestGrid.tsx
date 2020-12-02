@@ -61,7 +61,7 @@ export const TestGrid: React.FC<TestGridProps> = (props) => {
             switch (ci) {
                 case 0:
                     return firstColType === 'chevron'
-                        ? { type: 'chevron', text: `${ri} - ${ci}`, parentId: ri, isExpanded: ri % 4 ? true : undefined, hasChildren: true }
+                        ? { type: 'chevron', groupId: !(ri % 3) ? 'A' : undefined, text: `${ri} - ${ci}`, parentId: ri, isExpanded: ri % 4 ? true : undefined, hasChildren: true }
                         : { type: 'header', groupId: !(ri % 3) ? 'A' : undefined, text: `${ri} - ${ci}` }
                 case 1:
                     return { type: 'text', groupId: !(ri % 3) ? 'B' : undefined, text: `${ri} - ${ci}`, style }
