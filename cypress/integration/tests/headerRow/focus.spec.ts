@@ -1,11 +1,9 @@
-/// <reference types="Cypress" />
-
-import { visit } from '../../common/visit';
+import { visitHeaders } from '../../common/visit';
 
 context('Focus', () => {
 
     beforeEach(() => {
-        visit();
+        visitHeaders();
     });
 
     it('', () => { // ✅

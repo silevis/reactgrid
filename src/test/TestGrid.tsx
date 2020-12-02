@@ -1,7 +1,7 @@
 import React from 'react';
 import {
     Column, Row, Id, MenuOption, SelectionMode, DropPosition, CellLocation,
-    DefaultCellTypes, CellChange, ReactGridProps, TextCell, NumberCell, CellStyle, HeaderCell
+    DefaultCellTypes, CellChange, ReactGridProps, TextCell, NumberCell, CellStyle, HeaderCell, ChevronCell
 } from './../reactgrid';
 import { TestConfig } from './testEnvConfig';
 import '../styles.scss';
@@ -16,6 +16,7 @@ interface TestGridProps {
     enableColumnAndRowSelection?: boolean;
     enableFrozenFocus?: boolean;
     firstRowType?: TextCell['type'] | HeaderCell['type']; // 'text' if undefined
+    firstColType?: ChevronCell['type'] | HeaderCell['type']; // 'chevron' if undefined
     config: TestConfig;
     component: React.ComponentClass<ReactGridProps>;
 }
@@ -40,7 +41,9 @@ const style: CellStyle = {
 
 export const TestGrid: React.FC<TestGridProps> = (props) => {
     const {
-        config, component, enableSticky, enableColumnAndRowSelection, enableFrozenFocus, firstRowType
+        config, component, enableSticky, enableColumnAndRowSelection, enableFrozenFocus,
+        firstRowType = 'text',
+        firstColType = 'chevron'
     } = props;
 
     const [columns, setColumns] = React.useState(() => new Array(config.columns).fill({ columnId: 0, resizable: true, reorderable: true, width: -1 })
@@ -51,13 +54,15 @@ export const TestGrid: React.FC<TestGridProps> = (props) => {
         reorderable: true,
         height: config.cellHeight,
         cells: columns.map<TestGridCells>((_, ci) => {
-            if (ri === 0) return { type: firstRowType || 'text', text: `${ri} - ${ci}` }
+            if (ri === 0) return { type: firstRowType, text: `${ri} - ${ci}` }
             if (ri === 2 && ci === 8) return { type: 'text', text: `non-editable`, nonEditable: true, validator: (text: string): boolean => true }
             if (ri === 3 && ci === 8) return { type: 'text', text: '', placeholder: 'placeholder', validator: (text: string): boolean => true }
             const now = new Date();
             switch (ci) {
                 case 0:
-                    return { type: 'chevron', groupId: !(ri % 3) ? 'A' : undefined, text: `${ri} - ${ci}`, parentId: ri, isExpanded: ri % 4 ? true : undefined, hasChildren: true }
+                    return firstColType === 'chevron'
+                        ? { type: 'chevron', text: `${ri} - ${ci}`, parentId: ri, isExpanded: ri % 4 ? true : undefined, hasChildren: true }
+                        : { type: 'header', groupId: !(ri % 3) ? 'A' : undefined, text: `${ri} - ${ci}` }
                 case 1:
                     return { type: 'text', groupId: !(ri % 3) ? 'B' : undefined, text: `${ri} - ${ci}`, style }
                 case 2:
@@ -334,7 +339,7 @@ const Logo: React.FC<{ isPro?: boolean }> = props => {
                 PRO</div>}
         </h1>
         <TestLink href={''} />
-        <TestLink href={'enableHeaderRow'} />
+        <TestLink href={'enableHeaders'} />
         <TestLink href={'enableSticky'} />
         <TestLink href={'enableFrozenFocus'} />
         <TestLink href={'enablePinnedToBody'} />

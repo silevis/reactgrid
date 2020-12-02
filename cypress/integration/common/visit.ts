@@ -20,8 +20,8 @@ export function visitStickyPinnedToBody() {
     cy.visit('/enableStickyPinnedToBody');
 }
 
-export function visitHeaderRow() {
-    cy.visit('/enableHeaderRow');
+export function visitHeaders() {
+    cy.visit('/enableHeaders');
 }
 
 export function visitColumnAndRowSelections() {

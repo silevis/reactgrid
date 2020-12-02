@@ -50,7 +50,7 @@ export class Utilities {
         return config.cellHeight / 2;
     }
 
-    selectCellInEditMode(clientX, clientY) {
+    selectCellInEditMode(clientX: number, clientY: number) {
         this.selectCell(clientX, clientY)
         this.keyDown(constants.keyCodes.Enter, { force: true });
     }
@@ -65,7 +65,7 @@ export class Utilities {
         return Math.round(value);
     }
 
-    resetSelection(x, y) {
+    resetSelection(x: number, y: number) {
         this.selectCell(x, y + config.cellHeight);
         this.selectCell(x, y);
     }
@@ -115,7 +115,7 @@ export class Utilities {
     }
 
     getCellFocus() {
-        const cell = cy.get('.rg-cell-focus')
+        const cell = cy.get('.rg-cell-focus');
         cell.should('exist');
         return cell;
     }
@@ -128,39 +128,36 @@ export class Utilities {
         return cy.get('.dropdown-menu');
     }
 
-    /**
-     * Is needed in pro ??
-     */
     click(x: number, y: number) {
         this.getScrollableElement().trigger('pointerdown', x, y, { pointerType: 'mouse' });
         this.getBody().trigger('pointerup', 0, 0, { pointerType: 'mouse', force: true }); // 
     }
 
-    assertElementWidthIsEqual(element, expectedWidth: number): void {
+    assertElementWidthIsEqual(element: Cypress.Chainable, expectedWidth: number): void {
         element.invoke('css', 'width').then(str => parseInt(str)).should('be.eq', expectedWidth);
     }
 
-    assertElementHeightIsEqual(element, expectedHeight: number): void {
+    assertElementHeightIsEqual(element: Cypress.Chainable, expectedHeight: number): void {
         element.invoke('css', 'height').then(str => parseInt(str)).should('be.eq', expectedHeight);
     }
 
-    assertElementTopIsEqual(element, expectedTop: number): void {
+    assertElementTopIsEqual(element: Cypress.Chainable, expectedTop: number): void {
         element.invoke('css', 'top').then(str => parseInt(str)).should('be.eq', expectedTop);
     }
 
-    assertElementBottomIsEqual(element, expectedBottom: number): void {
+    assertElementBottomIsEqual(element: Cypress.Chainable, expectedBottom: number): void {
         element.invoke('css', 'bottom').then(str => parseInt(str)).should('be.eq', expectedBottom);
     }
 
-    assertElementLeftIsEqual(element, expectedLeft): void {
+    assertElementLeftIsEqual(element: Cypress.Chainable, expectedLeft: number): void {
         element.invoke('css', 'left').then(str => parseInt(str)).should('be.eq', expectedLeft);
     }
 
-    assertElementRightIsEqual(element, expectedRight): void {
+    assertElementRightIsEqual(element: Cypress.Chainable, expectedRight: number): void {
         element.invoke('css', 'right').then(str => parseInt(str)).should('be.eq', expectedRight);
     }
 
-    assertIsElementInScrollable(element): void {
+    assertIsElementInScrollable(element: Cypress.Chainable): void {
         element.then($el => {
             this.getScrollableElement().then($scrollable => {
                 const v = $scrollable[0];

@@ -92,12 +92,12 @@ context('Cell templates', () => {
         utils.selectCell(config.cellWidth + utils.getCellXCenter(), config.cellHeight * 5);
 
         utils.getCell(cellIdx, cellIdy).should($cell => expect($cell.eq(0)).to.contain('Select...'));
-        utils.keyDown(constants.keyCodes.Space, { force: true });
 
+        utils.keyDown(constants.keyCodes.Space, { force: true });
         cy.focused().type('{downarrow}');
         cy.focused().type('{enter}');
 
-        utils.getCell(cellIdx, cellIdy).should($cell => expect($cell.eq(0)).to.contain('Vue'));
+        utils.getReactGridContent().should($c => expect($c).to.contain('Vue')); // searching in a whole view 
     });
 
     it('should filter options on dropdown cell', () => { // ✅

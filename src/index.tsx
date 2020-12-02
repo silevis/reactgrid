@@ -3,7 +3,7 @@ import * as ReactDOM from 'react-dom';
 import { ExtTestGrid } from './test/TestGrid';
 import { ReactGrid } from './lib/Components/ReactGrid';
 // import './test/theming-test.scss';
-import { config, enablePinnedToBodyConfig } from './test/testEnvConfig';
+import { config, enablePinnedToBodyConfig, disabledInitialFocusLocationConfig } from './test/testEnvConfig';
 
 let component = <ExtTestGrid
   component={ReactGrid}
@@ -19,11 +19,12 @@ switch (window.location.pathname) {
     />;
     ExtTestGrid.displayName = 'TestGridWithEnabledSticky';
     break;
-  case '/enableHeaderRow':
+  case '/enableHeaders':
     component = <ExtTestGrid
       component={ReactGrid}
-      config={config}
+      config={disabledInitialFocusLocationConfig}
       firstRowType={'header'}
+      firstColType={'header'}
       enableColumnAndRowSelection
     />;
     ExtTestGrid.displayName = 'TestGridWithHeaderRow';

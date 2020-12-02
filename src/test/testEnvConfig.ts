@@ -59,6 +59,11 @@ export const enablePinnedToBodyConfig: TestConfig = {
     stickyRight: 3,
 }
 
+export const disabledInitialFocusLocationConfig: TestConfig = {
+    ...config,
+    initialFocusLocation: undefined
+}
+
 export interface TestConfig {
     pinToBody: boolean;
     additionalContent: boolean;
@@ -89,7 +94,7 @@ export interface TestConfig {
     stickyRight: number;
 
     focusLocation: CellLocation;
-    initialFocusLocation: CellLocation;
+    initialFocusLocation?: CellLocation;
     highlights: Highlight[];
 
     labels: TextLabels;
