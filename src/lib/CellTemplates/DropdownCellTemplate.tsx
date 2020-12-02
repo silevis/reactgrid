@@ -164,7 +164,7 @@ export class DropdownCellTemplate implements CellTemplate<DropdownCell> {
     }
 }
 
-const CustomOption: React.FC<OptionProps<OptionType>> = ({ innerProps, label, isSelected, isFocused }) => (
+const CustomOption: React.FC<OptionProps<OptionType, false>> = ({ innerProps, label, isSelected, isFocused }) => (
     <div
         {...innerProps}
         onPointerDown={e => e.stopPropagation()}
@@ -174,6 +174,6 @@ const CustomOption: React.FC<OptionProps<OptionType>> = ({ innerProps, label, is
     </div>
 );
 
-const CustomMenu: React.FC<MenuProps<OptionType>> = ({ innerProps, children }) => (
+const CustomMenu: React.FC<MenuProps<OptionType, false>> = ({ innerProps, children }) => (
     <div {...innerProps} className='dropdown-menu'>{children}</div>
 );
