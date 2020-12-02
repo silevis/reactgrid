@@ -124,6 +124,18 @@ export class Utilities {
         return cy.get('.rg-cell-highlight');
     }
 
+    getDropdownMenu() {
+        return cy.get('.dropdown-menu');
+    }
+
+    /**
+     * Is needed in pro ??
+     */
+    click(x: number, y: number) {
+        this.getScrollableElement().trigger('pointerdown', x, y, { pointerType: 'mouse' });
+        this.getBody().trigger('pointerup', 0, 0, { pointerType: 'mouse', force: true }); // 
+    }
+
     assertElementWidthIsEqual(element, expectedWidth: number): void {
         element.invoke('css', 'width').then(str => parseInt(str)).should('be.eq', expectedWidth);
     }
@@ -166,6 +178,10 @@ export class Utilities {
             const v = $scrollable[0];
             expect(this.round(v.scrollTop), 'Scroll top').to.be.eq(0)
         });
+    }
+
+    assertIsReactGridFocused() {
+        cy.focused().should('have.class', 'rg-hidden-element');
     }
 
     assertScrolledToBottom(): void {

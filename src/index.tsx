@@ -24,6 +24,7 @@ switch (window.location.pathname) {
       component={ReactGrid}
       config={config}
       firstRowType={'header'}
+      enableColumnAndRowSelection
     />;
     ExtTestGrid.displayName = 'TestGridWithHeaderRow';
     break;

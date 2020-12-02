@@ -13,8 +13,6 @@ context('Frozen focus', () => {
     });
 
     it('should stay in place', () => { // ✅
-        // 🟠  test nie przechodzi na PRO
-
         utils.selectCell((config.cellWidth * 2) - 10, (config.cellHeight * 10) - 10);
         utils.assertElementTopIsEqual(utils.getCellFocus(), config.cellHeight * 3 - 1);
     });

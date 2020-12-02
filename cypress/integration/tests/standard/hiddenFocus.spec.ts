@@ -28,7 +28,7 @@ context('Hidden focus', () => {
         cy.wait(utils.wait());
         (cy.focused().type('text', { force: true }) as any).tab({ shift: true });
         cy.wait(utils.wait());
-        cy.focused().should('have.class', 'rg-hidden-element');
+        utils.assertIsReactGridFocused();
     });
 
     it('should be able to type text outside grid', () => { // ✅
@@ -40,7 +40,7 @@ context('Hidden focus', () => {
         cy.focused().invoke('val').should('not.be.empty');
         utils.selectCell(200, 100);
         cy.wait(utils.wait());
-        cy.focused().should('have.class', 'rg-hidden-element');
+        utils.assertIsReactGridFocused();
     });
 
 });
