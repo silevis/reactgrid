@@ -64,6 +64,11 @@ export const disabledInitialFocusLocationConfig: TestConfig = {
     initialFocusLocation: undefined
 }
 
+export const enableAdditionalContentConfig: TestConfig = {
+    ...config,
+    additionalContent: true
+}
+
 export interface TestConfig {
     pinToBody: boolean;
     additionalContent: boolean;

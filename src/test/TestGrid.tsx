@@ -320,11 +320,11 @@ export const TestGrid: React.FC<TestGridProps> = (props) => {
 
 }
 
-const Logo: React.FC<{ isPro?: boolean }> = props => {
-    return <div style={{ display: 'flex', minWidth: 185 }}>
+const Logo: React.FC<{ isPro?: boolean; maxWidth?: number }> = ({ isPro, maxWidth = 1000 }) => {
+    return <div style={{ display: 'flex', minWidth: 185, maxWidth }}>
         <h1 style={{ position: 'relative' }}>
             ReactGrid
-            {props.isPro && <div
+            {isPro && <div
                 style={{
                     position: 'absolute',
                     top: '-0.5em',
@@ -344,12 +344,19 @@ const Logo: React.FC<{ isPro?: boolean }> = props => {
         <TestLink href={'enableFrozenFocus'} />
         <TestLink href={'enablePinnedToBody'} />
         <TestLink href={'enableStickyPinnedToBody'} />
+        <TestLink href={'enableAdditionalContent'} />
+        {isPro && <>
+            <TestLink href={'enableColumnAndRowSelection'} />
+            <TestLink href={'enableColumnAndRowSelectionWithSticky'} />
+        </>}
     </div>
 }
 
 const TestLink: React.FC<{ href: string }> = ({ href }) => {
     return (
-        <a href={`/${href}`} style={{ padding: '3px', color: window.location.pathname === `/${href}` ? 'gold' : 'gray' }}>/{href}</a>
+        <a href={`/${href}`} style={{ padding: '3px', color: window.location.pathname === `/${href}` ? 'gold' : 'gray' }}>
+            /{href}
+        </a>
     )
 }
 

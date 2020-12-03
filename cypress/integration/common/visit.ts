@@ -16,6 +16,10 @@ export function visitPinnedToBody() {
     cy.visit('/enablePinnedToBody');
 }
 
+export function visitAdditionalContent() {
+    cy.visit('/enableAdditionalContent');
+}
+
 export function visitStickyPinnedToBody() {
     cy.visit('/enableStickyPinnedToBody');
 }

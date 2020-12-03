@@ -3,7 +3,9 @@ import * as ReactDOM from 'react-dom';
 import { ExtTestGrid } from './test/TestGrid';
 import { ReactGrid } from './lib/Components/ReactGrid';
 // import './test/theming-test.scss';
-import { config, enablePinnedToBodyConfig, disabledInitialFocusLocationConfig } from './test/testEnvConfig';
+import {
+  config, enablePinnedToBodyConfig, disabledInitialFocusLocationConfig, enableAdditionalContentConfig
+} from './test/testEnvConfig';
 
 let component = <ExtTestGrid
   component={ReactGrid}
@@ -51,6 +53,13 @@ switch (window.location.pathname) {
       enableSticky
     />;
     ExtTestGrid.displayName = 'TestGridWithEnabledStickyPinnedToBody';
+    break;
+  case '/enableAdditionalContent':
+    component = <ExtTestGrid
+      component={ReactGrid}
+      config={enableAdditionalContentConfig}
+    />;
+    ExtTestGrid.displayName = 'TestGridWithEnabledAdditionalContent';
     break;
   default:
     break;
