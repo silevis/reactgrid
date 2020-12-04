@@ -27,7 +27,8 @@ export class Utilities {
     }
 
     scrollTo(left: number, top: number, duration = 500) {
-        return this.getScrollableElement().scrollTo(left, top, { duration });
+        return this.config.pinToBody ? cy.scrollTo(left, top, { duration, ensureScrollable: true }) :
+            this.getScrollableElement().scrollTo(left, top, { duration, ensureScrollable: true });
     }
 
     wait() {
