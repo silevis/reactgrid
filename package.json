@@ -61,6 +61,7 @@
     "run:all:tests": "run-p --print-label cy:**",
     "cy:standard": "npx cypress run --headless --quiet --browser firefox -s 'cypress/integration/tests/standard/*'",
     "cy:sticky": "npx cypress run --headless --quiet --browser firefox -s 'cypress/integration/tests/sticky/*'",
+    "cy:additionalContent": "npx cypress run --headless --quiet --browser firefox -s 'cypress/integration/tests/additionalContent/*'",
     "cy:frozenFocus": "npx cypress run --headless --quiet --browser firefox -s 'cypress/integration/tests/frozenFocus/*'",
     "cy:headerRow": "npx cypress run --headless --quiet --browser firefox -s 'cypress/integration/tests/headerRow/*'",
     "cy:pinnedToBody": "npx cypress run --headless --quiet --browser firefox -s 'cypress/integration/tests/pinnedToBody/*'",

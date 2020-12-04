@@ -66,7 +66,13 @@ export const disabledInitialFocusLocationConfig: TestConfig = {
 
 export const enableAdditionalContentConfig: TestConfig = {
     ...config,
-    additionalContent: true
+    additionalContent: true,
+}
+
+export const enableAdditionalContentWithFlexRowConfig: TestConfig = {
+    ...config,
+    additionalContent: true,
+    flexRow: true,
 }
 
 export interface TestConfig {

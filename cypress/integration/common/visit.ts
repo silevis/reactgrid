@@ -20,6 +20,10 @@ export function visitAdditionalContent() {
     cy.visit('/enableAdditionalContent');
 }
 
+export function visitAdditionalContentWithFlexRow() {
+    cy.visit('/enableAdditionalContent?flexRow=true');
+}
+
 export function visitStickyPinnedToBody() {
     cy.visit('/enableStickyPinnedToBody');
 }

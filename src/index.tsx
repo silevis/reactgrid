@@ -4,7 +4,8 @@ import { ExtTestGrid } from './test/TestGrid';
 import { ReactGrid } from './lib/Components/ReactGrid';
 // import './test/theming-test.scss';
 import {
-  config, enablePinnedToBodyConfig, disabledInitialFocusLocationConfig, enableAdditionalContentConfig
+  config, enablePinnedToBodyConfig, disabledInitialFocusLocationConfig, enableAdditionalContentConfig,
+  enableAdditionalContentWithFlexRowConfig
 } from './test/testEnvConfig';
 
 let component = <ExtTestGrid
@@ -57,7 +58,7 @@ switch (window.location.pathname) {
   case '/enableAdditionalContent':
     component = <ExtTestGrid
       component={ReactGrid}
-      config={enableAdditionalContentConfig}
+      config={window.location.search.includes('flexRow=true') ? enableAdditionalContentWithFlexRowConfig : enableAdditionalContentConfig}
     />;
     ExtTestGrid.displayName = 'TestGridWithEnabledAdditionalContent';
     break;

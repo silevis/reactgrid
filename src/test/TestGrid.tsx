@@ -43,7 +43,7 @@ export const TestGrid: React.FC<TestGridProps> = (props) => {
     const {
         config, component, enableSticky, enableColumnAndRowSelection, enableFrozenFocus,
         firstRowType = 'text',
-        firstColType = 'chevron'
+        firstColType = 'chevron',
     } = props;
 
     const [columns, setColumns] = React.useState(() => new Array(config.columns).fill({ columnId: 0, resizable: true, reorderable: true, width: -1 })
@@ -244,11 +244,11 @@ export const TestGrid: React.FC<TestGridProps> = (props) => {
                 }),
             }}>
                 {config.additionalContent &&
-                    <>
-                        <Logo isPro={config.isPro} />
-                        <Logo isPro={config.isPro} />
-                        <Logo isPro={config.isPro} />
-                    </>
+                    <div style={{ height: `${config.rgViewportHeight}px`, backgroundColor: '#fafff3' }}>
+                        <Logo isPro={config.isPro} width={config.rgViewportWidth} />
+                        <Logo isPro={config.isPro} width={config.rgViewportWidth} />
+                        <Logo isPro={config.isPro} width={config.rgViewportWidth} />
+                    </div>
                 }
                 <Component
                     rows={rows}
@@ -280,21 +280,11 @@ export const TestGrid: React.FC<TestGridProps> = (props) => {
                     labels={config.labels}
                 />
                 {config.additionalContent &&
-                    <>
-                        <h1 style={{ width: 3000 }}>TEXT</h1> Test WITH IT
-                        <h1>TEXT</h1> Test WITH IT
-                        <h1>TEXT</h1> Test WITH IT
-                        <h1>TEXT</h1> Test WITH IT
-                        <h1>TEXT</h1> Test WITH IT
-                        <h1>TEXT</h1> Test WITH IT
-                        <h1>TEXT</h1> Test WITH IT
-                        <h1>TEXT</h1> Test WITH IT
-                        <h1>TEXT</h1> Test WITH IT
-                        <h1>TEXT</h1> Test WITH IT
-                        <h1>TEXT</h1> Test WITH IT
-                        <h1>TEXT</h1> Test WITH IT
-                        <h1>TEXT</h1> Test WITH IT
-                    </>
+                    <div style={{ height: `${config.rgViewportHeight}px`, backgroundColor: '#fafff3' }}>
+                        <Logo isPro={config.isPro} width={config.rgViewportWidth} />
+                        <Logo isPro={config.isPro} width={config.rgViewportWidth} />
+                        <Logo isPro={config.isPro} width={config.rgViewportWidth} />
+                    </div>
                 }
             </div>
             <input type='text' data-cy='outer-input' />
@@ -320,8 +310,8 @@ export const TestGrid: React.FC<TestGridProps> = (props) => {
 
 }
 
-const Logo: React.FC<{ isPro?: boolean; maxWidth?: number }> = ({ isPro, maxWidth = 1000 }) => {
-    return <div style={{ display: 'flex', minWidth: 185, maxWidth }}>
+const Logo: React.FC<{ isPro?: boolean; width?: number }> = ({ isPro, width }) => {
+    return <div style={{ display: 'flex', width: `${width}px` }}>
         <h1 style={{ position: 'relative' }}>
             ReactGrid
             {isPro && <div

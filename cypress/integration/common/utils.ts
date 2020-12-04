@@ -8,7 +8,7 @@ export class Utilities {
     constructor(private config: TestConfig) { }
 
     getConfig(): TestConfig {
-        return this.config;
+        return config;
     }
 
     isMacOs() {
@@ -157,15 +157,20 @@ export class Utilities {
         element.invoke('css', 'right').then(str => parseInt(str)).should('be.eq', expectedRight);
     }
 
-    assertIsElementInScrollable(element: Cypress.Chainable): void {
+    assertIsElementInScrollable(element: Cypress.Chainable<JQuery<HTMLElement>>): void {
         element.then($el => {
             this.getScrollableElement().then($scrollable => {
                 const v = $scrollable[0];
                 const elementRect = $el[0].getBoundingClientRect();
-                expect($el[0].offsetTop).to.be.least(v.scrollTop - 1, 'top')
-                expect($el[0].offsetTop + elementRect.height).to.be.most(v.scrollTop + v.clientHeight + 1, 'bottom')
-                expect($el[0].offsetLeft).to.be.least(v.scrollLeft - 1, 'left')
-                expect($el[0].offsetLeft + elementRect.width).to.be.most(v.scrollLeft + v.clientWidth + 1, 'right')
+                const topOffset = (this.config.additionalContent ? this.config.flexRow ? 0 : this.config.rgViewportHeight - 1 : 0);
+                const bottomOffset = (this.config.additionalContent ? this.config.flexRow ? 0 : this.config.rgViewportHeight + 1 : 0);
+                const leftOffset = this.config.additionalContent ? this.config.flexRow ? this.config.rgViewportWidth - 1 : 0 : 0;
+                const rightOffset = this.config.additionalContent ? this.config.flexRow ? this.config.rgViewportWidth : 0 : 0;
+
+                expect($el[0].offsetTop + topOffset).to.be.least(v.scrollTop - 1, 'top');
+                expect($el[0].offsetTop + elementRect.height + bottomOffset).to.be.most(v.scrollTop + v.clientHeight + 1, 'bottom');
+                expect($el[0].offsetLeft + leftOffset).to.be.least(v.scrollLeft - 1, 'left');
+                expect($el[0].offsetLeft + elementRect.width + rightOffset).to.be.most(v.scrollLeft + v.clientWidth + 1, 'right')
             });
         });
     }
