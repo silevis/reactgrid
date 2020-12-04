@@ -35,11 +35,13 @@ export class Utilities {
     }
 
     scrollToBottom(left = 0) {
-        return this.scrollTo(left, config.rows * config.cellHeight);
+        const offset = this.getBottomAddtionalOffset();
+        return this.scrollTo(left, config.rows * config.cellHeight + offset);
     }
 
     scrollToRight(top = 0) {
-        this.scrollTo(config.columns * config.cellWidth, top);
+        const offset = this.getRightAddtionalOffset();
+        this.scrollTo(config.columns * config.cellWidth + offset, top);
     }
 
     getCellXCenter() {
@@ -162,10 +164,10 @@ export class Utilities {
             this.getScrollableElement().then($scrollable => {
                 const v = $scrollable[0];
                 const elementRect = $el[0].getBoundingClientRect();
-                const topOffset = (this.config.additionalContent ? this.config.flexRow ? 0 : this.config.rgViewportHeight - 1 : 0);
-                const bottomOffset = (this.config.additionalContent ? this.config.flexRow ? 0 : this.config.rgViewportHeight + 1 : 0);
-                const leftOffset = this.config.additionalContent ? this.config.flexRow ? this.config.rgViewportWidth - 1 : 0 : 0;
-                const rightOffset = this.config.additionalContent ? this.config.flexRow ? this.config.rgViewportWidth : 0 : 0;
+                const topOffset = this.getTopAddtionalOffset();
+                const bottomOffset = this.getBottomAddtionalOffset();
+                const leftOffset = this.getLeftAddtionalOffset()
+                const rightOffset = this.getRightAddtionalOffset();
 
                 expect($el[0].offsetTop + topOffset).to.be.least(v.scrollTop - 1, 'top');
                 expect($el[0].offsetTop + elementRect.height + bottomOffset).to.be.most(v.scrollTop + v.clientHeight + 1, 'bottom');
@@ -178,7 +180,35 @@ export class Utilities {
     assertScrolledToTop(): void {
         this.getScrollableElement().then($scrollable => {
             const v = $scrollable[0];
-            expect(this.round(v.scrollTop), 'Scroll top').to.be.eq(0)
+            const offset = this.getTopAddtionalOffset();
+            expect(this.round(v.scrollTop), 'Scroll top').to.be.most(offset)
+        });
+    }
+
+    assertScrolledToBottom(): void {
+        this.getScrollableElement().then($scrollable => {
+            const v = $scrollable[0];
+            const offset = this.getBottomAddtionalOffset();
+            const expectedValue = this.round(v.scrollTop + v.clientHeight) + 1;
+            expect(expectedValue, 'Scroll bottom').to.be.least(config.rows * config.cellHeight + offset);
+        });
+    }
+
+    assertScrolledToLeft(): void {
+        this.getScrollableElement().then($scrollable => {
+            const v = $scrollable[0];
+            const offset = this.getLeftAddtionalOffset();
+            const expectedValue = this.round(v.scrollLeft);
+            expect(expectedValue, 'Scroll left').to.be.most(offset);
+        });
+    }
+
+    assertScrolledToRight(includeLineWidth = false): void {
+        this.getScrollableElement().then($scrollable => {
+            const v = $scrollable[0];
+            const offset = this.getRightAddtionalOffset();
+            const expectedValue = this.round(v.scrollLeft + v.clientWidth + (includeLineWidth ? -config.lineWidth : 0)) + 1;
+            expect(expectedValue, 'Scroll Right').to.be.least(config.columns * config.cellWidth + offset);
         });
     }
 
@@ -186,28 +216,24 @@ export class Utilities {
         cy.focused().should('have.class', 'rg-hidden-element');
     }
 
-    assertScrolledToBottom(): void {
-        this.getScrollableElement().then($scrollable => {
-            const v = $scrollable[0];
-            const expectedValue = this.round(v.scrollTop + v.clientHeight) + 1;
-            expect(expectedValue, 'Scroll bottom').to.be.least(config.rows * config.cellHeight);
-        });
+    /**
+     * simplyfy this methods
+     */
+    private getTopAddtionalOffset(): number {
+        return this.config.additionalContent ? this.config.flexRow ? 0 : this.config.rgViewportHeight - 1 : 0;
     }
 
-    assertScrolledToLeft(): void {
-        this.getScrollableElement().then($scrollable => {
-            const v = $scrollable[0];
-            const expectedValue = this.round(v.scrollLeft);
-            expect(expectedValue, 'Scroll left').to.be.eq(0);
-        });
+    private getBottomAddtionalOffset(): number {
+        return this.config.additionalContent ? this.config.flexRow ? 0 : this.config.rgViewportHeight + 1 : 0;
     }
 
-    assertScrolledToRight(includeLineWidth = false): void {
-        this.getScrollableElement().then($scrollable => {
-            const v = $scrollable[0];
-            const expectedValue = this.round(v.scrollLeft + v.clientWidth + (includeLineWidth ? -config.lineWidth : 0)) + 1;
-            expect(expectedValue, 'Scroll Right').to.be.least(config.columns * config.cellWidth);
-        });
+    private getLeftAddtionalOffset(): number {
+        return this.config.additionalContent ? this.config.flexRow ? this.config.rgViewportWidth - 1 : 0 : 0;
     }
+
+    private getRightAddtionalOffset(): number {
+        return this.config.additionalContent ? this.config.flexRow ? this.config.rgViewportWidth : 0 : 0;
+    }
+
 
 }
