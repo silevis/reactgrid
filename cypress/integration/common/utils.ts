@@ -32,7 +32,7 @@ export class Utilities {
     }
 
     wait() {
-        return this.isMacOs() ? 50 : 500;
+        return this.isMacOs() ? 50 : 100;
     }
 
     scrollToBottom(left = 0) {

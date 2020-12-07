@@ -50,6 +50,7 @@ context('Keyboard', () => {
             utils.assertIsElementInScrollable(utils.getCellFocus());
         };
 
+        utils.wait();
         utils.assertElementTopIsEqual(utils.getCellFocus(), 0);
     });
 
