@@ -65,6 +65,8 @@ export const CellRenderer: React.FC<CellRendererProps> = ({ state, location, chi
     };
 
     const isMobile = isMobileDevice();
+    const isFirstRowOrColumnWithSelection = (state.props?.enableRowSelection && location.row.idx === 0)
+        || (state.props?.enableColumnSelection && location.column.idx === 0);
 
     const style = {
         ...(cellTemplate.getStyle && (cellTemplate.getStyle(cell, false) || {})),
@@ -74,7 +76,7 @@ export const CellRenderer: React.FC<CellRendererProps> = ({ state, location, chi
         width: location.column.width,
         height: location.row.height,
         ...(!(isFocused && state.currentlyEditedCell) && bordersProps),
-        ...((isFocused || cell.type === 'header') && { touchAction: 'none' }) // prevent scrolling
+        ...((isFocused || cell.type === 'header' || isFirstRowOrColumnWithSelection) && { touchAction: 'none' }) // prevent scrolling
     } as React.CSSProperties;
 
     const isInEditMode = isFocused && !!(state.currentlyEditedCell);
