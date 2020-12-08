@@ -1,5 +1,3 @@
-/// <reference types="Cypress" />
-
 import { config } from '../../../../src/test/testEnvConfig';
 import { Utilities } from '../../common/utils';
 import { visitFrozenFocus } from '../../common/visit';

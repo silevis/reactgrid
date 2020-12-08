@@ -1,5 +1,3 @@
-/// <reference types="Cypress" />
-
 import { visitPinnedToBody } from '../../common/visit';
 
 context('Pinned to body - scroll', () => {
@@ -8,8 +6,7 @@ context('Pinned to body - scroll', () => {
         visitPinnedToBody();
     });
 
-    it('', () => { // ✅
-
+    it.skip('', () => { // 🔴
     });
 
 });

@@ -1,4 +1,3 @@
-/// <reference types="Cypress" />
 import { visitStickyPinnedToBody } from '../../common/visit';
 import { constants } from '../../common/constants';
 import { Utilities } from '../../common/utils';

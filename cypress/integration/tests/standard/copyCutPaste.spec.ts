@@ -10,7 +10,7 @@ context('Copy / Cut / Paste', () => {
         visit();
     });
 
-    it.skip('should copy values between the same cell types', () => {
+    it.skip('should copy values between the same cell types', () => { // 🔴
 
         // utils.selectCell(config.cellWidth + utils.getCellXCenter(), 200);
         // cy.focused().trigger('cut', {
@@ -29,7 +29,7 @@ context('Copy / Cut / Paste', () => {
         // });
     });
 
-    it.skip('should not update selection after paste is not handled', () => {
+    it.skip('should not update selection after paste is not handled', () => { // 🔴
 
     });
 

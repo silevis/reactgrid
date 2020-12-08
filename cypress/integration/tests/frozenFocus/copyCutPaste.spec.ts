@@ -1,5 +1,3 @@
-/// <reference types="Cypress" />
-
 import { visitFrozenFocus } from '../../common/visit';
 
 context('Copy / Cut / Paste', () => {
@@ -8,8 +6,7 @@ context('Copy / Cut / Paste', () => {
         visitFrozenFocus();
     });
 
-    it('copy and paste into the same frozen focus', () => {
-
+    it.skip('copy and paste into the same frozen focus', () => { // 🔴
     });
 
 });

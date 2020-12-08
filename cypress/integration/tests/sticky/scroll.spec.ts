@@ -1,5 +1,3 @@
-/// <reference types="Cypress" />
-
 import { visitSticky } from '../../common/visit';
 import { constants } from '../../common/constants';
 import { Utilities } from '../../common/utils';

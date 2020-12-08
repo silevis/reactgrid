@@ -1,5 +1,3 @@
-/// <reference types="Cypress" />
-
 import { visitSticky } from '../../common/visit';
 import { Utilities } from '../../common/utils';
 import { config } from '../../../../src/test/testEnvConfig';
@@ -12,7 +10,7 @@ context('Focus on sticky', () => {
         visitSticky();
     });
 
-    it('Focus can be placed on all panes', () => {
+    it('Focus can be placed on all panes', () => { // ✅
         utils.selectCell((config.cellWidth * 2) - 10, (config.cellHeight * 2) - 10);
         utils.getCellFocus().should('be.visible');
         utils.selectCell((config.cellWidth * 4) - 10, (config.cellHeight * 2) - 10);
