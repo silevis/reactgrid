@@ -11,7 +11,7 @@ context('Scroll', () => {
         visitSticky();
     });
 
-    it.skip('should scroll viewport when cell is partially visible and focused', () => { // ✅
+    it('should scroll viewport when cell is partially visible and focused', () => { // ✅
         utils.scrollTo(0, utils.getCellYCenter());
         utils.selectCell(config.cellWidth + 5, config.cellHeight * config.stickyTop + 5);
         utils.assertIsElementInScrollable(utils.getCellFocus());
