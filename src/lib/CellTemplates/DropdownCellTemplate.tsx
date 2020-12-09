@@ -5,9 +5,9 @@ import { getCellProperty } from '../Functions/getCellProperty';
 import { getCharFromKeyCode } from './getCharFromKeyCode';
 import { isAlphaNumericKey } from './keyCodeCheckings';
 import { Cell, CellTemplate, Compatible, Uncertain, UncertainCompatible } from '../Model/PublicModel';
+import { keyCodes } from '../Functions/keyCodes';
 
 import Select, { OptionProps, MenuProps } from 'react-select';
-import { keyCodes } from '../Functions/keyCodes';
 
 export type OptionType = {
     label: string;
@@ -80,6 +80,8 @@ export class DropdownCellTemplate implements CellTemplate<DropdownCell> {
         isInEditMode: boolean,
         onCellChanged: (cell: Compatible<DropdownCell>, commit: boolean) => void
     ): React.ReactNode {
+        // TODO create custom hook - useDropdown
+
         //eslint-disable-next-line
         const selectRef = React.useRef<any>(null);
         //eslint-disable-next-line
@@ -108,7 +110,7 @@ export class DropdownCellTemplate implements CellTemplate<DropdownCell> {
                     {...(cell.isOpen !== undefined && { menuIsOpen: cell.isOpen })}
                     onMenuClose={() => onCellChanged(this.getCompatibleCell({ ...cell, isOpen: !cell.isOpen, inputValue: undefined }), true)}
                     onMenuOpen={() => onCellChanged(this.getCompatibleCell({ ...cell, isOpen: true }), true)}
-                    onChange={(e) => onCellChanged(this.getCompatibleCell({ ...cell, selectedValue: (e as { value: string }).value, isOpen: false, inputValue: undefined }), true)}
+                    onChange={(e) => onCellChanged(this.getCompatibleCell({ ...cell, selectedValue: (e as OptionType).value, isOpen: false, inputValue: undefined }), true)}
                     blurInputOnSelect={true}
                     defaultValue={cell.values.find(val => val.value === cell.selectedValue)}
                     isDisabled={cell.isDisabled}
