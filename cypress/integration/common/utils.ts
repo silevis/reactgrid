@@ -54,7 +54,7 @@ export class Utilities {
     }
 
     selectCellInEditMode(clientX: number, clientY: number) {
-        this.selectCell(clientX, clientY)
+        this.selectCell(clientX, clientY);
         this.keyDown(constants.keyCodes.Enter, { force: true });
     }
 
