@@ -61,7 +61,7 @@ context('Pinned to body - scroll', () => {
         utils.assertScrolledToRight(config.isPro);
     });
 
-    it.only('should scroll to left on arrow left keydown', () => { // ✅
+    it('should scroll to left on arrow left keydown', () => { // ✅
         utils.scrollToRight();
         cy.wait(utils.wait());
         utils.selectCell(config.columns * config.cellWidth - 1, config.cellHeight * 2 + 10,);
