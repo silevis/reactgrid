@@ -162,55 +162,123 @@ export class Utilities {
 
     assertIsElementInScrollable(element: Cypress.Chainable<JQuery<HTMLElement>>): void {
         element.then($el => {
-            this.getScrollableElement().then($scrollable => {
-                const v = $scrollable[0];
-                const elementRect = $el[0].getBoundingClientRect();
-                const topOffset = this.getTopAddtionalOffset();
-                const bottomOffset = this.getBottomAddtionalOffset();
-                const leftOffset = this.getLeftAddtionalOffset()
-                const rightOffset = this.getRightAddtionalOffset();
+            const elementRect = $el[0].getBoundingClientRect();
+            if (this.config.pinToBody) {
+                cy.window().its('scrollY').then($e => {
+                    this.getReactGrid().then($reactgrid => {
+                        const reactgridRect = $reactgrid[0].getBoundingClientRect();
+                        expect(this.round(reactgridRect.y + $el[0].offsetTop + $e)).to.be.least(this.round($e - 1), 'top');
+                        cy.document().its('documentElement').then($d => {
+                            expect(this.round($el[0].offsetTop + elementRect.height + reactgridRect.y + $e)).to.be.most(this.round($e + $d[0].clientHeight) + 1, 'bottom');
+                        });
+                    })
+                });
+                cy.window().its('scrollX').then($e => {
+                    this.getReactGrid().then($reactgrid => {
+                        const reactgridRect = $reactgrid[0].getBoundingClientRect();
+                        expect(this.round(reactgridRect.x + $el[0].offsetLeft + $e)).to.be.least(this.round($e - 1), 'left');
+                        cy.document().its('documentElement').then($d => {
+                            expect(this.round($el[0].offsetLeft + elementRect.width + reactgridRect.x + $e)).to.be.most(this.round($e + $d[0].clientWidth) + 1, 'right');
+                        });
+                    })
+                });
+            } else {
+                this.getScrollableElement().then($scrollable => {
+                    const v = $scrollable[0];
+                    const topOffset = this.getTopAddtionalOffset();
+                    const bottomOffset = this.getBottomAddtionalOffset();
+                    const leftOffset = this.getLeftAddtionalOffset()
+                    const rightOffset = this.getRightAddtionalOffset();
 
-                expect($el[0].offsetTop + topOffset).to.be.least(v.scrollTop - 1, 'top');
-                expect($el[0].offsetTop + elementRect.height + bottomOffset).to.be.most(v.scrollTop + v.clientHeight + 1, 'bottom');
-                expect($el[0].offsetLeft + leftOffset).to.be.least(v.scrollLeft - 1, 'left');
-                expect($el[0].offsetLeft + elementRect.width + rightOffset).to.be.most(v.scrollLeft + v.clientWidth + 1, 'right')
-            });
+                    expect($el[0].offsetTop + topOffset).to.be.least(v.scrollTop - 1, 'top');
+                    expect($el[0].offsetTop + elementRect.height + bottomOffset).to.be.most(v.scrollTop + v.clientHeight + 1, 'bottom');
+                    expect($el[0].offsetLeft + leftOffset).to.be.least(v.scrollLeft - 1, 'left');
+                    expect($el[0].offsetLeft + elementRect.width + rightOffset).to.be.most(v.scrollLeft + v.clientWidth + 1, 'right')
+                });
+            }
         });
     }
 
     assertScrolledToTop(): void {
-        this.getScrollableElement().then($scrollable => {
-            const v = $scrollable[0];
-            const offset = this.getTopAddtionalOffset();
-            expect(this.round(v.scrollTop), 'Scroll top').to.be.most(offset)
-        });
+        if (this.config.pinToBody) {
+            cy.window().its('scrollY').then($e => {
+                this.getReactGrid().then($reactgrid => {
+                    const reactgridRect = $reactgrid[0].getBoundingClientRect();
+                    console.log(reactgridRect)
+                    expect(this.round($e), 'Scroll top').to.be.most(this.round($e + reactgridRect.y))
+                })
+            });
+        }
+        else {
+            this.getScrollableElement().then($scrollable => {
+                const v = $scrollable[0];
+                const offset = this.getTopAddtionalOffset();
+                expect(this.round(v.scrollTop), 'Scroll top').to.be.most(offset)
+            });
+        }
     }
 
     assertScrolledToBottom(): void {
-        this.getScrollableElement().then($scrollable => {
-            const v = $scrollable[0];
-            const offset = this.getBottomAddtionalOffset();
-            const expectedValue = this.round(v.scrollTop + v.clientHeight) + 1;
-            expect(expectedValue, 'Scroll bottom').to.be.least(config.rows * config.cellHeight + offset);
-        });
+        if (this.config.pinToBody) {
+            cy.window().its('scrollY').then($e => {
+                this.getReactGrid().then($reactgrid => {
+                    const reactgridRect = $reactgrid[0].getBoundingClientRect();
+                    console.log(reactgridRect)
+                    cy.document().its('documentElement').then($d => {
+                        expect(this.round($e), 'Scroll bottom').to.be.least(this.round($e - $d[0].clientHeight + reactgridRect.y + config.rows * config.cellHeight));
+                    });
+                })
+            });
+        }
+        else {
+            this.getScrollableElement().then($scrollable => {
+                const v = $scrollable[0];
+                const offset = this.getBottomAddtionalOffset();
+                const expectedValue = this.round(v.scrollTop + v.clientHeight) + 1;
+                expect(expectedValue, 'Scroll bottom').to.be.least(config.rows * config.cellHeight + offset);
+            });
+        }
     }
 
     assertScrolledToLeft(): void {
-        this.getScrollableElement().then($scrollable => {
-            const v = $scrollable[0];
-            const offset = this.getLeftAddtionalOffset();
-            const expectedValue = this.round(v.scrollLeft);
-            expect(expectedValue, 'Scroll left').to.be.most(offset);
-        });
+        if (this.config.pinToBody) {
+            cy.window().its('scrollX').then($e => {
+                this.getReactGrid().then($reactgrid => {
+                    const reactgridRect = $reactgrid[0].getBoundingClientRect();
+                    expect(this.round($e)).to.be.most(this.round($e + reactgridRect.x));
+                })
+            });
+        }
+        else {
+            this.getScrollableElement().then($scrollable => {
+                const v = $scrollable[0];
+                const offset = this.getLeftAddtionalOffset();
+                const expectedValue = this.round(v.scrollLeft);
+                expect(expectedValue, 'Scroll left').to.be.most(offset);
+            });
+        }
     }
 
     assertScrolledToRight(includeLineWidth = false): void {
-        this.getScrollableElement().then($scrollable => {
-            const v = $scrollable[0];
-            const offset = this.getRightAddtionalOffset();
-            const expectedValue = this.round(v.scrollLeft + v.clientWidth + (includeLineWidth ? -config.lineWidth : 0)) + 1;
-            expect(expectedValue, 'Scroll Right').to.be.least(config.columns * config.cellWidth + offset);
-        });
+        if (this.config.pinToBody) {
+            cy.window().its('scrollX').then($e => {
+                this.getReactGrid().then($reactgrid => {
+                    const reactgridRect = $reactgrid[0].getBoundingClientRect();
+                    const expectedValue = this.round($e + (includeLineWidth ? -config.lineWidth : 0)) + 1;
+                    cy.document().its('documentElement').then($d => {
+                        expect(expectedValue, 'Scroll Right').to.be.least(this.round($e - $d[0].clientWidth + reactgridRect.x + config.columns * config.cellWidth));
+                    });
+                })
+            });
+        }
+        else {
+            this.getScrollableElement().then($scrollable => {
+                const v = $scrollable[0];
+                const offset = this.getRightAddtionalOffset();
+                const expectedValue = this.round(v.scrollLeft + v.clientWidth + (includeLineWidth ? -config.lineWidth : 0)) + 1;
+                expect(expectedValue, 'Scroll Right').to.be.least(config.columns * config.cellWidth + offset);
+            });
+        }
     }
 
     assertIsReactGridFocused() {

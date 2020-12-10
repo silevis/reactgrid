@@ -23,6 +23,7 @@ context('Sticky pinned to body - scroll', () => {
 
     it('should scroll to right and enter to scrollable area with keys and scroll to left', () => { // ✅
         utils.scrollToRight();
+        utils.assertScrolledToRight();
         utils.selectCell(utils.getCellXCenter(), config.cellHeight * 5 + utils.getCellYCenter(), { force: true });
         for (let i = 0; i < config.stickyLeft; i++) {
             utils.keyDown(constants.keyCodes.ArrowRight, { force: true });
