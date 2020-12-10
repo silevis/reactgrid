@@ -1,5 +1,4 @@
 import { config } from '../../../../src/test/testEnvConfig';
-import { constants } from '../../common/constants';
 import { Utilities } from '../../common/utils';
 import { visit } from '../../common/visit';
 
@@ -15,7 +14,7 @@ context('Cell editor position', () => {
 
     });
 
-    it.only('should open fixed cell editor on both axis scrolled view', () => {
+    it.only('should open fixed cell editor on both axis scrolled view', () => { // ✅
 
         const clickOne = {
             x: config.cellWidth * 1,
