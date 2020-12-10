@@ -54,7 +54,7 @@ export class Utilities {
     }
 
     selectCellInEditMode(clientX: number, clientY: number) {
-        this.selectCell(clientX, clientY)
+        this.selectCell(clientX, clientY);
         this.keyDown(constants.keyCodes.Enter, { force: true });
     }
 
@@ -64,8 +64,8 @@ export class Utilities {
             .substring(7);
     }
 
-    round(value: number): number {
-        return Math.round(value);
+    round(value: number, places = 0): number {
+        return +(Math.round(((value + "e+" + places) as unknown) as number) + "e-" + places);
     }
 
     resetSelection(x: number, y: number) {
@@ -283,6 +283,27 @@ export class Utilities {
 
     assertIsReactGridFocused() {
         cy.focused().should('have.class', 'rg-hidden-element');
+    }
+
+    assertCellEditorPosition(scroll: { x: number, y: number }, click: { x: number, y: number }) {
+        this.getCellEditor().then($c => {
+            const cellEditor = $c[0];
+            this.getReactGrid().then($r => {
+                const reactgridRect = $r[0].getBoundingClientRect();
+                const expectedLeft = this.round(reactgridRect.left + scroll.x + click.x - (scroll.x % config.cellWidth) - (scroll.x === 0 ? config.cellWidth : 0) - 1, 0);
+                const expectedTop = this.round(reactgridRect.top + scroll.y + click.y - (scroll.y % config.cellHeight) - (scroll.y === 0 ? config.cellHeight : 0) - 1, 0);
+                const realLeft = this.round(parseFloat(cellEditor.style.left.replace('px', '')), 0);
+                const realTop = this.round(parseFloat(cellEditor.style.top.replace('px', '')), 0);
+                expect(expectedLeft).to.be.equal(realLeft, 'Left distance');
+                expect(expectedTop).to.be.equal(realTop, 'Top distance');
+            });
+        });
+    }
+
+    getRandomInt(min: number, max: number): number {
+        min = Math.ceil(min);
+        max = Math.floor(max);
+        return Math.floor(Math.random() * (max - min + 1)) + min;
     }
 
     /**

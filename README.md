@@ -16,7 +16,6 @@ Browse our examples & docs: 👉 [reactgrid.com](https://reactgrid.com/?utm_sour
 Before running ReactGrid you need to have installed:
 - react": "^16.13.1"
 - react-dom: "^16.13.1"
-- react-select: "3.1.0"
 
 # Install
 
