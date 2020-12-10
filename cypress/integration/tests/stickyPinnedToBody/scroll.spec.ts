@@ -25,7 +25,7 @@ context('Sticky pinned to body - scroll', () => {
         utils.scrollToRight();
         utils.assertScrolledToRight();
         utils.selectCell(utils.getCellXCenter(), config.cellHeight * 5 + utils.getCellYCenter(), { force: true });
-        for (let i = 0; i < config.stickyLeft; i++) {
+        for (let i = 0; i < config.stickyLeft - 1; i++) {
             utils.keyDown(constants.keyCodes.ArrowRight, { force: true });
         };
         utils.assertScrolledToLeft();
