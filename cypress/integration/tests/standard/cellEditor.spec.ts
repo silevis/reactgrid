@@ -11,46 +11,52 @@ context('Cell editor position', () => {
         visit();
     });
 
-    it('should open fixed cell editor on non scrolled view', () => {
+    it.skip('should open fixed cell editor on non scrolled view', () => {
 
     });
 
-    it.only('should open fixed cell editor on x axis scrolled view', () => {
+    it.only('should open fixed cell editor on both axis scrolled view', () => {
 
-        const click = {
+        const clickOne = {
             x: config.cellWidth * 1,
-            y: 1,
+            y: config.cellHeight * 1,
         }
-
         const scroll = {
-            x: 1610,
-            // x: 3,
-            y: 0,
+            x: 120,
+            y: 32,
         }
-
-        const leftToReactgrid = click.x + scroll.x;
-        const topToReactgrid = click.y + scroll.y;
 
         utils.scrollTo(scroll.x, scroll.y);
-        utils.selectCellInEditMode(click.x, click.y);
+        utils.selectCellInEditMode(clickOne.x, clickOne.y);
 
-        utils.getCellEditor().then($c => {
-            const cellEditor = $c[0];
-            utils.getReactGrid().then($r => {
-                const reBoundingRect = $r[0].getBoundingClientRect();
-                cy.log(`${scroll.x % click.x === 0 ? 0 : reBoundingRect.left + scroll.x}`);
-                const expectedLeft =
-                    reBoundingRect.left
-                    + scroll.x
-                    // + click.x
-                    + (scroll.x % click.x === 0 ? 0 : config.cellWidth - (scroll.x % click.x))
-                    - 1;
-                expect(`${expectedLeft}px`).to.be.equal(cellEditor.style.left, 'Left distance');
-            });
-        });
+        utils.assertCellEditorPosition(scroll, clickOne);
+
+        utils.resetSelection(0, 0);
+
+        // ============
+
+        const scrollTwo = {
+            x: utils.getRandomInt(200, 400),
+            y: utils.getRandomInt(300, 700),
+        }
+        const clickTwo = {
+            x: config.cellWidth * 2,
+            y: config.cellHeight * 2,
+        }
+
+        utils.scrollTo(scrollTwo.x, scrollTwo.y);
+        utils.selectCellInEditMode(clickTwo.x, clickTwo.y);
+
+        utils.assertCellEditorPosition(scrollTwo, clickTwo);
+
     });
 
-    it('should open fixed cell editor on Y scrolled view', () => {
+    it.skip('should open fixed cell editor on Y scrolled view', () => {
+
+    });
+
+    it.skip('should open fixed cell editor on X axis scrolled view', () => {
+
     });
 
 });
