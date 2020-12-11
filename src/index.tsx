@@ -5,7 +5,7 @@ import { ReactGrid } from './lib/Components/ReactGrid';
 // import './test/theming-test.scss';
 import {
   config, enablePinnedToBodyConfig, disabledInitialFocusLocationConfig, enableAdditionalContentConfig,
-  enableAdditionalContentWithFlexRowConfig
+  enableAdditionalContentWithFlexRowConfig, enableSymetric
 } from './test/testEnvConfig';
 
 let component = <ExtTestGrid
@@ -61,6 +61,14 @@ switch (window.location.pathname) {
       config={window.location.search.includes('flexRow=true') ? enableAdditionalContentWithFlexRowConfig : enableAdditionalContentConfig}
     />;
     ExtTestGrid.displayName = 'TestGridWithEnabledAdditionalContent';
+    break;
+  case '/enableSymetric':
+    component = <ExtTestGrid
+      component={ReactGrid}
+      config={enableSymetric}
+      enableSticky
+    />;
+    ExtTestGrid.displayName = 'TestGridWithEnabledSymetric';
     break;
   default:
     break;

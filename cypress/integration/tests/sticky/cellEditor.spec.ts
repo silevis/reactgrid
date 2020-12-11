@@ -1,16 +1,16 @@
-import { config } from '../../../../src/test/testEnvConfig';
+import { enableSymetric as config } from '../../../../src/test/testEnvConfig';
 import { Utilities } from '../../common/utils';
-import { visitSticky } from '../../common/visit';
+import { visitSymetric } from '../../common/visit';
 
 const utils = new Utilities(config);
 
 context('Cell editor position', () => {
 
   beforeEach(() => {
-    visitSticky();
+    visitSymetric();
   });
 
-  it('should open cell editor on NON scrolled view', () => { // ✅
+  it.skip('should open cell editor on NON scrolled view', () => { // ✅
     [{
       click: {
         x: config.cellWidth * (config.stickyLeft + 1),
@@ -23,7 +23,7 @@ context('Cell editor position', () => {
     }, {
       click: {
         x: config.cellWidth * (config.stickyLeft + 3),
-        y: config.cellHeight * (config.stickyTop + 17),
+        y: config.cellHeight * (config.stickyTop + 6),
       },
       scroll: {
         x: 0,
@@ -32,30 +32,30 @@ context('Cell editor position', () => {
     }].forEach(utils.testCellEditorOnSticky.bind(utils));
   });
 
-  it('should open cell editor on scrolled view', () => { // ✅
+  it.skip('should open cell editor on scrolled view', () => { // ✅
     [{
       click: {
         x: config.cellWidth * (config.stickyLeft + 1),
         y: config.cellHeight * (config.stickyTop + 1),
       },
       scroll: {
-        x: 2000,
-        y: 20,
+        x: config.cellWidth * 2,
+        y: config.cellHeight * 3,
       },
     },
     {
       click: {
         x: config.cellWidth * (config.stickyLeft + 3),
-        y: config.cellHeight * (config.stickyTop + 17),
+        y: config.cellHeight * (config.stickyTop + 4),
       },
       scroll: {
-        x: 80,
-        y: 800,
+        x: config.cellWidth * 2,
+        y: config.cellHeight * 3,
       },
     }].forEach(utils.testCellEditorOnSticky.bind(utils));
   });
 
-  it('should open cell editor on NON scrolled left sticky', () => {
+  it.skip('should open cell editor on NON scrolled left sticky', () => {
     [
       {
         click: {
@@ -70,7 +70,7 @@ context('Cell editor position', () => {
       {
         click: {
           x: config.cellWidth * 1 - (config.stickyLeft ? 1 : 0),
-          y: config.cellHeight * (config.stickyTop + 16),
+          y: config.cellHeight * (config.stickyTop + 6),
         },
         scroll: {
           x: 0,
@@ -80,7 +80,7 @@ context('Cell editor position', () => {
     ].forEach(utils.testCellEditorOnSticky.bind(utils));
   });
 
-  it('should open cell editor on scrolled left sticky', () => {
+  it.skip('should open cell editor on scrolled left sticky', () => {
     [
       {
         click: {
@@ -88,24 +88,24 @@ context('Cell editor position', () => {
           y: config.cellHeight * (config.stickyTop + 3),
         },
         scroll: {
-          x: 150,
-          y: 200,
+          x: config.cellWidth * 2,
+          y: config.cellHeight * 3,
         },
       },
       {
         click: {
           x: config.cellWidth * 1 - (config.stickyLeft ? 1 : 0),
-          y: config.cellHeight * (config.stickyTop + 16),
+          y: config.cellHeight * (config.stickyTop + 5),
         },
         scroll: {
-          x: 305,
-          y: 200,
+          x: config.cellWidth * 2,
+          y: config.cellHeight * 6,
         },
       },
     ].forEach(utils.testCellEditorOnSticky.bind(utils));
   });
 
-  it('should open cell editor on NON scrolled top-left sticky', () => {
+  it.skip('should open cell editor on NON scrolled top-left sticky', () => {
     [
       {
         click: {
@@ -120,7 +120,7 @@ context('Cell editor position', () => {
       {
         click: {
           x: config.cellWidth * 2 - (config.stickyLeft ? 1 : 0),
-          y: config.cellHeight * 3 - (config.stickyTop ? 1 : 0),
+          y: config.cellHeight * 2 - (config.stickyTop ? 1 : 0),
         },
         scroll: {
           x: 0,
@@ -138,18 +138,18 @@ context('Cell editor position', () => {
           y: config.cellHeight * 1 - (config.stickyTop ? 1 : 0),
         },
         scroll: {
-          x: 1232,
-          y: 12,
+          x: config.cellWidth * 2,
+          y: config.cellHeight * 3,
         },
       },
       {
         click: {
           x: config.cellWidth * 2 - (config.stickyLeft ? 1 : 0),
-          y: config.cellHeight * 3 - (config.stickyTop ? 1 : 0),
+          y: config.cellHeight * 2 - (config.stickyTop ? 1 : 0),
         },
         scroll: {
-          x: 14,
-          y: 700,
+          x: config.cellWidth * 2,
+          y: config.cellHeight * 6,
         },
       },
     ].forEach(utils.testCellEditorOnSticky.bind(utils));

@@ -10,7 +10,7 @@ context('Cell editor position', () => {
     visit();
   });
 
-  it('should open fixed cell editor on non scrolled view', () => { // ✅
+  it.skip('should open fixed cell editor on non scrolled view', () => {
     [{
       click: {
         x: config.cellWidth * 1,
@@ -32,20 +32,20 @@ context('Cell editor position', () => {
     }].forEach(utils.testCellEditor.bind(utils));
   });
 
-  it('should open fixed cell editor on both axis scrolled view', () => { // ✅
+  it.skip('should open fixed cell editor on both axis scrolled view', () => {
     [{
       click: {
         x: config.cellWidth * 1,
         y: config.cellHeight * 1,
       },
       scroll: {
-        x: 120,
-        y: 32,
+        x: config.cellWidth,
+        y: config.cellHeight,
       },
     }, {
       click: {
-        x: utils.getRandomInt(200, 400),
-        y: utils.getRandomInt(300, 700),
+        x: config.cellWidth * utils.getRandomInt(1, 5),
+        y: config.cellHeight * utils.getRandomInt(1, 15),
       },
       scroll: {
         x: config.cellWidth * 2,

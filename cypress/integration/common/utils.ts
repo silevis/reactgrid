@@ -1,7 +1,7 @@
 /// <reference types="cypress" />
 
 import { constants } from './constants';
-import { config, TestConfig } from '../../../src/test/testEnvConfig';
+import { TestConfig } from '../../../src/test/testEnvConfig';
 
 export interface CellEditorTestParams {
     scroll: {
@@ -19,7 +19,7 @@ export class Utilities {
     constructor(private config: TestConfig) { }
 
     getConfig(): TestConfig {
-        return config;
+        return this.config;
     }
 
     isMacOs() {
@@ -48,20 +48,20 @@ export class Utilities {
 
     scrollToBottom(left = 0) {
         const offset = this.getBottomAddtionalOffset();
-        return this.scrollTo(left, config.rows * config.cellHeight + offset);
+        return this.scrollTo(left, this.getConfig().rows * this.getConfig().cellHeight + offset);
     }
 
     scrollToRight(top = 0) {
         const offset = this.getRightAddtionalOffset();
-        this.scrollTo(config.columns * config.cellWidth + offset, top);
+        this.scrollTo(this.getConfig().columns * this.getConfig().cellWidth + offset, top);
     }
 
     getCellXCenter() {
-        return config.cellWidth / 2;
+        return this.getConfig().cellWidth / 2;
     }
 
     getCellYCenter() {
-        return config.cellHeight / 2;
+        return this.getConfig().cellHeight / 2;
     }
 
     selectCellInEditMode(clientX: number, clientY: number) {
@@ -80,7 +80,7 @@ export class Utilities {
     }
 
     resetSelection(x: number, y: number) {
-        this.selectCell(x, y + config.cellHeight);
+        this.selectCell(x, y + this.getConfig().cellHeight);
         this.selectCell(x, y);
     }
 
@@ -236,7 +236,7 @@ export class Utilities {
                     const reactgridRect = $reactgrid[0].getBoundingClientRect();
                     console.log(reactgridRect)
                     cy.document().its('documentElement').then($d => {
-                        expect(this.round($e), 'Scroll bottom').to.be.least(this.round($e - $d[0].clientHeight + reactgridRect.y + config.rows * config.cellHeight));
+                        expect(this.round($e), 'Scroll bottom').to.be.least(this.round($e - $d[0].clientHeight + reactgridRect.y + this.getConfig().rows * this.getConfig().cellHeight));
                     });
                 })
             });
@@ -246,7 +246,7 @@ export class Utilities {
                 const v = $scrollable[0];
                 const offset = this.getBottomAddtionalOffset();
                 const expectedValue = this.round(v.scrollTop + v.clientHeight) + 1;
-                expect(expectedValue, 'Scroll bottom').to.be.least(config.rows * config.cellHeight + offset);
+                expect(expectedValue, 'Scroll bottom').to.be.least(this.getConfig().rows * this.getConfig().cellHeight + offset);
             });
         }
     }
@@ -275,9 +275,9 @@ export class Utilities {
             cy.window().its('scrollX').then($e => {
                 this.getReactGrid().then($reactgrid => {
                     const reactgridRect = $reactgrid[0].getBoundingClientRect();
-                    const expectedValue = this.round($e + (includeLineWidth ? -config.lineWidth : 0)) + 1;
+                    const expectedValue = this.round($e + (includeLineWidth ? -this.getConfig().lineWidth : 0)) + 1;
                     cy.document().its('documentElement').then($d => {
-                        expect(expectedValue, 'Scroll Right').to.be.least(this.round($e - $d[0].clientWidth + reactgridRect.x + config.columns * config.cellWidth));
+                        expect(expectedValue, 'Scroll Right').to.be.least(this.round($e - $d[0].clientWidth + reactgridRect.x + this.getConfig().columns * this.getConfig().cellWidth));
                     });
                 })
             });
@@ -286,8 +286,8 @@ export class Utilities {
             this.getScrollableElement().then($scrollable => {
                 const v = $scrollable[0];
                 const offset = this.getRightAddtionalOffset();
-                const expectedValue = this.round(v.scrollLeft + v.clientWidth + (includeLineWidth ? -config.lineWidth : 0)) + 1;
-                expect(expectedValue, 'Scroll Right').to.be.least(config.columns * config.cellWidth + offset);
+                const expectedValue = this.round(v.scrollLeft + v.clientWidth + (includeLineWidth ? -this.getConfig().lineWidth : 0)) + 1;
+                expect(expectedValue, 'Scroll Right').to.be.least(this.getConfig().columns * this.getConfig().cellWidth + offset);
             });
         }
     }
@@ -314,8 +314,8 @@ export class Utilities {
             const cellEditor = $c[0];
             this.getReactGrid().then($r => {
                 const reactgridRect = $r[0].getBoundingClientRect();
-                const expectedLeft = this.round(reactgridRect.left + scroll.x + click.x - (scroll.x % config.cellWidth) - (scroll.x === 0 ? config.cellWidth : 0) - 1, 0);
-                const expectedTop = this.round(reactgridRect.top + scroll.y + click.y - (scroll.y % config.cellHeight) - (scroll.y === 0 ? config.cellHeight : 0) - 1, 0);
+                const expectedLeft = this.round(reactgridRect.left + scroll.x + click.x - (scroll.x % this.getConfig().cellWidth) - (scroll.x === 0 ? this.getConfig().cellWidth : 0) - 1, 0);
+                const expectedTop = this.round(reactgridRect.top + scroll.y + click.y - (scroll.y % this.getConfig().cellHeight) - (scroll.y === 0 ? this.getConfig().cellHeight : 0) - 1, 0);
                 const realLeft = this.round(parseFloat(cellEditor.style.left.replace('px', '')), 0);
                 const realTop = this.round(parseFloat(cellEditor.style.top.replace('px', '')), 0);
                 expect(expectedLeft).to.be.equal(realLeft, 'Left distance');
@@ -326,32 +326,35 @@ export class Utilities {
 
     assertCellEditorPositionOnSticky(params: CellEditorTestParams) {
         const { click, scroll } = params;
-        console.log({
-            a: scroll.x === 0,
-            b: scroll.x % config.cellWidth === 0,
-            c: click.x < config.stickyLeft * config.cellWidth,
-            au: (scroll.x % config.cellWidth !== 0) && (scroll.x % config.cellWidth !== 0) && (click.x < config.stickyLeft * config.cellWidth),
-            isSticky: click.x < config.stickyLeft * config.cellWidth,
-            kiwk: scroll.y === 0 || scroll.y % config.cellHeight === 0,
-        });
         this.getCellEditor().then($c => {
             const cellEditor = $c[0];
-
             this.getReactGrid().then($r => {
                 const reactgridRect = $r[0].getBoundingClientRect();
-                const isStickyLeftClicked = click.x < config.stickyLeft * config.cellWidth;
-                const isStickyTopClicked = click.y < config.stickyTop * config.cellHeight;
+                const isStickyLeftClicked = click.x < this.getConfig().stickyLeft * this.getConfig().cellWidth;
+                const isStickyTopClicked = click.y < this.getConfig().stickyTop * this.getConfig().cellHeight;
                 const isLeftScrolled = scroll.x !== 0;
                 const isTopScrolled = scroll.y !== 0;
+                console.log({
+                    s: this.getConfig().stickyLeft * this.getConfig().cellWidth,
+                    c: click.x,
+                    reactgridRect,
+                    isStickyLeftClicked,
+                    isStickyTopClicked,
+                    isLeftScrolled,
+                    isTopScrolled,
+                    scroll,
+                    click
+                });
                 const expectedLeft = this.round(reactgridRect.left + scroll.x + click.x
-                    - (!isStickyLeftClicked && isLeftScrolled ? scroll.x % config.cellWidth : 0)
-                    - (!isLeftScrolled ? config.cellWidth : 0)
-                    - (isStickyLeftClicked && isLeftScrolled ? config.cellWidth : 0)
+                    - (!isStickyLeftClicked && isLeftScrolled ? scroll.x % this.getConfig().cellWidth : 0)
+                    - (!isLeftScrolled ? this.getConfig().cellWidth : 0)
+                    - (isStickyLeftClicked && isLeftScrolled ? this.getConfig().cellWidth : 0)
                     - (isStickyLeftClicked ? 0 : 1)
                     , 0);
                 const expectedTop = this.round(reactgridRect.top + scroll.y + click.y
-                    - (scroll.y % config.cellHeight)
-                    - (!isTopScrolled || scroll.y % config.cellHeight === 0 ? config.cellHeight : 0)
+                    - (!isStickyTopClicked && isTopScrolled ? scroll.y % this.getConfig().cellHeight : 0)
+                    - (!isTopScrolled ? this.getConfig().cellHeight : 0)
+                    - (isStickyTopClicked && isTopScrolled ? this.getConfig().cellHeight : 0)
                     - (isStickyTopClicked ? 0 : 1)
                     , 0);
                 const realLeft = this.round(parseFloat(cellEditor.style.left.replace('px', '')), 0);
@@ -361,11 +364,6 @@ export class Utilities {
             });
         });
     }
-
-    // - (!isStickyTopClicked && isTopScrolled ? scroll.y % config.cellHeight : 0)
-    //                 // - (!isTopScrolled ? config.cellHeight : 0)
-    //                 - (isStickyTopClicked && isTopScrolled ? config.cellHeight : 0)
-    //                 - (isStickyTopClicked ? 0 : 1)
 
     getRandomInt(min: number, max: number): number {
         min = Math.ceil(min);
@@ -377,20 +375,19 @@ export class Utilities {
      * simplyfy this methods
      */
     private getTopAddtionalOffset(): number {
-        return this.config.additionalContent ? this.config.flexRow ? 0 : this.config.rgViewportHeight - 1 : 0;
+        return this.getConfig().additionalContent ? this.getConfig().flexRow ? 0 : this.getConfig().rgViewportHeight - 1 : 0;
     }
 
     private getBottomAddtionalOffset(): number {
-        return this.config.additionalContent ? this.config.flexRow ? 0 : this.config.rgViewportHeight + 1 : 0;
+        return this.getConfig().additionalContent ? this.getConfig().flexRow ? 0 : this.getConfig().rgViewportHeight + 1 : 0;
     }
 
     private getLeftAddtionalOffset(): number {
-        return this.config.additionalContent ? this.config.flexRow ? this.config.rgViewportWidth - 1 : 0 : 0;
+        return this.getConfig().additionalContent ? this.getConfig().flexRow ? this.getConfig().rgViewportWidth - 1 : 0 : 0;
     }
 
     private getRightAddtionalOffset(): number {
-        return this.config.additionalContent ? this.config.flexRow ? this.config.rgViewportWidth : 0 : 0;
+        return this.getConfig().additionalContent ? this.getConfig().flexRow ? this.getConfig().rgViewportWidth : 0 : 0;
     }
-
 
 }

@@ -335,6 +335,7 @@ const Logo: React.FC<{ isPro?: boolean; width?: number }> = ({ isPro, width }) =
         <TestLink href={'enablePinnedToBody'} />
         <TestLink href={'enableStickyPinnedToBody'} />
         <TestLink href={'enableAdditionalContent'} />
+        <TestLink href={'enableSymetric'} />
         {isPro && <>
             <TestLink href={'enableColumnAndRowSelection'} />
             <TestLink href={'enableColumnAndRowSelectionWithSticky'} />

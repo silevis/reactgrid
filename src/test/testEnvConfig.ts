@@ -75,6 +75,16 @@ export const enableAdditionalContentWithFlexRowConfig: TestConfig = {
     flexRow: true,
 }
 
+export const enableSymetric: TestConfig = {
+    ...config,
+    cellHeight: 50,
+    cellWidth: 50,
+    stickyTop: 2,
+    stickyBottom: 2,
+    stickyLeft: 2,
+    stickyRight: 2,
+}
+
 export interface TestConfig {
     pinToBody: boolean;
     additionalContent: boolean;

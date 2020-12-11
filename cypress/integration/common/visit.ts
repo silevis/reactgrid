@@ -39,3 +39,7 @@ export function visitColumnAndRowSelections() {
 export function visitColumnAndRowSelectionsWithSticky() {
     cy.visit('/enableColumnAndRowSelectionWithSticky');
 }
+
+export function visitSymetric() {
+    cy.visit('/enableSymetric');
+}
