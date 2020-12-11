@@ -3,6 +3,17 @@
 import { constants } from './constants';
 import { config, TestConfig } from '../../../src/test/testEnvConfig';
 
+export interface CellEditorTestParams {
+    scroll: {
+        x: number,
+        y: number
+    },
+    click: {
+        x: number,
+        y: number
+    };
+}
+
 export class Utilities {
 
     constructor(private config: TestConfig) { }
@@ -285,13 +296,55 @@ export class Utilities {
         cy.focused().should('have.class', 'rg-hidden-element');
     }
 
-    assertCellEditorPosition(scroll: { x: number, y: number }, click: { x: number, y: number }) {
+    testCellEditor(testCase: CellEditorTestParams) {
+        this.scrollTo(testCase.scroll.x, testCase.scroll.y);
+        this.selectCellInEditMode(testCase.click.x, testCase.click.y);
+        this.assertCellEditorPosition(testCase);
+    }
+
+    testCellEditorOnSticky(testCase: CellEditorTestParams) {
+        this.scrollTo(testCase.scroll.x, testCase.scroll.y);
+        this.selectCellInEditMode(testCase.click.x, testCase.click.y);
+        this.assertCellEditorPositionOnSticky(testCase);
+    }
+
+    assertCellEditorPosition(params: CellEditorTestParams) {
+        const { click, scroll } = params;
         this.getCellEditor().then($c => {
             const cellEditor = $c[0];
             this.getReactGrid().then($r => {
                 const reactgridRect = $r[0].getBoundingClientRect();
                 const expectedLeft = this.round(reactgridRect.left + scroll.x + click.x - (scroll.x % config.cellWidth) - (scroll.x === 0 ? config.cellWidth : 0) - 1, 0);
                 const expectedTop = this.round(reactgridRect.top + scroll.y + click.y - (scroll.y % config.cellHeight) - (scroll.y === 0 ? config.cellHeight : 0) - 1, 0);
+                const realLeft = this.round(parseFloat(cellEditor.style.left.replace('px', '')), 0);
+                const realTop = this.round(parseFloat(cellEditor.style.top.replace('px', '')), 0);
+                expect(expectedLeft).to.be.equal(realLeft, 'Left distance');
+                expect(expectedTop).to.be.equal(realTop, 'Top distance');
+            });
+        });
+    }
+
+    assertCellEditorPositionOnSticky(params: CellEditorTestParams) {
+        const { click, scroll } = params;
+        console.log({
+            a: scroll.x === 0 || scroll.x % config.cellWidth === 0,
+        });
+        this.getCellEditor().then($c => {
+            const cellEditor = $c[0];
+
+            this.getReactGrid().then($r => {
+                const reactgridRect = $r[0].getBoundingClientRect();
+                const expectedLeft = this.round(reactgridRect.left + scroll.x + click.x
+                    - (scroll.x % config.cellWidth)
+                    - (scroll.x === 0 || (scroll.x % config.cellWidth === 0) ? config.cellWidth : 0)
+                    - ((click.x < config.stickyLeft * config.cellWidth) && scroll.x !== 0 ? config.cellWidth : 0)
+                    - (click.x < config.stickyLeft * config.cellWidth ? 0 : 1)
+                    , 0);
+                const expectedTop = this.round(reactgridRect.top + scroll.y + click.y
+                    - (scroll.y % config.cellHeight)
+                    - (scroll.y === 0 || scroll.y % config.cellHeight === 0 ? config.cellHeight : 0)
+                    - 1
+                    , 0);
                 const realLeft = this.round(parseFloat(cellEditor.style.left.replace('px', '')), 0);
                 const realTop = this.round(parseFloat(cellEditor.style.top.replace('px', '')), 0);
                 expect(expectedLeft).to.be.equal(realLeft, 'Left distance');
