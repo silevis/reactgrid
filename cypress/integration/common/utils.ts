@@ -327,23 +327,32 @@ export class Utilities {
     assertCellEditorPositionOnSticky(params: CellEditorTestParams) {
         const { click, scroll } = params;
         console.log({
-            a: scroll.x === 0 || scroll.x % config.cellWidth === 0,
+            a: scroll.x === 0,
+            b: scroll.x % config.cellWidth === 0,
+            c: click.x < config.stickyLeft * config.cellWidth,
+            au: (scroll.x % config.cellWidth !== 0) && (scroll.x % config.cellWidth !== 0) && (click.x < config.stickyLeft * config.cellWidth),
+            isSticky: click.x < config.stickyLeft * config.cellWidth,
+            kiwk: scroll.y === 0 || scroll.y % config.cellHeight === 0,
         });
         this.getCellEditor().then($c => {
             const cellEditor = $c[0];
 
             this.getReactGrid().then($r => {
                 const reactgridRect = $r[0].getBoundingClientRect();
+                const isStickyLeftClicked = click.x < config.stickyLeft * config.cellWidth;
+                const isStickyTopClicked = click.y < config.stickyTop * config.cellHeight;
+                const isLeftScrolled = scroll.x !== 0;
+                const isTopScrolled = scroll.y !== 0;
                 const expectedLeft = this.round(reactgridRect.left + scroll.x + click.x
-                    - (scroll.x % config.cellWidth)
-                    - (scroll.x === 0 || (scroll.x % config.cellWidth === 0) ? config.cellWidth : 0)
-                    - ((click.x < config.stickyLeft * config.cellWidth) && scroll.x !== 0 ? config.cellWidth : 0)
-                    - (click.x < config.stickyLeft * config.cellWidth ? 0 : 1)
+                    - (!isStickyLeftClicked && isLeftScrolled ? scroll.x % config.cellWidth : 0)
+                    - (!isLeftScrolled ? config.cellWidth : 0)
+                    - (isStickyLeftClicked && isLeftScrolled ? config.cellWidth : 0)
+                    - (isStickyLeftClicked ? 0 : 1)
                     , 0);
                 const expectedTop = this.round(reactgridRect.top + scroll.y + click.y
                     - (scroll.y % config.cellHeight)
-                    - (scroll.y === 0 || scroll.y % config.cellHeight === 0 ? config.cellHeight : 0)
-                    - 1
+                    - (!isTopScrolled || scroll.y % config.cellHeight === 0 ? config.cellHeight : 0)
+                    - (isStickyTopClicked ? 0 : 1)
                     , 0);
                 const realLeft = this.round(parseFloat(cellEditor.style.left.replace('px', '')), 0);
                 const realTop = this.round(parseFloat(cellEditor.style.top.replace('px', '')), 0);
@@ -352,6 +361,11 @@ export class Utilities {
             });
         });
     }
+
+    // - (!isStickyTopClicked && isTopScrolled ? scroll.y % config.cellHeight : 0)
+    //                 // - (!isTopScrolled ? config.cellHeight : 0)
+    //                 - (isStickyTopClicked && isTopScrolled ? config.cellHeight : 0)
+    //                 - (isStickyTopClicked ? 0 : 1)
 
     getRandomInt(min: number, max: number): number {
         min = Math.ceil(min);

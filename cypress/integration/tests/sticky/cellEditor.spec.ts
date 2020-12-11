@@ -80,11 +80,11 @@ context('Cell editor position', () => {
     ].forEach(utils.testCellEditorOnSticky.bind(utils));
   });
 
-  it.skip('should open cell editor on scrolled left sticky', () => {
+  it('should open cell editor on scrolled left sticky', () => {
     [
       {
         click: {
-          x: config.cellWidth * 2 - (config.stickyLeft ? 1 : 0),
+          x: config.cellWidth * 1 - (config.stickyLeft ? 1 : 0),
           y: config.cellHeight * (config.stickyTop + 3),
         },
         scroll: {
@@ -105,7 +105,7 @@ context('Cell editor position', () => {
     ].forEach(utils.testCellEditorOnSticky.bind(utils));
   });
 
-  it.skip('should open cell editor on NON scrolled top-left sticky', () => {
+  it('should open cell editor on NON scrolled top-left sticky', () => {
     [
       {
         click: {
@@ -131,7 +131,28 @@ context('Cell editor position', () => {
   });
 
   it.skip('should open cell editor on scrolled top-left sticky', () => {
-
+    [
+      {
+        click: {
+          x: config.cellWidth * 1 - (config.stickyLeft ? 1 : 0),
+          y: config.cellHeight * 1 - (config.stickyTop ? 1 : 0),
+        },
+        scroll: {
+          x: 1232,
+          y: 12,
+        },
+      },
+      {
+        click: {
+          x: config.cellWidth * 2 - (config.stickyLeft ? 1 : 0),
+          y: config.cellHeight * 3 - (config.stickyTop ? 1 : 0),
+        },
+        scroll: {
+          x: 14,
+          y: 700,
+        },
+      },
+    ].forEach(utils.testCellEditorOnSticky.bind(utils));
   });
 
   it.skip('should open cell editor on NON scrolled top sticky', () => {
