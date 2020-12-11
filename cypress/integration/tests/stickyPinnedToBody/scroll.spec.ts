@@ -31,4 +31,34 @@ context('Sticky pinned to body - scroll', () => {
         utils.assertScrolledToLeft();
     });
 
+    it('should scroll viewport when cell is is not fully visible vertically', () => { // ✅
+        utils.scrollTo(0, config.cellHeight + 10);
+        utils.selectCell(config.cellWidth + 5, config.cellHeight * (config.stickyTop + 1) + 5);
+        utils.assertIsElementInScrollable(utils.getCellFocus());
+
+        utils.assertElementTopIsEqual(utils.getCellFocus(), 0);
+
+        utils.scrollTo(0, config.cellHeight + 10);
+
+        utils.selectCell((config.cellWidth * config.stickyLeft) + 5, config.cellHeight * (config.stickyTop + 1) + 5);
+        utils.assertIsElementInScrollable(utils.getCellFocus());
+
+        utils.assertElementTopIsEqual(utils.getCellFocus(), 0);
+    });
+
+    it('should scroll viewport when cell is not fully visible horizontally', () => { // ✅
+        utils.scrollTo(config.cellWidth + 10, 0);
+        utils.selectCell(config.cellWidth * (config.stickyLeft + 1) + 5, config.cellHeight * (config.stickyTop + 1) + 5);
+        utils.assertIsElementInScrollable(utils.getCellFocus());
+
+        utils.assertElementTopIsEqual(utils.getCellFocus(), 0);
+
+        utils.scrollTo(config.cellWidth + 10, 0);
+
+        utils.selectCell(config.cellWidth * (config.stickyLeft + 2) + 5, config.cellHeight * (config.stickyTop + 1) + 5);
+        utils.assertIsElementInScrollable(utils.getCellFocus());
+
+        utils.assertElementTopIsEqual(utils.getCellFocus(), 0);
+    });
+
 });
