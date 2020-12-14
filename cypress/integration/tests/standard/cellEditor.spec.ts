@@ -76,7 +76,7 @@ context('Cell editor position', () => {
     }].forEach(utils.testCellEditor.bind(utils));
   });
 
-  it.only('should open a cell editor in the horizontally scrolled view', () => { // ✅
+  it('should open a cell editor in the horizontally scrolled view', () => { // ✅
     [{
       click: {
         x: config.cellWidth * 2,
