@@ -355,10 +355,7 @@ export const withDiv = <T extends object>(Component: React.ComponentType<T>): Re
     return ({ ...props }: TestGridProps) => {
         Component.displayName = 'WithDivWrapperTestGrid';
         return (
-            <div style={{
-                padding: 20,
-                position: 'relative',
-            }}>
+            <div style={{ ...props.config.withDivComponentStyles }}>
                 <Component {...props as T} />
             </div>
         )

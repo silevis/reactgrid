@@ -163,10 +163,12 @@ context('Cell editor position', () => {
 
   });
 
-
-
   it.skip('should open cell editor on scrolled left sticky', () => {
 
+  });
+
+  it.skip('cell editor should be fully visible on double click on partially visible cell focus', () => {
+    // 🟠 TODO fix it
   });
 
 });

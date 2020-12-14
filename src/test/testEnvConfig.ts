@@ -1,3 +1,4 @@
+import React from 'react';
 import { CellLocation, Highlight, TextLabels } from './../core';
 
 /**
@@ -44,7 +45,12 @@ export const config: TestConfig = {
         copyLabel: 'Copy me!',
         pasteLabel: 'Paste me!',
         cutLabel: 'Cut me!',
-    }
+    },
+
+    withDivComponentStyles: {
+        padding: 20,
+        position: 'relative',
+    },
 }
 
 /**
@@ -119,4 +125,7 @@ export interface TestConfig {
     highlights: Highlight[];
 
     labels: TextLabels;
+
+    withDivComponentStyles: React.CSSProperties;
+
 }

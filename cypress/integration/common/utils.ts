@@ -38,7 +38,7 @@ export class Utilities {
     }
 
     scrollTo(left: number, top: number, duration = 500) {
-        return this.config.pinToBody ? cy.scrollTo(left, top, { duration, ensureScrollable: true }) :
+        return this.getConfig().pinToBody ? cy.scrollTo(left, top, { duration, ensureScrollable: true }) :
             this.getScrollableElement().scrollTo(left, top, { duration, ensureScrollable: true });
     }
 
@@ -297,9 +297,32 @@ export class Utilities {
     }
 
     testCellEditor(testCase: CellEditorTestParams) {
-        this.scrollTo(testCase.scroll.x, testCase.scroll.y);
-        this.selectCellInEditMode(testCase.click.x, testCase.click.y);
-        this.assertCellEditorPosition(testCase);
+        let test: CellEditorTestParams;
+        if (this.getConfig().pinToBody) {
+            test = {
+                ...testCase,
+                click: {
+                    x: testCase.click.x - 1,
+                    y: testCase.click.y - 1,
+                }
+            }
+        } else {
+            test = { ...testCase };
+        }
+
+        this.scrollTo(test.scroll.x, test.scroll.y);
+
+        if (this.getConfig().pinToBody) {
+            const padding = this.getConfig().withDivComponentStyles.padding || 0;
+            if (typeof padding === 'number') {
+                this.selectCellInEditMode(test.click.x + padding + test.scroll.x, test.click.y + padding + test.scroll.y);
+            } else {
+                throw new Error(`Padding should be only an number!`);
+            }
+        } else {
+            this.selectCellInEditMode(test.click.x, test.click.y);
+        }
+        this.assertCellEditorPosition(test);
     }
 
     testCellEditorOnSticky(testCase: CellEditorTestParams) {
@@ -317,12 +340,12 @@ export class Utilities {
                 const expectedLeft = this.round(reactgridRect.left + scroll.x + click.x
                     - (scroll.x % this.getConfig().cellWidth)
                     - (scroll.x % this.getConfig().cellWidth === 0 ? this.getConfig().cellWidth : 0)
-                    - 1
+                    - (this.getConfig().pinToBody ? 0 : 1)
                     , 0);
                 const expectedTop = this.round(reactgridRect.top + scroll.y + click.y
                     - (scroll.y % this.getConfig().cellHeight)
                     - (scroll.y % this.getConfig().cellHeight === 0 ? this.getConfig().cellHeight : 0)
-                    - 1
+                    - (this.getConfig().pinToBody ? 0 : 1)
                     , 0);
                 const realLeft = this.round(parseFloat(cellEditor.style.left.replace('px', '')), 0);
                 const realTop = this.round(parseFloat(cellEditor.style.top.replace('px', '')), 0);

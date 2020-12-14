@@ -1,26 +1,27 @@
-import { config } from '../../../../src/test/testEnvConfig';
+import { enablePinnedToBodyConfig as config } from '../../../../src/test/testEnvConfig';
 import { Utilities } from '../../common/utils';
-import { visit } from '../../common/visit';
+import { visitPinnedToBody } from '../../common/visit';
 
 const utils = new Utilities(config);
 
 context('Cell editor position', () => {
 
   beforeEach(() => {
-    visit();
+    visitPinnedToBody();
   });
 
-  it('should open fixed cell editor on non scrolled view', () => { // ✅
+  it('should open fixed cell editor on non scrolled view', () => {// ✅
     [{
       click: {
-        x: config.cellWidth * 1,
-        y: config.cellHeight * 1,
+        x: config.cellWidth * 3,
+        y: config.cellHeight * 2,
       },
       scroll: {
         x: 0,
         y: 0,
       },
-    }, {
+    },
+    {
       click: {
         x: config.cellWidth * 6,
         y: config.cellHeight * 14,
@@ -29,20 +30,22 @@ context('Cell editor position', () => {
         x: 0,
         y: 0,
       },
-    }].forEach(utils.testCellEditor.bind(utils));
+    }
+    ].forEach(utils.testCellEditor.bind(utils));
   });
 
-  it('should open fixed cell editor on both axis scrolled view', () => { // ✅
+  it('should open fixed cell editor on both axis scrolled view', () => {// ✅
     [{
       click: {
         x: config.cellWidth * 1,
-        y: config.cellHeight * 2,
+        y: config.cellHeight * 1,
       },
       scroll: {
         x: config.cellWidth,
         y: config.cellHeight,
       },
-    }, {
+    },
+    {
       click: {
         x: config.cellWidth * utils.getRandomInt(1, 5),
         y: config.cellHeight * utils.getRandomInt(1, 15),
@@ -51,10 +54,11 @@ context('Cell editor position', () => {
         x: config.cellWidth * 20 + utils.getRandomInt(1, config.cellWidth),
         y: config.cellHeight * 25 + utils.getRandomInt(1, config.cellHeight),
       },
-    }].forEach(utils.testCellEditor.bind(utils));
+    },
+    ].forEach(utils.testCellEditor.bind(utils));
   });
 
-  it('should open a cell editor in the vertically scrolled view', () => { // ✅
+  it('should open a cell editor in the vertically scrolled view', () => {// ✅
     [{
       click: {
         x: config.cellWidth * 4,
@@ -71,15 +75,15 @@ context('Cell editor position', () => {
       },
       scroll: {
         x: 0,
-        y: config.cellHeight * 25 + utils.getRandomInt(1, config.cellHeight),
+        y: config.cellHeight * utils.getRandomInt(10, 30) + utils.getRandomInt(1, config.cellHeight),
       },
     }].forEach(utils.testCellEditor.bind(utils));
   });
 
-  it('should open a cell editor in the horizontally scrolled view', () => { // ✅
+  it('should open a cell editor in the horizontally scrolled view', () => {// ✅
     [{
       click: {
-        x: config.cellWidth * 2,
+        x: config.cellWidth * 4,
         y: config.cellHeight * 3,
       },
       scroll: {
