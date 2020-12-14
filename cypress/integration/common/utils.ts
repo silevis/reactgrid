@@ -314,8 +314,16 @@ export class Utilities {
             const cellEditor = $c[0];
             this.getReactGrid().then($r => {
                 const reactgridRect = $r[0].getBoundingClientRect();
-                const expectedLeft = this.round(reactgridRect.left + scroll.x + click.x - (scroll.x % this.getConfig().cellWidth) - (scroll.x === 0 ? this.getConfig().cellWidth : 0) - 1, 0);
-                const expectedTop = this.round(reactgridRect.top + scroll.y + click.y - (scroll.y % this.getConfig().cellHeight) - (scroll.y === 0 ? this.getConfig().cellHeight : 0) - 1, 0);
+                const expectedLeft = this.round(reactgridRect.left + scroll.x + click.x
+                    - (scroll.x % this.getConfig().cellWidth)
+                    - (scroll.x % this.getConfig().cellWidth === 0 ? this.getConfig().cellWidth : 0)
+                    - 1
+                    , 0);
+                const expectedTop = this.round(reactgridRect.top + scroll.y + click.y
+                    - (scroll.y % this.getConfig().cellHeight)
+                    - (scroll.y % this.getConfig().cellHeight === 0 ? this.getConfig().cellHeight : 0)
+                    - 1
+                    , 0);
                 const realLeft = this.round(parseFloat(cellEditor.style.left.replace('px', '')), 0);
                 const realTop = this.round(parseFloat(cellEditor.style.top.replace('px', '')), 0);
                 expect(expectedLeft).to.be.equal(realLeft, 'Left distance');
