@@ -309,8 +309,8 @@ export class Utilities {
         } else {
             test = { ...testCase };
         }
-
         this.scrollTo(test.scroll.x, test.scroll.y);
+        cy.wait(1000);
 
         if (this.getConfig().pinToBody) {
             const padding = this.getConfig().withDivComponentStyles.padding || 0;
@@ -322,6 +322,7 @@ export class Utilities {
         } else {
             this.selectCellInEditMode(test.click.x, test.click.y);
         }
+        cy.wait(400);
         this.assertCellEditorPosition(test);
     }
 
@@ -402,9 +403,6 @@ export class Utilities {
         return Math.floor(Math.random() * (max - min + 1)) + min;
     }
 
-    /**
-     * simplyfy this methods
-     */
     private getTopAddtionalOffset(): number {
         return this.getConfig().additionalContent ? this.getConfig().flexRow ? 0 : this.getConfig().rgViewportHeight - 1 : 0;
     }

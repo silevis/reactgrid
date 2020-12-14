@@ -32,7 +32,7 @@ context('Cell editor position', () => {
     }].forEach(utils.testCellEditor.bind(utils));
   });
 
-  it('should open fixed cell editor on both axis scrolled view', () => { // ✅
+  it('should open fixed cell editor on both axis scrolled view', () => { // ✅ 
     [{
       click: {
         x: config.cellWidth * 1,
@@ -76,7 +76,7 @@ context('Cell editor position', () => {
     }].forEach(utils.testCellEditor.bind(utils));
   });
 
-  it('should open a cell editor in the horizontally scrolled view', () => { // ✅
+  it.only('should open a cell editor in the horizontally scrolled view', () => { // ✅
     [{
       click: {
         x: config.cellWidth * 2,
@@ -86,7 +86,8 @@ context('Cell editor position', () => {
         x: config.cellWidth * 2,
         y: 0,
       },
-    }, {
+    },
+    {
       click: {
         x: config.cellWidth * utils.getRandomInt(1, 5),
         y: config.cellHeight * utils.getRandomInt(1, 15),
@@ -95,7 +96,8 @@ context('Cell editor position', () => {
         x: config.cellWidth * 20 + utils.getRandomInt(1, config.cellWidth),
         y: 0,
       },
-    }].forEach(utils.testCellEditor.bind(utils));
+    }
+    ].forEach(utils.testCellEditor.bind(utils));
   });
 
   it.skip('cell editor should be fully visible on double click on partially visible cell focus', () => {
