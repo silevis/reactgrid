@@ -47,7 +47,7 @@ export class Utilities {
     }
 
     scrollToBottom(left = 0) {
-        const offset = this.getBottomAddtionalOffset();
+        const offset = this.getBottomAddtionalOffset(true);
         return this.scrollTo(left, this.getConfig().rows * this.getConfig().cellHeight + offset);
     }
 
@@ -196,9 +196,9 @@ export class Utilities {
             } else {
                 this.getScrollableElement().then($scrollable => {
                     const v = $scrollable[0];
-                    const topOffset = this.getTopAddtionalOffset();
-                    const bottomOffset = this.getBottomAddtionalOffset();
-                    const leftOffset = this.getLeftAddtionalOffset()
+                    const topOffset = this.getTopAddtionalOffset(true);
+                    const bottomOffset = this.getBottomAddtionalOffset(true);
+                    const leftOffset = this.getLeftAddtionalOffset(true)
                     const rightOffset = this.getRightAddtionalOffset();
 
                     expect($el[0].offsetTop + topOffset).to.be.least(v.scrollTop - 1, 'top');
@@ -215,7 +215,6 @@ export class Utilities {
             cy.window().its('scrollY').then($e => {
                 this.getReactGrid().then($reactgrid => {
                     const reactgridRect = $reactgrid[0].getBoundingClientRect();
-                    console.log(reactgridRect)
                     expect(this.round($e), 'Scroll top').to.be.most(this.round($e + reactgridRect.y))
                 })
             });
@@ -223,7 +222,7 @@ export class Utilities {
         else {
             this.getScrollableElement().then($scrollable => {
                 const v = $scrollable[0];
-                const offset = this.getTopAddtionalOffset();
+                const offset = this.getTopAddtionalOffset(true);
                 expect(this.round(v.scrollTop), 'Scroll top').to.be.most(offset)
             });
         }
@@ -234,9 +233,9 @@ export class Utilities {
             cy.window().its('scrollY').then($e => {
                 this.getReactGrid().then($reactgrid => {
                     const reactgridRect = $reactgrid[0].getBoundingClientRect();
-                    console.log(reactgridRect)
                     cy.document().its('documentElement').then($d => {
-                        expect(this.round($e), 'Scroll bottom').to.be.least(this.round($e - $d[0].clientHeight + reactgridRect.y + this.getConfig().rows * this.getConfig().cellHeight));
+                        const expected = $e - $d[0].clientHeight + reactgridRect.y + this.getConfig().rows * this.getConfig().cellHeight;
+                        expect(this.round($e), 'Scroll bottom').to.be.least(this.round(expected));
                     });
                 })
             });
@@ -244,7 +243,7 @@ export class Utilities {
         else {
             this.getScrollableElement().then($scrollable => {
                 const v = $scrollable[0];
-                const offset = this.getBottomAddtionalOffset();
+                const offset = this.getBottomAddtionalOffset(true);
                 const expectedValue = this.round(v.scrollTop + v.clientHeight) + 1;
                 expect(expectedValue, 'Scroll bottom').to.be.least(this.getConfig().rows * this.getConfig().cellHeight + offset);
             });
@@ -263,7 +262,7 @@ export class Utilities {
         else {
             this.getScrollableElement().then($scrollable => {
                 const v = $scrollable[0];
-                const offset = this.getLeftAddtionalOffset();
+                const offset = this.getLeftAddtionalOffset(true);
                 const expectedValue = this.round(v.scrollLeft);
                 expect(expectedValue, 'Scroll left').to.be.most(offset);
             });
@@ -277,7 +276,8 @@ export class Utilities {
                     const reactgridRect = $reactgrid[0].getBoundingClientRect();
                     const expectedValue = this.round($e + (includeLineWidth ? -this.getConfig().lineWidth : 0)) + 1;
                     cy.document().its('documentElement').then($d => {
-                        expect(expectedValue, 'Scroll Right').to.be.least(this.round($e - $d[0].clientWidth + reactgridRect.x + this.getConfig().columns * this.getConfig().cellWidth));
+                        const toBeExpected = $e - $d[0].clientWidth + reactgridRect.x + this.getConfig().columns * this.getConfig().cellWidth;
+                        expect(expectedValue, 'Scroll Right').to.be.least(this.round(toBeExpected));
                     });
                 })
             });
@@ -342,11 +342,13 @@ export class Utilities {
                     - (scroll.x % this.getConfig().cellWidth)
                     - (scroll.x % this.getConfig().cellWidth === 0 ? this.getConfig().cellWidth : 0)
                     - (this.getConfig().pinToBody ? 0 : 1)
+                    - this.getLeftAddtionalOffset(false)
                     , 0);
                 const expectedTop = this.round(reactgridRect.top + scroll.y + click.y
                     - (scroll.y % this.getConfig().cellHeight)
                     - (scroll.y % this.getConfig().cellHeight === 0 ? this.getConfig().cellHeight : 0)
                     - (this.getConfig().pinToBody ? 0 : 1)
+                    - this.getTopAddtionalOffset(false)
                     , 0);
                 const realLeft = this.round(parseFloat(cellEditor.style.left.replace('px', '')), 0);
                 const realTop = this.round(parseFloat(cellEditor.style.top.replace('px', '')), 0);
@@ -403,20 +405,28 @@ export class Utilities {
         return Math.floor(Math.random() * (max - min + 1)) + min;
     }
 
-    private getTopAddtionalOffset(): number {
-        return this.getConfig().additionalContent ? this.getConfig().flexRow ? 0 : this.getConfig().rgViewportHeight - 1 : 0;
+    private getTopAddtionalOffset(pixelTolerance = false): number {
+        return this.getConfig().additionalContent
+            ? this.getConfig().flexRow ? 0 : this.getConfig().rgViewportHeight - (pixelTolerance ? 1 : 0)
+            : 0;
     }
 
-    private getBottomAddtionalOffset(): number {
-        return this.getConfig().additionalContent ? this.getConfig().flexRow ? 0 : this.getConfig().rgViewportHeight + 1 : 0;
+    private getBottomAddtionalOffset(pixelTolerance = false): number {
+        return this.getConfig().additionalContent
+            ? this.getConfig().flexRow ? 0 : this.getConfig().rgViewportHeight + (pixelTolerance ? 1 : 0)
+            : 0;
     }
 
-    private getLeftAddtionalOffset(): number {
-        return this.getConfig().additionalContent ? this.getConfig().flexRow ? this.getConfig().rgViewportWidth - 1 : 0 : 0;
+    private getLeftAddtionalOffset(pixelTolerance = false): number {
+        return this.getConfig().additionalContent
+            ? this.getConfig().flexRow ? this.getConfig().rgViewportWidth - (pixelTolerance ? 1 : 0) : 0
+            : 0;
     }
 
-    private getRightAddtionalOffset(): number {
-        return this.getConfig().additionalContent ? this.getConfig().flexRow ? this.getConfig().rgViewportWidth : 0 : 0;
+    private getRightAddtionalOffset(pixelTolerance = false): number {
+        return this.getConfig().additionalContent
+            ? this.getConfig().flexRow ? this.getConfig().rgViewportWidth + (pixelTolerance ? 1 : 0) : 0
+            : 0;
     }
 
 }
