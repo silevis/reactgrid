@@ -278,6 +278,7 @@ export const TestGrid: React.FC<TestGridProps> = (props) => {
                     enableFillHandle={config.enableFillHandle}
                     enableGroupIdRender={config.enableGroupIdRender}
                     labels={config.labels}
+                    breakpoint={config.breakpoint}
                 />
                 {config.additionalContent &&
                     <div style={{ height: `${config.rgViewportHeight}px`, backgroundColor: '#fafff3' }}>

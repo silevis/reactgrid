@@ -24,7 +24,7 @@ export class ReactGrid extends React.Component<ReactGridProps, State> {
     private cellMatrixBuilder = new CellMatrixBuilder();
     state: State = {
         update: this.stateUpdater,
-        cellMatrix: this.cellMatrixBuilder.setProps(this.props).fillRowsAndCols().fillSticky().fillScrollableRange()
+        cellMatrix: this.cellMatrixBuilder.setProps(this.props).fillRowsAndCols(0, 0).fillSticky(0, 0).fillScrollableRange(0, 0)
             .setEdgeLocations().getCellMatrix(),
         ...defaultStateFields
     }

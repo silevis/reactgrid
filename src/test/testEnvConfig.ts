@@ -10,7 +10,7 @@ export const config: TestConfig = {
     isPro: false,
 
     rgViewportHeight: 600,
-    rgViewportWidth: 1150,
+    rgViewportWidth: 500,
     margin: '0',
     enableRangeSelection: true,
     enableFillHandle: true,
@@ -44,7 +44,9 @@ export const config: TestConfig = {
         copyLabel: 'Copy me!',
         pasteLabel: 'Paste me!',
         cutLabel: 'Cut me!',
-    }
+    },
+
+    breakpoint: 50
 }
 
 /**
@@ -119,4 +121,6 @@ export interface TestConfig {
     highlights: Highlight[];
 
     labels: TextLabels;
+
+    breakpoint: number;
 }

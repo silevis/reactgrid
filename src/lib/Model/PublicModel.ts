@@ -60,6 +60,8 @@ export interface ReactGridProps {
     readonly enableFullWidthHeader?: boolean;
     /** Set `true` to enable groupId element rendering (by default `false`) */
     readonly enableGroupIdRender?: boolean;
+    /** Set breakpoint value to disable sticky (in % of view) */
+    readonly breakpoint?: number;
 
     /** 
      * Called when cell was changed (e.g. property `value`)
