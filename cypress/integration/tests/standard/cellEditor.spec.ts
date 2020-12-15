@@ -54,49 +54,53 @@ context('Cell editor position', () => {
     }].forEach(utils.testCellEditor.bind(utils));
   });
 
-  it.skip('should open a cell editor in the vertically scrolled view', () => { // 🔴 fix on MIT for PRO on headless
-    [{
-      click: {
-        x: config.cellWidth * 4,
-        y: config.cellHeight * 5,
+  it('should open a cell editor in the vertically scrolled view', () => { // ✅ 
+    [
+      {
+        click: {
+          x: config.cellWidth * 4,
+          y: config.cellHeight * 5,
+        },
+        scroll: {
+          x: 0,
+          y: config.cellHeight + 10,
+        },
       },
-      scroll: {
-        x: 0,
-        y: config.cellHeight,
-      },
-    }, {
-      click: {
-        x: config.cellWidth * utils.getRandomInt(1, 5),
-        y: config.cellHeight * utils.getRandomInt(1, 15),
-      },
-      scroll: {
-        x: 0,
-        y: config.cellHeight * 25 + utils.getRandomInt(1, config.cellHeight),
-      },
-    }].forEach(utils.testCellEditor.bind(utils));
+      {
+        click: {
+          x: config.cellWidth * utils.getRandomInt(1, 5),
+          y: config.cellHeight * utils.getRandomInt(1, 15),
+        },
+        scroll: {
+          x: 0,
+          y: config.cellHeight * 25 + utils.getRandomInt(1, config.cellHeight),
+        },
+      }
+    ].forEach(utils.testCellEditor.bind(utils));
   });
 
-  it.skip('should open a cell editor in the horizontally scrolled view', () => { // 🔴 fix on MIT for PRO on headless
-    [{
-      click: {
-        x: config.cellWidth * 2,
-        y: config.cellHeight * 3,
+  it('should open a cell editor in the horizontally scrolled view', () => {  // ✅ 
+    [
+      {
+        click: {
+          x: config.cellWidth * 2,
+          y: config.cellHeight * 3,
+        },
+        scroll: {
+          x: config.cellWidth * 2 + 2,
+          y: 0,
+        },
       },
-      scroll: {
-        x: config.cellWidth * 2,
-        y: 0,
-      },
-    },
-    {
-      click: {
-        x: config.cellWidth * utils.getRandomInt(1, 5),
-        y: config.cellHeight * utils.getRandomInt(1, 15),
-      },
-      scroll: {
-        x: config.cellWidth * 20 + utils.getRandomInt(1, config.cellWidth),
-        y: 0,
-      },
-    }
+      {
+        click: {
+          x: config.cellWidth * utils.getRandomInt(1, 5),
+          y: config.cellHeight * utils.getRandomInt(1, 15),
+        },
+        scroll: {
+          x: config.cellWidth * 20 + utils.getRandomInt(1, config.cellWidth),
+          y: 0,
+        },
+      }
     ].forEach(utils.testCellEditor.bind(utils));
   });
 
