@@ -61,7 +61,7 @@ context('Cell editor position', () => {
       {
         click: {
           x: config.cellWidth * 1 - 1,
-          y: config.cellHeight * (config.stickyTop + 8) - 1,
+          y: config.cellHeight * (config.stickyTop + 5) - 1,
         },
         scroll: {
           x: 0,
@@ -70,7 +70,7 @@ context('Cell editor position', () => {
       },
       {
         click: {
-          x: config.cellWidth * 1 - 1,
+          x: config.cellWidth * 2 - 1,
           y: config.cellHeight * (config.stickyTop + 6) - 1,
         },
         scroll: {
