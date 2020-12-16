@@ -47,7 +47,7 @@ export class EventHandlers {
             this.updateState(state => {
                 const scrollableElement = getScrollableParent(reactGridElement, true);
                 scrollableElement!.addEventListener('scroll', () => this.scrollHandler(visibleRangeCalculator));
-                state = updateResponsiveSticky(state.props!, state);
+                state = updateResponsiveSticky(state.props!, state); //TODO state.props! is correct here?
                 return visibleRangeCalculator({ ...state, reactGridElement, scrollableElement });
             });
         }

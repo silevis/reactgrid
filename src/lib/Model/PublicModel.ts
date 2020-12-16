@@ -60,8 +60,8 @@ export interface ReactGridProps {
     readonly enableFullWidthHeader?: boolean;
     /** Set `true` to enable groupId element rendering (by default `false`) */
     readonly enableGroupIdRender?: boolean;
-    /** Set breakpoint value to disable sticky (in % of view) */
-    readonly breakpoint?: number;
+    /** Object that contains breakpoints used for disable sticky on narrow views */
+    readonly breakpoints?: ResponsiveSticky;
 
     /** 
      * Called when cell was changed (e.g. property `value`)
@@ -147,6 +147,24 @@ export interface ReactGridProps {
      * @returns {boolean} Return `true` to allow droping column at specific column
      */
     readonly canReorderRows?: (targetRowId: Id, rowIds: Id[], dropPosition: DropPosition) => boolean;
+}
+
+/**
+ * Describes set of breakpoints used to disable sticky on narrow views.
+ * 
+ * @see https://reactgrid.com/docs/3.1/7-api/0-interfaces/90-textlabels/
+ */
+export interface ResponsiveSticky {
+    /** 
+     * Horizontal breakpoint (in % of ReactGrid scrollable element width).
+     * i.e. 40.
+    */
+    breakpointHorizontal?: number;
+    /** 
+     * Vertical breakpoint (in % of ReactGrid scrollable element height). 
+     * i.e. 40.
+    */
+    breakpointVertical?: number;
 }
 
 /**

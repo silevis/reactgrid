@@ -278,7 +278,7 @@ export const TestGrid: React.FC<TestGridProps> = (props) => {
                     enableFillHandle={config.enableFillHandle}
                     enableGroupIdRender={config.enableGroupIdRender}
                     labels={config.labels}
-                    breakpoint={config.breakpoint}
+                    breakpoints={config.breakpoints}
                 />
                 {config.additionalContent &&
                     <div style={{ height: `${config.rgViewportHeight}px`, backgroundColor: '#fafff3' }}>
@@ -337,6 +337,7 @@ const Logo: React.FC<{ isPro?: boolean; width?: number }> = ({ isPro, width }) =
         <TestLink href={'enableStickyPinnedToBody'} />
         <TestLink href={'enableAdditionalContent'} />
         <TestLink href={'enableSymetric'} />
+        <TestLink href={'enableResponsiveSticky'} />
         {isPro && <>
             <TestLink href={'enableColumnAndRowSelection'} />
             <TestLink href={'enableColumnAndRowSelectionWithSticky'} />
