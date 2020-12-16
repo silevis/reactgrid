@@ -1,7 +1,7 @@
 import { State } from '../Model/State';
 import { ReactGridProps } from '../Model/PublicModel';
 import { getSizeOfElement } from './elementSizeHelpers';
-import { CellMatrix } from '../../core';
+import { CellMatrix } from '../Model/CellMatrix';
 
 export function updateResponsiveSticky(props: ReactGridProps, state: State): State {
     const breakpoints = props.breakpoints;
