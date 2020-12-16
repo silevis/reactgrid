@@ -156,7 +156,7 @@ context('Cell editor position', () => {
     ].forEach(utils.testCellEditorOnSticky.bind(utils));
   });
 
-  it('should open cell editor on NON scrolled top sticky', () => {
+  it('should open cell editor on NON scrolled top sticky', () => { // ✅
     [
       {
         click: {
@@ -181,7 +181,7 @@ context('Cell editor position', () => {
     ].forEach(utils.testCellEditorOnSticky.bind(utils));
   });
 
-  it('should open cell editor on scrolled top sticky', () => {
+  it('should open cell editor on scrolled top sticky', () => { // ✅
     [
       {
         click: {

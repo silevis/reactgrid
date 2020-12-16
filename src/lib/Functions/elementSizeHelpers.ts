@@ -2,12 +2,14 @@ import { State } from '../Model/State';
 import { getScrollOfScrollableElement, getTopScrollableElement } from './scrollHelpers';
 import { isIOS } from './operatingSystem';
 
+// TODO replace any with exact type: HTMLElement | (Window & typeof globalThis)
 export function getSizeOfElement(element: any): { width: number, height: number } {
     const width = element !== undefined ? (element.clientWidth ?? (isIOS() ? window.innerWidth : document.documentElement.clientWidth)) : 0; // TODO check other mobile devices
     const height = element !== undefined ? (element.clientHeight ?? (isIOS() ? window.innerHeight : document.documentElement.clientHeight)) : 0;
     return { width, height };
 }
 
+// TODO is this fn used?
 export function getOffsetsOfElement(element: any): { offsetLeft: number, offsetTop: number } {
     return { offsetLeft: element.offsetLeft ?? 0, offsetTop: element.offsetTop ?? 0 };
 }
