@@ -364,40 +364,28 @@ export class Utilities {
             const cellEditor = $c[0];
             this.getReactGrid().then($r => {
                 const reactgridRect = $r[0].getBoundingClientRect();
-                const isStickyLeftClicked = click.x < this.getConfig().stickyLeft * this.getConfig().cellWidth;
                 const isStickyTopClicked = click.y < this.getConfig().stickyTop * this.getConfig().cellHeight;
+                const isStickyLeftClicked = click.x < this.getConfig().stickyLeft * this.getConfig().cellWidth;
                 const isLeftScrolled = scroll.x !== 0;
                 const isTopScrolled = scroll.y !== 0;
-                console.log({
-                    s: this.getConfig().stickyLeft * this.getConfig().cellWidth,
-                    c: click.x,
-                    reactgridRect,
-                    isStickyLeftClicked,
-                    isStickyTopClicked,
-                    isLeftScrolled,
-                    isTopScrolled,
-                    scroll,
-                    click
-                });
                 const expectedLeft = this.round(reactgridRect.left + scroll.x + click.x
                     - (!isStickyLeftClicked && isLeftScrolled ? scroll.x % this.getConfig().cellWidth : 0)
-                    - (!isLeftScrolled ? this.getConfig().cellWidth : 0)
-                    - (isStickyLeftClicked && isLeftScrolled ? this.getConfig().cellWidth : 0)
+                    - this.getConfig().cellWidth
                     - (isStickyLeftClicked ? 0 : 1)
                     , 0);
                 const expectedTop = this.round(reactgridRect.top + scroll.y + click.y
                     - (!isStickyTopClicked && isTopScrolled ? scroll.y % this.getConfig().cellHeight : 0)
-                    - (!isTopScrolled ? this.getConfig().cellHeight : 0)
-                    - (isStickyTopClicked && isTopScrolled ? this.getConfig().cellHeight : 0)
+                    - this.getConfig().cellHeight
                     - (isStickyTopClicked ? 0 : 1)
                     , 0);
-                const realLeft = this.round(parseFloat(cellEditor.style.left.replace('px', '')), 0);
-                const realTop = this.round(parseFloat(cellEditor.style.top.replace('px', '')), 0);
-                expect(expectedLeft).to.be.equal(realLeft, 'Left distance');
-                expect(expectedTop).to.be.equal(realTop, 'Top distance');
+                const actualLeft = this.round(parseFloat(cellEditor.style.left.replace('px', '')), 0);
+                const actualTop = this.round(parseFloat(cellEditor.style.top.replace('px', '')), 0);
+                expect(expectedLeft).to.be.equal(actualLeft, 'Left distance');
+                expect(expectedTop).to.be.equal(actualTop, 'Top distance');
             });
         });
     }
+
 
     getRandomInt(min: number, max: number): number {
         min = Math.ceil(min);

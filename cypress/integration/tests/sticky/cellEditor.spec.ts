@@ -10,7 +10,7 @@ context('Cell editor position', () => {
     visitSymetric();
   });
 
-  it.skip('should open cell editor on NON scrolled view', () => { // ✅
+  it('should open cell editor on scrollable on NON scrolled view', () => { // ✅
     [{
       click: {
         x: config.cellWidth * (config.stickyLeft + 1),
@@ -32,7 +32,7 @@ context('Cell editor position', () => {
     }].forEach(utils.testCellEditorOnSticky.bind(utils));
   });
 
-  it.skip('should open cell editor on scrolled view', () => { // ✅
+  it('should open cell editor on scrollable on scrolled view', () => { // ✅
     [{
       click: {
         x: config.cellWidth * (config.stickyLeft + 1),
@@ -45,7 +45,7 @@ context('Cell editor position', () => {
     },
     {
       click: {
-        x: config.cellWidth * (config.stickyLeft + 3),
+        x: config.cellWidth * (config.stickyLeft + 10),
         y: config.cellHeight * (config.stickyTop + 4),
       },
       scroll: {
@@ -55,7 +55,7 @@ context('Cell editor position', () => {
     }].forEach(utils.testCellEditorOnSticky.bind(utils));
   });
 
-  it.skip('should open cell editor on NON scrolled left sticky', () => {
+  it('should open cell editor on NON scrolled left sticky', () => { // ✅
     [
       {
         click: {
@@ -80,7 +80,7 @@ context('Cell editor position', () => {
     ].forEach(utils.testCellEditorOnSticky.bind(utils));
   });
 
-  it.skip('should open cell editor on scrolled left sticky', () => {
+  it('should open cell editor on scrolled left sticky', () => { // ✅
     [
       {
         click: {
@@ -105,7 +105,7 @@ context('Cell editor position', () => {
     ].forEach(utils.testCellEditorOnSticky.bind(utils));
   });
 
-  it.skip('should open cell editor on NON scrolled top-left sticky', () => {
+  it('should open cell editor on NON scrolled top-left sticky', () => { // ✅
     [
       {
         click: {
@@ -130,7 +130,7 @@ context('Cell editor position', () => {
     ].forEach(utils.testCellEditorOnSticky.bind(utils));
   });
 
-  it.skip('should open cell editor on scrolled top-left sticky', () => {
+  it('should open cell editor on scrolled top-left sticky', () => { // ✅
     [
       {
         click: {
