@@ -371,12 +371,10 @@ export class Utilities {
                 const expectedLeft = this.round(reactgridRect.left + scroll.x + click.x
                     - (!isStickyLeftClicked && isLeftScrolled ? scroll.x % this.getConfig().cellWidth : 0)
                     - this.getConfig().cellWidth
-                    - (isStickyLeftClicked ? 0 : 1)
                     , 0);
                 const expectedTop = this.round(reactgridRect.top + scroll.y + click.y
                     - (!isStickyTopClicked && isTopScrolled ? scroll.y % this.getConfig().cellHeight : 0)
                     - this.getConfig().cellHeight
-                    - (isStickyTopClicked ? 0 : 1)
                     , 0);
                 const actualLeft = this.round(parseFloat(cellEditor.style.left.replace('px', '')), 0);
                 const actualTop = this.round(parseFloat(cellEditor.style.top.replace('px', '')), 0);

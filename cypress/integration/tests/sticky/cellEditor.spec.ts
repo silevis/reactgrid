@@ -13,8 +13,8 @@ context('Cell editor position', () => {
   it('should open cell editor on scrollable on NON scrolled view', () => { // ✅
     [{
       click: {
-        x: config.cellWidth * (config.stickyLeft + 1),
-        y: config.cellHeight * (config.stickyTop + 1),
+        x: config.cellWidth * (config.stickyLeft + 1) - 1,  // substracting 1 for get correct click cell on headless mode
+        y: config.cellHeight * (config.stickyTop + 1) - 1,
       },
       scroll: {
         x: 0,
@@ -22,8 +22,8 @@ context('Cell editor position', () => {
       },
     }, {
       click: {
-        x: config.cellWidth * (config.stickyLeft + 3),
-        y: config.cellHeight * (config.stickyTop + 6),
+        x: config.cellWidth * (config.stickyLeft + 3) - 1,
+        y: config.cellHeight * (config.stickyTop + 6) - 1,
       },
       scroll: {
         x: 0,
@@ -35,8 +35,8 @@ context('Cell editor position', () => {
   it('should open cell editor on scrollable on scrolled view', () => { // ✅
     [{
       click: {
-        x: config.cellWidth * (config.stickyLeft + 1),
-        y: config.cellHeight * (config.stickyTop + 1),
+        x: config.cellWidth * (config.stickyLeft + 1) - 1,
+        y: config.cellHeight * (config.stickyTop + 1) - 1,
       },
       scroll: {
         x: config.cellWidth * 2,
@@ -45,22 +45,23 @@ context('Cell editor position', () => {
     },
     {
       click: {
-        x: config.cellWidth * (config.stickyLeft + 10),
-        y: config.cellHeight * (config.stickyTop + 4),
+        x: config.cellWidth * (config.stickyLeft + 10) - 1,
+        y: config.cellHeight * (config.stickyTop + 4) - 1,
       },
       scroll: {
         x: config.cellWidth * 2,
         y: config.cellHeight * 3,
       },
-    }].forEach(utils.testCellEditorOnSticky.bind(utils));
+    }
+    ].forEach(utils.testCellEditorOnSticky.bind(utils));
   });
 
   it('should open cell editor on NON scrolled left sticky', () => { // ✅
     [
       {
         click: {
-          x: config.cellWidth * 2 - (config.stickyLeft ? 1 : 0),
-          y: config.cellHeight * (config.stickyTop + 3),
+          x: config.cellWidth * 1 - 1,
+          y: config.cellHeight * (config.stickyTop + 8) - 1,
         },
         scroll: {
           x: 0,
@@ -69,8 +70,8 @@ context('Cell editor position', () => {
       },
       {
         click: {
-          x: config.cellWidth * 1 - (config.stickyLeft ? 1 : 0),
-          y: config.cellHeight * (config.stickyTop + 6),
+          x: config.cellWidth * 1 - 1,
+          y: config.cellHeight * (config.stickyTop + 6) - 1,
         },
         scroll: {
           x: 0,
@@ -84,8 +85,8 @@ context('Cell editor position', () => {
     [
       {
         click: {
-          x: config.cellWidth * 1 - (config.stickyLeft ? 1 : 0),
-          y: config.cellHeight * (config.stickyTop + 3),
+          x: config.cellWidth * 1 - 1,
+          y: config.cellHeight * (config.stickyTop + 3) - 1,
         },
         scroll: {
           x: config.cellWidth * 2,
@@ -94,8 +95,8 @@ context('Cell editor position', () => {
       },
       {
         click: {
-          x: config.cellWidth * 1 - (config.stickyLeft ? 1 : 0),
-          y: config.cellHeight * (config.stickyTop + 5),
+          x: config.cellWidth * 1 - 1,
+          y: config.cellHeight * (config.stickyTop + 5) - 1,
         },
         scroll: {
           x: config.cellWidth * 2,
@@ -109,8 +110,8 @@ context('Cell editor position', () => {
     [
       {
         click: {
-          x: config.cellWidth * 1 - (config.stickyLeft ? 1 : 0),
-          y: config.cellHeight * 1 - (config.stickyTop ? 1 : 0),
+          x: config.cellWidth * 1 - 1,
+          y: config.cellHeight * 1 - 1,
         },
         scroll: {
           x: 0,
@@ -119,8 +120,8 @@ context('Cell editor position', () => {
       },
       {
         click: {
-          x: config.cellWidth * 2 - (config.stickyLeft ? 1 : 0),
-          y: config.cellHeight * 2 - (config.stickyTop ? 1 : 0),
+          x: config.cellWidth * 2 - 1,
+          y: config.cellHeight * 2 - 1,
         },
         scroll: {
           x: 0,
@@ -134,37 +135,75 @@ context('Cell editor position', () => {
     [
       {
         click: {
-          x: config.cellWidth * 1 - (config.stickyLeft ? 1 : 0),
-          y: config.cellHeight * 1 - (config.stickyTop ? 1 : 0),
+          x: config.cellWidth * 1 - 1,
+          y: config.cellHeight * 1 - 1,
         },
         scroll: {
-          x: config.cellWidth * 2,
-          y: config.cellHeight * 3,
+          x: 0,
+          y: 0,
         },
       },
       {
         click: {
-          x: config.cellWidth * 2 - (config.stickyLeft ? 1 : 0),
-          y: config.cellHeight * 2 - (config.stickyTop ? 1 : 0),
+          x: config.cellWidth * 2 - 1,
+          y: config.cellHeight * 2 - 1,
         },
         scroll: {
-          x: config.cellWidth * 2,
-          y: config.cellHeight * 6,
+          x: 0,
+          y: 0,
         },
       },
     ].forEach(utils.testCellEditorOnSticky.bind(utils));
   });
 
-  it.skip('should open cell editor on NON scrolled top sticky', () => {
-
+  it('should open cell editor on NON scrolled top sticky', () => {
+    [
+      {
+        click: {
+          x: config.cellWidth * 10 - 1,
+          y: config.cellHeight * 1 - 1,
+        },
+        scroll: {
+          x: 0,
+          y: 0,
+        },
+      },
+      {
+        click: {
+          x: config.cellWidth * 12 - 1,
+          y: config.cellHeight * 2 - 1,
+        },
+        scroll: {
+          x: 0,
+          y: 0,
+        },
+      },
+    ].forEach(utils.testCellEditorOnSticky.bind(utils));
   });
 
-  it.skip('should open cell editor on scrolled top sticky', () => {
-
-  });
-
-  it.skip('should open cell editor on scrolled left sticky', () => {
-
+  it('should open cell editor on scrolled top sticky', () => {
+    [
+      {
+        click: {
+          x: config.cellWidth * 10 - 1,
+          y: config.cellHeight * 1 - 1,
+        },
+        scroll: {
+          x: config.cellWidth * 2,
+          y: config.cellHeight * 10,
+        },
+      },
+      {
+        click: {
+          x: config.cellWidth * 12 - 1,
+          y: config.cellHeight * 2 - 1,
+        },
+        scroll: {
+          x: config.cellWidth * 7,
+          y: config.cellHeight * 3,
+        },
+      },
+    ].forEach(utils.testCellEditorOnSticky.bind(utils));
   });
 
   it.skip('cell editor should be fully visible on double click on partially visible cell focus', () => {
