@@ -16,18 +16,10 @@ context('Cell editor position', () => {
         x: config.cellWidth * 1,
         y: config.cellHeight * 1,
       },
-      scroll: {
-        x: 0,
-        y: 0,
-      },
     }, {
       click: {
         x: config.cellWidth * 6,
         y: config.cellHeight * 14,
-      },
-      scroll: {
-        x: 0,
-        y: 0,
       },
     }].forEach(utils.testCellEditor.bind(utils));
   });

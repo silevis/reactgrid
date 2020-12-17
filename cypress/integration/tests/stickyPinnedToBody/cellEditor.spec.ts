@@ -17,19 +17,11 @@ context('Cell editor position', () => {
           x: config.cellWidth * (config.stickyLeft + 1) - 1,  // substracting 1 for get correct click cell on headless mode
           y: config.cellHeight * (config.stickyTop + 1) - 1,
         },
-        scroll: {
-          x: 0,
-          y: 0,
-        },
       },
       {
         click: {
           x: config.cellWidth * (config.stickyLeft + 1) - 1,
           y: config.cellHeight * (config.stickyTop + 12) - 1,
-        },
-        scroll: {
-          x: 0,
-          y: 0,
         },
       }
     ].forEach(utils.testCellEditorOnSticky.bind(utils));
@@ -67,19 +59,11 @@ context('Cell editor position', () => {
           x: config.cellWidth * 1 - 1,
           y: config.cellHeight * (config.stickyTop + 5) - 1,
         },
-        scroll: {
-          x: 0,
-          y: 0,
-        },
       },
       {
         click: {
           x: config.cellWidth * 3 - 1,
           y: config.cellHeight * (config.stickyTop + 16) - 1,
-        },
-        scroll: {
-          x: 0,
-          y: 0,
         },
       },
     ].forEach(utils.testCellEditorOnSticky.bind(utils));
@@ -90,23 +74,23 @@ context('Cell editor position', () => {
       {
         click: {
           x: config.cellWidth * 1 - 1,
-          y: config.cellHeight * (config.stickyTop + 3) - 1,
+          y: config.cellHeight * 1 - 1,
         },
         scroll: {
           x: config.cellWidth * 1,
-          y: config.cellHeight * 3,
+          y: config.cellHeight * 1,
         },
       },
-      {
-        click: {
-          x: config.cellWidth * 1 - 1,
-          y: config.cellHeight * (config.stickyTop + 5) - 1,
-        },
-        scroll: {
-          x: config.cellWidth * 2,
-          y: config.cellHeight * 6,
-        },
-      },
+      // {
+      //   click: {
+      //     x: config.cellWidth * 1 - 1,
+      //     y: config.cellHeight * (config.stickyTop + 5) - 1,
+      //   },
+      //   scroll: {
+      //     x: config.cellWidth * 2,
+      //     y: config.cellHeight * 6,
+      //   },
+      // },
     ].forEach(utils.testCellEditorOnSticky.bind(utils));
   });
 
@@ -117,19 +101,11 @@ context('Cell editor position', () => {
           x: config.cellWidth * 1 - 1,
           y: config.cellHeight * 1 - 1,
         },
-        scroll: {
-          x: 0,
-          y: 0,
-        },
       },
       {
         click: {
           x: config.cellWidth * 2 - 1,
           y: config.cellHeight * 2 - 1,
-        },
-        scroll: {
-          x: 0,
-          y: 0,
         },
       },
     ].forEach(utils.testCellEditorOnSticky.bind(utils));
@@ -142,19 +118,11 @@ context('Cell editor position', () => {
     //       x: config.cellWidth * 1 - 1,
     //       y: config.cellHeight * 1 - 1,
     //     },
-    //     scroll: {
-    //       x: 0,
-    //       y: 0,
-    //     },
     //   },
     //   {
     //     click: {
     //       x: config.cellWidth * 2 - 1,
     //       y: config.cellHeight * 2 - 1,
-    //     },
-    //     scroll: {
-    //       x: 0,
-    //       y: 0,
     //     },
     //   },
     // ].forEach(utils.testCellEditorOnSticky.bind(utils));
@@ -167,19 +135,11 @@ context('Cell editor position', () => {
           x: config.cellWidth * 10 - 1,
           y: config.cellHeight * 1 - 1,
         },
-        scroll: {
-          x: 0,
-          y: 0,
-        },
       },
       {
         click: {
           x: config.cellWidth * 12 - 1,
           y: config.cellHeight * 2 - 1,
-        },
-        scroll: {
-          x: 0,
-          y: 0,
         },
       },
     ].forEach(utils.testCellEditorOnSticky.bind(utils));

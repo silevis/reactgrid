@@ -309,37 +309,45 @@ export class Utilities {
         }
     }
 
+    private setScrollValues(testCase: CellEditorTestParams): CellEditorTestParams {
+        return {
+            ...testCase,
+            ...(!testCase.scroll && {
+                scroll: {
+                    x: 0,
+                    y: 0
+                }
+            })
+        }
+    }
+
     testCellEditor(testCase: CellEditorTestParams) {
-        let test: CellEditorTestParams;
+        let test: CellEditorTestParams = this.setScrollValues(testCase);
         if (this.getConfig().pinToBody) {
             test = {
-                ...testCase,
+                ...test,
                 click: {
-                    x: testCase.click.x - 1,
-                    y: testCase.click.y - 1,
+                    x: test.click.x - 1,
+                    y: test.click.y - 1,
                 }
             }
-        } else {
-            test = { ...testCase };
         }
         this.scrollTo(test.scroll.x, test.scroll.y);
         this.selectCellForTestCase(test);
         this.assertCellEditorPosition(test);
     }
 
+
     testCellEditorOnSticky(testCase: CellEditorTestParams) {
-        let test: CellEditorTestParams;
-        test = { ...testCase };
+        let test: CellEditorTestParams = this.setScrollValues(testCase);
         if (this.getConfig().pinToBody) {
             test = {
-                ...testCase,
+                ...test,
                 click: {
-                    x: testCase.click.x - (testCase.scroll.x !== 0 ? this.config.cellWidth : 0),
-                    y: testCase.click.y - (testCase.scroll.y !== 0 ? this.config.cellHeight : 0),
+                    x: test.click.x - (test.scroll.x !== 0 ? this.config.cellWidth : 0),
+                    y: test.click.y - (test.scroll.y !== 0 ? this.config.cellHeight : 0),
                 }
             }
-        } else {
-            test = { ...testCase };
         }
         this.scrollTo(test.scroll.x, test.scroll.y);
         this.selectCellForTestCase(test);
