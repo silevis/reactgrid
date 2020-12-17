@@ -51,8 +51,8 @@ export const areFocusesDiff = (props: ReactGridProps, state: State): boolean => 
 export const stateDeriver = (props: ReactGridProps) => (state: State) => (fn: (props: ReactGridProps, state: State) => State) => fn(props, state);
 
 const dataHasChanged = (props: ReactGridProps, state: State) => !state.cellMatrix || props !== state.cellMatrix.props
-    || (props.stickyLeftColumns !== undefined && props.stickyLeftColumns !== state.stickyLeftColumns)
-    || (props.stickyTopRows !== undefined && props.stickyTopRows !== state.stickyTopRows);
+    || (props.stickyLeftColumns !== undefined && props.stickyLeftColumns !== state.leftStickyColumns)
+    || (props.stickyTopRows !== undefined && props.stickyTopRows !== state.topStickyRows);
 
 export const highlightsHasChanged = (props: ReactGridProps, state: State) => props.highlights !== state.props?.highlights;
 
@@ -67,8 +67,10 @@ function updateCellMatrix(props: ReactGridProps, state: State): State {
     const builder = new CellMatrixBuilder();
     return {
         ...state,
-        cellMatrix: builder.setProps(props).fillRowsAndCols(state.stickyLeftColumns || 0, state.stickyTopRows || 0)
-            .fillSticky(state.stickyLeftColumns || 0, state.stickyTopRows || 0).fillScrollableRange(state.stickyLeftColumns || 0, state.stickyTopRows || 0)
+        cellMatrix: builder.setProps(props)
+            .fillRowsAndCols({ leftStickyColumns: state.leftStickyColumns || 0, topStickyRows: state.topStickyRows || 0 })
+            .fillSticky({ leftStickyColumns: state.leftStickyColumns || 0, topStickyRows: state.topStickyRows || 0 })
+            .fillScrollableRange({ leftStickyColumns: state.leftStickyColumns || 0, topStickyRows: state.topStickyRows || 0 })
             .setEdgeLocations().getCellMatrix()
     };
 }

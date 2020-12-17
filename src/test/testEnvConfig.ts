@@ -1,4 +1,4 @@
-import { CellLocation, Highlight, ResponsiveSticky, TextLabels } from './../core';
+import { CellLocation, Highlight, TextLabels } from './../core';
 
 /**
  * All of the properties that cypress tests files can read
@@ -46,10 +46,6 @@ export const config: TestConfig = {
         cutLabel: 'Cut me!',
     },
 
-    breakpoints: {
-        breakpointHorizontal: 0,
-        breakpointVertical: 0,
-    }
 }
 
 /**
@@ -94,10 +90,8 @@ export const enableResponsiveSticky: TestConfig = {
     ...config,
     rgViewportWidth: 500,
     stickyTop: 13,
-    breakpoints: {
-        breakpointHorizontal: 50,
-        breakpointVertical: 50,
-    }
+    horizontalStickyBreakpoint: 45,
+    verticalStickyBreakpoint: 45,
 }
 
 export interface TestConfig {
@@ -135,5 +129,7 @@ export interface TestConfig {
 
     labels: TextLabels;
 
-    breakpoints: ResponsiveSticky;
+    horizontalStickyBreakpoint?: number;
+    verticalStickyBreakpoint?: number;
+
 }

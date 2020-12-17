@@ -33,8 +33,8 @@ export interface State<TCellMatrix extends CellMatrix = CellMatrix, TBehavior ex
     readonly visibleRange?: Range;
 
     //STICKY
-    readonly stickyLeftColumns: number | undefined;
-    readonly stickyTopRows: number | undefined;
+    readonly leftStickyColumns: number | undefined;
+    readonly topStickyRows: number | undefined;
 
     // SCROLLS
     readonly topScrollBoudary: number;
@@ -62,6 +62,6 @@ export const defaultStateFields = {
     leftScrollBoudary: -1,
     rightScrollBoudary: -1,
     enableGroupIdRender: false,
-    stickyLeftColumns: undefined,
-    stickyTopRows: undefined,
+    leftStickyColumns: undefined,
+    topStickyRows: undefined,
 }
