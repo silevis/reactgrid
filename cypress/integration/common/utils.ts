@@ -296,6 +296,19 @@ export class Utilities {
         cy.focused().should('have.class', 'rg-hidden-element');
     }
 
+    private selectCellForTestCase(test: CellEditorTestParams) {
+        if (this.getConfig().pinToBody) {
+            const padding = this.getConfig().withDivComponentStyles.padding || 0;
+            if (typeof padding === 'number') {
+                this.selectCellInEditMode(test.click.x + padding + test.scroll.x, test.click.y + padding + test.scroll.y);
+            } else {
+                throw new Error(`Padding should be only an number!`);
+            }
+        } else {
+            this.selectCellInEditMode(test.click.x, test.click.y);
+        }
+    }
+
     testCellEditor(testCase: CellEditorTestParams) {
         let test: CellEditorTestParams;
         if (this.getConfig().pinToBody) {
@@ -310,29 +323,30 @@ export class Utilities {
             test = { ...testCase };
         }
         this.scrollTo(test.scroll.x, test.scroll.y);
-        cy.wait(1000);
-
-        if (this.getConfig().pinToBody) {
-            const padding = this.getConfig().withDivComponentStyles.padding || 0;
-            if (typeof padding === 'number') {
-                this.selectCellInEditMode(test.click.x + padding + test.scroll.x, test.click.y + padding + test.scroll.y);
-            } else {
-                throw new Error(`Padding should be only an number!`);
-            }
-        } else {
-            this.selectCellInEditMode(test.click.x, test.click.y);
-        }
-        cy.wait(400);
+        this.selectCellForTestCase(test);
         this.assertCellEditorPosition(test);
     }
 
     testCellEditorOnSticky(testCase: CellEditorTestParams) {
-        this.scrollTo(testCase.scroll.x, testCase.scroll.y);
-        this.selectCellInEditMode(testCase.click.x, testCase.click.y);
-        this.assertCellEditorPositionOnSticky(testCase);
+        let test: CellEditorTestParams;
+        test = { ...testCase };
+        if (this.getConfig().pinToBody) {
+            test = {
+                ...testCase,
+                click: {
+                    x: testCase.click.x - (testCase.scroll.x !== 0 ? this.config.cellWidth : 0),
+                    y: testCase.click.y - (testCase.scroll.y !== 0 ? this.config.cellHeight : 0),
+                }
+            }
+        } else {
+            test = { ...testCase };
+        }
+        this.scrollTo(test.scroll.x, test.scroll.y);
+        this.selectCellForTestCase(test);
+        this.assertCellEditorPositionOnSticky(test);
     }
 
-    assertCellEditorPosition(params: CellEditorTestParams) {
+    private assertCellEditorPosition(params: CellEditorTestParams) {
         const { click, scroll } = params;
         this.getCellEditor().then($c => {
             const cellEditor = $c[0];
@@ -358,7 +372,7 @@ export class Utilities {
         });
     }
 
-    assertCellEditorPositionOnSticky(params: CellEditorTestParams) {
+    private assertCellEditorPositionOnSticky(params: CellEditorTestParams) {
         const { click, scroll } = params;
         this.getCellEditor().then($c => {
             const cellEditor = $c[0];
@@ -368,18 +382,33 @@ export class Utilities {
                 const isStickyLeftClicked = click.x < this.getConfig().stickyLeft * this.getConfig().cellWidth;
                 const isLeftScrolled = scroll.x !== 0;
                 const isTopScrolled = scroll.y !== 0;
-                const expectedLeft = this.round(reactgridRect.left + scroll.x + click.x
-                    - (!isStickyLeftClicked && isLeftScrolled ? scroll.x % this.getConfig().cellWidth : 0)
-                    - this.getConfig().cellWidth
-                    , 0);
-                const expectedTop = this.round(reactgridRect.top + scroll.y + click.y
-                    - (!isStickyTopClicked && isTopScrolled ? scroll.y % this.getConfig().cellHeight : 0)
-                    - this.getConfig().cellHeight
-                    , 0);
-                const actualLeft = this.round(parseFloat(cellEditor.style.left.replace('px', '')), 0);
-                const actualTop = this.round(parseFloat(cellEditor.style.top.replace('px', '')), 0);
-                expect(expectedLeft).to.be.equal(actualLeft, 'Left distance');
-                expect(expectedTop).to.be.equal(actualTop, 'Top distance');
+                cy.window().then($w => {
+                    // const path = $w.location.pathname;
+                    // const areStickyEnable = path.includes('/enableSticky');
+                    // const isClickedOnLeftStickyOnPinnedToBody = areStickyEnable && isStickyLeftClicked && this.getConfig().pinToBody && isLeftScrolled;
+                    // const isClickedOnTopStickyOnPinnedToBody = areStickyEnable && isStickyTopClicked && this.getConfig().pinToBody && isTopScrolled;
+                    // console.log({ areStickyEnable, isStickyLeftClicked, reactgridRect });
+
+                    const expectedLeft = this.round(reactgridRect.left + scroll.x + click.x
+                        - (!isStickyLeftClicked && isLeftScrolled ? scroll.x % this.getConfig().cellWidth : 0)
+                        // - (isClickedOnLeftStickyOnPinnedToBody
+                        //     ? reactgridRect.left + scroll.x - 1
+                        //     : this.getConfig().cellWidth)
+                        - this.getConfig().cellWidth
+                        , 0);
+                    const expectedTop = this.round(reactgridRect.top + scroll.y + click.y
+                        - (!isStickyTopClicked && isTopScrolled ? scroll.y % this.getConfig().cellHeight : 0)
+                        // - (isClickedOnTopStickyOnPinnedToBody
+                        //     ? reactgridRect.top + scroll.y - 1
+                        //     : this.getConfig().cellHeight)
+                        - this.getConfig().cellHeight
+                        , 0);
+                    const actualLeft = this.round(parseFloat(cellEditor.style.left.replace('px', '')), 0);
+                    const actualTop = this.round(parseFloat(cellEditor.style.top.replace('px', '')), 0);
+                    expect(expectedLeft).to.be.equal(actualLeft, 'Left distance');
+                    expect(expectedTop).to.be.equal(actualTop, 'Top distance');
+                });
+
             });
         });
     }
