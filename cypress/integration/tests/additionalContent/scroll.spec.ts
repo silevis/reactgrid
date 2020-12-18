@@ -8,7 +8,7 @@ import { constants } from '../../common/constants';
 const utils = new Utilities(enableAdditionalContentConfig);
 const utilsFlexRow = new Utilities(enableAdditionalContentWithFlexRowConfig);
 
-context('Additional content', () => {
+context('Scroll', () => {
 
     beforeEach(() => {
     });

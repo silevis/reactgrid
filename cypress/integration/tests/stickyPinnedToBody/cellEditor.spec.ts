@@ -14,14 +14,14 @@ context('Cell editor position', () => {
     [
       {
         click: {
-          x: config.cellWidth * (config.stickyLeft + 1) - 1,  // substracting 1 for get correct click cell on headless mode
-          y: config.cellHeight * (config.stickyTop + 1) - 1,
+          x: config.cellWidth * (config.stickyLeft + 1),
+          y: config.cellHeight * (config.stickyTop + 1),
         },
       },
       {
         click: {
-          x: config.cellWidth * (config.stickyLeft + 1) - 1,
-          y: config.cellHeight * (config.stickyTop + 12) - 1,
+          x: config.cellWidth * (config.stickyLeft + 1),
+          y: config.cellHeight * (config.stickyTop + 12),
         },
       }
     ].forEach(utils.testCellEditorOnSticky.bind(utils));
@@ -31,8 +31,8 @@ context('Cell editor position', () => {
     [
       {
         click: {
-          x: config.cellWidth * (config.stickyLeft + 2) - 1,
-          y: config.cellHeight * (config.stickyTop + 1) - 1,
+          x: config.cellWidth * (config.stickyLeft + 2),
+          y: config.cellHeight * (config.stickyTop + 1),
         },
         scroll: {
           x: config.cellWidth * 1,
@@ -41,8 +41,8 @@ context('Cell editor position', () => {
       },
       {
         click: {
-          x: config.cellWidth * (config.stickyLeft + 2) - 1,
-          y: config.cellHeight * (config.stickyTop + 6) - 1,
+          x: config.cellWidth * (config.stickyLeft + 2),
+          y: config.cellHeight * (config.stickyTop + 6),
         },
         scroll: {
           x: config.cellWidth * 6,
@@ -56,14 +56,14 @@ context('Cell editor position', () => {
     [
       {
         click: {
-          x: config.cellWidth * 1 - 1,
-          y: config.cellHeight * (config.stickyTop + 5) - 1,
+          x: config.cellWidth * 1,
+          y: config.cellHeight * (config.stickyTop + 5),
         },
       },
       {
         click: {
-          x: config.cellWidth * 3 - 1,
-          y: config.cellHeight * (config.stickyTop + 16) - 1,
+          x: config.cellWidth * 3,
+          y: config.cellHeight * (config.stickyTop + 16),
         },
       },
     ].forEach(utils.testCellEditorOnSticky.bind(utils));
@@ -73,8 +73,8 @@ context('Cell editor position', () => {
     [
       {
         click: {
-          x: config.cellWidth * 1 - 1,
-          y: config.cellHeight * 1 - 1,
+          x: config.cellWidth * 1,
+          y: config.cellHeight * (config.stickyTop + 1),
         },
         scroll: {
           x: config.cellWidth * 1,
@@ -83,8 +83,8 @@ context('Cell editor position', () => {
       },
       // {
       //   click: {
-      //     x: config.cellWidth * 1 - 1,
-      //     y: config.cellHeight * (config.stickyTop + 5) - 1,
+      //     x: config.cellWidth * 1,
+      //     y: config.cellHeight * (config.stickyTop + 5),
       //   },
       //   scroll: {
       //     x: config.cellWidth * 2,
@@ -98,14 +98,14 @@ context('Cell editor position', () => {
     [
       {
         click: {
-          x: config.cellWidth * 1 - 1,
-          y: config.cellHeight * 1 - 1,
+          x: config.cellWidth * 1,
+          y: config.cellHeight * 1,
         },
       },
       {
         click: {
-          x: config.cellWidth * 2 - 1,
-          y: config.cellHeight * 2 - 1,
+          x: config.cellWidth * 2,
+          y: config.cellHeight * 2,
         },
       },
     ].forEach(utils.testCellEditorOnSticky.bind(utils));
@@ -115,14 +115,14 @@ context('Cell editor position', () => {
     // [
     //   {
     //     click: {
-    //       x: config.cellWidth * 1 - 1,
-    //       y: config.cellHeight * 1 - 1,
+    //       x: config.cellWidth * 1,
+    //       y: config.cellHeight * 1,
     //     },
     //   },
     //   {
     //     click: {
-    //       x: config.cellWidth * 2 - 1,
-    //       y: config.cellHeight * 2 - 1,
+    //       x: config.cellWidth * 2,
+    //       y: config.cellHeight * 2,
     //     },
     //   },
     // ].forEach(utils.testCellEditorOnSticky.bind(utils));
@@ -132,14 +132,14 @@ context('Cell editor position', () => {
     [
       {
         click: {
-          x: config.cellWidth * 10 - 1,
-          y: config.cellHeight * 1 - 1,
+          x: config.cellWidth * 10,
+          y: config.cellHeight * 1,
         },
       },
       {
         click: {
-          x: config.cellWidth * 12 - 1,
-          y: config.cellHeight * 2 - 1,
+          x: config.cellWidth * 12,
+          y: config.cellHeight * 2,
         },
       },
     ].forEach(utils.testCellEditorOnSticky.bind(utils));
@@ -149,8 +149,8 @@ context('Cell editor position', () => {
     [
       {
         click: {
-          x: config.cellWidth * 10 - 1,
-          y: config.cellHeight * 1 - 1,
+          x: config.cellWidth * 10,
+          y: config.cellHeight * 1,
         },
         scroll: {
           x: config.cellWidth * 2,
@@ -159,8 +159,8 @@ context('Cell editor position', () => {
       },
       {
         click: {
-          x: config.cellWidth * 12 - 1,
-          y: config.cellHeight * 2 - 1,
+          x: config.cellWidth * 12,
+          y: config.cellHeight * 2,
         },
         scroll: {
           x: config.cellWidth * 7,

@@ -38,7 +38,7 @@ context('Cell editor position', () => {
     ].forEach(utils.testCellEditor.bind(utils));
   });
 
-  it.only('should open fixed cell editor on both axis scrolled view', () => { // ✅
+  it('should open fixed cell editor on both axis scrolled view', () => { // ✅
     visitAdditionalContent();
     [
       {
@@ -90,60 +90,62 @@ context('Cell editor position', () => {
     ].forEach(utils.testCellEditor.bind(utils));
   });
 
-  it.skip('should open fixed cell editor on partially visible additional content with flex row', () => {
+  it('should open fixed cell editor on partially visible additional content with a flex row', () => {
     visitAdditionalContentWithFlexRow();
 
     [
       {
         click: {
-          x: utilsFlexRow.getConfig().cellWidth * 1,
-          y: utilsFlexRow.getConfig().cellHeight * 11,
+          x: utilsFlexRow.getConfig().cellWidth * 3,
+          y: utilsFlexRow.getConfig().cellHeight * 3,
         },
         scroll: {
-          x: utilsFlexRow.getConfig().rgViewportWidth,
-          y: 0,
+          x: utilsFlexRow.getConfig().rgViewportWidth - utilsFlexRow.getConfig().cellWidth * 2,
+          y: utilsFlexRow.getConfig().cellHeight * 1,
         },
       },
-      // {
-      //   click: {
-      //     x: utilsFlexRow.getConfig().cellWidth * 6,
-      //     y: utils.getConfig().cellHeight * 18,
-      //   },
-      //   scroll: {
-      //     x: 0,
-      //     y: utilsFlexRow.getConfig().rgViewportHeight / 2,
-      //   },
-      // }
+      {
+        click: {
+          x: utilsFlexRow.getConfig().cellWidth * 5,
+          y: utilsFlexRow.getConfig().cellHeight * 3,
+        },
+        scroll: {
+          x: utilsFlexRow.getConfig().rgViewportWidth - utilsFlexRow.getConfig().cellWidth * 4,
+          y: utilsFlexRow.getConfig().cellHeight * 10,
+        },
+      },
     ].forEach(utilsFlexRow.testCellEditor.bind(utilsFlexRow));
   });
 
-  it.skip('should open fixed cell editor on both axis scrolled view with flex row', () => {
+  it('should open fixed cell editor on both axis scrolled view with a flex row', () => {
     visitAdditionalContentWithFlexRow();
+    console.log(utilsFlexRow.getConfig().flexRow);
+
     [
       {
         click: {
-          x: utilsFlexRow.getConfig().cellWidth * 1,
+          x: utilsFlexRow.getConfig().cellWidth * 2,
           y: utilsFlexRow.getConfig().cellHeight * 2,
         },
         scroll: {
-          x: utilsFlexRow.getConfig().cellWidth + 10,
-          y: utilsFlexRow.getConfig().cellHeight + utilsFlexRow.getConfig().rgViewportHeight,
+          x: utilsFlexRow.getConfig().rgViewportWidth + utilsFlexRow.getConfig().cellWidth * 1,
+          y: utilsFlexRow.getConfig().cellHeight * 1,
         },
       },
       {
         click: {
-          x: utilsFlexRow.getConfig().cellWidth * utilsFlexRow.getRandomInt(1, 5),
-          y: utilsFlexRow.getConfig().cellHeight * utilsFlexRow.getRandomInt(1, 15),
+          x: utilsFlexRow.getConfig().cellWidth * 7,
+          y: utilsFlexRow.getConfig().cellHeight * 14,
         },
         scroll: {
-          x: utilsFlexRow.getConfig().cellWidth * 20 + utilsFlexRow.getRandomInt(1, utilsFlexRow.getConfig().cellWidth),
-          y: utilsFlexRow.getConfig().cellHeight * 25 + utilsFlexRow.getRandomInt(1, utilsFlexRow.getConfig().cellHeight) + utilsFlexRow.getConfig().rgViewportHeight,
+          x: utilsFlexRow.getConfig().rgViewportWidth + utilsFlexRow.getConfig().cellWidth * 10,
+          y: utilsFlexRow.getConfig().cellHeight * 20,
         },
-      }
-    ].forEach(utils.testCellEditor.bind(utils));
+      },
+    ].forEach(utilsFlexRow.testCellEditor.bind(utilsFlexRow));
   });
 
-  it.skip('should open a cell editor in the vertically scrolled view with flex row', () => {
+  it('should open a cell editor in the horizontally scrolled view with a flex row', () => {
     visitAdditionalContentWithFlexRow();
     [
       {
@@ -152,20 +154,23 @@ context('Cell editor position', () => {
           y: utilsFlexRow.getConfig().cellHeight * 5,
         },
         scroll: {
-          x: 0,
-          y: utilsFlexRow.getConfig().cellHeight + 10 + utilsFlexRow.getConfig().rgViewportHeight,
+          x: utilsFlexRow.getConfig().rgViewportWidth + utilsFlexRow.getConfig().cellWidth * 10,
+          y: 0,
         },
       },
       {
         click: {
-          x: utilsFlexRow.getConfig().cellWidth * utilsFlexRow.getRandomInt(1, 5),
-          y: utilsFlexRow.getConfig().cellHeight * utilsFlexRow.getRandomInt(1, 15),
+          x: utilsFlexRow.getConfig().cellWidth * 2,
+          y: utilsFlexRow.getConfig().cellHeight * 5,
         },
         scroll: {
-          x: 0,
-          y: utilsFlexRow.getConfig().cellHeight * 25 + utilsFlexRow.getRandomInt(1, utilsFlexRow.getConfig().cellHeight) + utils.getConfig().rgViewportHeight,
+          x: utilsFlexRow.getConfig().rgViewportWidth
+            + utilsFlexRow.getConfig().cellWidth * utilsFlexRow.getConfig().columns
+            - utilsFlexRow.getConfig().cellWidth * 4
+          ,
+          y: 0,
         },
-      }
+      },
     ].forEach(utilsFlexRow.testCellEditor.bind(utilsFlexRow));
   });
 

@@ -321,17 +321,19 @@ export class Utilities {
         }
     }
 
-    testCellEditor(testCase: CellEditorTestParams) {
-        let test: CellEditorTestParams = this.setScrollValues(testCase);
-        if (this.getConfig().pinToBody) {
-            test = {
-                ...test,
-                click: {
-                    x: test.click.x - 1,
-                    y: test.click.y - 1,
-                }
+    private moveClickPosByOnePixel(test: CellEditorTestParams): CellEditorTestParams {
+        return {
+            ...test,
+            click: {
+                x: test.click.x - 1,
+                y: test.click.y - 1,
             }
         }
+    }
+
+    testCellEditor(testCase: CellEditorTestParams) {
+        let test: CellEditorTestParams = this.setScrollValues(testCase);
+        test = this.moveClickPosByOnePixel(test);
         this.scrollTo(test.scroll.x, test.scroll.y);
         this.selectCellForTestCase(test);
         this.assertCellEditorPosition(test);
@@ -340,6 +342,7 @@ export class Utilities {
 
     testCellEditorOnSticky(testCase: CellEditorTestParams) {
         let test: CellEditorTestParams = this.setScrollValues(testCase);
+        test = this.moveClickPosByOnePixel(test);
         if (this.getConfig().pinToBody) {
             test = {
                 ...test,
@@ -360,17 +363,24 @@ export class Utilities {
             const cellEditor = $c[0];
             this.getReactGrid().then($r => {
                 const reactgridRect = $r[0].getBoundingClientRect();
+                const leftModulo = scroll.x % this.getConfig().cellWidth;
+                const topModulo = scroll.y % this.getConfig().cellHeight;
                 const expectedLeft = this.round(reactgridRect.left + scroll.x + click.x
-                    - (scroll.x % this.getConfig().cellWidth)
-                    - (scroll.x % this.getConfig().cellWidth === 0 ? this.getConfig().cellWidth : 0)
+                    - (leftModulo)
+                    - (leftModulo === 0 ? this.getConfig().cellWidth : 0)
                     - (this.getConfig().pinToBody ? 0 : 1)
                     - this.getLeftAddtionalOffset(false)
+                    - (this.getConfig().additionalContent && this.getConfig().flexRow
+                        ? this.getConfig().cellWidth - leftModulo
+                        : 0)
+                    + (!this.getConfig().pinToBody ? 1 : 0)
                     , 0);
                 const expectedTop = this.round(reactgridRect.top + scroll.y + click.y
-                    - (scroll.y % this.getConfig().cellHeight)
-                    - (scroll.y % this.getConfig().cellHeight === 0 ? this.getConfig().cellHeight : 0)
+                    - (topModulo)
+                    - (topModulo === 0 ? this.getConfig().cellHeight : 0)
                     - (this.getConfig().pinToBody ? 0 : 1)
                     - this.getTopAddtionalOffset(false)
+                    + (!this.getConfig().pinToBody ? 1 : 0)
                     , 0);
                 const realLeft = this.round(parseFloat(cellEditor.style.left.replace('px', '')), 0);
                 const realTop = this.round(parseFloat(cellEditor.style.top.replace('px', '')), 0);
