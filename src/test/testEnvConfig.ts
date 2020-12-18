@@ -88,7 +88,7 @@ export const enableSymetric: TestConfig = {
 
 export const enableResponsiveSticky: TestConfig = {
     ...config,
-    rgViewportWidth: 500,
+    fillViewport: true,
     stickyTop: 13,
     horizontalStickyBreakpoint: 45,
     verticalStickyBreakpoint: 45,
@@ -132,4 +132,5 @@ export interface TestConfig {
     horizontalStickyBreakpoint?: number;
     verticalStickyBreakpoint?: number;
 
+    fillViewport?: boolean;
 }

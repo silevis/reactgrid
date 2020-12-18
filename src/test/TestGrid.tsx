@@ -232,8 +232,8 @@ export const TestGrid: React.FC<TestGridProps> = (props) => {
         <>
             <div className='test-grid-container' data-cy='div-scrollable-element' style={{
                 ...(!config.pinToBody && {
-                    height: config.rgViewportHeight,
-                    width: config.rgViewportWidth,
+                    height: config.fillViewport ? '100vh' : config.rgViewportHeight,
+                    width: config.fillViewport ? '100vw' : config.rgViewportWidth,
                     margin: config.margin,
                     overflow: 'auto',
                 }),
@@ -289,8 +289,13 @@ export const TestGrid: React.FC<TestGridProps> = (props) => {
                     </div>
                 }
             </div>
-            <input type='text' data-cy='outer-input' />
-            <Logo isPro={config.isPro} />
+            <TestGridOptionsSelect isPro={config.isPro}></TestGridOptionsSelect>
+            {!config.fillViewport &&
+                <>
+                    <input type='text' data-cy='outer-input' />
+                    <Logo isPro={config.isPro} />
+                </>
+            }
             {config.additionalContent &&
                 <>
                     <h1 style={{ width: 3000 }}>TEXT</h1> Test WITH IT
@@ -330,38 +335,47 @@ const Logo: React.FC<{ isPro?: boolean; width?: number }> = ({ isPro, width }) =
                 }}>
                 PRO</div>}
         </h1>
-        <TestLink href={''} />
-        <TestLink href={'enableHeaders'} />
-        <TestLink href={'enableSticky'} />
-        <TestLink href={'enableFrozenFocus'} />
-        <TestLink href={'enablePinnedToBody'} />
-        <TestLink href={'enableStickyPinnedToBody'} />
-        <TestLink href={'enableAdditionalContent'} />
-        <TestLink href={'enableSymetric'} />
-        <TestLink href={'enableResponsiveSticky'} />
-        {isPro && <>
-            <TestLink href={'enableColumnAndRowSelection'} />
-            <TestLink href={'enableColumnAndRowSelectionWithSticky'} />
-        </>}
-    </div>
+    </div >
 }
 
-const TestLink: React.FC<{ href: string }> = ({ href }) => {
+export const TestGridOptionsSelect: React.FC<{ isPro?: boolean }> = ({ isPro }) => {
+    const navigate = (eventValue: string) => {
+        window.location.pathname = eventValue;
+    }
     return (
-        <a href={`/${href}`} style={{ padding: '3px', color: window.location.pathname === `/${href}` ? 'gold' : 'gray' }}>
-            /{href}
-        </a>
+        <form>
+            <select
+                onChange={(event) => navigate(event.target.value)}
+            >
+                <option value=''>Select pathname</option>
+                <option value='/'>/</option>
+                <option value='/enableHeaders'>Enable headers</option>
+                <option value='/enableSticky'>Enable sticky</option>
+                <option value='/enableFrozenFocus'>Enable frozen focus</option>
+                <option value='/enablePinnedToBody'>Enable pinned to body</option>
+                <option value='/enableStickyPinnedToBody'>Enable sticky pinned to body</option>
+                <option value='/enableAdditionalContent'>Enable additional content</option>
+                <option value='/enableSymetric'>Enable symetric</option>
+                <option value='/enableFrozenFocus'>Enable frozen focus</option>
+                <option value='/enableResponsiveSticky'>Enable responsive sticky</option>
+                {isPro && <>
+                    <option value='/enableColumnAndRowSelection'>Enable column and row selection</option>
+                    <option value='/enableColumnAndRowSelectionWithSticky'>Enable column and row selection with sticky</option>
+                </>}
+            </select>
+        </form>
     )
 }
-
-export const withDiv = <T extends object>(Component: React.ComponentType<T>): React.FC<T & TestGridProps> => {
+export const withDiv = <T extends object,>(Component: React.ComponentType<T>): React.FC<T & TestGridProps> => {
     return ({ ...props }: TestGridProps) => {
+        const { config } = props;
         Component.displayName = 'WithDivWrapperTestGrid';
+        const style = {
+            padding: config.fillViewport ? 0 : 20,
+            position: 'relative',
+        } as React.CSSProperties;
         return (
-            <div style={{
-                padding: 20,
-                position: 'relative',
-            }}>
+            <div style={style}>
                 <Component {...props as T} />
             </div>
         )
