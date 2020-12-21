@@ -34,7 +34,7 @@ export class CellMatrixBuilder implements ICellMatrixBuilder {
     }
 
     fillRowsAndCols(edges: StickyEdges = { leftStickyColumns: 0, topStickyRows: 0 }): CellMatrixBuilder {
-        const { leftStickyColumns: leftColumnsSticky, topStickyRows: topRowsSticky } = edges;
+        const { leftStickyColumns, topStickyRows } = edges;
         if (!Array.isArray(this.cellMatrix.props.rows)) {
             throw new Error('Feeded ReactGrids "rows" property is not an array!')
         }
@@ -43,7 +43,7 @@ export class CellMatrixBuilder implements ICellMatrixBuilder {
         }
         this.cellMatrix.rows = this.cellMatrix.props.rows.reduce(
             (rows, row, idx) => {
-                const top = this.getTop(idx, topRowsSticky, rows);
+                const top = this.getTop(idx, topStickyRows, rows);
                 const height = row.height || CellMatrix.DEFAULT_ROW_HEIGHT;
                 rows.push({ ...row, top, height, idx, bottom: top + height } as GridRow);
                 this.cellMatrix.height += height;
@@ -55,7 +55,7 @@ export class CellMatrixBuilder implements ICellMatrixBuilder {
         );
         this.cellMatrix.columns = this.cellMatrix.props.columns.reduce(
             (cols, column, idx) => {
-                const left = this.getLeft(idx, leftColumnsSticky, cols);
+                const left = this.getLeft(idx, leftStickyColumns, cols);
                 const width = column.width
                     ? (column.width < CellMatrix.MIN_COLUMN_WIDTH ? CellMatrix.MIN_COLUMN_WIDTH : column.width)
                     : CellMatrix.DEFAULT_COLUMN_WIDTH;
