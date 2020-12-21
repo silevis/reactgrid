@@ -368,12 +368,7 @@ export const TestGridOptionsSelect: React.FC<{ isPro?: boolean }> = ({ isPro }) 
 }
 export const withDiv = <T extends object,>(Component: React.ComponentType<T>): React.FC<T & TestGridProps> => {
     return ({ ...props }: TestGridProps) => {
-        const { config } = props;
         Component.displayName = 'WithDivWrapperTestGrid';
-        const style = {
-            padding: config.fillViewport ? 0 : 20,
-            position: 'relative',
-        } as React.CSSProperties;
         return (
             <div style={{ ...props.config.withDivComponentStyles }}>
                 <Component {...props as T} />
