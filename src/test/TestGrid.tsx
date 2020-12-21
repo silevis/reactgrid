@@ -232,8 +232,8 @@ export const TestGrid: React.FC<TestGridProps> = (props) => {
         <>
             <div className='test-grid-container' data-cy='div-scrollable-element' style={{
                 ...(!config.pinToBody && {
-                    height: config.fillViewport ? `calc(100vh - 10px)` : config.rgViewportHeight,
-                    width: config.fillViewport ? `calc(100vw - 25px)` : config.rgViewportWidth,
+                    height: config.fillViewport ? `calc(100vh - 30px)` : config.rgViewportHeight,
+                    width: config.fillViewport ? `calc(100vw - 45px)` : config.rgViewportWidth,
                     margin: config.margin,
                     overflow: 'auto',
                 }),
@@ -375,7 +375,7 @@ export const withDiv = <T extends object,>(Component: React.ComponentType<T>): R
             position: 'relative',
         } as React.CSSProperties;
         return (
-            <div style={style}>
+            <div style={{ ...props.config.withDivComponentStyles }}>
                 <Component {...props as T} />
             </div>
         )

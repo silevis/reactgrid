@@ -6,7 +6,7 @@ context('Copy / Cut / Paste', () => {
         visitFrozenFocus();
     });
 
-    it.skip('copy and paste into the same frozen focus', () => { // 🔴
+    it.skip('copy and paste into the same frozen focus', () => {
     });
 
 });

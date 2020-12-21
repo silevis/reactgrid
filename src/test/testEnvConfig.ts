@@ -1,3 +1,4 @@
+import React from 'react';
 import { CellLocation, Highlight, TextLabels } from './../core';
 
 /**
@@ -46,6 +47,10 @@ export const config: TestConfig = {
         cutLabel: 'Cut me!',
     },
 
+    withDivComponentStyles: {
+        padding: 20,
+        position: 'relative',
+    },
 }
 
 /**
@@ -142,4 +147,6 @@ export interface TestConfig {
     verticalStickyBreakpoint?: number;
 
     fillViewport?: boolean;
+    withDivComponentStyles: React.CSSProperties;
+
 }

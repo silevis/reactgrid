@@ -10,29 +10,21 @@ context('Cell editor position', () => {
     visitSymetric();
   });
 
-  it.skip('should open cell editor on NON scrolled view', () => { // ✅
+  it('should open cell editor on scrollable on NON scrolled view', () => { // ✅
     [{
       click: {
         x: config.cellWidth * (config.stickyLeft + 1),
         y: config.cellHeight * (config.stickyTop + 1),
-      },
-      scroll: {
-        x: 0,
-        y: 0,
       },
     }, {
       click: {
         x: config.cellWidth * (config.stickyLeft + 3),
         y: config.cellHeight * (config.stickyTop + 6),
       },
-      scroll: {
-        x: 0,
-        y: 0,
-      },
     }].forEach(utils.testCellEditorOnSticky.bind(utils));
   });
 
-  it.skip('should open cell editor on scrolled view', () => { // ✅
+  it('should open cell editor on scrollable on scrolled view', () => { // ✅
     [{
       click: {
         x: config.cellWidth * (config.stickyLeft + 1),
@@ -45,46 +37,39 @@ context('Cell editor position', () => {
     },
     {
       click: {
-        x: config.cellWidth * (config.stickyLeft + 3),
+        x: config.cellWidth * (config.stickyLeft + 10),
         y: config.cellHeight * (config.stickyTop + 4),
       },
       scroll: {
         x: config.cellWidth * 2,
         y: config.cellHeight * 3,
       },
-    }].forEach(utils.testCellEditorOnSticky.bind(utils));
+    }
+    ].forEach(utils.testCellEditorOnSticky.bind(utils));
   });
 
-  it.skip('should open cell editor on NON scrolled left sticky', () => {
+  it('should open cell editor on NON scrolled left sticky', () => { // ✅
     [
       {
         click: {
-          x: config.cellWidth * 2 - (config.stickyLeft ? 1 : 0),
-          y: config.cellHeight * (config.stickyTop + 3),
-        },
-        scroll: {
-          x: 0,
-          y: 0,
+          x: config.cellWidth * 1,
+          y: config.cellHeight * (config.stickyTop + 5),
         },
       },
       {
         click: {
-          x: config.cellWidth * 1 - (config.stickyLeft ? 1 : 0),
+          x: config.cellWidth * 2,
           y: config.cellHeight * (config.stickyTop + 6),
-        },
-        scroll: {
-          x: 0,
-          y: 0,
         },
       },
     ].forEach(utils.testCellEditorOnSticky.bind(utils));
   });
 
-  it.skip('should open cell editor on scrolled left sticky', () => {
+  it('should open cell editor on scrolled left sticky', () => { // ✅
     [
       {
         click: {
-          x: config.cellWidth * 1 - (config.stickyLeft ? 1 : 0),
+          x: config.cellWidth * 1,
           y: config.cellHeight * (config.stickyTop + 3),
         },
         scroll: {
@@ -94,7 +79,7 @@ context('Cell editor position', () => {
       },
       {
         click: {
-          x: config.cellWidth * 1 - (config.stickyLeft ? 1 : 0),
+          x: config.cellWidth * 1,
           y: config.cellHeight * (config.stickyTop + 5),
         },
         scroll: {
@@ -105,68 +90,84 @@ context('Cell editor position', () => {
     ].forEach(utils.testCellEditorOnSticky.bind(utils));
   });
 
-  it.skip('should open cell editor on NON scrolled top-left sticky', () => {
+  it('should open cell editor on NON scrolled top-left sticky', () => { // ✅
     [
       {
         click: {
-          x: config.cellWidth * 1 - (config.stickyLeft ? 1 : 0),
-          y: config.cellHeight * 1 - (config.stickyTop ? 1 : 0),
-        },
-        scroll: {
-          x: 0,
-          y: 0,
+          x: config.cellWidth * 1,
+          y: config.cellHeight * 1,
         },
       },
       {
         click: {
-          x: config.cellWidth * 2 - (config.stickyLeft ? 1 : 0),
-          y: config.cellHeight * 2 - (config.stickyTop ? 1 : 0),
-        },
-        scroll: {
-          x: 0,
-          y: 0,
+          x: config.cellWidth * 2,
+          y: config.cellHeight * 2,
         },
       },
     ].forEach(utils.testCellEditorOnSticky.bind(utils));
   });
 
-  it.skip('should open cell editor on scrolled top-left sticky', () => {
+  it('should open cell editor on scrolled top-left sticky', () => { // ✅
     [
       {
         click: {
-          x: config.cellWidth * 1 - (config.stickyLeft ? 1 : 0),
-          y: config.cellHeight * 1 - (config.stickyTop ? 1 : 0),
+          x: config.cellWidth * 1,
+          y: config.cellHeight * 1,
+        },
+      },
+      {
+        click: {
+          x: config.cellWidth * 2,
+          y: config.cellHeight * 2,
+        },
+      },
+    ].forEach(utils.testCellEditorOnSticky.bind(utils));
+  });
+
+  it('should open cell editor on NON scrolled top sticky', () => { // ✅
+    [
+      {
+        click: {
+          x: config.cellWidth * 10,
+          y: config.cellHeight * 1,
+        },
+      },
+      {
+        click: {
+          x: config.cellWidth * 12,
+          y: config.cellHeight * 2,
+        },
+      },
+    ].forEach(utils.testCellEditorOnSticky.bind(utils));
+  });
+
+  it('should open cell editor on scrolled top sticky', () => { // ✅
+    [
+      {
+        click: {
+          x: config.cellWidth * 10,
+          y: config.cellHeight * 1,
         },
         scroll: {
           x: config.cellWidth * 2,
+          y: config.cellHeight * 10,
+        },
+      },
+      {
+        click: {
+          x: config.cellWidth * 12,
+          y: config.cellHeight * 2,
+        },
+        scroll: {
+          x: config.cellWidth * 7,
           y: config.cellHeight * 3,
         },
       },
-      {
-        click: {
-          x: config.cellWidth * 2 - (config.stickyLeft ? 1 : 0),
-          y: config.cellHeight * 2 - (config.stickyTop ? 1 : 0),
-        },
-        scroll: {
-          x: config.cellWidth * 2,
-          y: config.cellHeight * 6,
-        },
-      },
     ].forEach(utils.testCellEditorOnSticky.bind(utils));
   });
 
-  it.skip('should open cell editor on NON scrolled top sticky', () => {
-
-  });
-
-  it.skip('should open cell editor on scrolled top sticky', () => {
-
-  });
-
-
-
-  it.skip('should open cell editor on scrolled left sticky', () => {
-
+  it.skip('cell editor should be fully visible on double click on partially visible cell focus', () => {
+    // 🟠 TODO fix it
   });
 
 });
