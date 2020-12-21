@@ -33,7 +33,7 @@ export class CellMatrixBuilder implements ICellMatrixBuilder {
         return this;
     }
 
-    fillRowsAndCols(edges: StickyEdges): CellMatrixBuilder {
+    fillRowsAndCols(edges: StickyEdges = { leftStickyColumns: 0, topStickyRows: 0 }): CellMatrixBuilder {
         const { leftStickyColumns: leftColumnsSticky, topStickyRows: topRowsSticky } = edges;
         if (!Array.isArray(this.cellMatrix.props.rows)) {
             throw new Error('Feeded ReactGrids "rows" property is not an array!')
@@ -70,19 +70,21 @@ export class CellMatrixBuilder implements ICellMatrixBuilder {
         return this;
     }
 
-    fillSticky(edges: StickyEdges): CellMatrixBuilder {
-        const { leftStickyColumns: leftColumnsSticky, topStickyRows: topRowsSticky } = edges;
+    fillSticky(edges: StickyEdges = { leftStickyColumns: 0, topStickyRows: 0 }): CellMatrixBuilder {
+        const { leftStickyColumns, topStickyRows } = edges;
         this.cellMatrix.ranges.stickyLeftRange = new Range(this.cellMatrix.rows,
-            this.cellMatrix.columns.slice(0, leftColumnsSticky || 0));
-        this.cellMatrix.ranges.stickyTopRange = new Range(this.cellMatrix.rows.slice(0, topRowsSticky || 0),
+            this.cellMatrix.columns.slice(0, leftStickyColumns || 0));
+        this.cellMatrix.ranges.stickyTopRange = new Range(this.cellMatrix.rows.slice(0, topStickyRows || 0),
             this.cellMatrix.columns);
         return this;
     }
-    fillScrollableRange(edges: StickyEdges): CellMatrixBuilder {
-        const { leftStickyColumns: leftColumnsSticky, topStickyRows: topRowsSticky } = edges;
-        this.cellMatrix.scrollableRange = this.getScrollableRange({ leftStickyColumns: leftColumnsSticky, topStickyRows: topRowsSticky });
+
+    fillScrollableRange(edges: StickyEdges = { leftStickyColumns: 0, topStickyRows: 0 }): CellMatrixBuilder {
+        const { leftStickyColumns, topStickyRows } = edges;
+        this.cellMatrix.scrollableRange = this.getScrollableRange({ leftStickyColumns, topStickyRows });
         return this;
     }
+
     setEdgeLocations(): CellMatrixBuilder {
         this.cellMatrix.first = this.cellMatrix.getLocation(0, 0);
         this.cellMatrix.last = this.cellMatrix.getLocation(this.cellMatrix.rows.length - 1,
@@ -99,9 +101,9 @@ export class CellMatrixBuilder implements ICellMatrixBuilder {
     }
 
     getScrollableRange = (edges: StickyEdges): Range => {
-        const { leftStickyColumns: leftColumnsSticky, topStickyRows: topRowsSticky } = edges;
-        const firstScrollableRowId = !topRowsSticky || topRowsSticky >= this.cellMatrix.rows.length ? 0 : topRowsSticky;
-        const firstScrollableColumnId = !leftColumnsSticky || leftColumnsSticky >= this.cellMatrix.columns.length ? 0 : leftColumnsSticky;
+        const { leftStickyColumns, topStickyRows } = edges;
+        const firstScrollableRowId = !topStickyRows || topStickyRows >= this.cellMatrix.rows.length ? 0 : topStickyRows;
+        const firstScrollableColumnId = !leftStickyColumns || leftStickyColumns >= this.cellMatrix.columns.length ? 0 : leftStickyColumns;
         return new Range(this.cellMatrix.rows.slice(firstScrollableRowId), this.cellMatrix.columns.slice(firstScrollableColumnId));
     }
 

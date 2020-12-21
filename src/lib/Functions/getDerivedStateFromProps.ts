@@ -50,7 +50,7 @@ export const areFocusesDiff = (props: ReactGridProps, state: State): boolean => 
 
 export const stateDeriver = (props: ReactGridProps) => (state: State) => (fn: (props: ReactGridProps, state: State) => State) => fn(props, state);
 
-const dataHasChanged = (props: ReactGridProps, state: State) => !state.cellMatrix || props !== state.cellMatrix.props
+export const dataHasChanged = (props: ReactGridProps, state: State) => !state.cellMatrix || props !== state.cellMatrix.props
     || (props.stickyLeftColumns !== undefined && props.stickyLeftColumns !== state.leftStickyColumns)
     || (props.stickyTopRows !== undefined && props.stickyTopRows !== state.topStickyRows);
 

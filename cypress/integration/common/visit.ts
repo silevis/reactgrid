@@ -51,3 +51,11 @@ export function visitResponsiveSticky() {
 export function visitResponsiveStickyPinnedToBody() {
     cy.visit('/enableResponsiveStickyPinnedToBody');
 }
+
+export function visitResponsiveStickyPro() {
+    cy.visit('/enableResponsiveStickyPro');
+}
+
+export function visitResponsiveStickyPinnedToBodyPro() {
+    cy.visit('/enableResponsiveStickyPinnedToBodyPro');
+}

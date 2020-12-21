@@ -60,13 +60,15 @@ export interface ReactGridProps {
     readonly enableFullWidthHeader?: boolean;
     /** Set `true` to enable groupId element rendering (by default `false`) */
     readonly enableGroupIdRender?: boolean;
-    /** Horizontal breakpoint in percents (%) of ReactGrid scrollable element width. 
-     * Disable sticky when sum of the sizes of sticky panes overflow
+    /** 
+     * Horizontal breakpoint in percents (%) of ReactGrid scrollable parent element width. 
+     * Disables sticky when the sum of the sizes of sticky panes overflows
      * given breakpoint value (by default `50`).
     */
     readonly horizontalStickyBreakpoint?: number;
-    /** Vertical breakpoint in percents (%) of ReactGrid scrollable element height. 
-     * Disable sticky when sum of the sizes of sticky panes overflow
+    /** 
+     * Vertical breakpoint in percents (%) of ReactGrid scrollable parent element height. 
+     * Disables sticky when the sum of the sizes of sticky panes overflows
      * given breakpoint value (by default `50`).
     */
     readonly verticalStickyBreakpoint?: number;

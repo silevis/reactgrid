@@ -361,11 +361,14 @@ export const TestGridOptionsSelect: React.FC<{ isPro?: boolean }> = ({ isPro }) 
                 {isPro && <>
                     <option value='/enableColumnAndRowSelection'>Enable column and row selection</option>
                     <option value='/enableColumnAndRowSelectionWithSticky'>Enable column and row selection with sticky</option>
+                    <option value='/enableResponsiveStickyPro'>Enable responsive sticky PRO</option>
+                    <option value='/enableResponsiveStickyPinnedToBodyPro'>Enable responsive sticky pinned to body PRO</option>
                 </>}
             </select>
         </form>
     )
 }
+
 export const withDiv = <T extends object,>(Component: React.ComponentType<T>): React.FC<T & TestGridProps> => {
     return ({ ...props }: TestGridProps) => {
         Component.displayName = 'WithDivWrapperTestGrid';

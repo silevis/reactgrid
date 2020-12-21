@@ -32,9 +32,9 @@ export interface State<TCellMatrix extends CellMatrix = CellMatrix, TBehavior ex
     // VISIBLE RANGE
     readonly visibleRange?: Range;
 
-    //STICKY
-    readonly leftStickyColumns: number | undefined;
-    readonly topStickyRows: number | undefined;
+    // STICKY
+    readonly leftStickyColumns?: number;
+    readonly topStickyRows?: number;
 
     // SCROLLS
     readonly topScrollBoudary: number;
