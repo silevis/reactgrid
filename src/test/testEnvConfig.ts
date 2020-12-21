@@ -47,6 +47,9 @@ export const config: TestConfig = {
         cutLabel: 'Cut me!',
     },
 
+    horizontalStickyBreakpoint: 100,
+    verticalStickyBreakpoint: 100,
+
     withDivComponentStyles: {
         padding: 20,
         position: 'relative',
