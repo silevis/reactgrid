@@ -47,3 +47,7 @@ export function visitSymetric() {
 export function visitResponsiveSticky() {
     cy.visit('/enableResponsiveSticky');
 }
+
+export function visitResponsiveStickyPinnedToBody() {
+    cy.visit('/enableResponsiveStickyPinnedToBody');
+}

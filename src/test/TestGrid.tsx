@@ -232,8 +232,8 @@ export const TestGrid: React.FC<TestGridProps> = (props) => {
         <>
             <div className='test-grid-container' data-cy='div-scrollable-element' style={{
                 ...(!config.pinToBody && {
-                    height: config.fillViewport ? '100vh' : config.rgViewportHeight,
-                    width: config.fillViewport ? '100vw' : config.rgViewportWidth,
+                    height: config.fillViewport ? `calc(100vh - 10px)` : config.rgViewportHeight,
+                    width: config.fillViewport ? `calc(100vw - 25px)` : config.rgViewportWidth,
                     margin: config.margin,
                     overflow: 'auto',
                 }),
@@ -344,10 +344,9 @@ export const TestGridOptionsSelect: React.FC<{ isPro?: boolean }> = ({ isPro }) 
     }
     return (
         <form>
-            <select
+            <select defaultValue={window.location.pathname}
                 onChange={(event) => navigate(event.target.value)}
             >
-                <option value=''>Select pathname</option>
                 <option value='/'>/</option>
                 <option value='/enableHeaders'>Enable headers</option>
                 <option value='/enableSticky'>Enable sticky</option>
@@ -358,6 +357,7 @@ export const TestGridOptionsSelect: React.FC<{ isPro?: boolean }> = ({ isPro }) 
                 <option value='/enableSymetric'>Enable symetric</option>
                 <option value='/enableFrozenFocus'>Enable frozen focus</option>
                 <option value='/enableResponsiveSticky'>Enable responsive sticky</option>
+                <option value='/enableResponsiveStickyPinnedToBody'>Enable responsive sticky pinned to body</option>
                 {isPro && <>
                     <option value='/enableColumnAndRowSelection'>Enable column and row selection</option>
                     <option value='/enableColumnAndRowSelectionWithSticky'>Enable column and row selection with sticky</option>

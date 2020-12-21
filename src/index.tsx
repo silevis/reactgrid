@@ -5,7 +5,7 @@ import { ReactGrid } from './lib/Components/ReactGrid';
 // import './test/theming-test.scss';
 import {
   config, enablePinnedToBodyConfig, disabledInitialFocusLocationConfig, enableAdditionalContentConfig,
-  enableAdditionalContentWithFlexRowConfig, enableSymetric, enableResponsiveSticky
+  enableAdditionalContentWithFlexRowConfig, enableSymetric, enableResponsiveSticky, enableResponsiveStickyPinnedToBody
 } from './test/testEnvConfig';
 
 let component = <ExtTestGrid
@@ -77,6 +77,14 @@ switch (window.location.pathname) {
       enableSticky
     />;
     ExtTestGrid.displayName = 'TestGridWithResponsiveSticky';
+    break;
+  case '/enableResponsiveStickyPinnedToBody':
+    component = <ExtTestGrid
+      component={ReactGrid}
+      config={enableResponsiveStickyPinnedToBody}
+      enableSticky
+    />;
+    ExtTestGrid.displayName = 'TestGridWithResponsiveStickyPinnedToBody';
     break;
   default:
     break;

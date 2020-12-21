@@ -94,6 +94,15 @@ export const enableResponsiveSticky: TestConfig = {
     verticalStickyBreakpoint: 45,
 }
 
+export const enableResponsiveStickyPinnedToBody: TestConfig = {
+    ...config,
+    pinToBody: true,
+    fillViewport: true,
+    stickyTop: 13,
+    horizontalStickyBreakpoint: 45,
+    verticalStickyBreakpoint: 45,
+}
+
 export interface TestConfig {
     pinToBody: boolean;
     additionalContent: boolean;
