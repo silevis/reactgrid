@@ -47,6 +47,9 @@ export const config: TestConfig = {
         cutLabel: 'Cut me!',
     },
 
+    horizontalStickyBreakpoint: 100,
+    verticalStickyBreakpoint: 100,
+
     withDivComponentStyles: {
         padding: 20,
         position: 'relative',
@@ -91,6 +94,23 @@ export const enableSymetric: TestConfig = {
     stickyRight: 2,
 }
 
+export const enableResponsiveSticky: TestConfig = {
+    ...config,
+    fillViewport: true,
+    stickyTop: 13,
+    horizontalStickyBreakpoint: 45,
+    verticalStickyBreakpoint: 45,
+}
+
+export const enableResponsiveStickyPinnedToBody: TestConfig = {
+    ...config,
+    pinToBody: true,
+    fillViewport: true,
+    stickyTop: 13,
+    horizontalStickyBreakpoint: 45,
+    verticalStickyBreakpoint: 45,
+}
+
 export interface TestConfig {
     pinToBody: boolean;
     additionalContent: boolean;
@@ -126,6 +146,10 @@ export interface TestConfig {
 
     labels: TextLabels;
 
+    horizontalStickyBreakpoint?: number;
+    verticalStickyBreakpoint?: number;
+
+    fillViewport?: boolean;
     withDivComponentStyles: React.CSSProperties;
 
 }

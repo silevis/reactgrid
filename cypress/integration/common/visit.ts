@@ -43,3 +43,19 @@ export function visitColumnAndRowSelectionsWithSticky() {
 export function visitSymetric() {
     cy.visit('/enableSymetric');
 }
+
+export function visitResponsiveSticky() {
+    cy.visit('/enableResponsiveSticky');
+}
+
+export function visitResponsiveStickyPinnedToBody() {
+    cy.visit('/enableResponsiveStickyPinnedToBody');
+}
+
+export function visitResponsiveStickyPro() {
+    cy.visit('/enableResponsiveStickyPro');
+}
+
+export function visitResponsiveStickyPinnedToBodyPro() {
+    cy.visit('/enableResponsiveStickyPinnedToBodyPro');
+}

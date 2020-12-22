@@ -128,6 +128,14 @@ export class Utilities {
         return cy.get('body');
     }
 
+    getLeftStickyPane() {
+        return cy.get('.rg-pane-left');
+    }
+
+    getTopStickyPane() {
+        return cy.get('.rg-pane-top');
+    }
+
     getCellFocus() {
         const cell = cy.get('.rg-cell-focus');
         cell.should('exist');
