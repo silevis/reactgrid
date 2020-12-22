@@ -195,7 +195,8 @@
       position: absolute;
       right: 4px;
       top: 4px; }
-  .reactgrid-content .rg-pane .rg-cell-focus {
+  .reactgrid-content .rg-pane .rg-cell-focus,
+  .reactgrid-content .rg-pane .rg-cell-highlight {
     position: absolute;
     pointer-events: none;
     box-sizing: border-box;
@@ -214,7 +215,7 @@
       cursor: crosshair;
       top: 50%;
       left: 50%;
-      transform: translate(calc(-50% - ( 1px/2 )), calc(-50% - ( 1px/2 )));
+      transform: translate(calc(-50% - (1px/ 2)), calc(-50% - (1px/ 2)));
       width: 6.5px;
       height: 6.5px;
       background-color: #3579f8;

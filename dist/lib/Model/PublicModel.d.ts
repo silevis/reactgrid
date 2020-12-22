@@ -54,6 +54,18 @@ export interface ReactGridProps {
     /** Set `true` to enable groupId element rendering (by default `false`) */
     readonly enableGroupIdRender?: boolean;
     /**
+     * Horizontal breakpoint in percents (%) of ReactGrid scrollable parent element width.
+     * Disables sticky when the sum of the sizes of sticky panes overflows
+     * given breakpoint value (by default `50`).
+    */
+    readonly horizontalStickyBreakpoint?: number;
+    /**
+     * Vertical breakpoint in percents (%) of ReactGrid scrollable parent element height.
+     * Disables sticky when the sum of the sizes of sticky panes overflows
+     * given breakpoint value (by default `50`).
+    */
+    readonly verticalStickyBreakpoint?: number;
+    /**
      * Called when cell was changed (e.g. property `value`)
      *
      * @param {CellChange[]} cellChanges Array of cell changes

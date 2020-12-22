@@ -12,6 +12,7 @@ var __assign = (this && this.__assign) || function () {
 import { recalcVisibleRange } from '../Functions/recalcVisibleRange';
 import { getScrollableParent, getScrollOfScrollableElement } from '../Functions/scrollHelpers';
 import { getVisibleSizeOfReactGrid } from '../Functions/elementSizeHelpers';
+import { updateResponsiveSticky } from '../Functions/updateResponsiveSticky';
 var EventHandlers = /** @class */ (function () {
     function EventHandlers(updateState, pointerEventsController) {
         var _this = this;
@@ -53,6 +54,9 @@ var EventHandlers = /** @class */ (function () {
                 _this.updateState(function (state) {
                     var scrollableElement = getScrollableParent(reactGridElement, true);
                     scrollableElement.addEventListener('scroll', function () { return _this.scrollHandler(visibleRangeCalculator); });
+                    if (state.props) {
+                        state = updateResponsiveSticky(state.props, state);
+                    }
                     return visibleRangeCalculator(__assign(__assign({}, state), { reactGridElement: reactGridElement, scrollableElement: scrollableElement }));
                 });
             }

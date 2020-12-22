@@ -13,6 +13,7 @@ import { CellMatrixBuilder } from '../Model/CellMatrixBuilder';
 import { defaultCellTemplates } from './defaultCellTemplates';
 import { focusLocation } from './focusLocation';
 import { recalcVisibleRange } from './recalcVisibleRange';
+import { updateResponsiveSticky } from './updateResponsiveSticky';
 export function getDerivedStateFromProps(props, state) {
     var stateDeriverWithProps = stateDeriver(props);
     var hasHighlightsChanged = highlightsHasChanged(props, state);
@@ -23,6 +24,7 @@ export function getDerivedStateFromProps(props, state) {
     state = stateDeriverWithProps(state)(appendCellTemplates);
     state = stateDeriverWithProps(state)(appendGroupIdRender);
     var hasChanged = dataHasChanged(props, state);
+    state = stateDeriverWithProps(state)(updateResponsiveSticky);
     if (hasChanged) {
         state = stateDeriverWithProps(state)(updateCellMatrix);
     }
@@ -42,7 +44,9 @@ export var areFocusesDiff = function (props, state) {
         || ((_c = props.focusLocation) === null || _c === void 0 ? void 0 : _c.rowId) !== ((_d = state.focusedLocation) === null || _d === void 0 ? void 0 : _d.row.rowId);
 };
 export var stateDeriver = function (props) { return function (state) { return function (fn) { return fn(props, state); }; }; };
-export var dataHasChanged = function (props, state) { return !state.cellMatrix || props !== state.cellMatrix.props; };
+export var dataHasChanged = function (props, state) { return !state.cellMatrix || props !== state.cellMatrix.props
+    || (props.stickyLeftColumns !== undefined && props.stickyLeftColumns !== state.leftStickyColumns)
+    || (props.stickyTopRows !== undefined && props.stickyTopRows !== state.topStickyRows); };
 export var highlightsHasChanged = function (props, state) { var _a; return props.highlights !== ((_a = state.props) === null || _a === void 0 ? void 0 : _a.highlights); };
 export function updateStateProps(props, state) {
     if (state.props !== props) {
@@ -52,7 +56,10 @@ export function updateStateProps(props, state) {
 }
 function updateCellMatrix(props, state) {
     var builder = new CellMatrixBuilder();
-    return __assign(__assign({}, state), { cellMatrix: builder.setProps(props).fillRowsAndCols().fillSticky().fillScrollableRange()
+    return __assign(__assign({}, state), { cellMatrix: builder.setProps(props)
+            .fillRowsAndCols({ leftStickyColumns: state.leftStickyColumns || 0, topStickyRows: state.topStickyRows || 0 })
+            .fillSticky({ leftStickyColumns: state.leftStickyColumns || 0, topStickyRows: state.topStickyRows || 0 })
+            .fillScrollableRange({ leftStickyColumns: state.leftStickyColumns || 0, topStickyRows: state.topStickyRows || 0 })
             .setEdgeLocations().getCellMatrix() });
 }
 export function updateFocusedLocation(props, state) {

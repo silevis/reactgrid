@@ -39,9 +39,9 @@ function getBorderProperties(getPropertyOnBorderFn) {
     };
 }
 export var CellRenderer = function (_a) {
-    var _b;
+    var _b, _c, _d;
     var state = _a.state, location = _a.location, children = _a.children, borders = _a.borders;
-    var _c = getCompatibleCellAndTemplate(state, location), cell = _c.cell, cellTemplate = _c.cellTemplate;
+    var _e = getCompatibleCellAndTemplate(state, location), cell = _e.cell, cellTemplate = _e.cellTemplate;
     var isFocused = state.focusedLocation !== undefined && areLocationsEqual(state.focusedLocation, location);
     var customClass = (_b = (cellTemplate.getClassName && cellTemplate.getClassName(cell, false))) !== null && _b !== void 0 ? _b : '';
     var storePropertyAndDefaultValue = storeBorderAndCell(borders, cell);
@@ -57,7 +57,9 @@ export var CellRenderer = function (_a) {
             : bordersWidth.bottom + " " + bordersStyle.bottom + " " + bordersColor.bottom,
     };
     var isMobile = isMobileDevice();
-    var style = __assign(__assign(__assign(__assign(__assign({}, (cellTemplate.getStyle && (cellTemplate.getStyle(cell, false) || {}))), (cell.style && noBorder(cell.style))), { left: location.column.left, top: location.row.top, width: location.column.width, height: location.row.height }), (!(isFocused && state.currentlyEditedCell) && bordersProps)), ((isFocused || cell.type === 'header') && { touchAction: 'none' }) // prevent scrolling
+    var isFirstRowOrColumnWithSelection = (((_c = state.props) === null || _c === void 0 ? void 0 : _c.enableRowSelection) && location.row.idx === 0)
+        || (((_d = state.props) === null || _d === void 0 ? void 0 : _d.enableColumnSelection) && location.column.idx === 0);
+    var style = __assign(__assign(__assign(__assign(__assign({}, (cellTemplate.getStyle && (cellTemplate.getStyle(cell, false) || {}))), (cell.style && noBorder(cell.style))), { left: location.column.left, top: location.row.top, width: location.column.width, height: location.row.height }), (!(isFocused && state.currentlyEditedCell) && bordersProps)), ((isFocused || cell.type === 'header' || isFirstRowOrColumnWithSelection) && { touchAction: 'none' }) // prevent scrolling
     );
     var isInEditMode = isFocused && !!(state.currentlyEditedCell);
     var groupIdClassName = cell.groupId ? " rg-groupId-" + cell.groupId : '';

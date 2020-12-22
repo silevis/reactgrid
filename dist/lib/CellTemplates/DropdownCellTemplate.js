@@ -14,8 +14,8 @@ import * as React from 'react';
 import { getCellProperty } from '../Functions/getCellProperty';
 import { getCharFromKeyCode } from './getCharFromKeyCode';
 import { isAlphaNumericKey } from './keyCodeCheckings';
-import Select from 'react-select';
 import { keyCodes } from '../Functions/keyCodes';
+import Select from 'react-select';
 var DropdownCellTemplate = /** @class */ (function () {
     function DropdownCellTemplate() {
     }
@@ -70,9 +70,13 @@ var DropdownCellTemplate = /** @class */ (function () {
         return { cell: cell, enableEditMode: false };
     };
     DropdownCellTemplate.prototype.render = function (cell, isInEditMode, onCellChanged) {
+        // TODO create custom hook - useDropdown
         var _this = this;
+        //eslint-disable-next-line
         var selectRef = React.useRef(null);
+        //eslint-disable-next-line
         var _a = React.useState(cell.inputValue), inputValue = _a[0], setInputValue = _a[1];
+        //eslint-disable-next-line
         React.useEffect(function () {
             if (cell.isOpen && selectRef.current) {
                 selectRef.current.focus();

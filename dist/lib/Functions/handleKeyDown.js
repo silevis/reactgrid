@@ -96,7 +96,7 @@ function handleKeyDownInternal(state, event) {
             case keyCodes.ESCAPE:
                 event.preventDefault();
                 (_o = state.hiddenFocusElement) === null || _o === void 0 ? void 0 : _o.focus({ preventScroll: true });
-                return (state.currentlyEditedCell) ? __assign(__assign({}, state), { currentlyEditedCell: undefined }) : state;
+                return state.currentlyEditedCell ? __assign(__assign({}, state), { currentlyEditedCell: undefined }) : state;
         }
     }
     return state;

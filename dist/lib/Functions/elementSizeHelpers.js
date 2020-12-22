@@ -1,11 +1,13 @@
 import { getScrollOfScrollableElement, getTopScrollableElement } from './scrollHelpers';
 import { isIOS } from './operatingSystem';
+// TODO replace any with exact type: HTMLElement | (Window & typeof globalThis)
 export function getSizeOfElement(element) {
     var _a, _b;
     var width = element !== undefined ? ((_a = element.clientWidth) !== null && _a !== void 0 ? _a : (isIOS() ? window.innerWidth : document.documentElement.clientWidth)) : 0; // TODO check other mobile devices
     var height = element !== undefined ? ((_b = element.clientHeight) !== null && _b !== void 0 ? _b : (isIOS() ? window.innerHeight : document.documentElement.clientHeight)) : 0;
     return { width: width, height: height };
 }
+// TODO is this fn used?
 export function getOffsetsOfElement(element) {
     var _a, _b;
     return { offsetLeft: (_a = element.offsetLeft) !== null && _a !== void 0 ? _a : 0, offsetTop: (_b = element.offsetTop) !== null && _b !== void 0 ? _b : 0 };

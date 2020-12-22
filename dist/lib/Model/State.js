@@ -18,4 +18,6 @@ export var defaultStateFields = {
     leftScrollBoudary: -1,
     rightScrollBoudary: -1,
     enableGroupIdRender: false,
+    leftStickyColumns: undefined,
+    topStickyRows: undefined,
 };
