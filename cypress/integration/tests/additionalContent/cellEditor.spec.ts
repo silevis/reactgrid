@@ -84,7 +84,7 @@ context('Cell editor position', () => {
         },
         scroll: {
           x: 0,
-          y: utils.getConfig().cellHeight * 25 + utils.getRandomInt(1, utils.getConfig().cellHeight) + utils.getConfig().rgViewportHeight,
+          y: utils.getConfig().cellHeight * 25 + utils.getConfig().rgViewportHeight,
         },
       }
     ].forEach(utils.testCellEditor.bind(utils));

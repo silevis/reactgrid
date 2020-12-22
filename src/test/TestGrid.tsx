@@ -289,13 +289,13 @@ export const TestGrid: React.FC<TestGridProps> = (props) => {
                     </div>
                 }
             </div>
-            <TestGridOptionsSelect isPro={config.isPro}></TestGridOptionsSelect>
             {!config.fillViewport &&
                 <>
                     <input type='text' data-cy='outer-input' />
                     <Logo isPro={config.isPro} />
                 </>
             }
+            <TestGridOptionsSelect isPro={config.isPro}></TestGridOptionsSelect>
             {config.additionalContent &&
                 <>
                     <h1 style={{ width: 3000 }}>TEXT</h1> Test WITH IT
@@ -369,7 +369,7 @@ export const TestGridOptionsSelect: React.FC<{ isPro?: boolean }> = ({ isPro }) 
     )
 }
 
-export const withDiv = <T extends object,>(Component: React.ComponentType<T>): React.FC<T & TestGridProps> => {
+export const withDiv = <T extends object>(Component: React.ComponentType<T>): React.FC<T & TestGridProps> => {
     return ({ ...props }: TestGridProps) => {
         Component.displayName = 'WithDivWrapperTestGrid';
         return (
