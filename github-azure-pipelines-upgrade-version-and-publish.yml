@@ -56,6 +56,8 @@ stages:
             displayName: "Update package-lock.json"
           - script: git pull
             displayName: "Pull changes"
+          - script: git push
+            displayName: "Push upgraded version"
           - script: git add .
             displayName: "Add changes"
           - script: git commit -m "upgrade version [ci skip]"
