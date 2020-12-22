@@ -4,6 +4,7 @@ import { getVisibleSizeOfReactGrid } from '../Functions/elementSizeHelpers';
 import { AbstractPointerEventsController } from './AbstractPointerEventsController';
 import { StateModifier, StateUpdater } from './State';
 import { PointerEvent, KeyboardEvent, ClipboardEvent, FocusEvent } from './domEventsTypes';
+import { updateResponsiveSticky } from '../Functions/updateResponsiveSticky';
 
 export class EventHandlers {
 
@@ -46,6 +47,9 @@ export class EventHandlers {
             this.updateState(state => {
                 const scrollableElement = getScrollableParent(reactGridElement, true);
                 scrollableElement!.addEventListener('scroll', () => this.scrollHandler(visibleRangeCalculator));
+                if (state.props) {
+                    state = updateResponsiveSticky(state.props, state);
+                }
                 return visibleRangeCalculator({ ...state, reactGridElement, scrollableElement });
             });
         }

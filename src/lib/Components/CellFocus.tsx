@@ -12,8 +12,7 @@ interface CellFocusProps {
 export const CellFocus: React.FC<CellFocusProps> = ({ borderColor, isHighlight, location, className }) => (
     <div
         key={borderColor}
-        data-cy={!isHighlight ? 'rg-cell-focus' : 'rg-cell-highlight'}
-        className={`rg-cell-focus ${className || ''}`}
+        className={`${isHighlight ? 'rg-cell-highlight' : 'rg-cell-focus'} ${className || ''}`}
         style={{
             top: location.row.top - (location.row.top === 0 ? 0 : 1),
             left: location.column.left - (location.column.left === 0 ? 0 : 1),

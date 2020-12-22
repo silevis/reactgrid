@@ -4,10 +4,9 @@ import { CellMatrixBuilder } from '../Model/CellMatrixBuilder';
 import { defaultCellTemplates } from './defaultCellTemplates';
 import { focusLocation } from './focusLocation';
 import { recalcVisibleRange } from './recalcVisibleRange';
-
+import { updateResponsiveSticky } from './updateResponsiveSticky';
 
 export function getDerivedStateFromProps(props: ReactGridProps, state: State): State {
-
     const stateDeriverWithProps = stateDeriver(props);
 
     const hasHighlightsChanged = highlightsHasChanged(props, state);
@@ -23,6 +22,8 @@ export function getDerivedStateFromProps(props: ReactGridProps, state: State): S
     state = stateDeriverWithProps(state)(appendGroupIdRender);
 
     const hasChanged = dataHasChanged(props, state);
+
+    state = stateDeriverWithProps(state)(updateResponsiveSticky);
 
     if (hasChanged) {
         state = stateDeriverWithProps(state)(updateCellMatrix);
@@ -49,7 +50,9 @@ export const areFocusesDiff = (props: ReactGridProps, state: State): boolean => 
 
 export const stateDeriver = (props: ReactGridProps) => (state: State) => (fn: (props: ReactGridProps, state: State) => State) => fn(props, state);
 
-export const dataHasChanged = (props: ReactGridProps, state: State) => !state.cellMatrix || props !== state.cellMatrix.props;
+export const dataHasChanged = (props: ReactGridProps, state: State) => !state.cellMatrix || props !== state.cellMatrix.props
+    || (props.stickyLeftColumns !== undefined && props.stickyLeftColumns !== state.leftStickyColumns)
+    || (props.stickyTopRows !== undefined && props.stickyTopRows !== state.topStickyRows);
 
 export const highlightsHasChanged = (props: ReactGridProps, state: State) => props.highlights !== state.props?.highlights;
 
@@ -64,7 +67,10 @@ function updateCellMatrix(props: ReactGridProps, state: State): State {
     const builder = new CellMatrixBuilder();
     return {
         ...state,
-        cellMatrix: builder.setProps(props).fillRowsAndCols().fillSticky().fillScrollableRange()
+        cellMatrix: builder.setProps(props)
+            .fillRowsAndCols({ leftStickyColumns: state.leftStickyColumns || 0, topStickyRows: state.topStickyRows || 0 })
+            .fillSticky({ leftStickyColumns: state.leftStickyColumns || 0, topStickyRows: state.topStickyRows || 0 })
+            .fillScrollableRange({ leftStickyColumns: state.leftStickyColumns || 0, topStickyRows: state.topStickyRows || 0 })
             .setEdgeLocations().getCellMatrix()
     };
 }

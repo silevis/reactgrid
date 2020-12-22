@@ -1,9 +1,9 @@
 import React from 'react';
 import {
     Column, Row, Id, MenuOption, SelectionMode, DropPosition, CellLocation,
-    DefaultCellTypes, CellChange, ReactGridProps, TextCell, NumberCell, CellStyle
+    DefaultCellTypes, CellChange, ReactGridProps, TextCell, NumberCell, CellStyle, HeaderCell, ChevronCell
 } from './../reactgrid';
-import { Config } from './testEnvConfig';
+import { TestConfig } from './testEnvConfig';
 import '../styles.scss';
 import { FlagCell, FlagCellTemplate } from './flagCell/FlagCellTemplate';
 
@@ -12,12 +12,12 @@ type TestGridCells = DefaultCellTypes | FlagCell;
 type TestGridRow = Row<TestGridCells>;
 
 interface TestGridProps {
-    containerHeight?: number;
-    containerWidth?: number;
-    containerMargin?: number;
     enableSticky?: boolean;
     enableColumnAndRowSelection?: boolean;
-    config: Config;
+    enableFrozenFocus?: boolean;
+    firstRowType?: TextCell['type'] | HeaderCell['type']; // 'text' if undefined
+    firstColType?: ChevronCell['type'] | HeaderCell['type']; // 'chevron' if undefined
+    config: TestConfig;
     component: React.ComponentClass<ReactGridProps>;
 }
 
@@ -40,7 +40,11 @@ const style: CellStyle = {
 };
 
 export const TestGrid: React.FC<TestGridProps> = (props) => {
-    const { config, containerHeight, containerWidth, containerMargin, component, enableSticky, enableColumnAndRowSelection } = props;
+    const {
+        config, component, enableSticky, enableColumnAndRowSelection, enableFrozenFocus,
+        firstRowType = 'text',
+        firstColType = 'chevron',
+    } = props;
 
     const [columns, setColumns] = React.useState(() => new Array(config.columns).fill({ columnId: 0, resizable: true, reorderable: true, width: -1 })
         .map<Column>((_, ci) => ({ columnId: `col-${ci}`, resizable: true, reorderable: true, width: config.cellWidth })));
@@ -50,13 +54,15 @@ export const TestGrid: React.FC<TestGridProps> = (props) => {
         reorderable: true,
         height: config.cellHeight,
         cells: columns.map<TestGridCells>((_, ci) => {
-            if (ri === 0) return { type: config.firstRowType, text: `${ri} - ${ci}` }
+            if (ri === 0) return { type: firstRowType, text: `${ri} - ${ci}` }
             if (ri === 2 && ci === 8) return { type: 'text', text: `non-editable`, nonEditable: true, validator: (text: string): boolean => true }
             if (ri === 3 && ci === 8) return { type: 'text', text: '', placeholder: 'placeholder', validator: (text: string): boolean => true }
             const now = new Date();
             switch (ci) {
                 case 0:
-                    return { type: 'chevron', groupId: !(ri % 3) ? 'A' : undefined, text: `${ri} - ${ci}`, parentId: ri, isExpanded: ri % 4 ? true : undefined, hasChildren: true }
+                    return firstColType === 'chevron'
+                        ? { type: 'chevron', groupId: !(ri % 3) ? 'A' : undefined, text: `${ri} - ${ci}`, parentId: ri, isExpanded: ri % 4 ? true : undefined, hasChildren: true }
+                        : { type: 'header', groupId: !(ri % 3) ? 'A' : undefined, text: `${ri} - ${ci}` }
                 case 1:
                     return { type: 'text', groupId: !(ri % 3) ? 'B' : undefined, text: `${ri} - ${ci}`, style }
                 case 2:
@@ -226,9 +232,9 @@ export const TestGrid: React.FC<TestGridProps> = (props) => {
         <>
             <div className='test-grid-container' data-cy='div-scrollable-element' style={{
                 ...(!config.pinToBody && {
-                    height: containerHeight || config.rgViewportHeight,
-                    width: containerWidth || config.rgViewportWidth,
-                    margin: containerMargin || config.margin,
+                    height: config.fillViewport ? `calc(100vh - 30px)` : config.rgViewportHeight,
+                    width: config.fillViewport ? `calc(100vw - 45px)` : config.rgViewportWidth,
+                    margin: config.margin,
                     overflow: 'auto',
                 }),
                 position: 'relative',
@@ -237,26 +243,23 @@ export const TestGrid: React.FC<TestGridProps> = (props) => {
                     flexDirection: 'row'
                 }),
             }}>
-                {config.enableAdditionalContent &&
-                    <>
-                        <Logo isPro={config.isPro} />
-                        <Logo isPro={config.isPro} />
-                        <Logo isPro={config.isPro} />
-                    </>
+                {config.additionalContent &&
+                    <div style={{ height: `${config.rgViewportHeight}px`, backgroundColor: '#fafff3' }}>
+                        <Logo isPro={config.isPro} width={config.rgViewportWidth} />
+                        <Logo isPro={config.isPro} width={config.rgViewportWidth} />
+                        <Logo isPro={config.isPro} width={config.rgViewportWidth} />
+                    </div>
                 }
                 <Component
                     rows={rows}
                     columns={columns}
-                    initialFocusLocation={{ columnId: 'col-1', rowId: 'row-2' }}
-                    // focusLocation={{ columnId: 'col-1', rowId: 'row-3' }}
-                    // onCellsChanged={handleChangesTest2} // This handler should be allowed
+                    initialFocusLocation={config.initialFocusLocation}
+                    focusLocation={enableFrozenFocus ? config.focusLocation : undefined}
+                    // onCellsChanged={handleChangesTest2} // TODO This handler should be allowed
                     onCellsChanged={handleChanges}
                     onColumnResized={handleColumnResize}
                     customCellTemplates={{ 'flag': new FlagCellTemplate() }}
-                    highlights={[
-                        { columnId: 'col-1', rowId: 'row-1', borderColor: '#00ff00' },
-                        { columnId: 'col-0', rowId: 'row-1', borderColor: 'red' }
-                    ]}
+                    highlights={config.highlights}
                     stickyLeftColumns={enableSticky ? config.stickyLeft : undefined}
                     stickyRightColumns={enableSticky ? config.stickyRight : undefined}
                     stickyTopRows={enableSticky ? config.stickyTop : undefined}
@@ -274,32 +277,26 @@ export const TestGrid: React.FC<TestGridProps> = (props) => {
                     enableRangeSelection={config.enableRangeSelection}
                     enableFillHandle={config.enableFillHandle}
                     enableGroupIdRender={config.enableGroupIdRender}
-                    labels={{
-                        copyLabel: 'Copy me!',
-                        pasteLabel: 'Paste me!',
-                        cutLabel: 'Cut me!',
-                    }}
+                    labels={config.labels}
+                    horizontalStickyBreakpoint={config.horizontalStickyBreakpoint}
+                    verticalStickyBreakpoint={config.verticalStickyBreakpoint}
                 />
-                {config.enableAdditionalContent &&
-                    <>
-                        <h1 style={{ width: 3000 }}>TEXT</h1> Test WITH IT
-                        <h1>TEXT</h1> Test WITH IT
-                        <h1>TEXT</h1> Test WITH IT
-                        <h1>TEXT</h1> Test WITH IT
-                        <h1>TEXT</h1> Test WITH IT
-                        <h1>TEXT</h1> Test WITH IT
-                        <h1>TEXT</h1> Test WITH IT
-                        <h1>TEXT</h1> Test WITH IT
-                        <h1>TEXT</h1> Test WITH IT
-                        <h1>TEXT</h1> Test WITH IT
-                        <h1>TEXT</h1> Test WITH IT
-                        <h1>TEXT</h1> Test WITH IT
-                    </>
+                {config.additionalContent &&
+                    <div style={{ height: `${config.rgViewportHeight}px`, backgroundColor: '#fafff3' }}>
+                        <Logo isPro={config.isPro} width={config.rgViewportWidth} />
+                        <Logo isPro={config.isPro} width={config.rgViewportWidth} />
+                        <Logo isPro={config.isPro} width={config.rgViewportWidth} />
+                    </div>
                 }
             </div>
-            <input type='text' data-cy='outer-input' />
-            <Logo isPro={config.isPro} />
-            {config.enableAdditionalContent &&
+            {!config.fillViewport &&
+                <>
+                    <input type='text' data-cy='outer-input' />
+                    <Logo isPro={config.isPro} />
+                </>
+            }
+            <TestGridOptionsSelect isPro={config.isPro}></TestGridOptionsSelect>
+            {config.additionalContent &&
                 <>
                     <h1 style={{ width: 3000 }}>TEXT</h1> Test WITH IT
                     <h1>TEXT</h1> Test WITH IT
@@ -320,11 +317,11 @@ export const TestGrid: React.FC<TestGridProps> = (props) => {
 
 }
 
-const Logo: React.FC<{ isPro?: boolean }> = props => {
-    return <div style={{ display: 'flex', minWidth: 185 }}>
+const Logo: React.FC<{ isPro?: boolean; width?: number }> = ({ isPro, width }) => {
+    return <div style={{ display: 'flex', width: `${width}px` }}>
         <h1 style={{ position: 'relative' }}>
             ReactGrid
-            {props.isPro && <div
+            {isPro && <div
                 style={{
                     position: 'absolute',
                     top: '-0.5em',
@@ -338,17 +335,45 @@ const Logo: React.FC<{ isPro?: boolean }> = props => {
                 }}>
                 PRO</div>}
         </h1>
-    </div>
+    </div >
+}
+
+export const TestGridOptionsSelect: React.FC<{ isPro?: boolean }> = ({ isPro }) => {
+    const navigate = (eventValue: string) => {
+        window.location.pathname = eventValue;
+    }
+    return (
+        <form>
+            <select defaultValue={window.location.pathname}
+                onChange={(event) => navigate(event.target.value)}
+            >
+                <option value='/'>/</option>
+                <option value='/enableHeaders'>Enable headers</option>
+                <option value='/enableSticky'>Enable sticky</option>
+                <option value='/enableFrozenFocus'>Enable frozen focus</option>
+                <option value='/enablePinnedToBody'>Enable pinned to body</option>
+                <option value='/enableStickyPinnedToBody'>Enable sticky pinned to body</option>
+                <option value='/enableAdditionalContent'>Enable additional content</option>
+                <option value='/enableSymetric'>Enable symetric</option>
+                <option value='/enableFrozenFocus'>Enable frozen focus</option>
+                <option value='/enableResponsiveSticky'>Enable responsive sticky</option>
+                <option value='/enableResponsiveStickyPinnedToBody'>Enable responsive sticky pinned to body</option>
+                {isPro && <>
+                    <option value='/enableColumnAndRowSelection'>Enable column and row selection</option>
+                    <option value='/enableColumnAndRowSelectionWithSticky'>Enable column and row selection with sticky</option>
+                    <option value='/enableResponsiveStickyPro'>Enable responsive sticky PRO</option>
+                    <option value='/enableResponsiveStickyPinnedToBodyPro'>Enable responsive sticky pinned to body PRO</option>
+                </>}
+            </select>
+        </form>
+    )
 }
 
 export const withDiv = <T extends object>(Component: React.ComponentType<T>): React.FC<T & TestGridProps> => {
     return ({ ...props }: TestGridProps) => {
         Component.displayName = 'WithDivWrapperTestGrid';
         return (
-            <div style={{
-                padding: 20,
-                position: 'relative',
-            }}>
+            <div style={{ ...props.config.withDivComponentStyles }}>
                 <Component {...props as T} />
             </div>
         )

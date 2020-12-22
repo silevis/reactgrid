@@ -1,7 +1,7 @@
 variables:
-- group: deployer-variables
-- group: develop-branch
-- group: master-branch
+  - group: deployer-variables
+  - group: develop-branch
+  - group: master-branch
 
 trigger:
   branches:
@@ -11,67 +11,54 @@ trigger:
 pr: none
 
 pool:
-  vmImage: 'ubuntu-latest'
+  vmImage: "ubuntu-latest"
 
-stages: 
+stages:
   - stage: upgrade_version_and_publish
-    displayName: 'Upgrade version and publish'
-    jobs: 
+    displayName: "Upgrade version and publish"
+    jobs:
       - job: upgrade_version_and_publish
         steps:
-        - task: NodeTool@0
-          inputs:
-            versionSpec: '10.x'
-          displayName: 'Install Node.js'
-        - checkout: self
-          persistCredentials: true
-        - script: 
-            git checkout $(MASTER_BRANCH_NAME)
-          displayName: 'Switch branch'
-        - script: 
-            npm install
-          displayName: 'Install dependencies'
-        - script: 
-           npm run remove-suffix
-          displayName: 'Remove suffix from package version'
-        - script:
-           npm run pre-deploy
-          displayName: 'Build TypeScript code'
-        - task: Npm@1
-          inputs:
-            command: 'custom'
-            customCommand: 'publish dist --access=public'
-            customEndpoint: 'npm ReactGrid deployment service'
-        - script: 
-            git config --global user.email "$(GIT_USER_MAIL)" && git config --global user.name "$(GIT_USER_NAME)"
-          displayName: 'Set configuration'
-        - script: 
-            git add .
-          displayName: 'Add changes'
-        - script: 
-            git commit -m "upgrade version [ci skip]"
-          displayName: 'Commit updated package version'
-        - script: 
-            git push
-          displayName: 'Push upgraded version'
-        - script: 
-            git checkout $(DEVELOP_BRANCH_NAME)
-          displayName: 'Change branch to develop'
-        - script: 
-            npm run remove-suffix
-          displayName: 'Remove suffix from develop package version'        
-        - script: 
-            npm install
-          displayName: 'Update package-lock.json'
-        - script: 
-            git pull
-          displayName: 'Pull changes'
-        - script: 
-            git add .
-          displayName: 'Add changes'
-        - script: 
-            git commit -m "upgrade version [ci skip]"
-          displayName: 'Commit updated package version'
-        - script: 
-            git push
-          displayName: 'Push upgraded version'
+          - task: NodeTool@0
+            inputs:
+              versionSpec: "10.x"
+            displayName: "Install Node.js"
+          - checkout: self
+            persistCredentials: true
+          - script: git checkout $(MASTER_BRANCH_NAME)
+            displayName: "Switch branch"
+          - script: npm install
+            displayName: "Install dependencies"
+          - script: npm run remove-suffix
+            displayName: "Remove suffix from package version"
+          - script: npm run pre-deploy
+            displayName: "Build TypeScript code"
+          - task: Npm@1
+            inputs:
+              command: "custom"
+              customCommand: "publish dist --access=public"
+              customEndpoint: "npm ReactGrid deployment service"
+          - script: git config --global user.email "$(GIT_USER_MAIL)" && git config --global user.name "$(GIT_USER_NAME)"
+            displayName: "Set configuration"
+          - script: git add .
+            displayName: "Add changes"
+          - script: git commit -m "upgrade version [ci skip]"
+            displayName: "Commit updated package version"
+          - script: git push
+            displayName: "Push upgraded version"
+          - script: git checkout $(DEVELOP_BRANCH_NAME)
+            displayName: "Change branch to develop"
+          - script: npm run remove-suffix
+            displayName: "Remove suffix from develop package version"
+          - script: npm version prerelease --preid=rc -m "upgrade version [ci skip]"
+            displayName: "Add rc.0 suffix to package version"
+          - script: npm install
+            displayName: "Update package-lock.json"
+          - script: git pull
+            displayName: "Pull changes"
+          - script: git add .
+            displayName: "Add changes"
+          - script: git commit -m "upgrade version [ci skip]"
+            displayName: "Commit updated package version"
+          - script: git push
+            displayName: "Push upgraded version"

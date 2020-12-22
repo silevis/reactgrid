@@ -13,7 +13,7 @@
     "module": "esnext",
     "moduleResolution": "node",
     "resolveJsonModule": true,
-    "jsx": "preserve",
+    "jsx": "react-jsx",
     "noImplicitAny": true,
     "noUnusedLocals": false,
     "noUnusedParameters": false,
@@ -21,7 +21,8 @@
     "isolatedModules": true,
     "allowJs": true,
     "skipLibCheck": true,
-    "experimentalDecorators": true
+    "experimentalDecorators": true,
+    "noFallthroughCasesInSwitch": true
   },
   "include": [
     "src"

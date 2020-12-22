@@ -59,7 +59,6 @@ const CellEditor: React.FC<CellEditorProps> = ({ style, cellType, children }) =>
     return (
         <div
             className={`rg-celleditor rg-${cellType}-celleditor`}
-            data-cy='rg-celleditor'
             style={style}
         >
             {children}

@@ -5,9 +5,9 @@ import { getCellProperty } from '../Functions/getCellProperty';
 import { getCharFromKeyCode } from './getCharFromKeyCode';
 import { isAlphaNumericKey } from './keyCodeCheckings';
 import { Cell, CellTemplate, Compatible, Uncertain, UncertainCompatible } from '../Model/PublicModel';
+import { keyCodes } from '../Functions/keyCodes';
 
 import Select, { OptionProps, MenuProps } from 'react-select';
-import { keyCodes } from '../Functions/keyCodes';
 
 export type OptionType = {
     label: string;
@@ -80,10 +80,13 @@ export class DropdownCellTemplate implements CellTemplate<DropdownCell> {
         isInEditMode: boolean,
         onCellChanged: (cell: Compatible<DropdownCell>, commit: boolean) => void
     ): React.ReactNode {
+        // TODO create custom hook - useDropdown
+
+        //eslint-disable-next-line
         const selectRef = React.useRef<any>(null);
-
+        //eslint-disable-next-line
         const [inputValue, setInputValue] = React.useState<string | undefined>(cell.inputValue);
-
+        //eslint-disable-next-line
         React.useEffect(() => {
             if (cell.isOpen && selectRef.current) {
                 selectRef.current.focus();
@@ -107,7 +110,7 @@ export class DropdownCellTemplate implements CellTemplate<DropdownCell> {
                     {...(cell.isOpen !== undefined && { menuIsOpen: cell.isOpen })}
                     onMenuClose={() => onCellChanged(this.getCompatibleCell({ ...cell, isOpen: !cell.isOpen, inputValue: undefined }), true)}
                     onMenuOpen={() => onCellChanged(this.getCompatibleCell({ ...cell, isOpen: true }), true)}
-                    onChange={(e) => onCellChanged(this.getCompatibleCell({ ...cell, selectedValue: (e as { value: string }).value, isOpen: false, inputValue: undefined }), true)}
+                    onChange={(e) => onCellChanged(this.getCompatibleCell({ ...cell, selectedValue: (e as OptionType).value, isOpen: false, inputValue: undefined }), true)}
                     blurInputOnSelect={true}
                     defaultValue={cell.values.find(val => val.value === cell.selectedValue)}
                     isDisabled={cell.isDisabled}
@@ -163,7 +166,7 @@ export class DropdownCellTemplate implements CellTemplate<DropdownCell> {
     }
 }
 
-const CustomOption: React.FC<OptionProps<OptionType>> = ({ innerProps, label, isSelected, isFocused }) => (
+const CustomOption: React.FC<OptionProps<OptionType, false>> = ({ innerProps, label, isSelected, isFocused }) => (
     <div
         {...innerProps}
         onPointerDown={e => e.stopPropagation()}
@@ -173,6 +176,6 @@ const CustomOption: React.FC<OptionProps<OptionType>> = ({ innerProps, label, is
     </div>
 );
 
-const CustomMenu: React.FC<MenuProps<OptionType>> = ({ innerProps, children }) => (
+const CustomMenu: React.FC<MenuProps<OptionType, false>> = ({ innerProps, children }) => (
     <div {...innerProps} className='dropdown-menu'>{children}</div>
 );

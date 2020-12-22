@@ -90,7 +90,7 @@ function handleKeyDownInternal(state: State, event: KeyboardEvent): State {
             case keyCodes.ESCAPE:
                 event.preventDefault();
                 state.hiddenFocusElement?.focus({ preventScroll: true });
-                return (state.currentlyEditedCell) ? { ...state, currentlyEditedCell: undefined } : state
+                return state.currentlyEditedCell ? { ...state, currentlyEditedCell: undefined } : state;
         }
     }
     return state;
