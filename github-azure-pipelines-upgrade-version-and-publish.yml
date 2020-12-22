@@ -50,14 +50,10 @@ stages:
             displayName: "Change branch to develop"
           - script: npm run remove-suffix
             displayName: "Remove suffix from develop package version"
-          - script: npm version prerelease --preid=rc -m "upgrade version [ci skip]" --force
-            displayName: "Add rc.0 suffix to package version"
           - script: npm install
             displayName: "Update package-lock.json"
           - script: git pull
             displayName: "Pull changes"
-          - script: git push
-            displayName: "Push upgraded version"
           - script: git add .
             displayName: "Add changes"
           - script: git commit -m "upgrade version [ci skip]"
