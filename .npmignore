@@ -12,3 +12,7 @@ github-azure-*.yml
 snapshots.js
 .gitignore
 test
+rollup.*
+.babelrc
+.eslintrc
+stats.html

@@ -7,10 +7,12 @@
       "esnext"
     ],
     "esModuleInterop": true,
+    "declaration": true,
+    "declarationDir": "dist/types",
     "allowSyntheticDefaultImports": true,
     "strict": true,
     "forceConsistentCasingInFileNames": true,
-    "module": "esnext",
+    "module": "es2015",
     "moduleResolution": "node",
     "resolveJsonModule": true,
     "jsx": "react-jsx",
@@ -25,7 +27,7 @@
     "noFallthroughCasesInSwitch": true
   },
   "include": [
-    "src"
+    "src/**/*"
   ],
   "exclude": [
     "src/index.tsx"
