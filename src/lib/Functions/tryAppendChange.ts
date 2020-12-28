@@ -4,7 +4,6 @@ import { State } from '../Model/State';
 import { getCompatibleCellAndTemplate } from './getCompatibleCellAndTemplate';
 
 export function tryAppendChange(state: State, location: Location, cell: Compatible<Cell>): State {
-
     const { cell: previousCell, cellTemplate } = getCompatibleCellAndTemplate(state, location);
     if (previousCell === cell || JSON.stringify(previousCell) === JSON.stringify(cell) || cellTemplate.update === undefined)
         return state;

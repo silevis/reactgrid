@@ -328,7 +328,7 @@ export interface CellTemplate<TCell extends Cell = Cell> {
      * 
      * @param {Compatible<TCell>} cell Incoming `Compatible` cell
      * @param {number} keyCode Represents the key pressed on the keyboard, or 1 for a pointer event (double click).
-     * @param {boolean} ctrl Is `ctrl` pressed when event is called ()
+     * @param {boolean} ctrl Is `ctrl` pressed when event is called
      * @param {boolean} shift Is `shift` pressed when event is called
      * @param {boolean} alt Is `alt` pressed when event is called
      * @returns {{ cell: Compatible<TCell>; enableEditMode: boolean }} Cell data and edit mode either affected by the event or not
@@ -339,7 +339,7 @@ export interface CellTemplate<TCell extends Cell = Cell> {
         ctrl: boolean,
         shift: boolean,
         alt: boolean
-    ): { cell: Compatible<TCell>; enableEditMode: boolean };
+    ): { cell: Compatible<TCell>; enableEditMode: boolean, options?: object };
 
     /**
      * Returns custom styles based on cell data applied to the cells `div` element

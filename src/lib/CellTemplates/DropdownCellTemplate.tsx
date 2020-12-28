@@ -23,7 +23,7 @@ export interface DropdownCell extends Cell {
     inputValue?: string;
 }
 
-export class DropdownCellTemplate implements CellTemplate<DropdownCell> {
+export const DropdownCellTemplate: CellTemplate<DropdownCell> = {
 
     getCompatibleCell(uncertainCell: Uncertain<DropdownCell>): Compatible<DropdownCell> {
         let selectedValue: string | undefined;
@@ -54,16 +54,16 @@ export class DropdownCellTemplate implements CellTemplate<DropdownCell> {
         }
         const text = selectedValue || '';
         return { ...uncertainCell, selectedValue, text, value, values, isDisabled, isOpen, inputValue };
-    }
+    },
 
     update(cell: Compatible<DropdownCell>, cellToMerge: UncertainCompatible<DropdownCell>): Compatible<DropdownCell> {
         return this.getCompatibleCell({ ...cell, selectedValue: cellToMerge.selectedValue, isOpen: cellToMerge.isOpen, inputValue: cellToMerge.inputValue });
-    }
+    },
 
     getClassName(cell: Compatible<DropdownCell>, isInEditMode: boolean) {
         const isOpen = cell.isOpen ? 'open' : 'closed';
         return `${cell.className ? cell.className : ''}${isOpen}`;
-    }
+    },
 
     handleKeyDown(cell: Compatible<DropdownCell>, keyCode: number, ctrl: boolean, shift: boolean, alt: boolean): { cell: Compatible<DropdownCell>, enableEditMode: boolean } {
         if ((keyCode === keyCodes.SPACE || keyCode === keyCodes.ENTER) && !shift) {
@@ -73,97 +73,115 @@ export class DropdownCellTemplate implements CellTemplate<DropdownCell> {
         if (!ctrl && !alt && isAlphaNumericKey(keyCode))
             return { cell: this.getCompatibleCell({ ...cell, inputValue: shift ? char : char.toLowerCase(), isOpen: !cell.isOpen }), enableEditMode: false }
         return { cell, enableEditMode: false };
-    }
+    },
 
     render(
         cell: Compatible<DropdownCell>,
         isInEditMode: boolean,
         onCellChanged: (cell: Compatible<DropdownCell>, commit: boolean) => void
     ): React.ReactNode {
-        // TODO create custom hook - useDropdown
-
-        //eslint-disable-next-line
-        const selectRef = React.useRef<any>(null);
-        //eslint-disable-next-line
-        const [inputValue, setInputValue] = React.useState<string | undefined>(cell.inputValue);
-        //eslint-disable-next-line
-        React.useEffect(() => {
-            if (cell.isOpen && selectRef.current) {
-                selectRef.current.focus();
-                setInputValue(cell.inputValue);
-            }
-        }, [cell.isOpen, cell.inputValue]);
-
         return (
-            <div
-                style={{ width: '100%' }}
-                onPointerDown={e => onCellChanged(this.getCompatibleCell({ ...cell, isOpen: true }), true)}
-            >
-                <Select
-                    {...(cell.inputValue && {
-                        inputValue,
-                        defaultInputValue: inputValue,
-                        onInputChange: e => setInputValue(e),
-                    })}
-                    isSearchable={true}
-                    ref={selectRef}
-                    {...(cell.isOpen !== undefined && { menuIsOpen: cell.isOpen })}
-                    onMenuClose={() => onCellChanged(this.getCompatibleCell({ ...cell, isOpen: !cell.isOpen, inputValue: undefined }), true)}
-                    onMenuOpen={() => onCellChanged(this.getCompatibleCell({ ...cell, isOpen: true }), true)}
-                    onChange={(e) => onCellChanged(this.getCompatibleCell({ ...cell, selectedValue: (e as OptionType).value, isOpen: false, inputValue: undefined }), true)}
-                    blurInputOnSelect={true}
-                    defaultValue={cell.values.find(val => val.value === cell.selectedValue)}
-                    isDisabled={cell.isDisabled}
-                    options={cell.values}
-                    onKeyDown={e => e.stopPropagation()}
-                    components={{
-                        Option: CustomOption,
-                        Menu: CustomMenu,
-                    }}
-                    styles={{
-                        container: (provided) => ({
-                            ...provided,
-                            width: '100%',
-                            height: '100%',
-                        }),
-                        control: (provided) => ({
-                            ...provided,
-                            border: 'none',
-                            borderColor: 'transparent',
-                            minHeight: '25px',
-                            background: 'transparent',
-                            boxShadow: 'none',
-                        }),
-                        indicatorsContainer: (provided) => ({
-                            ...provided,
-                            paddingTop: '0px',
-                        }),
-                        dropdownIndicator: (provided) => ({
-                            ...provided,
-                            padding: '0px 4px',
-                        }),
-                        singleValue: (provided) => ({
-                            ...provided,
-                            color: 'inherit'
-                        }),
-                        indicatorSeparator: (provided) => ({
-                            ...provided,
-                            marginTop: '4px',
-                            marginBottom: '4px',
-                        }),
-                        input: (provided) => ({
-                            ...provided,
-                            padding: 0,
-                        }),
-                        valueContainer: (provided) => ({
-                            ...provided,
-                            padding: '0 8px',
-                        }),
-                    }}
-                />
-            </div >
+            <DropdownCellComponent getCompatibleCell={this.getCompatibleCell} cell={cell} onCellChanged={onCellChanged} />
         );
     }
+}
+
+const exampleCell = {
+    useUltron() {
+        const selectRef = React.useRef<any>(null);
+    },
+    renderUltron() {
+        // eslint-disable-next-line react-hooks/rules-of-hooks
+        const selectRef = React.useRef<any>(null);
+    }
+}
+
+interface DropdownCellProps {
+    cell: Compatible<DropdownCell>;
+    onCellChanged: (cell: Compatible<DropdownCell>, commit: boolean) => void;
+    getCompatibleCell(uncertainCell: Uncertain<DropdownCell>): Compatible<DropdownCell>;
+}
+
+const DropdownCellComponent: React.FC<DropdownCellProps> = ({ cell, onCellChanged, getCompatibleCell }) => {
+    const selectRef = React.useRef<any>(null);
+    const [inputValue, setInputValue] = React.useState<string | undefined>(cell.inputValue);
+    React.useEffect(() => {
+        if (cell.isOpen && selectRef.current) {
+            selectRef.current.focus();
+            setInputValue(cell.inputValue);
+        }
+    }, [cell.isOpen, cell.inputValue]);
+
+    return (
+        <div
+            style={{ width: '100%' }}
+            onPointerDown={e => onCellChanged(getCompatibleCell({ ...cell, isOpen: true }), true)}
+        >
+            <Select
+                {...(cell.inputValue && {
+                    inputValue,
+                    defaultInputValue: inputValue,
+                    onInputChange: e => setInputValue(e),
+                })}
+                isSearchable={true}
+                ref={selectRef}
+                {...(cell.isOpen !== undefined && { menuIsOpen: cell.isOpen })}
+                onMenuClose={() => onCellChanged(getCompatibleCell({ ...cell, isOpen: !cell.isOpen, inputValue: undefined }), true)}
+                onMenuOpen={() => onCellChanged(getCompatibleCell({ ...cell, isOpen: true }), true)}
+                onChange={(e) => onCellChanged(getCompatibleCell({ ...cell, selectedValue: (e as OptionType).value, isOpen: false, inputValue: undefined }), true)}
+                blurInputOnSelect={true}
+                defaultValue={cell.values.find(val => val.value === cell.selectedValue)}
+                isDisabled={cell.isDisabled}
+                options={cell.values}
+                onKeyDown={e => e.stopPropagation()}
+                components={{
+                    Option: CustomOption,
+                    Menu: CustomMenu,
+                }}
+                styles={{
+                    container: (provided) => ({
+                        ...provided,
+                        width: '100%',
+                        height: '100%',
+                    }),
+                    control: (provided) => ({
+                        ...provided,
+                        border: 'none',
+                        borderColor: 'transparent',
+                        minHeight: '25px',
+                        background: 'transparent',
+                        boxShadow: 'none',
+                    }),
+                    indicatorsContainer: (provided) => ({
+                        ...provided,
+                        paddingTop: '0px',
+                    }),
+                    dropdownIndicator: (provided) => ({
+                        ...provided,
+                        padding: '0px 4px',
+                    }),
+                    singleValue: (provided) => ({
+                        ...provided,
+                        color: 'inherit'
+                    }),
+                    indicatorSeparator: (provided) => ({
+                        ...provided,
+                        marginTop: '4px',
+                        marginBottom: '4px',
+                    }),
+                    input: (provided) => ({
+                        ...provided,
+                        padding: 0,
+                    }),
+                    valueContainer: (provided) => ({
+                        ...provided,
+                        padding: '0 8px',
+                    }),
+                }}
+            />
+        </div >
+    );
+
 }
 
 const CustomOption: React.FC<OptionProps<OptionType, false>> = ({ innerProps, label, isSelected, isFocused }) => (

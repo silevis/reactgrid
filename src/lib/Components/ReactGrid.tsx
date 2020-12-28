@@ -18,7 +18,7 @@ import { isMobileDevice } from '../Functions/isMobileDevice';
 
 export class ReactGrid extends React.Component<ReactGridProps, State> {
     private updateState = (state: State) => this.setState(state);
-    private stateUpdater: StateUpdater = modifier => handleStateUpdate(modifier(this.state), this.state, this.props, this.updateState);
+    private stateUpdater: StateUpdater = modifier => handleStateUpdate(modifier, this.state, this.props.onCellsChanged, this.updateState);
     private pointerEventsController = new PointerEventsController(this.stateUpdater);
     private eventHandlers: EventHandlers = new EventHandlers(this.stateUpdater, this.pointerEventsController);
     private cellMatrixBuilder = new CellMatrixBuilder();

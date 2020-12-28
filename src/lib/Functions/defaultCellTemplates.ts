@@ -13,5 +13,5 @@ export const defaultCellTemplates: CellTemplates = {
     email: new EmailCellTemplate(),
     time: new TimeCellTemplate(),
     chevron: new ChevronCellTemplate(),
-    dropdown: new DropdownCellTemplate()
+    dropdown: DropdownCellTemplate
 };
