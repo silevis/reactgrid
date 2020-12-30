@@ -4,6 +4,8 @@ import external from 'rollup-plugin-peer-deps-external';
 import resolve from '@rollup/plugin-node-resolve';
 import scss from 'rollup-plugin-scss';
 import visualizer from 'rollup-plugin-visualizer';
+import del from 'rollup-plugin-delete';
+import replace from 'rollup-plugin-replace';
 /**
  * TODO remove unused plugins
  */
@@ -14,11 +16,16 @@ import pkg from "./package.json";
 
 // const extensions = [".js", ".jsx", ".ts", ".tsx"];
 const input = "src/reactgrid.ts";
+const NODE_ENV = process.env.NODE_ENV || "development";
 
 const plugins = [
+    replace({
+        "process.env.NODE_ENV": JSON.stringify(NODE_ENV)
+    }),
     typescript({
         typescript: require("typescript"),
         useTsconfigDeclarationDir: true,
+        tsconfig: 'tsconfig.prod.json',
         exclude: ['src/test/**/*'],
     }),
     external(),
@@ -45,7 +52,10 @@ const rollupConfig = [
             format: "esm",
             sourcemap: true,
         },
-        plugins,
+        plugins: [
+            ...plugins,
+            del({ targets: ['dist/*'] }),
+        ],
     },
     {
         input,
@@ -54,7 +64,9 @@ const rollupConfig = [
             format: "cjs",
             sourcemap: true,
         },
-        plugins,
+        plugins: [
+            ...plugins,
+        ],
     },
 ]
 
