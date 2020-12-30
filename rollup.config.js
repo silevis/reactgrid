@@ -6,6 +6,7 @@ import scss from 'rollup-plugin-scss';
 import visualizer from 'rollup-plugin-visualizer';
 import del from 'rollup-plugin-delete';
 import replace from 'rollup-plugin-replace';
+import copy from 'rollup-plugin-copy';
 /**
  * TODO remove unused plugins
  */
@@ -24,25 +25,32 @@ const plugins = [
     }),
     typescript({
         typescript: require("typescript"),
-        useTsconfigDeclarationDir: true,
+        // useTsconfigDeclarationDir: true,
         tsconfig: 'tsconfig.prod.json',
         exclude: ['src/test/**/*'],
     }),
     external(),
     resolve(),
     commonjs(),
-    visualizer(),
     scss({
         output: 'dist/styles.css',
         include: ['src/styles.scss'],
     }),
     // postcss(),
     // dts({}),
-    // terser({
-    //     compress: true,
-    //     keep_classnames: true,
-    // }),
 ];
+
+const executeOncePlugins = [
+    del({ targets: ['dist/*'] }),
+    copy({
+        targets: [
+            { src: ['src/*.scss', 'package.json', 'README.md', 'LICENSE', '.npmignore'], dest: 'dist' },
+            { src: 'src/test/theming-test.scss', dest: 'dist/test' },
+            { src: 'cypress/integration', dest: 'dist/cypress' },
+            { src: 'src/test/flagCell/flag-cell-style.scss', dest: 'dist/test/flagCell' },
+        ]
+    }),
+]
 
 const rollupConfig = [
     {
@@ -54,7 +62,10 @@ const rollupConfig = [
         },
         plugins: [
             ...plugins,
-            del({ targets: ['dist/*'] }),
+            ...executeOncePlugins,
+            visualizer({
+                filename: 'stats.reactgrid.esm.html'
+            }),
         ],
     },
     {
@@ -66,8 +77,30 @@ const rollupConfig = [
         },
         plugins: [
             ...plugins,
+            visualizer({
+                filename: 'stats.reactgrid.html'
+            }),
         ],
     },
+    /* {
+        input,
+        output: {
+            file: 'dist/reactgrid.min.js',
+            format: "cjs",
+            sourcemap: true,
+        },
+        plugins: [
+            ...plugins,
+            visualizer({
+                filename: 'stats.reactgrid.min.html',
+                sourcemap: true,
+            }),
+            terser({
+                compress: true,
+                keep_classnames: true,
+            }),
+        ],
+    }, */
 ]
 
 export default rollupConfig;
