@@ -7,11 +7,10 @@ import visualizer from 'rollup-plugin-visualizer';
 import del from 'rollup-plugin-delete';
 import replace from 'rollup-plugin-replace';
 import copy from 'rollup-plugin-copy';
+import dts from "rollup-plugin-dts";
 /**
  * TODO remove unused plugins
  */
-// import postcss from 'rollup-plugin-postcss';
-// import dts from "rollup-plugin-dts";
 // import { terser } from 'rollup-plugin-terser';
 import pkg from "./package.json";
 
@@ -25,7 +24,7 @@ const plugins = [
     }),
     typescript({
         typescript: require("typescript"),
-        // useTsconfigDeclarationDir: true,
+        useTsconfigDeclarationDir: true,
         tsconfig: 'tsconfig.prod.json',
         exclude: ['src/test/**/*'],
     }),
@@ -37,7 +36,6 @@ const plugins = [
         include: ['src/styles.scss'],
     }),
     // postcss(),
-    // dts({}),
 ];
 
 const executeOncePlugins = [
@@ -80,6 +78,15 @@ const rollupConfig = [
             visualizer({
                 filename: 'stats.reactgrid.html'
             }),
+        ],
+    },
+    {
+        input: "./dist/types/core/index.d.ts",
+        output: [
+            { file: './dist/types/core.d.ts', format: "es" }
+        ],
+        plugins: [
+            dts()
         ],
     },
     /* {

@@ -17,8 +17,6 @@
     "resolveJsonModule": true,
     "jsx": "react-jsx",
     "noImplicitAny": true,
-    "noUnusedLocals": false,
-    "noUnusedParameters": false,
     "noEmit": true,
     "isolatedModules": true,
     "allowJs": true,

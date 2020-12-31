@@ -1,11 +1,11 @@
 const ora = require('ora');
+const { exec } = require('child_process');
 
-function execShellCommand(cmd) {
-    const exec = require('child_process').exec;
+function execShellCommand(command) {
     return new Promise((resolve, reject) => {
-        exec(cmd, (error, stdout, stderr) => {
+        exec(command.cmd, (error, stdout, stderr) => {
             if (error) {
-                console.warn(error);
+                reject({ cmd: command, error: stderr });
             }
             resolve(stdout ? stdout : stderr);
         });
@@ -17,7 +17,7 @@ const throbber = ora().start();
 const enterReactGridProDir = 'cd ../ReactGrid-Pro &&';
 
 const commands = [
-    { cmd: 'npm run pre-deploy', title: 'Build JS' },
+    { cmd: 'npm run pre-deploy', title: 'Build JS with Rollup' },
     { cmd: 'rm -rf ../dist', title: 'Wipe ../dist directory' },
     { cmd: 'cp -r dist ..', title: 'Copy JS files to dist directory' },
     { cmd: 'rm -rf ../ReactGrid-Pro/node_modules/@silevis', title: 'Remove old ReactGrid MIT package' },
@@ -32,16 +32,16 @@ setTimeout(() => { }, 0);
 
 (async function () {
     throbber.info('Running building process...');
-    for (const command of commands) {
-        throbber.start(command.title);
-        try {
-            await execShellCommand(command.cmd);
+    try {
+        for (const command of commands) {
+            throbber.start(command.title);
+            await execShellCommand(command);
             throbber.succeed(command.title);
-        } catch (error) {
-            throbber.fail(error);
-            break;
         }
+    } catch (e) {
+        throbber.fail(e.cmd.title);
+        throbber.info(e.error);
+        throbber.fail('Build finished with an error!');
     }
-    throbber.succeed('Task Complete');
     throbber.stop();
 })();
