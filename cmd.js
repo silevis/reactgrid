@@ -17,20 +17,18 @@ const throbber = ora().start();
 const enterReactGridProDir = 'cd ../ReactGrid-Pro &&';
 
 const commands = [
-    { cmd: 'npm run pre-deploy', title: 'Build JS with Rollup' },
-    { cmd: 'rm -rf ../dist', title: 'Wipe ../dist directory' },
-    { cmd: 'cp -r dist ..', title: 'Copy JS files to dist directory' },
-    { cmd: 'rm -rf ../ReactGrid-Pro/node_modules/@silevis', title: 'Remove old ReactGrid MIT package' },
-    { cmd: enterReactGridProDir + 'npm i ./../dist --force --save-dev', title: 'Install MIT package in PRO' },
-    { cmd: enterReactGridProDir + 'npm i react react-dom --no-save', title: 'Install missing dependencies' },
-    { cmd: enterReactGridProDir + 'npm run copy:mit:tests', title: 'Copy MIT Cypress files' },
-    { cmd: enterReactGridProDir + 'npm run copy:styles', title: 'Copy MIT styles' },
-    { cmd: enterReactGridProDir + 'npm run copy:reactgrid:TestGrid', title: 'Copy MIT TestGrid component' },
+    { cmd: 'npm run pre-deploy', title: 'Building output Javascript with Rollup' },
+    { cmd: 'rm -rf ../dist', title: 'Wiping ../dist directory' },
+    { cmd: 'cp -r dist ..', title: 'Copying JS files to dist directory' },
+    { cmd: 'rm -rf ../ReactGrid-Pro/node_modules/@silevis', title: 'Removing old ReactGrid MIT package' },
+    { cmd: enterReactGridProDir + 'npm i ./../dist --force --save-dev', title: 'Instaling MIT package in PRO' },
+    { cmd: enterReactGridProDir + 'npm i react react-dom --no-save', title: 'Instaling missing dependencies' },
+    { cmd: enterReactGridProDir + 'npm run copy:mit:tests', title: 'Copying MIT Cypress files' },
+    { cmd: enterReactGridProDir + 'npm run copy:styles', title: 'Copying MIT styles' },
+    { cmd: enterReactGridProDir + 'npm run copy:reactgrid:TestGrid', title: 'Copying MIT TestGrid component' },
 ];
 
-setTimeout(() => { }, 0);
-
-(async function () {
+async function run() {
     throbber.info('Running building process...');
     try {
         for (const command of commands) {
@@ -44,4 +42,6 @@ setTimeout(() => { }, 0);
         throbber.fail('Build finished with an error!');
     }
     throbber.stop();
-})();
+};
+
+run();

@@ -179,24 +179,6 @@ Open live demo on [codesandbox.io](https://codesandbox.io/s/reactgrid-handling-c
 | :-: | :-: | :-: | :-: | :-: | :-: | :-:|
 | 80+ | 61+ | 57+ | 13.1+ | 13+ | 9+ | 45+ |
 
-# Integrations
-
-  - Next.js
-
-  At the moment we propose to use `next-transpile-modules` plugin ([docs](https://www.npmjs.com/package/next-transpile-modules#usage)).
-  Your `next.config.js` file should look like on the listing below:
-
-  ```ts
-  const withCSS = require("@zeit/next-css");
-
-  const withTM = require("next-transpile-modules")([
-    "@silevis/reactgrid",
-    "@silevis/reactgrid/styles.css"
-  ]);
-
-  module.exports = withTM(withCSS());  
-  ```
-
 # Docs
 
 Explore ReactGrid docs: [here](https://reactgrid.com/docs?utm_source=github&utm_medium=reactgriddocs&utm_campaign=docs)

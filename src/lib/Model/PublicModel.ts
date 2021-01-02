@@ -268,25 +268,20 @@ export type DefaultCellTypes =
  * 
  * @see https://reactgrid.com/docs/3.1/7-api/1-types/2-cell-change/
  */
-export type CellChange<TCell extends Cell = DefaultCellTypes & Cell> = TCell extends Cell ? Change<TCell> : never;
-
-/**
- * `Change` interface represents a particular change on a single cell on the cell template.
- * 
- * @see https://reactgrid.com/docs/3.1/7-api/1-types/2-cell-change/
- */
-export interface Change<TCell extends Cell = DefaultCellTypes> {
-    /** Row's `Id` where the change ocurred */
-    readonly rowId: Id;
-    /** Column's `Id` where the change ocurred */
-    readonly columnId: Id;
-    /** Extracted cell type of `TCell` (e.g. `text`, `chevron` and so on) */
-    readonly type: TCell['type'];
-    /** Previous content of the cell */
-    readonly previousCell: TCell;
-    /** New content of the cell */
-    readonly newCell: TCell;
-}
+export type CellChange<TCell extends Cell = DefaultCellTypes & Cell> = TCell extends Cell
+    ? {
+        /** Row's `Id` where the change ocurred */
+        readonly rowId: Id;
+        /** Column's `Id` where the change ocurred */
+        readonly columnId: Id;
+        /** Extracted cell type of `TCell` (e.g. `text`, `chevron` and so on) */
+        readonly type: TCell['type'];
+        /** Previous content of the cell */
+        readonly previousCell: TCell;
+        /** New content of the cell */
+        readonly newCell: TCell;
+    }
+    : never;
 
 /**
  * This interface is used for the communication between ReactGrid and a cell

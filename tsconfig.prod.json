@@ -4,7 +4,7 @@
     "allowJs": false,
     "outDir": "./dist",
     "jsx": "react",
-    "module": "ES2015",
+    "module": "ESNext",
     "declaration": true,
     "removeComments": false,
     "isolatedModules": false,

@@ -14,7 +14,6 @@ import dts from "rollup-plugin-dts";
 // import { terser } from 'rollup-plugin-terser';
 import pkg from "./package.json";
 
-// const extensions = [".js", ".jsx", ".ts", ".tsx"];
 const input = "src/reactgrid.ts";
 const NODE_ENV = process.env.NODE_ENV || "development";
 
@@ -35,7 +34,6 @@ const plugins = [
         output: 'dist/styles.css',
         include: ['src/styles.scss'],
     }),
-    // postcss(),
 ];
 
 const executeOncePlugins = [
@@ -60,7 +58,6 @@ const rollupConfig = [
         },
         plugins: [
             ...plugins,
-            ...executeOncePlugins,
             visualizer({
                 filename: 'stats.reactgrid.esm.html'
             }),
@@ -81,12 +78,21 @@ const rollupConfig = [
         ],
     },
     {
+        input: "./dist/types/reactgrid.d.ts",
+        output: [
+            { file: './dist/types/reactgrid.d.ts', format: "es" }
+        ],
+        plugins: [
+            dts(),
+        ],
+    },
+    {
         input: "./dist/types/core/index.d.ts",
         output: [
             { file: './dist/types/core.d.ts', format: "es" }
         ],
         plugins: [
-            dts()
+            dts(),
         ],
     },
     /* {
@@ -108,6 +114,8 @@ const rollupConfig = [
             }),
         ],
     }, */
-]
+];
+
+rollupConfig[0].plugins.push(...executeOncePlugins);
 
 export default rollupConfig;
