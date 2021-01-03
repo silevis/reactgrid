@@ -19,7 +19,6 @@ export * from './../lib/Components/PaneShadow';
 export * from './../lib/CellTemplates';
 
 export * from './../lib/Functions/getCompatibleCellAndTemplate';
-// export * from './../lib/Functions/getCellProperty';
 export * from './../lib/Functions/tryAppendChange';
 export * from './../lib/Functions/getLocationFromClient';
 export * from './../lib/Functions/handleKeyDown';
@@ -41,7 +40,6 @@ export * from './../lib/Functions/handleDoubleClick';
 export * from './../lib/Functions/handleKeyUp';
 export * from './../lib/Functions/focuses';
 export * from './../lib/Functions/handleKeyDown';
-// export * from './../lib/Functions/keyCodes';
 export * from './../lib/Functions/handleKeyDownOnCellTemplate';
 export * from './../lib/Functions/scrollIntoView';
 export * from './../lib/Functions/recalcVisibleRange';

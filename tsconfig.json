@@ -8,7 +8,7 @@
     ],
     "esModuleInterop": true,
     "declaration": true,
-    "declarationDir": "dist/types",
+    // "declarationDir": "dist/types",
     "allowSyntheticDefaultImports": true,
     "strict": true,
     "forceConsistentCasingInFileNames": true,

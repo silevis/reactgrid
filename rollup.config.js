@@ -7,14 +7,16 @@ import visualizer from 'rollup-plugin-visualizer';
 import del from 'rollup-plugin-delete';
 import replace from 'rollup-plugin-replace';
 import copy from 'rollup-plugin-copy';
-import dts from "rollup-plugin-dts";
+// import dts from 'rollup-plugin-dts';
+// import multi from '@rollup/plugin-multi-entry';
 /**
  * TODO remove unused plugins
  */
 // import { terser } from 'rollup-plugin-terser';
-import pkg from "./package.json";
+import pkg from './package.json';
 
-const input = "src/reactgrid.ts";
+const reactgrid = 'src/reactgrid.ts';
+const reactgridCore = 'src/core/index.ts'
 const NODE_ENV = process.env.NODE_ENV || "development";
 
 const plugins = [
@@ -23,7 +25,7 @@ const plugins = [
     }),
     typescript({
         typescript: require("typescript"),
-        useTsconfigDeclarationDir: true,
+        // useTsconfigDeclarationDir: true,
         tsconfig: 'tsconfig.prod.json',
         exclude: ['src/test/**/*'],
     }),
@@ -50,10 +52,32 @@ const executeOncePlugins = [
 
 const rollupConfig = [
     {
-        input,
+        input: reactgridCore,
+        output: {
+            file: 'dist/core/index.esm.js',
+            format: 'esm',
+            sourcemap: true,
+        },
+        plugins: [
+            ...plugins,
+        ],
+    },
+    {
+        input: reactgridCore,
+        output: {
+            file: 'dist/core/index.js',
+            format: 'cjs',
+            sourcemap: true,
+        },
+        plugins: [
+            ...plugins,
+        ],
+    },
+    {
+        input: reactgrid,
         output: {
             file: 'dist/' + pkg.module,
-            format: "esm",
+            format: 'esm',
             sourcemap: true,
         },
         plugins: [
@@ -64,10 +88,10 @@ const rollupConfig = [
         ],
     },
     {
-        input,
+        input: reactgrid,
         output: {
             file: 'dist/' + pkg.main,
-            format: "cjs",
+            format: 'cjs',
             sourcemap: true,
         },
         plugins: [
@@ -77,41 +101,13 @@ const rollupConfig = [
             }),
         ],
     },
-    {
-        input: "./dist/types/reactgrid.d.ts",
-        output: [
-            { file: './dist/types/reactgrid.d.ts', format: "es" }
-        ],
-        plugins: [
-            dts(),
-        ],
-    },
-    {
-        input: "./dist/types/core/index.d.ts",
-        output: [
-            { file: './dist/types/core.d.ts', format: "es" }
-        ],
-        plugins: [
-            dts(),
-        ],
-    },
     /* {
-        input,
-        output: {
-            file: 'dist/reactgrid.min.js',
-            format: "cjs",
-            sourcemap: true,
-        },
+        input: "./dist/core.d.ts",
+        output: [
+            { file: './dist/core.d.ts', format: "es" }
+        ],
         plugins: [
-            ...plugins,
-            visualizer({
-                filename: 'stats.reactgrid.min.html',
-                sourcemap: true,
-            }),
-            terser({
-                compress: true,
-                keep_classnames: true,
-            }),
+            dts(),
         ],
     }, */
 ];
