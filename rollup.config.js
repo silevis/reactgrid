@@ -7,7 +7,7 @@ import visualizer from 'rollup-plugin-visualizer';
 import del from 'rollup-plugin-delete';
 import replace from 'rollup-plugin-replace';
 import copy from 'rollup-plugin-copy';
-// import dts from 'rollup-plugin-dts';
+import dts from 'rollup-plugin-dts';
 // import multi from '@rollup/plugin-multi-entry';
 /**
  * TODO remove unused plugins
@@ -101,15 +101,24 @@ const rollupConfig = [
             }),
         ],
     },
-    /* {
-        input: "./dist/core.d.ts",
+    {
+        input: "./dist/reactgridProExports.d.ts",
         output: [
-            { file: './dist/core.d.ts', format: "es" }
+            { file: './dist/core/reactgrid.d.ts', format: "es" }
         ],
         plugins: [
             dts(),
         ],
-    }, */
+    },
+    {
+        input: "./dist/lib/index.d.ts",
+        output: [
+            { file: './dist/reactgrid.d.ts', format: "es" }
+        ],
+        plugins: [
+            dts(),
+        ],
+    },
 ];
 
 rollupConfig[0].plugins.push(...executeOncePlugins);
