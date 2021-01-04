@@ -1,6 +1,6 @@
 import typescript from 'rollup-plugin-typescript2';
 import commonjs from '@rollup/plugin-commonjs';
-import external from 'rollup-plugin-peer-deps-external';
+import externals from 'rollup-plugin-node-externals';
 import resolve from '@rollup/plugin-node-resolve';
 import scss from 'rollup-plugin-scss';
 import del from 'rollup-plugin-delete';
@@ -24,7 +24,9 @@ const plugins = [
         tsconfig: 'tsconfig.prod.json',
         exclude: ['src/test/**/*'],
     }),
-    external(),
+    externals({
+        devDeps: false,
+    }),
     resolve(),
     commonjs(),
     scss({
@@ -37,7 +39,7 @@ const plugins = [
         },
         compress: true,
         keep_classnames: true,
-    })
+    }),
 ];
 
 const executeOncePlugins = [
