@@ -1,31 +1,26 @@
-import typescript from "rollup-plugin-typescript2";
+import typescript from 'rollup-plugin-typescript2';
 import commonjs from '@rollup/plugin-commonjs';
 import external from 'rollup-plugin-peer-deps-external';
 import resolve from '@rollup/plugin-node-resolve';
 import scss from 'rollup-plugin-scss';
-import visualizer from 'rollup-plugin-visualizer';
 import del from 'rollup-plugin-delete';
 import replace from 'rollup-plugin-replace';
 import copy from 'rollup-plugin-copy';
 import dts from 'rollup-plugin-dts';
-// import multi from '@rollup/plugin-multi-entry';
-/**
- * TODO remove unused plugins
- */
-// import { terser } from 'rollup-plugin-terser';
+import { terser } from 'rollup-plugin-terser';
 import pkg from './package.json';
 
 const reactgrid = 'src/reactgrid.ts';
 const reactgridCore = 'src/core/index.ts'
-const NODE_ENV = process.env.NODE_ENV || "development";
+const NODE_ENV = JSON.stringify(process.env.NODE_ENV || 'development');
 
 const plugins = [
     replace({
-        "process.env.NODE_ENV": JSON.stringify(NODE_ENV)
+        'process.env.NODE_ENV': NODE_ENV
     }),
     typescript({
-        typescript: require("typescript"),
-        // useTsconfigDeclarationDir: true,
+        typescript: require('typescript'),
+        useTsconfigDeclarationDir: true,
         tsconfig: 'tsconfig.prod.json',
         exclude: ['src/test/**/*'],
     }),
@@ -36,6 +31,13 @@ const plugins = [
         output: 'dist/styles.css',
         include: ['src/styles.scss'],
     }),
+    terser({
+        format: {
+            comments: false,
+        },
+        compress: true,
+        keep_classnames: true,
+    })
 ];
 
 const executeOncePlugins = [
@@ -56,7 +58,6 @@ const rollupConfig = [
         output: {
             file: 'dist/core/index.esm.js',
             format: 'esm',
-            sourcemap: true,
         },
         plugins: [
             ...plugins,
@@ -67,7 +68,6 @@ const rollupConfig = [
         output: {
             file: 'dist/core/index.js',
             format: 'cjs',
-            sourcemap: true,
         },
         plugins: [
             ...plugins,
@@ -82,9 +82,6 @@ const rollupConfig = [
         },
         plugins: [
             ...plugins,
-            visualizer({
-                filename: 'stats.reactgrid.esm.html'
-            }),
         ],
     },
     {
@@ -96,24 +93,21 @@ const rollupConfig = [
         },
         plugins: [
             ...plugins,
-            visualizer({
-                filename: 'stats.reactgrid.html'
-            }),
         ],
     },
     {
-        input: "./dist/reactgridProExports.d.ts",
+        input: './dist/types/reactgridProExports.d.ts',
         output: [
-            { file: './dist/core/reactgrid.d.ts', format: "es" }
+            { file: './dist/core/reactgrid.d.ts', format: 'es' }
         ],
         plugins: [
             dts(),
         ],
     },
     {
-        input: "./dist/lib/index.d.ts",
+        input: './dist/types/lib/index.d.ts',
         output: [
-            { file: './dist/reactgrid.d.ts', format: "es" }
+            { file: './dist/reactgrid.d.ts', format: 'es' }
         ],
         plugins: [
             dts(),
@@ -123,4 +117,4 @@ const rollupConfig = [
 
 rollupConfig[0].plugins.push(...executeOncePlugins);
 
-export default rollupConfig;
+export default rollupConfig; 
