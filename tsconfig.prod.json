@@ -5,7 +5,6 @@
     "outDir": "./dist",
     "jsx": "react",
     "module": "ESNext",
-    "declaration": true,
     "removeComments": false,
     "isolatedModules": false,
     "noEmit": false

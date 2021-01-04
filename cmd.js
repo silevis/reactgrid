@@ -23,9 +23,7 @@ const commands = [
     { cmd: 'rm -rf ../ReactGrid-Pro/node_modules/@silevis', title: 'Removing old ReactGrid MIT package' },
     { cmd: enterReactGridProDir + 'npm i ./../dist --force --save-dev', title: 'Instaling MIT package in PRO' },
     { cmd: enterReactGridProDir + 'npm i react react-dom --no-save', title: 'Instaling missing dependencies' },
-    { cmd: enterReactGridProDir + 'npm run copy:mit:tests', title: 'Copying MIT Cypress files' },
-    { cmd: enterReactGridProDir + 'npm run copy:styles', title: 'Copying MIT styles' },
-    { cmd: enterReactGridProDir + 'npm run copy:reactgrid:TestGrid', title: 'Copying MIT TestGrid component' },
+    { cmd: enterReactGridProDir + 'npx run-s copy:mit:**', title: 'Copying files' },
 ];
 
 async function run() {

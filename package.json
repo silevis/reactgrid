@@ -57,9 +57,8 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "build:js": "npx rollup -c",
-    "pre-deploy": "npm run build:js",
-    "deploy": "npm publish dist --access=public && echo 'Finished publishing NPM package'",
+    "pre-deploy": "npx rollup -c",
+    "deploy": "npm publish dist --access=public",
     "test:cypress": "npx cypress open",
     "run:all:tests": "run-p --print-label cy:**",
     "cy:standard": "npx cypress run --headless --quiet --browser firefox -s 'cypress/integration/tests/standard/*'",
@@ -73,8 +72,7 @@
   },
   "husky": {
     "hooks": {
-      "pre-push": "if git-branch-is develop; then npm run run:all:tests; fi",
-      "pre-commit": "if git-branch-is develop; then echo 'Running pre-commit'; fi"
+      "pre-push": "if git-branch-is develop; then npm run run:all:tests; fi"
     }
   },
   "eslintConfig": {
