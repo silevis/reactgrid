@@ -8,11 +8,11 @@ import replace from 'rollup-plugin-replace';
 import copy from 'rollup-plugin-copy';
 import dts from 'rollup-plugin-dts';
 import { terser } from 'rollup-plugin-terser';
-import pkg from './package.json';
 
 const reactgrid = 'src/reactgrid.ts';
 const reactgridCore = 'src/core/index.ts'
 const NODE_ENV = JSON.stringify(process.env.NODE_ENV || 'development');
+const includeSourceMaps = true;
 
 const plugins = [
     replace({
@@ -56,42 +56,24 @@ const executeOncePlugins = [
 
 const rollupConfig = [
     {
-        input: reactgridCore,
+        input: [reactgridCore, reactgrid],
         output: {
-            file: 'dist/core/index.esm.js',
+            entryFileNames: '[name].esm.js',
+            dir: 'dist/core/',
             format: 'esm',
+            sourcemap: includeSourceMaps,
         },
         plugins: [
             ...plugins,
         ],
     },
     {
-        input: reactgridCore,
+        input: [reactgridCore, reactgrid],
         output: {
-            file: 'dist/core/index.js',
+            entryFileNames: '[name].js',
+            dir: 'dist/core/',
             format: 'cjs',
-        },
-        plugins: [
-            ...plugins,
-        ],
-    },
-    {
-        input: reactgrid,
-        output: {
-            file: 'dist/' + pkg.module,
-            format: 'esm',
-            sourcemap: true,
-        },
-        plugins: [
-            ...plugins,
-        ],
-    },
-    {
-        input: reactgrid,
-        output: {
-            file: 'dist/' + pkg.main,
-            format: 'cjs',
-            sourcemap: true,
+            sourcemap: includeSourceMaps,
         },
         plugins: [
             ...plugins,
