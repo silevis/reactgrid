@@ -32,4 +32,3 @@ yarn-error.log*
 
 .eslintcache
 debug.*
-stats.*
