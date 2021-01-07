@@ -1,5 +1,5 @@
 /// <reference types="react" />
-import { ReactNode, ClipboardEvent as ClipboardEvent$1, KeyboardEvent as KeyboardEvent$1, PointerEvent as PointerEvent$1, Component } from 'react';
+import { ReactNode, ClipboardEvent as ClipboardEvent$1, KeyboardEvent as KeyboardEvent$1, PointerEvent as PointerEvent$1, FocusEvent as FocusEvent$1, Component, FC, CSSProperties, NamedExoticComponent } from 'react';
 
 interface CheckboxCell extends Cell {
     type: 'checkbox';
@@ -691,6 +691,17 @@ interface MenuOption {
 declare type ClipboardEvent = ClipboardEvent$1<HTMLDivElement>;
 declare type KeyboardEvent = KeyboardEvent$1<HTMLDivElement>;
 declare type PointerEvent = PointerEvent$1<HTMLDivElement>;
+declare type FocusEvent = FocusEvent$1<HTMLDivElement>;
+
+declare class DefaultBehavior extends Behavior {
+    handlePointerDown(event: PointerEvent, location: PointerLocation, state: State): State;
+    handleDoubleClick(event: PointerEvent, location: Location, state: State): State;
+    handleKeyDown(event: KeyboardEvent, state: State): State;
+    handleKeyUp(event: KeyboardEvent, state: State): State;
+    handleCopy(event: ClipboardEvent, state: State): State;
+    handlePaste(event: ClipboardEvent, state: State): State;
+    handleCut(event: ClipboardEvent, state: State): State;
+}
 
 declare type SliceDirection = 'columns' | 'rows' | 'both';
 declare class Range {
@@ -767,7 +778,64 @@ interface State<TCellMatrix extends CellMatrix = CellMatrix, TBehavior extends B
     readonly rightScrollBoudary: number;
     readonly enableGroupIdRender: boolean;
 }
+declare const defaultStateFields: {
+    legacyBrowserMode: boolean;
+    focusedLocation: undefined;
+    currentBehavior: DefaultBehavior;
+    cellTemplates: undefined;
+    hiddenFocusElement: undefined;
+    reactGridElement: undefined;
+    scrollableElement: undefined;
+    queuedCellChanges: never[];
+    currentlyEditedCell: undefined;
+    highlightLocations: never[];
+    visibleRange: undefined;
+    topScrollBoudary: number;
+    bottomScrollBoudary: number;
+    leftScrollBoudary: number;
+    rightScrollBoudary: number;
+    enableGroupIdRender: boolean;
+    leftStickyColumns: undefined;
+    topStickyRows: undefined;
+};
 
+declare abstract class AbstractPointerEventsController {
+    readonly updateState: StateUpdater;
+    constructor(updateState: StateUpdater);
+    eventTimestamps: [number, number];
+    eventLocations: Array<Location | undefined>;
+    currentIndex: number;
+    pointerDownLocation?: Location;
+    abstract handlePointerDown: (event: PointerEvent, state: State) => State;
+    protected handlePointerDownInternal(event: PointerEvent, currentLocation: PointerLocation, state: State): State;
+    protected shouldHandleDoubleClick(currentLocation: PointerLocation, currentTimestamp: number, secondLastTimestamp: number): boolean;
+    protected shouldHandleCellSelectionOnMobile(event: PointerEvent, currentLocation: PointerLocation, currentTimestamp: number): boolean;
+}
+declare function isReadyToHandleEvent(event: PointerEvent): boolean;
+declare function isOnClickableArea(event: PointerEvent, state: State): boolean;
+
+declare class EventHandlers {
+    updateState: StateUpdater;
+    pointerEventsController: AbstractPointerEventsController;
+    constructor(updateState: StateUpdater, pointerEventsController: AbstractPointerEventsController);
+    pointerDownHandler: (event: PointerEvent) => void;
+    keyDownHandler: (event: KeyboardEvent) => void;
+    keyUpHandler: (event: KeyboardEvent) => void;
+    copyHandler: (event: ClipboardEvent) => void;
+    pasteHandler: (event: ClipboardEvent) => void;
+    cutHandler: (event: ClipboardEvent) => void;
+    blurHandler: (event: FocusEvent) => void;
+    windowResizeHandler: () => void;
+    reactgridRefHandler: (reactGridElement: HTMLDivElement) => void;
+    hiddenElementRefHandler: (hiddenFocusElement: HTMLInputElement) => void;
+    pasteCaptureHandler: (event: ClipboardEvent) => void;
+    scrollHandler: (visibleRangeCalculator: StateModifier) => void;
+    protected assignScrollHandler: (reactGridElement: HTMLDivElement, visibleRangeCalculator: StateModifier) => void;
+    protected updateOnScrollChange: (visibleRangeCalculator: StateModifier) => void;
+}
+
+declare type Orientation = 'horizontal' | 'vertical';
+declare type Direction = 'horizontal' | 'vertical' | 'both';
 interface GridColumn extends Column {
     readonly idx: number;
     readonly left: number;
@@ -780,6 +848,12 @@ interface GridRow extends Row {
     readonly bottom: number;
     readonly height: number;
 }
+interface Borders {
+    top?: boolean;
+    left?: boolean;
+    bottom?: boolean;
+    right?: boolean;
+}
 interface Location {
     readonly row: GridRow;
     readonly column: GridColumn;
@@ -791,6 +865,10 @@ interface PointerLocation extends Location {
     readonly viewportY: number;
     readonly cellX: number;
     readonly cellY: number;
+}
+interface GridRendererProps {
+    state: State;
+    eventHandlers: EventHandlers;
 }
 
 declare abstract class Behavior {
@@ -939,4 +1017,276 @@ declare enum keyCodes {
  */
 declare const getCellProperty: <TCell extends Cell, TKey extends keyof TCell>(uncertainCell: Uncertain<TCell>, propName: TKey, expectedType: 'string' | 'number' | 'boolean' | 'undefined' | 'function' | 'object' | 'symbol' | 'bigint') => NonNullable<Uncertain<TCell>[TKey]>;
 
-export { BorderProps, Cell, CellChange, CellLocation, CellStyle, CellTemplate, CellTemplates, CheckboxCell, CheckboxCellTemplate, ChevronCell, ChevronCellTemplate, Column, Compatible, DateCell, DateCellTemplate, DefaultCellTypes, DropPosition, DropdownCell, DropdownCellTemplate, EmailCell, EmailCellTemplate, HeaderCell, HeaderCellTemplate, Highlight, Id, MenuOption, NumberCell, NumberCellTemplate, OptionType, ReactGrid, ReactGridProps, Row, SelectionMode, TextCell, TextCellTemplate, TextLabels, TimeCell, TimeCellTemplate, Uncertain, UncertainCompatible, getCellProperty, getCharFromKeyCode, inNumericKey, isAllowedOnNumberTypingKey, isAlphaNumericKey, isNavigationKey, isNumpadNumericKey, keyCodes };
+interface StickyEdges {
+    leftStickyColumns: number;
+    topStickyRows: number;
+}
+interface ICellMatrixBuilder<TCellMatrixBuilder = CellMatrixBuilder, TStickyEdges extends StickyEdges = StickyEdges> {
+    setProps(props: CellMatrixProps): TCellMatrixBuilder;
+    fillRowsAndCols(edges: TStickyEdges): TCellMatrixBuilder;
+    fillSticky(edges: TStickyEdges): TCellMatrixBuilder;
+    fillScrollableRange(edges: TStickyEdges): TCellMatrixBuilder;
+    setEdgeLocations(): TCellMatrixBuilder;
+}
+declare class CellMatrixBuilder implements ICellMatrixBuilder {
+    private cellMatrix;
+    constructor();
+    reset(): CellMatrixBuilder;
+    setProps(props: CellMatrixProps): CellMatrixBuilder;
+    fillRowsAndCols(edges?: StickyEdges): CellMatrixBuilder;
+    fillSticky(edges?: StickyEdges): CellMatrixBuilder;
+    fillScrollableRange(edges?: StickyEdges): CellMatrixBuilder;
+    setEdgeLocations(): CellMatrixBuilder;
+    getTop: (idx: number, stickyTopRows: number | undefined, rows: GridRow[]) => number;
+    getLeft: (idx: number, stickyLeftColumns: number | undefined, cols: GridColumn[]) => number;
+    getScrollableRange: (edges: StickyEdges) => Range;
+    getCellMatrix(): CellMatrix;
+}
+
+interface CellEditorOffset {
+    top: number;
+    left: number;
+}
+interface CellEditorRendererProps {
+    state: State;
+    positionCalculator: (options: PositionState) => any;
+}
+interface PositionState<TState extends State = State> {
+    state: TState;
+    location: Location;
+}
+declare const CellEditorRenderer: FC<CellEditorRendererProps>;
+declare function getStickyLeftRangeWidth(cellMatrix: CellMatrix, location: Location): number | undefined;
+declare function getStickyTopRangeWidth(cellMatrix: CellMatrix, location: Location): number | undefined;
+declare function getLeftStickyOffset(cellMatrix: CellMatrix, location: Location, state: State): number | undefined;
+declare function getTopStickyOffset(cellMatrix: CellMatrix, location: Location, state: State): number | undefined;
+declare const cellEditorCalculator: (options: PositionState) => CellEditorOffset;
+
+declare const GridRenderer: FC<GridRendererProps>;
+
+declare const LegacyBrowserGridRenderer: FC<GridRendererProps>;
+
+interface CellRendererProps {
+    state: State;
+    location: Location;
+    borders: Borders;
+    children?: ReactNode;
+}
+interface CellRendererChildProps<TState extends State = State> {
+    location?: Location;
+    cell?: Compatible<Cell>;
+    state?: TState;
+}
+declare const CellRenderer: FC<CellRendererProps>;
+
+interface PaneProps {
+    renderChildren: boolean;
+    style: CSSProperties;
+    className: string;
+}
+interface RowsProps {
+    state: State;
+    range: Range;
+    borders: Borders;
+    cellRenderer: FC<CellRendererProps>;
+}
+interface PaneContentProps<TState extends State = State> {
+    state: TState;
+    range: () => Range;
+    borders: Borders;
+    cellRenderer: FC<CellRendererProps>;
+    children?: (state: TState, range: Range) => ReactNode;
+}
+interface PaneContentChild<TState extends State = State> {
+    state: TState;
+    calculatedRange?: Range;
+}
+declare const PaneGridContent: NamedExoticComponent<RowsProps>;
+declare const Pane: FC<PaneProps>;
+declare const PaneContent: FC<PaneContentProps<State>>;
+
+interface PanesProps<TState extends State = State> {
+    state: TState;
+    cellRenderer: FC<CellRendererProps>;
+}
+declare const PanesRenderer: FC<PanesProps>;
+
+interface PaneShadowProps {
+    renderCondition: boolean;
+    className: string;
+    style: CSSProperties;
+    zIndex?: number;
+}
+declare const PaneShadow: FC<PaneShadowProps>;
+
+declare function getCompatibleCellAndTemplate(state: State, location: Location): {
+    cell: Compatible<Cell>;
+    cellTemplate: CellTemplate;
+};
+
+declare function tryAppendChange(state: State, location: Location, cell: Compatible<Cell>): State;
+
+declare function getLocationFromClient(state: State, clientX: number, clientY: number, favorScrollableContent?: Direction): PointerLocation;
+declare function getStickyTopRow(state: State, viewportY: number, favorScrollableContent: boolean): {
+    cellY: number;
+    row: GridRow;
+} | undefined;
+declare function getLeftStickyColumn(state: State, viewportX: number, favorScrollableContent: boolean): {
+    cellX: number;
+    column: GridColumn;
+} | undefined;
+declare function getScrollableContentRow(state: State, viewportY: number): {
+    cellY: number;
+    row: GridRow;
+};
+declare function getScrollableContentColumn(state: State, viewportX: number): {
+    cellX: number;
+    column: GridColumn;
+};
+
+declare function handleKeyDown(state: State, event: KeyboardEvent): State;
+
+declare function componentDidUpdate(prevProps: ReactGridProps, prevState: State, state: State): void;
+
+declare function getDerivedStateFromProps(props: ReactGridProps, state: State): State;
+declare const areFocusesDiff: (props: ReactGridProps, state: State) => boolean;
+declare const stateDeriver: (props: ReactGridProps) => (state: State) => (fn: (props: ReactGridProps, state: State) => State) => State<CellMatrix<StickyRanges, CellMatrixProps>, Behavior>;
+declare const dataHasChanged: (props: ReactGridProps, state: State) => boolean;
+declare const highlightsHasChanged: (props: ReactGridProps, state: State) => boolean;
+declare function updateStateProps(props: ReactGridProps, state: State): State;
+declare function updateFocusedLocation(props: ReactGridProps, state: State): State;
+declare function appendCellTemplates(props: ReactGridProps, state: State): State;
+declare function appendGroupIdRender(props: ReactGridProps, state: State): State;
+declare function appendHighlights(props: ReactGridProps, state: State): State;
+declare function setInitialFocusLocation(props: ReactGridProps, state: State): State;
+declare function setFocusLocation(props: ReactGridProps, state: State): State;
+
+declare function isBrowserFirefox(): boolean;
+
+declare function isBrowserSafari(): boolean;
+
+declare function shouldRenderTopSticky(state: State): boolean;
+declare function shouldRenderLeftSticky(state: State): boolean;
+declare function shouldRenderCenterRange(state: State): boolean;
+declare function shouldRenderMiddleRange(state: State): boolean;
+
+declare function isMacOs(): boolean;
+declare function isIOS(): boolean;
+declare function isIpadOS(): boolean;
+
+declare function areLocationsEqual(location1: Location, location2?: Location): boolean;
+
+declare type ScrollableElement = HTMLElement | (Window & typeof globalThis) | undefined;
+declare function getScrollableParent(element: HTMLElement, includeHidden: boolean): ScrollableElement;
+declare function getScrollOfScrollableElement(element: ScrollableElement): {
+    scrollLeft: number;
+    scrollTop: number;
+};
+declare function getTopScrollableElement(): Window & typeof globalThis;
+
+declare function getSizeOfElement(element: any): {
+    width: number;
+    height: number;
+};
+declare function getOffsetsOfElement(element: any): {
+    offsetLeft: number;
+    offsetTop: number;
+};
+declare function getReactGridOffsets(state: State): {
+    left: number;
+    top: number;
+};
+declare function getVisibleSizeOfReactGrid(state: State): {
+    width: number;
+    height: number;
+    visibleOffsetRight: number;
+    visibleOffsetBottom: number;
+};
+declare const getStickyOffset: (scroll: number, offset: number) => number;
+
+declare function focusLocation(state: State, location: Location): State;
+
+declare function isSelectionKey(event: PointerEvent | KeyboardEvent): boolean;
+
+declare function handleDoubleClick(event: PointerEvent, location: Location, state: State): State;
+
+declare function handleKeyUp(event: KeyboardEvent, state: State): State;
+
+declare type FocusLocationFn = (state: State, location: Location) => State;
+declare type FocusCellFn = (colIdx: number, rowIdx: number, state: State) => State;
+declare type RowCalcFn = (state: State, location: Location) => number;
+declare const focusCell: (colIdx: number, rowIdx: number, state: State) => State;
+declare const moveFocusLeft: (state: State) => State;
+declare const moveFocusRight: (state: State) => State;
+declare const moveFocusUp: (state: State) => State;
+declare const moveFocusDown: (state: State) => State;
+declare const moveFocusPage: (rowCalculator: RowCalcFn) => (state: State) => State<CellMatrix<StickyRanges, CellMatrixProps>, Behavior>;
+declare const moveFocusPageUp: (state: State) => State<CellMatrix<StickyRanges, CellMatrixProps>, Behavior>;
+declare const moveFocusPageDown: (state: State) => State<CellMatrix<StickyRanges, CellMatrixProps>, Behavior>;
+declare function withFocusLocation(focusLocation: FocusLocationFn): (colIdx: number, rowIdx: number, state: State) => State;
+declare function withMoveFocusLeft(fc: FocusCellFn): (state: State) => State;
+declare function withMoveFocusRight(fc: FocusCellFn): (state: State) => State;
+declare function withMoveFocusUp(fc: FocusCellFn): (state: State) => State;
+declare function withMoveFocusDown(fc: FocusCellFn): (state: State) => State;
+declare function withMoveFocusPage(fc: FocusCellFn): (rowCalculator: RowCalcFn) => (state: State) => State<CellMatrix<StickyRanges, CellMatrixProps>, Behavior>;
+declare function getVisibleHeight(state: State, stickyHeight: number): number;
+
+declare function handleKeyDownOnCellTemplate(state: State, event: KeyboardEvent): State;
+
+declare function scrollIntoView(state: State, top: number, left: number): void;
+declare function getVisibleScrollAreaHeight(state: State, wholeStickyHeight: number): number;
+declare function getCalculatedScrollTopValueToBottom(location: Location, visibleScrollAreaHeight: number, scrollTop: number, topStickyOffset: number): number;
+declare function getCalculatedScrollTopValueToTop(location: Location, scrollTop: number, topStickyOffset: number): number;
+declare function isBottomCellAllVisible(state: State, location: Location, visibleScrollAreaHeight: number): boolean;
+declare function isTopCellAllVisible(state: State, location: Location): boolean;
+declare function isFocusLocationOnTopSticky(state: State, location: Location): boolean;
+declare function getVisibleScrollAreaWidth(state: State, wholeStickyWidth: number): number;
+declare function getCalculatedScrollLeftValueToRight(location: Location, visibleScrollAreaWidth: number, scrollLeft: number, leftStickyOffset: number): number;
+declare function getCalculatedScrollLeftValueToLeft(location: Location, scrollLeft: number, leftStickyOffset: number): number;
+declare function isRightCellAllVisible(state: State, location: Location, visibleScrollAreaWidth: number): boolean;
+declare function isLeftCellAllVisible(state: State, location: Location): boolean;
+declare function isFocusLocationOnLeftSticky(state: State, location: Location): boolean;
+
+declare const VS_PAGE_HEIGHT = 400;
+declare const VS_PAGE_WIDTH = 300;
+declare function recalcVisibleRange(state: State): State;
+declare function getVisibleScrollableSize(state: State, heights: number[], widths: number[]): {
+    height: number;
+    width: number;
+};
+declare function getVisibleColumns(state: State, scrollableWidth: number): GridColumn[];
+declare function getVisibleRows(state: State, scrollableHeight: number): GridRow[];
+
+declare const emptyCell: Compatible<Cell>;
+
+declare const columnsSlicer: (range: Range) => (rangeToSlice: Range) => () => Range;
+declare const rowsSlicer: (range: Range) => (rangeToSlice: Range) => () => Range;
+
+declare function handleStateUpdate<TState extends State = State>(newState: TState, state: TState, props: ReactGridProps, setState: (state: TState) => void): void;
+
+declare function tryAppendChangeHavingGroupId(state: State, location: Location, cell: Compatible<Cell>): State;
+
+declare function handleCopy(event: ClipboardEvent, state: State, removeValues?: boolean): State;
+declare function copyDataCommands(event: ClipboardEvent, state: State, div: HTMLDivElement): void;
+
+declare function handlePaste(event: ClipboardEvent, state: State): State<CellMatrix<StickyRanges, CellMatrixProps>, Behavior>;
+
+declare function getDataToCopy(state: State, activeSelectedRange: Range, removeValues?: boolean): {
+    div: HTMLDivElement;
+};
+declare function processSingleCell(tableRow: HTMLTableRowElement, state: State, location: Location): void;
+declare function createHTMLElements(activeSelectedRange: Range): {
+    div: HTMLDivElement;
+    table: HTMLTableElement;
+    location: Location;
+};
+declare function setStyles(div: HTMLDivElement, table: HTMLTableElement): void;
+declare function clearCell(state: State, location: Location, removeValues: boolean): void;
+
+declare function pasteData(state: State, activeSelectedRange: Range, cellToPaste: Compatible<Cell>): State;
+
+declare function i18n(state: State): Required<TextLabels>;
+
+declare function isMobileDevice(): boolean;
+
+export { AbstractPointerEventsController, Behavior, BorderProps, Borders, Cell, CellChange, CellEditorOffset, CellEditorRenderer, CellEditorRendererProps, CellLocation, CellMatrix, CellMatrixBuilder, CellMatrixProps, CellRenderer, CellRendererChildProps, CellRendererProps, CellStyle, CellTemplate, CellTemplates, CheckboxCell, CheckboxCellTemplate, ChevronCell, ChevronCellTemplate, ClipboardEvent, Column, Compatible, DateCell, DateCellTemplate, DefaultCellTypes, Direction, DropPosition, DropdownCell, DropdownCellTemplate, EmailCell, EmailCellTemplate, EventHandlers, FocusCellFn, FocusEvent, FocusLocationFn, GridColumn, GridRenderer, GridRendererProps, GridRow, HeaderCell, HeaderCellTemplate, Highlight, ICellMatrixBuilder, Id, IndexLookup, KeyboardEvent, LegacyBrowserGridRenderer, Location, MenuOption, NumberCell, NumberCellTemplate, OptionType, Orientation, Pane, PaneContent, PaneContentChild, PaneContentProps, PaneGridContent, PaneProps, PaneShadow, PanesProps, PanesRenderer, PointerEvent, PointerLocation, PositionState, Range, ReactGrid, ReactGridProps, Row, RowCalcFn, RowsProps, SelectionMode, SliceDirection, State, StateModifier, StateUpdater, StickyEdges, StickyRanges, TextCell, TextCellTemplate, TextLabels, TimeCell, TimeCellTemplate, Uncertain, UncertainCompatible, VS_PAGE_HEIGHT, VS_PAGE_WIDTH, appendCellTemplates, appendGroupIdRender, appendHighlights, areFocusesDiff, areLocationsEqual, cellEditorCalculator, clearCell, columnsSlicer, componentDidUpdate, copyDataCommands, createHTMLElements, dataHasChanged, defaultStateFields, emptyCell, focusCell, focusLocation, getCalculatedScrollLeftValueToLeft, getCalculatedScrollLeftValueToRight, getCalculatedScrollTopValueToBottom, getCalculatedScrollTopValueToTop, getCellProperty, getCharFromKeyCode, getCompatibleCellAndTemplate, getDataToCopy, getDerivedStateFromProps, getLeftStickyColumn, getLeftStickyOffset, getLocationFromClient, getOffsetsOfElement, getReactGridOffsets, getScrollOfScrollableElement, getScrollableContentColumn, getScrollableContentRow, getScrollableParent, getSizeOfElement, getStickyLeftRangeWidth, getStickyOffset, getStickyTopRangeWidth, getStickyTopRow, getTopScrollableElement, getTopStickyOffset, getVisibleColumns, getVisibleHeight, getVisibleRows, getVisibleScrollAreaHeight, getVisibleScrollAreaWidth, getVisibleScrollableSize, getVisibleSizeOfReactGrid, handleCopy, handleDoubleClick, handleKeyDown, handleKeyDownOnCellTemplate, handleKeyUp, handlePaste, handleStateUpdate, highlightsHasChanged, i18n, inNumericKey, isAllowedOnNumberTypingKey, isAlphaNumericKey, isBottomCellAllVisible, isBrowserFirefox, isBrowserSafari, isFocusLocationOnLeftSticky, isFocusLocationOnTopSticky, isIOS, isIpadOS, isLeftCellAllVisible, isMacOs, isMobileDevice, isNavigationKey, isNumpadNumericKey, isOnClickableArea, isReadyToHandleEvent, isRightCellAllVisible, isSelectionKey, isTopCellAllVisible, keyCodes, moveFocusDown, moveFocusLeft, moveFocusPage, moveFocusPageDown, moveFocusPageUp, moveFocusRight, moveFocusUp, pasteData, processSingleCell, recalcVisibleRange, rowsSlicer, scrollIntoView, setFocusLocation, setInitialFocusLocation, setStyles, shouldRenderCenterRange, shouldRenderLeftSticky, shouldRenderMiddleRange, shouldRenderTopSticky, stateDeriver, tryAppendChange, tryAppendChangeHavingGroupId, updateFocusedLocation, updateStateProps, withFocusLocation, withMoveFocusDown, withMoveFocusLeft, withMoveFocusPage, withMoveFocusRight, withMoveFocusUp };
