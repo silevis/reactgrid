@@ -21,7 +21,7 @@ const commands = [
     { cmd: 'rm -rf ../dist', title: 'Wiping ../dist directory' },
     { cmd: 'cp -r dist ..', title: 'Copying JS files to dist directory' },
     { cmd: 'rm -rf ../ReactGrid-Pro/node_modules/@silevis', title: 'Removing old ReactGrid MIT package' },
-    { cmd: enterReactGridProDir + 'npm i ./../dist --force --save-dev', title: 'Instaling MIT package in PRO' },
+    { cmd: enterReactGridProDir + 'npm i ./../dist --force', title: 'Instaling MIT package in PRO' },
     { cmd: enterReactGridProDir + 'npm i react react-dom --no-save', title: 'Instaling missing dependencies' },
     { cmd: enterReactGridProDir + 'npx run-s copy:mit:**', title: 'Copying files' },
 ];
