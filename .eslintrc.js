@@ -19,11 +19,15 @@ module.exports = {
     "plugins": [
         "react",
         "@typescript-eslint",
+        "react-hooks",
     ],
     "rules": {
         "react/prop-types": 0,
         "@typescript-eslint/no-explicit-any": [
             "error", { "ignoreRestArgs": true }
         ],
+        "react-hooks/rules-of-hooks": "error",
+        "react-hooks/exhaustive-deps": "error",
+        "@typescript-eslint/no-unused-vars": 0,
     },
 };

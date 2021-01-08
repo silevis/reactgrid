@@ -28,13 +28,12 @@ export interface PositionState<TState extends State = State> {
 }
 
 export const CellEditorRenderer: React.FC<CellEditorRendererProps> = ({ state, positionCalculator }) => {
-    const { currentlyEditedCell } = state;
-    const location = state.focusedLocation!;
+    const { currentlyEditedCell, focusedLocation: location } = state;
 
     const [position, dispatch] = React.useReducer(positionCalculator, { state, location }); // used to lock cell editor position
     React.useLayoutEffect(() => dispatch(), []);
 
-    if (!currentlyEditedCell) { // prevents to unexpectly opening cell editor on cypress
+    if (!currentlyEditedCell || !location) { // prevents to unexpectly opening cell editor on cypress
         return null;
     }
 

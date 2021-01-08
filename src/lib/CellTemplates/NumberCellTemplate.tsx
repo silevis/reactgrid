@@ -59,7 +59,7 @@ export class NumberCellTemplate implements CellTemplate<NumberCell> {
         }
     }
 
-    getClassName(cell: Compatible<NumberCell>, isInEditMode: boolean) {
+    getClassName(cell: Compatible<NumberCell>, isInEditMode: boolean): string {
         return cell.className ? cell.className : '';
     }
 

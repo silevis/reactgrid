@@ -5,7 +5,7 @@ import { emptyCell } from './emptyCell';
 import { getActiveSelectedRange } from './getActiveSelectedRange';
 import { pasteData } from './pasteData';
 
-export function handlePaste(event: ClipboardEvent, state: State) {
+export function handlePaste(event: ClipboardEvent, state: State): State {
     const activeSelectedRange = getActiveSelectedRange(state);
     if (!activeSelectedRange) {
         return state;

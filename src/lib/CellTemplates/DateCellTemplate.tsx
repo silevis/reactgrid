@@ -33,7 +33,7 @@ export class DateCellTemplate implements CellTemplate<DateCell> {
         return this.getCompatibleCell({ ...cell, date: new Date(cellToMerge.value) });
     }
 
-    getClassName(cell: Compatible<DateCell>, isInEditMode: boolean) {
+    getClassName(cell: Compatible<DateCell>, isInEditMode: boolean): string {
         return cell.className ? cell.className : '';
     }
 

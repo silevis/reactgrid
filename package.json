@@ -63,7 +63,7 @@
     "build": "react-scripts build",
     "pre-deploy": "npx rollup -c",
     "deploy": "npm publish dist --access=public",
-    "eslint": "npx eslint ./src/ --quiet",
+    "eslint": "npx eslint ./src",
     "test:cypress": "npx cypress open",
     "run:all:tests": "run-p --print-label cy:**",
     "cy:standard": "npx cypress run --headless --quiet --browser firefox -s 'cypress/integration/tests/standard/*'",
@@ -80,16 +80,11 @@
       "pre-push": "if git-branch-is develop; then npx run-s eslint run:all:tests; fi"
     }
   },
-  "eslintConfig": {
-    "extends": "react-app",
-    "globals": {
-      "cy": true,
-      "Cypress": true,
-      "context": true
-    }
-  },
   "browserslist": [
     ">0.2%",
     "not dead"
-  ]
+  ],
+  "dependencies": {
+    "eslint-plugin-react-hooks": "^4.2.0"
+  }
 }

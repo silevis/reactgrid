@@ -56,7 +56,10 @@ export function isReadyToHandleEvent(event: PointerEvent): boolean {
 
 // TODO think about create as saparate function
 export function isOnClickableArea(event: PointerEvent, state: State): boolean {
-    const { left } = state.reactGridElement!.getBoundingClientRect();
+    if (!state.reactGridElement) {
+        return false;
+    }
+    const { left } = state.reactGridElement.getBoundingClientRect();
     const viewportX = event.clientX - left;
     if (viewportX > state.cellMatrix.width) {
         return false;
