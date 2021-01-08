@@ -18,6 +18,7 @@ interface CellEditorProps {
 }
 export interface CellEditorRendererProps {
     state: State;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     positionCalculator: (options: PositionState) => any;
 }
 

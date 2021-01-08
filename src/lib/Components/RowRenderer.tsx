@@ -20,7 +20,7 @@ function shouldMemoRowRenderer(prevProps: RowRendererProps, nextProps: RowRender
         || nextCols[nextCols.length - 1].idx !== prevCols[prevCols.length - 1].idx);
 }
 
-export const RowRenderer: React.NamedExoticComponent<RowRendererProps> = React.memo(({ columns, row, cellRenderer, borders, state }) => {
+const MappedColumns: React.FC<RowRendererProps> = ({ columns, row, cellRenderer, borders, state }) => {
     const lastColIdx = columns[columns.length - 1].idx;
     const CellRenderer = cellRenderer;
     return (
@@ -39,4 +39,6 @@ export const RowRenderer: React.NamedExoticComponent<RowRendererProps> = React.m
             })}
         </>
     );
-}, shouldMemoRowRenderer);
+};
+
+export const RowRenderer: React.NamedExoticComponent<RowRendererProps> = React.memo(MappedColumns, shouldMemoRowRenderer);

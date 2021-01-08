@@ -70,4 +70,4 @@ export class ReactGrid extends React.Component<ReactGridProps, State> {
         }
     }
 
-};
+}

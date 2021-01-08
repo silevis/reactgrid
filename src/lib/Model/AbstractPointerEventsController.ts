@@ -10,7 +10,7 @@ export abstract class AbstractPointerEventsController {
 
     eventTimestamps: [number, number] = [0, 0];
     eventLocations: Array<Location | undefined> = [undefined, undefined];
-    currentIndex: number = 0;
+    currentIndex = 0;
     pointerDownLocation?: Location;
 
     abstract handlePointerDown: (event: PointerEvent, state: State) => State;
@@ -28,7 +28,7 @@ export abstract class AbstractPointerEventsController {
         return state;
     }
 
-    protected shouldHandleDoubleClick(currentLocation: PointerLocation, currentTimestamp: number, secondLastTimestamp: number) {
+    protected shouldHandleDoubleClick(currentLocation: PointerLocation, currentTimestamp: number, secondLastTimestamp: number): boolean {
         return currentTimestamp - secondLastTimestamp < 500
             && areLocationsEqual(currentLocation, this.eventLocations[0])
             && areLocationsEqual(currentLocation, this.eventLocations[1]);

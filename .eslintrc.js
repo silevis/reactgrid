@@ -6,7 +6,7 @@ module.exports = {
     "extends": [
         "eslint:recommended",
         "plugin:react/recommended",
-        "plugin:@typescript-eslint/recommended"
+        "plugin:@typescript-eslint/recommended",
     ],
     "parser": "@typescript-eslint/parser",
     "parserOptions": {
@@ -14,13 +14,16 @@ module.exports = {
             "jsx": true
         },
         "ecmaVersion": 12,
-        "sourceType": "module"
+        "sourceType": "module",
     },
     "plugins": [
         "react",
-        "@typescript-eslint"
+        "@typescript-eslint",
     ],
     "rules": {
-        "react/prop-types": 0
-    }
+        "react/prop-types": 0,
+        "@typescript-eslint/no-explicit-any": [
+            "error", { "ignoreRestArgs": true }
+        ],
+    },
 };

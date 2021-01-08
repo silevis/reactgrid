@@ -64,7 +64,7 @@ function rowBinarySearch(arr: GridRow[], val: number, start = 0, end = arr.lengt
 }
 
 function colBinarySearch(arr: GridColumn[], val: number, start = 0, end = arr.length - 1): number {
-    const mid = (start + end) >> 1;;
+    const mid = (start + end) >> 1;
     if (mid < 0)
         return 0;
     if (start >= end)
