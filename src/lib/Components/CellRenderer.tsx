@@ -3,10 +3,10 @@ import { areLocationsEqual } from '../Functions/areLocationsEqual';
 import { noBorder } from '../Functions/excludeObjectProperties';
 import { getCompatibleCellAndTemplate } from '../Functions/getCompatibleCellAndTemplate';
 import { tryAppendChange } from '../Functions/tryAppendChange';
-import { Borders } from '../Model/InternalModel';
+import { Borders, Location } from '../Model/InternalModel';
 import { BorderProps, Cell, Compatible } from '../Model/PublicModel';
 import { State } from '../Model/State';
-import { Location } from '../Model/InternalModel';
+import { isMobileDevice } from '../Functions/isMobileDevice';
 
 export interface CellRendererProps {
     state: State;
@@ -64,6 +64,10 @@ export const CellRenderer: React.FC<CellRendererProps> = ({ state, location, chi
             : `${bordersWidth.bottom} ${bordersStyle.bottom} ${bordersColor.bottom}`,
     };
 
+    const isMobile = isMobileDevice();
+    const isFirstRowOrColumnWithSelection = (state.props?.enableRowSelection && location.row.idx === 0)
+        || (state.props?.enableColumnSelection && location.column.idx === 0);
+
     const style = {
         ...(cellTemplate.getStyle && (cellTemplate.getStyle(cell, false) || {})),
         ...(cell.style && noBorder(cell.style)),
@@ -71,24 +75,34 @@ export const CellRenderer: React.FC<CellRendererProps> = ({ state, location, chi
         top: location.row.top,
         width: location.column.width,
         height: location.row.height,
-        ...bordersProps,
-        ...((isFocused || cell.type === 'header') && { touchAction: 'none' }) // prevent scrolling
+        ...(!(isFocused && state.currentlyEditedCell) && bordersProps),
+        ...((isFocused || cell.type === 'header' || isFirstRowOrColumnWithSelection) && { touchAction: 'none' }) // prevent scrolling
     } as React.CSSProperties;
 
-    const groupIdClassName = cell.groupId ? `rg-groupId-${cell.groupId}` : '';
-    const nonEditableClassName = cell.nonEditable ? 'rg-cell-nonEditable' : '';
-    const classNames = `rg-cell rg-${cell.type}-cell ${groupIdClassName} ${nonEditableClassName} ${customClass}`;
+    const isInEditMode = isFocused && !!(state.currentlyEditedCell);
 
+    const groupIdClassName = cell.groupId ? ` rg-groupId-${cell.groupId}` : '';
+    const nonEditableClassName = cell.nonEditable ? ' rg-cell-nonEditable' : '';
+    const cellClassNames = isInEditMode && isMobile ? ` rg-celleditor rg-${cell.type}-celleditor` : ` rg-${cell.type}-cell`;
+    const classNames = `rg-cell${cellClassNames}${groupIdClassName}${nonEditableClassName} ${customClass}`;
+    const cellToRender = isFocused && state.currentlyEditedCell && isMobile ? state.currentlyEditedCell : cell;
+
+    const onCellChanged = (cell: Compatible<Cell>, commit: boolean) => {
+        if (isInEditMode) {
+            state.currentlyEditedCell = commit ? undefined : cell;
+            if (commit) state.update(state => tryAppendChange(state, location, cell));
+        } else {
+            if (!commit) throw new Error('commit should be set to true in this case.');
+            state.update(state => tryAppendChange(state, location, cell));
+        }
+    }
     return (
         <div className={classNames} style={style}
             data-cell-colidx={process.env.NODE_ENV === "development" ? location.column.idx : null}
             data-cell-rowidx={process.env.NODE_ENV === "development" ? location.row.idx : null}>
-            {cellTemplate.render(cell, false, (cell, commit) => {
-                if (!commit) throw new Error('commit should be set to true in this case.');
-                state.update(state => tryAppendChange(state, location, cell));
-            })}
+            {cellTemplate.render(cellToRender, isMobile ? isInEditMode : false, onCellChanged)}
             {children}
-            {state.enableGroupIdRender && cell?.groupId !== undefined &&
+            {state.enableGroupIdRender && cell?.groupId !== undefined && !(isInEditMode && isMobile) &&
                 <span className='rg-groupId'>
                     {cell.groupId}
                 </span>

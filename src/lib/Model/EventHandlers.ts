@@ -3,7 +3,8 @@ import { getScrollableParent, getScrollOfScrollableElement } from '../Functions/
 import { getVisibleSizeOfReactGrid } from '../Functions/elementSizeHelpers';
 import { AbstractPointerEventsController } from './AbstractPointerEventsController';
 import { StateModifier, StateUpdater } from './State';
-import { PointerEvent, KeyboardEvent, ClipboardEvent } from './domEventsTypes';
+import { PointerEvent, KeyboardEvent, ClipboardEvent, FocusEvent } from './domEventsTypes';
+import { updateResponsiveSticky } from '../Functions/updateResponsiveSticky';
 
 export class EventHandlers {
 
@@ -15,6 +16,12 @@ export class EventHandlers {
     copyHandler = (event: ClipboardEvent) => this.updateState(state => state.currentBehavior.handleCopy(event, state));
     pasteHandler = (event: ClipboardEvent) => this.updateState(state => state.currentBehavior.handlePaste(event, state));
     cutHandler = (event: ClipboardEvent) => this.updateState(state => state.currentBehavior.handleCut(event, state));
+    blurHandler = (event: FocusEvent) => this.updateState(state => {
+        if ((event.target as HTMLInputElement)?.id.startsWith('react-select-')) { // give back focus on react-select dropdown blur
+            state.hiddenFocusElement?.focus({ preventScroll: true });
+        }
+        return state;
+    });
     windowResizeHandler = () => this.updateState(recalcVisibleRange);
     reactgridRefHandler = (reactGridElement: HTMLDivElement) => this.assignScrollHandler(reactGridElement, recalcVisibleRange);
     hiddenElementRefHandler = (hiddenFocusElement: HTMLInputElement) => this.updateState(state => {
@@ -40,6 +47,9 @@ export class EventHandlers {
             this.updateState(state => {
                 const scrollableElement = getScrollableParent(reactGridElement, true);
                 scrollableElement!.addEventListener('scroll', () => this.scrollHandler(visibleRangeCalculator));
+                if (state.props) {
+                    state = updateResponsiveSticky(state.props, state);
+                }
                 return visibleRangeCalculator({ ...state, reactGridElement, scrollableElement });
             });
         }

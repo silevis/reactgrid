@@ -1,5 +1,5 @@
-class Constants {
-    keyCodes = {
+export const constants = {
+    keyCodes: {
         A: 65,
         ArrowUp: 38,
         ArrowDown: 40,
@@ -20,8 +20,5 @@ class Constants {
         Copy: 67,
         Cut: 88,
         Paste: 86,
-    };
+    },
 }
-
-var constants = new Constants();
-module.exports = constants;

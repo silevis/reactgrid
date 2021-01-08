@@ -7,7 +7,7 @@
  */
 
 import {
-    TextCell, HeaderCell, CheckboxCell, DateCell, EmailCell, ChevronCell, NumberCell, TimeCell
+    TextCell, HeaderCell, CheckboxCell, DateCell, EmailCell, ChevronCell, NumberCell, TimeCell, DropdownCell
 } from './../CellTemplates';
 
 /**
@@ -60,6 +60,18 @@ export interface ReactGridProps {
     readonly enableFullWidthHeader?: boolean;
     /** Set `true` to enable groupId element rendering (by default `false`) */
     readonly enableGroupIdRender?: boolean;
+    /** 
+     * Horizontal breakpoint in percents (%) of ReactGrid scrollable parent element width. 
+     * Disables sticky when the sum of the sizes of sticky panes overflows
+     * given breakpoint value (by default `50`).
+    */
+    readonly horizontalStickyBreakpoint?: number;
+    /** 
+     * Vertical breakpoint in percents (%) of ReactGrid scrollable parent element height. 
+     * Disables sticky when the sum of the sizes of sticky panes overflows
+     * given breakpoint value (by default `50`).
+    */
+    readonly verticalStickyBreakpoint?: number;
 
     /** 
      * Called when cell was changed (e.g. property `value`)
@@ -249,31 +261,27 @@ export type DefaultCellTypes =
     | NumberCell
     | TextCell
     | TimeCell
+    | DropdownCell
 
 /**
  * `CellChange` type is used by `onCellsChanged`. It represents mutually exclusive changes on a single cell.
  * 
  * @see https://reactgrid.com/docs/3.1/7-api/1-types/2-cell-change/
  */
-export type CellChange<TCell extends Cell = DefaultCellTypes & Cell> = TCell extends Cell ? Change<TCell> : never;
-
-/**
- * `Change` interface represents a particular change on a single cell on the cell template.
- * 
- * @see https://reactgrid.com/docs/3.1/7-api/1-types/2-cell-change/
- */
-export interface Change<TCell extends Cell = DefaultCellTypes> {
-    /** Row's `Id` where the change ocurred */
-    readonly rowId: Id;
-    /** Column's `Id` where the change ocurred */
-    readonly columnId: Id;
-    /** Extracted cell type of `TCell` (e.g. `text`, `chevron` and so on) */
-    readonly type: TCell['type'];
-    /** Previous content of the cell */
-    readonly previousCell: TCell;
-    /** New content of the cell */
-    readonly newCell: TCell;
-}
+export type CellChange<TCell extends Cell = DefaultCellTypes & Cell> = TCell extends Cell
+    ? {
+        /** Row's `Id` where the change ocurred */
+        readonly rowId: Id;
+        /** Column's `Id` where the change ocurred */
+        readonly columnId: Id;
+        /** Extracted cell type of `TCell` (e.g. `text`, `chevron` and so on) */
+        readonly type: TCell['type'];
+        /** Previous content of the cell */
+        readonly previousCell: TCell;
+        /** New content of the cell */
+        readonly newCell: TCell;
+    }
+    : never;
 
 /**
  * This interface is used for the communication between ReactGrid and a cell

@@ -4,7 +4,7 @@
 }
 
 .reactgrid-content {
-    user-select: none; 
+    user-select: none;
     -moz-user-select: none;
     -webkit-user-select: none;
     display: flex;
@@ -12,22 +12,25 @@
     justify-content: flex-start;
     align-items: flex-start;
     .rg-pane {
-        &.rg-pane-top, &.rg-pane-bottom, &.rg-pane-left, &.rg-pane-right {
+        &.rg-pane-top,
+        &.rg-pane-bottom,
+        &.rg-pane-left,
+        &.rg-pane-right {
             position: sticky;
             position: -webkit-sticky;
             background-color: $sticky-bg-color;
         }
         &.rg-pane-top {
-            top: 0; 
+            top: 0;
         }
         &.rg-pane-bottom {
             bottom: 0;
         }
         &.rg-pane-left {
-            left: 0; 
+            left: 0;
         }
         &.rg-pane-right {
-            right: 0; 
+            right: 0;
         }
         .rg-cell {
             font-size: $cell-font-size;
@@ -62,12 +65,13 @@
             }
             .rg-groupId {
                 font-size: 0.8em;
-                position: absolute; 
+                position: absolute;
                 right: 4px;
                 top: 4px;
             }
         }
-        .rg-cell-focus {
+        .rg-cell-focus,
+        .rg-cell-highlight {
             position: absolute;
             pointer-events: none;
             box-sizing: border-box;
@@ -87,7 +91,10 @@
                 cursor: crosshair;
                 top: 50%;
                 left: 50%;
-                transform: translate(calc(-50% - ( #{$fill-handle-border-width}/2 )), calc(-50% - ( #{$fill-handle-border-width}/2 )));
+                transform: translate(
+                    calc(-50% - (#{$fill-handle-border-width}/ 2)),
+                    calc(-50% - (#{$fill-handle-border-width}/ 2))
+                );
                 width: $fill-handle-square;
                 height: $fill-handle-square;
                 background-color: $primary-color;
@@ -105,7 +112,7 @@
                 border-style: dashed;
                 border-color: $fillhandle-action-border-color;
             }
-    
+
             &.rg-partial-area-selected-range {
                 border-width: $partial-area-selected-border-width;
                 border-style: solid;
@@ -116,20 +123,23 @@
     }
     .shadow {
         position: sticky;
-        pointer-events: none;
         &.shadow-top {
+            pointer-events: none; //Needed for Firefox
             top: 0;
             box-shadow: $shadow-on-bottom $cell-shadow-color;
         }
         &.shadow-left {
+            pointer-events: none; //Needed for Firefox
             left: 0;
-            box-shadow: $shadow-on-right $cell-shadow-color; 
+            box-shadow: $shadow-on-right $cell-shadow-color;
         }
         &.shadow-bottom {
+            pointer-events: none; //Needed for Firefox
             bottom: 0;
             box-shadow: $shadow-on-top $cell-shadow-color;
         }
         &.shadow-right {
+            pointer-events: none; //Needed for Firefox
             right: 0;
             box-shadow: $shadow-on-left $cell-shadow-color;
         }
@@ -137,7 +147,7 @@
             box-shadow: $shadow-on-top-left-corner $cell-shadow-color;
         }
         &.shadow-top-right-corner {
-            box-shadow: $shadow-on-top-right-corner $cell-shadow-color; 
+            box-shadow: $shadow-on-top-right-corner $cell-shadow-color;
         }
         &.shadow-bottom-left-corner {
             box-shadow: $shadow-on-bottom-left-corner $cell-shadow-color;

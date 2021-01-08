@@ -7,14 +7,13 @@
 [![Build Status](https://dev.azure.com/Silevis/ReactGrid/_apis/build/status/GitHub-MIT/Upgrade%20version%20and%20publish?branchName=master)](https://dev.azure.com/Silevis/ReactGrid/_build/latest?definitionId=17&branchName=master) 
 [![reactgrid](https://img.shields.io/endpoint?url=https://dashboard.cypress.io/badge/simple/hwrqiy&style=flat&logo=cypress)](https://dashboard.cypress.io/projects/hwrqiy/runs)
 
-[![Gitter](https://badges.gitter.im/silevis-reactgrid/community.svg)](https://gitter.im/silevis-reactgrid/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge) 
 [![MIT license](https://david-dm.org/silevis/reactgrid/dev-status.svg)](https://david-dm.org/silevis/reactgrid?type=dev)   [![npm version](https://badge.fury.io/js/%40silevis%2Freactgrid.svg)](https://badge.fury.io/js/%40silevis%2Freactgrid)
 
 <img alt="Sample app" src="https://reactgrid.com/sample.gif"/>
 
 Browse our examples & docs: 👉 [reactgrid.com](https://reactgrid.com/?utm_source=github&utm_medium=reactgridmit&utm_campaign=readme)
 
-Before run you need to have installed:
+Before running ReactGrid you need to have installed:
 - react": "^16.13.1"
 - react-dom: "^16.13.1"
 
@@ -26,15 +25,18 @@ npm i @silevis/reactgrid
 
 # Usage
 
+In this particullar example we will display data in the same way like in a standard datatable.
+Of course you can still **place yours cells anywhere**, but now we will focus on the basics.
+
 ### Import ReactGrid component
 
 ```tsx
 import { ReactGrid, Column, Row } from "@silevis/reactgrid";
 ```
 
-###  Import css styles
+###  Import CSS styles
 
-Import basic CSS styles. This file is necessary to correctly display.
+Import basic CSS styles. This file is necessary to correctly display ReactGrid.
 
 ```tsx
 import "@silevis/reactgrid/styles.css";
@@ -42,100 +44,123 @@ import "@silevis/reactgrid/styles.css";
 
 ### Create a cell matrix
 
-Time to define our data. It will be stored in [React Hook](https://reactjs.org/docs/hooks-intro.html). 
-`useState` hook will be initialized with an object that contains two keys - `columns` and `rows`. 
-Both of them must be valid ReactGrid objects: `Columns` `Rows`.
+It's a good idea to separate up our data (people list) from ReactGrid interface (especially `Row` and `Column`).
+We encourage you to use Typescript features to prevent you from the possibly inconsistent data.  
 
 ```tsx
-import React, { useState } from "react";
-import ReactDOM from "react-dom";
-import { ReactGrid, Column, Row } from "@silevis/reactgrid";
-import "@silevis/reactgrid/styles.css";
-
-function App() {
-  const [columns] = useState<Column[]>(() => [
-    { columnId: "Name", width: 100 },
-    { columnId: "Surname", width: 100 }
-  ]);
-  const [rows] = useState<Row[]>(() => [
-    {
-      rowId: 0,
-      cells: [
-        { type: "header", text: "Name" },
-        { type: "header", text: "Surname" }
-      ]
-    },
-    {
-      rowId: 1,
-      cells: [
-        { type: "text", text: "Thomas" },
-        { type: "text", text: "Goldman" }
-      ]
-    },
-    {
-      rowId: 2,
-      cells: [
-        { type: "text", text: "Susie" },
-        { type: "text", text: "Spencer" }
-      ]
-    },
-    {
-      rowId: 3,
-      cells: [
-        { type: "text", text: "" },
-        { type: "text", text: "" }
-      ]
-    }
-  ]);
-
-  return (
-    <ReactGrid
-      rows={rows}
-      columns={columns}
-    />
-  );
+interface Person {
+  name: string;
+  surname: string;
 }
+
+const getPeople = (): Person[] => [
+  { name: "Thomas", surname: "Goldman" },
+  { name: "Susie", surname: "Quattro" },
+  { name: "", surname: "" }
+];
 ```
+In the next step we have defined an array of ReactGrid's `Column`s stored in `getColumns` function.
+If you are interested how to do more complex operations related with columns like resizing or
+reordering, please browse our [👉 docs](https://reactgrid.com/docs?utm_source=github&utm_medium=reactgriddocs&utm_campaign=docs) 
 
-### Handling changes
-
-To be able to change any value inside the grid you have to implement your own handler. 
-
-Add `CellChange` interface to your imports:
-
-```ts
-import { ReactGrid, Column, Row, CellChange } from "@silevis/reactgrid";
+```tsx
+const getColumns = (): Column[] => [
+  { columnId: "name", width: 150 },
+  { columnId: "surname", width: 150 }
+];
 ```
+At the top of the datatable we are going to display static cells that contain `Name` and `Surname` so we can define them now. 
 
-There is a basic handler code:
-
-```ts
-const handleChanges = (changes: CellChange[]) => {
-  setRows((prevRows) => {
-    changes.forEach((change) => {
-      const changeRowIdx = prevRows.findIndex(
-        (el) => el.rowId === change.rowId
-      );
-      const changeColumnIdx = columns.findIndex(
-        (el) => el.columnId === change.columnId
-      );
-      prevRows[changeRowIdx].cells[changeColumnIdx] = change.newCell;
-    });
-    return [...prevRows];
-  });
+```tsx
+const headerRow: Row<HeaderCell> = {
+  rowId: "header",
+  cells: [
+    { type: "header", text: "Name" },
+    { type: "header", text: "Surname" }
+  ]
 };
 ```
 
-Then update ReactGrid's component props:
+ReactGrid `rows` prop expects an array of rows that are compatible with imported `Row`s interface.
+As you see the function returns the header row and mapped people array to ReactGrid's `Rows`.
 
 ```tsx
-return (
-  <ReactGrid
-    rows={rows}
-    columns={columns}
-    onCellsChanged={handleChanges}
-  />  
-)
+const getRows = (people: Person[]): Row[] => [
+  headerRow,
+  ...people.map<Row>((person, idx) => ({
+    rowId: idx,
+    cells: [
+      { type: "text", text: person.name },
+      { type: "text", text: person.surname }
+    ]
+  }))
+];
+```
+
+The last step is wrapping it all up in the `App` component. People were stored inside `people` variable as React hook.
+ReactGrid component was fed with generated `rows` structure and previously defined `columns`
+
+```tsx
+function App() {
+  const [people] = React.useState<Person[]>(getPeople());
+  
+  const rows = getRows(people);
+  const columns = getColumns();
+
+  return <ReactGrid rows={rows} columns={columns} />;
+}
+```
+
+Open live demo on [codesandbox.io](https://codesandbox.io/s/reactgrid-getting-started-0754c?file=/src/index.tsx)
+
+### Handling changes
+
+Our code is currently read-only.
+To be able to change any value inside the grid you have to implement your own handler.
+
+Let's start with updating imports:
+
+```ts
+import { ReactGrid, Column, Row, CellChange, TextCell} from "@silevis/reactgrid";
+```
+
+Then define the function that applies changes to data and returns its copy.
+We expect that incoming changes affect `TextCell`, so the changes were marked by a following interface: `CellChange<TextCell>[]`.
+Given that information, we find the row and the column affected by each change,
+and then replace an appropriate cell text with a new one.
+
+```ts
+const applyChangesToPeople = (
+  changes: CellChange<TextCell>[],
+  prevPeople: Person[]
+): Person[] => {
+  changes.forEach((change) => {
+    const personIndex = change.rowId;
+    const fieldName = change.columnId;
+    prevPeople[personIndex][fieldName] = change.newCell.text;
+  });
+  return [...prevPeople];
+};
+```
+
+It's time to update the `App` component. As you see the `handleChanges` function updates only data by setting
+updated people from `applyChangesToPeople` function.
+
+```tsx
+function App() {
+  const [people, setPeople] = React.useState<Person[]>(getPeople());
+
+  const rows = getRows(people);
+  const columns = getColumns();
+
+  const handleChanges = (changes: CellChange<TextCell>[]) => {
+    setPeople((prevPeople) => applyChangesToPeople(changes, prevPeople));
+  };
+
+  return (
+    <ReactGrid rows={rows} columns={columns} onCellsChanged={handleChanges} />
+  );
+}
 ```
 
 Open live demo on [codesandbox.io](https://codesandbox.io/s/reactgrid-handling-changes-crzfx?file=/src/index.tsx)
@@ -150,27 +175,9 @@ Open live demo on [codesandbox.io](https://codesandbox.io/s/reactgrid-handling-c
 
 # Browser support
 
-| [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/edge/edge_48x48.png" alt="IE / Edge"  />](http://godban.github.io/browsers-support-badges/) Edge | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/firefox/firefox_48x48.png" alt="Firefox"  />](http://godban.github.io/browsers-support-badges/) Firefox | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/chrome/chrome_48x48.png" alt="Chrome"  />](http://godban.github.io/browsers-support-badges/) Chrome | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/safari/safari_48x48.png" alt="Safari" />](http://godban.github.io/browsers-support-badges/) Safari | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/safari-ios/safari-ios_48x48.png" alt="iOS Safari" />](http://godban.github.io/browsers-support-badges/) iOS/iPadOs Safari | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/samsung-internet/samsung-internet_48x48.png" alt="Samsung"/>](http://godban.github.io/browsers-support-badges/) Samsung internet | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/opera/opera_48x48.png" alt="Opera" />](http://godban.github.io/browsers-support-badges/) Opera |
+| [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/edge/edge_48x48.png" alt="Edge"  />](http://godban.github.io/browsers-support-badges/) Edge | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/firefox/firefox_48x48.png" alt="Firefox"  />](http://godban.github.io/browsers-support-badges/) Firefox | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/chrome/chrome_48x48.png" alt="Chrome"  />](http://godban.github.io/browsers-support-badges/) Chrome | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/safari/safari_48x48.png" alt="Safari" />](http://godban.github.io/browsers-support-badges/) Safari | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/safari-ios/safari-ios_48x48.png" alt="iOS Safari" />](http://godban.github.io/browsers-support-badges/) iOS/iPadOs Safari | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/samsung-internet/samsung-internet_48x48.png" alt="Samsung"/>](http://godban.github.io/browsers-support-badges/) Samsung internet | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/opera/opera_48x48.png" alt="Opera" />](http://godban.github.io/browsers-support-badges/) Opera |
 | :-: | :-: | :-: | :-: | :-: | :-: | :-:|
 | 80+ | 61+ | 57+ | 13.1+ | 13+ | 9+ | 45+ |
-
-# Integrations
-
-  - Next.js
-
-  At the moment we propose to use `next-transpile-modules` plugin ([docs](https://www.npmjs.com/package/next-transpile-modules#usage)).
-  Your `next.config.js` file should looks like on the listing below:
-
-  ```ts
-    const withCSS = require("@zeit/next-css");
-
-    const withTM = require("next-transpile-modules")([
-      "@silevis/reactgrid",
-      "@silevis/reactgrid/styles.css"
-    ]);
-
-    module.exports = withTM(withCSS());  
-  ```
 
 # Docs
 
@@ -179,7 +186,7 @@ Explore ReactGrid docs: [here](https://reactgrid.com/docs?utm_source=github&utm_
 # Licensing
 
 ReactGrid is available in two versions, [MIT](https://github.com/silevis/reactgrid/blob/develop/LICENSE) (this package) which serve 
-the full interface but is limited in functionality and PRO which is fully functional version. You can compare versions
+the full interface but is limited in functionality and PRO which is a fully functional version. You can compare versions
 [here](https://reactgrid.com/feature-comparison/?utm_source=github&utm_medium=reactgridfeatures&utm_campaign=licensing).
 
 (c) 2020 Silevis Software Sp. z o.o.

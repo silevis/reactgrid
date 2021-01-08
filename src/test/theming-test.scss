@@ -2,20 +2,21 @@ body {
     background-color: #000000;
     color: gold;
     .test-grid-container {
-        $primary-color:                     gold;
-        $bg-color:                          rgb(0, 0, 0);
-        $sticky-bg-color:                   #000000;
-        $shadow-color:                      #ffffff;
-        $resize-line-color:                 gold;
-        $resize-handle-gb-color:            violet;
-        $cell-editor-bg-color:              #000000;
-        $fillhandle-action-border-color:    #ffffff;
+        $primary-color: gold;
+        $bg-color: rgb(0, 0, 0);
+        $sticky-bg-color: #000000;
+        $shadow-color: #ffffff;
+        $resize-line-color: gold;
+        $resize-handle-gb-color: violet;
+        $cell-editor-bg-color: #000000;
+        $fillhandle-action-border-color: #ffffff;
         color: #ffffff;
+        $dropdown-menu-bg-color: #000000;
 
         $partial-area-gb-color: gold;
         $partial-area-border-color: gold;
 
-        @import './../styles.scss';
+        @import "./../styles.scss";
     }
     .rg-celleditor input {
         color: white;
