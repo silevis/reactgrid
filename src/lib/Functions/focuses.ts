@@ -56,7 +56,7 @@ export function withMoveFocusDown(fc: FocusCellFn) {
 
 export function withMoveFocusPage(fc: FocusCellFn) {
     return (rowCalculator: RowCalcFn) => {
-        return (state: State) => {
+        return (state: State): State => {
             const location = state.focusedLocation;
             if (!location)
                 return state;
@@ -73,7 +73,7 @@ export function getVisibleHeight(state: State, stickyHeight: number): number {
 function pageUpRowCalc(state: State, location: Location): number {
     const visibleScrollAreaHeight = getVisibleHeight(state, state.cellMatrix.ranges.stickyTopRange.height);
     const hasTopSticky = state.cellMatrix.ranges.stickyTopRange.rows.length > 0;
-    const isOnTopSticky = hasTopSticky && isFocusLocationOnTopSticky(state, location!);
+    const isOnTopSticky = hasTopSticky && isFocusLocationOnTopSticky(state, location);
     const hasScrollableRange = state.cellMatrix.scrollableRange.rows.length > 0;
     const isOnFirstElementOnScrollableRange = hasScrollableRange && location?.row.idx === state.cellMatrix.scrollableRange.first.row.idx;
     const rowsOnScreen = state.cellMatrix.scrollableRange.rows.filter(row => row.bottom < visibleScrollAreaHeight)
@@ -83,7 +83,7 @@ function pageUpRowCalc(state: State, location: Location): number {
         rowIdx = state.cellMatrix.ranges.stickyTopRange.first.row.idx;
     } else if (isOnFirstElementOnScrollableRange) {
         rowIdx = stickyTopRange.rows.length > 0 ? state.cellMatrix.ranges.stickyTopRange.last.row.idx : state.cellMatrix.first.row.idx;
-    } else if (location!.row.idx >= rowsOnScreen.length + state.cellMatrix.ranges.stickyTopRange.rows.length) {
+    } else if (location.row.idx >= rowsOnScreen.length + state.cellMatrix.ranges.stickyTopRange.rows.length) {
         rowIdx = location.row.idx - rowsOnScreen.length > 0 ? location.row.idx - rowsOnScreen.length : 0;
     } else {
         rowIdx = state.cellMatrix.scrollableRange.first.row.idx;
@@ -92,7 +92,7 @@ function pageUpRowCalc(state: State, location: Location): number {
 }
 
 function pageDownRowCalc(state: State, location: Location): number {
-    const isOnTopSticky = isFocusLocationOnTopSticky(state, location!);
+    const isOnTopSticky = isFocusLocationOnTopSticky(state, location);
     const hasTopSticky = state.cellMatrix.ranges.stickyTopRange.rows.length > 0;
     const isOnLastRowOnTopSticky = hasTopSticky && location?.row.idx === state.cellMatrix.ranges?.stickyTopRange.last.row.idx;
     const hasScrollableRange = state.cellMatrix.scrollableRange.rows.length > 0;

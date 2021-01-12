@@ -45,11 +45,16 @@ export class TimeCellTemplate implements CellTemplate<TimeCell> {
 
     render(cell: Compatible<TimeCell>, isInEditMode: boolean, onCellChanged: (cell: Compatible<TimeCell>, commit: boolean) => void): React.ReactNode {
 
-        if (!isInEditMode)
+        if (!isInEditMode) {
             return cell.text;
+        }
 
-        const hours = getFormattedTimeUnit(cell.time!.getHours());
-        const minutes = getFormattedTimeUnit(cell.time!.getMinutes());
+        if (!cell.time) {
+            return `"cell.time" is not initialized with a time value`;
+        }
+
+        const hours = getFormattedTimeUnit(cell.time.getHours());
+        const minutes = getFormattedTimeUnit(cell.time.getMinutes());
 
         return <input
             ref={input => {

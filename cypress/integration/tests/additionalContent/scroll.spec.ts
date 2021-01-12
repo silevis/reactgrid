@@ -10,9 +10,6 @@ const utilsFlexRow = new Utilities(enableAdditionalContentWithFlexRowConfig);
 
 context('Scroll', () => {
 
-    beforeEach(() => {
-    });
-
     /**
      * The test should run on 100 of viewport inside cypress runner
      */
@@ -71,7 +68,7 @@ context('Scroll', () => {
         utils.selectCell(utils.getConfig().cellWidth * 2 + 10, utils.getConfig().rgViewportHeight - utils.getConfig().cellHeight - 1);
         for (let i = 0; i < utils.getConfig().rows; i++) {
             utils.keyDown(constants.keyCodes.ArrowUp, { force: true }, 20, false);
-        };
+        }
 
         cy.wait(utils.wait());
         utils.assertIsElementInScrollable(utils.getCellFocus());
@@ -80,12 +77,12 @@ context('Scroll', () => {
         utils.assertScrolledToTop();
     });
 
-    it('should scroll to right on arrow right keydown', () => { // ✅
+    it.only('should scroll to right on arrow right keydown', () => { // ✅
         visitAdditionalContentWithFlexRow();
 
         for (let i = 0; i < utilsFlexRow.getConfig().columns; i++) {
             utilsFlexRow.keyDown(constants.keyCodes.ArrowRight, { force: true }, 20, false);
-        };
+        }
         cy.wait(utilsFlexRow.wait());
         utilsFlexRow.assertIsElementInScrollable(utilsFlexRow.getCellFocus());
         cy.wait(utilsFlexRow.wait());
@@ -101,7 +98,7 @@ context('Scroll', () => {
 
         for (let i = 0; i < utilsFlexRow.getConfig().columns; i++) {
             utilsFlexRow.keyDown(constants.keyCodes.ArrowLeft, { force: true }, 20, false);
-        };
+        }
         cy.wait(utilsFlexRow.wait());
         utilsFlexRow.assertIsElementInScrollable(utils.getCellFocus());
         cy.wait(utilsFlexRow.wait());

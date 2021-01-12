@@ -37,7 +37,7 @@ export const CellEditorRenderer: React.FC<CellEditorRendererProps> = ({ state, p
         return null;
     }
 
-    const cellTemplate = state.cellTemplates![currentlyEditedCell.type];
+    const cellTemplate = state.cellTemplates[currentlyEditedCell.type];
     return <CellEditor
         cellType={currentlyEditedCell.type}
         style={{
@@ -129,7 +129,7 @@ export const cellEditorCalculator = (options: PositionState): CellEditorOffset =
     let offsetLeft = 0,
         offsetTop = 0;
     if (state.scrollableElement !== getTopScrollableElement()) {
-        const { left, top } = (state.scrollableElement! as HTMLElement).getBoundingClientRect();
+        const { left, top } = (state.scrollableElement as HTMLElement).getBoundingClientRect();
         offsetLeft = left;
         offsetTop = top;
     }

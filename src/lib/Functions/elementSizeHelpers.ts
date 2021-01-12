@@ -18,11 +18,14 @@ export function getSizeOfElement(element: HTMLElement | (Window & typeof globalT
 
 export function getReactGridOffsets(state: State): { left: number, top: number } {
     const { scrollLeft, scrollTop } = getScrollOfScrollableElement(state.scrollableElement);
-    const { left: leftReactGrid, top: topReactGrid } = state.reactGridElement!.getBoundingClientRect();
+    if (!state.reactGridElement) {
+        throw new Error(`"state.reactGridElement" field should be initiated before calling "getBoundingClientRect()"`);
+    }
+    const { left: leftReactGrid, top: topReactGrid } = state.reactGridElement.getBoundingClientRect();
     let left = leftReactGrid + scrollLeft,
         top = topReactGrid + scrollTop;
-    if (state.scrollableElement !== getTopScrollableElement()) {
-        const { left: leftScrollable, top: topScrollable } = (state.scrollableElement! as Element).getBoundingClientRect();
+    if (state.scrollableElement !== undefined && state.scrollableElement !== getTopScrollableElement()) {
+        const { left: leftScrollable, top: topScrollable } = (state.scrollableElement as HTMLElement).getBoundingClientRect();
         left -= leftScrollable;
         top -= topScrollable;
     }

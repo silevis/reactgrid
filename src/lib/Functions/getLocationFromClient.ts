@@ -4,7 +4,10 @@ import { getScrollOfScrollableElement } from './scrollHelpers';
 import { getReactGridOffsets, getStickyOffset } from './elementSizeHelpers';
 
 export function getLocationFromClient(state: State, clientX: number, clientY: number, favorScrollableContent?: Direction): PointerLocation {
-    const { left, top } = state.reactGridElement!.getBoundingClientRect();
+    if (!state.reactGridElement) {
+        throw new Error(`"state.reactGridElement" field should be initiated before calling the "getBoundingClientRect()"`);
+    }
+    const { left, top } = state.reactGridElement.getBoundingClientRect();
     const viewportX = clientX - left;
     const viewportY = clientY - top;
 
