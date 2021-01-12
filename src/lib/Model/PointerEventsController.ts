@@ -10,16 +10,14 @@ export class PointerEventsController extends AbstractPointerEventsController {
     public handlePointerDown = (event: PointerEvent, state: State): State => {
         if (!isReadyToHandleEvent(event) || !isOnClickableArea(event, state))
             return state;
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        window.addEventListener('pointerup', this.handlePointerUp as any);
+        window.addEventListener('pointerup', this.handlePointerUp);
         const currentLocation = getLocationFromClient(state, event.clientX, event.clientY);
         return this.handlePointerDownInternal(event, currentLocation, state);
     };
 
     private handlePointerUp = (event: PointerEvent): void => {
         if (event.button !== 0 && event.button !== undefined) return;
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        window.removeEventListener('pointerup', this.handlePointerUp as any);
+        window.removeEventListener('pointerup', this.handlePointerUp);
         this.updateState(state => {
             const currentLocation = getLocationFromClient(state, event.clientX, event.clientY);
             const currentTimestamp = new Date().valueOf();

@@ -77,7 +77,7 @@ context('Scroll', () => {
         utils.assertScrolledToTop();
     });
 
-    it.only('should scroll to right on arrow right keydown', () => { // ✅
+    it('should scroll to right on arrow right keydown', () => { // ✅
         visitAdditionalContentWithFlexRow();
 
         for (let i = 0; i < utilsFlexRow.getConfig().columns; i++) {
