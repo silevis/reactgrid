@@ -29,11 +29,6 @@ export interface PaneContentProps<TState extends State = State> {
     children?: (state: TState, range: Range) => React.ReactNode;
 }
 
-export interface PaneContentChild<TState extends State = State> {
-    state: TState;
-    calculatedRange?: Range;
-}
-
 function shouldMemoPaneGridContent(prevProps: RowsProps, nextProps: RowsProps): boolean {
     const { state: prevState } = prevProps;
     const { state: nextState } = nextProps;

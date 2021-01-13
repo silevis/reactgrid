@@ -17,7 +17,7 @@ export function handlePaste(event: ClipboardEvent, state: State): State {
     //const selectionMode = parsedData.body.firstElementChild && parsedData.body.firstElementChild.getAttribute('data-selection') as SelectionMode;
     // TODO quite insecure! maybe do some checks ?
     const hasReactGridAttribute = document.body.firstElementChild?.getAttribute('data-reactgrid') === 'reactgrid-content';
-    if (hasReactGridAttribute && document.body.firstElementChild && document.body.firstElementChild.firstElementChild) {
+    if (hasReactGridAttribute && document.body.firstElementChild?.firstElementChild) {
         const tableRows = document.body.firstElementChild.firstElementChild.children;
         const rawData = tableRows[0].children[0].getAttribute('data-reactgrid');
         const data = rawData && JSON.parse(rawData);

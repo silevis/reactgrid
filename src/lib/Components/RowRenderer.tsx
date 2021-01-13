@@ -42,3 +42,5 @@ const MappedColumns: React.FC<RowRendererProps> = ({ columns, row, cellRenderer,
 };
 
 export const RowRenderer: React.NamedExoticComponent<RowRendererProps> = React.memo(MappedColumns, shouldMemoRowRenderer);
+
+RowRenderer.displayName = 'RowRenderer';
