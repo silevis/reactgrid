@@ -1,4 +1,4 @@
-type ScrollableElement = HTMLElement | (Window & typeof globalThis) | undefined;
+type ScrollableElement = HTMLElement | ReturnType<typeof getTopScrollableElement> | undefined;
 
 export function getScrollableParent(element: HTMLElement, includeHidden: boolean): ScrollableElement {
     let style = getComputedStyle(element);

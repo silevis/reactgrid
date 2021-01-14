@@ -33,29 +33,29 @@ export class ReactGrid extends React.Component<ReactGridProps, State> {
         ...defaultStateFields
     }
 
-    static getDerivedStateFromProps(props: ReactGridProps, state: State) {
+    static getDerivedStateFromProps(props: ReactGridProps, state: State): State | undefined {
         try {
             return getDerivedStateFromProps(props, state);
         } catch (error) {
             console.error(error);
-            return null;
+            return undefined;
         }
     }
 
-    componentDidUpdate(prevProps: ReactGridProps, prevState: State) {
+    componentDidUpdate(prevProps: ReactGridProps, prevState: State): void {
         componentDidUpdate(prevProps, prevState, this.state);
     }
 
-    componentDidMount() {
+    componentDidMount(): void {
         notifyAboutReactGridPro(this.state);
         window.addEventListener('resize', this.eventHandlers.windowResizeHandler);
     }
 
-    componentWillUnmount() {
+    componentWillUnmount(): void {
         window.removeEventListener('resize', this.eventHandlers.windowResizeHandler);
     }
 
-    render() {
+    render(): React.ReactNode {
         const { state, eventHandlers } = this;
         if (state.legacyBrowserMode) {
             return <LegacyBrowserGridRenderer state={state} eventHandlers={eventHandlers} />
@@ -70,4 +70,4 @@ export class ReactGrid extends React.Component<ReactGridProps, State> {
         }
     }
 
-};
+}

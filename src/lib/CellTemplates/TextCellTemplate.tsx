@@ -40,7 +40,7 @@ export class TextCellTemplate implements CellTemplate<TextCell> {
         return { cell, enableEditMode: keyCode === keyCodes.POINTER || keyCode === keyCodes.ENTER }
     }
 
-    getClassName(cell: Compatible<TextCell>, isInEditMode: boolean) {
+    getClassName(cell: Compatible<TextCell>, isInEditMode: boolean): string {
         const isValid = cell.validator ? cell.validator(cell.text) : true;
         const className = cell.className ? cell.className : '';
         return `${isValid ? 'valid' : 'invalid'} ${cell.placeholder && cell.text === '' ? 'placeholder' : ''} ${className}`;

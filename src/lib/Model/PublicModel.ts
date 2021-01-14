@@ -513,7 +513,7 @@ export interface Row<TCell extends Cell = DefaultCellTypes> {
      * default: `false` (row reorder implementation is on the developer's side) 
      */
     readonly reorderable?: boolean;
-};
+}
 
 /**
  * Menu option element displayed in context menu

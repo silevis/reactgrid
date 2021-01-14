@@ -18,6 +18,7 @@ interface CellEditorProps {
 }
 export interface CellEditorRendererProps {
     state: State;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     positionCalculator: (options: PositionState) => any;
 }
 
@@ -27,17 +28,16 @@ export interface PositionState<TState extends State = State> {
 }
 
 export const CellEditorRenderer: React.FC<CellEditorRendererProps> = ({ state, positionCalculator }) => {
-    const { currentlyEditedCell } = state;
-    const location = state.focusedLocation!;
+    const { currentlyEditedCell, focusedLocation: location } = state;
 
     const [position, dispatch] = React.useReducer(positionCalculator, { state, location }); // used to lock cell editor position
     React.useLayoutEffect(() => dispatch(), []);
 
-    if (!currentlyEditedCell) { // prevents to unexpectly opening cell editor on cypress
+    if (!currentlyEditedCell || !location) { // prevents to unexpectly opening cell editor on cypress
         return null;
     }
 
-    const cellTemplate = state.cellTemplates![currentlyEditedCell.type];
+    const cellTemplate = state.cellTemplates[currentlyEditedCell.type];
     return <CellEditor
         cellType={currentlyEditedCell.type}
         style={{
@@ -129,7 +129,7 @@ export const cellEditorCalculator = (options: PositionState): CellEditorOffset =
     let offsetLeft = 0,
         offsetTop = 0;
     if (state.scrollableElement !== getTopScrollableElement()) {
-        const { left, top } = (state.scrollableElement! as HTMLElement).getBoundingClientRect();
+        const { left, top } = (state.scrollableElement as HTMLElement).getBoundingClientRect();
         offsetLeft = left;
         offsetTop = top;
     }

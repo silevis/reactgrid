@@ -10,7 +10,11 @@ export function focusLocation(state: State, location: Location): State {
         state = tryAppendChange(state, state.focusedLocation, state.currentlyEditedCell);
     }
 
-    const { onFocusLocationChanged, onFocusLocationChanging, focusLocation } = state.props!;
+    if (!state.props) {
+        throw new Error(`"props" field on "state" object should be initiated before possible location focus`);
+    }
+
+    const { onFocusLocationChanged, onFocusLocationChanging, focusLocation } = state.props;
 
     if (focusLocation) {
         location = state.cellMatrix.getLocationById(focusLocation.rowId, focusLocation.columnId);

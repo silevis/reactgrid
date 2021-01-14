@@ -19,7 +19,7 @@ function handleKeyDownInternal(state: State, event: KeyboardEvent): State {
         return state;
     }
 
-    let newState = handleKeyDownOnCellTemplate(state, event);
+    const newState = handleKeyDownOnCellTemplate(state, event);
     if (newState !== state) {
         return newState;
     }

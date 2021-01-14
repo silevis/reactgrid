@@ -15,7 +15,7 @@ export interface TimeCell extends Cell {
 
 export class TimeCellTemplate implements CellTemplate<TimeCell> {
 
-    static dayInMillis: number = 86400000;
+    static dayInMillis = 86400000;
     static defaultDate: string = getDefaultDate();
 
     getCompatibleCell(uncertainCell: Uncertain<TimeCell>): Compatible<TimeCell> {
@@ -39,17 +39,22 @@ export class TimeCellTemplate implements CellTemplate<TimeCell> {
         return this.getCompatibleCell({ ...cell, time: new Date(cellToMerge.value) });
     }
 
-    getClassName(cell: Compatible<TimeCell>, isInEditMode: boolean) {
+    getClassName(cell: Compatible<TimeCell>, isInEditMode: boolean): string {
         return cell.className ? cell.className : '';
     }
 
     render(cell: Compatible<TimeCell>, isInEditMode: boolean, onCellChanged: (cell: Compatible<TimeCell>, commit: boolean) => void): React.ReactNode {
 
-        if (!isInEditMode)
+        if (!isInEditMode) {
             return cell.text;
+        }
 
-        const hours = getFormattedTimeUnit(cell.time!.getHours());
-        const minutes = getFormattedTimeUnit(cell.time!.getMinutes());
+        if (!cell.time) {
+            return `"cell.time" is not initialized with a time value`;
+        }
+
+        const hours = getFormattedTimeUnit(cell.time.getHours());
+        const minutes = getFormattedTimeUnit(cell.time.getMinutes());
 
         return <input
             ref={input => {

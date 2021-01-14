@@ -28,8 +28,9 @@ export const PanesRenderer: React.FC<PanesProps> = ({ state, cellRenderer }) => 
     }
 
     let visibleScrollableRange: Range | undefined = undefined;
+    const visibleRange = state.visibleRange as Range;
     if (renderMiddleRange) {
-        visibleScrollableRange = cellMatrix.scrollableRange.slice(state.visibleRange!, 'rows');
+        visibleScrollableRange = cellMatrix.scrollableRange.slice(visibleRange, 'rows');
     }
 
     const areOnlyStickyRows = cellMatrix.ranges.stickyTopRange.rows.length === cellMatrix.rows.length;
@@ -51,7 +52,7 @@ export const PanesRenderer: React.FC<PanesProps> = ({ state, cellRenderer }) => 
             >
                 <PaneContent
                     state={state}
-                    range={columnsSlicer(visibleScrollableRange as Range)(state.visibleRange!)}
+                    range={columnsSlicer(visibleScrollableRange as Range)(visibleRange)}
                     borders={{
                         bottom: true,
                         right: true,
@@ -112,7 +113,7 @@ export const PanesRenderer: React.FC<PanesProps> = ({ state, cellRenderer }) => 
             >
                 <PaneContent
                     state={state}
-                    range={columnsSlicer(cellMatrix.ranges.stickyTopRange)(state.visibleRange!)}
+                    range={columnsSlicer(cellMatrix.ranges.stickyTopRange)(visibleRange)}
                     borders={{
                         right: true,
                         top: true,

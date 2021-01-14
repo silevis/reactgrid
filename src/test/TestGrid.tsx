@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-empty-function */
 import React from 'react';
 import {
     Column, Row, Id, MenuOption, SelectionMode, DropPosition, CellLocation,
@@ -164,7 +165,7 @@ export const TestGrid: React.FC<TestGridProps> = (props) => {
         });
     };
 
-    const reorderArray = <T extends {}>(arr: T[], idxs: number[], to: number) => {
+    const reorderArray = <T extends unknown>(arr: T[], idxs: number[], to: number) => {
         const movedElements: T[] = arr.filter((_: T, idx: number) => idxs.includes(idx));
         to = Math.min(...idxs) < to ? to += 1 : to -= idxs.filter(idx => idx < to).length;
         const leftSide: T[] = arr.filter((_: T, idx: number) => idx < to && !idxs.includes(idx));
@@ -373,15 +374,16 @@ export const TestGridOptionsSelect: React.FC<{ isPro?: boolean }> = ({ isPro }) 
     )
 }
 
-export const withDiv = <T extends object>(Component: React.ComponentType<T>): React.FC<T & TestGridProps> => {
-    return ({ ...props }: TestGridProps) => {
-        Component.displayName = 'WithDivWrapperTestGrid';
+export const withDiv = <T extends Record<string, unknown> & TestGridProps>(Component: React.ComponentType<T>): React.FC<T> => {
+    Component.displayName = 'WithDivWrapperTestGrid';
+    const wrappedComponent = ({ ...props }: TestGridProps) => {
         return (
             <div style={{ ...props.config.withDivComponentStyles }}>
                 <Component {...props as T} />
             </div>
         )
     }
+    return wrappedComponent;
 }
 
 export const ExtTestGrid = withDiv(TestGrid);
