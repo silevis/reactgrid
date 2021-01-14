@@ -57,6 +57,10 @@ export const TestGrid: React.FC<TestGridProps> = (props) => {
             if (ri === 0) return { type: firstRowType, text: `${ri} - ${ci}` }
             if (ri === 2 && ci === 8) return { type: 'text', text: `non-editable`, nonEditable: true, validator: (text: string): boolean => true }
             if (ri === 3 && ci === 8) return { type: 'text', text: '', placeholder: 'placeholder', validator: (text: string): boolean => true }
+            if (ri === 8 && ci === 3) return { type: 'header', text: `${ri} - ${ci}`, validator: (text: string): boolean => true }
+            if (ri === 23 && ci === 4) return { type: 'header', text: `${ri} - ${ci}`, validator: (text: string): boolean => true }
+            if (ri === 4 && ci === 0) return { type: 'header', text: `${ri} - ${ci}`, validator: (text: string): boolean => true }
+            if (ri === 4 && ci === 29) return { type: 'header', text: `${ri} - ${ci}`, validator: (text: string): boolean => true }
             const now = new Date();
             switch (ci) {
                 case 0:

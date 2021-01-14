@@ -1,6 +1,7 @@
 import { Location } from '../Model/InternalModel';
 import { State } from '../Model/State';
 import { focusLocation } from './focusLocation';
+import { getCompatibleCellAndTemplate } from './getCompatibleCellAndTemplate';
 import { getVisibleScrollAreaHeight, isFocusLocationOnTopSticky } from './scrollIntoView';
 
 
@@ -25,33 +26,89 @@ export function withFocusLocation(focusLocation: FocusLocationFn) {
 }
 
 export function withMoveFocusLeft(fc: FocusCellFn) {
-    return (state: State): State => (state.focusedLocation && state.focusedLocation.column.idx > 0) ?
-        fc(state.focusedLocation.column.idx - 1, state.focusedLocation.row.idx, state) : state;
+    return (state: State): State => {
+        const focusLocation = getFocusLocationToLeft(state);
+        return (focusLocation) ? fc(focusLocation.column.idx, focusLocation.row.idx, state) : state;
+    }
+}
+
+function getNextFocusableLocation(state: State, rowIdx: number, colIdx: number) {
+    const location = state.cellMatrix.getLocation(rowIdx, colIdx);
+    const { cell, cellTemplate } = getCompatibleCellAndTemplate(state, location);
+    const { onFocusLocationChanging } = state.props!;
+    const cellLocation = { rowId: location.row.rowId, columnId: location.column.columnId };
+    const wasChangePrevented = !onFocusLocationChanging || onFocusLocationChanging(cellLocation);
+    const isFocusable = (!cellTemplate.isFocusable || cellTemplate.isFocusable(cell)) && wasChangePrevented;
+    return isFocusable ? location : undefined;
+}
+
+function getFocusLocationToLeft(state: State) {
+    if (state.focusedLocation) {
+        for (let colIdx = state.focusedLocation.column.idx - 1; colIdx >= state.cellMatrix.first.column.idx; --colIdx) {
+            const nextFocusableLocation = getNextFocusableLocation(state, state.focusedLocation.row.idx, colIdx)
+            if (nextFocusableLocation) {
+                return nextFocusableLocation;
+            }
+        }
+    }
+    return undefined;
 }
 
 export function withMoveFocusRight(fc: FocusCellFn) {
     return (state: State): State => {
-        return (state.focusedLocation && state.focusedLocation.column.idx < state.cellMatrix.last.column.idx) ?
-            fc(state.focusedLocation.column.idx + 1, state.focusedLocation.row.idx, state) : state;
+        const focusLocation = getFocusLocationToRight(state);
+        return (focusLocation) ? fc(focusLocation.column.idx, focusLocation.row.idx, state) : state;
     }
+}
+
+function getFocusLocationToRight(state: State) {
+    if (state.focusedLocation) {
+        for (let colIdx = state.focusedLocation.column.idx + 1; colIdx <= state.cellMatrix.last.column.idx; ++colIdx) {
+            const nextFocusableLocation = getNextFocusableLocation(state, state.focusedLocation.row.idx, colIdx)
+            if (nextFocusableLocation) {
+                return nextFocusableLocation;
+            }
+        }
+    }
+    return undefined;
 }
 
 export function withMoveFocusUp(fc: FocusCellFn) {
     return (state: State): State => {
-        return (state.focusedLocation && state.focusedLocation.row.idx > 0) ?
-            fc(state.focusedLocation.column.idx, state.focusedLocation.row.idx - 1, state) : state;
+        const focusLocation = getFocusLocationToUp(state);
+        return (focusLocation) ? fc(focusLocation.column.idx, focusLocation.row.idx, state) : state;
     }
+}
+
+function getFocusLocationToUp(state: State) {
+    if (state.focusedLocation) {
+        for (let rowIdx = state.focusedLocation.row.idx - 1; rowIdx >= state.cellMatrix.first.row.idx; --rowIdx) {
+            const nextFocusableLocation = getNextFocusableLocation(state, rowIdx, state.focusedLocation.column.idx)
+            if (nextFocusableLocation) {
+                return nextFocusableLocation;
+            }
+        }
+    }
+    return undefined;
 }
 
 export function withMoveFocusDown(fc: FocusCellFn) {
     return (state: State): State => {
-        if (state.focusedLocation) {
-            if (state.focusedLocation.row.idx === state.cellMatrix.last.row.idx)
-                return fc(state.focusedLocation.column.idx, state.focusedLocation.row.idx, state)
-            return fc(state.focusedLocation.column.idx, state.focusedLocation.row.idx + 1, state)
-        }
-        return state;
+        const focusLocation = getFocusLocationToDown(state);
+        return (focusLocation) ? fc(focusLocation.column.idx, focusLocation.row.idx, state) : state;
     }
+}
+
+function getFocusLocationToDown(state: State) {
+    if (state.focusedLocation) {
+        for (let rowIdx = state.focusedLocation.row.idx + 1; rowIdx <= state.cellMatrix.last.row.idx; ++rowIdx) {
+            const nextFocusableLocation = getNextFocusableLocation(state, rowIdx, state.focusedLocation.column.idx)
+            if (nextFocusableLocation) {
+                return nextFocusableLocation;
+            }
+        }
+    }
+    return undefined;
 }
 
 export function withMoveFocusPage(fc: FocusCellFn) {
