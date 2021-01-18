@@ -3,3 +3,5 @@ dist/*
 *.json
 rollup.config.js
 snapshots.js
+jest.config.js
+cypress/*

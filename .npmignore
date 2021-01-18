@@ -17,3 +17,4 @@ rollup.*
 .eslintrc
 stats.html
 types/
+__tests__

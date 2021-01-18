@@ -28,6 +28,7 @@
     "src/**/*"
   ],
   "exclude": [
-    "src/index.tsx"
+    "src/index.tsx",
+    "**/*.spec.ts"
   ]
 }
