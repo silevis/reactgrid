@@ -1,13 +1,13 @@
 import { Actions, By, Key, ThenableWebDriver, WebElement } from 'selenium-webdriver';
 import cypressJson from '../../cypress.json';
-import jest from '../../jest.config';
 import { getLocalIpAdresses } from './network';
 
 export class Utils {
 
     public actions!: Actions;
     public static BASE_URL = cypressJson.baseUrl;
-    public static LOCAL_BASE_URL = `${jest.PROTOCOL}://${getLocalIpAdresses()[0]}:${jest.PORT}`;
+    public static LOCAL_BASE_URL = `${process.env.PROTOCOL}://${getLocalIpAdresses()[0]}:${process.env.PORT}`;
+    public static REMOTE_BROSERSTACK_BASE_URL = `${process.env.PROTOCOL}://bs-local.com:${process.env.PORT}`;
 
     constructor(protected driver: ThenableWebDriver) {
         this.actions = driver.actions();
@@ -19,6 +19,10 @@ export class Utils {
 
     async visitLocal(path = ''): Promise<void> {
         await this.driver.get(Utils.LOCAL_BASE_URL + path);
+    }
+
+    async visitBrowserStackLocal(path = ''): Promise<void> {
+        await this.driver.get(Utils.REMOTE_BROSERSTACK_BASE_URL + path);
     }
 
     async sendKeys(...key: string[]): Promise<void> {
@@ -65,3 +69,20 @@ export class Utils {
     }
 
 }
+
+ // function runBrowserStackLocal(arg: any) {
+//     const local = new browserstack.Local();
+//     return new Promise((resolve, reject) => {
+//         local.start(arg, function () {
+//             if (local.isRunning()) {
+//                 resolve(local);
+//             }
+//             reject();
+//         });
+//     })
+// }
+// local = await runBrowserStackLocal(localServerOptions);
+
+// local.stop(function () {
+//     console.log('Local server closed');
+// });

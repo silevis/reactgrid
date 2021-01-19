@@ -17,7 +17,7 @@ describe('Clipboard', () => {
         utils = new Utils(driver);
 
         await utils.visit();
-    })
+    }, 30000)
 
     it('cut and paste', async () => {
 
@@ -30,7 +30,7 @@ describe('Clipboard', () => {
         await utils.paste();
 
         // expect(granted).toBe('granted'); 
-    });
+    }, 30000);
 
     it.skip('cut cell content of all cell templates', async () => {
         throw new Error(`Test not implemented!`);
