@@ -1,17 +1,24 @@
 import { Actions, By, Key, ThenableWebDriver, WebElement } from 'selenium-webdriver';
-
-export const BASE_URL = 'http://localhost:3001';
+import cypressJson from '../../cypress.json';
+import jest from '../../jest.config';
+import { getLocalIpAdresses } from './network';
 
 export class Utils {
 
-    actions!: Actions;
+    public actions!: Actions;
+    public static BASE_URL = cypressJson.baseUrl;
+    public static LOCAL_BASE_URL = `${jest.PROTOCOL}://${getLocalIpAdresses()[0]}:${jest.PORT}`;
 
-    constructor(private driver: ThenableWebDriver) {
+    constructor(protected driver: ThenableWebDriver) {
         this.actions = driver.actions();
     }
 
-    async visit(): Promise<void> {
-        await this.driver.get(BASE_URL);
+    async visit(path = ''): Promise<void> {
+        await this.driver.get(Utils.BASE_URL + path);
+    }
+
+    async visitLocal(path = ''): Promise<void> {
+        await this.driver.get(Utils.LOCAL_BASE_URL + path);
     }
 
     async sendKeys(...key: string[]): Promise<void> {

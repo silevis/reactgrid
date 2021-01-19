@@ -10,6 +10,7 @@ import { Cell, Uncertain } from '../Model/PublicModel';
  * 
  * @see https://reactgrid.com/docs/3.1/7-api/2-functions/
  */
+// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 export const getCellProperty = <TCell extends Cell, TKey extends keyof TCell>(
     uncertainCell: Uncertain<TCell>,
     propName: TKey,
@@ -21,5 +22,6 @@ export const getCellProperty = <TCell extends Cell, TKey extends keyof TCell>(
     if (typeof prop !== expectedType)
         throw new Error(`Property '${propName}' expected to be of type '${expectedType}' but is '${typeof prop}'`);
 
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     return prop!; // TODO is '!' necessary ?
 }

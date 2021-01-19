@@ -5,3 +5,4 @@ rollup.config.js
 snapshots.js
 jest.config.js
 cypress/*
+src/__tests__/*

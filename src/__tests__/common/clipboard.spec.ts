@@ -1,4 +1,4 @@
-import { Builder, By, Key, until, Button, ThenableWebDriver } from 'selenium-webdriver';
+import { Builder, Key, ThenableWebDriver } from 'selenium-webdriver';
 import { Utils } from '../utils';
 import { getChromeCapabilities, getOptions } from '../options';
 
@@ -19,7 +19,7 @@ describe('Clipboard', () => {
         await utils.visit();
     })
 
-    test('cut and paste', async () => {
+    it('cut and paste', async () => {
 
         await utils.sendKeys(Key.RETURN);
 
@@ -29,25 +29,39 @@ describe('Clipboard', () => {
         await utils.sendKeys(Key.ARROW_DOWN);
         await utils.paste();
 
-        // expect(granted).toBe('granted');
+        // expect(granted).toBe('granted'); 
     });
 
-    test('cut with context menu', async () => {
+    it.skip('cut cell content of all cell templates', async () => {
+        throw new Error(`Test not implemented!`);
+    });
 
-        const actions = driver.actions();
+    it.skip('cut cell with groupId', async () => {
+        throw new Error(`Test not implemented!`);
+    });
 
-        const selectedCell = await utils.focusCell(4, 4);
+    it.skip('cut cell and then paste content into the same cell template', async () => {
+        throw new Error(`Test not implemented!`);
+    });
 
-        await actions
-            .contextClick(selectedCell)
-            .perform();
+    it.skip('copy cell and paste into corespoding cell template', async () => {
+        throw new Error(`Test not implemented!`);
+    });
 
-        await utils.openContextMenu(selectedCell);
-        await utils.clickContextMenuOption(1);
-        const target = await utils.focusCell(2, 8);
-        await utils.openContextMenu(target);
-        await utils.clickContextMenuOption(2);
+    it.skip('should NOT paste cell into diffrent groupId', async () => {
+        throw new Error(`Test not implemented!`);
+    });
 
+    it.skip('should paste cell content into outer input', async () => {
+        throw new Error(`Test not implemented!`);
+    });
+
+    it.skip('should ensure that pasted content becomes ', async () => {
+        throw new Error(`Test not implemented!`);
+    });
+
+    it.skip('should paste content from other source', async () => {
+        throw new Error(`Test not implemented!`);
     });
 
     afterAll(async () => {

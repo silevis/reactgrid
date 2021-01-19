@@ -81,7 +81,7 @@ const rollupConfig = [
         ],
     },
     {
-        input: './dist/types/reactgridProExports.d.ts',
+        input: './dist/types/src/reactgridProExports.d.ts',
         output: [
             { file: './dist/core/reactgrid.d.ts', format: 'es' }
         ],
@@ -90,7 +90,7 @@ const rollupConfig = [
         ],
     },
     {
-        input: './dist/types/lib/index.d.ts',
+        input: './dist/types/src/lib/index.d.ts',
         output: [
             { file: './dist/reactgrid.d.ts', format: 'es' }
         ],

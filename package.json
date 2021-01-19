@@ -63,7 +63,7 @@
     "react-dom": "^16.13.1"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "start": "cross-env PORT=3000 react-scripts start",
     "build": "react-scripts build",
     "pre-deploy": "npx rollup -c",
     "deploy": "npm publish dist --access=public",
