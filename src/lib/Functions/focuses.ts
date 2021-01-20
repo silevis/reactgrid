@@ -11,8 +11,6 @@ export type RowCalcFn = (state: State, location: Location) => number;
 
 export const focusCell = withFocusLocation(focusLocation);
 
-export const moveFocusFirst = withMoveFocusFirst(focusCell);
-export const moveFocusLast = withMoveFocusLast(focusCell);
 export const moveFocusHome = withMoveFocusHome(focusCell);
 export const moveFocusEnd = withMoveFocusEnd(focusCell);
 export const moveFocusLeft = withMoveFocusLeft(focusCell);
@@ -26,36 +24,6 @@ export const moveFocusPageDown = moveFocusPage(pageDownRowCalc);
 export function withFocusLocation(focusLocation: FocusLocationFn) {
     return (colIdx: number, rowIdx: number, state: State): State => {
         return focusLocation(state, state.cellMatrix.getLocation(rowIdx, colIdx));
-    }
-}
-
-export function withMoveFocusFirst(fc: FocusCellFn) {
-    return (state: State): State => {
-        if (state.focusedLocation) {
-            const nextFocusableLocation = getNextFocusableLocation(state, state.focusedLocation.row.idx, 0)
-            if (!nextFocusableLocation) {
-                const nextLocation = state.cellMatrix.getLocation(state.focusedLocation.row.idx, 0);
-                const focusLocation = getFocusLocationToRight(state, nextLocation);
-                return focusLocation ? fc(focusLocation.column.idx, focusLocation.row.idx, state) : state;
-            }
-            return fc(nextFocusableLocation.column.idx, nextFocusableLocation.row.idx, state);
-        }
-        return state;
-    }
-}
-
-export function withMoveFocusLast(fc: FocusCellFn) {
-    return (state: State): State => {
-        if (state.focusedLocation) {
-            const lastFocusableLocation = getNextFocusableLocation(state, state.cellMatrix.last.row.idx, state.cellMatrix.last.column.idx)
-            if (!lastFocusableLocation) {
-                const nextLocation = state.cellMatrix.getLocation(state.focusedLocation.row.idx, state.cellMatrix.columns.length - 1);
-                const focusLocation = getFocusLocationToLeft(state, nextLocation);
-                return focusLocation ? fc(focusLocation.column.idx, focusLocation.row.idx, state) : state;
-            }
-            return fc(lastFocusableLocation.column.idx, lastFocusableLocation.row.idx, state);
-        }
-        return state;
     }
 }
 
