@@ -1,16 +1,28 @@
 import { Actions, By, Key, ThenableWebDriver, WebElement } from 'selenium-webdriver';
 import cypressJson from '../../cypress.json';
 import { getLocalIpAdresses } from './network';
+import { promises as fsp } from 'fs';
+import { TestConfig } from '../test/testEnvConfig';
+
+export interface CellLocation {
+    idx: number;
+    idy: number;
+}
 
 export class Utils {
 
-    public actions!: Actions;
+    private actions!: Actions;
+    private lastAssertionResult: 'passed' | 'failed' | undefined;
     public static BASE_URL = cypressJson.baseUrl;
     public static LOCAL_BASE_URL = `${process.env.PROTOCOL}://${getLocalIpAdresses()[0]}:${process.env.PORT}`;
     public static REMOTE_BROSERSTACK_BASE_URL = `${process.env.PROTOCOL}://bs-local.com:${process.env.PORT}`;
 
-    constructor(protected driver: ThenableWebDriver) {
+    constructor(protected driver: ThenableWebDriver, protected config: TestConfig) {
         this.actions = driver.actions();
+    }
+
+    getConfig(): TestConfig {
+        return this.config;
     }
 
     async visit(path = ''): Promise<void> {
@@ -25,6 +37,49 @@ export class Utils {
         await this.driver.get(Utils.REMOTE_BROSERSTACK_BASE_URL + path);
     }
 
+    async takeScreenshot(fileName: string): Promise<void> {
+        const image = await this.driver.takeScreenshot();
+        const path = __dirname + '/screenshots/' + fileName + '.png';
+        await fsp.writeFile(path, image, 'base64');
+    }
+
+    async writeTextToClipboard(text: string): Promise<unknown> {
+        return await this.driver.executeScript('navigator.clipboard.writeText(`' + text + '`);');
+    }
+
+    isLastAsserionPassed(): boolean {
+        return this.lastAssertionResult === 'passed';
+    }
+
+    isTestProd(): boolean {
+        return process.env.TEST_PROD === 'true';
+    }
+
+    async getOuterInput(): Promise<WebElement> {
+        const locator = By.css(`[data-cy="outer-input"]`);
+        return await this.driver.findElement(locator);
+    }
+
+    async runAssertion(
+        assertion: () => any,
+        onFailure?: () => any,
+    ) {
+        try {
+            await assertion();
+            this.lastAssertionResult = 'passed';
+        } catch (exception) {
+            if (typeof onFailure === 'function') {
+                await onFailure();
+            }
+            if (this.isTestProd()) {
+                await this.driver.close();
+                await this.driver.quit();
+            }
+            this.lastAssertionResult = 'failed';
+            throw exception;
+        }
+    }
+
     async sendKeys(...key: string[]): Promise<void> {
         const locator = By.className('rg-hidden-element');
         await this.driver.findElement(locator).sendKeys(...key);
@@ -36,26 +91,21 @@ export class Utils {
         //     .perform();
     }
 
-    async focusCell(idx: number, idy: number): Promise<WebElement> {
+    async getCell({ idx, idy }: CellLocation): Promise<WebElement> {
         const locator = By.css(`[data-cell-colidx="${idx}"][data-cell-rowidx="${idy}"]`);
-        const cell = await this.driver.findElement(locator);
+        return await this.driver.findElement(locator);
+    }
+
+    async focusCell({ idx, idy }: CellLocation): Promise<WebElement> {
+        const cell = await this.getCell({ idx, idy });
         await cell.click();
         return cell;
     }
 
-    async openContextMenu(element: WebElement): Promise<void> {
-        await this.actions
-            .contextClick(element)
-            .perform();
-    }
-
-    async clickContextMenuOption(idx: number): Promise<void> {
-        const locator = By.className('rg-context-menu-option');
-        const ctxOptions = await this.driver.findElements(locator);
-        const cutOption = await ctxOptions[idx];
-        await cutOption.click();
-    }
-
+    /**
+     * TODO
+     * Implement actions for non Mac OS 
+     */
     async copy(): Promise<void> {
         await this.sendKeys(Key.META + 'c');
     }

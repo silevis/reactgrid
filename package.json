@@ -38,6 +38,7 @@
     "dotenv": "^8.2.0",
     "eslint": "^7.17.0",
     "eslint-plugin-react": "^7.22.0",
+    "eslint-plugin-react-hooks": "^4.2.0",
     "git-branch-is": "^4.0.0",
     "husky": "^4.3.7",
     "node-sass": "^4.14.1",
@@ -70,7 +71,7 @@
     "pre-deploy": "npx rollup -c",
     "deploy": "npm publish dist --access=public",
     "eslint": "npx eslint ./src",
-    "test": "jest --watchAll --detectOpenHandles",
+    "test": "cross-env TEST_PROD=true jest --detectOpenHandles",
     "test:cypress": "npx cypress open",
     "run:all:tests": "run-p --print-label cy:**",
     "cy:standard": "npx cypress run --headless --quiet --browser firefox -s 'cypress/integration/tests/standard/*'",
@@ -84,7 +85,7 @@
   },
   "husky": {
     "hooks": {
-      "pre-push": "if git-branch-is develop; then npx run-s eslint run:all:tests; fi"
+      "pre-push": "if git-branch-is develop; then npx run-s eslint run:all:tests test; fi"
     }
   },
   "browserslist": [
