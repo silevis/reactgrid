@@ -11,13 +11,13 @@ describe.skip('Cell templates', () => {
     jest.setTimeout(30000);
 
     beforeAll(async () => {
-        // TODO REMOVE screenshoots
         driver = new Builder()
             .forBrowser('chrome')
             .usingServer(browserstackURL)
             .withCapabilities(IpadCapabilities)
             .build();
         utils = new Utils(driver, config, 'mobileIPad');
+        await utils.wipeScreenshotsDir();
     });
 
     beforeEach(async () => {

@@ -11,13 +11,13 @@ describe.skip('Scroll', () => {
     jest.setTimeout(30000);
 
     beforeAll(async () => {
-        // TODO REMOVE screenshoots
         driver = new Builder()
             .usingServer(appiumURL)
             .withCapabilities(mobileLocalcapabilities)
             .forBrowser('Chrome')
-            .build();;
+            .build();
         utils = new Utils(driver, config, 'mobileAndroidTablet');
+        await utils.wipeScreenshotsDir();
     });
 
     beforeEach(async () => {

@@ -18,6 +18,7 @@ export class Utils {
     public static BASE_URL = cypressJson.baseUrl;
     public static LOCAL_BASE_URL = `${process.env.PROTOCOL}://${getLocalIpAdresses()[0]}:${process.env.PORT}`;
     public static REMOTE_BROSERSTACK_BASE_URL = `${process.env.PROTOCOL}://bs-local.com:${process.env.PORT}`;
+    public static SCREENSHOT_DIR_PATH = __dirname + '/screenshots';
 
     constructor(
         protected driver: ThenableWebDriver,
@@ -49,8 +50,13 @@ export class Utils {
 
     async takeScreenshot(fileName: string): Promise<void> {
         const image = await this.driver.takeScreenshot();
-        const path = __dirname + '/screenshots/' + fileName + '.png';
+        const path = Utils.SCREENSHOT_DIR_PATH + '/' + fileName + '.png';
         await fsp.writeFile(path, image, 'base64');
+    }
+
+    async wipeScreenshotsDir(): Promise<void> {
+        const path = Utils.SCREENSHOT_DIR_PATH;
+        await fsp.rmdir(path, { recursive: true });
     }
 
     async writeTextToClipboard(text: string): Promise<unknown> {

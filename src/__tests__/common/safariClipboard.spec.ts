@@ -11,12 +11,12 @@ describe('Safari clipboard', () => {
     jest.setTimeout(30000);
 
     beforeAll(async () => {
-        // TODO REMOVE screenshoots
         driver = new Builder()
             .forBrowser('safari')
             .withCapabilities(getSafariCapabilities())
             .build();
         utils = new Utils(driver, config, 'desktopSafari');
+        await utils.wipeScreenshotsDir();
     });
 
     beforeEach(async () => {

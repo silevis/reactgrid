@@ -11,13 +11,13 @@ describe.skip('Cell editor', () => {
     jest.setTimeout(30000);
 
     beforeAll(async () => {
-        // TODO REMOVE screenshoots
         driver = new Builder()
             .forBrowser('chrome')
             .usingServer(appiumURL)
             .withCapabilities(mobileLocalcapabilities)
             .build();
         utils = new Utils(driver, config, 'mobileIPad');
+        await utils.wipeScreenshotsDir();
     });
 
     afterAll(async () => {

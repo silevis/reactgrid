@@ -11,13 +11,13 @@ describe('Clipboard', () => {
     jest.setTimeout(30000);
 
     beforeAll(async () => {
-        // TODO REMOVE screenshoots
         driver = new Builder()
             .forBrowser('chrome')
             .withCapabilities(getChromeCapabilities())
             .setChromeOptions(getOptions())
             .build();
         utils = new Utils(driver, config, 'desktopChrome');
+        await utils.wipeScreenshotsDir();
     });
 
     beforeEach(async () => {
