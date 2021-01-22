@@ -507,7 +507,7 @@ A`);
 
     });
 
-    it('should paste content from other source', async () => {
+    it('should paste content from other source', async () => { // ✅
 
         const targetLocation: CellLocation = {
             idx: 1,
@@ -538,6 +538,28 @@ A`);
             }
         }, async () => {
             await utils.takeScreenshot('should paste content from other source ');
+        });
+
+    });
+
+    it('paste into a non-editable cell should not be possible', async () => { // ✅
+
+        const text = `Text to paste`;
+
+        const targetLocation: CellLocation = {
+            idx: 8,
+            idy: 2,
+        }
+
+        const cell = await utils.focusCell(targetLocation);
+        const cellText = await cell.getText();
+
+        await utils.writeTextToClipboard(text);
+
+        await utils.paste();
+
+        await utils.runAssertion(async () => {
+            expect(cellText).toContain(cellText);
         });
 
     });

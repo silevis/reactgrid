@@ -356,7 +356,6 @@ export const TestGridOptionsSelect: React.FC<{ isPro?: boolean }> = ({ isPro }) 
                 <option value='/enableStickyPinnedToBody'>Enable sticky pinned to body</option>
                 <option value='/enableAdditionalContent'>Enable additional content</option>
                 <option value='/enableSymetric'>Enable symetric</option>
-                <option value='/enableFrozenFocus'>Enable frozen focus</option>
                 <option value='/enableResponsiveSticky'>Enable responsive sticky</option>
                 <option value='/enableResponsiveStickyPinnedToBody'>Enable responsive sticky pinned to body</option>
                 {isPro && <>

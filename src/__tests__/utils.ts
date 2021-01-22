@@ -13,7 +13,7 @@ export type TestedBrowsers = 'desktopSafari' | 'desktopChrome' | 'mobileIPad' | 
 
 export class Utils {
 
-    private actions!: Actions;
+    protected actions!: Actions;
     private lastAssertionResult: 'passed' | 'failed' | undefined;
     public static BASE_URL = cypressJson.baseUrl;
     public static LOCAL_BASE_URL = `${process.env.PROTOCOL}://${getLocalIpAdresses()[0]}:${process.env.PORT}`;
@@ -135,7 +135,7 @@ export class Utils {
         } else {
             await this.sendKeys(Key.META + 'c');
         }
-        await this.driver.sleep(200);
+        // await this.driver.sleep(200);
     }
 
     async cut(): Promise<void> {
@@ -150,7 +150,7 @@ export class Utils {
         } else {
             await this.sendKeys(Key.META + 'x');
         }
-        await this.driver.sleep(200);
+        // await this.driver.sleep(200);
     }
 
     async paste(): Promise<void> {
@@ -165,7 +165,7 @@ export class Utils {
         } else {
             await this.sendKeys(Key.META + 'v');
         }
-        await this.driver.sleep(200);
+        // await this.driver.sleep(200);
     }
 
 }
