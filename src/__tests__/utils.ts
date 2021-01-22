@@ -9,6 +9,8 @@ export interface CellLocation {
     idy: number;
 }
 
+export type TestedBrowsers = 'desktopSafari' | 'desktopChrome' | 'mobileIPad' | 'mobileAndroidTablet';
+
 export class Utils {
 
     private actions!: Actions;
@@ -17,12 +19,20 @@ export class Utils {
     public static LOCAL_BASE_URL = `${process.env.PROTOCOL}://${getLocalIpAdresses()[0]}:${process.env.PORT}`;
     public static REMOTE_BROSERSTACK_BASE_URL = `${process.env.PROTOCOL}://bs-local.com:${process.env.PORT}`;
 
-    constructor(protected driver: ThenableWebDriver, protected config: TestConfig) {
+    constructor(
+        protected driver: ThenableWebDriver,
+        protected config: TestConfig,
+        protected testedBrowser: TestedBrowsers,
+    ) {
         this.actions = driver.actions();
     }
 
     getConfig(): TestConfig {
         return this.config;
+    }
+
+    public getTestedBrowser(): TestedBrowsers {
+        return this.testedBrowser;
     }
 
     async visit(path = ''): Promise<void> {
@@ -99,23 +109,57 @@ export class Utils {
     async focusCell({ idx, idy }: CellLocation): Promise<WebElement> {
         const cell = await this.getCell({ idx, idy });
         await cell.click();
+        await this.driver.sleep(200);
         return cell;
     }
 
     /**
      * TODO
-     * Implement actions for non Mac OS 
+     * 1. Implement actions for non Mac OS opearing systems
      */
     async copy(): Promise<void> {
-        await this.sendKeys(Key.META + 'c');
+        if (this.testedBrowser === 'desktopSafari') {
+            await this.actions
+                .keyDown(Key.META)
+                .keyDown('c')
+                .keyUp('c')
+                .keyUp(Key.META)
+                .perform();
+            await this.actions.clear();
+        } else {
+            await this.sendKeys(Key.META + 'c');
+        }
+        await this.driver.sleep(200);
     }
 
     async cut(): Promise<void> {
-        await this.sendKeys(Key.META + 'x');
+        if (this.testedBrowser === 'desktopSafari') {
+            await this.actions
+                .keyDown(Key.META)
+                .keyDown('x')
+                .keyUp('x')
+                .keyUp(Key.META)
+                .perform();
+            await this.actions.clear();
+        } else {
+            await this.sendKeys(Key.META + 'x');
+        }
+        await this.driver.sleep(200);
     }
 
     async paste(): Promise<void> {
-        await this.sendKeys(Key.META + 'v');
+        if (this.testedBrowser === 'desktopSafari') {
+            await this.actions
+                .keyDown(Key.COMMAND)
+                .keyDown('v')
+                .keyUp('v')
+                .keyUp(Key.COMMAND)
+                .perform();
+            await this.actions.clear();
+        } else {
+            await this.sendKeys(Key.META + 'v');
+        }
+        await this.driver.sleep(200);
     }
 
 }

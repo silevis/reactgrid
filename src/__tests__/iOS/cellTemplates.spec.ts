@@ -5,18 +5,19 @@ import { config } from '../../test/testEnvConfig';
 
 describe.skip('Cell templates', () => {
 
-    const driver: ThenableWebDriver = new Builder()
-        .forBrowser('chrome')
-        .usingServer(browserstackURL)
-        .withCapabilities(IpadCapabilities)
-        .build();;
+    let driver: ThenableWebDriver;
     let utils: Utils;
 
     jest.setTimeout(30000);
 
     beforeAll(async () => {
         // TODO REMOVE screenshoots
-        utils = new Utils(driver, config);
+        driver = new Builder()
+            .forBrowser('chrome')
+            .usingServer(browserstackURL)
+            .withCapabilities(IpadCapabilities)
+            .build();
+        utils = new Utils(driver, config, 'mobileIPad');
     });
 
     beforeEach(async () => {

@@ -1,9 +1,9 @@
 import { Builder, By, Key, ThenableWebDriver, WebElement } from 'selenium-webdriver';
 import { CellLocation, Utils } from '../utils';
-import { getChromeCapabilities, getOptions } from '../options';
+import { getSafariCapabilities } from '../options';
 import { config } from '../../test/testEnvConfig';
 
-describe('Clipboard', () => {
+describe('Safari clipboard', () => {
 
     let driver: ThenableWebDriver;
     let utils: Utils;
@@ -13,11 +13,10 @@ describe('Clipboard', () => {
     beforeAll(async () => {
         // TODO REMOVE screenshoots
         driver = new Builder()
-            .forBrowser('chrome')
-            .withCapabilities(getChromeCapabilities())
-            .setChromeOptions(getOptions())
+            .forBrowser('safari')
+            .withCapabilities(getSafariCapabilities())
             .build();
-        utils = new Utils(driver, config, 'desktopChrome');
+        utils = new Utils(driver, config, 'desktopSafari');
     });
 
     beforeEach(async () => {
@@ -25,8 +24,8 @@ describe('Clipboard', () => {
     });
 
     afterAll(async () => {
-        await driver.quit();
         await driver.close();
+        await driver.quit();
     });
 
     it('cut cell content of all cell templates', async () => { // ✅
@@ -131,7 +130,7 @@ describe('Clipboard', () => {
         // Dropdown test should be implemented as separate test
     });
 
-    it.skip('cut on Dropdown cell', async () => { // ✅
+    it.skip('cut on Dropdown cell', async () => {
         // 🟠 TODO fix
         let source: CellLocation = {
             idx: 8,
@@ -162,8 +161,7 @@ describe('Clipboard', () => {
 
         // this line break is necessary
         await utils.runAssertion(async () => {
-            expect(await (await sourceCell.getText())).toContain(`❯
-A`);
+            expect(await (await sourceCell.getText())).toContain(`❯A`);
         });
 
         sourceCell = await utils.focusCell({
@@ -292,7 +290,7 @@ A`);
         // Dropdown test should be implemented as separate test
     });
 
-    it('copy cell and paste into corresponding cell template', async () => { // ✅
+    it('copy cell and paste into corresponding cell template', async () => {// ✅
 
         let source: CellLocation = {
             idx: 0,
@@ -407,7 +405,7 @@ A`);
 
     });
 
-    it.skip('copy on Dropdown cell', async () => { // ✅
+    it.skip('copy on Dropdown cell', async () => {
         // 🟠 TODO fix
         let source: CellLocation = {
             idx: 8,
@@ -499,7 +497,12 @@ A`);
             if (utils.getConfig().isPro) {
                 expect(cellText).toBe('text0');
             } else {
-                expect(cellText).toBe(textWithSpaces);
+                // int desktopSafari pasted text is joined with tab char
+                if (utils.getTestedBrowser() === 'desktopSafari') {
+                    expect(cellText).toBe(text);
+                } else {
+                    expect(cellText).toBe(textWithSpaces);
+                }
             }
         }, async () => {
             await utils.takeScreenshot('multi cell text is pasted into single cell');
@@ -507,7 +510,7 @@ A`);
 
     });
 
-    it('should paste content from other source', async () => {
+    it('should paste content from other source', async () => { // ✅
 
         const targetLocation: CellLocation = {
             idx: 1,
@@ -523,7 +526,11 @@ A`);
                 y: 100,
             })
             .perform();
-        await driver.findElement(By.className('handsontableInput')).sendKeys(Key.META + 'c');
+        if (utils.getTestedBrowser() === 'desktopSafari') {
+            await utils.cut();
+        } else {
+            await driver.findElement(By.className('handsontableInput')).sendKeys(Key.META + 'c');
+        }
         await utils.visit();
         await utils.focusCell(targetLocation);
         await utils.paste();

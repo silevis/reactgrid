@@ -52,3 +52,9 @@ export function getChromeCapabilities(): Capabilities {
 
     return chromeCapabilities;
 }
+
+export function getSafariCapabilities(): Capabilities {
+    const capabilities = Capabilities.safari();
+    capabilities.set('browserName', 'safari');
+    return capabilities;
+}

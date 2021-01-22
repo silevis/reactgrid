@@ -5,18 +5,19 @@ import { config } from '../../test/testEnvConfig';
 
 describe.skip('Scroll', () => {
 
-    const driver: ThenableWebDriver = new Builder()
-        .usingServer(appiumURL)
-        .withCapabilities(mobileLocalcapabilities)
-        .forBrowser('Chrome')
-        .build();;
+    let driver: ThenableWebDriver;
     let utils: Utils;
 
     jest.setTimeout(30000);
 
     beforeAll(async () => {
         // TODO REMOVE screenshoots
-        utils = new Utils(driver, config);
+        driver = new Builder()
+            .usingServer(appiumURL)
+            .withCapabilities(mobileLocalcapabilities)
+            .forBrowser('Chrome')
+            .build();;
+        utils = new Utils(driver, config, 'mobileAndroidTablet');
     });
 
     beforeEach(async () => {
