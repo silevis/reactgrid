@@ -107,7 +107,7 @@ context('Focus', () => {
     });
 
     it.skip('should reach first left focusable cell on ctrl + home key', () => { // ✅
-        //TODO
+        // 🟠  TODO
         utils.selectCell(config.cellWidth * 3 + utils.getCellXCenter(), config.cellHeight * 5 + utils.getCellYCenter());
         utils.keyDown(constants.keyCodes.Home, { force: true, metaKey: true, ctrlKey: !utils.isMacOs() && true });
 
@@ -116,7 +116,7 @@ context('Focus', () => {
     });
 
     it.skip('should reach first left focusable cell on crtl + end key', () => { // ✅
-        //TODO
+        // 🟠 TODO
         utils.selectCell(config.cellWidth * 3 + utils.getCellXCenter(), config.cellHeight * 5 + utils.getCellYCenter());
         utils.keyDown(constants.keyCodes.End, { force: true, metaKey: true, ctrlKey: !utils.isMacOs() && true });
 
