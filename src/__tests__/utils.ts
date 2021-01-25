@@ -1,4 +1,4 @@
-import { Actions, By, Key, ThenableWebDriver, WebElement } from 'selenium-webdriver';
+import { By, Key, ThenableWebDriver, WebElement } from 'selenium-webdriver';
 import cypressJson from '../../cypress.json';
 import { getLocalIpAdresses } from './network';
 import { promises as fsp } from 'fs';
@@ -13,7 +13,6 @@ export type TestedBrowsers = 'desktopSafari' | 'desktopChrome' | 'mobileIPad' | 
 
 export class Utils {
 
-    protected actions!: Actions;
     private lastAssertionResult: 'passed' | 'failed' | undefined;
     public static BASE_URL = cypressJson.baseUrl;
     public static LOCAL_BASE_URL = `${process.env.PROTOCOL}://${getLocalIpAdresses()[0]}:${process.env.PORT}`;
@@ -24,9 +23,7 @@ export class Utils {
         protected driver: ThenableWebDriver,
         protected config: TestConfig,
         protected testedBrowser: TestedBrowsers,
-    ) {
-        this.actions = driver.actions();
-    }
+    ) { }
 
     getConfig(): TestConfig {
         return this.config;
@@ -119,19 +116,24 @@ export class Utils {
         return cell;
     }
 
+    async scrollTo(left: number, top: number) {
+        await this.driver.executeScript(`document.getElementsByClassName("test-grid-container")[0].scrollTo(${left},${top});`);
+        (await this.driver).sleep(1000);
+    }
+
     /**
      * TODO
      * 1. Implement actions for non Mac OS opearing systems
      */
     async copy(): Promise<void> {
         if (this.testedBrowser === 'desktopSafari') {
-            await this.actions
+            await this.driver.actions()
                 .keyDown(Key.META)
                 .keyDown('c')
                 .keyUp('c')
                 .keyUp(Key.META)
                 .perform();
-            await this.actions.clear();
+            await this.driver.actions().clear();
         } else {
             await this.sendKeys(Key.META + 'c');
         }
@@ -140,13 +142,13 @@ export class Utils {
 
     async cut(): Promise<void> {
         if (this.testedBrowser === 'desktopSafari') {
-            await this.actions
+            await this.driver.actions()
                 .keyDown(Key.META)
                 .keyDown('x')
                 .keyUp('x')
                 .keyUp(Key.META)
                 .perform();
-            await this.actions.clear();
+            await this.driver.actions().clear();
         } else {
             await this.sendKeys(Key.META + 'x');
         }
@@ -155,13 +157,13 @@ export class Utils {
 
     async paste(): Promise<void> {
         if (this.testedBrowser === 'desktopSafari') {
-            await this.actions
+            await this.driver.actions()
                 .keyDown(Key.COMMAND)
                 .keyDown('v')
                 .keyUp('v')
                 .keyUp(Key.COMMAND)
                 .perform();
-            await this.actions.clear();
+            await this.driver.actions().clear();
         } else {
             await this.sendKeys(Key.META + 'v');
         }
