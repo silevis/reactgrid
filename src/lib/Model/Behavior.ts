@@ -3,12 +3,12 @@ import { KeyboardEvent, ClipboardEvent, PointerEvent } from './domEventsTypes';
 import { State } from './State';
 
 // ASK ARCHITECT BEFORE INTRODUCING ANY CHANGE!
-export abstract class Behavior {
+export abstract class Behavior<PointerUpEvent = PointerEvent> {
 
     handleKeyDown(event: KeyboardEvent, state: State): State {
         return state;
     }
-    handlePointerUp(event: PointerEvent, location: PointerLocation, state: State): State {
+    handlePointerUp(event: PointerUpEvent, location: PointerLocation, state: State): State {
         return state;
     }
     handleKeyUp(event: KeyboardEvent, state: State): State {

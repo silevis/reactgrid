@@ -18,6 +18,7 @@ interface TestGridProps {
     enableFrozenFocus?: boolean;
     firstRowType?: TextCell['type'] | HeaderCell['type']; // 'text' if undefined
     firstColType?: ChevronCell['type'] | HeaderCell['type']; // 'chevron' if undefined
+    cellType?: TextCell['type'] | HeaderCell['type']; // 'text' if undefined
     config: TestConfig;
     component: React.ComponentClass<ReactGridProps>;
 }
@@ -45,6 +46,7 @@ export const TestGrid: React.FC<TestGridProps> = (props) => {
         config, component, enableSticky, enableColumnAndRowSelection, enableFrozenFocus,
         firstRowType = 'text',
         firstColType = 'chevron',
+        cellType = 'text',
     } = props;
 
     const [columns, setColumns] = React.useState(() => new Array(config.columns).fill({ columnId: 0, resizable: true, reorderable: true, width: -1 })
@@ -58,6 +60,7 @@ export const TestGrid: React.FC<TestGridProps> = (props) => {
             if (ri === 0) return { type: firstRowType, text: `${ri} - ${ci}` }
             if (ri === 2 && ci === 8) return { type: 'text', text: `non-editable`, nonEditable: true, validator: (text: string): boolean => true }
             if (ri === 3 && ci === 8) return { type: 'text', text: '', placeholder: 'placeholder', validator: (text: string): boolean => true }
+            if ((ri === 3 || ri === 4 || ri === 5 || ri === 24 || ri === 149) && (ci === 10 || ci === 11 || ci === 12 || ci === 29)) return { type: cellType, text: `${ri} - ${ci}` }
             const now = new Date();
             switch (ci) {
                 case 0:
