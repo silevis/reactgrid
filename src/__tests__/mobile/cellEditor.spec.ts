@@ -1,9 +1,9 @@
 import { Builder, Key, ThenableWebDriver } from 'selenium-webdriver';
-import { Utils } from '../utils';
+import { CellLocation, Utils } from '../utils';
 import { appiumURL, mobileLocalcapabilities } from '../mobileOptions';
 import { config } from '../../test/testEnvConfig';
 
-describe.skip('Cell editor', () => {
+describe('Cell editor', () => {
 
     let driver: ThenableWebDriver;
     let utils: Utils;
@@ -16,23 +16,34 @@ describe.skip('Cell editor', () => {
             .usingServer(appiumURL)
             .withCapabilities(mobileLocalcapabilities)
             .build();
-        utils = new Utils(driver, config, 'mobileIPad');
+        utils = new Utils(driver, config, 'mobileAndroidTablet');
         await utils.wipeScreenshotsDir();
     });
 
+    beforeEach(async () => {
+        await utils.visitLocal();
+    });
+
     afterAll(async () => {
-        const nonProductionAndSuccess = !utils.isTestProd() && utils.isLastAsserionPassed();
-        if (nonProductionAndSuccess) {
-            if (await (await driver.getSession()).getId()) {
-                await driver.close();
-                await driver.quit();
-            }
-        }
+        // await driver.quit();
+        // await driver.close();
     });
 
     it('should be rendered inside cell', async () => {
-        // throw new Error(`Test not implemented!`);
+
+        const source: CellLocation = {
+            idx: 0,
+            idy: 5,
+        }
+
+        const sourceCell = await utils.focusCell(source);
+        const text = await sourceCell.getText();
         await utils.sendKeys(Key.RETURN);
+
+        await utils.runAssertion(async () => {
+            expect(text).toBe('❯');
+        });
+
     });
 
 });

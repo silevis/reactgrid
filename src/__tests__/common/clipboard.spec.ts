@@ -3,7 +3,7 @@ import { CellLocation, Utils } from '../utils';
 import { getChromeCapabilities, getOptions } from '../options';
 import { config } from '../../test/testEnvConfig';
 
-describe('Clipboard', () => {
+describe.skip('Clipboard', () => {
 
     let driver: ThenableWebDriver;
     let utils: Utils;

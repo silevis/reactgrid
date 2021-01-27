@@ -3,7 +3,7 @@ import { CellLocation, Utils } from '../utils';
 import { getSafariCapabilities } from '../options';
 import { config } from '../../test/testEnvConfig';
 
-describe('Safari clipboard', () => {
+describe.skip('Safari clipboard', () => {
 
     let driver: ThenableWebDriver;
     let utils: Utils;
