@@ -20,4 +20,5 @@ export const notifyAboutReactGridPro = (state: State): void => {
     notification(state.props.enableRowSelection, 'rowSelection');
     notification(state.props.stickyBottomRows, 'stickyBottomRows');
     notification(state.props.stickyRightColumns, 'stickyRightColumns');
+    notification(state.props.enableAutocomplete, 'autocomplete');
 }

@@ -49,6 +49,8 @@ export interface ReactGridProps {
     /** Set `true` to enable cell fill handle feature (by default `false`) */
     readonly enableFillHandle?: boolean;
     /** Set `true` to enable range selection feature (by default `false`) */
+    readonly enableAutocomplete?: boolean;
+    /** Set `true` to enable autocomplete fill range feature (by default `false`) */
     readonly enableRangeSelection?: boolean;
     /** Set `true` to enable row selection feature (by default `false`) */
     readonly enableRowSelection?: boolean;

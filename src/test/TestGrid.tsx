@@ -280,6 +280,7 @@ export const TestGrid: React.FC<TestGridProps> = (props) => {
                     enableFullWidthHeader={config.enableFullWidthHeader || false}
                     enableRangeSelection={config.enableRangeSelection}
                     enableFillHandle={config.enableFillHandle}
+                    enableAutocomplete={config.enableAutocomplete}
                     enableGroupIdRender={config.enableGroupIdRender}
                     labels={config.labels}
                     horizontalStickyBreakpoint={config.horizontalStickyBreakpoint}

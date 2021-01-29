@@ -15,6 +15,7 @@ export const config: TestConfig = {
     margin: '0',
     enableRangeSelection: true,
     enableFillHandle: true,
+    enableAutocomplete: true,
     enableFullWidthHeader: false,
     enableGroupIdRender: true,
 
@@ -127,6 +128,7 @@ export interface TestConfig {
     fillHandleWidth: number;
     enableRangeSelection: boolean;
     enableFillHandle: boolean;
+    enableAutocomplete: boolean;
     enableFullWidthHeader: boolean;
     enableGroupIdRender: boolean;
 
