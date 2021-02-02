@@ -48,6 +48,8 @@ export class NumberCellTemplate implements CellTemplate<NumberCell> {
     private getTextFromCharCode = (cellText: string): string => {
         switch (cellText.charCodeAt(0)) {
             case keyCodes.DASH:
+            case keyCodes.FIREFOX_DASH:
+            case keyCodes.SUBTRACT:
                 return '-';
             case keyCodes.COMMA:
                 return ','
