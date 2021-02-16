@@ -21,10 +21,6 @@ export interface PaneContentProps<TState extends State = State> {
     cellRenderer: React.FC<CellRendererProps>;
     children?: (state: TState, range: Range) => React.ReactNode;
 }
-export interface PaneContentChild<TState extends State = State> {
-    state: TState;
-    calculatedRange?: Range;
-}
 export declare const PaneGridContent: React.NamedExoticComponent<RowsProps>;
 export declare const Pane: React.FC<PaneProps>;
 export declare const PaneContent: React.FC<PaneContentProps<State>>;

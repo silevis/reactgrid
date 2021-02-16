@@ -4,13 +4,13 @@ interface ErrorBoundaryState {
     errorInfo?: React.ErrorInfo;
     hasError: boolean;
 }
-export declare class ErrorBoundary extends Component<any, ErrorBoundaryState> {
+export declare class ErrorBoundary extends Component<Record<string, unknown>, ErrorBoundaryState> {
     state: ErrorBoundaryState;
     static getDerivedStateFromError(error: ErrorBoundaryState): {
         hasError: boolean;
         error: ErrorBoundaryState;
     };
     componentDidCatch(error: Error, errorInfo: ErrorInfo): void;
-    render(): {} | null | undefined;
+    render(): React.ReactNode;
 }
 export {};

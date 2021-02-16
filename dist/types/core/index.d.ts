@@ -1,6 +1,5 @@
 export * from './../lib/Model/InternalModel';
 export * from './../lib/Model/Range';
-export * from './../lib/Model/domEventsTypes';
 export * from './../lib/Model/CellMatrix';
 export * from './../lib/Model/AbstractPointerEventsController';
 export * from './../lib/Model/State';

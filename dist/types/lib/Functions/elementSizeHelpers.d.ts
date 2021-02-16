@@ -1,11 +1,7 @@
 import { State } from '../Model/State';
-export declare function getSizeOfElement(element: any): {
+export declare function getSizeOfElement(element: HTMLElement | (Window & typeof globalThis) | undefined): {
     width: number;
     height: number;
-};
-export declare function getOffsetsOfElement(element: any): {
-    offsetLeft: number;
-    offsetTop: number;
 };
 export declare function getReactGridOffsets(state: State): {
     left: number;

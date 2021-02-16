@@ -13,7 +13,7 @@ export interface State<TCellMatrix extends CellMatrix = CellMatrix, TBehavior ex
     readonly cellMatrix: TCellMatrix;
     readonly currentBehavior: TBehavior;
     readonly focusedLocation?: Location;
-    readonly cellTemplates?: CellTemplates;
+    readonly cellTemplates: CellTemplates;
     hiddenFocusElement?: HTMLDivElement;
     readonly reactGridElement?: HTMLDivElement;
     readonly scrollableElement?: HTMLElement | (Window & typeof globalThis);
@@ -33,7 +33,7 @@ export declare const defaultStateFields: {
     legacyBrowserMode: boolean;
     focusedLocation: undefined;
     currentBehavior: DefaultBehavior;
-    cellTemplates: undefined;
+    cellTemplates: CellTemplates;
     hiddenFocusElement: undefined;
     reactGridElement: undefined;
     scrollableElement: undefined;

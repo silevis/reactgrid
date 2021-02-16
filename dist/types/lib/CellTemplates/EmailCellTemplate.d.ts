@@ -13,6 +13,6 @@ export declare class EmailCellTemplate implements CellTemplate<EmailCell> {
         enableEditMode: boolean;
     };
     update(cell: Compatible<EmailCell>, cellToMerge: UncertainCompatible<EmailCell>): Compatible<EmailCell>;
-    getClassName(cell: Compatible<EmailCell>, isInEditMode: boolean): "valid" | "invalid";
+    getClassName(cell: Compatible<EmailCell>, isInEditMode: boolean): string;
     render(cell: Compatible<EmailCell>, isInEditMode: boolean, onCellChanged: (cell: Compatible<EmailCell>, commit: boolean) => void): React.ReactNode;
 }

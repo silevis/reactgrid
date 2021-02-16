@@ -8,6 +8,7 @@ interface TestGridProps {
     enableFrozenFocus?: boolean;
     firstRowType?: TextCell['type'] | HeaderCell['type'];
     firstColType?: ChevronCell['type'] | HeaderCell['type'];
+    cellType?: TextCell['type'] | HeaderCell['type'];
     config: TestConfig;
     component: React.ComponentClass<ReactGridProps>;
 }
@@ -15,6 +16,6 @@ export declare const TestGrid: React.FC<TestGridProps>;
 export declare const TestGridOptionsSelect: React.FC<{
     isPro?: boolean;
 }>;
-export declare const withDiv: <T extends object>(Component: React.ComponentType<T>) => React.FC<T & TestGridProps>;
-export declare const ExtTestGrid: React.FC<TestGridProps>;
+export declare const withDiv: <T extends Record<string, unknown> & TestGridProps>(Component: React.ComponentType<T>) => React.FC<T>;
+export declare const ExtTestGrid: React.FC<Record<string, unknown> & TestGridProps>;
 export {};

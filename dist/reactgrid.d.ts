@@ -15,7 +15,7 @@ declare class CheckboxCellTemplate implements CellTemplate<CheckboxCell> {
     };
     private toggleCheckboxCell;
     update(cell: Compatible<CheckboxCell>, cellToMerge: UncertainCompatible<CheckboxCell>): Compatible<CheckboxCell>;
-    getClassName(cell: Compatible<CheckboxCell>, isInEditMode: boolean): string;
+    getClassName(cell: Compatible<CheckboxCell>): string;
     render(cell: Compatible<CheckboxCell>, isInEditMode: boolean, onCellChanged: (cell: Compatible<CheckboxCell>, commit: boolean) => void): ReactNode;
 }
 
@@ -48,7 +48,7 @@ declare class EmailCellTemplate implements CellTemplate<EmailCell> {
         enableEditMode: boolean;
     };
     update(cell: Compatible<EmailCell>, cellToMerge: UncertainCompatible<EmailCell>): Compatible<EmailCell>;
-    getClassName(cell: Compatible<EmailCell>, isInEditMode: boolean): "valid" | "invalid";
+    getClassName(cell: Compatible<EmailCell>, isInEditMode: boolean): string;
     render(cell: Compatible<EmailCell>, isInEditMode: boolean, onCellChanged: (cell: Compatible<EmailCell>, commit: boolean) => void): ReactNode;
 }
 
@@ -81,9 +81,7 @@ declare class HeaderCellTemplate implements CellTemplate<HeaderCell> {
     render(cell: Compatible<HeaderCell>, isInEditMode: boolean, onCellChanged: (cell: Compatible<HeaderCell>, commit: boolean) => void): ReactNode;
     isFocusable: (cell: Compatible<HeaderCell>) => boolean;
     getClassName(cell: Compatible<HeaderCell>, isInEditMode: boolean): string;
-    getStyle: (cell: Compatible<HeaderCell>) => {
-        background: string;
-    };
+    getStyle: (cell: Compatible<HeaderCell>) => CellStyle;
 }
 
 interface NumberCell extends Cell {
@@ -690,7 +688,43 @@ interface MenuOption {
 
 declare type ClipboardEvent = ClipboardEvent$1<HTMLDivElement>;
 declare type KeyboardEvent = KeyboardEvent$1<HTMLDivElement>;
-declare type PointerEvent = PointerEvent$1<HTMLDivElement>;
+declare type PointerEvent = PointerEvent$1<HTMLDivElement> | globalThis.PointerEvent;
+
+interface GridColumn extends Column {
+    readonly idx: number;
+    readonly left: number;
+    readonly right: number;
+    readonly width: number;
+}
+interface GridRow extends Row {
+    readonly idx: number;
+    readonly top: number;
+    readonly bottom: number;
+    readonly height: number;
+}
+interface Location {
+    readonly row: GridRow;
+    readonly column: GridColumn;
+}
+interface PointerLocation extends Location {
+    readonly row: GridRow;
+    readonly column: GridColumn;
+    readonly viewportX: number;
+    readonly viewportY: number;
+    readonly cellX: number;
+    readonly cellY: number;
+}
+
+declare abstract class Behavior<PointerUpEvent = PointerEvent> {
+    handleKeyDown(event: KeyboardEvent, state: State): State;
+    handlePointerUp(event: PointerUpEvent, location: PointerLocation, state: State): State;
+    handleKeyUp(event: KeyboardEvent, state: State): State;
+    handleCopy(event: ClipboardEvent, state: State): State;
+    handlePaste(event: ClipboardEvent, state: State): State;
+    handleCut(event: ClipboardEvent, state: State): State;
+    handlePointerDown(event: PointerEvent, location: PointerLocation, state: State): State;
+    handleDoubleClick(event: PointerEvent, location: PointerLocation, state: State): State;
+}
 
 declare type SliceDirection = 'columns' | 'rows' | 'both';
 declare class Range {
@@ -751,7 +785,7 @@ interface State<TCellMatrix extends CellMatrix = CellMatrix, TBehavior extends B
     readonly cellMatrix: TCellMatrix;
     readonly currentBehavior: TBehavior;
     readonly focusedLocation?: Location;
-    readonly cellTemplates?: CellTemplates;
+    readonly cellTemplates: CellTemplates;
     hiddenFocusElement?: HTMLDivElement;
     readonly reactGridElement?: HTMLDivElement;
     readonly scrollableElement?: HTMLElement | (Window & typeof globalThis);
@@ -768,42 +802,6 @@ interface State<TCellMatrix extends CellMatrix = CellMatrix, TBehavior extends B
     readonly enableGroupIdRender: boolean;
 }
 
-interface GridColumn extends Column {
-    readonly idx: number;
-    readonly left: number;
-    readonly right: number;
-    readonly width: number;
-}
-interface GridRow extends Row {
-    readonly idx: number;
-    readonly top: number;
-    readonly bottom: number;
-    readonly height: number;
-}
-interface Location {
-    readonly row: GridRow;
-    readonly column: GridColumn;
-}
-interface PointerLocation extends Location {
-    readonly row: GridRow;
-    readonly column: GridColumn;
-    readonly viewportX: number;
-    readonly viewportY: number;
-    readonly cellX: number;
-    readonly cellY: number;
-}
-
-declare abstract class Behavior {
-    handleKeyDown(event: KeyboardEvent, state: State): State;
-    handlePointerUp(event: PointerEvent, location: PointerLocation, state: State): State;
-    handleKeyUp(event: KeyboardEvent, state: State): State;
-    handleCopy(event: ClipboardEvent, state: State): State;
-    handlePaste(event: ClipboardEvent, state: State): State;
-    handleCut(event: ClipboardEvent, state: State): State;
-    handlePointerDown(event: PointerEvent, location: PointerLocation, state: State): State;
-    handleDoubleClick(event: PointerEvent, location: PointerLocation, state: State): State;
-}
-
 declare class ReactGrid extends Component<ReactGridProps, State> {
     private updateState;
     private stateUpdater;
@@ -811,11 +809,11 @@ declare class ReactGrid extends Component<ReactGridProps, State> {
     private eventHandlers;
     private cellMatrixBuilder;
     state: State;
-    static getDerivedStateFromProps(props: ReactGridProps, state: State): State<CellMatrix<StickyRanges, CellMatrixProps>, Behavior> | null;
+    static getDerivedStateFromProps(props: ReactGridProps, state: State): State | undefined;
     componentDidUpdate(prevProps: ReactGridProps, prevState: State): void;
     componentDidMount(): void;
     componentWillUnmount(): void;
-    render(): JSX.Element;
+    render(): ReactNode;
 }
 
 /**
@@ -914,6 +912,7 @@ declare enum keyCodes {
     F12 = 123,
     NUM_LOCK = 144,
     SCROLL_LOCK = 145,
+    FIREFOX_DASH = 173,
     SEMICOLON = 186,
     EQUALS = 187,
     COMMA = 188,
