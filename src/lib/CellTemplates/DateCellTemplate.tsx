@@ -33,18 +33,23 @@ export class DateCellTemplate implements CellTemplate<DateCell> {
         return this.getCompatibleCell({ ...cell, date: new Date(cellToMerge.value) });
     }
 
-    getClassName(cell: Compatible<DateCell>, isInEditMode: boolean) {
+    getClassName(cell: Compatible<DateCell>, isInEditMode: boolean): string {
         return cell.className ? cell.className : '';
     }
 
     render(cell: Compatible<DateCell>, isInEditMode: boolean, onCellChanged: (cell: Compatible<DateCell>, commit: boolean) => void): React.ReactNode {
 
-        if (!isInEditMode)
+        if (!isInEditMode) {
             return cell.text;
+        }
 
-        const year = getFormattedTimeUnit(cell.date!.getFullYear());
-        const month = getFormattedTimeUnit(cell.date!.getMonth() + 1);
-        const day = getFormattedTimeUnit(cell.date!.getDate());
+        if (!cell.date) {
+            return `"cell.date" is not initialized with a date value`;
+        }
+
+        const year = getFormattedTimeUnit(cell.date.getFullYear());
+        const month = getFormattedTimeUnit(cell.date.getMonth() + 1);
+        const day = getFormattedTimeUnit(cell.date.getDate());
 
         return <input
             ref={input => {

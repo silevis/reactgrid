@@ -28,6 +28,7 @@ switch (window.location.pathname) {
       config={disabledInitialFocusLocationConfig}
       firstRowType={'header'}
       firstColType={'header'}
+      cellType={'header'}
       enableColumnAndRowSelection
     />;
     ExtTestGrid.displayName = 'TestGridWithHeaderRow';

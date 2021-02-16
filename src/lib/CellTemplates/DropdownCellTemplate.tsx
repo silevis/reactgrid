@@ -60,7 +60,7 @@ export class DropdownCellTemplate implements CellTemplate<DropdownCell> {
         return this.getCompatibleCell({ ...cell, selectedValue: cellToMerge.selectedValue, isOpen: cellToMerge.isOpen, inputValue: cellToMerge.inputValue });
     }
 
-    getClassName(cell: Compatible<DropdownCell>, isInEditMode: boolean) {
+    getClassName(cell: Compatible<DropdownCell>, isInEditMode: boolean): string {
         const isOpen = cell.isOpen ? 'open' : 'closed';
         return `${cell.className ? cell.className : ''}${isOpen}`;
     }

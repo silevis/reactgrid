@@ -2,7 +2,7 @@ import * as React from 'react';
 
 // NOTE: all modules imported below may be imported from '@silevis/reactgrid'
 import { getCellProperty } from '../Functions/getCellProperty';
-import { Cell, CellTemplate, Compatible, Uncertain } from '../Model/PublicModel';
+import { Cell, CellStyle, CellTemplate, Compatible, Uncertain } from '../Model/PublicModel';
 
 export interface HeaderCell extends Cell {
     type: 'header',
@@ -21,11 +21,11 @@ export class HeaderCellTemplate implements CellTemplate<HeaderCell> {
         return cell.text;
     }
 
-    isFocusable = (cell: Compatible<HeaderCell>) => false;
+    isFocusable = (cell: Compatible<HeaderCell>): boolean => false;
 
-    getClassName(cell: Compatible<HeaderCell>, isInEditMode: boolean) {
+    getClassName(cell: Compatible<HeaderCell>, isInEditMode: boolean): string {
         return cell.className ? cell.className : '';
     }
 
-    getStyle = (cell: Compatible<HeaderCell>) => ({ background: 'rgba(128, 128, 128, 0.1)' })
+    getStyle = (cell: Compatible<HeaderCell>): CellStyle => ({ background: 'rgba(128, 128, 128, 0.1)' })
 }

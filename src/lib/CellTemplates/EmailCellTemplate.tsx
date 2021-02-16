@@ -33,7 +33,7 @@ export class EmailCellTemplate implements CellTemplate<EmailCell> {
         return this.getCompatibleCell({ ...cell, text: cellToMerge.text })
     }
 
-    getClassName(cell: Compatible<EmailCell>, isInEditMode: boolean) {
+    getClassName(cell: Compatible<EmailCell>, isInEditMode: boolean): string {
         const isValid = cell.validator ? cell.validator(cell.text) : true;
         return isValid ? 'valid' : 'invalid';
     }

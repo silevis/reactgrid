@@ -45,7 +45,8 @@ export const isNumpadNumericKey = (keyCode: number): boolean => (keyCode >= keyC
  * @see https://reactgrid.com/docs/3.1/7-api/2-functions/
  */
 export const isAllowedOnNumberTypingKey = (keyCode: number): boolean =>
-    (keyCode >= keyCodes.COMMA && keyCode <= keyCodes.PERIOD) || keyCode === keyCodes.DECIMAL;
+    (keyCode >= keyCodes.COMMA && keyCode <= keyCodes.PERIOD)
+    || keyCode === keyCodes.DECIMAL || keyCode === keyCodes.SUBTRACT || keyCode === keyCodes.FIREFOX_DASH;
 
 /**
  * Checks that the pressed key's `keyCode` is one of navigation keys 

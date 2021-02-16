@@ -6,6 +6,7 @@ import { CellMatrix } from './CellMatrix';
 import { Behavior } from './Behavior';
 import { Location } from './InternalModel';
 import { Range } from './Range';
+import { defaultCellTemplates } from '../Functions/defaultCellTemplates';
 
 export type StateModifier<TState extends State = State> = (state: TState) => TState;
 export type StateUpdater = (modifier: StateModifier) => void;
@@ -19,7 +20,7 @@ export interface State<TCellMatrix extends CellMatrix = CellMatrix, TBehavior ex
     readonly currentBehavior: TBehavior;
     readonly focusedLocation?: Location;
 
-    readonly cellTemplates?: CellTemplates;
+    readonly cellTemplates: CellTemplates;
     hiddenFocusElement?: HTMLDivElement; // updated without setState
     readonly reactGridElement?: HTMLDivElement;
     readonly scrollableElement?: HTMLElement | (Window & typeof globalThis);
@@ -49,7 +50,7 @@ export const defaultStateFields = {
     legacyBrowserMode: isBrowserIE() || isBrowserEdge(),
     focusedLocation: undefined,
     currentBehavior: new DefaultBehavior(),
-    cellTemplates: undefined,
+    cellTemplates: defaultCellTemplates,
     hiddenFocusElement: undefined,
     reactGridElement: undefined,
     scrollableElement: undefined,

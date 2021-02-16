@@ -19,7 +19,7 @@ export class CheckboxCellTemplate implements CellTemplate<CheckboxCell> {
         const text = checked ?
             uncertainCell.checkedText ? uncertainCell.checkedText : '1' :
             uncertainCell.uncheckedText ? uncertainCell.uncheckedText : '';
-        return { ...uncertainCell, checked, value: checked ? 1 : NaN, text };
+        return { ...uncertainCell, checked: !!checked, value: checked ? 1 : NaN, text };
     }
 
     handleKeyDown(cell: Compatible<CheckboxCell>, keyCode: number, ctrl: boolean, shift: boolean, alt: boolean): { cell: Compatible<CheckboxCell>; enableEditMode: boolean } {
@@ -37,7 +37,7 @@ export class CheckboxCellTemplate implements CellTemplate<CheckboxCell> {
         return this.getCompatibleCell({ ...cell, checked });
     }
 
-    getClassName(cell: Compatible<CheckboxCell>, isInEditMode: boolean) {
+    getClassName(cell: Compatible<CheckboxCell>): string {
         return cell.className ? cell.className : '';
     }
 

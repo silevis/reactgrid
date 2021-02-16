@@ -204,6 +204,6 @@ characterMap[220] = "\\";
 characterMap[221] = "]";
 characterMap[222] = "'";
 
-export const getCharFromKeyCode = (keyCode: number, isShiftKey: boolean = false) => {
+export const getCharFromKeyCode = (keyCode: number, isShiftKey = false): string => {
     return isShiftKey ? characterMapShift[keyCode] : characterMap[keyCode];
 }

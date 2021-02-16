@@ -4,7 +4,7 @@ import { isSelectionKey } from './isSelectionKey';
 import { wipeSelectedRanges } from './wipeSelectedRanges';
 import { handleKeyDownOnCellTemplate } from './handleKeyDownOnCellTemplate';
 import { keyCodes } from './keyCodes';
-import { focusCell, moveFocusDown, moveFocusLeft, moveFocusPageDown, moveFocusPageUp, moveFocusRight, moveFocusUp } from './focuses';
+import { focusCell, moveFocusDown, moveFocusEnd, moveFocusHome, moveFocusLeft, moveFocusPageDown, moveFocusPageUp, moveFocusRight, moveFocusUp } from './focuses';
 import { focusLocation } from './focusLocation';
 
 export function handleKeyDown(state: State, event: KeyboardEvent): State {
@@ -19,7 +19,7 @@ function handleKeyDownInternal(state: State, event: KeyboardEvent): State {
         return state;
     }
 
-    let newState = handleKeyDownOnCellTemplate(state, event);
+    const newState = handleKeyDownOnCellTemplate(state, event);
     if (newState !== state) {
         return newState;
     }
@@ -72,12 +72,10 @@ function handleKeyDownInternal(state: State, event: KeyboardEvent): State {
                 return moveFocusRight(state);
             case keyCodes.HOME:
                 state.hiddenFocusElement?.focus({ preventScroll: true });
-                return state.focusedLocation ? focusCell(0, state.focusedLocation.row.idx, state) : state;
+                return moveFocusHome(state);
             case keyCodes.END:
                 state.hiddenFocusElement?.focus({ preventScroll: true });
-                return state.focusedLocation
-                    ? focusCell(state.cellMatrix.columns.length - 1, state.focusedLocation.row.idx, state)
-                    : state;
+                return moveFocusEnd(state);
             case keyCodes.PAGE_UP:
                 state.hiddenFocusElement?.focus({ preventScroll: true });
                 return moveFocusPageUp(state);

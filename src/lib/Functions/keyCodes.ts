@@ -94,6 +94,7 @@ export enum keyCodes {
     F12 = 123,
     NUM_LOCK = 144,
     SCROLL_LOCK = 145,
+    FIREFOX_DASH = 173,
     SEMICOLON = 186,
     EQUALS = 187,
     COMMA = 188,
@@ -105,4 +106,4 @@ export enum keyCodes {
     BACK_SLASH = 220,
     CLOSE_BRACKET = 221,
     SINGLE_QUOTE = 222
-};
+}

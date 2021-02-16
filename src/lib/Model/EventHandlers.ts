@@ -10,21 +10,21 @@ export class EventHandlers {
 
     constructor(public updateState: StateUpdater, public pointerEventsController: AbstractPointerEventsController) { }
 
-    pointerDownHandler = (event: PointerEvent) => this.updateState(state => this.pointerEventsController.handlePointerDown(event, state));
-    keyDownHandler = (event: KeyboardEvent) => this.updateState(state => state.currentBehavior.handleKeyDown(event, state));
-    keyUpHandler = (event: KeyboardEvent) => this.updateState(state => state.currentBehavior.handleKeyUp(event, state));
-    copyHandler = (event: ClipboardEvent) => this.updateState(state => state.currentBehavior.handleCopy(event, state));
-    pasteHandler = (event: ClipboardEvent) => this.updateState(state => state.currentBehavior.handlePaste(event, state));
-    cutHandler = (event: ClipboardEvent) => this.updateState(state => state.currentBehavior.handleCut(event, state));
-    blurHandler = (event: FocusEvent) => this.updateState(state => {
+    pointerDownHandler = (event: PointerEvent): void => this.updateState(state => this.pointerEventsController.handlePointerDown(event, state));
+    keyDownHandler = (event: KeyboardEvent): void => this.updateState(state => state.currentBehavior.handleKeyDown(event, state));
+    keyUpHandler = (event: KeyboardEvent): void => this.updateState(state => state.currentBehavior.handleKeyUp(event, state));
+    copyHandler = (event: ClipboardEvent): void => this.updateState(state => state.currentBehavior.handleCopy(event, state));
+    pasteHandler = (event: ClipboardEvent): void => this.updateState(state => state.currentBehavior.handlePaste(event, state));
+    cutHandler = (event: ClipboardEvent): void => this.updateState(state => state.currentBehavior.handleCut(event, state));
+    blurHandler = (event: FocusEvent): void => this.updateState(state => {
         if ((event.target as HTMLInputElement)?.id.startsWith('react-select-')) { // give back focus on react-select dropdown blur
             state.hiddenFocusElement?.focus({ preventScroll: true });
         }
         return state;
     });
-    windowResizeHandler = () => this.updateState(recalcVisibleRange);
-    reactgridRefHandler = (reactGridElement: HTMLDivElement) => this.assignScrollHandler(reactGridElement, recalcVisibleRange);
-    hiddenElementRefHandler = (hiddenFocusElement: HTMLInputElement) => this.updateState(state => {
+    windowResizeHandler = (): void => this.updateState(recalcVisibleRange);
+    reactgridRefHandler = (reactGridElement: HTMLDivElement): void => this.assignScrollHandler(reactGridElement, recalcVisibleRange);
+    hiddenElementRefHandler = (hiddenFocusElement: HTMLInputElement): void => this.updateState(state => {
         if (state.props?.initialFocusLocation && hiddenFocusElement) {
             hiddenFocusElement.focus({ preventScroll: true });
         }
@@ -32,21 +32,21 @@ export class EventHandlers {
         return state;
     });
 
-    pasteCaptureHandler = (event: ClipboardEvent) => {
-        const htmlData = event.clipboardData!.getData('text/html');
+    pasteCaptureHandler = (event: ClipboardEvent): void => {
+        const htmlData = event.clipboardData.getData('text/html');
         const parsedData = new DOMParser().parseFromString(htmlData, 'text/html');
-        if (htmlData && parsedData.body.firstElementChild!.getAttribute('data-reactgrid') === 'reactgrid-content') {
+        if (htmlData && parsedData.body.firstElementChild?.getAttribute('data-reactgrid') === 'reactgrid-content') {
             event.bubbles = false;
         }
     };
 
-    scrollHandler = (visibleRangeCalculator: StateModifier) => this.updateOnScrollChange(visibleRangeCalculator);
+    scrollHandler = (visibleRangeCalculator: StateModifier): void => this.updateOnScrollChange(visibleRangeCalculator);
 
-    protected assignScrollHandler = (reactGridElement: HTMLDivElement, visibleRangeCalculator: StateModifier) => {
+    protected assignScrollHandler = (reactGridElement: HTMLDivElement, visibleRangeCalculator: StateModifier): void => {
         if (reactGridElement) {
             this.updateState(state => {
                 const scrollableElement = getScrollableParent(reactGridElement, true);
-                scrollableElement!.addEventListener('scroll', () => this.scrollHandler(visibleRangeCalculator));
+                scrollableElement?.addEventListener('scroll', () => this.scrollHandler(visibleRangeCalculator));
                 if (state.props) {
                     state = updateResponsiveSticky(state.props, state);
                 }
@@ -55,7 +55,7 @@ export class EventHandlers {
         }
     }
 
-    protected updateOnScrollChange = (visibleRangeCalculator: StateModifier) => {
+    protected updateOnScrollChange = (visibleRangeCalculator: StateModifier): void => {
         this.updateState(state => {
             const PAGE_UPDATE_OFFSET = 200;
             const { scrollTop, scrollLeft } = getScrollOfScrollableElement(state.scrollableElement);

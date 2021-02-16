@@ -10,7 +10,7 @@ export abstract class AbstractPointerEventsController {
 
     eventTimestamps: [number, number] = [0, 0];
     eventLocations: Array<Location | undefined> = [undefined, undefined];
-    currentIndex: number = 0;
+    currentIndex = 0;
     pointerDownLocation?: Location;
 
     abstract handlePointerDown: (event: PointerEvent, state: State) => State;
@@ -28,7 +28,7 @@ export abstract class AbstractPointerEventsController {
         return state;
     }
 
-    protected shouldHandleDoubleClick(currentLocation: PointerLocation, currentTimestamp: number, secondLastTimestamp: number) {
+    protected shouldHandleDoubleClick(currentLocation: PointerLocation, currentTimestamp: number, secondLastTimestamp: number): boolean {
         return currentTimestamp - secondLastTimestamp < 500
             && areLocationsEqual(currentLocation, this.eventLocations[0])
             && areLocationsEqual(currentLocation, this.eventLocations[1]);
@@ -56,7 +56,10 @@ export function isReadyToHandleEvent(event: PointerEvent): boolean {
 
 // TODO think about create as saparate function
 export function isOnClickableArea(event: PointerEvent, state: State): boolean {
-    const { left } = state.reactGridElement!.getBoundingClientRect();
+    if (!state.reactGridElement) {
+        return false;
+    }
+    const { left } = state.reactGridElement.getBoundingClientRect();
     const viewportX = event.clientX - left;
     if (viewportX > state.cellMatrix.width) {
         return false;

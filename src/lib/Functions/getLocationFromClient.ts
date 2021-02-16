@@ -4,7 +4,10 @@ import { getScrollOfScrollableElement } from './scrollHelpers';
 import { getReactGridOffsets, getStickyOffset } from './elementSizeHelpers';
 
 export function getLocationFromClient(state: State, clientX: number, clientY: number, favorScrollableContent?: Direction): PointerLocation {
-    const { left, top } = state.reactGridElement!.getBoundingClientRect();
+    if (!state.reactGridElement) {
+        throw new Error(`"state.reactGridElement" field should be initiated before calling the "getBoundingClientRect()"`);
+    }
+    const { left, top } = state.reactGridElement.getBoundingClientRect();
     const viewportX = clientX - left;
     const viewportY = clientY - top;
 
@@ -27,7 +30,7 @@ export function getStickyTopRow(state: State, viewportY: number, favorScrollable
     const { top } = getReactGridOffsets(state);
     const topStickyOffset = getStickyOffset(scrollTop, top);
     if (cellMatrix.ranges.stickyTopRange.rows.find(row => row.bottom > viewportY - topStickyOffset) && viewportY < cellMatrix.ranges.stickyTopRange.height + topStickyOffset && !(favorScrollableContent && scrollTop > top)) {
-        const row = cellMatrix.ranges.stickyTopRange.rows.find(row => row.bottom > viewportY - topStickyOffset)!;
+        const row = cellMatrix.ranges.stickyTopRange.rows.find(row => row.bottom > viewportY - topStickyOffset) || cellMatrix.ranges.stickyTopRange.first.row;
         const cellY = viewportY - row.top;
         return { cellY, row };
     }
@@ -39,7 +42,7 @@ export function getLeftStickyColumn(state: State, viewportX: number, favorScroll
     const { left } = getReactGridOffsets(state);
     const leftStickyOffset = getStickyOffset(scrollLeft, left);
     if (cellMatrix.ranges.stickyLeftRange.columns.find(column => column.right > viewportX - leftStickyOffset) && viewportX < cellMatrix.ranges.stickyLeftRange.width + leftStickyOffset && !(favorScrollableContent && scrollLeft > left)) {
-        const column = cellMatrix.ranges.stickyLeftRange.columns.find(column => column.right > viewportX - leftStickyOffset)!;
+        const column = cellMatrix.ranges.stickyLeftRange.columns.find(column => column.right > viewportX - leftStickyOffset) || cellMatrix.ranges.stickyLeftRange.first.column;
         const cellX = viewportX - column.left;
         return { cellX, column };
     }

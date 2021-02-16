@@ -5,7 +5,10 @@ import { isSelectionKey } from './isSelectionKey';
 import { tryAppendChange } from './tryAppendChange';
 
 export function handleKeyDownOnCellTemplate(state: State, event: KeyboardEvent): State {
-    const location = state.focusedLocation!;
+    const { focusedLocation: location } = state;
+    if (!location) {
+        return state;
+    }
     const { cell, cellTemplate } = getCompatibleCellAndTemplate(state, location);
     if (cellTemplate.handleKeyDown && !state.currentlyEditedCell) { // TODO need add !(event.shiftKey && event.keyCode === keyCodes.SPACE) to working keycodes (shift + space) in a lower condition
         const { cell: newCell, enableEditMode } = cellTemplate.handleKeyDown(cell, event.keyCode, isSelectionKey(event), event.shiftKey, event.altKey);

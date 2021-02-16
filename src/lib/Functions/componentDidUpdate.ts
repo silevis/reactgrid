@@ -12,7 +12,7 @@ import {
 } from './scrollIntoView';
 
 //TODO what about initialFocusLocation and focusLocation set by props
-export function componentDidUpdate(prevProps: ReactGridProps, prevState: State, state: State) {
+export function componentDidUpdate(prevProps: ReactGridProps, prevState: State, state: State): void {
     const location = state.focusedLocation;
     if (location) {
         const shouldChangeScroll = !areLocationsEqual(location, prevState.focusedLocation);

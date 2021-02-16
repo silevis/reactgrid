@@ -3,24 +3,29 @@ import { getScrollOfScrollableElement, getTopScrollableElement } from './scrollH
 import { isIOS } from './operatingSystem';
 
 // TODO replace any with exact type: HTMLElement | (Window & typeof globalThis)
-export function getSizeOfElement(element: any): { width: number, height: number } {
-    const width = element !== undefined ? (element.clientWidth ?? (isIOS() ? window.innerWidth : document.documentElement.clientWidth)) : 0; // TODO check other mobile devices
-    const height = element !== undefined ? (element.clientHeight ?? (isIOS() ? window.innerHeight : document.documentElement.clientHeight)) : 0;
+export function getSizeOfElement(element: HTMLElement | (Window & typeof globalThis) | undefined): { width: number, height: number } {
+    if (!element) {
+        return { width: 0, height: 0 };
+    }
+    const width = element instanceof HTMLElement
+        ? element.clientWidth
+        : isIOS() ? window.innerWidth : document.documentElement.clientWidth; // TODO check other mobile devices
+    const height = element instanceof HTMLElement
+        ? element.clientHeight
+        : isIOS() ? window.innerHeight : document.documentElement.clientHeight;
     return { width, height };
-}
-
-// TODO is this fn used?
-export function getOffsetsOfElement(element: any): { offsetLeft: number, offsetTop: number } {
-    return { offsetLeft: element.offsetLeft ?? 0, offsetTop: element.offsetTop ?? 0 };
 }
 
 export function getReactGridOffsets(state: State): { left: number, top: number } {
     const { scrollLeft, scrollTop } = getScrollOfScrollableElement(state.scrollableElement);
-    const { left: leftReactGrid, top: topReactGrid } = state.reactGridElement!.getBoundingClientRect();
+    if (!state.reactGridElement) {
+        throw new Error(`"state.reactGridElement" field should be initiated before calling "getBoundingClientRect()"`);
+    }
+    const { left: leftReactGrid, top: topReactGrid } = state.reactGridElement.getBoundingClientRect();
     let left = leftReactGrid + scrollLeft,
         top = topReactGrid + scrollTop;
-    if (state.scrollableElement !== getTopScrollableElement()) {
-        const { left: leftScrollable, top: topScrollable } = (state.scrollableElement! as Element).getBoundingClientRect();
+    if (state.scrollableElement !== undefined && state.scrollableElement !== getTopScrollableElement()) {
+        const { left: leftScrollable, top: topScrollable } = (state.scrollableElement as HTMLElement).getBoundingClientRect();
         left -= leftScrollable;
         top -= topScrollable;
     }
@@ -29,7 +34,7 @@ export function getReactGridOffsets(state: State): { left: number, top: number }
 
 export function getVisibleSizeOfReactGrid(state: State): { width: number, height: number, visibleOffsetRight: number, visibleOffsetBottom: number } {
     const { scrollLeft, scrollTop } = getScrollOfScrollableElement(state.scrollableElement);
-    const { width: widthOfScrollableElement, height: heightOfScrollableElement } = getSizeOfElement(state.scrollableElement!);
+    const { width: widthOfScrollableElement, height: heightOfScrollableElement } = getSizeOfElement(state.scrollableElement);
     const { left, top } = getReactGridOffsets(state);
 
     const scrollBottom = scrollTop + heightOfScrollableElement,
