@@ -20,6 +20,10 @@ export interface StickyRanges {
     stickyLeftRange: Range;
 }
 
+export interface Span {
+    range?: Range;
+}
+
 // INTERNAL
 export class CellMatrix<TStickyRanges extends StickyRanges = StickyRanges, TCellMatrixProps extends CellMatrixProps = CellMatrixProps> {
 
@@ -39,6 +43,10 @@ export class CellMatrix<TStickyRanges extends StickyRanges = StickyRanges, TCell
 
     rowIndexLookup: IndexLookup = {};
     columnIndexLookup: IndexLookup = {};
+
+    spanCellLookup: { [location: string]: Span } = {};
+
+    rangesToRender: { [location: string]: Span } = {};
 
     constructor(public ranges: TStickyRanges) { }
 
@@ -66,6 +74,10 @@ export class CellMatrix<TStickyRanges extends StickyRanges = StickyRanges, TCell
         const colIdx = this.columnIndexLookup[location.column.columnId] !== undefined ? this.columnIndexLookup[location.column.columnId] : location.column.idx < this.last.column.idx ? location.column.idx : this.last.column.idx;
         const rowIdx = this.rowIndexLookup[location.row.rowId] !== undefined ? this.rowIndexLookup[location.row.rowId] : location.row.idx < this.last.row.idx ? location.row.idx : this.last.row.idx;
         return this.getLocation(rowIdx, colIdx);
+    }
+
+    getLocationToFindRangeByIds(idx: number, idy: number): string {
+        return `${idx}, ${idy}`;
     }
 
     validateRange(range: Range): Range {

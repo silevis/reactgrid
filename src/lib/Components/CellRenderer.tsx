@@ -4,6 +4,7 @@ import { noBorder } from '../Functions/excludeObjectProperties';
 import { getCompatibleCellAndTemplate } from '../Functions/getCompatibleCellAndTemplate';
 import { tryAppendChange } from '../Functions/tryAppendChange';
 import { Borders, Location } from '../Model/InternalModel';
+import { Range } from '../Model/Range'
 import { BorderProps, Cell, Compatible } from '../Model/PublicModel';
 import { State } from '../Model/State';
 import { isMobileDevice } from '../Functions/isMobileDevice';
@@ -12,6 +13,7 @@ export interface CellRendererProps {
     state: State;
     location: Location;
     borders: Borders;
+    range: Range;
     children?: React.ReactNode;
 }
 
@@ -44,7 +46,7 @@ function getBorderProperties(getPropertyOnBorderFn: (borderEdge: keyof Borders) 
     }
 }
 
-export const CellRenderer: React.FC<CellRendererProps> = ({ state, location, children, borders }) => {
+export const CellRenderer: React.FC<CellRendererProps> = ({ state, location, range, children, borders }) => {
     const { cell, cellTemplate } = getCompatibleCellAndTemplate(state, location);
     const isFocused = state.focusedLocation !== undefined && areLocationsEqual(state.focusedLocation, location);
     const customClass = (cellTemplate.getClassName && cellTemplate.getClassName(cell, false)) ?? '';
@@ -67,14 +69,13 @@ export const CellRenderer: React.FC<CellRendererProps> = ({ state, location, chi
     const isMobile = isMobileDevice();
     const isFirstRowOrColumnWithSelection = (state.props?.enableRowSelection && location.row.idx === 0)
         || (state.props?.enableColumnSelection && location.column.idx === 0);
-
     const style = {
         ...(cellTemplate.getStyle && (cellTemplate.getStyle(cell, false) || {})),
         ...(cell.style && noBorder(cell.style)),
         left: location.column.left,
         top: location.row.top,
-        width: location.column.width,
-        height: location.row.height,
+        width: range.width,
+        height: range.height,
         ...(!(isFocused && state.currentlyEditedCell) && bordersProps),
         ...((isFocused || cell.type === 'header' || isFirstRowOrColumnWithSelection) && { touchAction: 'none' }) // prevent scrolling
     } as React.CSSProperties;

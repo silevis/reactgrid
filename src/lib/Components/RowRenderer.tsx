@@ -27,6 +27,10 @@ const MappedColumns: React.FC<RowRendererProps> = ({ columns, row, cellRenderer,
         <>
             {columns.map(column => {
                 const location: Location = { row, column };
+                const range = state.cellMatrix.rangesToRender[state.cellMatrix.getLocationToFindRangeByIds(column.idx, row.idx)]?.range;
+                if (!range) {
+                    return null;
+                }
                 return <CellRenderer
                     key={row.idx + '-' + column.idx}
                     borders={{
@@ -35,7 +39,9 @@ const MappedColumns: React.FC<RowRendererProps> = ({ columns, row, cellRenderer,
                         right: (borders.right && column.idx === lastColIdx) || !(state.cellMatrix.scrollableRange.last.column.idx === location.column.idx)
                     }}
                     state={state}
-                    location={location} />
+                    location={location}
+                    range={range}
+                />
             })}
         </>
     );

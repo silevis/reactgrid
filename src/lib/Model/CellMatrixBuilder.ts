@@ -1,4 +1,4 @@
-import { CellMatrix, CellMatrixProps, StickyRanges } from './CellMatrix';
+import { CellMatrix, CellMatrixProps, StickyRanges, Span } from './CellMatrix';
 import { GridColumn, GridRow } from './InternalModel';
 import { Range } from './Range';
 
@@ -41,19 +41,18 @@ export class CellMatrixBuilder implements ICellMatrixBuilder {
         if (!Array.isArray(this.cellMatrix.props.columns)) {
             throw new Error('Feeded ReactGrids "columns" property is not an array!')
         }
-        this.cellMatrix.rows = this.cellMatrix.props.rows.reduce(
+        this.cellMatrix.rows = this.cellMatrix.props.rows.reduce<GridRow[]>(
             (rows, row, idx) => {
                 const top = this.getTop(idx, topStickyRows, rows);
                 const height = row.height || CellMatrix.DEFAULT_ROW_HEIGHT;
                 rows.push({ ...row, top, height, idx, bottom: top + height } as GridRow);
                 this.cellMatrix.height += height;
-                // TODO what with rowIndexLookup?
                 this.cellMatrix.rowIndexLookup[row.rowId] = idx;
                 return rows;
             },
-            [] as GridRow[]
+            []
         );
-        this.cellMatrix.columns = this.cellMatrix.props.columns.reduce(
+        this.cellMatrix.columns = this.cellMatrix.props.columns.reduce<GridColumn[]>(
             (cols, column, idx) => {
                 const left = this.getLeft(idx, leftStickyColumns, cols);
                 const width = column.width
@@ -65,9 +64,34 @@ export class CellMatrixBuilder implements ICellMatrixBuilder {
                 this.cellMatrix.columnIndexLookup[column.columnId] = idx;
                 return cols;
             },
-            [] as GridColumn[]
+            []
         );
         return this;
+    }
+
+    setRangesToRenderLookup(): CellMatrixBuilder {
+        let rangesToExclude: Range[] = [];
+        this.cellMatrix.rows.forEach((row, idy) => {
+            row.cells.forEach((cell, idx) => {
+                const { rowspan = 0, colspan = 0 } = cell;
+                const rows = rowspan ? this.cellMatrix.rows.slice(idy, idy + rowspan) : [this.cellMatrix.rows[idy]];
+                const columns = colspan ? this.cellMatrix.columns.slice(idx, idx + colspan) : [this.cellMatrix.columns[idx]];
+                const range = new Range(rows, columns)
+                rangesToExclude = rangesToExclude.concat(this.getRangesToRender(range));
+                this.cellMatrix.spanCellLookup[this.cellMatrix.getLocationToFindRangeByIds(idx, idy)] = {
+                    range: range
+                }
+            })
+        });
+        const keys = rangesToExclude.map(range => `${range.columns[0].idx}, ${range.rows[0].idx}`);
+        Object.keys(this.cellMatrix.spanCellLookup).filter(key => !keys.includes(key)).forEach(key => this.cellMatrix.rangesToRender[key] = this.cellMatrix.spanCellLookup[key]);
+        return this;
+    }
+
+    getRangesToRender(range: Range): Range[] {
+        const result = range.rows.flatMap(row => range.columns.map(column => new Range([row], [column])));
+        result.shift();
+        return result;
     }
 
     fillSticky(edges: StickyEdges = { leftStickyColumns: 0, topStickyRows: 0 }): CellMatrixBuilder {
