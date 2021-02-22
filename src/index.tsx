@@ -5,7 +5,8 @@ import { ReactGrid } from './lib/Components/ReactGrid';
 // import './test/theming-test.scss';
 import {
   config, enablePinnedToBodyConfig, disabledInitialFocusLocationConfig, enableAdditionalContentConfig,
-  enableAdditionalContentWithFlexRowConfig, enableSymetric, enableResponsiveSticky, enableResponsiveStickyPinnedToBody, enableSpannedCells
+  enableAdditionalContentWithFlexRowConfig, enableSymetric, enableResponsiveSticky, enableResponsiveStickyPinnedToBody,
+  enableSpannedCells
 } from './test/testEnvConfig';
 
 let component = <ExtTestGrid

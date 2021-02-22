@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { translateLocationIdxToLookupKey } from '../Model/CellMatrix';
 import { GridRow, GridColumn, Borders, Location } from '../Model/InternalModel';
 import { State } from '../Model/State';
 import { CellRendererProps } from './CellRenderer';
@@ -26,11 +27,11 @@ const MappedColumns: React.FC<RowRendererProps> = ({ columns, row, cellRenderer,
     return (
         <>
             {columns.map(column => {
-                const location: Location = { row, column };
-                const range = state.cellMatrix.rangesToRender[state.cellMatrix.getLocationToFindRangeByIds(column.idx, row.idx)]?.range;
+                const range = state.cellMatrix.rangesToRender[translateLocationIdxToLookupKey(column.idx, row.idx)]?.range;
                 if (!range) {
                     return null;
                 }
+                const location: Location = { row, column };
                 return <CellRenderer
                     key={row.idx + '-' + column.idx}
                     borders={{

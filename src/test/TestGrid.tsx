@@ -93,8 +93,6 @@ export const TestGrid: React.FC<TestGridProps> = (props) => {
                             { value: 'angular', label: 'Angular' }
                         ], currentValue: 'react', isDisabled: false
                     }
-                // case 9: // TODO allow user to pass non focusable cell (header cell) with arrows
-                //     return { type: 'header', text: `${ri} - ${ci}` }
                 default:
                     return { type: 'text', text: `${ri} - ${ci}`, validator: (text: string): boolean => true }
             }
@@ -367,7 +365,6 @@ export const TestGridOptionsSelect: React.FC<{ isPro?: boolean }> = ({ isPro }) 
                 <option value='/enableResponsiveSticky'>Enable responsive sticky</option>
                 <option value='/enableResponsiveStickyPinnedToBody'>Enable responsive sticky pinned to body</option>
                 <option value='/enableSpannedCells'>Enable spanned cells</option>
-
                 {isPro && <>
                     <option value='/enableColumnAndRowSelection'>Enable column and row selection</option>
                     <option value='/enableColumnAndRowSelectionWithSticky'>Enable column and row selection with sticky</option>

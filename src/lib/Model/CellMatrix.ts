@@ -66,7 +66,7 @@ export class CellMatrix<TStickyRanges extends StickyRanges = StickyRanges, TCell
             const column = this.columns[this.columnIndexLookup[columnId]];
             return this.validateLocation({ row, column });
         } catch (error) {
-            throw new EvalError(`column: '${columnId}', row: '${rowId}'`)
+            throw new RangeError(`column: '${columnId}', row: '${rowId}'`)
         }
     }
 
@@ -74,10 +74,6 @@ export class CellMatrix<TStickyRanges extends StickyRanges = StickyRanges, TCell
         const colIdx = this.columnIndexLookup[location.column.columnId] !== undefined ? this.columnIndexLookup[location.column.columnId] : location.column.idx < this.last.column.idx ? location.column.idx : this.last.column.idx;
         const rowIdx = this.rowIndexLookup[location.row.rowId] !== undefined ? this.rowIndexLookup[location.row.rowId] : location.row.idx < this.last.row.idx ? location.row.idx : this.last.row.idx;
         return this.getLocation(rowIdx, colIdx);
-    }
-
-    getLocationToFindRangeByIds(idx: number, idy: number): string {
-        return `${idx}, ${idy}`;
     }
 
     validateRange(range: Range): Range {
@@ -88,4 +84,8 @@ export class CellMatrix<TStickyRanges extends StickyRanges = StickyRanges, TCell
         return this.rows[location.row.idx].cells[location.column.idx];
     }
 
+}
+
+export function translateLocationIdxToLookupKey(idx: number, idy: number): string {
+    return `${idx}, ${idy}`;
 }

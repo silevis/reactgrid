@@ -1,4 +1,4 @@
-import { CellMatrix, CellMatrixProps, StickyRanges, Span } from './CellMatrix';
+import { CellMatrix, CellMatrixProps, StickyRanges, translateLocationIdxToLookupKey } from './CellMatrix';
 import { GridColumn, GridRow } from './InternalModel';
 import { Range } from './Range';
 
@@ -76,22 +76,26 @@ export class CellMatrixBuilder implements ICellMatrixBuilder {
                 const { rowspan = 0, colspan = 0 } = cell;
                 const rows = rowspan ? this.cellMatrix.rows.slice(idy, idy + rowspan) : [this.cellMatrix.rows[idy]];
                 const columns = colspan ? this.cellMatrix.columns.slice(idx, idx + colspan) : [this.cellMatrix.columns[idx]];
-                const range = new Range(rows, columns)
-                rangesToExclude = rangesToExclude.concat(this.getRangesToRender(range));
-                this.cellMatrix.spanCellLookup[this.cellMatrix.getLocationToFindRangeByIds(idx, idy)] = {
-                    range: range
-                }
+                const range = new Range(rows, columns);
+                rangesToExclude = [...rangesToExclude, ...this.getRangesToRender(range)];
+                this.cellMatrix.spanCellLookup[translateLocationIdxToLookupKey(idx, idy)] = { range };
             })
         });
-        const keys = rangesToExclude.map(range => `${range.columns[0].idx}, ${range.rows[0].idx}`);
-        Object.keys(this.cellMatrix.spanCellLookup).filter(key => !keys.includes(key)).forEach(key => this.cellMatrix.rangesToRender[key] = this.cellMatrix.spanCellLookup[key]);
+
+        // TODO try to optimize by using only lookup
+        const keys = rangesToExclude.map(range => translateLocationIdxToLookupKey(range.first.column.idx, range.first.row.idx));
+        Object
+            .keys(this.cellMatrix.spanCellLookup)
+            .forEach(key => {
+                if (!keys.includes(key)) {
+                    this.cellMatrix.rangesToRender[key] = this.cellMatrix.spanCellLookup[key]
+                }
+            });
         return this;
     }
 
     getRangesToRender(range: Range): Range[] {
-        const result = range.rows.flatMap(row => range.columns.map(column => new Range([row], [column])));
-        result.shift();
-        return result;
+        return range.rows.flatMap(row => range.columns.map(column => new Range([row], [column]))).slice(1);
     }
 
     fillSticky(edges: StickyEdges = { leftStickyColumns: 0, topStickyRows: 0 }): CellMatrixBuilder {
