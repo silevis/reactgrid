@@ -23,7 +23,7 @@ const commands = [
     { cmd: 'rm -rf ../ReactGrid-Pro/node_modules/@silevis', title: 'Removing old ReactGrid MIT package' },
     { cmd: enterReactGridProDir + 'npm i ./../dist --force', title: 'Instaling MIT package in PRO' },
     { cmd: enterReactGridProDir + 'npm i react react-dom --no-save', title: 'Instaling missing dependencies' },
-    { cmd: enterReactGridProDir + 'npx run-s copy:mit:**', title: 'Copying files' },
+    { cmd: enterReactGridProDir + 'npm run copy:mit:styles && npm run copy:mit:tests && npm run copy:mit:TestGrid', title: 'Copying files' },
 ];
 
 async function run() {
@@ -40,6 +40,6 @@ async function run() {
         throbber.fail('Build finished with an error!');
     }
     throbber.stop();
-};
+}
 
 run();

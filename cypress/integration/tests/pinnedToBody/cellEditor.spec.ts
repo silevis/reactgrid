@@ -84,11 +84,11 @@ context('Cell editor position', () => {
       },
     }, {
       click: {
-        x: config.cellWidth * utils.getRandomInt(1, 5),
-        y: config.cellHeight * utils.getRandomInt(1, 15),
+        x: config.cellWidth * 4,
+        y: config.cellHeight * 15,
       },
       scroll: {
-        x: config.cellWidth * 20 + utils.getRandomInt(1, config.cellWidth),
+        x: config.cellWidth * 20 + 65,
         y: 0,
       },
     }].forEach(utils.testCellEditor.bind(utils));
