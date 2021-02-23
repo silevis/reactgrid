@@ -16,7 +16,8 @@ export function componentDidUpdate(prevProps: ReactGridProps, prevState: State, 
     const location = state.focusedLocation;
     if (location) {
         const shouldChangeScroll = !areLocationsEqual(location, prevState.focusedLocation);
-        if (shouldChangeScroll) {
+        const wasCellEditorOpened = state.currentlyEditedCell !== undefined && state.currentlyEditedCell !== prevState.currentlyEditedCell;
+        if (shouldChangeScroll || wasCellEditorOpened) {
             const top = getScrollTop(state, location);
             const left = getScrollLeft(state, location);
             scrollIntoView(state, top, left);
