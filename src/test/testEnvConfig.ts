@@ -136,11 +136,10 @@ export const enableResponsiveStickyPinnedToBody: TestConfig = {
 
 export const enableSpannedCells: TestConfig = {
     ...config,
-    columns: 5,
-    rows: 5,
     spannedCells: [
         { idx: 1, idy: 1, rowspan: 2, colspan: 2 },
-        { idx: 2, idy: 3, rowspan: 0, colspan: 3 },
+        { idx: 2, idy: 3, colspan: 3 },
+        { idx: 6, idy: 5, rowspan: 5 },
     ],
     headerCells: [
         { idx: 2, idy: 1 },
@@ -148,6 +147,11 @@ export const enableSpannedCells: TestConfig = {
         { idx: 2, idy: 2 },
         { idx: 3, idy: 3 },
         { idx: 4, idy: 3 },
+        { idx: 6, idy: 5 },
+        { idx: 6, idy: 6 },
+        { idx: 6, idy: 7 },
+        { idx: 6, idy: 8 },
+        { idx: 6, idy: 9 },
     ]
 }
 

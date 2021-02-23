@@ -22,11 +22,11 @@ export class Utilities {
         return this.config;
     }
 
-    isMacOs() {
+    isMacOs(): boolean {
         return Cypress.platform === 'darwin';
     }
 
-    selectCell(clientX: number, clientY: number, customEventArgs = undefined) {
+    selectCell(clientX: number, clientY: number, customEventArgs = undefined): void {
         const scrollableElement = this.getScrollableElement();
         if (customEventArgs !== undefined) {
             scrollableElement.trigger('pointerdown', clientX, clientY, { ...customEventArgs, pointerType: 'mouse' });
@@ -37,34 +37,35 @@ export class Utilities {
         cy.wait(500);
     }
 
-    scrollTo(left: number, top: number, duration = 500) {
-        return this.getConfig().pinToBody ? cy.scrollTo(left, top, { duration, ensureScrollable: true }) :
-            this.getScrollableElement().scrollTo(left, top, { duration, ensureScrollable: true });
+    scrollTo(left: number, top: number, duration = 500): void {
+        this.getConfig().pinToBody
+            ? cy.scrollTo(left, top, { duration, ensureScrollable: true })
+            : this.getScrollableElement().scrollTo(left, top, { duration, ensureScrollable: true });
     }
 
-    wait() {
+    wait(): number {
         return this.isMacOs() ? 50 : 100;
     }
 
-    scrollToBottom(left = 0) {
+    scrollToBottom(left = 0): void {
         const offset = this.getBottomAddtionalOffset(true);
-        return this.scrollTo(left, this.getConfig().rows * this.getConfig().cellHeight + offset);
+        this.scrollTo(left, this.getConfig().rows * this.getConfig().cellHeight + offset);
     }
 
-    scrollToRight(top = 0) {
+    scrollToRight(top = 0): void {
         const offset = this.getRightAddtionalOffset();
         this.scrollTo(this.getConfig().columns * this.getConfig().cellWidth + offset, top);
     }
 
-    getCellXCenter() {
+    getCellXCenter(): number {
         return this.getConfig().cellWidth / 2;
     }
 
-    getCellYCenter() {
+    getCellYCenter(): number {
         return this.getConfig().cellHeight / 2;
     }
 
-    selectCellInEditMode(clientX: number, clientY: number) {
+    selectCellInEditMode(clientX: number, clientY: number): void {
         this.selectCell(clientX, clientY);
         this.keyDown(constants.keyCodes.Enter, { force: true });
     }
@@ -79,12 +80,12 @@ export class Utilities {
         return +(Math.round(((value + "e+" + places) as unknown) as number) + "e-" + places);
     }
 
-    resetSelection(x: number, y: number) {
+    resetSelection(x: number, y: number): void {
         this.selectCell(x, y + this.getConfig().cellHeight);
         this.selectCell(x, y);
     }
 
-    keyDown(keyCode: number, customEventArgs?: {}, timeout = 200, log = true) {
+    keyDown(keyCode: number, customEventArgs?: Record<string, unknown>, timeout = 200, log = true): void {
         const rg = this.getReactGridContent();
         if (customEventArgs !== undefined) {
             rg.trigger('keydown', { ...customEventArgs, keyCode, log, force: true });
@@ -95,62 +96,62 @@ export class Utilities {
         cy.wait(timeout, { log });
     }
 
-    getCell(x: number, y: number) {
+    getCell(x: number, y: number): Cypress.Chainable {
         return cy.get(`[data-cell-colidx=${x}][data-cell-rowidx=${y}]`).eq(0);
     }
 
-    getScrollableElement() {
+    getScrollableElement(): Cypress.Chainable {
         // TODO is Body correct element for getting scroll and sroll view?
         return this.config.pinToBody ? this.getBody() : this.getDivScrollableElement();
     }
 
-    getDivScrollableElement() {
+    getDivScrollableElement(): Cypress.Chainable {
         return cy.get('.test-grid-container');
     }
 
-    getReactGrid() {
+    getReactGrid(): Cypress.Chainable {
         return cy.get('.reactgrid');
     }
 
-    getReactGridContent() {
+    getReactGridContent(): Cypress.Chainable {
         return cy.get('.reactgrid-content');
     }
 
-    getOuterInput() {
+    getOuterInput(): Cypress.Chainable {
         return cy.get('[data-cy=outer-input]');
     }
 
-    getCellEditor() {
+    getCellEditor(): Cypress.Chainable {
         return cy.get('.rg-celleditor');
     }
 
-    getBody() {
+    getBody(): Cypress.Chainable {
         return cy.get('body');
     }
 
-    getLeftStickyPane() {
+    getLeftStickyPane(): Cypress.Chainable {
         return cy.get('.rg-pane-left');
     }
 
-    getTopStickyPane() {
+    getTopStickyPane(): Cypress.Chainable {
         return cy.get('.rg-pane-top');
     }
 
-    getCellFocus() {
+    getCellFocus(): Cypress.Chainable {
         const cell = cy.get('.rg-cell-focus');
         cell.should('exist');
         return cell;
     }
 
-    getCellHighlight() {
+    getCellHighlight(): Cypress.Chainable {
         return cy.get('.rg-cell-highlight');
     }
 
-    getDropdownMenu() {
+    getDropdownMenu(): Cypress.Chainable {
         return cy.get('.dropdown-menu');
     }
 
-    click(x: number, y: number) {
+    click(x: number, y: number): void {
         this.getScrollableElement().trigger('pointerdown', x, y, { pointerType: 'mouse' });
         this.getBody().trigger('pointerup', 0, 0, { pointerType: 'mouse', force: true }); // 
     }
@@ -300,7 +301,7 @@ export class Utilities {
         }
     }
 
-    assertIsReactGridFocused() {
+    assertIsReactGridFocused(): void {
         cy.focused().should('have.class', 'rg-hidden-element');
     }
 
@@ -339,7 +340,7 @@ export class Utilities {
         }
     }
 
-    testCellEditor(testCase: CellEditorTestParams) {
+    testCellEditor(testCase: CellEditorTestParams): void {
         let test: CellEditorTestParams = this.setScrollValues(testCase);
         test = this.moveClickPosByOnePixel(test);
         this.scrollTo(test.scroll.x, test.scroll.y);
@@ -348,7 +349,7 @@ export class Utilities {
     }
 
 
-    testCellEditorOnSticky(testCase: CellEditorTestParams) {
+    testCellEditorOnSticky(testCase: CellEditorTestParams): void {
         let test: CellEditorTestParams = this.setScrollValues(testCase);
         test = this.moveClickPosByOnePixel(test);
         if (this.getConfig().pinToBody) {

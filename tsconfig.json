@@ -22,6 +22,9 @@
     "allowJs": true,
     "skipLibCheck": true,
     "experimentalDecorators": true,
+    "types": [
+      "cypress"
+    ],
     "noFallthroughCasesInSwitch": true
   },
   "include": [

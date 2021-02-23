@@ -1,61 +1,65 @@
 /// <reference types="cypress" />
 
-export function visit() {
+export function visit(): void {
     cy.visit('/');
 }
 
-export function visitSticky() {
+export function visitSticky(): void {
     cy.visit('/enableSticky');
 }
 
-export function visitFrozenFocus() {
+export function visitFrozenFocus(): void {
     cy.visit('/enableFrozenFocus');
 }
 
-export function visitPinnedToBody() {
+export function visitPinnedToBody(): void {
     cy.visit('/enablePinnedToBody');
 }
 
-export function visitAdditionalContent() {
+export function visitAdditionalContent(): void {
     cy.visit('/enableAdditionalContent');
 }
 
-export function visitAdditionalContentWithFlexRow() {
+export function visitAdditionalContentWithFlexRow(): void {
     cy.visit('/enableAdditionalContent?flexRow=true');
 }
 
-export function visitStickyPinnedToBody() {
+export function visitStickyPinnedToBody(): void {
     cy.visit('/enableStickyPinnedToBody');
 }
 
-export function visitHeaders() {
+export function visitHeaders(): void {
     cy.visit('/enableHeaders');
 }
 
-export function visitColumnAndRowSelections() {
+export function visitColumnAndRowSelections(): void {
     cy.visit('/enableColumnAndRowSelection');
 }
 
-export function visitColumnAndRowSelectionsWithSticky() {
+export function visitColumnAndRowSelectionsWithSticky(): void {
     cy.visit('/enableColumnAndRowSelectionWithSticky');
 }
 
-export function visitSymetric() {
+export function visitSymetric(): void {
     cy.visit('/enableSymetric');
 }
 
-export function visitResponsiveSticky() {
+export function visitSpannedCells(): void {
+    cy.visit('/enableSpannedCells');
+}
+
+export function visitResponsiveSticky(): void {
     cy.visit('/enableResponsiveSticky');
 }
 
-export function visitResponsiveStickyPinnedToBody() {
+export function visitResponsiveStickyPinnedToBody(): void {
     cy.visit('/enableResponsiveStickyPinnedToBody');
 }
 
-export function visitResponsiveStickyPro() {
+export function visitResponsiveStickyPro(): void {
     cy.visit('/enableResponsiveStickyPro');
 }
 
-export function visitResponsiveStickyPinnedToBodyPro() {
+export function visitResponsiveStickyPinnedToBodyPro(): void {
     cy.visit('/enableResponsiveStickyPinnedToBodyPro');
 }
