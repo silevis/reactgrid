@@ -3,6 +3,7 @@ import { visitAdditionalContent, visitAdditionalContentWithFlexRow } from '../..
 import {
   enableAdditionalContentConfig, enableAdditionalContentWithFlexRowConfig
 } from '../../../../src/test/testEnvConfig';
+import { constants } from '../../common/constants';
 
 const utils = new Utilities(enableAdditionalContentConfig);
 const utilsFlexRow = new Utilities(enableAdditionalContentWithFlexRowConfig);
@@ -174,8 +175,30 @@ context('Cell editor position', () => {
     ].forEach(utilsFlexRow.testCellEditor.bind(utilsFlexRow));
   });
 
-  it.skip('cell editor should be fully visible on double click on partially visible cell focus', () => {
-    // 🟠 TODO fix it
+  it('cell editor should be fully visible on double click on horizontally partially visible cell focus', () => { // ✅ 
+    visitAdditionalContentWithFlexRow();
+    utils.scrollTo(utilsFlexRow.getConfig().rgViewportWidth, 0);
+    utils.selectCell((utilsFlexRow.getConfig().cellWidth * 3) - 10, (utilsFlexRow.getConfig().cellHeight * 3) - 10);
+    utils.scrollTo(utilsFlexRow.getConfig().rgViewportWidth + utilsFlexRow.getConfig().cellWidth * 3 - utilsFlexRow.getConfig().cellWidth / 2, 0);
+    utils.getCellFocus().should('be.visible');
+    utils.keyDown(constants.keyCodes.Enter, { force: true }, 20, false);
+    utils.getCellEditor().then($el => {
+      const elementRect = $el[0].getBoundingClientRect();
+      utils.assertElementLeftIsEqual(utils.getCellEditor(), elementRect.left);
+    });
+  });
+
+  it('cell editor should be fully visible on double click on vertically partially visible cell focus', () => { // ✅ 
+    visitAdditionalContent();
+    utils.scrollTo(0, utilsFlexRow.getConfig().rgViewportHeight);
+    utils.selectCell((utilsFlexRow.getConfig().cellWidth * 3) - 10, (utilsFlexRow.getConfig().cellHeight * 3) - 10);
+    utils.scrollTo(0, utilsFlexRow.getConfig().rgViewportHeight + utilsFlexRow.getConfig().cellHeight * 3 - utilsFlexRow.getConfig().cellHeight / 2);
+    utils.getCellFocus().should('be.visible');
+    utils.keyDown(constants.keyCodes.Enter, { force: true }, 20, false);
+    utils.getCellEditor().then($el => {
+      const elementRect = $el[0].getBoundingClientRect();
+      utils.assertElementTopIsEqual(utils.getCellEditor(), elementRect.top);
+    });
   });
 
 });

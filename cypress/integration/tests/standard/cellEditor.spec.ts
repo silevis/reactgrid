@@ -99,8 +99,38 @@ context('Cell editor position', () => {
     ].forEach(utils.testCellEditor.bind(utils));
   });
 
-  it.skip('cell editor should be fully visible on double click on partially visible cell focus', () => {
-    // 🟠 TODO fix it
+  it('cell editor should be fully visible on double click on horizontally partially visible cell focus', () => { // ✅ 
+    utils.selectCell((config.cellWidth * 3) - 10, (config.cellHeight * 3) - 10);
+    utils.getCellFocus().should('be.visible');
+    [
+      {
+        click: {
+          x: 0.1,
+          y: config.cellHeight * 3,
+        },
+        scroll: {
+          x: config.cellWidth * 3 - config.cellWidth / 2,
+          y: 0,
+        },
+      },
+    ].forEach(utils.testCellEditor.bind(utils));
+  });
+
+  it('cell editor should be fully visible on double click on vertically partially visible cell focus', () => { // ✅ 
+    utils.selectCell((config.cellWidth * 3) - 10, (config.cellHeight * 3) - 10);
+    utils.getCellFocus().should('be.visible');
+    [
+      {
+        click: {
+          x: config.cellWidth * 3,
+          y: 0.1,
+        },
+        scroll: {
+          x: 0,
+          y: config.cellHeight * 3 - config.cellHeight / 2,
+        },
+      },
+    ].forEach(utils.testCellEditor.bind(utils));
   });
 
 });

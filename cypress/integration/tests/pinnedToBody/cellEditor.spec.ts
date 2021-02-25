@@ -1,6 +1,7 @@
 import { enablePinnedToBodyConfig as config } from '../../../../src/test/testEnvConfig';
 import { Utilities } from '../../common/utils';
 import { visitPinnedToBody } from '../../common/visit';
+import { constants } from '../../common/constants';
 
 const utils = new Utilities(config);
 
@@ -94,8 +95,33 @@ context('Cell editor position', () => {
     }].forEach(utils.testCellEditor.bind(utils));
   });
 
-  it.skip('cell editor should be fully visible on double click on partially visible cell focus', () => {
-    // 🟠 TODO fix it
+  it('cell editor should be fully visible on double click on horizontally partially visible cell focus', () => { // ✅ 
+    utils.selectCell(config.cellWidth * 3, config.cellHeight * 3);
+    utils.getCellFocus().should('be.visible');
+    [
+      {
+        click: {
+          x: 0.1,
+          y: config.cellHeight * 3,
+        },
+        scroll: {
+          x: config.cellWidth * 3 - config.cellWidth / 2,
+          y: 0,
+        },
+      },
+    ].forEach(utils.testCellEditor.bind(utils));
+  });
+
+  it('cell editor should be fully visible on double click on vertically partially visible cell focus', () => { // ✅ 
+    utils.selectCell(config.cellWidth * 3, config.cellHeight * 3);
+    utils.getCellFocus().should('be.visible');
+    utils.scrollTo(0, config.cellHeight * 4 - config.cellHeight / 2);
+
+    utils.keyDown(constants.keyCodes.Enter, { force: true }, 20, false);
+    utils.getCellEditor().then($el => {
+      const elementRect = $el[0].getBoundingClientRect();
+      utils.assertElementTopIsEqual(utils.getCellEditor(), elementRect.top);
+    });
   });
 
 });
