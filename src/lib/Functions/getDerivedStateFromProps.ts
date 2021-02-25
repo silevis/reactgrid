@@ -69,6 +69,7 @@ function updateCellMatrix(props: ReactGridProps, state: State): State {
         ...state,
         cellMatrix: builder.setProps(props)
             .fillRowsAndCols({ leftStickyColumns: state.leftStickyColumns || 0, topStickyRows: state.topStickyRows || 0 })
+            .setRangesToRenderLookup()
             .fillSticky({ leftStickyColumns: state.leftStickyColumns || 0, topStickyRows: state.topStickyRows || 0 })
             .fillScrollableRange({ leftStickyColumns: state.leftStickyColumns || 0, topStickyRows: state.topStickyRows || 0 })
             .setEdgeLocations().getCellMatrix()

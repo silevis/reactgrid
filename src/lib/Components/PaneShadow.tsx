@@ -11,10 +11,12 @@ interface PaneShadowProps {
 export const PaneShadow: React.FC<PaneShadowProps> = ({ renderCondition, className, style, zIndex, children }) => {
     if (renderCondition) {
         return (
-            <div className={`shadow ${className}`} style={{
+            <div className={`rg-pane-shadow ${className}`} style={{
                 ...style,
-                ...(isBrowserFirefox() && { zIndex: zIndex }),
-            }} >{children}</div>
+                ...(isBrowserFirefox() && { zIndex }),
+            }} >
+                {children}
+            </div>
         )
     }
     return null;

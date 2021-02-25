@@ -41,6 +41,29 @@ export const config: TestConfig = {
         { columnId: 'col-0', rowId: 'row-1', borderColor: 'red' },
     ],
 
+    headerCells: [
+        { idx: 10, idy: 3 },
+        { idx: 10, idy: 4 },
+        { idx: 10, idy: 5 },
+        { idx: 10, idy: 24 },
+        { idx: 10, idy: 149 },
+        { idx: 11, idy: 3 },
+        { idx: 11, idy: 4 },
+        { idx: 11, idy: 5 },
+        { idx: 11, idy: 24 },
+        { idx: 11, idy: 149 },
+        { idx: 12, idy: 3 },
+        { idx: 12, idy: 4 },
+        { idx: 12, idy: 5 },
+        { idx: 12, idy: 24 },
+        { idx: 12, idy: 149 },
+        { idx: 29, idy: 3 },
+        { idx: 29, idy: 4 },
+        { idx: 29, idy: 5 },
+        { idx: 29, idy: 24 },
+        { idx: 29, idy: 149 },
+    ],
+
     labels: {
         copyLabel: 'Copy me!',
         pasteLabel: 'Paste me!',
@@ -111,6 +134,27 @@ export const enableResponsiveStickyPinnedToBody: TestConfig = {
     verticalStickyBreakpoint: 45,
 }
 
+export const enableSpannedCells: TestConfig = {
+    ...config,
+    spannedCells: [
+        { idx: 1, idy: 1, rowspan: 2, colspan: 2 },
+        { idx: 2, idy: 3, colspan: 3 },
+        { idx: 6, idy: 5, rowspan: 5 },
+    ],
+    headerCells: [
+        { idx: 2, idy: 1 },
+        { idx: 1, idy: 2 },
+        { idx: 2, idy: 2 },
+        { idx: 3, idy: 3 },
+        { idx: 4, idy: 3 },
+        { idx: 6, idy: 5 },
+        { idx: 6, idy: 6 },
+        { idx: 6, idy: 7 },
+        { idx: 6, idy: 8 },
+        { idx: 6, idy: 9 },
+    ]
+}
+
 export interface TestConfig {
     pinToBody: boolean;
     additionalContent: boolean;
@@ -142,6 +186,9 @@ export interface TestConfig {
 
     focusLocation: CellLocation;
     initialFocusLocation?: CellLocation;
+    spannedCells?: { idx: number, idy: number, colspan?: number, rowspan?: number }[];
+    headerCells?: { idx: number, idy: number }[];
+
     highlights: Highlight[];
 
     labels: TextLabels;

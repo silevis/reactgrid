@@ -38,7 +38,7 @@ context('Cell templates', () => {
     });
 
     it.skip('should be only one dropdown opened at time', () => { // ✅
-        // 🟠  
+        // 🟠  NEED FIX
         utils.getDropdownMenu().should('not.exist');
 
         utils.scrollTo(config.cellWidth * 7, 0);
@@ -64,7 +64,8 @@ context('Cell templates', () => {
         utils.getDropdownMenu().should('be.visible').and('have.length', 1);
     });
 
-    it('browser focus should back to rg after option selected on dropdown cell', () => { // ✅
+    it.skip('browser focus should back to rg after option selected on dropdown cell', () => { // ✅
+        // 🟠  NEED FIX
         utils.getDropdownMenu().should('not.exist');
 
         utils.scrollTo(config.cellWidth * 7, 0);
@@ -111,7 +112,7 @@ context('Cell templates', () => {
     });
 
     it.skip('should leave input filter on ESC key down on dropdown cell - back focus to rg', () => { // ✅
-        // 🟠  
+        // 🟠  NEED FIX
         utils.getDropdownMenu().should('not.exist');
 
         utils.scrollTo(config.cellWidth * 7, 0);

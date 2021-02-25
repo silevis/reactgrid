@@ -20,6 +20,10 @@ export interface StickyRanges {
     stickyLeftRange: Range;
 }
 
+export interface Span {
+    range?: Range;
+}
+
 // INTERNAL
 export class CellMatrix<TStickyRanges extends StickyRanges = StickyRanges, TCellMatrixProps extends CellMatrixProps = CellMatrixProps> {
 
@@ -40,6 +44,10 @@ export class CellMatrix<TStickyRanges extends StickyRanges = StickyRanges, TCell
     rowIndexLookup: IndexLookup = {};
     columnIndexLookup: IndexLookup = {};
 
+    spanCellLookup: { [location: string]: Span } = {};
+
+    rangesToRender: { [location: string]: Span } = {};
+
     constructor(public ranges: TStickyRanges) { }
 
     getRange(start: Location, end: Location): Range {
@@ -58,7 +66,7 @@ export class CellMatrix<TStickyRanges extends StickyRanges = StickyRanges, TCell
             const column = this.columns[this.columnIndexLookup[columnId]];
             return this.validateLocation({ row, column });
         } catch (error) {
-            throw new EvalError(`column: '${columnId}', row: '${rowId}'`)
+            throw new RangeError(`column: '${columnId}', row: '${rowId}'`)
         }
     }
 
@@ -76,4 +84,8 @@ export class CellMatrix<TStickyRanges extends StickyRanges = StickyRanges, TCell
         return this.rows[location.row.idx].cells[location.column.idx];
     }
 
+}
+
+export function translateLocationIdxToLookupKey(idx: number, idy: number): string {
+    return `${idx}, ${idy}`;
 }

@@ -3,7 +3,7 @@ import { Range } from '../Model/Range';
 import { State } from '../Model/State';
 import { Borders } from '../Model/InternalModel';
 import { Highlight } from '../Model/PublicModel';
-import { CellFocus } from './CellFocus';
+import { CellFocus, CellHighlight } from './CellFocus';
 import { RowRenderer } from './RowRenderer';
 import { CellRendererProps } from './CellRenderer';
 import { isMobileDevice } from '../Functions/isMobileDevice';
@@ -62,7 +62,7 @@ function renderHighlights(state: State, range: Range) {
         try {
             const location = state.cellMatrix.getLocationById(highlight.rowId, highlight.columnId);
             return location && range.contains(location) &&
-                <CellFocus key={id} location={location} borderColor={highlight.borderColor} isHighlight />;
+                <CellHighlight key={id} location={location} state={state} borderColor={highlight.borderColor} />;
         } catch (error) {
             console.error(`Cell location fot found while rendering highlights at: ${(error as Error).message}`);
             return null;
