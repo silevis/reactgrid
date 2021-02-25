@@ -99,7 +99,7 @@ context('Cell editor position', () => {
     ].forEach(utils.testCellEditor.bind(utils));
   });
 
-  it('cell editor should be fully visible on double click on horizontally partially visible cell focus', () => { // ✅ 
+  it.skip('cell editor should be fully visible on double click on horizontally partially visible cell focus', () => {
     utils.selectCell((config.cellWidth * 3) - 10, (config.cellHeight * 3) - 10);
     utils.getCellFocus().should('be.visible');
     [
@@ -116,7 +116,7 @@ context('Cell editor position', () => {
     ].forEach(utils.testCellEditor.bind(utils));
   });
 
-  it('cell editor should be fully visible on double click on vertically partially visible cell focus', () => { // ✅ 
+  it.skip('cell editor should be fully visible on double click on vertically partially visible cell focus', () => {
     utils.selectCell((config.cellWidth * 3) - 10, (config.cellHeight * 3) - 10);
     utils.getCellFocus().should('be.visible');
     [
