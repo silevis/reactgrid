@@ -460,6 +460,10 @@ export interface Cell {
     style?: CellStyle;
     /** Additional CSS classes */
     className?: string;
+    /** Specifies the number of columns a cell should span */
+    colspan?: number;
+    /** Specifies the number of rows a cell should span */
+    rowspan?: number;
 }
 
 /**

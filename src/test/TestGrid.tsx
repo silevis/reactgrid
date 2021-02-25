@@ -60,7 +60,11 @@ export const TestGrid: React.FC<TestGridProps> = (props) => {
             if (ri === 0) return { type: firstRowType, text: `${ri} - ${ci}` }
             if (ri === 2 && ci === 8) return { type: 'text', text: `non-editable`, nonEditable: true, validator: (text: string): boolean => true }
             if (ri === 3 && ci === 8) return { type: 'text', text: '', placeholder: 'placeholder', validator: (text: string): boolean => true }
-            if ((ri === 3 || ri === 4 || ri === 5 || ri === 24 || ri === 149) && (ci === 10 || ci === 11 || ci === 12 || ci === 29)) return { type: cellType, text: `${ri} - ${ci}` }
+            const spannedCells = config.spannedCells?.filter(sC => sC.idx === ci && sC.idy === ri)[0];
+            const headerCells = config.headerCells?.filter(sC => sC.idx === ci && sC.idy === ri)[0];
+            if (spannedCells || headerCells) {
+                return { type: cellType, text: `${ri} - ${ci}`, colspan: spannedCells ? spannedCells.colspan : 0, rowspan: spannedCells ? spannedCells.rowspan : 0 }
+            }
             const now = new Date();
             switch (ci) {
                 case 0:
@@ -89,8 +93,6 @@ export const TestGrid: React.FC<TestGridProps> = (props) => {
                             { value: 'angular', label: 'Angular' }
                         ], currentValue: 'react', isDisabled: false
                     }
-                // case 9: // TODO allow user to pass non focusable cell (header cell) with arrows
-                //     return { type: 'header', text: `${ri} - ${ci}` }
                 default:
                     return { type: 'text', text: `${ri} - ${ci}`, validator: (text: string): boolean => true }
             }
@@ -362,6 +364,7 @@ export const TestGridOptionsSelect: React.FC<{ isPro?: boolean }> = ({ isPro }) 
                 <option value='/enableFrozenFocus'>Enable frozen focus</option>
                 <option value='/enableResponsiveSticky'>Enable responsive sticky</option>
                 <option value='/enableResponsiveStickyPinnedToBody'>Enable responsive sticky pinned to body</option>
+                <option value='/enableSpannedCells'>Enable spanned cells</option>
                 {isPro && <>
                     <option value='/enableColumnAndRowSelection'>Enable column and row selection</option>
                     <option value='/enableColumnAndRowSelectionWithSticky'>Enable column and row selection with sticky</option>

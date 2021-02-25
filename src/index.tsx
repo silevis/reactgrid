@@ -5,7 +5,8 @@ import { ReactGrid } from './lib/Components/ReactGrid';
 // import './test/theming-test.scss';
 import {
   config, enablePinnedToBodyConfig, disabledInitialFocusLocationConfig, enableAdditionalContentConfig,
-  enableAdditionalContentWithFlexRowConfig, enableSymetric, enableResponsiveSticky, enableResponsiveStickyPinnedToBody
+  enableAdditionalContentWithFlexRowConfig, enableSymetric, enableResponsiveSticky, enableResponsiveStickyPinnedToBody,
+  enableSpannedCells
 } from './test/testEnvConfig';
 
 let component = <ExtTestGrid
@@ -86,6 +87,14 @@ switch (window.location.pathname) {
       enableSticky
     />;
     ExtTestGrid.displayName = 'TestGridWithResponsiveStickyPinnedToBody';
+    break;
+  case '/enableSpannedCells':
+    component = <ExtTestGrid
+      component={ReactGrid}
+      config={enableSpannedCells}
+      cellType={'header'}
+    />;
+    ExtTestGrid.displayName = 'TestGridWithSpannedCells';
     break;
   default:
     break;
