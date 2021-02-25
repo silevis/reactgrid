@@ -14,6 +14,7 @@ export declare const enableAdditionalContentWithFlexRowConfig: TestConfig;
 export declare const enableSymetric: TestConfig;
 export declare const enableResponsiveSticky: TestConfig;
 export declare const enableResponsiveStickyPinnedToBody: TestConfig;
+export declare const enableSpannedCells: TestConfig;
 export interface TestConfig {
     pinToBody: boolean;
     additionalContent: boolean;
@@ -39,6 +40,16 @@ export interface TestConfig {
     stickyRight: number;
     focusLocation: CellLocation;
     initialFocusLocation?: CellLocation;
+    spannedCells?: {
+        idx: number;
+        idy: number;
+        colspan?: number;
+        rowspan?: number;
+    }[];
+    headerCells?: {
+        idx: number;
+        idy: number;
+    }[];
     highlights: Highlight[];
     labels: TextLabels;
     horizontalStickyBreakpoint?: number;

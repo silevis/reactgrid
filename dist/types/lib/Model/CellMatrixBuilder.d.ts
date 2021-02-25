@@ -18,6 +18,8 @@ export declare class CellMatrixBuilder implements ICellMatrixBuilder {
     reset(): CellMatrixBuilder;
     setProps(props: CellMatrixProps): CellMatrixBuilder;
     fillRowsAndCols(edges?: StickyEdges): CellMatrixBuilder;
+    setRangesToRenderLookup(): CellMatrixBuilder;
+    getRangesToRender(range: Range): Range[];
     fillSticky(edges?: StickyEdges): CellMatrixBuilder;
     fillScrollableRange(edges?: StickyEdges): CellMatrixBuilder;
     setEdgeLocations(): CellMatrixBuilder;

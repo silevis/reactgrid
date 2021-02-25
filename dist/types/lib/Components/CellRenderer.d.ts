@@ -1,11 +1,13 @@
 import * as React from 'react';
 import { Borders, Location } from '../Model/InternalModel';
+import { Range } from '../Model/Range';
 import { Cell, Compatible } from '../Model/PublicModel';
 import { State } from '../Model/State';
 export interface CellRendererProps {
     state: State;
     location: Location;
     borders: Borders;
+    range: Range;
     children?: React.ReactNode;
 }
 export interface CellRendererChildProps<TState extends State = State> {

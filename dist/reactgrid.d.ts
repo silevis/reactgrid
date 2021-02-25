@@ -615,6 +615,10 @@ interface Cell {
     style?: CellStyle;
     /** Additional CSS classes */
     className?: string;
+    /** Specifies the number of columns a cell should span */
+    colspan?: number;
+    /** Specifies the number of rows a cell should span */
+    rowspan?: number;
 }
 /**
  * Cell type marker - every field of `TCell` is optional.
@@ -752,6 +756,9 @@ interface StickyRanges {
     stickyTopRange: Range;
     stickyLeftRange: Range;
 }
+interface Span {
+    range?: Range;
+}
 declare class CellMatrix<TStickyRanges extends StickyRanges = StickyRanges, TCellMatrixProps extends CellMatrixProps = CellMatrixProps> {
     ranges: TStickyRanges;
     static DEFAULT_ROW_HEIGHT: number;
@@ -767,6 +774,12 @@ declare class CellMatrix<TStickyRanges extends StickyRanges = StickyRanges, TCel
     last: Location;
     rowIndexLookup: IndexLookup;
     columnIndexLookup: IndexLookup;
+    spanCellLookup: {
+        [location: string]: Span;
+    };
+    rangesToRender: {
+        [location: string]: Span;
+    };
     constructor(ranges: TStickyRanges);
     getRange(start: Location, end: Location): Range;
     getLocation(rowIdx: number, columnIdx: number): Location;
