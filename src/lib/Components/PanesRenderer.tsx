@@ -125,7 +125,7 @@ export const PanesRenderer: React.FC<PanesProps> = ({ state, cellRenderer }) => 
             </Pane>
             <Pane
                 renderChildren={renderTopSticky && renderLeftSticky}
-                className={'rg-pane-top rg-pane-left shadow shadow-top-left-corner'}
+                className={'rg-pane-top rg-pane-left rg-pane-shadow shadow-top-left-corner'}
                 style={{
                     height: cellMatrix.ranges.stickyTopRange.height,
                     width: (areOnlyStickyRows && areOnlyStickyCols)
