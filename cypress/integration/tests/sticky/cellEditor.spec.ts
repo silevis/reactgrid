@@ -177,14 +177,13 @@ context('Cell editor position', () => {
 
     utils.getScrollableElement().then($scrollable => {
       const v = $scrollable[0];
-      const firstScrollValue = utils.round(v.scrollLeft);
       utils.scrollTo(utils.getCellXCenter(), 0);
       utils.keyDown(constants.keyCodes.Enter, { force: true }, 20, false);
       utils.getScrollableElement().then($scrollable => {
         const v2 = $scrollable[0];
         cy.wait(utils.wait());
         const secondSrollValue = utils.round(v2.scrollLeft);
-        expect(firstScrollValue, 'Scroll left').to.be.equal(secondSrollValue);
+        expect(v.scrollLeft, 'Scroll left').to.be.equal(secondSrollValue);
       });
     });
   });
@@ -198,14 +197,13 @@ context('Cell editor position', () => {
 
     utils.getScrollableElement().then($scrollable => {
       const v = $scrollable[0];
-      const firstScrollValue = utils.round(v.scrollTop);
       utils.scrollTo(0, utils.getCellYCenter());
       utils.keyDown(constants.keyCodes.Enter, { force: true }, 20, false);
       utils.getScrollableElement().then($scrollable => {
         const v2 = $scrollable[0];
         cy.wait(utils.wait());
         const secondSrollValue = utils.round(v2.scrollTop);
-        expect(firstScrollValue, 'Scroll Top').to.be.equal(secondSrollValue);
+        expect(v.scrollTop, 'Scroll Top').to.be.equal(secondSrollValue);
       });
     });
   });
