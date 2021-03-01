@@ -73,7 +73,8 @@ export class CellMatrixBuilder implements ICellMatrixBuilder {
         let rangesToExclude: Range[] = [];
         this.cellMatrix.rows.forEach((row, idy) => {
             row.cells.forEach((cell, idx) => {
-                const { rowspan = 0, colspan = 0 } = cell;
+                const rowspan = ("rowspan" in cell && cell.rowspan) || 0;
+                const colspan = ("colspan" in cell && cell.colspan) || 0;
                 const rows = rowspan ? this.cellMatrix.rows.slice(idy, idy + rowspan) : [this.cellMatrix.rows[idy]];
                 const columns = colspan ? this.cellMatrix.columns.slice(idx, idx + colspan) : [this.cellMatrix.columns[idx]];
                 const range = new Range(rows, columns);

@@ -93,6 +93,8 @@ export const TestGrid: React.FC<TestGridProps> = (props) => {
                             { value: 'angular', label: 'Angular' }
                         ], currentValue: 'react', isDisabled: false
                     }
+                case -1: // just for interface testing purposes
+                    return { type: 'header', text: ``, rowspan: 3, colspan: 2 }
                 default:
                     return { type: 'text', text: `${ri} - ${ci}`, validator: (text: string): boolean => true }
             }
