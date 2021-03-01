@@ -168,27 +168,45 @@ context('Cell editor position', () => {
     ].forEach(utils.testCellEditorOnSticky.bind(utils));
   });
 
-  it.skip('cell editor should be fully visible on double click on horizontally partially visible cell focus', () => {
-    utils.selectCell(config.cellWidth * 3, config.cellHeight * 3);
+  it('cell editor should be fully visible on double click on horizontally partially visible cell focus', () => { // ✅
+    utils.selectCell((utils.getConfig().cellWidth * 3) - 10, (utils.getConfig().cellHeight * 3) - 10);
     utils.getCellFocus().should('be.visible');
     utils.scrollTo(utils.getCellXCenter(), 0);
+    cy.wait(utils.wait());
+    utils.keyDown(constants.keyCodes.ArrowDown, { force: true }, 20, false);
 
-    utils.keyDown(constants.keyCodes.Enter, { force: true }, 20, false);
-    utils.getCellEditor().then($el => {
-      const elementRect = $el[0].getBoundingClientRect();
-      utils.assertElementLeftIsEqual(utils.getCellEditor(), utils.round(elementRect.left));
+    utils.getScrollableElement().then($scrollable => {
+      const v = $scrollable[0];
+      const firstScrollValue = utils.round(v.scrollLeft);
+      utils.scrollTo(utils.getCellXCenter(), 0);
+      utils.keyDown(constants.keyCodes.Enter, { force: true }, 20, false);
+      utils.getScrollableElement().then($scrollable => {
+        const v2 = $scrollable[0];
+        cy.wait(utils.wait());
+        const secondSrollValue = utils.round(v2.scrollLeft);
+        expect(firstScrollValue, 'Scroll left').to.be.equal(secondSrollValue);
+      });
     });
   });
 
-  it.skip('cell editor should be fully visible on double click on vertically partially visible cell focus', () => {
-    utils.selectCell(config.cellWidth * 3, config.cellHeight * 3);
+  it('cell editor should be fully visible on double click on vertically partially visible cell focus', () => { // ✅
+    utils.selectCell((utils.getConfig().cellWidth * 3) - 10, (utils.getConfig().cellHeight * 3) - 10);
     utils.getCellFocus().should('be.visible');
     utils.scrollTo(0, utils.getCellYCenter());
+    cy.wait(utils.wait());
+    utils.keyDown(constants.keyCodes.ArrowRight, { force: true }, 20, false);
 
-    utils.keyDown(constants.keyCodes.Enter, { force: true }, 20, false);
-    utils.getCellEditor().then($el => {
-      const elementRect = $el[0].getBoundingClientRect();
-      utils.assertElementTopIsEqual(utils.getCellEditor(), utils.round(elementRect.top));
+    utils.getScrollableElement().then($scrollable => {
+      const v = $scrollable[0];
+      const firstScrollValue = utils.round(v.scrollTop);
+      utils.scrollTo(0, utils.getCellYCenter());
+      utils.keyDown(constants.keyCodes.Enter, { force: true }, 20, false);
+      utils.getScrollableElement().then($scrollable => {
+        const v2 = $scrollable[0];
+        cy.wait(utils.wait());
+        const secondSrollValue = utils.round(v2.scrollTop);
+        expect(firstScrollValue, 'Scroll Top').to.be.equal(secondSrollValue);
+      });
     });
   });
 
