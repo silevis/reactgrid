@@ -24,9 +24,9 @@ $dropdown-focused-item-bg-color: lighten(
 $dropdown-menu-bg-color: #ffffff !default;
 
 // SHADOWS
-$shadow-blur-radius: 7px !default;
-$shadow-spread-radius: -3px !default;
-$shadow-length: 3px !default;
+$shadow-blur-radius: 3px !default;
+$shadow-spread-radius: 1px !default;
+$shadow-length: 1px !default;
 $cell-editor-shadow: 1px 1px 6px !default;
 
 // CONTEXT MENU
@@ -38,4 +38,5 @@ $opacity-35: 0.35 !default;
 $opacity-20: 0.2 !default;
 $opacity-15: 0.15 !default;
 $opacity-10: 0.1 !default;
+$opacity-06: 0.06 !default;
 $opacity-01: 0.01 !default;
