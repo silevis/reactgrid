@@ -1,6 +1,6 @@
 import * as React from 'react';
-import { Cell, CellStyle, CellTemplate, Compatible, Uncertain } from '../Model/PublicModel';
-export interface HeaderCell extends Cell {
+import { Cell, CellStyle, CellTemplate, Compatible, Span, Uncertain } from '../Model/PublicModel';
+export interface HeaderCell extends Cell, Span {
     type: 'header';
     text: string;
 }

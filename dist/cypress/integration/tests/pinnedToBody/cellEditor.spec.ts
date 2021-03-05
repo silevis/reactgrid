@@ -95,32 +95,41 @@ context('Cell editor position', () => {
     }].forEach(utils.testCellEditor.bind(utils));
   });
 
-  it.skip('cell editor should be fully visible on double click on horizontally partially visible cell focus', () => {
-    utils.selectCell(config.cellWidth * 3, config.cellHeight * 3);
+  it('cell editor should be fully visible on double click on horizontally partially visible cell focus', () => { // ✅
+    utils.selectCell((utils.getConfig().cellWidth * 3) - 10, (utils.getConfig().cellHeight * 3) - 10);
     utils.getCellFocus().should('be.visible');
-    [
-      {
-        click: {
-          x: 0.1,
-          y: config.cellHeight * 3,
-        },
-        scroll: {
-          x: config.cellWidth * 3 - config.cellWidth / 2,
-          y: 0,
-        },
-      },
-    ].forEach(utils.testCellEditor.bind(utils));
+    utils.scrollTo(utils.getConfig().cellWidth * 3 - utils.getCellXCenter(), 0);
+    cy.wait(utils.wait());
+    utils.keyDown(constants.keyCodes.ArrowDown, { force: true }, 20, false);
+
+    cy.window().its('scrollX').then($scrollLeft => {
+      const firstScrollValue = utils.round($scrollLeft);
+      utils.scrollTo(utils.getConfig().cellWidth * 3 - utils.getCellXCenter(), 0);
+      utils.keyDown(constants.keyCodes.Enter, { force: true }, 20, false);
+      cy.window().its('scrollX').then($scrollLeft2 => {
+        cy.wait(utils.wait());
+        const secondSrollValue = utils.round($scrollLeft2);
+        expect(firstScrollValue, 'Scroll left').to.be.equal(secondSrollValue);
+      });
+    });
   });
 
-  it.skip('cell editor should be fully visible on double click on vertically partially visible cell focus', () => {
-    utils.selectCell(config.cellWidth * 3, config.cellHeight * 3);
+  it('cell editor should be fully visible on double click on vertically partially visible cell focus', () => { // ✅
+    utils.selectCell((utils.getConfig().cellWidth * 3) - 10, (utils.getConfig().cellHeight * 3) - 10);
     utils.getCellFocus().should('be.visible');
-    utils.scrollTo(0, config.cellHeight * 4 - utils.getCellYCenter());
+    utils.scrollTo(0, utils.getConfig().cellHeight * 3 - utils.getCellYCenter());
+    cy.wait(utils.wait());
+    utils.keyDown(constants.keyCodes.ArrowRight, { force: true }, 20, false);
 
-    utils.keyDown(constants.keyCodes.Enter, { force: true }, 20, false);
-    utils.getCellEditor().then($el => {
-      const elementRect = $el[0].getBoundingClientRect();
-      utils.assertElementTopIsEqual(utils.getCellEditor(), utils.round(elementRect.top));
+    cy.window().its('scrollY').then($scrollTop => {
+      const firstScrollValue = utils.round($scrollTop);
+      utils.scrollTo(0, utils.getConfig().cellHeight * 3 - utils.getCellYCenter());
+      utils.keyDown(constants.keyCodes.Enter, { force: true }, 20, false);
+      cy.window().its('scrollY').then($scrollTop2 => {
+        cy.wait(utils.wait());
+        const secondSrollValue = utils.round($scrollTop2);
+        expect(firstScrollValue, 'Scroll Top').to.be.equal(secondSrollValue);
+      });
     });
   });
 

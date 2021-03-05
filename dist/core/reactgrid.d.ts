@@ -72,7 +72,7 @@ declare class ChevronCellTemplate implements CellTemplate<ChevronCell> {
     render(cell: Compatible<ChevronCell>, isInEditMode: boolean, onCellChanged: (cell: Compatible<ChevronCell>, commit: boolean) => void): ReactNode;
 }
 
-interface HeaderCell extends Cell {
+interface HeaderCell extends Cell, Span {
     type: 'header';
     text: string;
 }
@@ -600,6 +600,18 @@ interface CellStyle {
     };
 }
 /**
+ * Defines quantity of rows and columns to span.
+ * At this moment span feature is available only for `HeaderCell`.
+ *
+ * @see https://reactgrid.com/docs/3.1/2-implementing-core-features/9e-cell-span/
+ */
+interface Span {
+    /** Specifies the number of columns a cell should span */
+    colspan?: number;
+    /** Specifies the number of rows a cell should span */
+    rowspan?: number;
+}
+/**
  * A base for built-in cell types (e.g. `HeaderCell`) and your own
  *
  * @see https://reactgrid.com/docs/3.1/7-api/0-interfaces/4-cell/
@@ -615,10 +627,6 @@ interface Cell {
     style?: CellStyle;
     /** Additional CSS classes */
     className?: string;
-    /** Specifies the number of columns a cell should span */
-    colspan?: number;
-    /** Specifies the number of rows a cell should span */
-    rowspan?: number;
 }
 /**
  * Cell type marker - every field of `TCell` is optional.
@@ -814,7 +822,7 @@ interface StickyRanges {
     stickyTopRange: Range;
     stickyLeftRange: Range;
 }
-interface Span {
+interface SpanLookup {
     range?: Range;
 }
 declare class CellMatrix<TStickyRanges extends StickyRanges = StickyRanges, TCellMatrixProps extends CellMatrixProps = CellMatrixProps> {
@@ -833,10 +841,10 @@ declare class CellMatrix<TStickyRanges extends StickyRanges = StickyRanges, TCel
     rowIndexLookup: IndexLookup;
     columnIndexLookup: IndexLookup;
     spanCellLookup: {
-        [location: string]: Span;
+        [location: string]: SpanLookup;
     };
     rangesToRender: {
-        [location: string]: Span;
+        [location: string]: SpanLookup;
     };
     constructor(ranges: TStickyRanges);
     getRange(start: Location, end: Location): Range;
@@ -1306,4 +1314,4 @@ declare function i18n(state: State): Required<TextLabels>;
 
 declare function isMobileDevice(): boolean;
 
-export { AbstractPointerEventsController, Behavior, BorderProps, Borders, Cell, CellChange, CellEditorOffset, CellEditorRenderer, CellEditorRendererProps, CellLocation, CellMatrix, CellMatrixBuilder, CellMatrixProps, CellRenderer, CellRendererChildProps, CellRendererProps, CellStyle, CellTemplate, CellTemplates, CheckboxCell, CheckboxCellTemplate, ChevronCell, ChevronCellTemplate, Column, Compatible, DateCell, DateCellTemplate, DefaultCellTypes, Direction, DropPosition, DropdownCell, DropdownCellTemplate, EmailCell, EmailCellTemplate, EventHandlers, FocusCellFn, FocusLocationFn, GridColumn, GridRenderer, GridRendererProps, GridRow, HeaderCell, HeaderCellTemplate, Highlight, ICellMatrixBuilder, Id, IndexLookup, LegacyBrowserGridRenderer, Location, MenuOption, NumberCell, NumberCellTemplate, OptionType, Orientation, Pane, PaneContent, PaneContentProps, PaneGridContent, PaneProps, PaneShadow, PanesProps, PanesRenderer, PointerLocation, PositionState, Range, ReactGrid, ReactGridProps, Row, RowCalcFn, RowsProps, SelectionMode, SliceDirection, Span, State, StateModifier, StateUpdater, StickyEdges, StickyRanges, TextCell, TextCellTemplate, TextLabels, TimeCell, TimeCellTemplate, Uncertain, UncertainCompatible, VS_PAGE_HEIGHT, VS_PAGE_WIDTH, appendCellTemplates, appendGroupIdRender, appendHighlights, areFocusesDiff, areLocationsEqual, cellEditorCalculator, clearCell, columnsSlicer, componentDidUpdate, copyDataCommands, createHTMLElements, dataHasChanged, defaultStateFields, emptyCell, focusCell, focusLocation, getCalculatedScrollLeftValueToLeft, getCalculatedScrollLeftValueToRight, getCalculatedScrollTopValueToBottom, getCalculatedScrollTopValueToTop, getCellProperty, getCharFromKeyCode, getCompatibleCellAndTemplate, getDataToCopy, getDerivedStateFromProps, getFocusLocationToDown, getFocusLocationToLeft, getFocusLocationToRight, getFocusLocationToUp, getLeftStickyColumn, getLeftStickyOffset, getLocationFromClient, getNextFocusableLocation, getReactGridOffsets, getScrollOfScrollableElement, getScrollableContentColumn, getScrollableContentRow, getScrollableParent, getSizeOfElement, getStickyLeftRangeWidth, getStickyOffset, getStickyTopRangeWidth, getStickyTopRow, getTopScrollableElement, getTopStickyOffset, getVisibleColumns, getVisibleHeight, getVisibleRows, getVisibleScrollAreaHeight, getVisibleScrollAreaWidth, getVisibleScrollableSize, getVisibleSizeOfReactGrid, handleCopy, handleDoubleClick, handleKeyDown, handleKeyDownOnCellTemplate, handleKeyUp, handlePaste, handleStateUpdate, highlightsHasChanged, i18n, inNumericKey, isAllowedOnNumberTypingKey, isAlphaNumericKey, isBottomCellAllVisible, isBrowserFirefox, isBrowserSafari, isFocusLocationOnLeftSticky, isFocusLocationOnTopSticky, isIOS, isIpadOS, isLeftCellAllVisible, isMacOs, isMobileDevice, isNavigationKey, isNumpadNumericKey, isOnClickableArea, isReadyToHandleEvent, isRightCellAllVisible, isSelectionKey, isTopCellAllVisible, keyCodes, moveFocusDown, moveFocusEnd, moveFocusHome, moveFocusLeft, moveFocusPage, moveFocusPageDown, moveFocusPageUp, moveFocusRight, moveFocusUp, pasteData, processSingleCell, recalcVisibleRange, rowsSlicer, scrollIntoView, setFocusLocation, setInitialFocusLocation, setStyles, shouldRenderCenterRange, shouldRenderLeftSticky, shouldRenderMiddleRange, shouldRenderTopSticky, stateDeriver, translateLocationIdxToLookupKey, tryAppendChange, tryAppendChangeHavingGroupId, updateFocusedLocation, updateStateProps, withFocusLocation, withMoveFocusDown, withMoveFocusEnd, withMoveFocusHome, withMoveFocusLeft, withMoveFocusPage, withMoveFocusRight, withMoveFocusUp };
+export { AbstractPointerEventsController, Behavior, BorderProps, Borders, Cell, CellChange, CellEditorOffset, CellEditorRenderer, CellEditorRendererProps, CellLocation, CellMatrix, CellMatrixBuilder, CellMatrixProps, CellRenderer, CellRendererChildProps, CellRendererProps, CellStyle, CellTemplate, CellTemplates, CheckboxCell, CheckboxCellTemplate, ChevronCell, ChevronCellTemplate, Column, Compatible, DateCell, DateCellTemplate, DefaultCellTypes, Direction, DropPosition, DropdownCell, DropdownCellTemplate, EmailCell, EmailCellTemplate, EventHandlers, FocusCellFn, FocusLocationFn, GridColumn, GridRenderer, GridRendererProps, GridRow, HeaderCell, HeaderCellTemplate, Highlight, ICellMatrixBuilder, Id, IndexLookup, LegacyBrowserGridRenderer, Location, MenuOption, NumberCell, NumberCellTemplate, OptionType, Orientation, Pane, PaneContent, PaneContentProps, PaneGridContent, PaneProps, PaneShadow, PanesProps, PanesRenderer, PointerLocation, PositionState, Range, ReactGrid, ReactGridProps, Row, RowCalcFn, RowsProps, SelectionMode, SliceDirection, Span, SpanLookup, State, StateModifier, StateUpdater, StickyEdges, StickyRanges, TextCell, TextCellTemplate, TextLabels, TimeCell, TimeCellTemplate, Uncertain, UncertainCompatible, VS_PAGE_HEIGHT, VS_PAGE_WIDTH, appendCellTemplates, appendGroupIdRender, appendHighlights, areFocusesDiff, areLocationsEqual, cellEditorCalculator, clearCell, columnsSlicer, componentDidUpdate, copyDataCommands, createHTMLElements, dataHasChanged, defaultStateFields, emptyCell, focusCell, focusLocation, getCalculatedScrollLeftValueToLeft, getCalculatedScrollLeftValueToRight, getCalculatedScrollTopValueToBottom, getCalculatedScrollTopValueToTop, getCellProperty, getCharFromKeyCode, getCompatibleCellAndTemplate, getDataToCopy, getDerivedStateFromProps, getFocusLocationToDown, getFocusLocationToLeft, getFocusLocationToRight, getFocusLocationToUp, getLeftStickyColumn, getLeftStickyOffset, getLocationFromClient, getNextFocusableLocation, getReactGridOffsets, getScrollOfScrollableElement, getScrollableContentColumn, getScrollableContentRow, getScrollableParent, getSizeOfElement, getStickyLeftRangeWidth, getStickyOffset, getStickyTopRangeWidth, getStickyTopRow, getTopScrollableElement, getTopStickyOffset, getVisibleColumns, getVisibleHeight, getVisibleRows, getVisibleScrollAreaHeight, getVisibleScrollAreaWidth, getVisibleScrollableSize, getVisibleSizeOfReactGrid, handleCopy, handleDoubleClick, handleKeyDown, handleKeyDownOnCellTemplate, handleKeyUp, handlePaste, handleStateUpdate, highlightsHasChanged, i18n, inNumericKey, isAllowedOnNumberTypingKey, isAlphaNumericKey, isBottomCellAllVisible, isBrowserFirefox, isBrowserSafari, isFocusLocationOnLeftSticky, isFocusLocationOnTopSticky, isIOS, isIpadOS, isLeftCellAllVisible, isMacOs, isMobileDevice, isNavigationKey, isNumpadNumericKey, isOnClickableArea, isReadyToHandleEvent, isRightCellAllVisible, isSelectionKey, isTopCellAllVisible, keyCodes, moveFocusDown, moveFocusEnd, moveFocusHome, moveFocusLeft, moveFocusPage, moveFocusPageDown, moveFocusPageUp, moveFocusRight, moveFocusUp, pasteData, processSingleCell, recalcVisibleRange, rowsSlicer, scrollIntoView, setFocusLocation, setInitialFocusLocation, setStyles, shouldRenderCenterRange, shouldRenderLeftSticky, shouldRenderMiddleRange, shouldRenderTopSticky, stateDeriver, translateLocationIdxToLookupKey, tryAppendChange, tryAppendChangeHavingGroupId, updateFocusedLocation, updateStateProps, withFocusLocation, withMoveFocusDown, withMoveFocusEnd, withMoveFocusHome, withMoveFocusLeft, withMoveFocusPage, withMoveFocusRight, withMoveFocusUp };

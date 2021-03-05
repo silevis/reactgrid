@@ -1,15 +1,15 @@
-$shadow-on-bottom:              0 $shadow-length $shadow-blur-radius $shadow-spread-radius !default;
-$shadow-on-top:                 0 (-$shadow-length) $shadow-blur-radius $shadow-spread-radius !default;
-$shadow-on-left:                (-$shadow-length) 0 $shadow-blur-radius $shadow-spread-radius !default;
-$shadow-on-right:               $shadow-length 0 $shadow-blur-radius $shadow-spread-radius !default;
-$shadow-on-top-left-corner:     $shadow-length $shadow-length $shadow-blur-radius $shadow-spread-radius !default;
-$shadow-on-top-right-corner:    (-$shadow-length) $shadow-length $shadow-blur-radius $shadow-spread-radius !default;
-$shadow-on-bottom-left-corner:  $shadow-length (-$shadow-length) $shadow-blur-radius $shadow-spread-radius !default;
-$shadow-on-bottom-right-corner: (-$shadow-length) (-$shadow-length) $shadow-blur-radius $shadow-spread-radius !default;
+$shadow-on-bottom:              2*$shadow-length 2*$shadow-length $shadow-blur-radius $shadow-spread-radius !default;
+$shadow-on-top:                 2*$shadow-length (-$shadow-length) $shadow-blur-radius $shadow-spread-radius !default;
+$shadow-on-left:                5*(-$shadow-length) 0 $shadow-blur-radius 2*(-$shadow-spread-radius) !default;
+$shadow-on-right:               5*$shadow-length 0 $shadow-blur-radius 2*(-$shadow-spread-radius) !default;
+$shadow-on-top-left-corner:     2*$shadow-length 3*$shadow-length $shadow-blur-radius $shadow-spread-radius !default;
+$shadow-on-top-right-corner:    2*(-$shadow-length) 2*$shadow-length $shadow-blur-radius $shadow-spread-radius !default;
+$shadow-on-bottom-left-corner:  2*$shadow-length 2*(-$shadow-length) $shadow-blur-radius $shadow-spread-radius !default;
+$shadow-on-bottom-right-corner: 2*(-$shadow-length) 2*(-$shadow-length) $shadow-blur-radius $shadow-spread-radius !default;
 
 
 $white-with-heavy-opacity:      rgba($bg-color, $opacity-01);
-$black-with-medium-opacity:     rgba($shadow-color, $opacity-35);
+$black-with-medium-opacity:     rgba($shadow-color, $opacity-06);
 
 $main-bg-color:                 $bg-color;
 $shadow-bg:                     $shadow-color;

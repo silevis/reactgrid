@@ -389,6 +389,18 @@ export interface CellStyle {
     };
 }
 /**
+ * Defines quantity of rows and columns to span.
+ * At this moment span feature is available only for `HeaderCell`.
+ *
+ * @see https://reactgrid.com/docs/3.1/2-implementing-core-features/9e-cell-span/
+ */
+export interface Span {
+    /** Specifies the number of columns a cell should span */
+    colspan?: number;
+    /** Specifies the number of rows a cell should span */
+    rowspan?: number;
+}
+/**
  * A base for built-in cell types (e.g. `HeaderCell`) and your own
  *
  * @see https://reactgrid.com/docs/3.1/7-api/0-interfaces/4-cell/
@@ -404,10 +416,6 @@ export interface Cell {
     style?: CellStyle;
     /** Additional CSS classes */
     className?: string;
-    /** Specifies the number of columns a cell should span */
-    colspan?: number;
-    /** Specifies the number of rows a cell should span */
-    rowspan?: number;
 }
 /**
  * Cell type marker - every field of `TCell` is optional.

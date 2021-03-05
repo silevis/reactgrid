@@ -12,7 +12,7 @@
   box-sizing: border-box;
   z-index: 5;
   background-color: #ffffff;
-  box-shadow: 1px 1px 6px rgba(0, 0, 0, 0.35);
+  box-shadow: 1px 1px 6px rgba(0, 0, 0, 0.06);
   display: flex;
   border-style: solid;
   border-color: #3579f8;
@@ -240,33 +240,33 @@
     .reactgrid-content .rg-pane-shadow.shadow-top {
       pointer-events: none;
       top: 0;
-      box-shadow: 0 3px 7px -3px rgba(0, 0, 0, 0.35); }
+      box-shadow: 2px 2px 3px 1px rgba(0, 0, 0, 0.06); }
     .reactgrid-content .rg-pane-shadow.shadow-left {
       pointer-events: none;
       left: 0;
-      box-shadow: 3px 0 7px -3px rgba(0, 0, 0, 0.35); }
+      box-shadow: 5px 0 3px -2px rgba(0, 0, 0, 0.06); }
     .reactgrid-content .rg-pane-shadow.shadow-bottom {
       pointer-events: none;
       bottom: 0;
-      box-shadow: 0 -3px 7px -3px rgba(0, 0, 0, 0.35); }
+      box-shadow: 2px -1px 3px 1px rgba(0, 0, 0, 0.06); }
     .reactgrid-content .rg-pane-shadow.shadow-right {
       pointer-events: none;
       right: 0;
-      box-shadow: -3px 0 7px -3px rgba(0, 0, 0, 0.35); }
+      box-shadow: -5px 0 3px -2px rgba(0, 0, 0, 0.06); }
     .reactgrid-content .rg-pane-shadow.shadow-top-left-corner {
-      box-shadow: 3px 3px 7px -3px rgba(0, 0, 0, 0.35); }
+      box-shadow: 2px 3px 3px 1px rgba(0, 0, 0, 0.06); }
     .reactgrid-content .rg-pane-shadow.shadow-top-right-corner {
-      box-shadow: -3px 3px 7px -3px rgba(0, 0, 0, 0.35); }
+      box-shadow: -2px 2px 3px 1px rgba(0, 0, 0, 0.06); }
     .reactgrid-content .rg-pane-shadow.shadow-bottom-left-corner {
-      box-shadow: 3px -3px 7px -3px rgba(0, 0, 0, 0.35); }
+      box-shadow: 2px -2px 3px 1px rgba(0, 0, 0, 0.06); }
     .reactgrid-content .rg-pane-shadow.shadow-bottom-right-corner {
-      box-shadow: -3px -3px 7px -3px rgba(0, 0, 0, 0.35); }
+      box-shadow: -2px -2px 3px 1px rgba(0, 0, 0, 0.06); }
   .reactgrid-content .rg-context-menu {
     position: fixed;
     z-index: 1000;
     background-color: #ffffff;
     font-size: 1em;
-    box-shadow: 0px 0px 8px 2px rgba(0, 0, 0, 0.35); }
+    box-shadow: 0px 0px 8px 2px rgba(0, 0, 0, 0.06); }
     .reactgrid-content .rg-context-menu .rg-context-menu-option {
       padding: 8px 20px 8px 15px;
       cursor: pointer; }

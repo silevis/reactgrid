@@ -72,7 +72,7 @@ declare class ChevronCellTemplate implements CellTemplate<ChevronCell> {
     render(cell: Compatible<ChevronCell>, isInEditMode: boolean, onCellChanged: (cell: Compatible<ChevronCell>, commit: boolean) => void): ReactNode;
 }
 
-interface HeaderCell extends Cell {
+interface HeaderCell extends Cell, Span {
     type: 'header';
     text: string;
 }
@@ -600,6 +600,18 @@ interface CellStyle {
     };
 }
 /**
+ * Defines quantity of rows and columns to span.
+ * At this moment span feature is available only for `HeaderCell`.
+ *
+ * @see https://reactgrid.com/docs/3.1/2-implementing-core-features/9e-cell-span/
+ */
+interface Span {
+    /** Specifies the number of columns a cell should span */
+    colspan?: number;
+    /** Specifies the number of rows a cell should span */
+    rowspan?: number;
+}
+/**
  * A base for built-in cell types (e.g. `HeaderCell`) and your own
  *
  * @see https://reactgrid.com/docs/3.1/7-api/0-interfaces/4-cell/
@@ -615,10 +627,6 @@ interface Cell {
     style?: CellStyle;
     /** Additional CSS classes */
     className?: string;
-    /** Specifies the number of columns a cell should span */
-    colspan?: number;
-    /** Specifies the number of rows a cell should span */
-    rowspan?: number;
 }
 /**
  * Cell type marker - every field of `TCell` is optional.
@@ -756,7 +764,7 @@ interface StickyRanges {
     stickyTopRange: Range;
     stickyLeftRange: Range;
 }
-interface Span {
+interface SpanLookup {
     range?: Range;
 }
 declare class CellMatrix<TStickyRanges extends StickyRanges = StickyRanges, TCellMatrixProps extends CellMatrixProps = CellMatrixProps> {
@@ -775,10 +783,10 @@ declare class CellMatrix<TStickyRanges extends StickyRanges = StickyRanges, TCel
     rowIndexLookup: IndexLookup;
     columnIndexLookup: IndexLookup;
     spanCellLookup: {
-        [location: string]: Span;
+        [location: string]: SpanLookup;
     };
     rangesToRender: {
-        [location: string]: Span;
+        [location: string]: SpanLookup;
     };
     constructor(ranges: TStickyRanges);
     getRange(start: Location, end: Location): Range;
@@ -951,4 +959,4 @@ declare enum keyCodes {
  */
 declare const getCellProperty: <TCell extends Cell, TKey extends keyof TCell>(uncertainCell: Uncertain<TCell>, propName: TKey, expectedType: 'string' | 'number' | 'boolean' | 'undefined' | 'function' | 'object' | 'symbol' | 'bigint') => NonNullable<Uncertain<TCell>[TKey]>;
 
-export { BorderProps, Cell, CellChange, CellLocation, CellStyle, CellTemplate, CellTemplates, CheckboxCell, CheckboxCellTemplate, ChevronCell, ChevronCellTemplate, Column, Compatible, DateCell, DateCellTemplate, DefaultCellTypes, DropPosition, DropdownCell, DropdownCellTemplate, EmailCell, EmailCellTemplate, HeaderCell, HeaderCellTemplate, Highlight, Id, MenuOption, NumberCell, NumberCellTemplate, OptionType, ReactGrid, ReactGridProps, Row, SelectionMode, TextCell, TextCellTemplate, TextLabels, TimeCell, TimeCellTemplate, Uncertain, UncertainCompatible, getCellProperty, getCharFromKeyCode, inNumericKey, isAllowedOnNumberTypingKey, isAlphaNumericKey, isNavigationKey, isNumpadNumericKey, keyCodes };
+export { BorderProps, Cell, CellChange, CellLocation, CellStyle, CellTemplate, CellTemplates, CheckboxCell, CheckboxCellTemplate, ChevronCell, ChevronCellTemplate, Column, Compatible, DateCell, DateCellTemplate, DefaultCellTypes, DropPosition, DropdownCell, DropdownCellTemplate, EmailCell, EmailCellTemplate, HeaderCell, HeaderCellTemplate, Highlight, Id, MenuOption, NumberCell, NumberCellTemplate, OptionType, ReactGrid, ReactGridProps, Row, SelectionMode, Span, TextCell, TextCellTemplate, TextLabels, TimeCell, TimeCellTemplate, Uncertain, UncertainCompatible, getCellProperty, getCharFromKeyCode, inNumericKey, isAllowedOnNumberTypingKey, isAlphaNumericKey, isNavigationKey, isNumpadNumericKey, keyCodes };
