@@ -20,7 +20,7 @@ export interface StickyRanges {
     stickyLeftRange: Range;
 }
 
-export interface Span {
+export interface SpanLookup {
     range?: Range;
 }
 
@@ -44,9 +44,9 @@ export class CellMatrix<TStickyRanges extends StickyRanges = StickyRanges, TCell
     rowIndexLookup: IndexLookup = {};
     columnIndexLookup: IndexLookup = {};
 
-    spanCellLookup: { [location: string]: Span } = {};
+    spanCellLookup: { [location: string]: SpanLookup } = {};
 
-    rangesToRender: { [location: string]: Span } = {};
+    rangesToRender: { [location: string]: SpanLookup } = {};
 
     constructor(public ranges: TStickyRanges) { }
 
