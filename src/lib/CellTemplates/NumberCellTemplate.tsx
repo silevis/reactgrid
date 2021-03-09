@@ -75,6 +75,7 @@ export class NumberCellTemplate implements CellTemplate<NumberCell> {
         const format = new Intl.NumberFormat(locale, { useGrouping: false, maximumFractionDigits: 20 });
 
         return <input
+            inputMode="decimal"
             ref={input => {
                 if (input) {
                     input.focus();
