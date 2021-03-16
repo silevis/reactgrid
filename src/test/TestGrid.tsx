@@ -201,7 +201,7 @@ export const TestGrid: React.FC<TestGridProps> = (props) => {
         });
     }
 
-    const handleContextMenu = (selectedRowIds: Id[], selectedColIds: Id[], selectionMode: SelectionMode, menuOptions: MenuOption[]): MenuOption[] => {
+    const handleContextMenu = (selectedRowIds: Id[], selectedColIds: Id[], selectionMode: SelectionMode, menuOptions: MenuOption[], selectedRanges: Array<CellLocation[]>): MenuOption[] => {
         if (selectionMode === 'row') {
             menuOptions = [
                 ...menuOptions,
