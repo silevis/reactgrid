@@ -49,6 +49,7 @@ export const TestGrid: React.FC<TestGridProps> = (props) => {
         cellType = 'text',
     } = props;
 
+    const [render, setRender] = React.useState(true);
     const [columns, setColumns] = React.useState(() => new Array(config.columns).fill({ columnId: 0, resizable: true, reorderable: true, width: -1 })
         .map<Column>((_, ci) => ({ columnId: `col-${ci}`, resizable: true, reorderable: true, width: config.cellWidth })));
 
@@ -258,7 +259,7 @@ export const TestGrid: React.FC<TestGridProps> = (props) => {
                         <Logo isPro={config.isPro} width={config.rgViewportWidth} />
                     </div>
                 }
-                <Component
+                {render && <Component
                     rows={rows}
                     columns={columns}
                     initialFocusLocation={config.initialFocusLocation}
@@ -288,7 +289,7 @@ export const TestGrid: React.FC<TestGridProps> = (props) => {
                     labels={config.labels}
                     horizontalStickyBreakpoint={config.horizontalStickyBreakpoint}
                     verticalStickyBreakpoint={config.verticalStickyBreakpoint}
-                />
+                />}
                 {config.additionalContent &&
                     <div style={{ height: `${config.rgViewportHeight}px`, backgroundColor: '#fafff3' }}>
                         <Logo isPro={config.isPro} width={config.rgViewportWidth} />
@@ -304,6 +305,9 @@ export const TestGrid: React.FC<TestGridProps> = (props) => {
                 </>
             }
             <TestGridOptionsSelect isPro={config.isPro}></TestGridOptionsSelect>
+            <button onClick={()=> {
+                setRender((render) => !render);
+            }}>Mount / Unmount</button>
             {config.additionalContent &&
                 <>
                     <h1 style={{ width: 3000 }}>TEXT</h1> Test WITH IT
