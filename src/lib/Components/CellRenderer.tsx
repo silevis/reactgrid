@@ -99,8 +99,11 @@ export const CellRenderer: React.FC<CellRendererProps> = ({ state, location, ran
     }
     return (
         <div className={classNames} style={style}
-            data-cell-colidx={process.env.NODE_ENV === "development" ? location.column.idx : null}
-            data-cell-rowidx={process.env.NODE_ENV === "development" ? location.row.idx : null}>
+            {...(process.env.NODE_ENV === 'development' && {
+                'data-cell-colidx': location.column.idx,
+                'data-cell-rowidx': location.row.idx
+            })}
+        >
             {cellTemplate.render(cellToRender, isMobile ? isInEditMode : false, onCellChanged)}
             {children}
             {state.enableGroupIdRender && cell?.groupId !== undefined && !(isInEditMode && isMobile) &&
