@@ -50,7 +50,7 @@ export const PaneGridContent: React.NamedExoticComponent<RowsProps> = React.memo
         borders={{
             ...borders,
             top: borders.top && row.top === 0,
-            bottom: (borders.bottom && row.idx === range.last.row.idx) || !(state.cellMatrix.scrollableRange.last.row.idx === row.idx)
+            bottom: (borders.bottom && row.idx === range.last.row.idx) || !(state.cellMatrix.scrollableRange.last.row?.idx === row.idx)
         }} />
     )}
 </>, shouldMemoPaneGridContent);
