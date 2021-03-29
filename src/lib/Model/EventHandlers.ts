@@ -40,16 +40,20 @@ export class EventHandlers {
         }
     };
 
-    scrollHandlerInternal = (visibleRangeCalculator: StateModifier): void => this.updateOnScrollChange(visibleRangeCalculator);
+    protected scrollHandlerInternal = (visibleRangeCalculator: StateModifier): void => {
+        try {
+            return this.updateOnScrollChange(visibleRangeCalculator);
+        } catch (error) {
+            console.error(error);
+        }
+    };
 
-    scrollHandler!: () => void;
+    scrollHandler = () => this.scrollHandlerInternal(recalcVisibleRange);
 
     protected assignScrollHandler = (reactGridElement: HTMLDivElement, visibleRangeCalculator: StateModifier): void => {
         if (reactGridElement) {
             this.updateState(state => {
                 const scrollableElement = getScrollableParent(reactGridElement, true);
-                this.scrollHandler = () => this.scrollHandlerInternal(visibleRangeCalculator);
-                scrollableElement?.addEventListener('scroll', this.scrollHandler);
                 if (state.props) {
                     state = updateResponsiveSticky(state.props, state);
                 }

@@ -44,6 +44,9 @@ export class ReactGrid extends React.Component<ReactGridProps, State> {
     }
 
     componentDidUpdate(prevProps: ReactGridProps, prevState: State): void {
+        if (!prevState.reactGridElement && this.state.reactGridElement) {
+            this.state.scrollableElement?.addEventListener('scroll', this.eventHandlers.scrollHandler);
+        }
         componentDidUpdate(prevProps, prevState, this.state);
     }
 
