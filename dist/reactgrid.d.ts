@@ -1,5 +1,5 @@
 /// <reference types="react" />
-import { ReactNode, ClipboardEvent as ClipboardEvent$1, KeyboardEvent as KeyboardEvent$1, PointerEvent as PointerEvent$1, Component } from 'react';
+import * as React$1 from 'react';
 
 interface CheckboxCell extends Cell {
     type: 'checkbox';
@@ -16,7 +16,7 @@ declare class CheckboxCellTemplate implements CellTemplate<CheckboxCell> {
     private toggleCheckboxCell;
     update(cell: Compatible<CheckboxCell>, cellToMerge: UncertainCompatible<CheckboxCell>): Compatible<CheckboxCell>;
     getClassName(cell: Compatible<CheckboxCell>): string;
-    render(cell: Compatible<CheckboxCell>, isInEditMode: boolean, onCellChanged: (cell: Compatible<CheckboxCell>, commit: boolean) => void): ReactNode;
+    render(cell: Compatible<CheckboxCell>, isInEditMode: boolean, onCellChanged: (cell: Compatible<CheckboxCell>, commit: boolean) => void): React$1.ReactNode;
 }
 
 interface DateCell extends Cell {
@@ -32,14 +32,14 @@ declare class DateCellTemplate implements CellTemplate<DateCell> {
     };
     update(cell: Compatible<DateCell>, cellToMerge: UncertainCompatible<DateCell>): Compatible<DateCell>;
     getClassName(cell: Compatible<DateCell>, isInEditMode: boolean): string;
-    render(cell: Compatible<DateCell>, isInEditMode: boolean, onCellChanged: (cell: Compatible<DateCell>, commit: boolean) => void): ReactNode;
+    render(cell: Compatible<DateCell>, isInEditMode: boolean, onCellChanged: (cell: Compatible<DateCell>, commit: boolean) => void): React$1.ReactNode;
 }
 
 interface EmailCell extends Cell {
     type: 'email';
     text: string;
     validator?: (text: string) => boolean;
-    renderer?: (text: string) => ReactNode;
+    renderer?: (text: string) => React$1.ReactNode;
 }
 declare class EmailCellTemplate implements CellTemplate<EmailCell> {
     getCompatibleCell(uncertainCell: Uncertain<EmailCell>): Compatible<EmailCell>;
@@ -49,7 +49,7 @@ declare class EmailCellTemplate implements CellTemplate<EmailCell> {
     };
     update(cell: Compatible<EmailCell>, cellToMerge: UncertainCompatible<EmailCell>): Compatible<EmailCell>;
     getClassName(cell: Compatible<EmailCell>, isInEditMode: boolean): string;
-    render(cell: Compatible<EmailCell>, isInEditMode: boolean, onCellChanged: (cell: Compatible<EmailCell>, commit: boolean) => void): ReactNode;
+    render(cell: Compatible<EmailCell>, isInEditMode: boolean, onCellChanged: (cell: Compatible<EmailCell>, commit: boolean) => void): React$1.ReactNode;
 }
 
 interface ChevronCell extends Cell {
@@ -69,7 +69,7 @@ declare class ChevronCellTemplate implements CellTemplate<ChevronCell> {
     };
     getClassName(cell: Compatible<ChevronCell>, isInEditMode: boolean): string;
     getStyle(cell: Compatible<ChevronCell>, isInEditMode: boolean): CellStyle;
-    render(cell: Compatible<ChevronCell>, isInEditMode: boolean, onCellChanged: (cell: Compatible<ChevronCell>, commit: boolean) => void): ReactNode;
+    render(cell: Compatible<ChevronCell>, isInEditMode: boolean, onCellChanged: (cell: Compatible<ChevronCell>, commit: boolean) => void): React$1.ReactNode;
 }
 
 interface HeaderCell extends Cell, Span {
@@ -78,7 +78,7 @@ interface HeaderCell extends Cell, Span {
 }
 declare class HeaderCellTemplate implements CellTemplate<HeaderCell> {
     getCompatibleCell(uncertainCell: Uncertain<HeaderCell>): Compatible<HeaderCell>;
-    render(cell: Compatible<HeaderCell>, isInEditMode: boolean, onCellChanged: (cell: Compatible<HeaderCell>, commit: boolean) => void): ReactNode;
+    render(cell: Compatible<HeaderCell>, isInEditMode: boolean, onCellChanged: (cell: Compatible<HeaderCell>, commit: boolean) => void): React$1.ReactNode;
     isFocusable: (cell: Compatible<HeaderCell>) => boolean;
     getClassName(cell: Compatible<HeaderCell>, isInEditMode: boolean): string;
     getStyle: (cell: Compatible<HeaderCell>) => CellStyle;
@@ -100,7 +100,7 @@ declare class NumberCellTemplate implements CellTemplate<NumberCell> {
     update(cell: Compatible<NumberCell>, cellToMerge: UncertainCompatible<NumberCell>): Compatible<NumberCell>;
     private getTextFromCharCode;
     getClassName(cell: Compatible<NumberCell>, isInEditMode: boolean): string;
-    render(cell: Compatible<NumberCell>, isInEditMode: boolean, onCellChanged: (cell: Compatible<NumberCell>, commit: boolean) => void): ReactNode;
+    render(cell: Compatible<NumberCell>, isInEditMode: boolean, onCellChanged: (cell: Compatible<NumberCell>, commit: boolean) => void): React$1.ReactNode;
 }
 
 interface TextCell extends Cell {
@@ -108,7 +108,7 @@ interface TextCell extends Cell {
     text: string;
     placeholder?: string;
     validator?: (text: string) => boolean;
-    renderer?: (text: string) => ReactNode;
+    renderer?: (text: string) => React$1.ReactNode;
 }
 declare class TextCellTemplate implements CellTemplate<TextCell> {
     getCompatibleCell(uncertainCell: Uncertain<TextCell>): Compatible<TextCell>;
@@ -118,7 +118,7 @@ declare class TextCellTemplate implements CellTemplate<TextCell> {
         enableEditMode: boolean;
     };
     getClassName(cell: Compatible<TextCell>, isInEditMode: boolean): string;
-    render(cell: Compatible<TextCell>, isInEditMode: boolean, onCellChanged: (cell: Compatible<TextCell>, commit: boolean) => void): ReactNode;
+    render(cell: Compatible<TextCell>, isInEditMode: boolean, onCellChanged: (cell: Compatible<TextCell>, commit: boolean) => void): React$1.ReactNode;
 }
 
 interface TimeCell extends Cell {
@@ -136,7 +136,7 @@ declare class TimeCellTemplate implements CellTemplate<TimeCell> {
     };
     update(cell: Compatible<TimeCell>, cellToMerge: UncertainCompatible<TimeCell>): Compatible<TimeCell>;
     getClassName(cell: Compatible<TimeCell>, isInEditMode: boolean): string;
-    render(cell: Compatible<TimeCell>, isInEditMode: boolean, onCellChanged: (cell: Compatible<TimeCell>, commit: boolean) => void): ReactNode;
+    render(cell: Compatible<TimeCell>, isInEditMode: boolean, onCellChanged: (cell: Compatible<TimeCell>, commit: boolean) => void): React$1.ReactNode;
 }
 
 declare type OptionType = {
@@ -159,7 +159,7 @@ declare class DropdownCellTemplate implements CellTemplate<DropdownCell> {
         cell: Compatible<DropdownCell>;
         enableEditMode: boolean;
     };
-    render(cell: Compatible<DropdownCell>, isInEditMode: boolean, onCellChanged: (cell: Compatible<DropdownCell>, commit: boolean) => void): ReactNode;
+    render(cell: Compatible<DropdownCell>, isInEditMode: boolean, onCellChanged: (cell: Compatible<DropdownCell>, commit: boolean) => void): React$1.ReactNode;
 }
 
 /**
@@ -332,9 +332,10 @@ interface ReactGridProps {
      * @param {Id[]} selectedColIds Array of selected rows's `Id`s
      * @param {SelectionMode} selectionMode Current selection mode
      * @param {MenuOption[]} menuOptions Array of built-in menu options e.g. copy/cut/paste
+     * @param {Array<CellLocation[]>} selectedRanges Returns array of selected cell locations
      * @returns {MenuOption[]} Returns array of context menu options
      */
-    readonly onContextMenu?: (selectedRowIds: Id[], selectedColIds: Id[], selectionMode: SelectionMode, menuOptions: MenuOption[]) => MenuOption[];
+    readonly onContextMenu?: (selectedRowIds: Id[], selectedColIds: Id[], selectionMode: SelectionMode, menuOptions: MenuOption[], selectedRanges: Array<CellLocation[]>) => MenuOption[];
     /**
      * Allow or not to change specific columns order
      *
@@ -412,7 +413,7 @@ interface CellTemplates {
     [key: string]: CellTemplate;
 }
 /**
- * Describes focus position inside the grid.
+ * Describes cell location inside the grid. Could describe e.g. focus.
  *
  * @see https://reactgrid.com/docs/3.1/7-api/0-interfaces/6-cell-location/
  */
@@ -693,14 +694,15 @@ interface MenuOption {
      * @param {Id[]} selectedRowIds `Id`s of selected rows.
      * @param {Id[]} selectedColIds `Id`s of selected columns.
      * @param {SelectionMode} selectionMode Current selection mode.
+     * @param {Array<CellLocation[]>} selectedRanges Returns array of selected cell locations
      * @returns {void}
      */
-    handler: (selectedRowIds: Id[], selectedColIds: Id[], selectionMode: SelectionMode) => void;
+    handler: (selectedRowIds: Id[], selectedColIds: Id[], selectionMode: SelectionMode, selectedRanges: Array<CellLocation[]>) => void;
 }
 
-declare type ClipboardEvent = ClipboardEvent$1<HTMLDivElement>;
-declare type KeyboardEvent = KeyboardEvent$1<HTMLDivElement>;
-declare type PointerEvent = PointerEvent$1<HTMLDivElement> | globalThis.PointerEvent;
+declare type ClipboardEvent = React$1.ClipboardEvent<HTMLDivElement>;
+declare type KeyboardEvent = React$1.KeyboardEvent<HTMLDivElement>;
+declare type PointerEvent = React$1.PointerEvent<HTMLDivElement> | globalThis.PointerEvent;
 
 interface GridColumn extends Column {
     readonly idx: number;
@@ -823,7 +825,7 @@ interface State<TCellMatrix extends CellMatrix = CellMatrix, TBehavior extends B
     readonly enableGroupIdRender: boolean;
 }
 
-declare class ReactGrid extends Component<ReactGridProps, State> {
+declare class ReactGrid extends React$1.Component<ReactGridProps, State> {
     private updateState;
     private stateUpdater;
     private pointerEventsController;
@@ -834,7 +836,7 @@ declare class ReactGrid extends Component<ReactGridProps, State> {
     componentDidUpdate(prevProps: ReactGridProps, prevState: State): void;
     componentDidMount(): void;
     componentWillUnmount(): void;
-    render(): ReactNode;
+    render(): React$1.ReactNode;
 }
 
 /**

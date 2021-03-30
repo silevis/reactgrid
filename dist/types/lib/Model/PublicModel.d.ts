@@ -121,9 +121,10 @@ export interface ReactGridProps {
      * @param {Id[]} selectedColIds Array of selected rows's `Id`s
      * @param {SelectionMode} selectionMode Current selection mode
      * @param {MenuOption[]} menuOptions Array of built-in menu options e.g. copy/cut/paste
+     * @param {Array<CellLocation[]>} selectedRanges Returns array of selected cell locations
      * @returns {MenuOption[]} Returns array of context menu options
      */
-    readonly onContextMenu?: (selectedRowIds: Id[], selectedColIds: Id[], selectionMode: SelectionMode, menuOptions: MenuOption[]) => MenuOption[];
+    readonly onContextMenu?: (selectedRowIds: Id[], selectedColIds: Id[], selectionMode: SelectionMode, menuOptions: MenuOption[], selectedRanges: Array<CellLocation[]>) => MenuOption[];
     /**
      * Allow or not to change specific columns order
      *
@@ -201,7 +202,7 @@ export interface CellTemplates {
     [key: string]: CellTemplate;
 }
 /**
- * Describes focus position inside the grid.
+ * Describes cell location inside the grid. Could describe e.g. focus.
  *
  * @see https://reactgrid.com/docs/3.1/7-api/0-interfaces/6-cell-location/
  */
@@ -482,7 +483,8 @@ export interface MenuOption {
      * @param {Id[]} selectedRowIds `Id`s of selected rows.
      * @param {Id[]} selectedColIds `Id`s of selected columns.
      * @param {SelectionMode} selectionMode Current selection mode.
+     * @param {Array<CellLocation[]>} selectedRanges Returns array of selected cell locations
      * @returns {void}
      */
-    handler: (selectedRowIds: Id[], selectedColIds: Id[], selectionMode: SelectionMode) => void;
+    handler: (selectedRowIds: Id[], selectedColIds: Id[], selectionMode: SelectionMode, selectedRanges: Array<CellLocation[]>) => void;
 }

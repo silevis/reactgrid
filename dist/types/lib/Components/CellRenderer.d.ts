@@ -8,6 +8,8 @@ export interface CellRendererProps {
     location: Location;
     borders: Borders;
     range: Range;
+    update: State['update'];
+    currentlyEditedCell: State['currentlyEditedCell'];
     children?: React.ReactNode;
 }
 export interface CellRendererChildProps<TState extends State = State> {
