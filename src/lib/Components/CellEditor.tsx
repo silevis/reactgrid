@@ -30,10 +30,16 @@ export interface PositionState<TState extends State = State> {
 export const CellEditorRenderer: React.FC<CellEditorRendererProps> = ({ state, positionCalculator }) => {
     const { currentlyEditedCell, focusedLocation: location } = state;
 
-    const [position, dispatch] = React.useReducer(positionCalculator, { state, location }); // used to lock cell editor position
-    React.useEffect(() => dispatch(), []);
+    const renders = React.useRef(0);
 
-    if (!currentlyEditedCell || !location) { // prevents to unexpectly opening cell editor on cypress
+    const [position, dispatch] = React.useReducer(positionCalculator, { state, location }); // used to lock cell editor position
+
+    React.useEffect(() => {
+        renders.current += 1;
+        dispatch();
+    }, []);
+
+    if (!currentlyEditedCell || !location || renders.current === 0) { // prevents to unexpectly opening cell editor on cypress
         return null;
     }
 
@@ -50,7 +56,7 @@ export const CellEditorRenderer: React.FC<CellEditorRendererProps> = ({ state, p
     >
         {cellTemplate.render(currentlyEditedCell, true, (cell: Compatible<Cell>, commit: boolean) => {
             state.currentlyEditedCell = commit ? undefined : cell;
-            if (commit) state.update(state => tryAppendChange(state, location, cell));
+            if (commit) state.update(s => tryAppendChange(s, location, cell));
         })}
     </CellEditor>
 };

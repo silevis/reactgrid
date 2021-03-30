@@ -36,10 +36,10 @@ export class CellMatrixBuilder implements ICellMatrixBuilder {
     fillRowsAndCols(edges: StickyEdges = { leftStickyColumns: 0, topStickyRows: 0 }): CellMatrixBuilder {
         const { leftStickyColumns, topStickyRows } = edges;
         if (!Array.isArray(this.cellMatrix.props.rows)) {
-            throw new Error('Feeded ReactGrids "rows" property is not an array!')
+            throw new TypeError('Feeded ReactGrids "rows" property is not an array!')
         }
         if (!Array.isArray(this.cellMatrix.props.columns)) {
-            throw new Error('Feeded ReactGrids "columns" property is not an array!')
+            throw new TypeError('Feeded ReactGrids "columns" property is not an array!')
         }
         this.cellMatrix.rows = this.cellMatrix.props.rows.reduce<GridRow[]>(
             (rows, row, idx) => {
@@ -131,9 +131,13 @@ export class CellMatrixBuilder implements ICellMatrixBuilder {
 
     getScrollableRange = (edges: StickyEdges): Range => {
         const { leftStickyColumns, topStickyRows } = edges;
-        const firstScrollableRowId = !topStickyRows || topStickyRows >= this.cellMatrix.rows.length ? 0 : topStickyRows;
-        const firstScrollableColumnId = !leftStickyColumns || leftStickyColumns >= this.cellMatrix.columns.length ? 0 : leftStickyColumns;
-        return new Range(this.cellMatrix.rows.slice(firstScrollableRowId), this.cellMatrix.columns.slice(firstScrollableColumnId));
+        const firstScrollableRowIndex = (!topStickyRows || topStickyRows > this.cellMatrix.rows.length)
+            ? 0
+            : topStickyRows;
+        const firstScrollableColumnIndex = (!leftStickyColumns || leftStickyColumns > this.cellMatrix.columns.length)
+            ? 0
+            : leftStickyColumns;
+        return new Range(this.cellMatrix.rows.slice(firstScrollableRowIndex), this.cellMatrix.columns.slice(firstScrollableColumnIndex));
     }
 
     getCellMatrix(): CellMatrix {

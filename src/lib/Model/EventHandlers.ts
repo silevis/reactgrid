@@ -23,7 +23,7 @@ export class EventHandlers {
         return state;
     });
     windowResizeHandler = (): void => this.updateState(recalcVisibleRange);
-    reactgridRefHandler = (reactGridElement: HTMLDivElement): void => this.assignScrollHandler(reactGridElement, recalcVisibleRange);
+    reactgridRefHandler = (reactGridElement: HTMLDivElement): void => this.assignElementsRefs(reactGridElement, recalcVisibleRange);
     hiddenElementRefHandler = (hiddenFocusElement: HTMLInputElement): void => this.updateState(state => {
         if (state.props?.initialFocusLocation && hiddenFocusElement) {
             hiddenFocusElement.focus({ preventScroll: true });
@@ -40,13 +40,20 @@ export class EventHandlers {
         }
     };
 
-    scrollHandler = (visibleRangeCalculator: StateModifier): void => this.updateOnScrollChange(visibleRangeCalculator);
+    protected scrollHandlerInternal = (visibleRangeCalculator: StateModifier): void => {
+        try {
+            return this.updateOnScrollChange(visibleRangeCalculator);
+        } catch (error) {
+            console.error(error);
+        }
+    };
 
-    protected assignScrollHandler = (reactGridElement: HTMLDivElement, visibleRangeCalculator: StateModifier): void => {
+    scrollHandler: () => void = () => this.scrollHandlerInternal(recalcVisibleRange);
+
+    protected assignElementsRefs = (reactGridElement: HTMLDivElement, visibleRangeCalculator: StateModifier): void => {
         if (reactGridElement) {
             this.updateState(state => {
                 const scrollableElement = getScrollableParent(reactGridElement, true);
-                scrollableElement?.addEventListener('scroll', () => this.scrollHandler(visibleRangeCalculator));
                 if (state.props) {
                     state = updateResponsiveSticky(state.props, state);
                 }

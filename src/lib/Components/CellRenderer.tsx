@@ -14,6 +14,8 @@ export interface CellRendererProps {
     location: Location;
     borders: Borders;
     range: Range;
+    update: State['update'];
+    currentlyEditedCell: State['currentlyEditedCell'];
     children?: React.ReactNode;
 }
 
@@ -46,10 +48,12 @@ function getBorderProperties(getPropertyOnBorderFn: (borderEdge: keyof Borders) 
     }
 }
 
-export const CellRenderer: React.FC<CellRendererProps> = ({ state, location, range, children, borders }) => {
+export const CellRenderer: React.FC<CellRendererProps> = ({ state, location, range, children, borders, update, currentlyEditedCell }) => {
     const { cell, cellTemplate } = getCompatibleCellAndTemplate(state, location);
     const isFocused = state.focusedLocation !== undefined && areLocationsEqual(state.focusedLocation, location);
     const customClass = (cellTemplate.getClassName && cellTemplate.getClassName(cell, false)) ?? '';
+
+    const currentlyEditedCellRef = React.useRef(currentlyEditedCell);
 
     const storePropertyAndDefaultValue = storeBorderAndCell(borders, cell);
     const bordersColor = getBorderProperties(storePropertyAndDefaultValue('color', '#E8E8E8')),
@@ -76,31 +80,35 @@ export const CellRenderer: React.FC<CellRendererProps> = ({ state, location, ran
         top: location.row.top,
         width: range.width,
         height: range.height,
-        ...(!(isFocused && state.currentlyEditedCell) && bordersProps),
+        ...(!(isFocused && currentlyEditedCellRef.current) && bordersProps),
         ...((isFocused || cell.type === 'header' || isFirstRowOrColumnWithSelection) && { touchAction: 'none' }) // prevent scrolling
     } as React.CSSProperties;
 
-    const isInEditMode = isFocused && !!(state.currentlyEditedCell);
+    const isInEditMode = isFocused && !!(currentlyEditedCellRef.current);
 
     const groupIdClassName = cell.groupId ? ` rg-groupId-${cell.groupId}` : '';
     const nonEditableClassName = cell.nonEditable ? ' rg-cell-nonEditable' : '';
     const cellClassNames = isInEditMode && isMobile ? ` rg-celleditor rg-${cell.type}-celleditor` : ` rg-${cell.type}-cell`;
     const classNames = `rg-cell${cellClassNames}${groupIdClassName}${nonEditableClassName} ${customClass}`;
-    const cellToRender = isFocused && state.currentlyEditedCell && isMobile ? state.currentlyEditedCell : cell;
+    const cellToRender = isFocused && currentlyEditedCellRef.current && isMobile ? currentlyEditedCellRef.current : cell;
 
-    const onCellChanged = (cell: Compatible<Cell>, commit: boolean) => {
+    const onCellChanged = React.useCallback((cell: Compatible<Cell>, commit: boolean) => {
         if (isInEditMode) {
-            state.currentlyEditedCell = commit ? undefined : cell;
-            if (commit) state.update(state => tryAppendChange(state, location, cell));
+            currentlyEditedCellRef.current = commit ? undefined : cell;
+            if (commit) update(state => tryAppendChange(state, location, cell));
         } else {
             if (!commit) throw new Error('commit should be set to true in this case.');
-            state.update(state => tryAppendChange(state, location, cell));
+            update(state => tryAppendChange(state, location, cell));
         }
-    }
+    }, [isInEditMode, location, update, currentlyEditedCellRef]);
+
     return (
         <div className={classNames} style={style}
-            data-cell-colidx={process.env.NODE_ENV === "development" ? location.column.idx : null}
-            data-cell-rowidx={process.env.NODE_ENV === "development" ? location.row.idx : null}>
+            {...(process.env.NODE_ENV === 'development' && {
+                'data-cell-colidx': location.column.idx,
+                'data-cell-rowidx': location.row.idx
+            })}
+        >
             {cellTemplate.render(cellToRender, isMobile ? isInEditMode : false, onCellChanged)}
             {children}
             {state.enableGroupIdRender && cell?.groupId !== undefined && !(isInEditMode && isMobile) &&
