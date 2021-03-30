@@ -16,8 +16,10 @@ export interface RowRendererProps {
 function shouldMemoRowRenderer(prevProps: RowRendererProps, nextProps: RowRendererProps): boolean {
     const { columns: prevCols } = prevProps;
     const { columns: nextCols, forceUpdate } = nextProps;
-    return !(forceUpdate
-        || nextCols[0].idx !== prevCols[0].idx || nextCols.length !== prevCols.length
+    return !(
+        // key for improving rendering speed - eg. chacksum for each col/row/cell
+        forceUpdate ||
+        nextCols[0].idx !== prevCols[0].idx || nextCols.length !== prevCols.length
         || nextCols[nextCols.length - 1].idx !== prevCols[prevCols.length - 1].idx);
 }
 
@@ -42,6 +44,8 @@ const MappedColumns: React.FC<RowRendererProps> = ({ columns, row, cellRenderer,
                     state={state}
                     location={location}
                     range={range}
+                    currentlyEditedCell={state.currentlyEditedCell}
+                    update={state.update}
                 />
             })}
         </>
