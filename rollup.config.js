@@ -33,13 +33,13 @@ const plugins = [
         output: 'dist/styles.css',
         include: ['src/styles.scss'],
     }),
-    // terser({
-    //     format: {
-    //         comments: false,
-    //     },
-    //     compress: true,
-    //     keep_classnames: true,
-    // }),
+    terser({
+        format: {
+            comments: false,
+        },
+        compress: true,
+        keep_classnames: true,
+    }),
 ];
 
 const executeOncePlugins = [
