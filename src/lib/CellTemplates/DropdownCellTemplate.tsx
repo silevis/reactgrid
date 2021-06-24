@@ -170,12 +170,12 @@ const CustomOption: React.FC<OptionProps<OptionType, false>> = ({ innerProps, la
     <div
         {...innerProps}
         onPointerDown={e => e.stopPropagation()}
-        className={`dropdown-option${isSelected ? ' selected' : ''}${isFocused ? ' focused' : ''}`}
+        className={`rg-dropdown-option${isSelected ? ' selected' : ''}${isFocused ? ' focused' : ''}`}
     >
         {label}
     </div>
 );
 
 const CustomMenu: React.FC<MenuProps<OptionType, false>> = ({ innerProps, children }) => (
-    <div {...innerProps} className='dropdown-menu'>{children}</div>
+    <div {...innerProps} className='rg-dropdown-menu'>{children}</div>
 );

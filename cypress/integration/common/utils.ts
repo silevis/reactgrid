@@ -148,7 +148,7 @@ export class Utilities {
     }
 
     getDropdownMenu(): Cypress.Chainable {
-        return cy.get('.dropdown-menu');
+        return cy.get('.rg-dropdown-menu');
     }
 
     click(x: number, y: number): void {
