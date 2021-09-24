@@ -11,7 +11,6 @@ import {
     isTopCellAllVisible, scrollIntoView
 } from './scrollIntoView';
 
-//TODO what about initialFocusLocation and focusLocation set by props
 export function componentDidUpdate(prevProps: ReactGridProps, prevState: State, state: State): void {
     const location = state.focusedLocation;
     if (location) {
