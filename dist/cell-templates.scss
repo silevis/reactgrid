@@ -142,7 +142,7 @@
     &.rg-dropdown-cell {
         padding: 0;
         overflow: visible;
-        .dropdown-menu {
+        .rg-dropdown-menu {
             top: 100%;
             background-color: $dropdown-menu-bg-color;
             border-radius: 4px;
@@ -154,9 +154,9 @@
             z-index: 1;
             box-sizing: border-box;
         }
-        .dropdown-option {
-            padding: 3px 0.5em;
-            height: 1.5em;
+        .rg-dropdown-option {
+            padding: 0.3em 0.5em;
+            min-height: 1.5em;
             display: flex;
             align-items: center;
             &.selected::before {

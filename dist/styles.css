@@ -116,7 +116,7 @@
 .reactgrid-content .rg-pane .rg-cell.rg-dropdown-cell {
   padding: 0;
   overflow: visible; }
-  .reactgrid-content .rg-pane .rg-cell.rg-dropdown-cell .dropdown-menu {
+  .reactgrid-content .rg-pane .rg-cell.rg-dropdown-cell .rg-dropdown-menu {
     top: 100%;
     background-color: #ffffff;
     border-radius: 4px;
@@ -127,15 +127,15 @@
     width: 100%;
     z-index: 1;
     box-sizing: border-box; }
-  .reactgrid-content .rg-pane .rg-cell.rg-dropdown-cell .dropdown-option {
-    padding: 3px 0.5em;
-    height: 1.5em;
+  .reactgrid-content .rg-pane .rg-cell.rg-dropdown-cell .rg-dropdown-option {
+    padding: 0.3em 0.5em;
+    min-height: 1.5em;
     display: flex;
     align-items: center; }
-    .reactgrid-content .rg-pane .rg-cell.rg-dropdown-cell .dropdown-option.selected::before {
+    .reactgrid-content .rg-pane .rg-cell.rg-dropdown-cell .rg-dropdown-option.selected::before {
       content: "✓";
       padding-right: 0.2em; }
-    .reactgrid-content .rg-pane .rg-cell.rg-dropdown-cell .dropdown-option.focused {
+    .reactgrid-content .rg-pane .rg-cell.rg-dropdown-cell .rg-dropdown-option.focused {
       color: black;
       background-color: #e2ebfe; }
 

@@ -121,7 +121,6 @@ context('Cell editor position', () => {
 
   it('should open fixed cell editor on both axis scrolled view with a flex row', () => {
     visitAdditionalContentWithFlexRow();
-    console.log(utilsFlexRow.getConfig().flexRow);
 
     [
       {
