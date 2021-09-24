@@ -16,26 +16,29 @@ export function focusLocation(state: State, location: Location): State {
 
     const { onFocusLocationChanged, onFocusLocationChanging, focusLocation } = state.props;
 
-    if (focusLocation) {
-        location = state.cellMatrix.getLocationById(focusLocation.rowId, focusLocation.columnId);
-    }
-
     const { cell, cellTemplate } = getCompatibleCellAndTemplate(state, location);
     const cellLocation = { rowId: location.row.rowId, columnId: location.column.columnId };
 
-    const wasChangePrevented = !onFocusLocationChanging || onFocusLocationChanging(cellLocation);
+    const isChangeAllowedByUser = !onFocusLocationChanging || onFocusLocationChanging(cellLocation);
 
-    const isFocusable = (!cellTemplate.isFocusable || cellTemplate.isFocusable(cell)) && wasChangePrevented;
+    const isCellTemplateFocusable = !cellTemplate.isFocusable || cellTemplate.isFocusable(cell);
 
-    const validatedFocusLocation = state.cellMatrix.validateLocation(location);
+    const forcedLocation = focusLocation
+        ? state.cellMatrix.getLocationById(focusLocation.rowId, focusLocation.columnId)
+        : undefined;
 
-    if (!isFocusable) {
+    const isLocationAcceptable = areLocationsEqual(location, state.focusedLocation)
+        || (forcedLocation ? areLocationsEqual(location, forcedLocation) : true);
+
+    if (!isCellTemplateFocusable || !isChangeAllowedByUser || !isLocationAcceptable) {
         return state;
     }
 
-    onFocusLocationChanged && (!focusLocation && areLocationsEqual(location, validatedFocusLocation))
-        && onFocusLocationChanged(cellLocation);
+    if (onFocusLocationChanged) {
+        onFocusLocationChanged(cellLocation);
+    }
 
+    const validatedFocusLocation = state.cellMatrix.validateLocation(location);
     return {
         ...state,
         focusedLocation: validatedFocusLocation,
