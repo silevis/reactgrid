@@ -1,7 +1,7 @@
 import * as React from 'react'
 import * as ReactDOM from 'react-dom';
 import { ExtTestGrid } from './test/TestGrid';
-import { ReactGrid } from './lib/Components/ReactGrid';
+import { ReactGrid } from './proLib/Components/ReactGrid';
 // import './test/theming-test.scss';
 import {
   config, enablePinnedToBodyConfig, disabledInitialFocusLocationConfig, enableAdditionalContentConfig,

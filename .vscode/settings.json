@@ -1,14 +1,14 @@
 {
-    "runOnSave.statusMessageTimeout": 3000,
-    "runOnSave.commands": [
-        {
-            "match": ".*",
-            "command": "node cmd.js",
-            "runIn": "terminal",
-            "runningStatusMessage": "Compiling ${fileBasename}",
-            // "notMatch": ".spec.ts", // bad idea
-            "finishStatusMessage": "${fileBasename} compiled"
-        }
-    ],
-    "typescript.tsdk": "node_modules/typescript/lib"
+  "runOnSave.statusMessageTimeout": 3000,
+  // "runOnSave.commands": [
+  //     {
+  //         "match": ".*",
+  //         "command": "node cmd.js",
+  //         "runIn": "terminal",
+  //         "runningStatusMessage": "Compiling ${fileBasename}",
+  //         // "notMatch": ".spec.ts", // bad idea
+  //         "finishStatusMessage": "${fileBasename} compiled"
+  //     }
+  // ],
+  "typescript.tsdk": "node_modules/typescript/lib"
 }
