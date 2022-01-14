@@ -11,7 +11,7 @@ import {
   ClipboardEvent,
   PointerEvent,
 } from "../Model/domEventsTypes";
-import { ProCellSelectionBehavior } from "./CellSelectionBehavior";
+import { CellSelectionBehavior } from "./CellSelectionBehavior";
 import { Behavior } from "../Model/Behavior";
 import { proHandleKeyDown } from "../Functions/proHandleKeyDown";
 import { State } from "../Model/State";
@@ -25,7 +25,7 @@ import { RowReorderBehavior } from "./RowReorderBehavior";
 import { proHandleCopy } from "../Functions/proHandleCopy";
 import { proHandlePaste } from "../Functions/proHandlePaste";
 
-export class ProDefaultBehavior extends Behavior {
+export class DefaultBehavior extends Behavior {
   handlePointerDown(
     event: PointerEvent,
     location: PointerLocation,
@@ -107,7 +107,7 @@ export class ProDefaultBehavior extends Behavior {
     ) {
       return new FillHandleBehavior();
     } else {
-      return new ProCellSelectionBehavior();
+      return new CellSelectionBehavior();
     }
   }
 

@@ -14,7 +14,7 @@ import { State } from "../Model/State";
 import { proFocusLocation } from "../Functions/proFocusLocation";
 import { handleContextMenu } from "../Functions/handleContextMenu";
 
-export class ProCellSelectionBehavior extends Behavior {
+export class CellSelectionBehavior extends Behavior {
   handlePointerDown(
     event: PointerEvent,
     location: Location,

@@ -4,7 +4,7 @@ import { isBrowserEdge } from '../Functions/microsoftEdge';
 import { DefaultBehavior } from '../Behaviors/DefaultBehavior';
 import { CellMatrix } from './CellMatrix';
 import { Behavior } from './Behavior';
-import { Location, Orientation } from './InternalModel';
+import { Location, Orientation, } from './InternalModel';
 import { Range } from './Range';
 import { defaultCellTemplates } from '../Functions/defaultCellTemplates';
 
@@ -89,12 +89,12 @@ export const defaultStateFields = {
     enableColumnSelection: false,
     enableRowSelection: false,
     contextMenuPosition: { top: -1, left: -1 },
-    lineOrientation: "horizontal",
+    lineOrientation: "horizontal" as Orientation,
     linePosition: -1,
     shadowSize: 0,
     shadowPosition: -1,
     shadowCursor: "default",
-    selectionMode: "range",
+    selectionMode: "range" as SelectionMode,
     selectedRanges: [],
     selectedIndexes: [],
     selectedIds: [],
