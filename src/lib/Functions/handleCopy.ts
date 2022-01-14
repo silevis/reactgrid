@@ -7,11 +7,11 @@ import { isBrowserSafari } from './safari';
 export function handleCopy(event: ClipboardEvent, state: State, removeValues = false): State {
     const activeSelectedRange = getActiveSelectedRange(state);
     if (!activeSelectedRange) {
-        return state;
+      return state;
     }
     const { div } = getDataToCopy(state, activeSelectedRange, removeValues);
     copyDataCommands(event, state, div);
-    return state;
+    return { ...state, copyRange: activeSelectedRange };
 }
 
 export function copyDataCommands(event: ClipboardEvent, state: State, div: HTMLDivElement): void {

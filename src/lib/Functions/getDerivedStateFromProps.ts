@@ -68,10 +68,22 @@ function updateCellMatrix(props: ReactGridProps, state: State): State {
     return {
         ...state,
         cellMatrix: builder.setProps(props)
-            .fillRowsAndCols({ leftStickyColumns: state.leftStickyColumns || 0, topStickyRows: state.topStickyRows || 0 })
+            .fillRowsAndCols({ 
+                leftStickyColumns: state.leftStickyColumns || 0,
+                topStickyRows: state.topStickyRows || 0,
+                rightStickyColumns: state.leftStickyColumns || 0, 
+                bottomStickyRows: state.topStickyRows || 0 })
             .setRangesToRenderLookup()
-            .fillSticky({ leftStickyColumns: state.leftStickyColumns || 0, topStickyRows: state.topStickyRows || 0 })
-            .fillScrollableRange({ leftStickyColumns: state.leftStickyColumns || 0, topStickyRows: state.topStickyRows || 0 })
+            .fillSticky({ 
+                leftStickyColumns: state.leftStickyColumns || 0, 
+                topStickyRows: state.topStickyRows || 0,
+                rightStickyColumns: state.leftStickyColumns || 0, 
+                bottomStickyRows: state.topStickyRows || 0 })
+            .fillScrollableRange({ 
+                leftStickyColumns: state.leftStickyColumns || 0, 
+                topStickyRows: state.topStickyRows || 0,
+                rightStickyColumns: state.leftStickyColumns || 0, 
+                bottomStickyRows: state.topStickyRows || 0 })
             .setEdgeLocations().getCellMatrix()
     };
 }
