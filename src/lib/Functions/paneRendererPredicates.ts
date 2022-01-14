@@ -17,3 +17,11 @@ export function shouldRenderMiddleRange(state: State): boolean {
         state.cellMatrix.scrollableRange.first.row && state.cellMatrix.scrollableRange.last.row &&
         state.visibleRange && state.visibleRange.height > 0); // TODO rewrite without !!
 }
+
+export function shouldRenderBottomSticky(state: State): boolean {
+    return !!(state.cellMatrix.ranges.stickyBottomRange.height > 0 && state.cellMatrix.rows.length > 0);
+}
+
+export function shouldRenderRightSticky(state: State): boolean {
+    return !!(state.cellMatrix.ranges.stickyRightRange.width > 0);
+}
