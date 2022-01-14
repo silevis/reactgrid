@@ -1,10 +1,10 @@
-import { CellTemplates, Cell, ReactGridProps, Compatible, Highlight, CellChange } from './PublicModel';
+import { CellTemplates, Cell, ReactGridProps, Compatible, Highlight, CellChange, Id, SelectionMode } from './PublicModel';
 import { isBrowserIE } from '../Functions/internetExplorer';
 import { isBrowserEdge } from '../Functions/microsoftEdge';
 import { DefaultBehavior } from '../Behaviors/DefaultBehavior';
 import { CellMatrix } from './CellMatrix';
 import { Behavior } from './Behavior';
-import { Location } from './InternalModel';
+import { Location, Orientation } from './InternalModel';
 import { Range } from './Range';
 import { defaultCellTemplates } from '../Functions/defaultCellTemplates';
 
@@ -44,6 +44,25 @@ export interface State<TCellMatrix extends CellMatrix = CellMatrix, TBehavior ex
     readonly rightScrollBoudary: number;
 
     readonly enableGroupIdRender: boolean;
+
+    readonly enableFillHandle: boolean;
+    readonly enableRangeSelection: boolean;
+    readonly enableColumnSelection: boolean;
+    readonly enableRowSelection: boolean;
+    readonly contextMenuPosition: { top: number; left: number };
+    readonly lineOrientation: Orientation;
+    readonly linePosition: number;
+    readonly shadowSize: number;
+    readonly shadowPosition: number;
+    readonly shadowCursor: string;
+    readonly selectionMode: SelectionMode;
+    readonly selectedRanges: Range[];
+    readonly selectedIndexes: number[];
+    readonly selectedIds: Id[];
+    readonly activeSelectedRangeIdx: number;
+    readonly copyRange?: Range;
+    readonly rightStickyColumns: number | undefined;
+    readonly bottomStickyRows: number | undefined;
 }
 
 export const defaultStateFields = {
@@ -65,4 +84,22 @@ export const defaultStateFields = {
     enableGroupIdRender: false,
     leftStickyColumns: undefined,
     topStickyRows: undefined,
+    enableFillHandle: false,
+    enableRangeSelection: true,
+    enableColumnSelection: false,
+    enableRowSelection: false,
+    contextMenuPosition: { top: -1, left: -1 },
+    lineOrientation: "horizontal",
+    linePosition: -1,
+    shadowSize: 0,
+    shadowPosition: -1,
+    shadowCursor: "default",
+    selectionMode: "range",
+    selectedRanges: [],
+    selectedIndexes: [],
+    selectedIds: [],
+    activeSelectedRangeIdx: 0,
+    copyRange: undefined,
+    rightStickyColumns: undefined,
+    bottomStickyRows: undefined,
 }

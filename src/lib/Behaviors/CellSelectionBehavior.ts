@@ -1,14 +1,76 @@
-import { focusLocation } from '../Functions/focusLocation';
-import { Behavior } from '../Model/Behavior';
-import { State } from '../Model/State';
-import { Location } from '../Model/InternalModel';
-import { PointerEvent } from '../Model/domEventsTypes';
+import {
+  Location,
+  isSelectionKey,
+  isOnClickableArea,
+  getCompatibleCellAndTemplate,
+} from "../../core";
+import { PointerEvent } from "../Model/domEventsTypes";
+import {
+  updateActiveSelectedRange,
+  selectRange,
+} from "../Functions/selectRange";
+import { Behavior } from "../Model/Behavior";
+import { State } from "../Model/State";
+import { proFocusLocation } from "../Functions/proFocusLocation";
+import { handleContextMenu } from "../Functions/handleContextMenu";
 
-export class CellSelectionBehavior extends Behavior {
-
-    handlePointerDown(event: PointerEvent, location: Location, state: State): State {
-        if ((event.target as HTMLDivElement).className === 'reactgrid-content') return state;
-        return focusLocation(state, location);
+export class ProCellSelectionBehavior extends Behavior {
+  handlePointerDown(
+    event: PointerEvent,
+    location: Location,
+    state: State
+  ): State {
+    if ((event.target as HTMLDivElement).className === "reactgrid-content")
+      return state;
+    if (state.enableRangeSelection && event.shiftKey && state.focusedLocation) {
+      const range = state.cellMatrix.getRange(state.focusedLocation, location);
+      if (isSelectionKey(event) && state.selectionMode === "range") {
+        return updateActiveSelectedRange(state, range);
+      } else {
+        return selectRange(state, range, false);
+      }
+    } else if (state.enableRangeSelection && isSelectionKey(event)) {
+      const pointedRangeIdx = state.selectedRanges.findIndex((range) =>
+        range.contains(location)
+      );
+      const pointedRange = state.selectedRanges[pointedRangeIdx];
+      const { cellTemplate } = getCompatibleCellAndTemplate(state, location);
+      if (pointedRange) {
+        state = proFocusLocation(state, location, false);
+        state = { ...state, activeSelectedRangeIdx: pointedRangeIdx };
+      } else if (!cellTemplate.isFocusable) {
+        const range = state.cellMatrix.getRange(location, location);
+        state = selectRange(state, range, true);
+        state = proFocusLocation(state, location, false);
+      }
+    } else {
+      state = proFocusLocation(state, location);
     }
+    return state;
+  }
 
+  handlePointerEnter(
+    event: PointerEvent,
+    location: Location,
+    state: State
+  ): State {
+    if (
+      !state.enableRangeSelection ||
+      !state.focusedLocation ||
+      (event.target as HTMLDivElement).className === "reactgrid-content"
+    ) {
+      // fix for FF scroll issue
+      return state;
+    }
+    const range = state.cellMatrix.getRange(state.focusedLocation, location);
+    if (state.selectionMode === "range" && isOnClickableArea(event, state)) {
+      return updateActiveSelectedRange(state, range);
+    } else {
+      return selectRange(state, range, false);
+    }
+  }
+
+  handleContextMenu(event: PointerEvent, state: State): State {
+    return handleContextMenu(event, state);
+  }
 }
