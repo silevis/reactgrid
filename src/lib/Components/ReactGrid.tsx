@@ -12,7 +12,7 @@ import {
 import { cellEditorCalculator } from "../Functions/cellEditorCalculator";
 import { PointerEventsController } from "../Model/PointerEventsController";
 import { EventHandlers } from "../Model/EventHandlers";
-import { getProDerivedStateFromProps } from "../Functions/getProDerivedStateFromProps";
+import { getDerivedStateFromProps } from "../Functions/getDerivedStateFromProps";
 import { PanesRenderer } from "./PanesRenderer";
 import { DefaultBehavior } from "../Behaviors/DefaultBehavior";
 import { CellMatrixBuilder } from "../Model/CellMatrixBuilder";
@@ -21,7 +21,7 @@ import { Line } from "./Line";
 import { Shadow } from "./Shadow";
 import { ContextMenu } from "./ContextMenu";
 import { ProCellRenderer } from "./HOCs";
-import { proComponentDidUpdate } from "../Functions/proComponentDidUpdate";
+import { componentDidUpdate } from "../Functions/componentDidUpdate";
 import { getSelectedLocations } from "../Functions/getSelectedLocations";
 
 export class ReactGrid extends React.Component<ReactGridProps, State> {
@@ -60,7 +60,7 @@ export class ReactGrid extends React.Component<ReactGridProps, State> {
     state: State
   ): State | null {
     try {
-      return getProDerivedStateFromProps(props, state);
+      return getDerivedStateFromProps(props, state);
     } catch (error) {
       console.error(error);
       return null;
@@ -74,7 +74,7 @@ export class ReactGrid extends React.Component<ReactGridProps, State> {
         this.eventHandlers.scrollHandler
       );
     }
-    proComponentDidUpdate(prevProps, prevState, this.state);
+    componentDidUpdate(prevProps, prevState, this.state);
   }
 
   componentDidMount(): void {

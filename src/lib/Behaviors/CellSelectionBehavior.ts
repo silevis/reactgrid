@@ -11,7 +11,7 @@ import {
 } from "../Functions/selectRange";
 import { Behavior } from "../Model/Behavior";
 import { State } from "../Model/State";
-import { proFocusLocation } from "../Functions/proFocusLocation";
+import { focusLocation } from "../Functions/focusLocation";
 import { handleContextMenu } from "../Functions/handleContextMenu";
 
 export class CellSelectionBehavior extends Behavior {
@@ -36,15 +36,15 @@ export class CellSelectionBehavior extends Behavior {
       const pointedRange = state.selectedRanges[pointedRangeIdx];
       const { cellTemplate } = getCompatibleCellAndTemplate(state, location);
       if (pointedRange) {
-        state = proFocusLocation(state, location, false);
+        state = focusLocation(state, location, false);
         state = { ...state, activeSelectedRangeIdx: pointedRangeIdx };
       } else if (!cellTemplate.isFocusable) {
         const range = state.cellMatrix.getRange(location, location);
         state = selectRange(state, range, true);
-        state = proFocusLocation(state, location, false);
+        state = focusLocation(state, location, false);
       }
     } else {
-      state = proFocusLocation(state, location);
+      state = focusLocation(state, location);
     }
     return state;
   }

@@ -6,6 +6,10 @@ import { DefaultBehavior } from '../Behaviors/DefaultBehavior';
 import { Behavior } from './Behavior';
 import { ResizeColumnBehavior } from '../Behaviors/ResizeColumnBehavior';
 import { ColumnReorderBehavior } from '../Behaviors/ColumnReorderBehavior';
+import { isOnClickableAreaOnPro } from '../Functions/isOnClickableArea';
+import { scrollCalculator } from '../Functions/componentDidUpdate';
+import { scrollIntoView } from '../Functions/scrollIntoView';
+import { areLocationsEqual } from '../Functions/areLocationsEqual';
 
 
 export class PointerEventsController extends AbstractPointerEventsController {
@@ -45,7 +49,7 @@ export class PointerEventsController extends AbstractPointerEventsController {
   
       window.addEventListener("pointermove", this.handlePointerMove);
       window.addEventListener("pointerup", this.handlePointerUp);
-      const currentLocation = getProLocationFromClient(
+      const currentLocation = getLocationFromClient(
         state as State,
         event.clientX,
         event.clientY
@@ -76,7 +80,7 @@ export class PointerEventsController extends AbstractPointerEventsController {
       window.addEventListener("pointerdown", this.handleHideContextMenu);
       this.updateState((state) => {
         if (this.isContainElement(event, state)) {
-          const currentLocation = getProLocationFromClient(
+          const currentLocation = getLocationFromClient(
             state as State,
             event.clientX,
             event.clientY
@@ -100,13 +104,13 @@ export class PointerEventsController extends AbstractPointerEventsController {
       this.updateState((state) => {
         const autoScrollDirection = (state.currentBehavior as Behavior)
           .autoScrollDirection;
-        const stickyLocation = getProLocationFromClient(
+        const stickyLocation = getLocationFromClient(
           state as State,
           event.clientX,
           event.clientY,
           undefined
         );
-        const underStickyLocation = getProLocationFromClient(
+        const underStickyLocation = getLocationFromClient(
           state as State,
           event.clientX,
           event.clientY,
@@ -182,7 +186,7 @@ export class PointerEventsController extends AbstractPointerEventsController {
       window.removeEventListener("pointermove", this.handlePointerMove);
       window.removeEventListener("contextmenu", this.handleContextMenu);
       this.updateState((state) => {
-        const currentLocation = getProLocationFromClient(
+        const currentLocation = getLocationFromClient(
           state as State,
           event.clientX,
           event.clientY

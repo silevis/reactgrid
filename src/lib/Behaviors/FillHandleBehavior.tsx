@@ -14,7 +14,7 @@ import {
 import { PointerEvent } from "../Model/domEventsTypes";
 import { State } from "../Model/State";
 import { Behavior } from "../Model/Behavior";
-import { getProActiveSelectedRange } from "../Functions/getProActiveSelectedRange";
+import { getActiveSelectedRange } from "../Functions/getActiveSelectedRange";
 import { PartialArea } from "../Components/PartialArea";
 import { isRangeIntersects } from "../Functions/isRangeIntersectsWith";
 import { newLocation } from "../Functions/newLocation";
@@ -30,7 +30,7 @@ export class FillHandleBehavior extends Behavior {
     location: Location,
     state: State
   ): State {
-    const selectedRange = getProActiveSelectedRange(state);
+    const selectedRange = getActiveSelectedRange(state);
     this.fillDirection = this.getFillDirection(selectedRange, location);
     this.fillRange = this.getFillRange(
       state.cellMatrix,
@@ -46,7 +46,7 @@ export class FillHandleBehavior extends Behavior {
     location: Location,
     state: State
   ): State {
-    const activeSelectedRange = getProActiveSelectedRange(state);
+    const activeSelectedRange = getActiveSelectedRange(state);
     const cellMatrix = state.cellMatrix;
     if (!activeSelectedRange || this.fillRange === undefined) {
       return state;

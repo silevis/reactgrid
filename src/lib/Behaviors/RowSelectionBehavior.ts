@@ -6,7 +6,7 @@ import {
   selectMultipleRows,
   selectOneRow,
 } from "../Functions/selectRange";
-import { proFocusLocation } from "../Functions/proFocusLocation";
+import { focusLocation } from "../Functions/focusLocation";
 import { handleContextMenu } from "../Functions/handleContextMenu";
 import { PointerEvent } from "../Model/domEventsTypes";
 
@@ -34,7 +34,7 @@ export class RowSelectionBehavior extends Behavior {
         isSelectionKey(event)
       );
     } else {
-      state = proFocusLocation(state, location, false);
+      state = focusLocation(state, location, false);
       state = selectOneRow(state, location.row, isSelectionKey(event));
     }
     return state;

@@ -1,13 +1,13 @@
 import { State } from '../Model/State';
-import { getProActiveSelectedRange } from './getProActiveSelectedRange';
-import { getProDataToCopy } from './getProDataToCopy';
+import { getActiveSelectedRange } from './getActiveSelectedRange';
+import { getDataToCopy } from './getDataToCopy';
 
 export function copySelectedRangeToClipboard(state: State, removeValues = false): void {
-    const activeSelectedRange = getProActiveSelectedRange(state);
+    const activeSelectedRange = getActiveSelectedRange(state);
     if (!activeSelectedRange) {
         return;
     }
-    const { div } = getProDataToCopy(state, activeSelectedRange, removeValues);
+    const { div } = getDataToCopy(state, activeSelectedRange, removeValues);
     document.body.appendChild(div);
     div.focus();
     document.execCommand('selectAll', false, undefined);

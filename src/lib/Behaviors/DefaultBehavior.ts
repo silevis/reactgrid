@@ -13,7 +13,7 @@ import {
 } from "../Model/domEventsTypes";
 import { CellSelectionBehavior } from "./CellSelectionBehavior";
 import { Behavior } from "../Model/Behavior";
-import { proHandleKeyDown } from "../Functions/proHandleKeyDown";
+import { handleKeyDown } from "../Functions/handleKeyDown";
 import { State } from "../Model/State";
 import { ColumnSelectionBehavior } from "./ColumnSelectionBehavior";
 import { RowSelectionBehavior } from "./RowSelectionBehavior";
@@ -22,8 +22,8 @@ import { handleContextMenu } from "../Functions/handleContextMenu";
 import { ResizeColumnBehavior } from "./ResizeColumnBehavior";
 import { ColumnReorderBehavior } from "./ColumnReorderBehavior";
 import { RowReorderBehavior } from "./RowReorderBehavior";
-import { proHandleCopy } from "../Functions/proHandleCopy";
-import { proHandlePaste } from "../Functions/proHandlePaste";
+import { handleCopy } from "../Functions/handleCopy";
+import { handlePaste } from "../Functions/handlePaste";
 
 export class DefaultBehavior extends Behavior {
   handlePointerDown(
@@ -124,7 +124,7 @@ export class DefaultBehavior extends Behavior {
   }
 
   handleKeyDown(event: KeyboardEvent, state: State): State {
-    return proHandleKeyDown(state as State, event);
+    return handleKeyDown(state as State, event);
   }
 
   handleKeyUp(event: KeyboardEvent, state: State): State {
@@ -132,14 +132,14 @@ export class DefaultBehavior extends Behavior {
   }
 
   handleCopy(event: ClipboardEvent, state: State): State {
-    return proHandleCopy(event, state);
+    return handleCopy(event, state);
   }
 
   handlePaste(event: ClipboardEvent, state: State): State {
-    return proHandlePaste(event, state);
+    return handlePaste(event, state);
   }
 
   handleCut(event: ClipboardEvent, state: State): State {
-    return proHandleCopy(event, state, true);
+    return handleCopy(event, state, true);
   }
 }

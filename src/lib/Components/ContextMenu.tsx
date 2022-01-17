@@ -12,8 +12,8 @@ import {
   Cell,
 } from "../../core";
 import { copySelectedRangeToClipboard } from "../Functions/copySelectedRangeToClipboard";
-import { proPasteData } from "../Functions/proPasteData";
-import { getProActiveSelectedRange } from "../Functions/getProActiveSelectedRange";
+import { pasteData } from "../Functions/pasteData";
+import { getActiveSelectedRange } from "../Functions/getActiveSelectedRange";
 import { getSelectedLocations } from "../Functions/getSelectedLocations";
 
 interface ContextMenuProps {
@@ -53,7 +53,7 @@ export const ContextMenu: React.FC<ContextMenuProps> = ({
               ...state,
               contextMenuPosition: { top: -1, left: -1 },
               ...((id === "copy" || id === "cut") && {
-                copyRange: getProActiveSelectedRange(state as State),
+                copyRange: getActiveSelectedRange(state as State),
               }),
             }));
           }}
@@ -136,7 +136,7 @@ function handleContextMenuPaste(state: State) {
               });
             }
           }
-          return proPasteData(
+          return pasteData(
             proState,
             clipboardRows.map((line, rowIdx) => {
               return line.split("\t").map<Compatible<Cell>>((text, colIdx) => {

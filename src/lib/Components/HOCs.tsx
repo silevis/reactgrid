@@ -4,7 +4,6 @@ import {
   CellRendererProps,
   CellRenderer,
   Range,
-  State,
 } from "../../core";
 import { SelectedRanges } from "./SelectedRanges";
 import { ResizeHandle } from "./ResizeHandle";

@@ -7,7 +7,7 @@ import {
   selectMultipleColumns,
   selectOneColumn,
 } from "../Functions/selectRange";
-import { proFocusLocation } from "../Functions/proFocusLocation";
+import { focusLocation } from "../Functions/focusLocation";
 import { handleContextMenu } from "../Functions/handleContextMenu";
 
 export class ColumnSelectionBehavior extends Behavior {
@@ -34,7 +34,7 @@ export class ColumnSelectionBehavior extends Behavior {
         isSelectionKey(event)
       );
     } else {
-      state = proFocusLocation(state, location, false);
+      state = focusLocation(state, location, false);
       state = selectOneColumn(state, location.column, isSelectionKey(event));
     }
     return state;
