@@ -5,47 +5,141 @@ import { defaultCellTemplates } from './defaultCellTemplates';
 import { focusLocation } from './focusLocation';
 import { recalcVisibleRange } from './recalcVisibleRange';
 import { updateResponsiveSticky } from './updateResponsiveSticky';
+import { updateSelectedColumns, updateSelectedRows } from './updateState';
+import { resetSelection } from './selectRange';
 
-export function getDerivedStateFromProps(props: ReactGridProps, state: State): State {
+// export function getDerivedStateFromProps(props: ReactGridProps, state: State): State {
+//     const stateDeriverWithProps = stateDeriver(props);
+
+//     const hasHighlightsChanged = highlightsHasChanged(props, state);
+
+//     if (hasHighlightsChanged) {
+//         state = stateDeriverWithProps(state)(appendHighlights);
+//     }
+
+//     state = stateDeriverWithProps(state)(updateStateProps);
+
+//     state = stateDeriverWithProps(state)(appendCellTemplates);
+
+//     state = stateDeriverWithProps(state)(appendGroupIdRender);
+
+//     const hasChanged = dataHasChanged(props, state);
+
+//     state = stateDeriverWithProps(state)(updateResponsiveSticky);
+
+//     if (hasChanged) {
+//         state = stateDeriverWithProps(state)(updateCellMatrix);
+//     }
+
+//     state = stateDeriverWithProps(state)(updateFocusedLocation);
+
+//     if (hasChanged) {
+//         state = stateDeriverWithProps(state)(updateVisibleRange);
+//     }
+//     state = stateDeriverWithProps(state)(setInitialFocusLocation);
+
+//     if (areFocusesDiff(props, state)) {
+//         state = stateDeriverWithProps(state)(setFocusLocation);
+//     }
+
+//     return state;
+// }
+
+export function getDerivedStateFromProps(
+    props: ReactGridProps,
+    state: State
+  ): State {
     const stateDeriverWithProps = stateDeriver(props);
-
+  
     const hasHighlightsChanged = highlightsHasChanged(props, state);
-
+  
     if (hasHighlightsChanged) {
-        state = stateDeriverWithProps(state)(appendHighlights);
+      state = stateDeriverWithProps(state)(appendHighlights) as State;
     }
+    state = stateDeriverWithProps(state)(updateStateProps) as State;
+  
+    state = stateDeriverWithProps(state)(appendCellTemplates) as State;
 
-    state = stateDeriverWithProps(state)(updateStateProps);
-
-    state = stateDeriverWithProps(state)(appendCellTemplates);
-
-    state = stateDeriverWithProps(state)(appendGroupIdRender);
-
+    state = stateDeriverWithProps(state)(appendGroupIdRender) as State;
+  
     const hasChanged = dataHasChanged(props, state);
-
-    state = stateDeriverWithProps(state)(updateResponsiveSticky);
-
+  
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    state = stateDeriverWithProps(state)(
+      updateResponsiveSticky as any
+    ) as State;
+  
     if (hasChanged) {
-        state = stateDeriverWithProps(state)(updateCellMatrix);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      state = stateDeriverWithProps(state)(
+        updateCellMatrix as any
+      ) as State;
     }
-
-    state = stateDeriverWithProps(state)(updateFocusedLocation);
-
+  
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    state = stateDeriverWithProps(state)(updateSelections as any) as State;
+  
+    state = stateDeriverWithProps(state)(updateFocusedLocation) as State;
+  
     if (hasChanged) {
-        state = stateDeriverWithProps(state)(updateVisibleRange);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      state = stateDeriverWithProps(state)(
+        updateVisibleRange as any
+      ) as State;
     }
-    state = stateDeriverWithProps(state)(setInitialFocusLocation);
-
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    state = stateDeriverWithProps(state)(
+      setInitialFocusLocation as any
+    ) as State;
+  
     if (areFocusesDiff(props, state)) {
-        state = stateDeriverWithProps(state)(setFocusLocation);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      state = stateDeriverWithProps(state)(
+        setFocusLocation as any
+      ) as State;
     }
-
+  
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    state = stateDeriverWithProps(state)(appendStateFields);
+  
     return state;
 }
 
+function updateSelections(props: ReactGridProps, state: State): State {
+    if (state.selectionMode === "row" && state.selectedIds.length > 0) {
+      state = updateSelectedRows(state);
+    } else if (state.selectionMode === "column" && state.selectedIds.length > 0) {
+      state = updateSelectedColumns(state);
+    } else {
+      state = {
+        ...state,
+        selectedRanges: [...state.selectedRanges].map((range) =>
+          state.cellMatrix.validateRange(range)
+        ),
+      };
+    }
+    return state;
+  }
+
+function appendStateFields(
+    props: ReactGridProps,
+    state: State
+  ): State {
+    return {
+      ...state,
+      enableFillHandle: !!props.enableFillHandle,
+      enableRangeSelection: !!props.enableRangeSelection,
+      enableColumnSelection: !!props.enableColumnSelection,
+      enableRowSelection: !!props.enableRowSelection,
+    };
+  }
+  
+
 export const areFocusesDiff = (props: ReactGridProps, state: State): boolean => {
     return props.focusLocation?.columnId !== state.focusedLocation?.column.columnId
-        || props.focusLocation?.rowId !== state.focusedLocation?.row.rowId;
+        || props.focusLocation?.rowId !== state.focusedLocation?.row.rowId
+        || (props.stickyRightColumns !== undefined && props.stickyRightColumns !== state.rightStickyColumns) 
+        || (props.stickyBottomRows !== undefined && props.stickyBottomRows !== state.bottomStickyRows);
 }
 
 export const stateDeriver = (props: ReactGridProps) => (state: State) => (fn: (props: ReactGridProps, state: State) => State): State => fn(props, state);
@@ -67,25 +161,30 @@ function updateCellMatrix(props: ReactGridProps, state: State): State {
     const builder = new CellMatrixBuilder();
     return {
         ...state,
-        cellMatrix: builder.setProps(props)
-            .fillRowsAndCols({ 
-                leftStickyColumns: state.leftStickyColumns || 0,
-                topStickyRows: state.topStickyRows || 0,
-                rightStickyColumns: state.leftStickyColumns || 0, 
-                bottomStickyRows: state.topStickyRows || 0 })
-            .setRangesToRenderLookup()
-            .fillSticky({ 
-                leftStickyColumns: state.leftStickyColumns || 0, 
-                topStickyRows: state.topStickyRows || 0,
-                rightStickyColumns: state.leftStickyColumns || 0, 
-                bottomStickyRows: state.topStickyRows || 0 })
-            .fillScrollableRange({ 
-                leftStickyColumns: state.leftStickyColumns || 0, 
-                topStickyRows: state.topStickyRows || 0,
-                rightStickyColumns: state.leftStickyColumns || 0, 
-                bottomStickyRows: state.topStickyRows || 0 })
-            .setEdgeLocations().getCellMatrix()
-    };
+        cellMatrix: builder
+          .setProps(props)
+          .fillRowsAndCols({
+            leftStickyColumns: state.leftStickyColumns || 0,
+            topStickyRows: state.topStickyRows || 0,
+            rightStickyColumns: state.rightStickyColumns || 0,
+            bottomStickyRows: state.bottomStickyRows || 0,
+          })
+          .setRangesToRenderLookup()
+          .fillSticky({
+            leftStickyColumns: state.leftStickyColumns || 0,
+            topStickyRows: state.topStickyRows || 0,
+            rightStickyColumns: state.rightStickyColumns || 0,
+            bottomStickyRows: state.bottomStickyRows || 0,
+          })
+          .fillScrollableRange({
+            leftStickyColumns: state.leftStickyColumns || 0,
+            topStickyRows: state.topStickyRows || 0,
+            rightStickyColumns: state.rightStickyColumns || 0,
+            bottomStickyRows: state.bottomStickyRows || 0,
+          })
+          .setEdgeLocations()
+          .getCellMatrix(),
+      };
 }
 
 export function updateFocusedLocation(props: ReactGridProps, state: State): State {
@@ -131,27 +230,45 @@ export function appendHighlights(props: ReactGridProps, state: State): State {
 
 export function setInitialFocusLocation(props: ReactGridProps, state: State): State {
     const locationToFocus = props.initialFocusLocation;
+    const wasFocused = !!state.focusedLocation;
+
     if (locationToFocus && !state.focusedLocation) {
         if (isLocationToFocusCorrect(state, locationToFocus)) {
             console.error('Data inconsistency in ReactGrid "initialFocusLocation" prop');
-            return state;
+        } else {
+            const location = state.cellMatrix.getLocationById(locationToFocus.rowId, locationToFocus.columnId);
+            state =  focusLocation(state, location);
         }
-        const location = state.cellMatrix.getLocationById(locationToFocus.rowId, locationToFocus.columnId);
-        return focusLocation(state, location);
     }
+
+    const location = state.focusedLocation;
+
+    if (!wasFocused && location) {
+        state = resetSelection(state, location);
+    }
+
     return state;
 }
 
 export function setFocusLocation(props: ReactGridProps, state: State): State {
     const locationToFocus = props.focusLocation;
+    const wasFocused = !!state.focusedLocation;
+
     if (locationToFocus) {
         if (isLocationToFocusCorrect(state, locationToFocus)) {
             console.error('Data inconsistency in ReactGrid "focusLocation" prop');
-            return state;
+        } else {
+            const location = state.cellMatrix.getLocationById(locationToFocus.rowId, locationToFocus.columnId);
+            state = focusLocation(state, location)
         }
-        const location = state.cellMatrix.getLocationById(locationToFocus.rowId, locationToFocus.columnId);
-        return focusLocation(state, location)
     }
+
+    const location = state.focusedLocation;
+
+    if (!wasFocused && location && props.focusLocation && state.selectedRanges.length <= 1) {
+        state = resetSelection(state, location);
+    }
+    
     return state;
 }
 

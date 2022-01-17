@@ -28,7 +28,7 @@ import { scrollCalculator } from "./componentDidUpdate";
 import { resetSelection } from "./selectRange";
 import { newLocation } from "./newLocation";
 
-export function proHandleKeyDown(
+export function handleKeyDown(
   state: State,
   event: KeyboardEvent
 ): State {

@@ -1,7 +1,7 @@
 import { PointerEvent } from '../Model/domEventsTypes';
-import { getProLocationFromClient } from './getProLocationFromClient';
+import { getLocationFromClient } from './getLocationFromClient';
 import { State } from '../Model/State';
-import { proFocusLocation } from './proFocusLocation';
+import { focusLocation } from './focusLocation';
 
 
 export function handleContextMenu(event: PointerEvent, state: State): State {
@@ -17,9 +17,9 @@ export function handleContextMenu(event: PointerEvent, state: State): State {
     if (right) { contextMenuPosition.left = clickX + 5; }
     if (bottom) { contextMenuPosition.top = clickY - 25 - 5; }
     if (left) { contextMenuPosition.left = clickX - 120 - 5; }
-    const focusedLocation = getProLocationFromClient(state, clickX, clickY);
+    const focusedLocation = getLocationFromClient(state, clickX, clickY);
     if (!state.selectedRanges.find(range => range.contains(focusedLocation))) {
-        state = proFocusLocation(state, focusedLocation)
+        state = focusLocation(state, focusedLocation)
     }
     return {
         ...state,
