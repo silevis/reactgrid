@@ -14,6 +14,7 @@ export function focusLocation(state: State, location: Location, applyResetSelect
     if (!state.props) {
         throw new Error(`"props" field on "state" object should be initiated before possible location focus`);
     }
+    
 
     const { onFocusLocationChanged, onFocusLocationChanging, focusLocation } = state.props;
 
@@ -45,9 +46,10 @@ export function focusLocation(state: State, location: Location, applyResetSelect
         // TODO is `location` really needed
         state = resetSelection(
           state,
-          state.focusedLocation ? state.focusedLocation : location
+          validatedFocusLocation
         );
     }
+
 
     return {
         ...state,
