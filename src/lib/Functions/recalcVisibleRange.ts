@@ -9,17 +9,23 @@ export const VS_PAGE_WIDTH = 300;
 const ADDITONAL_INDEX = 1; // is needed for getting last element in array
 
 export function recalcVisibleRange(state: State): State {
-    /**
-     * Here was disabled virtual rendering by selecting whole cell matrix as visible range in a quick way,
-     * TODO: remove all unused code e.g. getting scrollable element, calculating visible size etc...
-     */
-     const {rows, columns} = state.cellMatrix.scrollableRange;
-     const visibleRange = new Range(rows, columns);
-     return {
-         ...state,
-         visibleRange
-     };
+    const { scrollTop, scrollLeft } = getScrollOfScrollableElement(state.scrollableElement);
+    const { width, height } = getVisibleScrollableSize(state,
+        [-state.cellMatrix.ranges.stickyTopRange.height, -state.cellMatrix.ranges.stickyBottomRange.height],
+        [-state.cellMatrix.ranges.stickyLeftRange.width, -state.cellMatrix.ranges.stickyRightRange.width]);
+    const visibleColumns = getVisibleColumns(state, width);
+    const visibleRows = getVisibleRows(state, height);
+    const visibleRange = new Range(visibleRows, visibleColumns);
+    return {
+        ...state,
+        leftScrollBoudary: visibleRange.columns.length > 0 ? scrollLeft - VS_PAGE_WIDTH : 0,
+        rightScrollBoudary: visibleRange.last.column === undefined ? 0 : VS_PAGE_WIDTH + scrollLeft,
+        topScrollBoudary: visibleRange.columns.length > 0 ? scrollTop - VS_PAGE_HEIGHT : 0,
+        bottomScrollBoudary: visibleRange.last.row === undefined ? 0 : VS_PAGE_HEIGHT + scrollTop,
+        visibleRange
+    };
 }
+
 
 export function getVisibleScrollableSize(state: State, heights: number[], widths: number[]): { height: number, width: number } {
     const { height, width } = getVisibleSizeOfReactGrid(state);
