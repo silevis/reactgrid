@@ -13,7 +13,7 @@ context('Responsive sticky', () => {
 
     it('Left and top sticky shouldn`t display on narrow view', () => { // ✅
         utils.getTopStickyPane().should('not.exist');
-        utils.getLeftStickyPane().should('not.exist');;
+        utils.getLeftStickyPane().should('not.exist');
     });
 
     it('Only top sticky should display on narrow view', () => { // ✅

@@ -1,5 +1,5 @@
 import React from 'react';
-import { CellLocation, Highlight, TextLabels } from './../core';
+import { CellLocation, Highlight, TextLabels } from '../core';
 
 /**
  * All of the properties that cypress tests files can read
@@ -8,7 +8,7 @@ export const config: TestConfig = {
     pinToBody: false,
     additionalContent: false,
     flexRow: false,
-    isPro: false,
+    isPro: true,
 
     rgViewportHeight: 600,
     rgViewportWidth: 1150,
@@ -23,8 +23,8 @@ export const config: TestConfig = {
     minCellWidth: 40,
     fillHandleWidth: 18,
 
-    columns: 10,
-    rows: 30,
+    columns: 30,
+    rows: 150,
 
     lineWidth: 1,
 
@@ -77,6 +77,7 @@ export const config: TestConfig = {
         padding: 20,
         position: 'relative',
     },
+
 }
 
 /**
@@ -117,10 +118,25 @@ export const enableSymetric: TestConfig = {
     stickyRight: 2,
 }
 
+
 export const enableResponsiveSticky: TestConfig = {
     ...config,
     fillViewport: true,
     stickyTop: 13,
+    stickyLeft: 2,
+    stickyRight: 0,
+    stickyBottom: 0,
+    horizontalStickyBreakpoint: 45,
+    verticalStickyBreakpoint: 45,
+}
+
+export const enableResponsiveStickyPro: TestConfig = {
+    ...config,
+    fillViewport: true,
+    stickyTop: 0,
+    stickyLeft: 0,
+    stickyRight: 2,
+    stickyBottom: 13,
     horizontalStickyBreakpoint: 45,
     verticalStickyBreakpoint: 45,
 }
@@ -130,6 +146,21 @@ export const enableResponsiveStickyPinnedToBody: TestConfig = {
     pinToBody: true,
     fillViewport: true,
     stickyTop: 13,
+    stickyLeft: 2,
+    stickyRight: 0,
+    stickyBottom: 0,
+    horizontalStickyBreakpoint: 45,
+    verticalStickyBreakpoint: 45,
+}
+
+export const enableResponsiveStickyPinnedToBodyPro: TestConfig = {
+    ...config,
+    pinToBody: true,
+    fillViewport: true,
+    stickyTop: 0,
+    stickyLeft: 0,
+    stickyRight: 2,
+    stickyBottom: 13,
     horizontalStickyBreakpoint: 45,
     verticalStickyBreakpoint: 45,
 }
@@ -186,10 +217,10 @@ export interface TestConfig {
 
     focusLocation: CellLocation;
     initialFocusLocation?: CellLocation;
+    highlights: Highlight[];
     spannedCells?: { idx: number, idy: number, colspan?: number, rowspan?: number }[];
     headerCells?: { idx: number, idy: number }[];
 
-    highlights: Highlight[];
 
     labels: TextLabels;
 

@@ -66,7 +66,7 @@ context('Scroll', () => {
         utils.selectCell(config.cellWidth * 2 + utils.getCellXCenter(), utils.getCellYCenter());
         for (let i = 0; i < config.stickyTop; i++) {
             utils.keyDown(constants.keyCodes.ArrowDown, { force: true });
-        };
+        }
         utils.assertScrolledToTop();
     });
 
@@ -75,7 +75,7 @@ context('Scroll', () => {
         utils.selectCell(utils.getCellXCenter(), config.cellHeight * 5 + utils.getCellYCenter());
         for (let i = 0; i < config.stickyLeft; i++) {
             utils.keyDown(constants.keyCodes.ArrowRight, { force: true });
-        };
+        }
         utils.assertScrolledToLeft();
     });
 
