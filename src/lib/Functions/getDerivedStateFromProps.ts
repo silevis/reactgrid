@@ -146,7 +146,9 @@ export const stateDeriver = (props: ReactGridProps) => (state: State) => (fn: (p
 
 export const dataHasChanged = (props: ReactGridProps, state: State): boolean => !state.cellMatrix || props !== state.cellMatrix.props
     || (props.stickyLeftColumns !== undefined && props.stickyLeftColumns !== state.leftStickyColumns)
-    || (props.stickyTopRows !== undefined && props.stickyTopRows !== state.topStickyRows);
+    || (props.stickyTopRows !== undefined && props.stickyTopRows !== state.topStickyRows)
+    || (props.stickyBottomRows !== undefined && props.stickyBottomRows !== state.bottomStickyRows)
+    || (props.stickyRightColumns !== undefined && props.stickyRightColumns !== state.rightStickyColumns);
 
 export const highlightsHasChanged = (props: ReactGridProps, state: State): boolean => props.highlights !== state.props?.highlights;
 
