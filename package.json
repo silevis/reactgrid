@@ -75,6 +75,8 @@
     "cy:pinnedToBody": "npx cypress run --headless --quiet --browser firefox -s 'cypress/integration/tests/pinnedToBody/*'",
     "cy:stickyPinnedToBody": "npx cypress run --headless --quiet --browser firefox -s 'cypress/integration/tests/stickyPinnedToBody/*'",
     "cy:spannedCells": "npx cypress run --headless --quiet --browser firefox -s 'cypress/integration/tests/spannedCells/*'",
+    "cy:columnAndRowSelections": "npx cypress run --headless --quiet --browser firefox -s 'cypress/integration/tests/columnAndRowSelections/*'",
+    "cy:columnAndRowSelectionsWithSticky": "npx cypress run --headless --quiet --browser firefox -s 'cypress/integration/tests/columnAndRowSelectionsWithSticky/*'",
     "remove-suffix": "cross-env SUFFIX=rc node ./node_modules/npm-version-suffix/run-remove-suffix.js"
   },
   "husky": {
