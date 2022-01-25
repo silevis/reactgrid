@@ -8,7 +8,6 @@ export const config: TestConfig = {
     pinToBody: false,
     additionalContent: false,
     flexRow: false,
-    isPro: true,
 
     rgViewportHeight: 600,
     rgViewportWidth: 1150,
@@ -190,7 +189,6 @@ export interface TestConfig {
     pinToBody: boolean;
     additionalContent: boolean;
     flexRow: boolean;
-    isPro: boolean;
 
     rgViewportHeight: number;
     rgViewportWidth: number;
