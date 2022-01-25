@@ -357,13 +357,13 @@ export const TestGridOptionsSelect: React.FC = () => {
                 <option value='/enableAdditionalContent'>Enable additional content</option>
                 <option value='/enableSymetric'>Enable symetric</option>
                 <option value='/enableFrozenFocus'>Enable frozen focus</option>
-                <option value='/enableResponsiveSticky'>Enable responsive sticky</option>
-                <option value='/enableResponsiveStickyPinnedToBody'>Enable responsive sticky pinned to body</option>
+                <option value='/enableResponsiveStickyTopLeft'>Enable responsive top and left sticky panes</option>
+                <option value='/enableResponsiveStickyBottomRight'>Enable responsive bottom and right sticky panes</option>
+                <option value='/enableResponsiveStickyPinnedToBodyTopLeft'>Enable responsive top and left sticky panes pinned to body</option>
+                <option value='/enableResponsiveStickyPinnedToBodyBottomRight'>Enable responsive bottom and right sticky panes pinned to body</option>
                 <option value='/enableSpannedCells'>Enable spanned cells</option>
                 <option value='/enableColumnAndRowSelection'>Enable column and row selection</option>
                 <option value='/enableColumnAndRowSelectionWithSticky'>Enable column and row selection with sticky</option>
-                <option value='/enableResponsiveStickyPro'>Enable responsive sticky PRO</option>
-                <option value='/enableResponsiveStickyPinnedToBodyPro'>Enable responsive sticky pinned to body PRO</option>
             </select>
         </form>
     )

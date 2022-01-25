@@ -118,7 +118,7 @@ export const enableSymetric: TestConfig = {
 }
 
 
-export const enableResponsiveSticky: TestConfig = {
+export const enableTopLeftResponsiveSticky: TestConfig = {
     ...config,
     fillViewport: true,
     stickyTop: 13,
@@ -129,7 +129,7 @@ export const enableResponsiveSticky: TestConfig = {
     verticalStickyBreakpoint: 45,
 }
 
-export const enableResponsiveStickyPro: TestConfig = {
+export const enableBottomRightResponsiveSticky: TestConfig = {
     ...config,
     fillViewport: true,
     stickyTop: 0,
@@ -140,7 +140,7 @@ export const enableResponsiveStickyPro: TestConfig = {
     verticalStickyBreakpoint: 45,
 }
 
-export const enableResponsiveStickyPinnedToBody: TestConfig = {
+export const enableTopLeftResponsiveStickyPinnedToBody: TestConfig = {
     ...config,
     pinToBody: true,
     fillViewport: true,
@@ -152,7 +152,7 @@ export const enableResponsiveStickyPinnedToBody: TestConfig = {
     verticalStickyBreakpoint: 45,
 }
 
-export const enableResponsiveStickyPinnedToBodyPro: TestConfig = {
+export const enableBottomRightResponsiveStickyPinnedToBody: TestConfig = {
     ...config,
     pinToBody: true,
     fillViewport: true,

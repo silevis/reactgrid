@@ -5,8 +5,8 @@ import { ReactGrid } from './lib/Components/ReactGrid';
 import './test/theming-test.scss';
 import {
     config, enablePinnedToBodyConfig, disabledInitialFocusLocationConfig, enableAdditionalContentConfig,
-    enableAdditionalContentWithFlexRowConfig, enableSymetric, enableResponsiveSticky, enableResponsiveStickyPinnedToBody,
-    enableResponsiveStickyPro, enableResponsiveStickyPinnedToBodyPro, enableSpannedCells
+    enableAdditionalContentWithFlexRowConfig, enableSymetric, enableTopLeftResponsiveSticky, enableTopLeftResponsiveStickyPinnedToBody,
+    enableBottomRightResponsiveSticky, enableBottomRightResponsiveStickyPinnedToBody, enableSpannedCells
 } from './test/testEnvConfig';
 
 let component = <ExtTestGrid
@@ -91,34 +91,34 @@ switch (window.location.pathname) {
         />;
         ExtTestGrid.displayName = 'TestGridProWithEnabledSymetric';
         break;
-    case '/enableResponsiveSticky':
+    case '/enableResponsiveStickyTopLeft':
         component = <ExtTestGrid
             component={ReactGrid}
-            config={enableResponsiveSticky}
+            config={enableTopLeftResponsiveSticky}
             enableSticky
         />;
-        ExtTestGrid.displayName = 'TestGridProWithEnabledResponsiveSticky';
+        ExtTestGrid.displayName = 'TestGridProWithEnabledResponsiveStickyTopLeft';
         break;
-    case '/enableResponsiveStickyPro':
+    case '/enableResponsiveStickyBottomRight':
         component = <ExtTestGrid
             component={ReactGrid}
-            config={enableResponsiveStickyPro}
+            config={enableBottomRightResponsiveSticky}
             enableSticky
         />;
-        ExtTestGrid.displayName = 'TestGridProWithEnabledResponsiveSticky';
+        ExtTestGrid.displayName = 'TestGridWithEnabledResponsiveStickyBottomRight';
         break;
-    case '/enableResponsiveStickyPinnedToBody':
+    case '/enableResponsiveStickyPinnedToBodyTopLeft':
         component = <ExtTestGrid
             component={ReactGrid}
-            config={enableResponsiveStickyPinnedToBody}
+            config={enableTopLeftResponsiveStickyPinnedToBody}
             enableSticky
         />;
         ExtTestGrid.displayName = 'TestGridProWithResponsiveStickyPinnedToBody';
         break;
-    case '/enableResponsiveStickyPinnedToBodyPro':
+    case '/enableResponsiveStickyPinnedToBodyBottomRight':
         component = <ExtTestGrid
             component={ReactGrid}
-            config={enableResponsiveStickyPinnedToBodyPro}
+            config={enableBottomRightResponsiveStickyPinnedToBody}
             enableSticky
         />;
         ExtTestGrid.displayName = 'TestGridProWithResponsiveStickyPinnedToBody';

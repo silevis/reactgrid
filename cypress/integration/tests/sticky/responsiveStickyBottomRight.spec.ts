@@ -1,13 +1,13 @@
-import { visitResponsiveStickyPro } from "../../common/visit";
+import { visitResponsiveStickyBottomRight } from "../../common/visit";
 import { Utilities } from "../../common/utils";
-import { enableResponsiveStickyPro as config } from "../../../../src/test/testEnvConfig";
+import { enableResponsiveStickyBottomRight as config } from "../../../../src/test/testEnvConfig";
 
 const utils = new Utilities(config);
 
-context("Responsive sticky", () => {
+context("Responsive sticky right and bottom", () => {
   beforeEach(() => {
     cy.viewport(500, 600);
-    visitResponsiveStickyPro();
+    visitResponsiveStickyBottomRight();
   });
 
   it("Right and Bottom sticky shouldn`t display on narrow view", () => {
