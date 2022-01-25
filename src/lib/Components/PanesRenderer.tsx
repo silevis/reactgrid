@@ -18,7 +18,6 @@ import {
   shouldRenderRightSticky,
 } from "../Functions/paneRendererPredicates";
 import { State } from "../Model/State";
-import { renderProComponents } from "./HOCs";
 
 export interface PanesProps {
   state: State;
@@ -80,9 +79,7 @@ export const PanesRenderer: React.FC<PanesProps> = ({ state, cellRenderer }) => 
                       top: !renderTopSticky,
                   }}
                   cellRenderer={cellRenderer}
-              >
-                  {renderProComponents}
-              </PaneContent>
+              />
           </Pane>
           <PaneShadow renderCondition={renderLeftSticky} className={'shadow-left'} zIndex={2} style={{
               width: cellMatrix.ranges.stickyLeftRange.width,
@@ -135,9 +132,7 @@ export const PanesRenderer: React.FC<PanesProps> = ({ state, cellRenderer }) => 
                       left: !renderLeftSticky,
                   }}
                   cellRenderer={cellRenderer}
-              >
-                  {renderProComponents}
-              </PaneContent>
+                />
           </Pane>
           <Pane
               renderChildren={(renderMiddleRange && renderRightSticky) || !visibleScrollableRange}
@@ -160,9 +155,7 @@ export const PanesRenderer: React.FC<PanesProps> = ({ state, cellRenderer }) => 
                       bottom: !renderBottomSticky,
                   }}
                   cellRenderer={cellRenderer}
-              >
-                  {renderProComponents}
-              </PaneContent>
+              />
           </Pane>
           <Pane
               renderChildren={renderTopSticky && renderCenterRange}
@@ -186,9 +179,7 @@ export const PanesRenderer: React.FC<PanesProps> = ({ state, cellRenderer }) => 
                       left: !renderLeftSticky
                   }}
                   cellRenderer={cellRenderer}
-              >
-                  {renderProComponents}
-              </PaneContent>
+                />
           </Pane>
           <Pane
               renderChildren={(renderMiddleRange && renderLeftSticky) || !visibleScrollableRange}
@@ -212,9 +203,7 @@ export const PanesRenderer: React.FC<PanesProps> = ({ state, cellRenderer }) => 
                       left: true
                   }}
                   cellRenderer={cellRenderer}
-              >
-                  {renderProComponents}
-              </PaneContent>
+                />
           </Pane>
           <Pane
               renderChildren={renderBottomSticky && renderRightSticky}
@@ -238,9 +227,7 @@ export const PanesRenderer: React.FC<PanesProps> = ({ state, cellRenderer }) => 
                       bottom: true
                   }}
                   cellRenderer={cellRenderer}
-              >
-                  {renderProComponents}
-              </PaneContent>
+                />
           </Pane>
           <Pane
               renderChildren={renderBottomSticky && renderLeftSticky}
@@ -264,9 +251,7 @@ export const PanesRenderer: React.FC<PanesProps> = ({ state, cellRenderer }) => 
                       bottom: true,
                   }}
                   cellRenderer={cellRenderer}
-              >
-                  {renderProComponents}
-              </PaneContent>
+                />
           </Pane>
           <Pane
               renderChildren={renderTopSticky && renderRightSticky}
@@ -290,9 +275,7 @@ export const PanesRenderer: React.FC<PanesProps> = ({ state, cellRenderer }) => 
                       bottom: true,
                   }}
                   cellRenderer={cellRenderer}
-              >
-                  {renderProComponents}
-              </PaneContent>
+                />
           </Pane>
           <Pane
               renderChildren={renderTopSticky && renderLeftSticky}
@@ -316,9 +299,7 @@ export const PanesRenderer: React.FC<PanesProps> = ({ state, cellRenderer }) => 
                       bottom: true,
                   }}
                   cellRenderer={cellRenderer}
-              >
-                  {renderProComponents}
-              </PaneContent>
+                />
           </Pane>
       </>
   )

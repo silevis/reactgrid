@@ -1,10 +1,9 @@
 import * as React from "react";
-import { Range } from "../../core";
+import { PaneContentChild, Range } from "../../core";
 import { PartialArea } from "./PartialArea";
 import { isRangeIntersects } from "../Functions/isRangeIntersectsWith";
-import { ProPaneContentChild } from "./HOCs";
 
-export const SelectedRanges: React.FC<ProPaneContentChild> = ({
+export const SelectedRanges: React.FC<PaneContentChild> = ({
   state,
   calculatedRange,
 }) => {

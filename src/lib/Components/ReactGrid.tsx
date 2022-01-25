@@ -1,5 +1,5 @@
 import * as React from "react";
-import { ReactGridProps } from "../../core";
+import { CellRenderer, ReactGridProps } from "../../core";
 import {
   GridRenderer,
   LegacyBrowserGridRenderer,
@@ -20,7 +20,6 @@ import { defaultStateFields, State } from "../Model/State";
 import { Line } from "./Line";
 import { Shadow } from "./Shadow";
 import { ContextMenu } from "./ContextMenu";
-import { ProCellRenderer } from "./HOCs";
 import { componentDidUpdate } from "../Functions/componentDidUpdate";
 import { getSelectedLocations } from "../Functions/getSelectedLocations";
 
@@ -105,7 +104,7 @@ export class ReactGrid extends React.Component<ReactGridProps, State> {
     } else {
       return (
         <GridRenderer state={state} eventHandlers={eventHandlers}>
-          <PanesRenderer state={state} cellRenderer={ProCellRenderer} />
+          <PanesRenderer state={state} cellRenderer={CellRenderer} />
           <Line
             linePosition={state.linePosition}
             orientation={state.lineOrientation}

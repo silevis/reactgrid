@@ -2,6 +2,7 @@
 import { EventHandlers } from './EventHandlers';
 import { Column, Row } from './PublicModel';
 import { State } from './State';
+import { Range } from './Range';
 
 export type Orientation = 'horizontal' | 'vertical';
 
@@ -56,3 +57,8 @@ export interface GridRendererProps {
     state: State;
     eventHandlers: EventHandlers;
 }
+
+export interface PaneContentChild {
+    state: State;
+    calculatedRange: Range;
+  }

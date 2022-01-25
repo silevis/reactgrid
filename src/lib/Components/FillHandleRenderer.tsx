@@ -1,10 +1,9 @@
 import * as React from "react";
-import { Range } from "../../core";
+import { PaneContentChild, Range } from "../../core";
 import { CellSelectionBehavior } from "../Behaviors/CellSelectionBehavior";
-import { ProPaneContentChild } from "./HOCs";
 import { FillHandle } from "./FillHandle";
 
-export const FillHandleRenderer: React.FC<ProPaneContentChild> = ({
+export const FillHandleRenderer: React.FC<PaneContentChild> = ({
   state,
   calculatedRange,
 }) => {
