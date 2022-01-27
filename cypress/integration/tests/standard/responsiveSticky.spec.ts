@@ -1,6 +1,6 @@
-import { visitResponsiveSticky } from '../../common/visit';
+import { visitResponsiveStickyTopLeft } from '../../common/visit';
 import { Utilities } from '../../common/utils';
-import { enableResponsiveSticky as config } from '../../../../src/test/testEnvConfig';
+import { enableTopLeftResponsiveSticky as config } from '../../../../src/test/testEnvConfig';
 
 const utils = new Utilities(config);
 
@@ -8,12 +8,12 @@ context('Responsive sticky', () => {
 
     beforeEach(() => {
         cy.viewport(500, 600);
-        visitResponsiveSticky();
+        visitResponsiveStickyTopLeft();
     });
 
     it('Sticky shouldn`t display on narrow view', () => { // ✅
         utils.getTopStickyPane().should('not.exist');
-        utils.getLeftStickyPane().should('not.exist');;
+        utils.getLeftStickyPane().should('not.exist');
     });
 
     it('Only top sticky should display on narrow view', () => {
