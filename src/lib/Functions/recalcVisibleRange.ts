@@ -13,11 +13,12 @@ export function recalcVisibleRange(state: State): State {
      * Here was disabled virtual rendering by selecting whole cell matrix as visible range in a quick way,
      * TODO: remove all unused code e.g. getting scrollable element, calculating visible size etc...
      */
-    const visibleRange = new Range(state.cellMatrix.rows, state.cellMatrix.columns);
-    return {
-        ...state,
-        visibleRange
-    };
+     const {rows, columns} = state.cellMatrix.scrollableRange;
+     const visibleRange = new Range(rows, columns);
+     return {
+         ...state,
+         visibleRange
+     };
 }
 
 export function getVisibleScrollableSize(state: State, heights: number[], widths: number[]): { height: number, width: number } {
