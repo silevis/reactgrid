@@ -63,6 +63,6 @@ export class EventHandlers {
     }
 
     protected updateOnScrollChange = (visibleRangeCalculator: StateModifier): void => {
-        this.updateState(visibleRangeCalculator)
+        this.updateState(visibleRangeCalculator);
     }
 }
