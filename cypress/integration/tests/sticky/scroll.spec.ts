@@ -50,7 +50,7 @@ context('Scroll', () => {
 
         utils.getScrollableElement().then($viewport => {
             const v = $viewport[0];
-            const stickyRightSize = config.isPro ? config.stickyRight * config.cellWidth : 0;
+            const stickyRightSize = config.stickyRight * config.cellWidth;
             utils.selectCell(v.clientWidth - stickyRightSize - 20, config.cellHeight + utils.getCellYCenter());
 
             utils.assertIsElementInScrollable(utils.getCellFocus());

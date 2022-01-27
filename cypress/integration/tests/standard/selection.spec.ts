@@ -7,7 +7,7 @@ import { constants } from "../../common/constants";
 
 const utils = new Utilities(config);
 
-context("Pro Selection", () => {
+context("Selection", () => {
   beforeEach(() => {
     visit();
   });

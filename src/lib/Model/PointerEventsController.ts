@@ -1,12 +1,12 @@
 import { PointerEvent } from './domEventsTypes';
 import { getLocationFromClient } from '../Functions/getLocationFromClient';
-import { AbstractPointerEventsController, isOnClickableArea, isReadyToHandleEvent } from './AbstractPointerEventsController';
+import { AbstractPointerEventsController, isReadyToHandleEvent } from './AbstractPointerEventsController';
 import { State } from './State';
 import { DefaultBehavior } from '../Behaviors/DefaultBehavior';
 import { Behavior } from './Behavior';
 import { ResizeColumnBehavior } from '../Behaviors/ResizeColumnBehavior';
 import { ColumnReorderBehavior } from '../Behaviors/ColumnReorderBehavior';
-import { isOnClickableAreaOnPro } from '../Functions/isOnClickableArea';
+import { isOnClickableArea } from '../Functions/isOnClickableArea';
 import { scrollCalculator } from '../Functions/componentDidUpdate';
 import { scrollIntoView } from '../Functions/scrollIntoView';
 import { areLocationsEqual } from '../Functions/areLocationsEqual';
@@ -30,7 +30,7 @@ export class PointerEventsController extends AbstractPointerEventsController {
       this.isInRightSticky = false;
       this.isInTopSticky = false;
       this.isInBottomSticky = false;
-      const onClickableAreaOnPro = isOnClickableAreaOnPro(
+      const onClickableAreaOnPro = isOnClickableArea(
         event,
         state as State
       );
