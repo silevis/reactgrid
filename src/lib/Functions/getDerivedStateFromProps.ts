@@ -8,43 +8,6 @@ import { updateResponsiveSticky } from './updateResponsiveSticky';
 import { updateSelectedColumns, updateSelectedRows } from './updateState';
 import { resetSelection } from './selectRange';
 
-// export function getDerivedStateFromProps(props: ReactGridProps, state: State): State {
-//     const stateDeriverWithProps = stateDeriver(props);
-
-//     const hasHighlightsChanged = highlightsHasChanged(props, state);
-
-//     if (hasHighlightsChanged) {
-//         state = stateDeriverWithProps(state)(appendHighlights);
-//     }
-
-//     state = stateDeriverWithProps(state)(updateStateProps);
-
-//     state = stateDeriverWithProps(state)(appendCellTemplates);
-
-//     state = stateDeriverWithProps(state)(appendGroupIdRender);
-
-//     const hasChanged = dataHasChanged(props, state);
-
-//     state = stateDeriverWithProps(state)(updateResponsiveSticky);
-
-//     if (hasChanged) {
-//         state = stateDeriverWithProps(state)(updateCellMatrix);
-//     }
-
-//     state = stateDeriverWithProps(state)(updateFocusedLocation);
-
-//     if (hasChanged) {
-//         state = stateDeriverWithProps(state)(updateVisibleRange);
-//     }
-//     state = stateDeriverWithProps(state)(setInitialFocusLocation);
-
-//     if (areFocusesDiff(props, state)) {
-//         state = stateDeriverWithProps(state)(setFocusLocation);
-//     }
-
-//     return state;
-// }
-
 export function getDerivedStateFromProps(
     props: ReactGridProps,
     state: State
@@ -54,52 +17,38 @@ export function getDerivedStateFromProps(
     const hasHighlightsChanged = highlightsHasChanged(props, state);
   
     if (hasHighlightsChanged) {
-      state = stateDeriverWithProps(state)(appendHighlights) as State;
+      state = stateDeriverWithProps(state)(appendHighlights);
     }
-    state = stateDeriverWithProps(state)(updateStateProps) as State;
+    state = stateDeriverWithProps(state)(updateStateProps);
   
-    state = stateDeriverWithProps(state)(appendCellTemplates) as State;
+    state = stateDeriverWithProps(state)(appendCellTemplates);
 
-    state = stateDeriverWithProps(state)(appendGroupIdRender) as State;
+    state = stateDeriverWithProps(state)(appendGroupIdRender);
   
     const hasChanged = dataHasChanged(props, state);
   
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    state = stateDeriverWithProps(state)(
-      updateResponsiveSticky as any
-    ) as State;
+    state = stateDeriverWithProps(state)(updateResponsiveSticky)
+    
+    state = stateDeriverWithProps(state)(disableVirtualScrolling)
   
     if (hasChanged) {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      state = stateDeriverWithProps(state)(
-        updateCellMatrix as any
-      ) as State;
+      state = stateDeriverWithProps(state)(updateCellMatrix);
     }
   
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    state = stateDeriverWithProps(state)(updateSelections as any) as State;
+    state = stateDeriverWithProps(state)(updateSelections);
   
-    state = stateDeriverWithProps(state)(updateFocusedLocation) as State;
+    state = stateDeriverWithProps(state)(updateFocusedLocation);
   
     if (hasChanged) {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      state = stateDeriverWithProps(state)(
-        updateVisibleRange as any
-      ) as State;
+      state = stateDeriverWithProps(state)(updateVisibleRange);
     }
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    state = stateDeriverWithProps(state)(
-      setInitialFocusLocation as any
-    ) as State;
+
+    state = stateDeriverWithProps(state)(setInitialFocusLocation);
   
     if (areFocusesDiff(props, state)) {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      state = stateDeriverWithProps(state)(
-        setFocusLocation as any
-      ) as State;
+      state = stateDeriverWithProps(state)(setFocusLocation);
     }
   
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     state = stateDeriverWithProps(state)(appendStateFields);
   
     return state;
@@ -215,6 +164,13 @@ export function appendGroupIdRender(props: ReactGridProps, state: State): State 
         ...state,
         enableGroupIdRender: !!props.enableGroupIdRender
     }
+}
+
+function disableVirtualScrolling(props: ReactGridProps, state: State): State {
+  return {
+      ...state,
+      disableVirtualScrolling: !!props.disableVirtualScrolling
+  }
 }
 
 export function appendHighlights(props: ReactGridProps, state: State): State {

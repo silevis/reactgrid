@@ -59,7 +59,7 @@ export class ReactGrid extends React.Component<ReactGridProps, State> {
     state: State
   ): State | null {
     try {
-      return getDerivedStateFromProps(props, state);
+      return getDerivedStateFromProps(props, state)
     } catch (error) {
       console.error(error);
       return null;
