@@ -10,8 +10,6 @@ const utilsFlexRow = new Utilities(enableAdditionalContentWithFlexRowConfig);
 
 context('Cell editor position', () => {
 
-  // beforeEach(() => {});
-
   it('should open fixed cell editor on partially visible additional content', () => { // ✅
     visitAdditionalContent();
     [
