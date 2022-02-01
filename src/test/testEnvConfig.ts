@@ -16,6 +16,7 @@ export const config: TestConfig = {
     enableFillHandle: true,
     enableFullWidthHeader: false,
     enableGroupIdRender: true,
+    disableVirtualScrolling: false,
 
     cellHeight: 25,
     cellWidth: 150,
@@ -117,6 +118,10 @@ export const enableSymetric: TestConfig = {
     stickyRight: 2,
 }
 
+export const disableVirtualScrolling: TestConfig = {
+    ...config,
+    disableVirtualScrolling: true,
+}
 
 export const enableTopLeftResponsiveSticky: TestConfig = {
     ...config,
@@ -202,6 +207,7 @@ export interface TestConfig {
     enableFillHandle: boolean;
     enableFullWidthHeader: boolean;
     enableGroupIdRender: boolean;
+    disableVirtualScrolling: boolean;
 
     columns: number;
     rows: number;

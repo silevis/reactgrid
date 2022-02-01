@@ -63,3 +63,7 @@ export function visitResponsiveStickyPinnedToBodyTopLeft(): void {
 export function visitResponsiveStickyPinnedToBodyBottomRight(): void {
     cy.visit('/enableResponsiveStickyPinnedToBodyBottomRight');
 }
+
+export function visitDisabledVirtualScrolling(): void {
+    cy.visit('/disableVirtualScrolling');
+}

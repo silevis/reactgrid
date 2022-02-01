@@ -149,6 +149,10 @@ export class Utilities {
     return cy.get(".reactgrid");
   }
 
+  getAllCells(): Cypress.Chainable {
+    return cy.get(".rg-cell");
+  }
+
   getReactGridContent(): Cypress.Chainable {
     return cy.get(".reactgrid-content");
   }

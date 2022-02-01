@@ -6,7 +6,7 @@ import './test/theming-test.scss';
 import {
     config, enablePinnedToBodyConfig, disabledInitialFocusLocationConfig, enableAdditionalContentConfig,
     enableAdditionalContentWithFlexRowConfig, enableSymetric, enableTopLeftResponsiveSticky, enableTopLeftResponsiveStickyPinnedToBody,
-    enableBottomRightResponsiveSticky, enableBottomRightResponsiveStickyPinnedToBody, enableSpannedCells
+    enableBottomRightResponsiveSticky, enableBottomRightResponsiveStickyPinnedToBody, enableSpannedCells, disableVirtualScrolling
 } from './test/testEnvConfig';
 
 let component = <ExtTestGrid
@@ -130,6 +130,14 @@ switch (window.location.pathname) {
             cellType={'header'}
         />;
         ExtTestGrid.displayName = 'TestGridWithSpannedCells';
+        break;
+    case '/disableVirtualScrolling':
+        component = <ExtTestGrid
+            component={ReactGrid}
+            config={disableVirtualScrolling}
+            cellType={'header'}
+        />;
+        ExtTestGrid.displayName = 'DisabledVirtualScrolling';
         break;
     default:
         break;

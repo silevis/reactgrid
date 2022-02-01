@@ -291,6 +291,7 @@ export const TestGrid: React.FC<TestGridProps> = (props) => {
                     labels={config.labels}
                     horizontalStickyBreakpoint={config.horizontalStickyBreakpoint}
                     verticalStickyBreakpoint={config.verticalStickyBreakpoint}
+                    disableVirtualScrolling={config.disableVirtualScrolling}
                 />}
                 {config.additionalContent &&
                     <div style={{ height: `${config.rgViewportHeight}px`, backgroundColor: '#fafff3' }}>
@@ -364,6 +365,7 @@ export const TestGridOptionsSelect: React.FC = () => {
                 <option value='/enableSpannedCells'>Enable spanned cells</option>
                 <option value='/enableColumnAndRowSelection'>Enable column and row selection</option>
                 <option value='/enableColumnAndRowSelectionWithSticky'>Enable column and row selection with sticky</option>
+                <option value='/disableVirtualScrolling'>Disable virtual scrolling</option>
             </select>
         </form>
     )
