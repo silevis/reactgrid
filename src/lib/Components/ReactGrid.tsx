@@ -59,7 +59,7 @@ export class ReactGrid extends React.Component<ReactGridProps, State> {
     state: State
   ): State | null {
     try {
-      return getDerivedStateFromProps(props, state)
+      return getDerivedStateFromProps(props, state);
     } catch (error) {
       console.error(error);
       return null;
@@ -136,7 +136,7 @@ export class ReactGrid extends React.Component<ReactGridProps, State> {
                 }
               />
             )}
-          {!isMobileDevice() && state.currentlyEditedCell && (
+          {state.currentlyEditedCell && (
             <CellEditorRenderer
               state={state}
               positionCalculator={cellEditorCalculator}
