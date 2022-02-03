@@ -54,7 +54,6 @@ export interface PointerLocation extends Location {
 }
 
 export interface GridRendererProps {
-    state: State;
     eventHandlers: EventHandlers;
 }
 

@@ -4,12 +4,9 @@ import {
   GridRenderer,
   LegacyBrowserGridRenderer,
   StateModifier,
-  MenuOption,
   CellEditorRenderer,
   handleStateUpdate,
-  isMobileDevice,
 } from "../../core";
-import { cellEditorCalculator } from "../Functions/cellEditorCalculator";
 import { PointerEventsController } from "../Model/PointerEventsController";
 import { EventHandlers } from "../Model/EventHandlers";
 import { getDerivedStateFromProps } from "../Functions/getDerivedStateFromProps";
@@ -21,7 +18,7 @@ import { Line } from "./Line";
 import { Shadow } from "./Shadow";
 import { ContextMenu } from "./ContextMenu";
 import { componentDidUpdate } from "../Functions/componentDidUpdate";
-import { getSelectedLocations } from "../Functions/getSelectedLocations";
+import { StateProvider } from "./StateProvider";
 
 export class ReactGrid extends React.Component<ReactGridProps, State> {
   private updateState = (state: State) => this.setState(state);
@@ -96,54 +93,26 @@ export class ReactGrid extends React.Component<ReactGridProps, State> {
 
     if (state.legacyBrowserMode) {
       return (
-        <LegacyBrowserGridRenderer
-          state={state}
-          eventHandlers={eventHandlers}
-        />
-      );
-    } else {
-      return (
-        <GridRenderer state={state} eventHandlers={eventHandlers}>
-          <PanesRenderer state={state} cellRenderer={CellRenderer} />
-          <Line
-            linePosition={state.linePosition}
-            orientation={state.lineOrientation}
-            cellMatrix={state.cellMatrix}
-          />
-          <Shadow
-            shadowPosition={state.shadowPosition}
-            orientation={state.lineOrientation}
-            cellMatrix={state.cellMatrix}
-            shadowSize={state.shadowSize}
-            cursor={state.shadowCursor}
-          />
-          {state.contextMenuPosition.top !== -1 &&
-            state.contextMenuPosition.left !== -1 && (
-              <ContextMenu
-                state={state}
-                onContextMenu={(menuOptions: MenuOption[]) =>
-                  state.props?.onContextMenu
-                    ? state.props.onContextMenu(
-                        state.selectionMode === "row" ? state.selectedIds : [],
-                        state.selectionMode === "column"
-                          ? state.selectedIds
-                          : [],
-                        state.selectionMode,
-                        menuOptions,
-                        getSelectedLocations(state)
-                      )
-                    : []
-                }
-              />
-            )}
-          {state.currentlyEditedCell && (
-            <CellEditorRenderer
-              state={state}
-              positionCalculator={cellEditorCalculator}
-            />
-          )}
-        </GridRenderer>
+        <StateProvider state={state}>
+          <LegacyBrowserGridRenderer eventHandlers={eventHandlers} />
+        </StateProvider>
       );
     }
+
+    return (
+      <StateProvider state={state}>
+        <GridRenderer eventHandlers={eventHandlers}>
+          <PanesRenderer cellRenderer={CellRenderer} />
+
+          <Line />
+
+          <Shadow />
+
+          <ContextMenu />
+
+          {state.currentlyEditedCell && <CellEditorRenderer />}
+        </GridRenderer>
+      </StateProvider>
+    );
   }
 }

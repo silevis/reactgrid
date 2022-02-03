@@ -1,35 +1,26 @@
 import * as React from "react";
-import { Orientation } from "../../core";
-import { CellMatrix } from "../Model/CellMatrix";
+import { useReactGridState } from "./StateProvider";
 
-interface LineProps {
-  linePosition: number;
-  orientation: Orientation;
-  cellMatrix: CellMatrix;
-}
+export const Line: React.FC = () => {
+  const { linePosition, lineOrientation, cellMatrix } = useReactGridState();
 
-export const Line: React.FC<LineProps> = ({
-  cellMatrix,
-  linePosition,
-  orientation,
-}) => {
-  const isVertical = orientation === "vertical";
+  const isVertical = lineOrientation === "vertical";
+
   const lineStyles = Object.assign(
     {},
     isVertical
       ? { left: linePosition, height: cellMatrix.height }
       : { top: linePosition, width: cellMatrix.width }
   );
+
+  if (linePosition === -1) return null;
+
   return (
-    <>
-      {linePosition !== -1 && (
-        <div
-          className={`rg-line ${
-            isVertical ? "rg-line-vertical" : "rg-line-horizontal"
-          }`}
-          style={lineStyles}
-        />
-      )}
-    </>
+    <div
+      className={`rg-line ${
+        isVertical ? "rg-line-vertical" : "rg-line-horizontal"
+      }`}
+      style={lineStyles}
+    />
   );
 };

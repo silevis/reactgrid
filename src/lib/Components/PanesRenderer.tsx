@@ -17,14 +17,15 @@ import {
   shouldRenderBottomSticky,
   shouldRenderRightSticky,
 } from "../Functions/paneRendererPredicates";
-import { State } from "../Model/State";
+import { useReactGridState } from "./StateProvider";
 
 export interface PanesProps {
-  state: State;
   cellRenderer: React.FC<CellRendererProps>;
 }
 
-export const PanesRenderer: React.FC<PanesProps> = ({ state, cellRenderer }) => {
+export const PanesRenderer: React.FC<PanesProps> = ({ cellRenderer }) => {
+  const state = useReactGridState()
+  
   const cellMatrix = state.cellMatrix;
   const renderTopSticky = shouldRenderTopSticky(state),
       renderMiddleRange = shouldRenderMiddleRange(state),

@@ -82,7 +82,7 @@ export const Pane: React.FC<PaneProps> = ({ className, style, renderChildren, ch
 };
 
 export const PaneContent: React.FC<PaneContentProps<State>> = (props) => {
-    const { state, range, borders, cellRenderer, children } = props;
+    const { state, range, borders, cellRenderer } = props;
 
     const calculatedRange = range();
 
@@ -93,15 +93,15 @@ export const PaneContent: React.FC<PaneContentProps<State>> = (props) => {
             {state.focusedLocation && !(state.currentlyEditedCell && isMobileDevice()) && calculatedRange.contains(state.focusedLocation) &&
                 <CellFocus location={state.focusedLocation} />}
             <SelectedRanges
-                state={state as State}
+                state={state}
                 calculatedRange={calculatedRange}
             />
             <FillHandleRangeSelection
-                state={state as State}
+                state={state}
                 calculatedRange={calculatedRange}
             />
             <FillHandleRenderer
-                state={state as State}
+                state={state}
                 calculatedRange={calculatedRange}
             />
         </>

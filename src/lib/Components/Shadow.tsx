@@ -1,37 +1,29 @@
-import * as React from "react";
-import { Orientation } from "../../core";
-import { CellMatrix } from "../Model/CellMatrix";
+import React from "react";
+import { useReactGridState } from "./StateProvider";
 
-interface ShadowProps {
-  shadowPosition: number;
-  orientation: Orientation;
-  cellMatrix: CellMatrix;
-  shadowSize: number;
-  cursor: string;
-}
+export const Shadow: React.FC = () => {
+  const {
+    lineOrientation,
+    shadowSize,
+    shadowPosition,
+    shadowCursor,
+    cellMatrix,
+  } = useReactGridState();
 
-export const Shadow: React.FC<ShadowProps> = ({
-  shadowSize,
-  shadowPosition,
-  cellMatrix,
-  cursor,
-  orientation,
-}) => {
-  const isVertical = orientation === "vertical";
-  if (shadowPosition === -1) {
-    return null;
-  } else {
-    return (
-      <div
-        className="rg-shadow"
-        style={{
-          cursor: cursor,
-          top: isVertical ? 0 : shadowPosition,
-          left: isVertical ? shadowPosition : 0,
-          width: isVertical ? shadowSize : cellMatrix.width,
-          height: isVertical ? cellMatrix.height : shadowSize,
-        }}
-      />
-    );
-  }
+  const isVertical = lineOrientation === "vertical";
+
+  if (shadowPosition === -1) return null;
+
+  return (
+    <div
+      className="rg-shadow"
+      style={{
+        cursor: shadowCursor,
+        top: isVertical ? 0 : shadowPosition,
+        left: isVertical ? shadowPosition : 0,
+        width: isVertical ? shadowSize : cellMatrix.width,
+        height: isVertical ? cellMatrix.height : shadowSize,
+      }}
+    />
+  );
 };

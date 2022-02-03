@@ -15,20 +15,34 @@ import { copySelectedRangeToClipboard } from "../Functions/copySelectedRangeToCl
 import { pasteData } from "../Functions/pasteData";
 import { getActiveSelectedRange } from "../Functions/getActiveSelectedRange";
 import { getSelectedLocations } from "../Functions/getSelectedLocations";
+import { useReactGridState } from "./StateProvider";
 
-interface ContextMenuProps {
-  state: State;
-  onContextMenu?: (menuOptions: MenuOption[]) => MenuOption[];
-}
+export const ContextMenu: React.FC = () => {
+  const state = useReactGridState();
 
-export const ContextMenu: React.FC<ContextMenuProps> = ({
-  onContextMenu,
-  state,
-}) => {
+  if (
+    state.contextMenuPosition.top === -1 &&
+    state.contextMenuPosition.left === -1
+  )
+    return null;
+
   const { contextMenuPosition, selectedIds, selectionMode } = state;
+
   let contextMenuOptions = customContextMenuOptions(state);
-  const options = onContextMenu ? onContextMenu(contextMenuOptions) : [];
+
+  const onContextMenu = (menuOptions: MenuOption[]) =>
+    state.props?.onContextMenu?.(
+      state.selectionMode === "row" ? state.selectedIds : [],
+      state.selectionMode === "column" ? state.selectedIds : [],
+      state.selectionMode,
+      menuOptions,
+      getSelectedLocations(state)
+    ) ?? [];
+
+  const options = onContextMenu(contextMenuOptions);
+
   if (options.length >= 0) contextMenuOptions = options;
+
   return (
     <div
       className="rg-context-menu"
