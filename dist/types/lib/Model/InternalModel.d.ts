@@ -1,6 +1,7 @@
 import { EventHandlers } from './EventHandlers';
 import { Column, Row } from './PublicModel';
 import { State } from './State';
+import { Range } from './Range';
 export declare type Orientation = 'horizontal' | 'vertical';
 export declare type Direction = 'horizontal' | 'vertical' | 'both';
 export interface GridColumn extends Column {
@@ -34,6 +35,9 @@ export interface PointerLocation extends Location {
     readonly cellY: number;
 }
 export interface GridRendererProps {
-    state: State;
     eventHandlers: EventHandlers;
+}
+export interface PaneContentChild {
+    state: State;
+    calculatedRange: Range;
 }

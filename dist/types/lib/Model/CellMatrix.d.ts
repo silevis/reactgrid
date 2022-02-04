@@ -9,20 +9,24 @@ export interface CellMatrixProps {
     rows: Row<Cell>[];
     stickyTopRows?: number;
     stickyLeftColumns?: number;
+    stickyRightColumns?: number;
+    stickyBottomRows?: number;
 }
 export interface StickyRanges {
     stickyTopRange: Range;
     stickyLeftRange: Range;
+    stickyRightRange: Range;
+    stickyBottomRange: Range;
 }
 export interface SpanLookup {
     range?: Range;
 }
-export declare class CellMatrix<TStickyRanges extends StickyRanges = StickyRanges, TCellMatrixProps extends CellMatrixProps = CellMatrixProps> {
-    ranges: TStickyRanges;
+export declare class CellMatrix {
+    ranges: StickyRanges;
     static DEFAULT_ROW_HEIGHT: number;
     static DEFAULT_COLUMN_WIDTH: number;
     static MIN_COLUMN_WIDTH: number;
-    props: TCellMatrixProps;
+    props: CellMatrixProps;
     scrollableRange: Range;
     width: number;
     height: number;
@@ -38,7 +42,7 @@ export declare class CellMatrix<TStickyRanges extends StickyRanges = StickyRange
     rangesToRender: {
         [location: string]: SpanLookup;
     };
-    constructor(ranges: TStickyRanges);
+    constructor(ranges: StickyRanges);
     getRange(start: Location, end: Location): Range;
     getLocation(rowIdx: number, columnIdx: number): Location;
     getLocationById(rowId: Id, columnId: Id): Location;

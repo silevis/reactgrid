@@ -221,7 +221,8 @@
       background-color: #3579f8;
       border-width: 1px;
       border-style: solid;
-      border-color: #ffffff; }
+      border-color: #ffffff;
+      background-clip: content-box; }
   .reactgrid-content .rg-pane .rg-partial-area {
     position: absolute;
     pointer-events: none;

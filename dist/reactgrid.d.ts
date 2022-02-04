@@ -264,6 +264,8 @@ interface ReactGridProps {
     readonly enableFullWidthHeader?: boolean;
     /** Set `true` to enable groupId element rendering (by default `false`) */
     readonly enableGroupIdRender?: boolean;
+    /** Set `true` to disable virtual scrolling (by default `false`) */
+    readonly disableVirtualScrolling?: boolean;
     /**
      * Horizontal breakpoint in percents (%) of ReactGrid scrollable parent element width.
      * Disables sticky when the sum of the sizes of sticky panes overflows
@@ -704,42 +706,6 @@ declare type ClipboardEvent = React$1.ClipboardEvent<HTMLDivElement>;
 declare type KeyboardEvent = React$1.KeyboardEvent<HTMLDivElement>;
 declare type PointerEvent = React$1.PointerEvent<HTMLDivElement> | globalThis.PointerEvent;
 
-interface GridColumn extends Column {
-    readonly idx: number;
-    readonly left: number;
-    readonly right: number;
-    readonly width: number;
-}
-interface GridRow extends Row {
-    readonly idx: number;
-    readonly top: number;
-    readonly bottom: number;
-    readonly height: number;
-}
-interface Location {
-    readonly row: GridRow;
-    readonly column: GridColumn;
-}
-interface PointerLocation extends Location {
-    readonly row: GridRow;
-    readonly column: GridColumn;
-    readonly viewportX: number;
-    readonly viewportY: number;
-    readonly cellX: number;
-    readonly cellY: number;
-}
-
-declare abstract class Behavior<PointerUpEvent = PointerEvent> {
-    handleKeyDown(event: KeyboardEvent, state: State): State;
-    handlePointerUp(event: PointerUpEvent, location: PointerLocation, state: State): State;
-    handleKeyUp(event: KeyboardEvent, state: State): State;
-    handleCopy(event: ClipboardEvent, state: State): State;
-    handlePaste(event: ClipboardEvent, state: State): State;
-    handleCut(event: ClipboardEvent, state: State): State;
-    handlePointerDown(event: PointerEvent, location: PointerLocation, state: State): State;
-    handleDoubleClick(event: PointerEvent, location: PointerLocation, state: State): State;
-}
-
 declare type SliceDirection = 'columns' | 'rows' | 'both';
 declare class Range {
     readonly rows: GridRow[];
@@ -753,6 +719,22 @@ declare class Range {
     slice(range: Range, direction: SliceDirection): Range;
 }
 
+declare abstract class Behavior<PointerUpEvent = PointerEvent | MouseEvent> {
+    handleKeyDown(event: KeyboardEvent, state: State): State;
+    handlePointerUp(event: PointerUpEvent, location: PointerLocation, state: State): State;
+    handleKeyUp(event: KeyboardEvent, state: State): State;
+    handleCopy(event: ClipboardEvent, state: State): State;
+    handlePaste(event: ClipboardEvent, state: State): State;
+    handleCut(event: ClipboardEvent, state: State): State;
+    handlePointerDown(event: PointerEvent, location: PointerLocation, state: State): State;
+    handleDoubleClick(event: PointerEvent, location: PointerLocation, state: State): State;
+    handlePointerMove(event: PointerEvent, location: PointerLocation, state: State): State;
+    handlePointerEnter(event: PointerEvent, location: PointerLocation, state: State): State;
+    handleContextMenu(event: PointerEvent | MouseEvent, state: State): State;
+    renderPanePart(state: State, pane: Range): React.ReactNode;
+    autoScrollDirection: Direction;
+}
+
 interface IndexLookup {
     [id: string]: number;
 }
@@ -761,20 +743,24 @@ interface CellMatrixProps {
     rows: Row<Cell>[];
     stickyTopRows?: number;
     stickyLeftColumns?: number;
+    stickyRightColumns?: number;
+    stickyBottomRows?: number;
 }
 interface StickyRanges {
     stickyTopRange: Range;
     stickyLeftRange: Range;
+    stickyRightRange: Range;
+    stickyBottomRange: Range;
 }
 interface SpanLookup {
     range?: Range;
 }
-declare class CellMatrix<TStickyRanges extends StickyRanges = StickyRanges, TCellMatrixProps extends CellMatrixProps = CellMatrixProps> {
-    ranges: TStickyRanges;
+declare class CellMatrix {
+    ranges: StickyRanges;
     static DEFAULT_ROW_HEIGHT: number;
     static DEFAULT_COLUMN_WIDTH: number;
     static MIN_COLUMN_WIDTH: number;
-    props: TCellMatrixProps;
+    props: CellMatrixProps;
     scrollableRange: Range;
     width: number;
     height: number;
@@ -790,7 +776,7 @@ declare class CellMatrix<TStickyRanges extends StickyRanges = StickyRanges, TCel
     rangesToRender: {
         [location: string]: SpanLookup;
     };
-    constructor(ranges: TStickyRanges);
+    constructor(ranges: StickyRanges);
     getRange(start: Location, end: Location): Range;
     getLocation(rowIdx: number, columnIdx: number): Location;
     getLocationById(rowId: Id, columnId: Id): Location;
@@ -823,6 +809,55 @@ interface State<TCellMatrix extends CellMatrix = CellMatrix, TBehavior extends B
     readonly leftScrollBoudary: number;
     readonly rightScrollBoudary: number;
     readonly enableGroupIdRender: boolean;
+    readonly enableFillHandle: boolean;
+    readonly enableRangeSelection: boolean;
+    readonly enableColumnSelection: boolean;
+    readonly enableRowSelection: boolean;
+    readonly disableVirtualScrolling: boolean;
+    readonly contextMenuPosition: {
+        top: number;
+        left: number;
+    };
+    readonly lineOrientation: Orientation;
+    readonly linePosition: number;
+    readonly shadowSize: number;
+    readonly shadowPosition: number;
+    readonly shadowCursor: string;
+    readonly selectionMode: SelectionMode;
+    readonly selectedRanges: Range[];
+    readonly selectedIndexes: number[];
+    readonly selectedIds: Id[];
+    readonly activeSelectedRangeIdx: number;
+    readonly copyRange?: Range;
+    readonly rightStickyColumns: number | undefined;
+    readonly bottomStickyRows: number | undefined;
+}
+
+declare type Orientation = 'horizontal' | 'vertical';
+declare type Direction = 'horizontal' | 'vertical' | 'both';
+interface GridColumn extends Column {
+    readonly idx: number;
+    readonly left: number;
+    readonly right: number;
+    readonly width: number;
+}
+interface GridRow extends Row {
+    readonly idx: number;
+    readonly top: number;
+    readonly bottom: number;
+    readonly height: number;
+}
+interface Location {
+    readonly row: GridRow;
+    readonly column: GridColumn;
+}
+interface PointerLocation extends Location {
+    readonly row: GridRow;
+    readonly column: GridColumn;
+    readonly viewportX: number;
+    readonly viewportY: number;
+    readonly cellX: number;
+    readonly cellY: number;
 }
 
 declare class ReactGrid extends React$1.Component<ReactGridProps, State> {
@@ -832,7 +867,7 @@ declare class ReactGrid extends React$1.Component<ReactGridProps, State> {
     private eventHandlers;
     private cellMatrixBuilder;
     state: State;
-    static getDerivedStateFromProps(props: ReactGridProps, state: State): State | undefined;
+    static getDerivedStateFromProps(props: ReactGridProps, state: State): State | null;
     componentDidUpdate(prevProps: ReactGridProps, prevState: State): void;
     componentDidMount(): void;
     componentWillUnmount(): void;

@@ -87,7 +87,7 @@ context('Scroll', () => {
         utilsFlexRow.assertIsElementInScrollable(utilsFlexRow.getCellFocus());
         cy.wait(utilsFlexRow.wait());
 
-        utilsFlexRow.assertScrolledToRight(utilsFlexRow.getConfig().isPro);
+        utilsFlexRow.assertScrolledToRight(true);
     });
 
     it('should scroll to left on arrow left keydown', () => { // ✅

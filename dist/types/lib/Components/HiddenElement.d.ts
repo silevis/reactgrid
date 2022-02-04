@@ -1,7 +1,5 @@
-import * as React from 'react';
-import { State } from '../Model/State';
+import * as React from "react";
 interface HiddenElementProps {
-    state: State;
     hiddenElementRefHandler: (hiddenFocusElement: HTMLInputElement) => void;
 }
 export declare const HiddenElement: React.FC<HiddenElementProps>;

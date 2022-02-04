@@ -1,5 +1,5 @@
 import React from 'react';
-import { CellLocation, Highlight, TextLabels } from './../core';
+import { CellLocation, Highlight, TextLabels } from '../core';
 /**
  * All of the properties that cypress tests files can read
  */
@@ -12,14 +12,16 @@ export declare const disabledInitialFocusLocationConfig: TestConfig;
 export declare const enableAdditionalContentConfig: TestConfig;
 export declare const enableAdditionalContentWithFlexRowConfig: TestConfig;
 export declare const enableSymetric: TestConfig;
-export declare const enableResponsiveSticky: TestConfig;
-export declare const enableResponsiveStickyPinnedToBody: TestConfig;
+export declare const disableVirtualScrolling: TestConfig;
+export declare const enableTopLeftResponsiveSticky: TestConfig;
+export declare const enableBottomRightResponsiveSticky: TestConfig;
+export declare const enableTopLeftResponsiveStickyPinnedToBody: TestConfig;
+export declare const enableBottomRightResponsiveStickyPinnedToBody: TestConfig;
 export declare const enableSpannedCells: TestConfig;
 export interface TestConfig {
     pinToBody: boolean;
     additionalContent: boolean;
     flexRow: boolean;
-    isPro: boolean;
     rgViewportHeight: number;
     rgViewportWidth: number;
     margin: string;
@@ -31,6 +33,7 @@ export interface TestConfig {
     enableFillHandle: boolean;
     enableFullWidthHeader: boolean;
     enableGroupIdRender: boolean;
+    disableVirtualScrolling: boolean;
     columns: number;
     rows: number;
     lineWidth: number;
@@ -40,6 +43,7 @@ export interface TestConfig {
     stickyRight: number;
     focusLocation: CellLocation;
     initialFocusLocation?: CellLocation;
+    highlights: Highlight[];
     spannedCells?: {
         idx: number;
         idy: number;
@@ -50,7 +54,6 @@ export interface TestConfig {
         idx: number;
         idy: number;
     }[];
-    highlights: Highlight[];
     labels: TextLabels;
     horizontalStickyBreakpoint?: number;
     verticalStickyBreakpoint?: number;

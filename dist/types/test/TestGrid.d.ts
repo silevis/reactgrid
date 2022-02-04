@@ -13,9 +13,7 @@ interface TestGridProps {
     component: React.ComponentClass<ReactGridProps>;
 }
 export declare const TestGrid: React.FC<TestGridProps>;
-export declare const TestGridOptionsSelect: React.FC<{
-    isPro?: boolean;
-}>;
+export declare const TestGridOptionsSelect: React.FC;
 export declare const withDiv: <T extends Record<string, unknown> & TestGridProps>(Component: React.ComponentType<T>) => React.FC<T>;
 export declare const ExtTestGrid: React.FC<Record<string, unknown> & TestGridProps>;
 export {};

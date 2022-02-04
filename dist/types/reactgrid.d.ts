@@ -1,2 +1,3 @@
-import './styles.scss';
+import "./styles.scss";
 export * from './lib';
+export * from './core';

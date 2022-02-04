@@ -27,7 +27,6 @@ export * from './../lib/Functions/areLocationsEqual';
 export * from './../lib/Functions/scrollHelpers';
 export * from './../lib/Functions/elementSizeHelpers';
 export * from './../lib/Functions/focusLocation';
-export * from './../lib/Functions/getLocationFromClient';
 export * from './../lib/Functions/isSelectionKey';
 export * from './../lib/Functions/handleDoubleClick';
 export * from './../lib/Functions/handleKeyUp';

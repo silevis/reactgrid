@@ -61,7 +61,7 @@ context('Scroll', () => {
         cy.wait(utils.wait());
         utils.assertIsElementInScrollable(utils.getCellFocus());
         cy.wait(utils.wait());
-        utils.assertScrolledToRight(config.isPro);
+        utils.assertScrolledToRight(true);
     });
 
     it('should scroll to left on arrow left keydown', () => { // ✅

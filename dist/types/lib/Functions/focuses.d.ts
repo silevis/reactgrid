@@ -4,6 +4,7 @@ export declare type FocusLocationFn = (state: State, location: Location) => Stat
 export declare type FocusCellFn = (colIdx: number, rowIdx: number, state: State) => State;
 export declare type RowCalcFn = (state: State, location: Location) => number;
 export declare const focusCell: (colIdx: number, rowIdx: number, state: State) => State;
+export declare type ProFocusCellFn = (colIdx: number, rowIdx: number, state: State) => State;
 export declare const moveFocusHome: (state: State) => State;
 export declare const moveFocusEnd: (state: State) => State;
 export declare const moveFocusLeft: (state: State) => State;
