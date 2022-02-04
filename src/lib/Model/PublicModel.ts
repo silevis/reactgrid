@@ -60,6 +60,8 @@ export interface ReactGridProps {
     readonly enableFullWidthHeader?: boolean;
     /** Set `true` to enable groupId element rendering (by default `false`) */
     readonly enableGroupIdRender?: boolean;
+    /** Set `true` to disable virtual scrolling (by default `false`) */
+    readonly disableVirtualScrolling?: boolean;
     /** 
      * Horizontal breakpoint in percents (%) of ReactGrid scrollable parent element width. 
      * Disables sticky when the sum of the sizes of sticky panes overflows
@@ -72,6 +74,7 @@ export interface ReactGridProps {
      * given breakpoint value (by default `50`).
     */
     readonly verticalStickyBreakpoint?: number;
+
 
     /** 
      * Called when cell was changed (e.g. property `value`)

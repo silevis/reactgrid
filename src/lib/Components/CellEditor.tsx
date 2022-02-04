@@ -6,6 +6,8 @@ import { Location } from '../Model/InternalModel';
 import { CellMatrix } from '../Model/CellMatrix';
 import { Compatible, Cell } from '../Model/PublicModel';
 import { State } from '../Model/State';
+import { calculateCellEditorPosition } from '../Functions/cellEditorCalculator';
+import { useReactGridState } from './StateProvider';
 
 export interface CellEditorOffset {
     top: number;
@@ -16,23 +18,19 @@ interface CellEditorProps {
     cellType: string;
     style: React.CSSProperties;
 }
-export interface CellEditorRendererProps {
-    state: State;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    positionCalculator: (options: PositionState) => any;
-}
 
 export interface PositionState<TState extends State = State> {
     state: TState;
     location: Location;
 }
 
-export const CellEditorRenderer: React.FC<CellEditorRendererProps> = ({ state, positionCalculator }) => {
+export const CellEditorRenderer: React.FC = () => {
+    const state = useReactGridState();
     const { currentlyEditedCell, focusedLocation: location } = state;
 
     const renders = React.useRef(0);
 
-    const [position, dispatch] = React.useReducer(positionCalculator, { state, location }); // used to lock cell editor position
+    const [position, dispatch] = React.useReducer(calculateCellEditorPosition as (options: PositionState) => any, {state, location}); // used to lock cell editor position
 
     React.useEffect(() => {
         renders.current += 1;

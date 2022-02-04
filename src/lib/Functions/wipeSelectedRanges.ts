@@ -3,6 +3,17 @@ import { emptyCell } from './emptyCell';
 import { tryAppendChange } from './tryAppendChange';
 
 export function wipeSelectedRanges(state: State): State {
-    const location = state.focusedLocation;
-    return location ? tryAppendChange(state, { row: location.row, column: location.column }, emptyCell) : state;
+    state.selectedRanges.forEach((range) =>
+    range.rows.forEach((row) =>
+      range.columns.forEach(
+        (column) =>
+          (state = tryAppendChange(
+            state,
+            { row, column },
+            emptyCell
+          ) as State)
+      )
+    )
+  );
+  return state;
 }

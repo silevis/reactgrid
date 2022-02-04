@@ -1,19 +1,19 @@
-import { visitResponsiveSticky } from '../../common/visit';
+import { visitResponsiveStickyPinnedToBodyTopLeft } from '../../common/visit';
 import { Utilities } from '../../common/utils';
-import { enableResponsiveSticky as config } from '../../../../src/test/testEnvConfig';
+import { enableTopLeftResponsiveStickyPinnedToBody as config } from '../../../../src/test/testEnvConfig';
 
 const utils = new Utilities(config);
 
-context('Responsive sticky', () => {
+context('Responsive top and left sticky pinned to body', () => {
 
     beforeEach(() => {
         cy.viewport(500, 600);
-        visitResponsiveSticky();
+        visitResponsiveStickyPinnedToBodyTopLeft();
     });
 
     it('Left and top sticky shouldn`t display on narrow view', () => { // ✅
         utils.getTopStickyPane().should('not.exist');
-        utils.getLeftStickyPane().should('not.exist');;
+        utils.getLeftStickyPane().should('not.exist');
     });
 
     it('Only top sticky should display on narrow view', () => { // ✅

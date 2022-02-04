@@ -35,7 +35,7 @@ export class FlagCellTemplate implements CellTemplate<FlagCell> {
             return <div
                 className='rg-flag-wrapper'
                 style={{
-                    backgroundImage: 'url("' + flagURL + '"), url("https://upload.wikimedia.org/wikipedia/commons/0/04/Nuvola_unknown_flag.svg")',
+                    // backgroundImage: 'url("' + flagURL + '"), url("https://upload.wikimedia.org/wikipedia/commons/0/04/Nuvola_unknown_flag.svg")',
                 }} />
         }
         return <input

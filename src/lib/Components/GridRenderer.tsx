@@ -2,15 +2,16 @@ import * as React from 'react';
 import { GridRendererProps } from '../Model/InternalModel';
 import { HiddenElement } from './HiddenElement';
 import { ErrorBoundary } from './ErrorBoundary';
+import { useReactGridState } from './StateProvider';
 
-export const GridRenderer: React.FC<GridRendererProps> = ({ state, eventHandlers, children }) => {
-    const { cellMatrix } = state;
+export const GridRenderer: React.FC<GridRendererProps> = ({ eventHandlers, children }) => {
+    const { cellMatrix, props } = useReactGridState();
     return (<ErrorBoundary>
         <div
             className='reactgrid'
             style={{
                 position: 'relative',
-                width: state.props?.enableFullWidthHeader ? '100%' : cellMatrix.width,
+                width: props?.enableFullWidthHeader ? '100%' : cellMatrix.width,
                 height: cellMatrix.height
             }}
             ref={eventHandlers.reactgridRefHandler}
@@ -26,12 +27,12 @@ export const GridRenderer: React.FC<GridRendererProps> = ({ state, eventHandlers
                 onCut={eventHandlers.cutHandler}
                 onBlur={eventHandlers.blurHandler}
                 style={{
-                    width: state.props?.enableFullWidthHeader ? '100%' : cellMatrix.width,
+                    width: props?.enableFullWidthHeader ? '100%' : cellMatrix.width,
                     height: cellMatrix.height,
                 }}
             >
                 {children}
-                <HiddenElement hiddenElementRefHandler={eventHandlers.hiddenElementRefHandler} state={state} />
+                <HiddenElement hiddenElementRefHandler={eventHandlers.hiddenElementRefHandler} />
             </div>
         </div>
     </ErrorBoundary>)

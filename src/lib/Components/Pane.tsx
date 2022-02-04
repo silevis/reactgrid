@@ -7,6 +7,9 @@ import { CellFocus, CellHighlight } from './CellFocus';
 import { RowRenderer } from './RowRenderer';
 import { CellRendererProps } from './CellRenderer';
 import { isMobileDevice } from '../Functions/isMobileDevice';
+import { FillHandleRangeSelection } from './FillHandleRangeSelection';
+import { FillHandleRenderer } from './FillHandleRenderer';
+import { SelectedRanges } from './SelectedRanges';
 
 export interface PaneProps {
     renderChildren: boolean;
@@ -79,7 +82,7 @@ export const Pane: React.FC<PaneProps> = ({ className, style, renderChildren, ch
 };
 
 export const PaneContent: React.FC<PaneContentProps<State>> = (props) => {
-    const { state, range, borders, cellRenderer, children } = props;
+    const { state, range, borders, cellRenderer } = props;
 
     const calculatedRange = range();
 
@@ -89,7 +92,18 @@ export const PaneContent: React.FC<PaneContentProps<State>> = (props) => {
             {renderHighlights(state, calculatedRange)}
             {state.focusedLocation && !(state.currentlyEditedCell && isMobileDevice()) && calculatedRange.contains(state.focusedLocation) &&
                 <CellFocus location={state.focusedLocation} />}
-            {children && children(state, calculatedRange)}
+            <SelectedRanges
+                state={state}
+                calculatedRange={calculatedRange}
+            />
+            <FillHandleRangeSelection
+                state={state}
+                calculatedRange={calculatedRange}
+            />
+            <FillHandleRenderer
+                state={state}
+                calculatedRange={calculatedRange}
+            />
         </>
     )
 }

@@ -1,5 +1,5 @@
 import React from 'react';
-import { CellLocation, Highlight, TextLabels } from './../core';
+import { CellLocation, Highlight, TextLabels } from '../core';
 
 /**
  * All of the properties that cypress tests files can read
@@ -8,7 +8,6 @@ export const config: TestConfig = {
     pinToBody: false,
     additionalContent: false,
     flexRow: false,
-    isPro: false,
 
     rgViewportHeight: 600,
     rgViewportWidth: 1150,
@@ -17,6 +16,7 @@ export const config: TestConfig = {
     enableFillHandle: true,
     enableFullWidthHeader: false,
     enableGroupIdRender: true,
+    disableVirtualScrolling: false,
 
     cellHeight: 25,
     cellWidth: 150,
@@ -77,6 +77,7 @@ export const config: TestConfig = {
         padding: 20,
         position: 'relative',
     },
+
 }
 
 /**
@@ -117,19 +118,53 @@ export const enableSymetric: TestConfig = {
     stickyRight: 2,
 }
 
-export const enableResponsiveSticky: TestConfig = {
+export const disableVirtualScrolling: TestConfig = {
+    ...config,
+    disableVirtualScrolling: true,
+}
+
+export const enableTopLeftResponsiveSticky: TestConfig = {
     ...config,
     fillViewport: true,
     stickyTop: 13,
+    stickyLeft: 2,
+    stickyRight: 0,
+    stickyBottom: 0,
     horizontalStickyBreakpoint: 45,
     verticalStickyBreakpoint: 45,
 }
 
-export const enableResponsiveStickyPinnedToBody: TestConfig = {
+export const enableBottomRightResponsiveSticky: TestConfig = {
+    ...config,
+    fillViewport: true,
+    stickyTop: 0,
+    stickyLeft: 0,
+    stickyRight: 2,
+    stickyBottom: 13,
+    horizontalStickyBreakpoint: 45,
+    verticalStickyBreakpoint: 45,
+}
+
+export const enableTopLeftResponsiveStickyPinnedToBody: TestConfig = {
     ...config,
     pinToBody: true,
     fillViewport: true,
     stickyTop: 13,
+    stickyLeft: 2,
+    stickyRight: 0,
+    stickyBottom: 0,
+    horizontalStickyBreakpoint: 45,
+    verticalStickyBreakpoint: 45,
+}
+
+export const enableBottomRightResponsiveStickyPinnedToBody: TestConfig = {
+    ...config,
+    pinToBody: true,
+    fillViewport: true,
+    stickyTop: 0,
+    stickyLeft: 0,
+    stickyRight: 2,
+    stickyBottom: 13,
     horizontalStickyBreakpoint: 45,
     verticalStickyBreakpoint: 45,
 }
@@ -159,7 +194,6 @@ export interface TestConfig {
     pinToBody: boolean;
     additionalContent: boolean;
     flexRow: boolean;
-    isPro: boolean;
 
     rgViewportHeight: number;
     rgViewportWidth: number;
@@ -173,6 +207,7 @@ export interface TestConfig {
     enableFillHandle: boolean;
     enableFullWidthHeader: boolean;
     enableGroupIdRender: boolean;
+    disableVirtualScrolling: boolean;
 
     columns: number;
     rows: number;
@@ -186,10 +221,10 @@ export interface TestConfig {
 
     focusLocation: CellLocation;
     initialFocusLocation?: CellLocation;
+    highlights: Highlight[];
     spannedCells?: { idx: number, idy: number, colspan?: number, rowspan?: number }[];
     headerCells?: { idx: number, idy: number }[];
 
-    highlights: Highlight[];
 
     labels: TextLabels;
 
