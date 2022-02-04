@@ -256,9 +256,9 @@ export const TestGrid: React.FC<TestGridProps> = (props) => {
             }}>
                 {config.additionalContent &&
                     <div style={{ height: `${config.rgViewportHeight}px`, backgroundColor: '#fafff3' }}>
-                        <Logo isPro={config.isPro} width={config.rgViewportWidth} />
-                        <Logo isPro={config.isPro} width={config.rgViewportWidth} />
-                        <Logo isPro={config.isPro} width={config.rgViewportWidth} />
+                        <Logo width={config.rgViewportWidth} />
+                        <Logo width={config.rgViewportWidth} />
+                        <Logo width={config.rgViewportWidth} />
                     </div>
                 }
                 {render && <Component
@@ -291,22 +291,23 @@ export const TestGrid: React.FC<TestGridProps> = (props) => {
                     labels={config.labels}
                     horizontalStickyBreakpoint={config.horizontalStickyBreakpoint}
                     verticalStickyBreakpoint={config.verticalStickyBreakpoint}
+                    disableVirtualScrolling={config.disableVirtualScrolling}
                 />}
                 {config.additionalContent &&
                     <div style={{ height: `${config.rgViewportHeight}px`, backgroundColor: '#fafff3' }}>
-                        <Logo isPro={config.isPro} width={config.rgViewportWidth} />
-                        <Logo isPro={config.isPro} width={config.rgViewportWidth} />
-                        <Logo isPro={config.isPro} width={config.rgViewportWidth} />
+                        <Logo width={config.rgViewportWidth} />
+                        <Logo width={config.rgViewportWidth} />
+                        <Logo width={config.rgViewportWidth} />
                     </div>
                 }
             </div>
             {!config.fillViewport &&
                 <>
                     <input type='text' data-cy='outer-input' />
-                    <Logo isPro={config.isPro} />
+                    <Logo />
                 </>
             }
-            <TestGridOptionsSelect isPro={config.isPro}></TestGridOptionsSelect>
+            <TestGridOptionsSelect></TestGridOptionsSelect>
             <button onClick={() => {
                 setRender((render) => !render);
             }}>Mount / Unmount</button>
@@ -331,28 +332,15 @@ export const TestGrid: React.FC<TestGridProps> = (props) => {
 
 }
 
-const Logo: React.FC<{ isPro?: boolean; width?: number }> = ({ isPro, width }) => {
+const Logo: React.FC<{width?: number }> = ({ width }) => {
     return <div style={{ display: 'flex', width: `${width}px` }}>
         <h1 style={{ position: 'relative' }}>
             ReactGrid
-            {isPro && <div
-                style={{
-                    position: 'absolute',
-                    top: '-0.5em',
-                    right: 0,
-                    height: '2.5em',
-                    width: '2.5em',
-                    transform: 'translateX(100%) rotate(90deg)',
-                    background: 'gold',
-                    fontSize: '0.3em',
-                    color: 'black'
-                }}>
-                PRO</div>}
         </h1>
     </div >
 }
 
-export const TestGridOptionsSelect: React.FC<{ isPro?: boolean }> = ({ isPro }) => {
+export const TestGridOptionsSelect: React.FC = () => {
     const navigate = (eventValue: string) => {
         window.location.pathname = eventValue;
     }
@@ -370,15 +358,14 @@ export const TestGridOptionsSelect: React.FC<{ isPro?: boolean }> = ({ isPro }) 
                 <option value='/enableAdditionalContent'>Enable additional content</option>
                 <option value='/enableSymetric'>Enable symetric</option>
                 <option value='/enableFrozenFocus'>Enable frozen focus</option>
-                <option value='/enableResponsiveSticky'>Enable responsive sticky</option>
-                <option value='/enableResponsiveStickyPinnedToBody'>Enable responsive sticky pinned to body</option>
+                <option value='/enableResponsiveStickyTopLeft'>Enable responsive top and left sticky panes</option>
+                <option value='/enableResponsiveStickyBottomRight'>Enable responsive bottom and right sticky panes</option>
+                <option value='/enableResponsiveStickyPinnedToBodyTopLeft'>Enable responsive top and left sticky panes pinned to body</option>
+                <option value='/enableResponsiveStickyPinnedToBodyBottomRight'>Enable responsive bottom and right sticky panes pinned to body</option>
                 <option value='/enableSpannedCells'>Enable spanned cells</option>
-                {isPro && <>
-                    <option value='/enableColumnAndRowSelection'>Enable column and row selection</option>
-                    <option value='/enableColumnAndRowSelectionWithSticky'>Enable column and row selection with sticky</option>
-                    <option value='/enableResponsiveStickyPro'>Enable responsive sticky PRO</option>
-                    <option value='/enableResponsiveStickyPinnedToBodyPro'>Enable responsive sticky pinned to body PRO</option>
-                </>}
+                <option value='/enableColumnAndRowSelection'>Enable column and row selection</option>
+                <option value='/enableColumnAndRowSelectionWithSticky'>Enable column and row selection with sticky</option>
+                <option value='/disableVirtualScrolling'>Disable virtual scrolling</option>
             </select>
         </form>
     )

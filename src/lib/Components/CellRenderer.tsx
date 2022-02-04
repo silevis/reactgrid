@@ -8,6 +8,7 @@ import { Range } from '../Model/Range'
 import { BorderProps, Cell, Compatible } from '../Model/PublicModel';
 import { State } from '../Model/State';
 import { isMobileDevice } from '../Functions/isMobileDevice';
+import { ResizeHandle } from './ResizeHandle';
 
 export interface CellRendererProps {
     state: State;
@@ -110,7 +111,9 @@ export const CellRenderer: React.FC<CellRendererProps> = ({ state, location, ran
             })}
         >
             {cellTemplate.render(cellToRender, isMobile ? isInEditMode : false, onCellChanged)}
-            {children}
+            {location.row.idx === 0 && location.column.resizable && (
+                <ResizeHandle />
+            )}
             {state.enableGroupIdRender && cell?.groupId !== undefined && !(isInEditMode && isMobile) &&
                 <span className='rg-groupId'>
                     {cell.groupId}

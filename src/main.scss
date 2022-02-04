@@ -101,6 +101,7 @@
                 border-width: $fill-handle-border-width;
                 border-style: solid;
                 border-color: $fill-handle-border-color;
+                background-clip: content-box;
             }
         }
         .rg-partial-area {

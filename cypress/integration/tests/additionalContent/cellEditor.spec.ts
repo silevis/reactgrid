@@ -4,15 +4,11 @@ import {
   enableAdditionalContentConfig, enableAdditionalContentWithFlexRowConfig
 } from '../../../../src/test/testEnvConfig';
 import { constants } from '../../common/constants';
-import { util } from 'chai';
 
 const utils = new Utilities(enableAdditionalContentConfig);
 const utilsFlexRow = new Utilities(enableAdditionalContentWithFlexRowConfig);
 
 context('Cell editor position', () => {
-
-  beforeEach(() => {
-  });
 
   it('should open fixed cell editor on partially visible additional content', () => { // ✅
     visitAdditionalContent();

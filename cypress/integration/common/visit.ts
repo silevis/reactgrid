@@ -48,18 +48,22 @@ export function visitSpannedCells(): void {
     cy.visit('/enableSpannedCells');
 }
 
-export function visitResponsiveSticky(): void {
-    cy.visit('/enableResponsiveSticky');
+export function visitResponsiveStickyTopLeft(): void {
+    cy.visit('/enableResponsiveStickyTopLeft');
 }
 
-export function visitResponsiveStickyPinnedToBody(): void {
-    cy.visit('/enableResponsiveStickyPinnedToBody');
+export function visitResponsiveStickyBottomRight(): void {
+    cy.visit('/enableResponsiveStickyBottomRight');
 }
 
-export function visitResponsiveStickyPro(): void {
-    cy.visit('/enableResponsiveStickyPro');
+export function visitResponsiveStickyPinnedToBodyTopLeft(): void {
+    cy.visit('/enableResponsiveStickyPinnedToBodyTopLeft');
 }
 
-export function visitResponsiveStickyPinnedToBodyPro(): void {
-    cy.visit('/enableResponsiveStickyPinnedToBodyPro');
+export function visitResponsiveStickyPinnedToBodyBottomRight(): void {
+    cy.visit('/enableResponsiveStickyPinnedToBodyBottomRight');
+}
+
+export function visitDisabledVirtualScrolling(): void {
+    cy.visit('/disableVirtualScrolling');
 }
