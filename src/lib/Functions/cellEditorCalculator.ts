@@ -57,7 +57,6 @@ const calculatedYAxisOffset = (location: Location, state: State): number => {
 
 export const calculateCellEditorPosition = (options: PositionState): CellEditorOffset => {
   const { state, location } = options;
-  console.log(state)
   const { scrollTop, scrollLeft } = getScrollOfScrollableElement(state.scrollableElement);
   const { top, left } = getReactGridOffsets(state);
   let offsetLeft = 0,
