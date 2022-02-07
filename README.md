@@ -2,28 +2,38 @@
 
 ### Add spreadsheet-like behavior to your React app 🚀
 
+<div align="center">
+
+&nbsp;
+
 [![MIT license](https://img.shields.io/badge/License-MIT-blue.svg)](https://github.com/silevis/reactgrid/blob/develop/LICENSE)
 [![Build Status](https://dev.azure.com/Silevis/ReactGrid/_apis/build/status/GitHub-MIT/Upgrade%20version%20and%20publish?branchName=master)](https://dev.azure.com/Silevis/ReactGrid/_build/latest?definitionId=17&branchName=master)
 [![reactgrid](https://img.shields.io/endpoint?url=https://dashboard.cypress.io/badge/simple/hwrqiy&style=flat&logo=cypress)](https://dashboard.cypress.io/projects/hwrqiy/runs)
-
-[![MIT license](https://david-dm.org/silevis/reactgrid/dev-status.svg)](https://david-dm.org/silevis/reactgrid?type=dev) [![npm version](https://badge.fury.io/js/%40silevis%2Freactgrid.svg)](https://badge.fury.io/js/%40silevis%2Freactgrid)
+[![npm version](https://badge.fury.io/js/%40silevis%2Freactgrid.svg)](https://badge.fury.io/js/%40silevis%2Freactgrid)
 
 <img alt="Sample app" src="https://reactgrid.com/sample.gif"/>
 
-Browse our examples & docs: 👉 [reactgrid.com](https://reactgrid.com/?utm_source=github&utm_medium=reactgridmit&utm_campaign=readme)
+</div>
+&nbsp;
 
 Before running ReactGrid you need to have installed:
 
 - react": "^16.13.1"
 - react-dom: "^16.13.1"
 
-# Install
+# Docs
+
+- [Demo](https://reactgrid.com/examples)
+- [Documentation](https://reactgrid.com/docs/4.0/0-introduction/)
+- [API Reference](https://reactgrid.com/docs/4.0/7-api/)
+
+# Get started
+
+Install package by running
 
 ```shell
 npm i @silevis/reactgrid
 ```
-
-# Usage
 
 In this particullar example we will display data in the same way like in a standard datatable.
 Of course you can still **place yours cells anywhere**, but now we will focus on the basics.
@@ -184,32 +194,9 @@ Open live demo on [codesandbox.io](https://codesandbox.io/s/reactgrid-handling-c
 
 # Browser support
 
-| [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/edge/edge_48x48.png" alt="Edge"  />](http://godban.github.io/browsers-support-badges/) Edge | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/firefox/firefox_48x48.png" alt="Firefox"  />](http://godban.github.io/browsers-support-badges/) Firefox | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/chrome/chrome_48x48.png" alt="Chrome"  />](http://godban.github.io/browsers-support-badges/) Chrome | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/safari/safari_48x48.png" alt="Safari" />](http://godban.github.io/browsers-support-badges/) Safari | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/safari-ios/safari-ios_48x48.png" alt="iOS Safari" />](http://godban.github.io/browsers-support-badges/) iOS/iPadOs Safari | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/samsung-internet/samsung-internet_48x48.png" alt="Samsung"/>](http://godban.github.io/browsers-support-badges/) Samsung internet | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/opera/opera_48x48.png" alt="Opera" />](http://godban.github.io/browsers-support-badges/) Opera |
-| :---------------------------------------------------------------------------------------------------------------------------------------------------------------------: | :---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: | :-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------: | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------: | :---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------: |
-|                                                                                   80+                                                                                   |                                                                                         61+                                                                                         |                                                                                       57+                                                                                       |                                                                                     13.1+                                                                                      |                                                                                                  13+                                                                                                  |                                                                                                      9+                                                                                                      |                                                                                    45+                                                                                     |
-
-# Docs
-
-Explore ReactGrid docs: [here](https://reactgrid.com/docs?utm_source=github&utm_medium=reactgriddocs&utm_campaign=docs)
-
-# For devs
-
-Buiding image with docker 🐳:
-
-`docker build -t reactgrid-dev .`
-
-Running the container:
-
-```
-docker run \
- -it \
- --rm \
- -v ${PWD}:/app \
- -v /app/node_modules \
- -p 3000:3000 \
- -e CHOKIDAR_USEPOLLING=true \
- reactgrid-dev
-```
+| [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/edge/edge_48x48.png" alt="Edge"  />](http://godban.github.io/browsers-support-badges/)<br> Edge | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/firefox/firefox_48x48.png" alt="Firefox"  />](http://godban.github.io/browsers-support-badges/)<br> Firefox | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/chrome/chrome_48x48.png" alt="Chrome"  />](http://godban.github.io/browsers-support-badges/)<br> Chrome | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/safari/safari_48x48.png" alt="Safari" />](http://godban.github.io/browsers-support-badges/)<br> Safari | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/safari-ios/safari-ios_48x48.png" alt="iOS Safari" />](http://godban.github.io/browsers-support-badges/) <br>iOS/iPadOs Safari | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/samsung-internet/samsung-internet_48x48.png" alt="Samsung"/>](http://godban.github.io/browsers-support-badges/)<br> Samsung internet | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/opera/opera_48x48.png" alt="Opera" />](http://godban.github.io/browsers-support-badges/)<br> Opera |
+| :-------------------------------------------------------------------------------------------------------------------------------------------------------------------------: | :-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: | :---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: | :-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------: |
+|                                                                                     80+                                                                                     |                                                                                           61+                                                                                           |                                                                                         57+                                                                                         |                                                                                       13.1+                                                                                        |                                                                                                    13+                                                                                                    |                                                                                                        9+                                                                                                        |                                                                                      45+                                                                                       |
 
 # Licensing
 
