@@ -212,11 +212,8 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 # Authors
 
-[Silevis Software](https://www.silevis.com/?utm_source=github&utm_medium=reactgrdigit&utm_campaign=github)
-
-<p align="center">
+<div align="center">
   <a href="https://www.silevis.com/?utm_source=github&utm_medium=reactgrdigit&utm_campaign=github">
-    <img alt="Silevis" src="https://media.licdn.com/dms/image/C4D0BAQGgkonm5f80mA/company-logo_200_200/0?e=2159024400&v=beta&t=l5Nw-CF55OIxVORSAXOw79DlgSiDakhnYLlkBOMj7s8" width="200" />
+    <img src="public/silevis.png" alt="Silevis" width="400"/>
   </a>
-</p>
-````
+</div>
