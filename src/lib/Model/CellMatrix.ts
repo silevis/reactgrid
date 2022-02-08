@@ -55,8 +55,15 @@ export class CellMatrix {
     constructor(public ranges: StickyRanges) { }
 
     getRange(start: Location, end: Location): Range {
-        const cols = this.columns.slice(start.column.idx < end.column.idx ? start.column.idx : end.column.idx, start.column.idx > end.column.idx ? start.column.idx + 1 : end.column.idx + 1);
-        const rows = this.rows.slice(start.row.idx < end.row.idx ? start.row.idx : end.row.idx, start.row.idx > end.row.idx ? start.row.idx + 1 : end.row.idx + 1);
+        const cols = this.columns.slice(
+            Math.min(start.column.idx, end.column.idx), 
+            Math.max(start.column.idx, end.column.idx) + 1
+        );
+        const rows = this.rows.slice(
+            Math.min(start.row.idx, end.row.idx),
+            Math.max(start.row.idx, end.row.idx) + 1
+        );
+
         return new Range(rows, cols);
     }
 
@@ -75,8 +82,8 @@ export class CellMatrix {
     }
 
     validateLocation(location: Location): Location {
-        const colIdx = this.columnIndexLookup[location.column.columnId] !== undefined ? this.columnIndexLookup[location.column.columnId] : location.column.idx < this.last.column.idx ? location.column.idx : this.last.column.idx;
-        const rowIdx = this.rowIndexLookup[location.row.rowId] !== undefined ? this.rowIndexLookup[location.row.rowId] : location.row.idx < this.last.row.idx ? location.row.idx : this.last.row.idx;
+        const colIdx = this.columnIndexLookup[location.column.columnId] ?? Math.min(location.column.idx, this.last.column.idx);
+        const rowIdx = this.rowIndexLookup[location.row.rowId] ?? Math.min(location.row.idx, this.last.row.idx);
         return this.getLocation(rowIdx, colIdx);
     }
 
