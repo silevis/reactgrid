@@ -4,8 +4,6 @@
 
 <div align="center">
 
-&nbsp;
-
 [![MIT license](https://img.shields.io/badge/License-MIT-blue.svg)](https://github.com/silevis/reactgrid/blob/develop/LICENSE)
 [![Build Status](https://dev.azure.com/Silevis/ReactGrid/_apis/build/status/GitHub-MIT/Upgrade%20version%20and%20publish?branchName=master)](https://dev.azure.com/Silevis/ReactGrid/_build/latest?definitionId=17&branchName=master)
 [![reactgrid](https://img.shields.io/endpoint?url=https://dashboard.cypress.io/badge/simple/hwrqiy&style=flat&logo=cypress)](https://dashboard.cypress.io/projects/hwrqiy/runs)
@@ -213,7 +211,11 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 # Authors
 
 <div align="center">
-  <a href="https://www.silevis.com/?utm_source=github&utm_medium=reactgrdigit&utm_campaign=github">
+  <a 
+    href="https://www.silevis.com/?utm_source=github&utm_medium=reactgrdigit&utm_campaign=github" 
+    target="_blank" 
+    rel="noopener noreferrer"
+  >
     <img src="public/silevis.png" alt="Silevis" width="400"/>
   </a>
 </div>
