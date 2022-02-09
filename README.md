@@ -16,8 +16,8 @@
 
 Before running ReactGrid you need to have installed:
 
-- react": "^16.13.1"
-- react-dom: "^16.13.1"
+- react": `^16.13.1`
+- react-dom: `^16.13.1`
 
 # Docs
 
