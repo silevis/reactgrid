@@ -11,7 +11,8 @@ ReactGrid is an open-source React component for displaying and editing data in a
 
 <img alt="Sample app" src="https://reactgrid.com/sample.gif"/>
 
-We've put a lot of effort in this software, if you like our work, please give this project a star ⭐
+We've put a lot of effort in this software<br/>
+If you like our work, please give this project a star ⭐
 
 </div>
 &nbsp;
