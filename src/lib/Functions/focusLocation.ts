@@ -15,7 +15,7 @@ export function focusLocation(state: State, location: Location, applyResetSelect
         throw new Error(`"props" field on "state" object should be initiated before possible location focus`);
     }
     
-
+    
     const { onFocusLocationChanged, onFocusLocationChanging, focusLocation } = state.props;
 
     const { cell, cellTemplate } = getCompatibleCellAndTemplate(state, location);
@@ -42,7 +42,7 @@ export function focusLocation(state: State, location: Location, applyResetSelect
 
     const validatedFocusLocation = state.cellMatrix.validateLocation(location);
 
-    if (applyResetSelection && state.focusedLocation) {
+    if (applyResetSelection) {
         // TODO is `location` really needed
         state = resetSelection(
           state,
