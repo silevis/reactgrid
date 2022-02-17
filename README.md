@@ -24,10 +24,10 @@ Prerequisites:
 
 # Docs
 
-- [Demo](https://reactgrid.com/examples)
-- [Get started](https://reactgrid.com/docs/4.0/1-getting-started/)
-- [Documentation](https://reactgrid.com/docs/4.0/0-introduction/)
-- [API Reference](https://reactgrid.com/docs/4.0/7-api/)
+- [Demo](https://reactgrid.com/examples/?utm_source=github&utm_medium=readme)
+- [Get started](https://reactgrid.com/docs/4.0/1-getting-started/?utm_source=github&utm_medium=readme)
+- [Documentation](https://reactgrid.com/docs/4.0/0-introduction/?utm_source=github&utm_medium=readme)
+- [API Reference](https://reactgrid.com/docs/4.0/7-api/?utm_source=github&utm_medium=readme)
 
 # Browser support
 
