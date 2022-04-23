@@ -23,6 +23,14 @@ interface TestGridProps {
     component: React.ComponentClass<ReactGridProps>;
 }
 
+const numberValidator: NumberCell['validator'] = (number: number) => {
+    return number !== 1000;
+}
+
+const textValidator: TextCell['validator'] = (text: string) => {
+    return text !== "myText";
+}
+
 const emailValidator: TextCell['validator'] = (email) => {
     const email_regex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     return email_regex.test(email.replace(/\s+/g, ''));
@@ -61,11 +69,21 @@ export const TestGrid: React.FC<TestGridProps> = (props) => {
             if (ri === 0) return { type: firstRowType, text: `${ri} - ${ci}` }
             if (ri === 2 && ci === 8) return { type: 'text', text: `non-editable`, nonEditable: true, validator: (text: string): boolean => true }
             if (ri === 3 && ci === 8) return { type: 'text', text: '', placeholder: 'placeholder', validator: (text: string): boolean => true }
+            
             const spannedCells = config.spannedCells?.filter(sC => sC.idx === ci && sC.idy === ri)[0];
             const headerCells = config.headerCells?.filter(sC => sC.idx === ci && sC.idy === ri)[0];
             if (spannedCells || headerCells) {
                 return { type: cellType, text: `${ri} - ${ci}`, colspan: spannedCells ? spannedCells.colspan : 0, rowspan: spannedCells ? spannedCells.rowspan : 0 }
             }
+
+            // spanned and header cells should "win" these conditions
+            if (ri === 1 && ci === 1) return { type: 'text', groupId: !(ri % 3) ? 'B' : undefined, text: `${ri} - ${ci}`, style, validator: textValidator, errorMessage: "ERR" };
+            if (ri === 1 && ci === 2) return { type: 'email', text: `${ri}.${ci}@bing.pl`, validator: emailValidator, errorMessage: "ERR" };
+            if (ri === 1 && ci === 3) return { type: 'number', format: myNumberFormat, validator: numberValidator, errorMessage: "ERR", value: parseFloat(`${ri}.${ci}`), nanToZero: false, hideZero: true };
+            if (ri === 2 && ci === 1) return { type: 'text', groupId: !(ri % 3) ? 'B' : undefined, text: `${ri} - ${ci}`, style, validator: textValidator };
+            if (ri === 2 && ci === 2) return { type: 'email', text: `${ri}.${ci}@bing.pl`, validator: emailValidator };
+            if (ri === 2 && ci === 3) return { type: 'number', format: myNumberFormat, validator: numberValidator, value: parseFloat(`${ri}.${ci}`), nanToZero: false, hideZero: true };
+
             const now = new Date();
             switch (ci) {
                 case 0:
