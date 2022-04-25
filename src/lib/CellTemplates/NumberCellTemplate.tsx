@@ -64,14 +64,14 @@ export class NumberCellTemplate implements CellTemplate<NumberCell> {
     }
 
     getClassName(cell: Compatible<NumberCell>, isInEditMode: boolean): string {
-        const isValid = cell.validator ? cell.validator(cell.value) : true;
+        const isValid = cell.validator?.(cell.value) ?? true;
         const className = cell.className ? cell.className : '';
-        return `${isValid ? 'valid' : 'invalid'} ${className}`;
+        return `${!isValid ? 'rg-invalid' : ''} ${className}`;
     }
 
     render(cell: Compatible<NumberCell>, isInEditMode: boolean, onCellChanged: (cell: Compatible<NumberCell>, commit: boolean) => void): React.ReactNode {
         if (!isInEditMode) {
-            const isValid = cell.validator ? cell.validator(cell.value) : true;
+            const isValid = cell.validator?.(cell.value) ?? true;           
             const textToDisplay = !isValid && cell.errorMessage ? cell.errorMessage : cell.text;
             return textToDisplay;
         }

@@ -51,7 +51,7 @@ export class TextCellTemplate implements CellTemplate<TextCell> {
 
         if (!isInEditMode) {
             const isValid = cell.validator ? cell.validator(cell.text) : true;
-            const cellText = cell.text === '' ? (cell.placeholder || '') : cell.text;
+            const cellText = cell.text || cell.placeholder || '';
             const textToDisplay = !isValid && cell.errorMessage ? cell.errorMessage : cellText;
             return cell.renderer ? cell.renderer(textToDisplay) : textToDisplay;
         }
