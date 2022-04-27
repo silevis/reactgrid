@@ -65,7 +65,7 @@ export class NumberCellTemplate implements CellTemplate<NumberCell> {
 
     getClassName(cell: Compatible<NumberCell>, isInEditMode: boolean): string {
         const isValid = cell.validator?.(cell.value) ?? true;
-        const className = cell.className ? cell.className : '';
+        const className = cell.className || '';
         return `${!isValid ? 'rg-invalid' : ''} ${className}`;
     }
 
