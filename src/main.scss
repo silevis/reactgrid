@@ -1,210 +1,211 @@
 [contenteditable] {
-    -webkit-user-select: text;
-    user-select: text;
+  -webkit-user-select: text;
+  user-select: text;
 }
 
 .reactgrid-content {
-    user-select: none;
-    -moz-user-select: none;
-    -webkit-user-select: none;
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: flex-start;
-    align-items: flex-start;
-    .rg-pane {
-        &.rg-pane-top,
-        &.rg-pane-bottom,
-        &.rg-pane-left,
-        &.rg-pane-right {
-            position: sticky;
-            position: -webkit-sticky;
-            background-color: $sticky-bg-color;
-        }
-        &.rg-pane-top {
-            top: 0;
-        }
-        &.rg-pane-bottom {
-            bottom: 0;
-        }
-        &.rg-pane-left {
-            left: 0;
-        }
-        &.rg-pane-right {
-            right: 0;
-        }
-        .rg-cell {
-            font-size: $cell-font-size;
-            box-sizing: border-box;
-            white-space: nowrap;
-            position: absolute;
-            display: flex;
-            flex-direction: row;
-            align-items: center;
-            overflow: hidden;
-            padding: $cell-padding;
-            outline: none;
-            touch-action: auto;
+  user-select: none;
+  -moz-user-select: none;
+  -webkit-user-select: none;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  align-items: flex-start;
+  .rg-pane {
+    &.rg-pane-top,
+    &.rg-pane-bottom,
+    &.rg-pane-left,
+    &.rg-pane-right {
+      position: sticky;
+      position: -webkit-sticky;
+      background-color: $sticky-bg-color;
+    }
+    &.rg-pane-top {
+      top: 0;
+    }
+    &.rg-pane-bottom {
+      bottom: 0;
+    }
+    &.rg-pane-left {
+      left: 0;
+    }
+    &.rg-pane-right {
+      right: 0;
+    }
+    .rg-cell {
+      font-size: $cell-font-size;
+      box-sizing: border-box;
+      white-space: nowrap;
+      position: absolute;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      overflow: hidden;
+      padding: $cell-padding;
+      outline: none;
+      touch-action: auto;
+      border-color: $cell-border-color;
 
-            .rg-touch-resize-handle {
-                position: absolute;
-                top: 0;
-                right: 0;
-                width: $resize-handle-area;
-                height: 100%;
-                pointer-events: auto;
-                .rg-resize-handle {
-                    &:hover {
-                        cursor: col-resize;
-                        background-color: $resize-handle-gb-color;
-                    }
-                    position: absolute;
-                    right: 0;
-                    width: $resize-handle-line-width;
-                    height: 100%;
-                }
-            }
-            .rg-groupId {
-                font-size: 0.8em;
-                position: absolute;
-                right: 4px;
-                top: 4px;
-            }
-        }
-        .rg-cell-focus,
-        .rg-cell-highlight {
-            position: absolute;
-            pointer-events: none;
-            box-sizing: border-box;
-            border-style: solid;
-            border-width: $cell-focus-border-width;
-            border-color: $primary-color;
-        }
-        .rg-touch-fill-handle {
-            position: absolute;
-            width: $fill-handle-area;
-            height: $fill-handle-area;
-            background-color: $fill-handle-bg-color;
-            touch-action: none;
-            pointer-events: auto;
-            .rg-fill-handle {
-                position: absolute;
-                cursor: crosshair;
-                top: 50%;
-                left: 50%;
-                transform: translate(
-                    calc(-50% - (#{$fill-handle-border-width}/ 2)),
-                    calc(-50% - (#{$fill-handle-border-width}/ 2))
-                );
-                width: $fill-handle-square;
-                height: $fill-handle-square;
-                background-color: $primary-color;
-                border-width: $fill-handle-border-width;
-                border-style: solid;
-                border-color: $fill-handle-border-color;
-                background-clip: content-box;
-            }
-        }
-        .rg-partial-area {
-            position: absolute;
-            pointer-events: none;
-            box-sizing: border-box;
-            &.rg-partial-area-part {
-                border-width: $partial-area-border-width;
-                border-style: dashed;
-                border-color: $fillhandle-action-border-color;
-            }
-
-            &.rg-partial-area-selected-range {
-                border-width: $partial-area-selected-border-width;
-                border-style: solid;
-                border-color: $partial-area-border-color;
-                background-color: $partial-area-background-color;
-            }
-        }
-    }
-    .rg-pane-shadow {
-        position: sticky;
-        &.shadow-top {
-            pointer-events: none; //Needed for Firefox
-            top: 0;
-            box-shadow: $shadow-on-bottom $cell-shadow-color;
-        }
-        &.shadow-left {
-            pointer-events: none; //Needed for Firefox
-            left: 0;
-            box-shadow: $shadow-on-right $cell-shadow-color;
-        }
-        &.shadow-bottom {
-            pointer-events: none; //Needed for Firefox
-            bottom: 0;
-            box-shadow: $shadow-on-top $cell-shadow-color;
-        }
-        &.shadow-right {
-            pointer-events: none; //Needed for Firefox
-            right: 0;
-            box-shadow: $shadow-on-left $cell-shadow-color;
-        }
-        &.shadow-top-left-corner {
-            box-shadow: $shadow-on-top-left-corner $cell-shadow-color;
-        }
-        &.shadow-top-right-corner {
-            box-shadow: $shadow-on-top-right-corner $cell-shadow-color;
-        }
-        &.shadow-bottom-left-corner {
-            box-shadow: $shadow-on-bottom-left-corner $cell-shadow-color;
-        }
-        &.shadow-bottom-right-corner {
-            box-shadow: $shadow-on-bottom-right-corner $cell-shadow-color;
-        }
-    }
-    .rg-context-menu {
-        position: fixed;
-        z-index: 1000;
-        background-color: $main-bg-color;
-        font-size: $context-menu-font-size;
-        box-shadow: $context-menu-shadow $cell-shadow-color;
-        .rg-context-menu-option {
-            padding: $context-menu-option-padding;
-            cursor: pointer;
-            &:hover {
-                background-color: darken($main-bg-color, 5);
-            }
-        }
-    }
-    .rg-shadow {
+      .rg-touch-resize-handle {
         position: absolute;
-        background-color: $shadow-bg;
-        opacity: $opacity-10;
-        z-index: 4;
-    }
-    .rg-column-resize-hint {
-        background-color: $resize-hint-bg-color;
-        position: absolute;
-        padding: 5px;
-        border-radius: 0 5px 5px 0;
-    }
-    .rg-line {
-        position: absolute;
-        background-color: $resize-line-color;
-        z-index: 4;
-        &-horizontal {
-            left: 0;
-            height: $line-size-horizontal;
+        top: 0;
+        right: 0;
+        width: $resize-handle-area;
+        height: 100%;
+        pointer-events: auto;
+        .rg-resize-handle {
+          &:hover {
+            cursor: col-resize;
+            background-color: $resize-handle-gb-color;
+          }
+          position: absolute;
+          right: 0;
+          width: $resize-handle-line-width;
+          height: 100%;
         }
-        &-vertical {
-            top: 0;
-            width: $line-size-vertical;
-        }
+      }
+      .rg-groupId {
+        font-size: 0.8em;
+        position: absolute;
+        right: 4px;
+        top: 4px;
+      }
     }
-    .rg-hidden-element {
-        border: 0;
-        padding: 0;
-        margin: 0;
-        position: fixed;
-        width: 1px;
-        height: 1px;
-        opacity: 0;
+    .rg-cell-focus,
+    .rg-cell-highlight {
+      position: absolute;
+      pointer-events: none;
+      box-sizing: border-box;
+      border-style: solid;
+      border-width: $cell-focus-border-width;
+      border-color: $primary-color;
+    }
+    .rg-touch-fill-handle {
+      position: absolute;
+      width: $fill-handle-area;
+      height: $fill-handle-area;
+      background-color: $fill-handle-bg-color;
+      touch-action: none;
+      pointer-events: auto;
+      .rg-fill-handle {
+        position: absolute;
+        cursor: crosshair;
         top: 50%;
         left: 50%;
+        transform: translate(
+          calc(-50% - (#{$fill-handle-border-width}/ 2)),
+          calc(-50% - (#{$fill-handle-border-width}/ 2))
+        );
+        width: $fill-handle-square;
+        height: $fill-handle-square;
+        background-color: $primary-color;
+        border-width: $fill-handle-border-width;
+        border-style: solid;
+        border-color: $fill-handle-border-color;
+        background-clip: content-box;
+      }
     }
+    .rg-partial-area {
+      position: absolute;
+      pointer-events: none;
+      box-sizing: border-box;
+      &.rg-partial-area-part {
+        border-width: $partial-area-border-width;
+        border-style: dashed;
+        border-color: $fillhandle-action-border-color;
+      }
+
+      &.rg-partial-area-selected-range {
+        border-width: $partial-area-selected-border-width;
+        border-style: solid;
+        border-color: $partial-area-border-color;
+        background-color: $partial-area-background-color;
+      }
+    }
+  }
+  .rg-pane-shadow {
+    position: sticky;
+    &.shadow-top {
+      pointer-events: none; //Needed for Firefox
+      top: 0;
+      box-shadow: $shadow-on-bottom $cell-shadow-color;
+    }
+    &.shadow-left {
+      pointer-events: none; //Needed for Firefox
+      left: 0;
+      box-shadow: $shadow-on-right $cell-shadow-color;
+    }
+    &.shadow-bottom {
+      pointer-events: none; //Needed for Firefox
+      bottom: 0;
+      box-shadow: $shadow-on-top $cell-shadow-color;
+    }
+    &.shadow-right {
+      pointer-events: none; //Needed for Firefox
+      right: 0;
+      box-shadow: $shadow-on-left $cell-shadow-color;
+    }
+    &.shadow-top-left-corner {
+      box-shadow: $shadow-on-top-left-corner $cell-shadow-color;
+    }
+    &.shadow-top-right-corner {
+      box-shadow: $shadow-on-top-right-corner $cell-shadow-color;
+    }
+    &.shadow-bottom-left-corner {
+      box-shadow: $shadow-on-bottom-left-corner $cell-shadow-color;
+    }
+    &.shadow-bottom-right-corner {
+      box-shadow: $shadow-on-bottom-right-corner $cell-shadow-color;
+    }
+  }
+  .rg-context-menu {
+    position: fixed;
+    z-index: 1000;
+    background-color: $main-bg-color;
+    font-size: $context-menu-font-size;
+    box-shadow: $context-menu-shadow $cell-shadow-color;
+    .rg-context-menu-option {
+      padding: $context-menu-option-padding;
+      cursor: pointer;
+      &:hover {
+        background-color: darken($main-bg-color, 5);
+      }
+    }
+  }
+  .rg-shadow {
+    position: absolute;
+    background-color: $shadow-bg;
+    opacity: $opacity-10;
+    z-index: 4;
+  }
+  .rg-column-resize-hint {
+    background-color: $resize-hint-bg-color;
+    position: absolute;
+    padding: 5px;
+    border-radius: 0 5px 5px 0;
+  }
+  .rg-line {
+    position: absolute;
+    background-color: $resize-line-color;
+    z-index: 4;
+    &-horizontal {
+      left: 0;
+      height: $line-size-horizontal;
+    }
+    &-vertical {
+      top: 0;
+      width: $line-size-vertical;
+    }
+  }
+  .rg-hidden-element {
+    border: 0;
+    padding: 0;
+    margin: 0;
+    position: fixed;
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+    top: 50%;
+    left: 50%;
+  }
 }
