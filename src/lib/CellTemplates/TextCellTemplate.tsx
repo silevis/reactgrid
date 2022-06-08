@@ -12,8 +12,7 @@ export interface TextCell extends Cell {
     text: string,
     placeholder?: string;
     validator?: (text: string) => boolean,
-    renderer?: (text: string) => React.ReactNode,
-    errorMessage?: string
+    renderer?: (text: string) => React.ReactNode
 }
 
 export class TextCellTemplate implements CellTemplate<TextCell> {
@@ -50,9 +49,7 @@ export class TextCellTemplate implements CellTemplate<TextCell> {
     render(cell: Compatible<TextCell>, isInEditMode: boolean, onCellChanged: (cell: Compatible<TextCell>, commit: boolean) => void): React.ReactNode {
 
         if (!isInEditMode) {
-            const isValid = cell.validator ? cell.validator(cell.text) : true;
-            const cellText = cell.text || cell.placeholder || '';
-            const textToDisplay = !isValid && cell.errorMessage ? cell.errorMessage : cellText;
+            const textToDisplay = cell.text === '' ? (cell.placeholder || '') : cell.text;
             return cell.renderer ? cell.renderer(textToDisplay) : textToDisplay;
         }
 
