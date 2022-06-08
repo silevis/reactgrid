@@ -10,10 +10,8 @@ export interface NumberCell extends Cell {
     type: 'number';
     value: number;
     format?: Intl.NumberFormat;
-    validator?: (value: number) => boolean,
     nanToZero?: boolean;
     hideZero?: boolean;
-    errorMessage?: string
 }
 
 export class NumberCellTemplate implements CellTemplate<NumberCell> {
@@ -64,16 +62,13 @@ export class NumberCellTemplate implements CellTemplate<NumberCell> {
     }
 
     getClassName(cell: Compatible<NumberCell>, isInEditMode: boolean): string {
-        const isValid = cell.validator?.(cell.value) ?? true;
-        const className = cell.className || '';
-        return `${!isValid ? 'rg-invalid' : ''} ${className}`;
+        return cell.className ? cell.className : '';
     }
 
     render(cell: Compatible<NumberCell>, isInEditMode: boolean, onCellChanged: (cell: Compatible<NumberCell>, commit: boolean) => void): React.ReactNode {
+
         if (!isInEditMode) {
-            const isValid = cell.validator?.(cell.value) ?? true;           
-            const textToDisplay = !isValid && cell.errorMessage ? cell.errorMessage : cell.text;
-            return textToDisplay;
+            return cell.text;
         }
 
         const locale = cell.format ? cell.format.resolvedOptions().locale : window.navigator.languages[0];
