@@ -11,8 +11,7 @@ export interface EmailCell extends Cell {
     type: 'email',
     text: string,
     validator?: (text: string) => boolean,
-    renderer?: (text: string) => React.ReactNode,
-    errorMessage?: string
+    renderer?: (text: string) => React.ReactNode
 }
 
 export class EmailCellTemplate implements CellTemplate<EmailCell> {
@@ -40,11 +39,8 @@ export class EmailCellTemplate implements CellTemplate<EmailCell> {
     }
 
     render(cell: Compatible<EmailCell>, isInEditMode: boolean, onCellChanged: (cell: Compatible<EmailCell>, commit: boolean) => void): React.ReactNode {
-        if (!isInEditMode) {
-            const isValid = cell.validator ? cell.validator(cell.text) : true;
-            const textToDisplay = !isValid && cell.errorMessage ? cell.errorMessage : cell.text;
-            return cell.renderer ? cell.renderer(textToDisplay) : textToDisplay;
-        }
+        if (!isInEditMode)
+            return cell.renderer ? cell.renderer(cell.text) : cell.text;
 
         return <input
             ref={input => {
