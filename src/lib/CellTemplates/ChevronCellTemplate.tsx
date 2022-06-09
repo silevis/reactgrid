@@ -100,7 +100,7 @@ export class ChevronCellTemplate implements CellTemplate<ChevronCell> {
                     }}
                     defaultValue={cell.text}
                     onChange={e => onCellChanged(this.getCompatibleCell({ ...cell, text: e.currentTarget.value }), false)}
-                    onBlur={e => onCellChanged(this.getCompatibleCell({ ...cell, text: e.currentTarget.value }), (e as any).view?.event?.keyCode === keyCodes.ESCAPE ? false : true)}
+                    onBlur={e => onCellChanged(this.getCompatibleCell({ ...cell, text: e.currentTarget.value }), (e as any).view?.event?.keyCode !== keyCodes.ESCAPE)}
                     onCopy={e => e.stopPropagation()}
                     onCut={e => e.stopPropagation()}
                     onPaste={e => e.stopPropagation()}
