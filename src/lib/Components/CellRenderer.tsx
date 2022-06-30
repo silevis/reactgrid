@@ -4,7 +4,7 @@ import { noBorder } from '../Functions/excludeObjectProperties';
 import { getCompatibleCellAndTemplate } from '../Functions/getCompatibleCellAndTemplate';
 import { tryAppendChange } from '../Functions/tryAppendChange';
 import { Borders, Location } from '../Model/InternalModel';
-import { Range } from '../Model/Range'
+import { Range } from '../Model/Range';
 import { BorderProps, Cell, Compatible } from '../Model/PublicModel';
 import { State } from '../Model/State';
 import { isMobileDevice } from '../Functions/isMobileDevice';
@@ -32,12 +32,15 @@ function storeBorderAndCell(borders: Borders, cell: Compatible<Cell>) {
     return (property: keyof BorderProps, defaultProp: string) => {
         return (borderEdge: keyof Borders) => {
             if (borders[borderEdge]) {
-                return cell.style?.border?.[borderEdge]?.[property] ? cell.style.border[borderEdge]?.[property] : defaultProp;
+                return cell.style?.border?.[borderEdge]?.[property]
+                    ? cell.style.border[borderEdge]?.[property]
+                    : defaultProp;
             } else if (cell.style?.border?.[borderEdge]?.[property]) {
                 return cell.style.border[borderEdge]?.[property];
-            } return unset;
-        }
-    }
+            }
+            return unset;
+        };
+    };
 }
 
 function getBorderProperties(getPropertyOnBorderFn: (borderEdge: keyof Borders) => string | undefined) {
@@ -46,10 +49,17 @@ function getBorderProperties(getPropertyOnBorderFn: (borderEdge: keyof Borders) 
         right: getPropertyOnBorderFn('right'),
         top: getPropertyOnBorderFn('top'),
         bottom: getPropertyOnBorderFn('bottom'),
-    }
+    };
 }
 
-export const CellRenderer: React.FC<CellRendererProps> = ({ state, location, range, children, borders, update, currentlyEditedCell }) => {
+export const CellRenderer: React.FC<CellRendererProps> = ({
+    state,
+    location,
+    range,
+    borders,
+    update,
+    currentlyEditedCell,
+}) => {
     const { cell, cellTemplate } = getCompatibleCellAndTemplate(state, location);
     const isFocused = state.focusedLocation !== undefined && areLocationsEqual(state.focusedLocation, location);
     const customClass = (cellTemplate.getClassName && cellTemplate.getClassName(cell, false)) ?? '';
@@ -57,23 +67,24 @@ export const CellRenderer: React.FC<CellRendererProps> = ({ state, location, ran
     const currentlyEditedCellRef = React.useRef(currentlyEditedCell);
 
     const storePropertyAndDefaultValue = storeBorderAndCell(borders, cell);
-    const bordersColor = getBorderProperties(storePropertyAndDefaultValue('color', '#E8E8E8')),
-        bordersWidth = getBorderProperties(storePropertyAndDefaultValue('width', '1px')),
+    const bordersWidth = getBorderProperties(storePropertyAndDefaultValue('width', '1px')),
         bordersStyle = getBorderProperties(storePropertyAndDefaultValue('style', 'solid'));
+
     const bordersProps = {
-        borderLeft: bordersWidth.left === unset && bordersStyle.left === unset && bordersColor.left === unset ? unset
-            : `${bordersWidth.left} ${bordersStyle.left} ${bordersColor.left}`,
-        borderRight: bordersWidth.right === unset && bordersStyle.right === unset && bordersColor.right === unset ? unset
-            : `${bordersWidth.right} ${bordersStyle.right} ${bordersColor.right}`,
-        borderTop: bordersWidth.top === unset && bordersStyle.top === unset && bordersColor.top === unset ? unset
-            : `${bordersWidth.top} ${bordersStyle.top} ${bordersColor.top}`,
-        borderBottom: bordersWidth.bottom === unset && bordersStyle.bottom === unset && bordersColor.bottom === unset ? unset
-            : `${bordersWidth.bottom} ${bordersStyle.bottom} ${bordersColor.bottom}`,
+        borderLeftWidth: bordersWidth.left,
+        borderLeftStyle: bordersStyle.left,
+        borderRightWidth: bordersWidth.right,
+        borderRightStyle: bordersStyle.right,
+        borderTopWidth: bordersWidth.top,
+        borderTopStyle: bordersStyle.top,
+        borderBottomWidth: bordersWidth.bottom,
+        borderBottomStyle: bordersStyle.bottom,
     };
 
     const isMobile = isMobileDevice();
-    const isFirstRowOrColumnWithSelection = (state.props?.enableRowSelection && location.row.idx === 0)
-        || (state.props?.enableColumnSelection && location.column.idx === 0);
+    const isFirstRowOrColumnWithSelection =
+        (state.props?.enableRowSelection && location.row.idx === 0) ||
+        (state.props?.enableColumnSelection && location.column.idx === 0);
     const style = {
         ...(cellTemplate.getStyle && (cellTemplate.getStyle(cell, false) || {})),
         ...(cell.style && noBorder(cell.style)),
@@ -82,43 +93,46 @@ export const CellRenderer: React.FC<CellRendererProps> = ({ state, location, ran
         width: range.width,
         height: range.height,
         ...(!(isFocused && currentlyEditedCellRef.current) && bordersProps),
-        ...((isFocused || cell.type === 'header' || isFirstRowOrColumnWithSelection) && { touchAction: 'none' }) // prevent scrolling
+        ...((isFocused || cell.type === 'header' || isFirstRowOrColumnWithSelection) && { touchAction: 'none' }), // prevent scrolling
     } as React.CSSProperties;
 
-    const isInEditMode = isFocused && !!(currentlyEditedCellRef.current);
+    const isInEditMode = isFocused && !!currentlyEditedCellRef.current;
 
     const groupIdClassName = cell.groupId ? ` rg-groupId-${cell.groupId}` : '';
     const nonEditableClassName = cell.nonEditable ? ' rg-cell-nonEditable' : '';
-    const cellClassNames = isInEditMode && isMobile ? ` rg-celleditor rg-${cell.type}-celleditor` : ` rg-${cell.type}-cell`;
+    const cellClassNames =
+        isInEditMode && isMobile ? ` rg-celleditor rg-${cell.type}-celleditor` : ` rg-${cell.type}-cell`;
     const classNames = `rg-cell${cellClassNames}${groupIdClassName}${nonEditableClassName} ${customClass}`;
-    const cellToRender = isFocused && currentlyEditedCellRef.current && isMobile ? currentlyEditedCellRef.current : cell;
+    const cellToRender =
+        isFocused && currentlyEditedCellRef.current && isMobile ? currentlyEditedCellRef.current : cell;
 
-    const onCellChanged = React.useCallback((cell: Compatible<Cell>, commit: boolean) => {
-        if (isInEditMode) {
-            currentlyEditedCellRef.current = commit ? undefined : cell;
-            if (commit) update(state => tryAppendChange(state, location, cell));
-        } else {
-            if (!commit) throw new Error('commit should be set to true in this case.');
-            update(state => tryAppendChange(state, location, cell));
-        }
-    }, [isInEditMode, location, update, currentlyEditedCellRef]);
+    const onCellChanged = React.useCallback(
+        (cell: Compatible<Cell>, commit: boolean) => {
+            if (isInEditMode) {
+                currentlyEditedCellRef.current = commit ? undefined : cell;
+                if (commit) update((state) => tryAppendChange(state, location, cell));
+            } else {
+                if (!commit) throw new Error('commit should be set to true in this case.');
+                update((state) => tryAppendChange(state, location, cell));
+            }
+        },
+        [isInEditMode, location, update, currentlyEditedCellRef]
+    );
 
     return (
-        <div className={classNames} style={style}
+        <div
+            className={classNames}
+            style={style}
             {...(process.env.NODE_ENV === 'development' && {
                 'data-cell-colidx': location.column.idx,
-                'data-cell-rowidx': location.row.idx
+                'data-cell-rowidx': location.row.idx,
             })}
         >
             {cellTemplate.render(cellToRender, isMobile ? isInEditMode : false, onCellChanged)}
-            {location.row.idx === 0 && location.column.resizable && (
-                <ResizeHandle />
+            {location.row.idx === 0 && location.column.resizable && <ResizeHandle />}
+            {state.enableGroupIdRender && cell?.groupId !== undefined && !(isInEditMode && isMobile) && (
+                <span className="rg-groupId">{cell.groupId}</span>
             )}
-            {state.enableGroupIdRender && cell?.groupId !== undefined && !(isInEditMode && isMobile) &&
-                <span className='rg-groupId'>
-                    {cell.groupId}
-                </span>
-            }
-        </div >
+        </div>
     );
 };

@@ -6,7 +6,7 @@ $shadow-color: #000000 !default;
 $resize-line-color: #74b9ff !default;
 $resize-hint-bg-color: $resize-line-color !default;
 $resize-handle-gb-color: $primary-color !default;
-$cell-border-color: #111111 !default;
+$cell-border-color: #e8e8e8 !default;
 $cell-editor-bg-color: #ffffff !default;
 $cell-editor-border-color: $primary-color !default;
 $fillhandle-action-border-color: #000000 !default;
@@ -18,8 +18,8 @@ $checkbox-hover: #cccccc !default;
 $checkbox-mark: #ffffff !default;
 
 $dropdown-focused-item-bg-color: lighten(
-    $color: $primary-color,
-    $amount: 35,
+  $color: $primary-color,
+  $amount: 35,
 ) !default;
 $dropdown-menu-bg-color: #ffffff !default;
 
