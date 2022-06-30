@@ -4,8 +4,10 @@ export interface NumberCell extends Cell {
     type: 'number';
     value: number;
     format?: Intl.NumberFormat;
+    validator?: (value: number) => boolean;
     nanToZero?: boolean;
     hideZero?: boolean;
+    errorMessage?: string;
 }
 export declare class NumberCellTemplate implements CellTemplate<NumberCell> {
     getCompatibleCell(uncertainCell: Uncertain<NumberCell>): Compatible<NumberCell>;

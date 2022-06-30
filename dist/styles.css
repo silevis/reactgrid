@@ -3,7 +3,7 @@
   width: 100%;
   height: 100%;
   padding: 0;
-  border: 0;
+  margin: 0;
   background: transparent;
   font-size: 1em;
   outline: none; }
@@ -38,7 +38,7 @@
   align-items: center;
   justify-content: center;
   padding: 0;
-  border: 0;
+  margin: 0;
   background: transparent;
   pointer-events: auto; }
   .reactgrid-content .rg-pane .rg-cell.rg-checkbox-cell input {
@@ -174,7 +174,8 @@
     overflow: hidden;
     padding: 0 4px;
     outline: none;
-    touch-action: auto; }
+    touch-action: auto;
+    border-color: #e8e8e8; }
     .reactgrid-content .rg-pane .rg-cell .rg-touch-resize-handle {
       position: absolute;
       top: 0;

@@ -5,6 +5,7 @@ export interface EmailCell extends Cell {
     text: string;
     validator?: (text: string) => boolean;
     renderer?: (text: string) => React.ReactNode;
+    errorMessage?: string;
 }
 export declare class EmailCellTemplate implements CellTemplate<EmailCell> {
     getCompatibleCell(uncertainCell: Uncertain<EmailCell>): Compatible<EmailCell>;

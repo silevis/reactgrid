@@ -6,6 +6,7 @@ export interface TextCell extends Cell {
     placeholder?: string;
     validator?: (text: string) => boolean;
     renderer?: (text: string) => React.ReactNode;
+    errorMessage?: string;
 }
 export declare class TextCellTemplate implements CellTemplate<TextCell> {
     getCompatibleCell(uncertainCell: Uncertain<TextCell>): Compatible<TextCell>;

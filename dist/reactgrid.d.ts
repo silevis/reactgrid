@@ -40,6 +40,7 @@ interface EmailCell extends Cell {
     text: string;
     validator?: (text: string) => boolean;
     renderer?: (text: string) => React$1.ReactNode;
+    errorMessage?: string;
 }
 declare class EmailCellTemplate implements CellTemplate<EmailCell> {
     getCompatibleCell(uncertainCell: Uncertain<EmailCell>): Compatible<EmailCell>;
@@ -88,8 +89,10 @@ interface NumberCell extends Cell {
     type: 'number';
     value: number;
     format?: Intl.NumberFormat;
+    validator?: (value: number) => boolean;
     nanToZero?: boolean;
     hideZero?: boolean;
+    errorMessage?: string;
 }
 declare class NumberCellTemplate implements CellTemplate<NumberCell> {
     getCompatibleCell(uncertainCell: Uncertain<NumberCell>): Compatible<NumberCell>;
@@ -109,6 +112,7 @@ interface TextCell extends Cell {
     placeholder?: string;
     validator?: (text: string) => boolean;
     renderer?: (text: string) => React$1.ReactNode;
+    errorMessage?: string;
 }
 declare class TextCellTemplate implements CellTemplate<TextCell> {
     getCompatibleCell(uncertainCell: Uncertain<TextCell>): Compatible<TextCell>;
