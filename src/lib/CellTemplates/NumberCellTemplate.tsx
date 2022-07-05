@@ -89,7 +89,7 @@ export class NumberCellTemplate implements CellTemplate<NumberCell> {
             }}
             defaultValue={Number.isNaN(cell.value) ? this.getTextFromCharCode(cell.text) : format.format(cell.value)}
             onChange={e => onCellChanged(this.getCompatibleCell({ ...cell, value: parseFloat(e.currentTarget.value.replace(/,/g, '.')) }), false)}
-            onBlur={e => onCellChanged(this.getCompatibleCell({ ...cell, value: parseFloat(e.currentTarget.value.replace(/,/g, '.')) }), true)}
+            onBlur={e => onCellChanged(this.getCompatibleCell({ ...cell, value: parseFloat(e.currentTarget.value.replace(/,/g, '.')) }), (e as any).view?.event?.keyCode !== keyCodes.ESCAPE)}
             onKeyDown={e => {
                 if (inNumericKey(e.keyCode) || isNavigationKey(e.keyCode) || isAllowedOnNumberTypingKey(e.keyCode)) e.stopPropagation();
                 if ((!inNumericKey(e.keyCode) && !isNavigationKey(e.keyCode) && !isAllowedOnNumberTypingKey(e.keyCode)) || e.shiftKey) e.preventDefault();
