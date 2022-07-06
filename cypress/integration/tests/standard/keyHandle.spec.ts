@@ -125,8 +125,8 @@ context('Keyboard', () => {
         cy.wait(utils.wait());
         utils.getCellEditor().should('be.visible').and('have.length', 1);
     });
-
-    it.skip('Escape key pressed should exit from edit mode without changes', () => {  // 🔴
+    
+    it('Escape key pressed should exit from edit mode without changes', () => {  // 🔴
         // TODO FIX THIS FEATURE
 
         utils.selectCellInEditMode(config.cellWidth + utils.getCellXCenter(), config.cellHeight * 4 + utils.getCellYCenter());
