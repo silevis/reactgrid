@@ -78,7 +78,13 @@ function handleKeyDownInternal(
         location
       ) as State;
     }
-    return newState;
+    return {
+      ...newState,
+      currentlyEditedCell: {
+        ...newState.currentlyEditedCell!,
+        text: event.key
+      }
+    };
   }
 
   if (event.altKey) return state;
