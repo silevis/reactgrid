@@ -28,10 +28,7 @@ import { scrollCalculator } from "./componentDidUpdate";
 import { resetSelection } from "./selectRange";
 import { newLocation } from "./newLocation";
 
-export function handleKeyDown(
-  state: State,
-  event: KeyboardEvent
-): State {
+export function handleKeyDown(state: State, event: KeyboardEvent): State {
   const newState = handleKeyDownInternal(state, event);
   if (newState !== state) {
     event.stopPropagation();
@@ -40,10 +37,7 @@ export function handleKeyDown(
   return newState;
 }
 
-function handleKeyDownInternal(
-  state: State,
-  event: KeyboardEvent
-): State {
+function handleKeyDownInternal(state: State, event: KeyboardEvent): State {
   const location = state.focusedLocation;
   if (!location) {
     return state;
@@ -69,7 +63,7 @@ function handleKeyDownInternal(
   const newState = handleKeyDownOnCellTemplate(state, event) as State;
   if (newState !== state) {
     if (!isSingleCellSelected && event.keyCode === keyCodes.ENTER) {
-      const direction = event.shiftKey ? "up" : "down";
+      const direction = event.shiftKey ? "up" : "right";
       state.hiddenFocusElement?.focus();
       return moveFocusInsideSelectedRange(
         state,
