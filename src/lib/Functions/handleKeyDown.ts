@@ -37,7 +37,11 @@ export function handleKeyDown(state: State, event: KeyboardEvent): State {
   return newState;
 }
 
-function handleKeyDownInternal(state: State, event: KeyboardEvent): State {
+// TODO: rewrite/simplify if possible
+function handleKeyDownInternal(
+  state: State,
+  event: KeyboardEvent
+): State {
   const location = state.focusedLocation;
   if (!location) {
     return state;

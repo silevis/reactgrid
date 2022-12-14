@@ -1,11 +1,11 @@
 import * as React from 'react';
 
 // NOTE: all modules imported below may be imported from '@silevis/reactgrid'
-import { isAlphaNumericKey, isNavigationKey } from './keyCodeCheckings';
+import { isAlphaNumericKey, isKeyPrintable, isNavigationKey } from './keyCodeCheckings';
 import { getCellProperty } from '../Functions/getCellProperty';
 import { keyCodes } from '../Functions/keyCodes';
 import { Cell, CellTemplate, Compatible, Uncertain, UncertainCompatible } from '../Model/PublicModel';
-import { getCharFromKeyCode } from './getCharFromKeyCode';
+import { getCharFromKey, getCharFromKeyCode } from './getCharFromKeyCode';
 
 export interface EmailCell extends Cell {
     type: 'email',
@@ -16,6 +16,7 @@ export interface EmailCell extends Cell {
 }
 
 export class EmailCellTemplate implements CellTemplate<EmailCell> {
+    private wasEscKeyPressed = false;
 
     getCompatibleCell(uncertainCell: Uncertain<EmailCell>): Compatible<EmailCell> {
         const text = getCellProperty(uncertainCell, 'text', 'string');
@@ -23,11 +24,16 @@ export class EmailCellTemplate implements CellTemplate<EmailCell> {
         return { ...uncertainCell, text, value };
     }
 
-    handleKeyDown(cell: Compatible<EmailCell>, keyCode: number, ctrl: boolean, shift: boolean, alt: boolean): { cell: Compatible<EmailCell>, enableEditMode: boolean } {
-        const char = getCharFromKeyCode(keyCode, shift);
-        if (!ctrl && !alt && isAlphaNumericKey(keyCode) && !(shift && keyCode === keyCodes.SPACE))
-            return { cell: { ...cell, text: !shift ? char.toLowerCase() : char }, enableEditMode: true }
+    handleKeyDown(cell: Compatible<EmailCell>, keyCode: number, ctrl: boolean, shift: boolean, alt: boolean, key: string): { cell: Compatible<EmailCell>, enableEditMode: boolean } {
+        const char = getCharFromKey(key);
+
+        if (!ctrl && isKeyPrintable(key) && !(shift && keyCode === keyCodes.SPACE))
+            return { cell: { ...cell, text: char }, enableEditMode: true }
         return { cell, enableEditMode: keyCode === keyCodes.POINTER || keyCode === keyCodes.ENTER }
+    }
+
+    handleCompositionEnd(cell: Compatible<EmailCell>, eventData: any): { cell: Compatible<EmailCell>, enableEditMode: boolean } {
+        return { cell: { ...cell, text: eventData }, enableEditMode: true }
     }
 
     update(cell: Compatible<EmailCell>, cellToMerge: UncertainCompatible<EmailCell>): Compatible<EmailCell> {
@@ -36,7 +42,7 @@ export class EmailCellTemplate implements CellTemplate<EmailCell> {
 
     getClassName(cell: Compatible<EmailCell>, isInEditMode: boolean): string {
         const isValid = cell.validator ? cell.validator(cell.text) : true;
-        return isValid ? 'valid' : 'invalid';
+        return isValid ? 'valid' : 'rg-invalid';
     }
 
     render(cell: Compatible<EmailCell>, isInEditMode: boolean, onCellChanged: (cell: Compatible<EmailCell>, commit: boolean) => void): React.ReactNode {
@@ -51,9 +57,10 @@ export class EmailCellTemplate implements CellTemplate<EmailCell> {
                 if (input) input.focus();
             }}
             onChange={e => onCellChanged(this.getCompatibleCell({ ...cell, text: e.currentTarget.value }), false)}
-            onBlur={e => onCellChanged(this.getCompatibleCell({ ...cell, text: e.currentTarget.value }), (e as any).view?.event?.keyCode !== keyCodes.ESCAPE)}
+            onBlur={e => { onCellChanged(this.getCompatibleCell({ ...cell, text: e.currentTarget.value }), !this.wasEscKeyPressed); this.wasEscKeyPressed = false; }}
             onKeyDown={e => {
                 if (isAlphaNumericKey(e.keyCode) || (isNavigationKey(e.keyCode))) e.stopPropagation();
+                if (e.keyCode === keyCodes.ESCAPE) this.wasEscKeyPressed = true;
             }}
             defaultValue={cell.text}
             onCopy={e => e.stopPropagation()}

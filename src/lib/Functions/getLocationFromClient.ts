@@ -3,6 +3,7 @@ import { getScrollOfScrollableElement } from './scrollHelpers';
 import { getReactGridOffsets, getSizeOfElement, getStickyOffset, getVisibleSizeOfReactGrid } from './elementSizeHelpers';
 import { State } from '../Model/State';
 
+// TODO: rewrite without division
 export function getLocationFromClient(
     state: State,
     clientX: number,

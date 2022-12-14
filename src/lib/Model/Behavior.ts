@@ -16,6 +16,9 @@ export abstract class Behavior<PointerUpEvent = PointerEvent | MouseEvent> {
     handleKeyUp(event: KeyboardEvent, state: State): State {
         return state;
     }
+    handleCompositionEnd(event: CompositionEvent, state: State): State {
+        return state;
+    }
     handleCopy(event: ClipboardEvent, state: State): State {
         return state;
     }

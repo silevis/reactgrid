@@ -8,6 +8,7 @@ import { updateResponsiveSticky } from './updateResponsiveSticky';
 import { updateSelectedColumns, updateSelectedRows } from './updateState';
 import { resetSelection } from './selectRange';
 
+// TODO: rewrite without division
 export function getDerivedStateFromProps(
     props: ReactGridProps,
     state: State
