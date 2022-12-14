@@ -63,7 +63,11 @@ function handleKeyDownInternal(state: State, event: KeyboardEvent): State {
   const newState = handleKeyDownOnCellTemplate(state, event) as State;
   if (newState !== state) {
     if (!isSingleCellSelected && event.keyCode === keyCodes.ENTER) {
-      const direction = event.shiftKey ? "up" : "right";
+      const direction = event.shiftKey
+        ? "up"
+        : state.props?.moveRightOnEnter
+        ? "right"
+        : "down";
       state.hiddenFocusElement?.focus();
       return moveFocusInsideSelectedRange(
         state,
@@ -218,13 +222,17 @@ function handleKeyDownInternal(state: State, event: KeyboardEvent): State {
       case keyCodes.PAGE_DOWN:
         state.hiddenFocusElement?.focus();
         return moveFocusPageDown(state) as State;
-      case keyCodes.ENTER:
+      case keyCodes.ENTER: {
+        const isMoveRightEnable = state.props?.moveRightOnEnter
+          ? { ...moveFocusRight(state), currentlyEditedCell: undefined }
+          : { ...moveFocusDown(state), currentlyEditedCell: undefined };
         state.hiddenFocusElement?.focus();
         return (
           isSingleCellSelected
-            ? { ...moveFocusRight(state), currentlyEditedCell: undefined }
+            ? isMoveRightEnable
             : moveFocusInsideSelectedRange(state, "right", asr, location)
         ) as State;
+      }
       case keyCodes.ESCAPE:
         event.preventDefault();
         state.hiddenFocusElement?.focus();
