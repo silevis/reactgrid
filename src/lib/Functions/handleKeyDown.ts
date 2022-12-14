@@ -222,8 +222,8 @@ function handleKeyDownInternal(state: State, event: KeyboardEvent): State {
         state.hiddenFocusElement?.focus();
         return (
           isSingleCellSelected
-            ? { ...moveFocusDown(state), currentlyEditedCell: undefined }
-            : moveFocusInsideSelectedRange(state, "down", asr, location)
+            ? { ...moveFocusRight(state), currentlyEditedCell: undefined }
+            : moveFocusInsideSelectedRange(state, "right", asr, location)
         ) as State;
       case keyCodes.ESCAPE:
         event.preventDefault();
