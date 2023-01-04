@@ -43,7 +43,7 @@
     "ora": "^5.4.0",
     "postcss": "^8.2.8",
     "react-scripts": "^4.0.3",
-    "react-select": "^4.3.0",
+    "react-select": "^5.7.0",
     "rollup": "^2.43.1",
     "rollup-plugin-copy": "^3.3.0",
     "rollup-plugin-delete": "^2.0.0",
