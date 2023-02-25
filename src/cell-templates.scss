@@ -2,7 +2,7 @@
     width: 100%;
     height: 100%;
     padding: $template-padding;
-    border: $template-margin;
+    margin: $template-margin;
     background: $template-bg-color;
     font-size: $template-font-size;
     outline: none;
@@ -44,7 +44,7 @@
         align-items: center;
         justify-content: center;
         padding: $template-padding;
-        border: $template-margin;
+        margin: $template-margin;
         background: $template-bg-color;
         pointer-events: auto;
         input {
