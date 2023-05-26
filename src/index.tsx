@@ -1,5 +1,5 @@
 import * as React from 'react'
-import * as ReactDOM from 'react-dom';
+import { createRoot } from 'react-dom/client';
 import { ExtTestGrid } from './test/TestGrid';
 import { ReactGrid } from './lib/Components/ReactGrid';
 import './test/theming-test.scss';
@@ -143,7 +143,7 @@ switch (window.location.pathname) {
         break;
 }
 
-ReactDOM.render(
-    component,
-    document.getElementById('root') as HTMLElement
-);
+const container = document.getElementById('root') as HTMLElement;
+// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+const root = createRoot(container!); // createRoot(container!) if you use TypeScript
+root.render(<React.StrictMode>{component}</React.StrictMode>);
