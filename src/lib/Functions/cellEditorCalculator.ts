@@ -55,8 +55,8 @@ const calculatedYAxisOffset = (location: Location, state: State): number => {
   return 0;
 }
 
-export const calculateCellEditorPosition = (options: PositionState): CellEditorOffset => {
-  const { state, location } = options;
+export const calculateCellEditorPosition = (positionState: PositionState): CellEditorOffset => {
+  const { state, location } = positionState;
   const { scrollTop, scrollLeft } = getScrollOfScrollableElement(state.scrollableElement);
   const { top, left } = getReactGridOffsets(state);
   let offsetLeft = 0,
@@ -67,14 +67,19 @@ export const calculateCellEditorPosition = (options: PositionState): CellEditorO
       offsetTop = top;
   }
 
+  // React StrictMode calls reducer two times to eliminate any side-effects
+  // this function is a reducer so we need to add the state and location to positionState
+  // in order to get them in the second call
   return {
-      left: location.column.left + calculatedXAxisOffset(location, state as State)
-          + offsetLeft
-          + left
-          - scrollLeft,
-      top: location.row.top + calculatedYAxisOffset(location, state as State)
-          + offsetTop
-          + top
-          - scrollTop
+    state,
+    location,
+    left: location.column.left + calculatedXAxisOffset(location, state as State)
+        + offsetLeft
+        + left
+        - scrollLeft,
+    top: location.row.top + calculatedYAxisOffset(location, state as State)
+        + offsetTop
+        + top
+        - scrollTop
   };
 }
