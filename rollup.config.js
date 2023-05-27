@@ -32,6 +32,7 @@ const plugins = [
     scss({
         output: 'dist/styles.css',
         include: ['src/styles.scss'],
+        runtime: require("sass"),
     }),
     terser({
         format: {
