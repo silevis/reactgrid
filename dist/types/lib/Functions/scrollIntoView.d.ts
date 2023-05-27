@@ -1,0 +1,15 @@
+import { Location } from '../Model/InternalModel';
+import { State } from '../Model/State';
+export declare function scrollIntoView(state: State, top: number, left: number): void;
+export declare function getVisibleScrollAreaHeight(state: State, wholeStickyHeight: number): number;
+export declare function getCalculatedScrollTopValueToBottom(location: Location, visibleScrollAreaHeight: number, scrollTop: number, topStickyOffset: number): number;
+export declare function getCalculatedScrollTopValueToTop(location: Location, scrollTop: number, topStickyOffset: number): number;
+export declare function isBottomCellAllVisible(state: State, location: Location, visibleScrollAreaHeight: number): boolean;
+export declare function isTopCellAllVisible(state: State, location: Location): boolean;
+export declare function isFocusLocationOnTopSticky(state: State, location: Location): boolean;
+export declare function getVisibleScrollAreaWidth(state: State, wholeStickyWidth: number): number;
+export declare function getCalculatedScrollLeftValueToRight(location: Location, visibleScrollAreaWidth: number, scrollLeft: number, leftStickyOffset: number): number;
+export declare function getCalculatedScrollLeftValueToLeft(location: Location, scrollLeft: number, leftStickyOffset: number): number;
+export declare function isRightCellAllVisible(state: State, location: Location, visibleScrollAreaWidth: number): boolean;
+export declare function isLeftCellAllVisible(state: State, location: Location): boolean;
+export declare function isFocusLocationOnLeftSticky(state: State, location: Location): boolean;
