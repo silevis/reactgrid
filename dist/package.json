@@ -41,8 +41,6 @@
     "npm-version-suffix": "^0.2.0",
     "ora": "^5.4.0",
     "postcss": "^8.2.8",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
     "react-scripts": "^4.0.3",
     "react-select": "^4.3.1",
     "rollup": "^2.43.1",
@@ -55,6 +53,10 @@
     "rollup-plugin-terser": "^7.0.2",
     "rollup-plugin-typescript2": "^0.31.0",
     "typescript": "^4.2.3"
+  },
+  "peerDependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
   },
   "scripts": {
     "start": "react-scripts start",
