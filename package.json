@@ -1,5 +1,5 @@
 {
-  "name": "alon-shmiel/reactgrid",
+  "name": "@alonshmiel/reactgrid",
   "description": "Add spreadsheet-like behavior to your React app.",
   "version": "1.0.0",
   "homepage": "https://reactgrid.com",
@@ -8,6 +8,9 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/silevis/reactgrid.git"
+  },
+  "publishConfig": {
+    "access": "public"
   },
   "keywords": [
     "react",
