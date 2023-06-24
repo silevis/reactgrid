@@ -192,13 +192,15 @@ export class Utilities {
   }
 
   click(x: number, y: number): void {
-    this.getScrollableElement().trigger("pointerdown", x, y, {
-      pointerType: "mouse",
-    });
-    this.getBody().trigger("pointerup", 0, 0, {
-      pointerType: "mouse",
-      force: true,
-    }); //
+    // TODO: use pointerdown + pointerup instead of click
+    // this.getScrollableElement().trigger("pointerdown", x, y, {
+    //   pointerType: "mouse",
+    // });
+    // this.getBody().trigger("pointerup", 0, 0, {
+    //   pointerType: "mouse",
+    //   force: true,
+    // });
+    this.getScrollableElement().click(x, y);
   }
 
   assertElementWidthIsEqual(
@@ -708,7 +710,6 @@ export class Utilities {
         pointerType: "mouse",
       });
       body.trigger("pointerup", toX + offsetLeft, toY + offsetTop, {
-        force: true,
         log,
         pointerType: "mouse",
       });
@@ -962,7 +963,6 @@ export class Utilities {
       ) {
         body.trigger("pointermove", x + offsetLeft, startY + offsetTop, {
           log,
-          force: true,
         });
       }
       body.trigger("pointerup", {
