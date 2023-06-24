@@ -193,6 +193,7 @@ export class Utilities {
 
   click(x: number, y: number): void {
     // TODO: use pointerdown + pointerup instead of click
+    // cypress issue? https://github.com/cypress-io/cypress/issues/21381
     // this.getScrollableElement().trigger("pointerdown", x, y, {
     //   pointerType: "mouse",
     // });
