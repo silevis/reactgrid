@@ -33,7 +33,7 @@
     .rg-date-cell {
         justify-content: flex-end;
     }
-    &.rg-email-cell.invalid {
+    &.rg-email-cell.rg-invalid {
         color: $template-content-invalid;
     }
     &.rg-text-cell.placeholder {
