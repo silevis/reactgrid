@@ -2,9 +2,11 @@ import * as React from 'react';
 import { Location } from '../Model/InternalModel';
 import { CellMatrix } from '../Model/CellMatrix';
 import { State } from '../Model/State';
-export interface CellEditorOffset {
+export interface CellEditorOffset<TState extends State = State> {
     top: number;
     left: number;
+    state: TState;
+    location: Location;
 }
 export interface PositionState<TState extends State = State> {
     state: TState;

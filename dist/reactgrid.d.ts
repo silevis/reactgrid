@@ -998,6 +998,6 @@ declare enum keyCodes {
  *
  * @see https://reactgrid.com/docs/3.1/7-api/2-functions/
  */
-declare const getCellProperty: <TCell extends Cell, TKey extends keyof TCell>(uncertainCell: Uncertain<TCell>, propName: TKey, expectedType: 'string' | 'number' | 'boolean' | 'undefined' | 'function' | 'object' | 'symbol' | 'bigint') => NonNullable<Uncertain<TCell>[TKey]>;
+declare const getCellProperty: <TCell extends Cell, TKey extends keyof TCell>(uncertainCell: Uncertain<TCell>, propName: TKey, expectedType: 'string' | 'number' | 'boolean' | 'undefined' | 'function' | 'object' | 'symbol' | 'bigint') => any;
 
 export { BorderProps, Cell, CellChange, CellLocation, CellStyle, CellTemplate, CellTemplates, CheckboxCell, CheckboxCellTemplate, ChevronCell, ChevronCellTemplate, Column, Compatible, DateCell, DateCellTemplate, DefaultCellTypes, DropPosition, DropdownCell, DropdownCellTemplate, EmailCell, EmailCellTemplate, HeaderCell, HeaderCellTemplate, Highlight, Id, MenuOption, NumberCell, NumberCellTemplate, OptionType, ReactGrid, ReactGridProps, Row, SelectionMode, Span, TextCell, TextCellTemplate, TextLabels, TimeCell, TimeCellTemplate, Uncertain, UncertainCompatible, getCellProperty, getCharFromKeyCode, inNumericKey, isAllowedOnNumberTypingKey, isAlphaNumericKey, isNavigationKey, isNumpadNumericKey, keyCodes };

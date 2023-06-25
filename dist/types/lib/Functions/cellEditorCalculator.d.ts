@@ -1,2 +1,2 @@
 import { PositionState, CellEditorOffset } from "../../core";
-export declare const calculateCellEditorPosition: (options: PositionState) => CellEditorOffset;
+export declare const calculateCellEditorPosition: (positionState: PositionState) => CellEditorOffset;

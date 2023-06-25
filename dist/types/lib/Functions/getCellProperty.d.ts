@@ -9,4 +9,4 @@ import { Cell, Uncertain } from '../Model/PublicModel';
  *
  * @see https://reactgrid.com/docs/3.1/7-api/2-functions/
  */
-export declare const getCellProperty: <TCell extends Cell, TKey extends keyof TCell>(uncertainCell: Uncertain<TCell>, propName: TKey, expectedType: 'string' | 'number' | 'boolean' | 'undefined' | 'function' | 'object' | 'symbol' | 'bigint') => NonNullable<Uncertain<TCell>[TKey]>;
+export declare const getCellProperty: <TCell extends Cell, TKey extends keyof TCell>(uncertainCell: Uncertain<TCell>, propName: TKey, expectedType: 'string' | 'number' | 'boolean' | 'undefined' | 'function' | 'object' | 'symbol' | 'bigint') => any;
