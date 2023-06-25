@@ -36,7 +36,7 @@ export class EmailCellTemplate implements CellTemplate<EmailCell> {
 
     getClassName(cell: Compatible<EmailCell>, isInEditMode: boolean): string {
         const isValid = cell.validator ? cell.validator(cell.text) : true;
-        return isValid ? 'valid' : 'invalid';
+        return isValid ? 'valid' : 'rg-invalid';
     }
 
     render(cell: Compatible<EmailCell>, isInEditMode: boolean, onCellChanged: (cell: Compatible<EmailCell>, commit: boolean) => void): React.ReactNode {
