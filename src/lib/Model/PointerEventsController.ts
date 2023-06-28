@@ -95,7 +95,6 @@ export class PointerEventsController extends AbstractPointerEventsController {
             state as State
           );
           state.hiddenFocusElement?.focus();
-          state.props?.onSelectionChanged && state.props.onSelectionChanged(state.selectedRanges);
         }
         return state;
       });
@@ -227,6 +226,8 @@ export class PointerEventsController extends AbstractPointerEventsController {
           );
         }
         state.hiddenFocusElement?.focus();
+        state.props?.onSelectionChanged && state.props.onSelectionChanged(state.selectedRanges);
+
         return state;
       });
     };
