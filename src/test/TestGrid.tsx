@@ -2,7 +2,7 @@
 import React from 'react';
 import {
     Column, Row, Id, MenuOption, SelectionMode, DropPosition, CellLocation,
-    DefaultCellTypes, CellChange, ReactGridProps, TextCell, NumberCell, CellStyle, HeaderCell, ChevronCell
+    DefaultCellTypes, CellChange, ReactGridProps, TextCell, NumberCell, CellStyle, HeaderCell, ChevronCell, Range
 } from './../reactgrid';
 import { TestConfig } from './testEnvConfig';
 import '../styles.scss';
@@ -238,6 +238,8 @@ export const TestGrid: React.FC<TestGridProps> = (props) => {
         return true;
     }
 
+    const onSelectionChanged = (range: Range[]): void => { }
+
     const Component = component;
     return (
         <>
@@ -292,6 +294,7 @@ export const TestGrid: React.FC<TestGridProps> = (props) => {
                     horizontalStickyBreakpoint={config.horizontalStickyBreakpoint}
                     verticalStickyBreakpoint={config.verticalStickyBreakpoint}
                     disableVirtualScrolling={config.disableVirtualScrolling}
+                    onSelectionChanged={onSelectionChanged}
                 />}
                 {config.additionalContent &&
                     <div style={{ height: `${config.rgViewportHeight}px`, backgroundColor: '#fafff3' }}>
