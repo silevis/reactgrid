@@ -10,6 +10,8 @@ import {
     TextCell, HeaderCell, CheckboxCell, DateCell, EmailCell, ChevronCell, NumberCell, TimeCell, DropdownCell
 } from './../CellTemplates';
 
+import { Range } from './Range';
+
 /**
  * `SelectionMode` is a marker for currect selection mode
  * 
@@ -100,6 +102,14 @@ export interface ReactGridProps {
      * @returns {boolean} Return `false` to prevent position changing
      */
     readonly onFocusLocationChanging?: (location: CellLocation) => boolean;
+
+    /** 
+     * Called when changing selection.
+     * 
+     * @param {Range[]} selectedRanges array of selected cell locations
+     * @returns {void}
+     */
+    readonly onSelectionChanged?: (selectedRanges: Range[]) => void;
 
     /** 
      * Called when column resize action was finished
