@@ -338,7 +338,9 @@ export interface CellTemplate<TCell extends Cell = Cell> {
         keyCode: number,
         ctrl: boolean,
         shift: boolean,
-        alt: boolean
+        alt: boolean,
+        eventType?: any,
+        eventData?: any,
     ): { cell: Compatible<TCell>; enableEditMode: boolean };
 
     /**

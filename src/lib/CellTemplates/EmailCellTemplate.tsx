@@ -23,7 +23,10 @@ export class EmailCellTemplate implements CellTemplate<EmailCell> {
         return { ...uncertainCell, text, value };
     }
 
-    handleKeyDown(cell: Compatible<EmailCell>, keyCode: number, ctrl: boolean, shift: boolean, alt: boolean): { cell: Compatible<EmailCell>, enableEditMode: boolean } {
+    handleKeyDown(cell: Compatible<EmailCell>, keyCode: number, ctrl: boolean, shift: boolean, alt: boolean, eventType: any, eventData: any): { cell: Compatible<EmailCell>, enableEditMode: boolean } {
+        if (eventType === "compositionend") {
+            return { cell: { ...cell, text: eventData }, enableEditMode: true }
+        }
         const char = getCharFromKeyCode(keyCode, shift);
         if (!ctrl && !alt && isAlphaNumericKey(keyCode) && !(shift && keyCode === keyCodes.SPACE))
             return { cell: { ...cell, text: !shift ? char.toLowerCase() : char }, enableEditMode: true }
