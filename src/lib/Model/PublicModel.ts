@@ -339,8 +339,18 @@ export interface CellTemplate<TCell extends Cell = Cell> {
         ctrl: boolean,
         shift: boolean,
         alt: boolean,
-        eventType?: any,
-        eventData?: any,
+    ): { cell: Compatible<TCell>; enableEditMode: boolean };
+
+    /** 
+     * Handles compositionEnd event on cell template (opening cell in edit mode)
+     * 
+     * @param {Compatible<TCell>} cell Incoming `Compatible` cell
+     * @param {string} event data
+     * @returns {{ cell: Compatible<TCell>; enableEditMode: boolean }} Cell data and edit mode either affected by the event or not
+    */
+    handleCompositionEnd?(
+        cell: Compatible<TCell>,
+        eventData: string,
     ): { cell: Compatible<TCell>; enableEditMode: boolean };
 
     /**
