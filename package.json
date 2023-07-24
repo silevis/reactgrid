@@ -64,7 +64,7 @@
     "deploy": "npm publish dist --access=public",
     "eslint": "npx eslint ./src",
     "test:cypress": "npx cypress open",
-    "run:all:tests": "npx cypress run --headless --quiet --browser chrome -s 'cypress/integration/tests/**/*.spec.ts'",
+    "run:all:tests": "npx cypress run --headless --quiet --browser firefox -s 'cypress/integration/tests/**/*.spec.ts'",
     "run:all:tests:parallel": "run-p --print-label cy:**",
     "cy:standard": "npx cypress run --headless --quiet --browser firefox -s 'cypress/integration/tests/standard/*'",
     "cy:sticky": "npx cypress run --headless --quiet --browser firefox -s 'cypress/integration/tests/sticky/*'",
