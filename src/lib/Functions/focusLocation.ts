@@ -3,9 +3,10 @@ import { Location } from '../Model/InternalModel';
 import { tryAppendChange } from './tryAppendChange';
 import { getCompatibleCellAndTemplate } from './getCompatibleCellAndTemplate';
 import { areLocationsEqual } from './areLocationsEqual';
+import { resetSelection } from './selectRange';
 
 
-export function focusLocation(state: State, location: Location): State {
+export function focusLocation(state: State, location: Location, applyResetSelection = true): State {
     if (state.focusedLocation && state.currentlyEditedCell) {
         state = tryAppendChange(state, state.focusedLocation, state.currentlyEditedCell);
     }
@@ -13,7 +14,8 @@ export function focusLocation(state: State, location: Location): State {
     if (!state.props) {
         throw new Error(`"props" field on "state" object should be initiated before possible location focus`);
     }
-
+    
+    
     const { onFocusLocationChanged, onFocusLocationChanging, focusLocation } = state.props;
 
     const { cell, cellTemplate } = getCompatibleCellAndTemplate(state, location);
@@ -39,9 +41,20 @@ export function focusLocation(state: State, location: Location): State {
     }
 
     const validatedFocusLocation = state.cellMatrix.validateLocation(location);
+
+    if (applyResetSelection) {
+        // TODO is `location` really needed
+        state = resetSelection(
+          state,
+          validatedFocusLocation
+        );
+    }
+
+
     return {
         ...state,
         focusedLocation: validatedFocusLocation,
+        contextMenuPosition: { top: -1, left: -1 },
         currentlyEditedCell: undefined // TODO disable in derived state from props
     };
 }

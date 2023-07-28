@@ -13,11 +13,15 @@ export interface CellMatrixProps {
     rows: Row<Cell>[];
     stickyTopRows?: number;
     stickyLeftColumns?: number;
+    stickyRightColumns?: number;
+    stickyBottomRows?: number;
 }
 
 export interface StickyRanges {
     stickyTopRange: Range;
     stickyLeftRange: Range;
+    stickyRightRange: Range;
+    stickyBottomRange: Range;
 }
 
 export interface SpanLookup {
@@ -25,13 +29,13 @@ export interface SpanLookup {
 }
 
 // INTERNAL
-export class CellMatrix<TStickyRanges extends StickyRanges = StickyRanges, TCellMatrixProps extends CellMatrixProps = CellMatrixProps> {
+export class CellMatrix {
 
     static DEFAULT_ROW_HEIGHT = 25;
     static DEFAULT_COLUMN_WIDTH = 150;
     static MIN_COLUMN_WIDTH = 40;
 
-    props!: TCellMatrixProps;
+    props!: CellMatrixProps;
     scrollableRange!: Range;
     width = 0;
     height = 0;
@@ -48,11 +52,18 @@ export class CellMatrix<TStickyRanges extends StickyRanges = StickyRanges, TCell
 
     rangesToRender: { [location: string]: SpanLookup } = {};
 
-    constructor(public ranges: TStickyRanges) { }
+    constructor(public ranges: StickyRanges) { }
 
     getRange(start: Location, end: Location): Range {
-        const cols = this.columns.slice(start.column.idx < end.column.idx ? start.column.idx : end.column.idx, start.column.idx > end.column.idx ? start.column.idx + 1 : end.column.idx + 1);
-        const rows = this.rows.slice(start.row.idx < end.row.idx ? start.row.idx : end.row.idx, start.row.idx > end.row.idx ? start.row.idx + 1 : end.row.idx + 1);
+        const cols = this.columns.slice(
+            Math.min(start.column.idx, end.column.idx), 
+            Math.max(start.column.idx, end.column.idx) + 1
+        );
+        const rows = this.rows.slice(
+            Math.min(start.row.idx, end.row.idx),
+            Math.max(start.row.idx, end.row.idx) + 1
+        );
+
         return new Range(rows, cols);
     }
 
@@ -71,8 +82,8 @@ export class CellMatrix<TStickyRanges extends StickyRanges = StickyRanges, TCell
     }
 
     validateLocation(location: Location): Location {
-        const colIdx = this.columnIndexLookup[location.column.columnId] !== undefined ? this.columnIndexLookup[location.column.columnId] : location.column.idx < this.last.column.idx ? location.column.idx : this.last.column.idx;
-        const rowIdx = this.rowIndexLookup[location.row.rowId] !== undefined ? this.rowIndexLookup[location.row.rowId] : location.row.idx < this.last.row.idx ? location.row.idx : this.last.row.idx;
+        const colIdx = this.columnIndexLookup[location.column.columnId] ?? Math.min(location.column.idx, this.last.column.idx);
+        const rowIdx = this.rowIndexLookup[location.row.rowId] ?? Math.min(location.row.idx, this.last.row.idx);
         return this.getLocation(rowIdx, colIdx);
     }
 

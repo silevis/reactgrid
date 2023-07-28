@@ -1,78 +1,118 @@
-import * as React from 'react';
-import { GridRenderer } from './GridRenderer';
-import { PanesRenderer } from './PanesRenderer';
-import { handleStateUpdate } from '../Functions/handleStateUpdate';
-import { getDerivedStateFromProps } from '../Functions/getDerivedStateFromProps';
-import { notifyAboutReactGridPro } from '../Functions/notifyAboutReactGridPro';
-import { componentDidUpdate } from '../Functions/componentDidUpdate';
-import { EventHandlers } from '../Model/EventHandlers';
-import { ReactGridProps } from '../Model/PublicModel';
-import { defaultStateFields, State, StateUpdater } from '../Model/State';
-import { PointerEventsController } from '../Model/PointerEventsController';
-import { CellMatrixBuilder } from '../Model/CellMatrixBuilder';
-import { LegacyBrowserGridRenderer } from './LegacyBrowserGridRenderer';
-import { CellEditorRenderer, cellEditorCalculator } from './CellEditor';
-import { CellRenderer } from './CellRenderer';
-import { isMobileDevice } from '../Functions/isMobileDevice';
-
+import * as React from "react";
+import { CellRenderer, ReactGridProps } from "../../core";
+import {
+  GridRenderer,
+  LegacyBrowserGridRenderer,
+  StateModifier,
+  CellEditorRenderer,
+  handleStateUpdate,
+} from "../../core";
+import { PointerEventsController } from "../Model/PointerEventsController";
+import { EventHandlers } from "../Model/EventHandlers";
+import { getDerivedStateFromProps } from "../Functions/getDerivedStateFromProps";
+import { PanesRenderer } from "./PanesRenderer";
+import { DefaultBehavior } from "../Behaviors/DefaultBehavior";
+import { CellMatrixBuilder } from "../Model/CellMatrixBuilder";
+import { defaultStateFields, State } from "../Model/State";
+import { Line } from "./Line";
+import { Shadow } from "./Shadow";
+import { ContextMenu } from "./ContextMenu";
+import { componentDidUpdate } from "../Functions/componentDidUpdate";
+import { StateProvider } from "./StateProvider";
 
 export class ReactGrid extends React.Component<ReactGridProps, State> {
-    private updateState = (state: State) => this.setState(state);
-    private stateUpdater: StateUpdater = modifier => handleStateUpdate(modifier(this.state), this.state, this.props, this.updateState);
-    private pointerEventsController = new PointerEventsController(this.stateUpdater);
-    private eventHandlers: EventHandlers = new EventHandlers(this.stateUpdater, this.pointerEventsController);
-    private cellMatrixBuilder = new CellMatrixBuilder();
-    state: State = {
-        update: this.stateUpdater,
-        cellMatrix: this.cellMatrixBuilder.setProps(this.props)
-            .fillRowsAndCols()
-            .setRangesToRenderLookup()
-            .fillSticky()
-            .fillScrollableRange()
-            .setEdgeLocations()
-            .getCellMatrix(),
-        ...defaultStateFields
+  private updateState = (state: State) => this.setState(state);
+  private stateUpdater = (modifier: StateModifier) =>
+    handleStateUpdate(
+      modifier(this.state) as State,
+      this.state,
+      this.props,
+      this.updateState
+    );
+  private pointerEventsController = new PointerEventsController(
+    this.stateUpdater
+  );
+  private eventHandlers = new EventHandlers(
+    this.stateUpdater,
+    this.pointerEventsController
+  );
+  private cellMatrixBuilder = new CellMatrixBuilder();
+  state: State = {
+    update: this.stateUpdater,
+    ...defaultStateFields,
+    currentBehavior: new DefaultBehavior(),
+    cellMatrix: this.cellMatrixBuilder
+      .setProps(this.props)
+      .fillRowsAndCols()
+      .setRangesToRenderLookup()
+      .fillSticky()
+      .fillScrollableRange()
+      .setEdgeLocations()
+      .getCellMatrix(),
+  };
+
+  static getDerivedStateFromProps(
+    props: ReactGridProps,
+    state: State
+  ): State | null {
+    try {
+      return getDerivedStateFromProps(props, state);
+    } catch (error) {
+      console.error(error);
+      return null;
+    }
+  }
+
+  componentDidUpdate(prevProps: ReactGridProps, prevState: State): void {
+    if (!prevState.reactGridElement && this.state.reactGridElement) {
+      this.state.scrollableElement?.addEventListener(
+        "scroll",
+        this.eventHandlers.scrollHandler
+      );
+    }
+    componentDidUpdate(prevProps, prevState, this.state);
+  }
+
+  componentDidMount(): void {
+    window.addEventListener("resize", this.eventHandlers.windowResizeHandler);
+  }
+
+  componentWillUnmount(): void {
+    window.removeEventListener(
+      "resize",
+      this.eventHandlers.windowResizeHandler
+    );
+    this.state.scrollableElement?.removeEventListener(
+      "scroll",
+      this.eventHandlers.scrollHandler
+    );
+  }
+
+  render(): React.ReactNode {
+    const { state, eventHandlers } = this;
+
+    if (state.legacyBrowserMode) {
+      return (
+        <StateProvider state={state}>
+          <LegacyBrowserGridRenderer eventHandlers={eventHandlers} />
+        </StateProvider>
+      );
     }
 
-    static getDerivedStateFromProps(props: ReactGridProps, state: State): State | undefined {
-        try {
-            return getDerivedStateFromProps(props, state);
-        } catch (error) {
-            console.error(error);
-            return undefined;
-        }
-    }
+    return (
+      <StateProvider state={state}>
+        <GridRenderer eventHandlers={eventHandlers}>
+          <PanesRenderer cellRenderer={CellRenderer} />
 
-    componentDidUpdate(prevProps: ReactGridProps, prevState: State): void {
-        if (!prevState.reactGridElement && this.state.reactGridElement) {
-            this.state.scrollableElement?.addEventListener('scroll', this.eventHandlers.scrollHandler);
-        }
-        componentDidUpdate(prevProps, prevState, this.state);
-    }
+          <Line />
 
-    componentDidMount(): void {
-        notifyAboutReactGridPro(this.state);
-        window.addEventListener('resize', this.eventHandlers.windowResizeHandler);
-    }
+          <Shadow />
 
-    componentWillUnmount(): void {
-        window.removeEventListener('resize', this.eventHandlers.windowResizeHandler);
-        this.state.scrollableElement?.removeEventListener('scroll', this.eventHandlers.scrollHandler);
-    }
+          <ContextMenu />
 
-    render(): React.ReactNode {
-        const { state, eventHandlers } = this;
-        if (state.legacyBrowserMode) {
-            return <LegacyBrowserGridRenderer state={state} eventHandlers={eventHandlers} />
-        } else {
-            return (
-                <GridRenderer state={state} eventHandlers={eventHandlers}>
-                    <PanesRenderer state={state} cellRenderer={CellRenderer} />
-                    {state.currentlyEditedCell && !isMobileDevice() &&
-                        <CellEditorRenderer state={state} positionCalculator={cellEditorCalculator} />}
-                </GridRenderer>
-            )
-        }
-    }
-
+          {state.currentlyEditedCell && <CellEditorRenderer />}
+        </GridRenderer>
+      </StateProvider>
+    );
+  }
 }

@@ -1,9 +1,11 @@
-import { PointerLocation } from './InternalModel';
+import { Direction, PointerLocation } from './InternalModel';
 import { KeyboardEvent, ClipboardEvent, PointerEvent } from './domEventsTypes';
 import { State } from './State';
+import { Range } from './Range';
+
 
 // ASK ARCHITECT BEFORE INTRODUCING ANY CHANGE!
-export abstract class Behavior<PointerUpEvent = PointerEvent> {
+export abstract class Behavior<PointerUpEvent = PointerEvent | MouseEvent> {
 
     handleKeyDown(event: KeyboardEvent, state: State): State {
         return state;
@@ -30,4 +32,32 @@ export abstract class Behavior<PointerUpEvent = PointerEvent> {
         return state;
     }
 
+    handlePointerMove(
+        event: PointerEvent,
+        location: PointerLocation,
+        state: State
+      ): State {
+        return state;
+      }
+    
+      handlePointerEnter(
+        event: PointerEvent,
+        location: PointerLocation,
+        state: State
+      ): State {
+        return state;
+      }
+    
+      handleContextMenu(
+        event: PointerEvent | MouseEvent,
+        state: State
+      ): State {
+        return state;
+      }
+    
+      renderPanePart(state: State, pane: Range): React.ReactNode {
+        return undefined;
+      }
+    
+      autoScrollDirection: Direction = "both";
 } 

@@ -8,6 +8,7 @@ import { Cell, CellTemplate, Compatible, Uncertain, UncertainCompatible } from '
 import { keyCodes } from '../Functions/keyCodes';
 
 import Select, { OptionProps, MenuProps } from 'react-select';
+import { FC } from 'react';
 
 export type OptionType = {
     label: string;
@@ -80,90 +81,98 @@ export class DropdownCellTemplate implements CellTemplate<DropdownCell> {
         isInEditMode: boolean,
         onCellChanged: (cell: Compatible<DropdownCell>, commit: boolean) => void
     ): React.ReactNode {
-        // TODO create custom hook - useDropdown
-
-        //eslint-disable-next-line
-        const selectRef = React.useRef<any>(null);
-        //eslint-disable-next-line
-        const [inputValue, setInputValue] = React.useState<string | undefined>(cell.inputValue);
-        //eslint-disable-next-line
-        React.useEffect(() => {
-            if (cell.isOpen && selectRef.current) {
-                selectRef.current.focus();
-                setInputValue(cell.inputValue);
-            }
-        }, [cell.isOpen, cell.inputValue]);
-
         return (
-            <div
-                style={{ width: '100%' }}
-                onPointerDown={e => onCellChanged(this.getCompatibleCell({ ...cell, isOpen: true }), true)}
-            >
-                <Select
-                    {...(cell.inputValue && {
-                        inputValue,
-                        defaultInputValue: inputValue,
-                        onInputChange: e => setInputValue(e),
-                    })}
-                    isSearchable={true}
-                    ref={selectRef}
-                    {...(cell.isOpen !== undefined && { menuIsOpen: cell.isOpen })}
-                    onMenuClose={() => onCellChanged(this.getCompatibleCell({ ...cell, isOpen: !cell.isOpen, inputValue: undefined }), true)}
-                    onMenuOpen={() => onCellChanged(this.getCompatibleCell({ ...cell, isOpen: true }), true)}
-                    onChange={(e) => onCellChanged(this.getCompatibleCell({ ...cell, selectedValue: (e as OptionType).value, isOpen: false, inputValue: undefined }), true)}
-                    blurInputOnSelect={true}
-                    defaultValue={cell.values.find(val => val.value === cell.selectedValue)}
-                    isDisabled={cell.isDisabled}
-                    options={cell.values}
-                    onKeyDown={e => e.stopPropagation()}
-                    components={{
-                        Option: CustomOption,
-                        Menu: CustomMenu,
-                    }}
-                    styles={{
-                        container: (provided) => ({
-                            ...provided,
-                            width: '100%',
-                            height: '100%',
-                        }),
-                        control: (provided) => ({
-                            ...provided,
-                            border: 'none',
-                            borderColor: 'transparent',
-                            minHeight: '25px',
-                            background: 'transparent',
-                            boxShadow: 'none',
-                        }),
-                        indicatorsContainer: (provided) => ({
-                            ...provided,
-                            paddingTop: '0px',
-                        }),
-                        dropdownIndicator: (provided) => ({
-                            ...provided,
-                            padding: '0px 4px',
-                        }),
-                        singleValue: (provided) => ({
-                            ...provided,
-                            color: 'inherit'
-                        }),
-                        indicatorSeparator: (provided) => ({
-                            ...provided,
-                            marginTop: '4px',
-                            marginBottom: '4px',
-                        }),
-                        input: (provided) => ({
-                            ...provided,
-                            padding: 0,
-                        }),
-                        valueContainer: (provided) => ({
-                            ...provided,
-                            padding: '0 8px',
-                        }),
-                    }}
-                />
-            </div >
+            <DropdownInput onCellChanged={(cell) => onCellChanged(this.getCompatibleCell(cell), true)} cell={cell}/>
         );
     }
+}
+
+interface DIProps{
+    onCellChanged: (...args: any[] ) => void;
+    cell: Record<string,any>;
+    
+}
+
+const DropdownInput: FC<DIProps> = ({onCellChanged, cell}) => {
+    
+    const selectRef = React.useRef<any>(null);
+
+    const [inputValue, setInputValue] = React.useState<string | undefined>(cell.inputValue);
+
+    React.useEffect(() => {
+        if (cell.isOpen && selectRef.current) {
+            selectRef.current.focus();
+            setInputValue(cell.inputValue);
+        }
+    }, [cell.isOpen, cell.inputValue]);
+
+    return  <div
+    style={{ width: '100%' }}
+    onPointerDown={e => onCellChanged({ ...cell, isOpen: true })}
+>
+    <Select
+        {...(cell.inputValue && {
+            inputValue,
+            defaultInputValue: inputValue,
+            onInputChange: e => setInputValue(e),
+        })}
+        isSearchable={true}
+        ref={selectRef}
+        {...(cell.isOpen !== undefined && { menuIsOpen: cell.isOpen })}
+        onMenuClose={() => onCellChanged({ ...cell, isOpen: !cell.isOpen, inputValue: undefined })}
+        onMenuOpen={() => onCellChanged({ ...cell, isOpen: true })}
+        onChange={(e) => onCellChanged({ ...cell, selectedValue: (e as OptionType).value, isOpen: false, inputValue: undefined })}
+        blurInputOnSelect={true}
+        defaultValue={cell.values.find((val: any) => val.value === cell.selectedValue)}
+        isDisabled={cell.isDisabled}
+        options={cell.values}
+        onKeyDown={e => e.stopPropagation()}
+        components={{
+            Option: CustomOption,
+            Menu: CustomMenu,
+        }}
+        styles={{
+            container: (provided) => ({
+                ...provided,
+                width: '100%',
+                height: '100%',
+            }),
+            control: (provided) => ({
+                ...provided,
+                border: 'none',
+                borderColor: 'transparent',
+                minHeight: '25px',
+                background: 'transparent',
+                boxShadow: 'none',
+            }),
+            indicatorsContainer: (provided) => ({
+                ...provided,
+                paddingTop: '0px',
+            }),
+            dropdownIndicator: (provided) => ({
+                ...provided,
+                padding: '0px 4px',
+            }),
+            singleValue: (provided) => ({
+                ...provided,
+                color: 'inherit'
+            }),
+            indicatorSeparator: (provided) => ({
+                ...provided,
+                marginTop: '4px',
+                marginBottom: '4px',
+            }),
+            input: (provided) => ({
+                ...provided,
+                padding: 0,
+            }),
+            valueContainer: (provided) => ({
+                ...provided,
+                padding: '0 8px',
+            }),
+        }}
+    />
+</div >
 }
 
 const CustomOption: React.FC<OptionProps<OptionType, false>> = ({ innerProps, label, isSelected, isFocused }) => (

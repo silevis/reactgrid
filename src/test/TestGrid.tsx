@@ -23,6 +23,14 @@ interface TestGridProps {
     component: React.ComponentClass<ReactGridProps>;
 }
 
+const numberValidator: NumberCell['validator'] = (number: number) => {
+    return number !== 1000;
+}
+
+const textValidator: TextCell['validator'] = (text: string) => {
+    return text !== "myText";
+}
+
 const emailValidator: TextCell['validator'] = (email) => {
     const email_regex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     return email_regex.test(email.replace(/\s+/g, ''));
@@ -61,11 +69,21 @@ export const TestGrid: React.FC<TestGridProps> = (props) => {
             if (ri === 0) return { type: firstRowType, text: `${ri} - ${ci}` }
             if (ri === 2 && ci === 8) return { type: 'text', text: `non-editable`, nonEditable: true, validator: (text: string): boolean => true }
             if (ri === 3 && ci === 8) return { type: 'text', text: '', placeholder: 'placeholder', validator: (text: string): boolean => true }
+            
             const spannedCells = config.spannedCells?.filter(sC => sC.idx === ci && sC.idy === ri)[0];
             const headerCells = config.headerCells?.filter(sC => sC.idx === ci && sC.idy === ri)[0];
             if (spannedCells || headerCells) {
                 return { type: cellType, text: `${ri} - ${ci}`, colspan: spannedCells ? spannedCells.colspan : 0, rowspan: spannedCells ? spannedCells.rowspan : 0 }
             }
+
+            // spanned and header cells should "win" these conditions
+            if (ri === 1 && ci === 1) return { type: 'text', groupId: !(ri % 3) ? 'B' : undefined, text: `${ri} - ${ci}`, style, validator: textValidator, errorMessage: "ERR" };
+            if (ri === 1 && ci === 2) return { type: 'email', text: `${ri}.${ci}@bing.pl`, validator: emailValidator, errorMessage: "ERR" };
+            if (ri === 1 && ci === 3) return { type: 'number', format: myNumberFormat, validator: numberValidator, errorMessage: "ERR", value: parseFloat(`${ri}.${ci}`), nanToZero: false, hideZero: true };
+            if (ri === 2 && ci === 1) return { type: 'text', groupId: !(ri % 3) ? 'B' : undefined, text: `${ri} - ${ci}`, style, validator: textValidator };
+            if (ri === 2 && ci === 2) return { type: 'email', text: `${ri}.${ci}@bing.pl`, validator: emailValidator };
+            if (ri === 2 && ci === 3) return { type: 'number', format: myNumberFormat, validator: numberValidator, value: parseFloat(`${ri}.${ci}`), nanToZero: false, hideZero: true };
+
             const now = new Date();
             switch (ci) {
                 case 0:
@@ -256,9 +274,9 @@ export const TestGrid: React.FC<TestGridProps> = (props) => {
             }}>
                 {config.additionalContent &&
                     <div style={{ height: `${config.rgViewportHeight}px`, backgroundColor: '#fafff3' }}>
-                        <Logo isPro={config.isPro} width={config.rgViewportWidth} />
-                        <Logo isPro={config.isPro} width={config.rgViewportWidth} />
-                        <Logo isPro={config.isPro} width={config.rgViewportWidth} />
+                        <Logo width={config.rgViewportWidth} />
+                        <Logo width={config.rgViewportWidth} />
+                        <Logo width={config.rgViewportWidth} />
                     </div>
                 }
                 {render && <Component
@@ -291,22 +309,23 @@ export const TestGrid: React.FC<TestGridProps> = (props) => {
                     labels={config.labels}
                     horizontalStickyBreakpoint={config.horizontalStickyBreakpoint}
                     verticalStickyBreakpoint={config.verticalStickyBreakpoint}
+                    disableVirtualScrolling={config.disableVirtualScrolling}
                 />}
                 {config.additionalContent &&
                     <div style={{ height: `${config.rgViewportHeight}px`, backgroundColor: '#fafff3' }}>
-                        <Logo isPro={config.isPro} width={config.rgViewportWidth} />
-                        <Logo isPro={config.isPro} width={config.rgViewportWidth} />
-                        <Logo isPro={config.isPro} width={config.rgViewportWidth} />
+                        <Logo width={config.rgViewportWidth} />
+                        <Logo width={config.rgViewportWidth} />
+                        <Logo width={config.rgViewportWidth} />
                     </div>
                 }
             </div>
             {!config.fillViewport &&
                 <>
                     <input type='text' data-cy='outer-input' />
-                    <Logo isPro={config.isPro} />
+                    <Logo />
                 </>
             }
-            <TestGridOptionsSelect isPro={config.isPro}></TestGridOptionsSelect>
+            <TestGridOptionsSelect></TestGridOptionsSelect>
             <button onClick={() => {
                 setRender((render) => !render);
             }}>Mount / Unmount</button>
@@ -331,28 +350,15 @@ export const TestGrid: React.FC<TestGridProps> = (props) => {
 
 }
 
-const Logo: React.FC<{ isPro?: boolean; width?: number }> = ({ isPro, width }) => {
+const Logo: React.FC<{width?: number }> = ({ width }) => {
     return <div style={{ display: 'flex', width: `${width}px` }}>
         <h1 style={{ position: 'relative' }}>
             ReactGrid
-            {isPro && <div
-                style={{
-                    position: 'absolute',
-                    top: '-0.5em',
-                    right: 0,
-                    height: '2.5em',
-                    width: '2.5em',
-                    transform: 'translateX(100%) rotate(90deg)',
-                    background: 'gold',
-                    fontSize: '0.3em',
-                    color: 'black'
-                }}>
-                PRO</div>}
         </h1>
     </div >
 }
 
-export const TestGridOptionsSelect: React.FC<{ isPro?: boolean }> = ({ isPro }) => {
+export const TestGridOptionsSelect: React.FC = () => {
     const navigate = (eventValue: string) => {
         window.location.pathname = eventValue;
     }
@@ -370,15 +376,14 @@ export const TestGridOptionsSelect: React.FC<{ isPro?: boolean }> = ({ isPro }) 
                 <option value='/enableAdditionalContent'>Enable additional content</option>
                 <option value='/enableSymetric'>Enable symetric</option>
                 <option value='/enableFrozenFocus'>Enable frozen focus</option>
-                <option value='/enableResponsiveSticky'>Enable responsive sticky</option>
-                <option value='/enableResponsiveStickyPinnedToBody'>Enable responsive sticky pinned to body</option>
+                <option value='/enableResponsiveStickyTopLeft'>Enable responsive top and left sticky panes</option>
+                <option value='/enableResponsiveStickyBottomRight'>Enable responsive bottom and right sticky panes</option>
+                <option value='/enableResponsiveStickyPinnedToBodyTopLeft'>Enable responsive top and left sticky panes pinned to body</option>
+                <option value='/enableResponsiveStickyPinnedToBodyBottomRight'>Enable responsive bottom and right sticky panes pinned to body</option>
                 <option value='/enableSpannedCells'>Enable spanned cells</option>
-                {isPro && <>
-                    <option value='/enableColumnAndRowSelection'>Enable column and row selection</option>
-                    <option value='/enableColumnAndRowSelectionWithSticky'>Enable column and row selection with sticky</option>
-                    <option value='/enableResponsiveStickyPro'>Enable responsive sticky PRO</option>
-                    <option value='/enableResponsiveStickyPinnedToBodyPro'>Enable responsive sticky pinned to body PRO</option>
-                </>}
+                <option value='/enableColumnAndRowSelection'>Enable column and row selection</option>
+                <option value='/enableColumnAndRowSelectionWithSticky'>Enable column and row selection with sticky</option>
+                <option value='/disableVirtualScrolling'>Disable virtual scrolling</option>
             </select>
         </form>
     )

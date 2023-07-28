@@ -44,7 +44,8 @@
             padding: $cell-padding;
             outline: none;
             touch-action: auto;
-
+            border-color: $cell-border-color;
+            
             .rg-touch-resize-handle {
                 position: absolute;
                 top: 0;
@@ -101,6 +102,7 @@
                 border-width: $fill-handle-border-width;
                 border-style: solid;
                 border-color: $fill-handle-border-color;
+                background-clip: content-box;
             }
         }
         .rg-partial-area {

@@ -14,8 +14,12 @@ export * from './../lib/Components/CellRenderer';
 export * from './../lib/Components/Pane';
 export * from './../lib/Components/PanesRenderer';
 export * from './../lib/Components/PaneShadow';
+export * from './../lib/Components/ReactGrid';
+
+export * from './../lib/CellTemplates';
 
 export * from './../lib/Functions/getCompatibleCellAndTemplate';
+export * from './../lib/Functions/getCellProperty';
 export * from './../lib/Functions/tryAppendChange';
 export * from './../lib/Functions/getLocationFromClient';
 export * from './../lib/Functions/handleKeyDown';
@@ -29,7 +33,6 @@ export * from './../lib/Functions/areLocationsEqual';
 export * from './../lib/Functions/scrollHelpers';
 export * from './../lib/Functions/elementSizeHelpers';
 export * from './../lib/Functions/focusLocation';
-export * from './../lib/Functions/getLocationFromClient';
 export * from './../lib/Functions/isSelectionKey';
 export * from './../lib/Functions/handleDoubleClick';
 export * from './../lib/Functions/handleKeyUp';
@@ -48,6 +51,7 @@ export * from './../lib/Functions/handlePaste';
 export * from './../lib/Functions/getDataToCopy';
 export * from './../lib/Functions/pasteData';
 export * from './../lib/Functions/i18n';
+export * from './../lib/Functions/keyCodes';
 export * from './../lib/Functions/isMobileDevice';
 
 export * from './../lib';
