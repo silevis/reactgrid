@@ -9,9 +9,11 @@ import { State } from '../Model/State';
 import { calculateCellEditorPosition } from '../Functions/cellEditorCalculator';
 import { useReactGridState } from './StateProvider';
 
-export interface CellEditorOffset {
+export interface CellEditorOffset<TState extends State = State> {
     top: number;
     left: number;
+    state: TState;
+    location: Location;
 }
 
 interface CellEditorProps {
@@ -138,7 +140,12 @@ export const cellEditorCalculator = (options: PositionState): CellEditorOffset =
         offsetTop = top;
     }
 
+    // React StrictMode calls reducer two times to eliminate any side-effects
+    // this function is a reducer so we need to add the state and location to positionState
+    // in order to get them in the second call
     return {
+        state,
+        location,
         left: location.column.left + calculatedXAxisOffset(location, state)
             + offsetLeft
             + left
