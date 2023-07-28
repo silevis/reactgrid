@@ -36,7 +36,7 @@ export class EmailCellTemplate implements CellTemplate<EmailCell> {
 
     getClassName(cell: Compatible<EmailCell>, isInEditMode: boolean): string {
         const isValid = cell.validator ? cell.validator(cell.text) : true;
-        return isValid ? 'valid' : 'invalid';
+        return isValid ? 'valid' : 'rg-invalid';
     }
 
     render(cell: Compatible<EmailCell>, isInEditMode: boolean, onCellChanged: (cell: Compatible<EmailCell>, commit: boolean) => void): React.ReactNode {
@@ -51,7 +51,7 @@ export class EmailCellTemplate implements CellTemplate<EmailCell> {
                 if (input) input.focus();
             }}
             onChange={e => onCellChanged(this.getCompatibleCell({ ...cell, text: e.currentTarget.value }), false)}
-            onBlur={e => onCellChanged(this.getCompatibleCell({ ...cell, text: e.currentTarget.value }), true)}
+            onBlur={e => onCellChanged(this.getCompatibleCell({ ...cell, text: e.currentTarget.value }), (e as any).view?.event?.keyCode !== keyCodes.ESCAPE)}
             onKeyDown={e => {
                 if (isAlphaNumericKey(e.keyCode) || (isNavigationKey(e.keyCode))) e.stopPropagation();
             }}
