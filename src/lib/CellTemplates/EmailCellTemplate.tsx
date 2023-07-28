@@ -11,7 +11,8 @@ export interface EmailCell extends Cell {
     type: 'email',
     text: string,
     validator?: (text: string) => boolean,
-    renderer?: (text: string) => React.ReactNode
+    renderer?: (text: string) => React.ReactNode,
+    errorMessage?: string
 }
 
 export class EmailCellTemplate implements CellTemplate<EmailCell> {
@@ -35,19 +36,22 @@ export class EmailCellTemplate implements CellTemplate<EmailCell> {
 
     getClassName(cell: Compatible<EmailCell>, isInEditMode: boolean): string {
         const isValid = cell.validator ? cell.validator(cell.text) : true;
-        return isValid ? 'valid' : 'invalid';
+        return isValid ? 'valid' : 'rg-invalid';
     }
 
     render(cell: Compatible<EmailCell>, isInEditMode: boolean, onCellChanged: (cell: Compatible<EmailCell>, commit: boolean) => void): React.ReactNode {
-        if (!isInEditMode)
-            return cell.renderer ? cell.renderer(cell.text) : cell.text;
+        if (!isInEditMode) {
+            const isValid = cell.validator ? cell.validator(cell.text) : true;
+            const textToDisplay = !isValid && cell.errorMessage ? cell.errorMessage : cell.text;
+            return cell.renderer ? cell.renderer(textToDisplay) : textToDisplay;
+        }
 
         return <input
             ref={input => {
                 if (input) input.focus();
             }}
             onChange={e => onCellChanged(this.getCompatibleCell({ ...cell, text: e.currentTarget.value }), false)}
-            onBlur={e => onCellChanged(this.getCompatibleCell({ ...cell, text: e.currentTarget.value }), true)}
+            onBlur={e => onCellChanged(this.getCompatibleCell({ ...cell, text: e.currentTarget.value }), (e as any).view?.event?.keyCode !== keyCodes.ESCAPE)}
             onKeyDown={e => {
                 if (isAlphaNumericKey(e.keyCode) || (isNavigationKey(e.keyCode))) e.stopPropagation();
             }}
