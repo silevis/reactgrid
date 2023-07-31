@@ -17,6 +17,7 @@ export interface ChevronCell extends Cell {
 }
 
 export class ChevronCellTemplate implements CellTemplate<ChevronCell> {
+    private wasEscKeyPressed = false;
 
     getCompatibleCell(uncertainCell: Uncertain<ChevronCell>): Compatible<ChevronCell> {
         const text = getCellProperty(uncertainCell, 'text', 'string');
@@ -100,13 +101,14 @@ export class ChevronCellTemplate implements CellTemplate<ChevronCell> {
                     }}
                     defaultValue={cell.text}
                     onChange={e => onCellChanged(this.getCompatibleCell({ ...cell, text: e.currentTarget.value }), false)}
-                    onBlur={e => onCellChanged(this.getCompatibleCell({ ...cell, text: e.currentTarget.value }), (e as any).view?.event?.keyCode !== keyCodes.ESCAPE)}
+                    onBlur={e => { onCellChanged(this.getCompatibleCell({ ...cell, text: e.currentTarget.value }), !this.wasEscKeyPressed); this.wasEscKeyPressed = false; }}
                     onCopy={e => e.stopPropagation()}
                     onCut={e => e.stopPropagation()}
                     onPaste={e => e.stopPropagation()}
                     onPointerDown={e => e.stopPropagation()}
                     onKeyDown={e => {
                         if (isAlphaNumericKey(e.keyCode) || (isNavigationKey(e.keyCode))) e.stopPropagation();
+                        if (e.keyCode === keyCodes.ESCAPE) this.wasEscKeyPressed = true;
                     }}
                 />
         );

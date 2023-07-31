@@ -16,6 +16,7 @@ export interface EmailCell extends Cell {
 }
 
 export class EmailCellTemplate implements CellTemplate<EmailCell> {
+    private wasEscKeyPressed = false;
 
     getCompatibleCell(uncertainCell: Uncertain<EmailCell>): Compatible<EmailCell> {
         const text = getCellProperty(uncertainCell, 'text', 'string');
@@ -51,9 +52,10 @@ export class EmailCellTemplate implements CellTemplate<EmailCell> {
                 if (input) input.focus();
             }}
             onChange={e => onCellChanged(this.getCompatibleCell({ ...cell, text: e.currentTarget.value }), false)}
-            onBlur={e => onCellChanged(this.getCompatibleCell({ ...cell, text: e.currentTarget.value }), (e as any).view?.event?.keyCode !== keyCodes.ESCAPE)}
+            onBlur={e => { onCellChanged(this.getCompatibleCell({ ...cell, text: e.currentTarget.value }), !this.wasEscKeyPressed); this.wasEscKeyPressed = false; }}
             onKeyDown={e => {
                 if (isAlphaNumericKey(e.keyCode) || (isNavigationKey(e.keyCode))) e.stopPropagation();
+                if (e.keyCode === keyCodes.ESCAPE) this.wasEscKeyPressed = true;
             }}
             defaultValue={cell.text}
             onCopy={e => e.stopPropagation()}

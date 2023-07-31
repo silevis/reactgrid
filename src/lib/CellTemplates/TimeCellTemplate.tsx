@@ -17,6 +17,7 @@ export class TimeCellTemplate implements CellTemplate<TimeCell> {
 
     static dayInMillis = 86400000;
     static defaultDate: string = getDefaultDate();
+    private wasEscKeyPressed = false;
 
     getCompatibleCell(uncertainCell: Uncertain<TimeCell>): Compatible<TimeCell> {
         const time = uncertainCell.time ? getCellProperty(uncertainCell, 'time', 'object') : new Date(NaN);
@@ -68,11 +69,12 @@ export class TimeCellTemplate implements CellTemplate<TimeCell> {
             }}
             onBlur={e => {
                 const timestamp = getTimestamp(e.currentTarget.value);
-                if (!Number.isNaN(timestamp)) onCellChanged(this.getCompatibleCell({ ...cell, time: new Date(timestamp) }), true);
+                if (!Number.isNaN(timestamp)) { onCellChanged(this.getCompatibleCell({ ...cell, time: new Date(timestamp) }), !this.wasEscKeyPressed); this.wasEscKeyPressed = false; }
             }}
             onKeyDown={e => {
                 if (inNumericKey(e.keyCode) || isNavigationKey(e.keyCode) || (e.keyCode === keyCodes.COMMA || e.keyCode === keyCodes.PERIOD)) e.stopPropagation();
                 if (!inNumericKey(e.keyCode) && !isNavigationKey(e.keyCode) && (e.keyCode !== keyCodes.COMMA && e.keyCode !== keyCodes.PERIOD)) e.preventDefault();
+                if (e.keyCode === keyCodes.ESCAPE) this.wasEscKeyPressed = true;
             }}
             onCopy={e => e.stopPropagation()}
             onCut={e => e.stopPropagation()}
