@@ -168,8 +168,8 @@ function handleContextMenuPaste(state: State) {
                 return {
                   type: "text",
                   // probably this ternanary and spread operator is no longer needed
-                  text: applyMetaData ? cell.text : text,
-                  value: applyMetaData ? cell.value : parseFloat(text),
+                  text: text,
+                  value: parseFloat(text),
                   ...(applyMetaData && {
                     groupId: cell.groupId,
                   }),
