@@ -11,6 +11,7 @@ export interface FlagCell extends Cell {
 }
 
 export class FlagCellTemplate implements CellTemplate<FlagCell> {
+    private wasEscKeyPressed = false;
 
     getCompatibleCell(uncertainCell: Uncertain<FlagCell>): Compatible<FlagCell> {
         const text = getCellProperty(uncertainCell, 'text', 'string');
@@ -48,10 +49,13 @@ export class FlagCellTemplate implements CellTemplate<FlagCell> {
             onCut={e => e.stopPropagation()}
             onPaste={e => e.stopPropagation()}
             onPointerDown={e => e.stopPropagation()}
-            onBlur={e => onCellChanged(this.getCompatibleCell({ ...cell, text: e.currentTarget.value }), (e as any).view?.event?.keyCode !== keyCodes.ESCAPE)}
+            onBlur={e => { onCellChanged(this.getCompatibleCell({ ...cell, text: e.currentTarget.value }), !this.wasEscKeyPressed); this.wasEscKeyPressed = false; }}
             onKeyDown={e => {
                 if (isAlphaNumericKey(e.keyCode) || isNavigationKey(e.keyCode)) e.stopPropagation();
-                if (e.keyCode === keyCodes.ESCAPE) e.currentTarget.value = cell.text; // reset
+                if (e.keyCode === keyCodes.ESCAPE) { 
+                    e.currentTarget.value = cell.text; // reset
+                    this.wasEscKeyPressed = true;
+                }
             }}
         />
     }
