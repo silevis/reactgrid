@@ -1,7 +1,7 @@
 import * as React from 'react';
 import {
     CellTemplate, Cell, Compatible, Uncertain, UncertainCompatible, isNavigationKey, getCellProperty,
-    isAlphaNumericKey, keyCodes
+    isAlphaNumericKey, keyCodes, getCharFromKey
 } from '../../reactgrid';
 import './flag-cell-style.scss';
 
@@ -19,9 +19,11 @@ export class FlagCellTemplate implements CellTemplate<FlagCell> {
         return { ...uncertainCell, text, value };
     }
 
-    handleKeyDown(cell: Compatible<FlagCell>, keyCode: number, ctrl: boolean, shift: boolean, alt: boolean): { cell: Compatible<FlagCell>, enableEditMode: boolean } {
+    handleKeyDown(cell: Compatible<FlagCell>, keyCode: number, ctrl: boolean, shift: boolean, alt: boolean, key: string): { cell: Compatible<FlagCell>, enableEditMode: boolean } {
+        const char = getCharFromKey(key, shift);
+
         if (!ctrl && !alt && isAlphaNumericKey(keyCode))
-            return { cell, enableEditMode: true }
+            return { cell: { ...cell, text: char }, enableEditMode: true }
         return { cell, enableEditMode: keyCode === keyCodes.POINTER || keyCode === keyCodes.ENTER }
     }
 

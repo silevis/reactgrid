@@ -2,7 +2,7 @@ import * as React from 'react';
 
 // NOTE: all modules imported below may be imported from '@silevis/reactgrid'
 import { getCellProperty } from '../Functions/getCellProperty';
-import { getCharFromKeyCode } from './getCharFromKeyCode';
+import { getCharFromKey, getCharFromKeyCode } from './getCharFromKeyCode';
 import { isAlphaNumericKey } from './keyCodeCheckings';
 import { Cell, CellTemplate, Compatible, Uncertain, UncertainCompatible } from '../Model/PublicModel';
 import { keyCodes } from '../Functions/keyCodes';
@@ -73,15 +73,15 @@ export class DropdownCellTemplate implements CellTemplate<DropdownCell> {
         return `${cell.className ? cell.className : ''}${isOpen}`;
     }
 
-    handleKeyDown(cell: Compatible<DropdownCell>, keyCode: number, ctrl: boolean, shift: boolean, alt: boolean): { cell: Compatible<DropdownCell>, enableEditMode: boolean } {
+    handleKeyDown(cell: Compatible<DropdownCell>, keyCode: number, ctrl: boolean, shift: boolean, alt: boolean, key: string): { cell: Compatible<DropdownCell>, enableEditMode: boolean } {
         if ((keyCode === keyCodes.SPACE || keyCode === keyCodes.ENTER) && !shift) {
             return { cell: this.getCompatibleCell({ ...cell, isOpen: !cell.isOpen }), enableEditMode: false };
         }
 
-        const char = getCharFromKeyCode(keyCode, shift);
+        const char = getCharFromKey(key, shift);
 
         if (!ctrl && !alt && isAlphaNumericKey(keyCode))
-            return { cell: this.getCompatibleCell({ ...cell, inputValue: shift ? char : char.toLowerCase(), isOpen: !cell.isOpen }), enableEditMode: false }
+            return { cell: this.getCompatibleCell({ ...cell, inputValue: char, isOpen: !cell.isOpen }), enableEditMode: false }
 
         return { cell, enableEditMode: false };
     }

@@ -207,3 +207,9 @@ characterMap[222] = "'";
 export const getCharFromKeyCode = (keyCode: number, isShiftKey = false): string => {
     return isShiftKey ? characterMapShift[keyCode] : characterMap[keyCode];
 }
+
+export const getCharFromKey = (key: string, isShiftKey = false): string => {
+    const activeLanguage = navigator.language || 'en-US';
+
+    return !isShiftKey ? key.toLocaleLowerCase(activeLanguage) : key.toLocaleUpperCase(activeLanguage);
+}

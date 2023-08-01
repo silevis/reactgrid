@@ -5,7 +5,7 @@ import { getCellProperty } from '../Functions/getCellProperty';
 import { keyCodes } from '../Functions/keyCodes';
 import { Cell, CellStyle, CellTemplate, Compatible, Id, Uncertain, UncertainCompatible } from '../Model/PublicModel';
 import { isNavigationKey, isAlphaNumericKey } from './keyCodeCheckings';
-import { getCharFromKeyCode } from './getCharFromKeyCode';
+import { getCharFromKey, getCharFromKeyCode } from './getCharFromKeyCode';
 
 export interface ChevronCell extends Cell {
     type: 'chevron';
@@ -47,14 +47,16 @@ export class ChevronCellTemplate implements CellTemplate<ChevronCell> {
         return this.getCompatibleCell({ ...cell, isExpanded: cellToMerge.isExpanded, text: cellToMerge.text })
     }
 
-    handleKeyDown(cell: Compatible<ChevronCell>, keyCode: number, ctrl: boolean, shift: boolean, alt: boolean): { cell: Compatible<ChevronCell>, enableEditMode: boolean } {
+    handleKeyDown(cell: Compatible<ChevronCell>, keyCode: number, ctrl: boolean, shift: boolean, alt: boolean, key: string): { cell: Compatible<ChevronCell>, enableEditMode: boolean } {
         let enableEditMode = keyCode === keyCodes.POINTER || keyCode === keyCodes.ENTER;
         const cellCopy = { ...cell };
-        const char = getCharFromKeyCode(keyCode, shift);
+
+        const char = getCharFromKey(key, shift);
+
         if (keyCode === keyCodes.SPACE && cellCopy.isExpanded !== undefined && !shift) {
             cellCopy.isExpanded = !cellCopy.isExpanded;
         } else if (!ctrl && !alt && isAlphaNumericKey(keyCode) && !(shift && keyCode === keyCodes.SPACE)) {
-            cellCopy.text = !shift ? char.toLowerCase() : char;
+            cellCopy.text = char;
             enableEditMode = true;
         }
         return { cell: cellCopy, enableEditMode };
