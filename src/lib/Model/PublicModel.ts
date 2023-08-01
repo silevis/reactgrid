@@ -331,7 +331,7 @@ export interface CellTemplate<TCell extends Cell = Cell> {
      * @param {boolean} ctrl Is `ctrl` pressed when event is called ()
      * @param {boolean} shift Is `shift` pressed when event is called
      * @param {boolean} alt Is `alt` pressed when event is called
-     * @param {string} key Represents the value of the key pressed by the user
+     * @param {string} [key] Represents the value of the key pressed by the user. Optional for backwards compatibility.
      * @returns {{ cell: Compatible<TCell>; enableEditMode: boolean }} Cell data and edit mode either affected by the event or not
     */
     handleKeyDown?(
