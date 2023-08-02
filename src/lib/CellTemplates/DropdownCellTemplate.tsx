@@ -78,7 +78,7 @@ export class DropdownCellTemplate implements CellTemplate<DropdownCell> {
             return { cell: this.getCompatibleCell({ ...cell, isOpen: !cell.isOpen }), enableEditMode: false };
         }
 
-        const char = getCharFromKey(key, shift);
+        const char = getCharFromKey(key);
 
         if (!ctrl && !alt && isAlphaNumericKey(keyCode))
             return { cell: this.getCompatibleCell({ ...cell, inputValue: char, isOpen: !cell.isOpen }), enableEditMode: false }

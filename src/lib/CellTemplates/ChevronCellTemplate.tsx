@@ -4,7 +4,7 @@ import * as React from 'react';
 import { getCellProperty } from '../Functions/getCellProperty';
 import { keyCodes } from '../Functions/keyCodes';
 import { Cell, CellStyle, CellTemplate, Compatible, Id, Uncertain, UncertainCompatible } from '../Model/PublicModel';
-import { isNavigationKey, isAlphaNumericKey } from './keyCodeCheckings';
+import { isNavigationKey, isAlphaNumericKey, isCharAlphaNumeric, isKeyPrintable } from './keyCodeCheckings';
 import { getCharFromKey, getCharFromKeyCode } from './getCharFromKeyCode';
 
 export interface ChevronCell extends Cell {
@@ -51,11 +51,11 @@ export class ChevronCellTemplate implements CellTemplate<ChevronCell> {
         let enableEditMode = keyCode === keyCodes.POINTER || keyCode === keyCodes.ENTER;
         const cellCopy = { ...cell };
 
-        const char = getCharFromKey(key, shift);
+        const char = getCharFromKey(key);
 
         if (keyCode === keyCodes.SPACE && cellCopy.isExpanded !== undefined && !shift) {
             cellCopy.isExpanded = !cellCopy.isExpanded;
-        } else if (!ctrl && !alt && isAlphaNumericKey(keyCode) && !(shift && keyCode === keyCodes.SPACE)) {
+        } else if (isCharAlphaNumeric(char) && !(shift && keyCode === keyCodes.SPACE)) {
             cellCopy.text = char;
             enableEditMode = true;
         }

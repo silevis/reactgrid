@@ -21,7 +21,9 @@ export const isAlphaNumericKey = (keyCode: number): boolean =>
  * @param {string} char character produced by `KeyboardEvent.key` field
  * @returns {boolean} Returns `true` if `char` is one of alphanumeric characters
  */
-export const isCharAlphaNumeric = (char: string): boolean => char.match(/[a-zA-Z0-9]/) !== null;
+export const isCharAlphaNumeric = (char: string): boolean => char.match(/^[a-zA-Z0-9]$/) !== null;
+
+export const isKeyPrintable = (key: string): boolean => key.length === 1;
 
 /**
  * Checks that the pressed key's `keyCode` is one of numeric keys

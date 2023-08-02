@@ -25,7 +25,7 @@ export class EmailCellTemplate implements CellTemplate<EmailCell> {
     }
 
     handleKeyDown(cell: Compatible<EmailCell>, keyCode: number, ctrl: boolean, shift: boolean, alt: boolean, key: string): { cell: Compatible<EmailCell>, enableEditMode: boolean } {
-        const char = getCharFromKey(key, shift);
+        const char = getCharFromKey(key);
 
         if (!ctrl && !alt && isAlphaNumericKey(keyCode) && !(shift && keyCode === keyCodes.SPACE))
             return { cell: { ...cell, text: char }, enableEditMode: true }

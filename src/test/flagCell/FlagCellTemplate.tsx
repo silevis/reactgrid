@@ -20,7 +20,7 @@ export class FlagCellTemplate implements CellTemplate<FlagCell> {
     }
 
     handleKeyDown(cell: Compatible<FlagCell>, keyCode: number, ctrl: boolean, shift: boolean, alt: boolean, key: string): { cell: Compatible<FlagCell>, enableEditMode: boolean } {
-        const char = getCharFromKey(key, shift);
+        const char = getCharFromKey(key);
 
         if (!ctrl && !alt && isAlphaNumericKey(keyCode))
             return { cell: { ...cell, text: char }, enableEditMode: true }
