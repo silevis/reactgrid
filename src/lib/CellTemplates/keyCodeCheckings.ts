@@ -48,6 +48,8 @@ export const isAllowedOnNumberTypingKey = (keyCode: number): boolean =>
     (keyCode >= keyCodes.COMMA && keyCode <= keyCodes.PERIOD)
     || keyCode === keyCodes.DECIMAL || keyCode === keyCodes.SUBTRACT || keyCode === keyCodes.FIREFOX_DASH;
 
+export const isCharAllowedOnNumberInput = (char: string): boolean => char.match(/[\d.,+-]/) !== null;
+
 /**
  * Checks that the pressed key's `keyCode` is one of navigation keys 
  * 
