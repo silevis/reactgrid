@@ -55,7 +55,7 @@ export class ChevronCellTemplate implements CellTemplate<ChevronCell> {
 
         if (keyCode === keyCodes.SPACE && cellCopy.isExpanded !== undefined && !shift) {
             cellCopy.isExpanded = !cellCopy.isExpanded;
-        } else if (isCharAlphaNumeric(char) && !(shift && keyCode === keyCodes.SPACE)) {
+        } else if (!ctrl && isKeyPrintable(key) && !(shift && keyCode === keyCodes.SPACE)) {
             cellCopy.text = char;
             enableEditMode = true;
         }

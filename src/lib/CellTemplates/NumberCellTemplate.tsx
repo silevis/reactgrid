@@ -36,10 +36,8 @@ export class NumberCellTemplate implements CellTemplate<NumberCell> {
     handleKeyDown(cell: Compatible<NumberCell>, keyCode: number, ctrl: boolean, shift: boolean, alt: boolean, key: string): { cell: Compatible<NumberCell>; enableEditMode: boolean } {
         if (isNumpadNumericKey(keyCode)) keyCode -= 48;
         const char = getCharFromKey(key);
-        if (isCharAllowedOnNumberInput(char)) {
+        if (!ctrl && isCharAllowedOnNumberInput(char)) {
             const value = Number(char);
-
-            console.log(value, Number.isNaN(value), isCharAllowedOnNumberInput(char))
 
             if (Number.isNaN(value) && isCharAllowedOnNumberInput(char))
                 return { cell: { ...this.getCompatibleCell({ ...cell, value }), text: char }, enableEditMode: true }
