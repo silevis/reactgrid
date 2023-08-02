@@ -76,6 +76,10 @@ export class DropdownCellTemplate implements CellTemplate<DropdownCell> {
         return { cell, enableEditMode: false };
     }
 
+    handleCompositionEnd(cell: Compatible<DropdownCell>, eventData: any): { cell: Compatible<DropdownCell>, enableEditMode: boolean } {
+        return { cell: { ...cell, inputValue: eventData, isOpen: !cell.isOpen }, enableEditMode: false }
+    }
+
     render(
         cell: Compatible<DropdownCell>,
         isInEditMode: boolean,

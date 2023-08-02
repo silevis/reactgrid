@@ -59,6 +59,10 @@ export class ChevronCellTemplate implements CellTemplate<ChevronCell> {
         return { cell: cellCopy, enableEditMode };
     }
 
+    handleCompositionEnd(cell: Compatible<ChevronCell>, eventData: any): { cell: Compatible<ChevronCell>, enableEditMode: boolean } {
+        return { cell: { ...cell, text: eventData }, enableEditMode: true }
+    }
+
     getClassName(cell: Compatible<ChevronCell>, isInEditMode: boolean): string {
         const isExpanded = cell.hasChildren ? cell.isExpanded ? 'expanded' : 'collapsed' : '';
         const className = cell.className ?? '';

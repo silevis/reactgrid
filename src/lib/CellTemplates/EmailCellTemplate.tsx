@@ -30,6 +30,10 @@ export class EmailCellTemplate implements CellTemplate<EmailCell> {
         return { cell, enableEditMode: keyCode === keyCodes.POINTER || keyCode === keyCodes.ENTER }
     }
 
+    handleCompositionEnd(cell: Compatible<EmailCell>, eventData: any): { cell: Compatible<EmailCell>, enableEditMode: boolean } {
+        return { cell: { ...cell, text: eventData }, enableEditMode: true }
+    }
+
     update(cell: Compatible<EmailCell>, cellToMerge: UncertainCompatible<EmailCell>): Compatible<EmailCell> {
         return this.getCompatibleCell({ ...cell, text: cellToMerge.text })
     }
