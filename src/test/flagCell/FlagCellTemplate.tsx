@@ -27,6 +27,10 @@ export class FlagCellTemplate implements CellTemplate<FlagCell> {
         return { cell, enableEditMode: keyCode === keyCodes.POINTER || keyCode === keyCodes.ENTER }
     }
 
+    handleCompositionEnd(cell: Compatible<FlagCell>, eventData: any): { cell: Compatible<FlagCell>, enableEditMode: boolean } {
+        return { cell: { ...cell, text: eventData }, enableEditMode: true }
+    }
+
     update(cell: Compatible<FlagCell>, cellToMerge: UncertainCompatible<FlagCell>): Compatible<FlagCell> {
         return this.getCompatibleCell({ ...cell, text: cellToMerge.text });
     }

@@ -42,6 +42,10 @@ export class TextCellTemplate implements CellTemplate<TextCell> {
             return { cell: this.getCompatibleCell({ ...cell, text: char }), enableEditMode: true }
         return { cell, enableEditMode: keyCode === keyCodes.POINTER || keyCode === keyCodes.ENTER }
     }
+    
+    handleCompositionEnd(cell: Compatible<TextCell>, eventData: any): { cell: Compatible<TextCell>, enableEditMode: boolean } {
+        return { cell: { ...cell, text: eventData }, enableEditMode: true }
+    }
 
     getClassName(cell: Compatible<TextCell>, isInEditMode: boolean): string {
         const isValid = cell.validator ? cell.validator(cell.text) : true;

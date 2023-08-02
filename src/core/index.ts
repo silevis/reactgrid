@@ -36,6 +36,7 @@ export * from './../lib/Functions/focusLocation';
 export * from './../lib/Functions/isSelectionKey';
 export * from './../lib/Functions/handleDoubleClick';
 export * from './../lib/Functions/handleKeyUp';
+export * from './../lib/Functions/handleCompositionEnd';
 export * from './../lib/Functions/focuses';
 export * from './../lib/Functions/handleKeyDown';
 export * from './../lib/Functions/handleKeyDownOnCellTemplate';

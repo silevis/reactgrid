@@ -2,6 +2,7 @@ import {
   PointerLocation,
   Location,
   handleKeyUp,
+  handleCompositionEnd,
   handleDoubleClick,
   getScrollOfScrollableElement,
   isSelectionKey,
@@ -129,6 +130,10 @@ export class DefaultBehavior extends Behavior {
 
   handleKeyUp(event: KeyboardEvent, state: State): State {
     return handleKeyUp(event, state) as State;
+  }
+
+  handleCompositionEnd(event: CompositionEvent, state: State): State {
+    return handleCompositionEnd(event, state) as State;
   }
 
   handleCopy(event: ClipboardEvent, state: State): State {
