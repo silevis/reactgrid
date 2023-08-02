@@ -5,7 +5,7 @@ import { isAlphaNumericKey, isNavigationKey } from './keyCodeCheckings'
 import { getCellProperty } from '../Functions/getCellProperty';
 import { keyCodes } from '../Functions/keyCodes';
 import { Cell, CellTemplate, Compatible, Uncertain, UncertainCompatible } from '../Model/PublicModel';
-import { getCharFromKeyCode } from './getCharFromKeyCode';
+import { getCharFromKey, getCharFromKeyCode } from './getCharFromKeyCode';
 
 export interface TextCell extends Cell {
     type: 'text',
@@ -17,6 +17,7 @@ export interface TextCell extends Cell {
 }
 
 export class TextCellTemplate implements CellTemplate<TextCell> {
+    private wasEscKeyPressed = false;
 
     getCompatibleCell(uncertainCell: Uncertain<TextCell>): Compatible<TextCell> {
         const text = getCellProperty(uncertainCell, 'text', 'string');
@@ -34,10 +35,11 @@ export class TextCellTemplate implements CellTemplate<TextCell> {
         return this.getCompatibleCell({ ...cell, text: cellToMerge.text, placeholder: cellToMerge.placeholder })
     }
 
-    handleKeyDown(cell: Compatible<TextCell>, keyCode: number, ctrl: boolean, shift: boolean, alt: boolean): { cell: Compatible<TextCell>, enableEditMode: boolean } {
-        const char = getCharFromKeyCode(keyCode, shift);
+    handleKeyDown(cell: Compatible<TextCell>, keyCode: number, ctrl: boolean, shift: boolean, alt: boolean, key: string): { cell: Compatible<TextCell>, enableEditMode: boolean } {
+        const char = getCharFromKey(key, shift);
+
         if (!ctrl && !alt && isAlphaNumericKey(keyCode) && !(shift && keyCode === keyCodes.SPACE))
-            return { cell: this.getCompatibleCell({ ...cell, text: shift ? char : char.toLowerCase() }), enableEditMode: true }
+            return { cell: this.getCompatibleCell({ ...cell, text: char }), enableEditMode: true }
         return { cell, enableEditMode: keyCode === keyCodes.POINTER || keyCode === keyCodes.ENTER }
     }
     
@@ -69,7 +71,7 @@ export class TextCellTemplate implements CellTemplate<TextCell> {
             }}
             defaultValue={cell.text}
             onChange={e => onCellChanged(this.getCompatibleCell({ ...cell, text: e.currentTarget.value }), false)}
-            onBlur={e => onCellChanged(this.getCompatibleCell({ ...cell, text: e.currentTarget.value }), (e as any).view?.event?.keyCode !== keyCodes.ESCAPE)}
+            onBlur={e => { onCellChanged(this.getCompatibleCell({ ...cell, text: e.currentTarget.value }), !this.wasEscKeyPressed); this.wasEscKeyPressed = false; }}
             onCopy={e => e.stopPropagation()}
             onCut={e => e.stopPropagation()}
             onPaste={e => e.stopPropagation()}
@@ -77,6 +79,7 @@ export class TextCellTemplate implements CellTemplate<TextCell> {
             placeholder={cell.placeholder}
             onKeyDown={e => {
                 if (isAlphaNumericKey(e.keyCode) || (isNavigationKey(e.keyCode))) e.stopPropagation();
+                if (e.keyCode === keyCodes.ESCAPE) this.wasEscKeyPressed = true;
             }}
         />
     }
