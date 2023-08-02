@@ -132,7 +132,7 @@ export class DefaultBehavior extends Behavior {
     return handleKeyUp(event, state) as State;
   }
 
-  handleCompositionEnd(event: KeyboardEvent, state: State): State {
+  handleCompositionEnd(event: CompositionEvent, state: State): State {
     return handleCompositionEnd(event, state) as State;
   }
 

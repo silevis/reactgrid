@@ -3,7 +3,7 @@ import { State } from '../Model/State';
 import { handleCompositionEndOnCellTemplate } from "./handleCompositionEndOnCellTemplate";
 
 
-export function handleCompositionEnd(event: KeyboardEvent, state: State): State {
+export function handleCompositionEnd(event: CompositionEvent, state: State): State {
   const newState = handleCompositionEndOnCellTemplate(state, event);
   if (newState !== state) {
     event.stopPropagation();
