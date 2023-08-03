@@ -4,8 +4,9 @@ import * as React from 'react';
 import { getCellProperty } from '../Functions/getCellProperty';
 import { keyCodes } from '../Functions/keyCodes';
 import { Cell, CellTemplate, Compatible, Uncertain, UncertainCompatible } from '../Model/PublicModel';
-import { inNumericKey, isNavigationKey, isAlphaNumericKey } from './keyCodeCheckings'
+import { inNumericKey, isNavigationKey, isAlphaNumericKey, isCharAllowedOnNumberInput } from './keyCodeCheckings'
 import { getTimestamp, getFormattedTimeUnit, getDefaultDate } from './timeUtils';
+import { getCharFromKey } from './getCharFromKeyCode';
 
 export interface TimeCell extends Cell {
     type: 'time';
@@ -27,8 +28,8 @@ export class TimeCellTemplate implements CellTemplate<TimeCell> {
         return { ...uncertainCell, time, value, text }
     }
 
-    handleKeyDown(cell: Compatible<TimeCell>, keyCode: number, ctrl: boolean, shift: boolean, alt: boolean): { cell: Compatible<TimeCell>, enableEditMode: boolean } {
-        if (!ctrl && !alt && !shift && isAlphaNumericKey(keyCode))
+    handleKeyDown(cell: Compatible<TimeCell>, keyCode: number, ctrl: boolean, shift: boolean, alt: boolean, key: string): { cell: Compatible<TimeCell>, enableEditMode: boolean } {
+        if (!ctrl && isCharAllowedOnNumberInput(getCharFromKey(key)))
             return { cell: this.getCompatibleCell({ ...cell }), enableEditMode: true }
         return { cell, enableEditMode: keyCode === keyCodes.POINTER || keyCode === keyCodes.ENTER }
     }
