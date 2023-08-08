@@ -40,6 +40,7 @@ export function handleKeyDown(
   return newState;
 }
 
+// TODO: rewrite/simplify if possible
 function handleKeyDownInternal(
   state: State,
   event: KeyboardEvent

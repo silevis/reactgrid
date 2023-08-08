@@ -1,5 +1,7 @@
 import { Cell, Uncertain } from '../Model/PublicModel';
 
+// TODO: simplify if possible
+
 /**
  * Gets property cell's value
  * 
