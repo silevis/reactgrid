@@ -6,6 +6,7 @@ import { visit } from '../../common/visit';
 const utils = new Utilities(config);
 const INVALID_CLASS_NAME = "rg-invalid";
 const OLD_INVALID_CLASS_NAME = "invalid";
+
 context('Cell validation', () => {
 
     beforeEach(() => {
