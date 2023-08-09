@@ -66,15 +66,19 @@ export interface ReactGridProps {
      * Horizontal breakpoint in percents (%) of ReactGrid scrollable parent element width. 
      * Disables sticky when the sum of the sizes of sticky panes overflows
      * given breakpoint value (by default `50`).
-    */
+     */
     readonly horizontalStickyBreakpoint?: number;
     /** 
      * Vertical breakpoint in percents (%) of ReactGrid scrollable parent element height. 
      * Disables sticky when the sum of the sizes of sticky panes overflows
      * given breakpoint value (by default `50`).
-    */
+     */
     readonly verticalStickyBreakpoint?: number;
 
+    /**
+     * When pressing `Enter` key, move focus to the next column (by default `false`)
+     */
+    readonly moveRightOnEnter?: boolean;
 
     /** 
      * Called when cell was changed (e.g. property `value`)
