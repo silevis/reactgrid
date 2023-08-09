@@ -17,7 +17,7 @@ context('Cell validation', () => {
         const cellIdy = 2;
 
         utils.selectCell(config.cellWidth * 2 + utils.getCellXCenter(), config.cellHeight * 4);
-        
+   
         utils.getCell(cellIdx, cellIdy).should('not.have.class', OLD_INVALID_CLASS_NAME);
     });
 
