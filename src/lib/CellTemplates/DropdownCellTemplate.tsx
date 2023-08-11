@@ -65,7 +65,12 @@ export class DropdownCellTemplate implements CellTemplate<DropdownCell> {
     }
 
     update(cell: Compatible<DropdownCell>, cellToMerge: UncertainCompatible<DropdownCell>): Compatible<DropdownCell> {
-        return this.getCompatibleCell({ ...cell, selectedValue: cellToMerge.selectedValue, isOpen: cellToMerge.isOpen, inputValue: cellToMerge.inputValue });
+        // I use the text property as a selectedValue property because behaviors don't know about the selectedValue property
+        // and instead throw an error when we try to access it.
+        // Before merging, we also need to check if the incoming value is in the target values array, otherwise we set it to undefined.
+        const selectedValueFromText = cell.values.some((val: any) => val.value === cellToMerge.text) ? cellToMerge.text : undefined;
+
+        return this.getCompatibleCell({ ...cell, selectedValue: selectedValueFromText, isOpen: cellToMerge.isOpen, inputValue: cellToMerge.inputValue });
     }
 
     getClassName(cell: Compatible<DropdownCell>, isInEditMode: boolean): string {
@@ -112,7 +117,7 @@ const DropdownInput: FC<DIProps> = ({ onCellChanged, cell }) => {
     const selectRef = React.useRef<any>(null);
 
     const [inputValue, setInputValue] = React.useState<string | undefined>(cell.inputValue);
-    const selectedValue = React.useMemo<OptionType | undefined>(() => cell.values.find((val: any) => val.value === cell.selectedValue), [cell.selectedValue, cell.values]);
+    const selectedValue = React.useMemo<OptionType | undefined>(() => cell.values.find((val: any) => val.value === cell.text), [cell.text, cell.values]);
 
     React.useEffect(() => {
         if (cell.isOpen && selectRef.current) {
