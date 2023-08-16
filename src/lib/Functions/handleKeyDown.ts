@@ -675,5 +675,14 @@ function resizeSelection(
     scrollIntoView(state, top, left);
   }
 
+  if (state.props?.onSelectionChanging && !state.props.onSelectionChanging(selectedRanges)) {
+    // If selection change is canceled we can just return the state here
+    // TODO: We could try to find the "best possible selection", but I've not yet found a use case for this and - as I discovered - it isn't trivial
+    // TODO: Also, we could add a external way to change the selection so the users could implement this themselves
+    return state;
+  }
+
+  state.props?.onSelectionChanged?.(selectedRanges);
+
   return { ...state, selectedRanges };
 }
