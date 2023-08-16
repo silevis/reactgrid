@@ -3,6 +3,8 @@ import {
   isSelectionKey,
   isOnClickableArea,
   getCompatibleCellAndTemplate,
+  CellMatrix,
+  PointerLocation,
 } from "../../core";
 import { PointerEvent } from "../Model/domEventsTypes";
 import {
@@ -68,6 +70,26 @@ export class CellSelectionBehavior extends Behavior {
     } else {
       return selectRange(state, range, false);
     }
+  }
+
+  handlePointerUp(event: MouseEvent | PointerEvent, location: PointerLocation, state: State<CellMatrix, Behavior<MouseEvent | PointerEvent>>): State<CellMatrix, Behavior<MouseEvent | PointerEvent>> {
+      if (
+        state.props?.onSelectionChanging &&
+        !state.props.onSelectionChanging(state.selectedRanges)
+      ) {
+        // Cancel the latest selection
+        const filteredRanges = [
+          ...state.selectedRanges,
+        ].filter((_, index) => index !== state.activeSelectedRangeIdx);
+
+        return {
+          ...state,
+          selectedRanges: filteredRanges,
+          activeSelectedRangeIdx: filteredRanges.length - 1,
+        };
+      }
+
+      return state;
   }
 
   handleContextMenu(event: PointerEvent, state: State): State {

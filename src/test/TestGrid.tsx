@@ -256,7 +256,21 @@ export const TestGrid: React.FC<TestGridProps> = (props) => {
         return true;
     }
 
-    const onSelectionChanged = (range: Range[]): void => { }
+    const handleSelectionChanged = (range: Range[]): void => { }
+
+    const BANNED_LOCATION = { rowIdx: 5, colIdx: 10 };
+
+    const doesRangeContainLocationByIdx = (range: Range, location: { rowIdx: number, colIdx: number }): boolean => {
+        return location.colIdx >= range.first.column.idx &&
+            location.colIdx <= range.last.column.idx &&
+            location.rowIdx >= range.first.row.idx &&
+            location.rowIdx <= range.last.row.idx;
+    };
+
+    const handleSelectionChanging = (ranges: Range[]): boolean => {
+        // Returns false if any range contains the banned location
+        return !ranges.some(range => doesRangeContainLocationByIdx(range, BANNED_LOCATION));
+    };
 
     const Component = component;
     return (
@@ -312,7 +326,8 @@ export const TestGrid: React.FC<TestGridProps> = (props) => {
                     horizontalStickyBreakpoint={config.horizontalStickyBreakpoint}
                     verticalStickyBreakpoint={config.verticalStickyBreakpoint}
                     disableVirtualScrolling={config.disableVirtualScrolling}
-                    onSelectionChanged={onSelectionChanged}
+                    onSelectionChanged={handleSelectionChanged}
+                    onSelectionChanging={handleSelectionChanging}
                 />}
                 {config.additionalContent &&
                     <div style={{ height: `${config.rgViewportHeight}px`, backgroundColor: '#fafff3' }}>

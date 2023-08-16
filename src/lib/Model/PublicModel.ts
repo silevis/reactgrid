@@ -104,12 +104,21 @@ export interface ReactGridProps {
     readonly onFocusLocationChanging?: (location: CellLocation) => boolean;
 
     /** 
-     * Called when changing selection.
+     * Called when selection has been changed.
      * 
      * @param {Range[]} selectedRanges array of selected cell locations
      * @returns {void}
      */
     readonly onSelectionChanged?: (selectedRanges: Range[]) => void;
+
+    /**
+     * Called when trying to change selection.
+     * You are able to prevent selection changing.
+     * 
+     * @param {Range[]} selectedRanges array of selected cell locations
+     * @returns {boolean} Return `false` to prevent selection changing
+     */
+    readonly onSelectionChanging?: (selectedRanges: Range[]) => boolean;
 
     /** 
      * Called when column resize action was finished
