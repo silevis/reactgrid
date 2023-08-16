@@ -105,7 +105,7 @@ function handleKeyDownInternal(
   } else if (isSelectionKey(event)) {
     const cm = state.cellMatrix;
     switch (event.keyCode) {
-      case keyCodes.KEY_A:
+      case keyCodes.KEY_A: {
         if (
           state.selectedRanges.length === 1 &&
           areLocationsEqual(state.selectedRanges[0].first, cm.first) &&
@@ -113,12 +113,20 @@ function handleKeyDownInternal(
         ) {
           return resetSelection(state, location);
         }
+
+        const newRange = cm.getRange(cm.first, cm.last);
+
+        if (state.props?.onSelectionChanging && !state.props.onSelectionChanging([newRange])) {  
+          return state;
+        }
+
         return {
           ...state,
-          selectedRanges: [cm.getRange(cm.first, cm.last)],
+          selectedRanges: [newRange],
           selectionMode: "range",
           activeSelectedRangeIdx: 0,
         };
+      }
       case keyCodes.HOME:
         return focusLocation(state, state.cellMatrix.first);
       case keyCodes.END:
