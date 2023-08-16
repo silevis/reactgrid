@@ -73,10 +73,7 @@ export class CellSelectionBehavior extends Behavior {
   }
 
   handlePointerUp(event: MouseEvent | PointerEvent, location: PointerLocation, state: State<CellMatrix, Behavior<MouseEvent | PointerEvent>>): State<CellMatrix, Behavior<MouseEvent | PointerEvent>> {
-      if (
-        state.props?.onSelectionChanging &&
-        !state.props.onSelectionChanging(state.selectedRanges)
-      ) {
+      if (state.props?.onSelectionChanging && !state.props.onSelectionChanging(state.selectedRanges)) {
         // Cancel the latest selection
         const filteredRanges = [
           ...state.selectedRanges,
@@ -88,6 +85,8 @@ export class CellSelectionBehavior extends Behavior {
           activeSelectedRangeIdx: filteredRanges.length - 1,
         };
       }
+
+      state.props?.onSelectionChanged && state.props.onSelectionChanged(state.selectedRanges);
 
       return state;
   }
