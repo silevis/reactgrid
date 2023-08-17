@@ -16,10 +16,10 @@ export class Range {
     }
 
     contains(location: Location): boolean {
-        return location.column.idx >= this.first.column.idx &&
-            location.column.idx <= this.last.column.idx &&
-            location.row.idx >= this.first.row.idx &&
-            location.row.idx <= this.last.row.idx;
+        return location.column?.idx >= this.first.column?.idx &&
+            location.column?.idx <= this.last.column?.idx &&
+            location.row?.idx >= this.first.row?.idx &&
+            location.row?.idx <= this.last.row?.idx;
     }
 
     slice(range: Range, direction: SliceDirection): Range {

@@ -1,7 +1,7 @@
 import * as React from 'react';
 import {
     CellTemplate, Cell, Compatible, Uncertain, UncertainCompatible, isNavigationKey, getCellProperty,
-    isAlphaNumericKey, keyCodes
+    isAlphaNumericKey, keyCodes, getCharFromKey, isKeyPrintable
 } from '../../reactgrid';
 import './flag-cell-style.scss';
 
@@ -11,6 +11,7 @@ export interface FlagCell extends Cell {
 }
 
 export class FlagCellTemplate implements CellTemplate<FlagCell> {
+    private wasEscKeyPressed = false;
 
     getCompatibleCell(uncertainCell: Uncertain<FlagCell>): Compatible<FlagCell> {
         const text = getCellProperty(uncertainCell, 'text', 'string');
@@ -18,10 +19,16 @@ export class FlagCellTemplate implements CellTemplate<FlagCell> {
         return { ...uncertainCell, text, value };
     }
 
-    handleKeyDown(cell: Compatible<FlagCell>, keyCode: number, ctrl: boolean, shift: boolean, alt: boolean): { cell: Compatible<FlagCell>, enableEditMode: boolean } {
-        if (!ctrl && !alt && isAlphaNumericKey(keyCode))
-            return { cell, enableEditMode: true }
+    handleKeyDown(cell: Compatible<FlagCell>, keyCode: number, ctrl: boolean, shift: boolean, alt: boolean, key: string): { cell: Compatible<FlagCell>, enableEditMode: boolean } {
+        const char = getCharFromKey(key);
+
+        if (!ctrl && isKeyPrintable(key) && !(shift && keyCode === keyCodes.SPACE))
+            return { cell: { ...cell, text: char }, enableEditMode: true }
         return { cell, enableEditMode: keyCode === keyCodes.POINTER || keyCode === keyCodes.ENTER }
+    }
+
+    handleCompositionEnd(cell: Compatible<FlagCell>, eventData: any): { cell: Compatible<FlagCell>, enableEditMode: boolean } {
+        return { cell: { ...cell, text: eventData }, enableEditMode: true }
     }
 
     update(cell: Compatible<FlagCell>, cellToMerge: UncertainCompatible<FlagCell>): Compatible<FlagCell> {
@@ -48,10 +55,13 @@ export class FlagCellTemplate implements CellTemplate<FlagCell> {
             onCut={e => e.stopPropagation()}
             onPaste={e => e.stopPropagation()}
             onPointerDown={e => e.stopPropagation()}
-            onBlur={e => onCellChanged(this.getCompatibleCell({ ...cell, text: e.currentTarget.value }), (e as any).view?.event?.keyCode !== keyCodes.ESCAPE)}
+            onBlur={e => { onCellChanged(this.getCompatibleCell({ ...cell, text: e.currentTarget.value }), !this.wasEscKeyPressed); this.wasEscKeyPressed = false; }}
             onKeyDown={e => {
                 if (isAlphaNumericKey(e.keyCode) || isNavigationKey(e.keyCode)) e.stopPropagation();
-                if (e.keyCode === keyCodes.ESCAPE) e.currentTarget.value = cell.text; // reset
+                if (e.keyCode === keyCodes.ESCAPE) { 
+                    e.currentTarget.value = cell.text; // reset
+                    this.wasEscKeyPressed = true;
+                }
             }}
         />
     }

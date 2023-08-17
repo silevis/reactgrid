@@ -1,3 +1,5 @@
+import { isKeyPrintable } from "./keyCodeCheckings";
+
 const characterMapShift: string[] = [];
 characterMapShift[8] = "";
 characterMapShift[9] = "";
@@ -206,4 +208,8 @@ characterMap[222] = "'";
 
 export const getCharFromKeyCode = (keyCode: number, isShiftKey = false): string => {
     return isShiftKey ? characterMapShift[keyCode] : characterMap[keyCode];
+}
+
+export const getCharFromKey = (key: string, isShiftKey = false): string => {
+    return isKeyPrintable(key) ? key : "";
 }
