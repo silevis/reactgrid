@@ -3,10 +3,14 @@ import { State } from "../Model/State";
 import { newLocation } from "./newLocation";
 
 export function resetSelection(state: State, location: Location): State {
+  const newRange = state.cellMatrix.getRange(location, location);
+
+  state?.props?.onSelectionChanged && state.props.onSelectionChanged([newRange]);
+  
   return {
     ...state,
     activeSelectedRangeIdx: 0,
-    selectedRanges: [state.cellMatrix.getRange(location, location)],
+    selectedRanges: [newRange],
     selectedIndexes: [],
     selectedIds: [],
     selectionMode: "range",
