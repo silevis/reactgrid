@@ -466,6 +466,10 @@ export const TestGrid: React.FC<TestGridProps> = (props) => {
     ];
   };
 
+  const handleFocusLocationChanged = (location: CellLocation): void => { }
+
+  const handleFocusLocationChanging = (location: CellLocation): boolean => true;
+
   const handleSelectionChanged = (range: Range[]): void => { }
 
   const BANNED_LOCATION = { rowIdx: 5, colIdx: 10 };
