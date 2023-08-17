@@ -13,6 +13,7 @@ export class EventHandlers {
     pointerDownHandler = (event: PointerEvent): void => this.updateState(state => this.pointerEventsController.handlePointerDown(event, state));
     keyDownHandler = (event: KeyboardEvent): void => this.updateState(state => state.currentBehavior.handleKeyDown(event, state));
     keyUpHandler = (event: KeyboardEvent): void => this.updateState(state => state.currentBehavior.handleKeyUp(event, state));
+    compositionEndHandler = (event: CompositionEvent): void => this.updateState(state => state.currentBehavior.handleCompositionEnd(event, state));
     copyHandler = (event: ClipboardEvent): void => this.updateState(state => state.currentBehavior.handleCopy(event, state));
     pasteHandler = (event: ClipboardEvent): void => this.updateState(state => state.currentBehavior.handlePaste(event, state));
     cutHandler = (event: ClipboardEvent): void => this.updateState(state => state.currentBehavior.handleCut(event, state));

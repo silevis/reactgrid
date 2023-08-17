@@ -5,6 +5,8 @@ import { visit } from '../../common/visit';
 
 const utils = new Utilities(config);
 const INVALID_CLASS_NAME = "rg-invalid";
+const OLD_INVALID_CLASS_NAME = "invalid";
+
 context('Cell validation', () => {
 
     beforeEach(() => {
@@ -16,8 +18,8 @@ context('Cell validation', () => {
         const cellIdy = 2;
 
         utils.selectCell(config.cellWidth * 2 + utils.getCellXCenter(), config.cellHeight * 4);
-        
-        utils.getCell(cellIdx, cellIdy).should('not.have.class', INVALID_CLASS_NAME);
+   
+        utils.getCell(cellIdx, cellIdy).should('not.have.class', OLD_INVALID_CLASS_NAME);
     });
 
     it('should be valid email cell', () => { // ✅
@@ -25,7 +27,7 @@ context('Cell validation', () => {
         const cellIdy = 2;
         utils.selectCell(config.cellWidth * 3 + utils.getCellXCenter(), config.cellHeight * 4);
 
-        utils.getCell(cellIdx, cellIdy).should('not.have.class', INVALID_CLASS_NAME);
+        utils.getCell(cellIdx, cellIdy).should('not.have.class', OLD_INVALID_CLASS_NAME);
     });
 
     it('should be valid number cell', () => { // ✅
@@ -50,7 +52,7 @@ context('Cell validation', () => {
         cy.focused().type("myText", { force: true });
         utils.keyDown(constants.keyCodes.Enter, { force: true }, 500, true);
 
-        utils.getCell(cellIdx, cellIdy).should('have.class', INVALID_CLASS_NAME);
+        utils.getCell(cellIdx, cellIdy).should('have.class', OLD_INVALID_CLASS_NAME);
         utils.getCell(cellIdx, cellIdy).should($cell => expect($cell.eq(0)).to.not.contain('ERR'));
     });
 
@@ -84,7 +86,7 @@ context('Cell validation', () => {
         cy.focused().type("abc", { force: true });
         utils.keyDown(constants.keyCodes.Enter, { force: true }, 500, true);
         
-        utils.getCell(cellIdx, cellIdy).should('have.class', INVALID_CLASS_NAME);
+        utils.getCell(cellIdx, cellIdy).should('have.class', OLD_INVALID_CLASS_NAME);
         utils.getCell(cellIdx, cellIdy).should($cell => expect($cell.eq(0)).to.contain('ERR'));
     });
 
@@ -101,7 +103,7 @@ context('Cell validation', () => {
         cy.focused().type("myText", { force: true });
         utils.keyDown(constants.keyCodes.Enter, { force: true }, 500, true);
         
-        utils.getCell(cellIdx, cellIdy).should('have.class', INVALID_CLASS_NAME);
+        utils.getCell(cellIdx, cellIdy).should('have.class', OLD_INVALID_CLASS_NAME);
         utils.getCell(cellIdx, cellIdy).should($cell => expect($cell.eq(0)).to.contain('ERR'));
     });
 
@@ -135,7 +137,7 @@ context('Cell validation', () => {
         cy.focused().type("abc", { force: true });
         utils.keyDown(constants.keyCodes.Enter, { force: true }, 500, true);
         
-        utils.getCell(cellIdx, cellIdy).should('have.class', INVALID_CLASS_NAME);
+        utils.getCell(cellIdx, cellIdy).should('have.class', OLD_INVALID_CLASS_NAME);
         utils.getCell(cellIdx, cellIdy).should($cell => expect($cell.eq(0)).to.not.contain('ERR'));
     });
 
@@ -152,7 +154,7 @@ context('Cell validation', () => {
         cy.focused().type("myText", { force: true });
         utils.keyDown(constants.keyCodes.Enter, { force: true }, 500, true);
 
-        utils.getCell(cellIdx, cellIdy).should('have.class', INVALID_CLASS_NAME);
+        utils.getCell(cellIdx, cellIdy).should('have.class', OLD_INVALID_CLASS_NAME);
         utils.getCell(cellIdx, cellIdy).should($cell => expect($cell.eq(0)).to.not.contain('ERR'));
     });
 });

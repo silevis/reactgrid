@@ -53,6 +53,7 @@ export function getDataToCopy(
     return text;
   }
 
+// ? unused?
 export function processSingleCell(tableRow: HTMLTableRowElement, state: State, location: Location): void {
     const tableCell: HTMLTableDataCellElement = tableRow.insertCell();
     const { cell } = getCompatibleCellAndTemplate(state, location);
