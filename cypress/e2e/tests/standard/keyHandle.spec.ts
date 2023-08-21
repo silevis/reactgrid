@@ -195,17 +195,20 @@ context('Keyboard', () => {
         utils.getReactGrid().should('contain.text', randomText);
     });
 
-    it('Enter key pressed should exit from cell edit mode and move to next row', () => { // ✅
+    it('Enter key pressed should exit from cell edit mode and move to next row or right cell (depending on `moveRightOnEnter` prop)', () => { // ✅
         utils.selectCellInEditMode(config.cellWidth + utils.getCellXCenter(), config.cellHeight * 4 + utils.getCellYCenter());
-        const randomText = utils.randomText();
-        cy.focused().type(randomText, { force: true });
 
-        utils.keyDown(constants.keyCodes.Enter, { force: true });
-        cy.wait(utils.wait());
+        const randomText = utils.randomText();
+        cy.focused().type(`${randomText}{enter}`);
+
         utils.getCellEditor().should('not.exist');
-        cy.wait(utils.wait());
-        utils.assertElementTopIsEqual(utils.getCellFocus(), config.cellHeight * 5 - config.lineWidth);
-        cy.wait(utils.wait());
+
+        if (config.moveRightOnEnter) {
+            utils.assertElementLeftIsEqual(utils.getCellFocus(), config.cellWidth * 2 - config.lineWidth);
+        } else {
+            utils.assertElementTopIsEqual(utils.getCellFocus(), config.cellHeight * 5 - config.lineWidth);
+        }
+
         utils.getReactGrid().should('contain.text', randomText);
     });
 
