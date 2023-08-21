@@ -528,7 +528,6 @@ export const TestGrid: React.FC<TestGridProps> = (props) => {
             focusLocation={enableFrozenFocus ? config.focusLocation : undefined}
             // onCellsChanged={handleChangesTest2} // TODO This handler should be allowed
             onCellsChanged={handleChanges}
-            moveRightOnEnter
             onColumnResized={handleColumnResize}
             customCellTemplates={{ flag: new FlagCellTemplate() }}
             highlights={config.highlights}
@@ -553,6 +552,7 @@ export const TestGrid: React.FC<TestGridProps> = (props) => {
             horizontalStickyBreakpoint={config.horizontalStickyBreakpoint}
             verticalStickyBreakpoint={config.verticalStickyBreakpoint}
             disableVirtualScrolling={config.disableVirtualScrolling}
+            moveRightOnEnter={config.moveRightOnEnter}
           />
         )}
         {config.additionalContent && (

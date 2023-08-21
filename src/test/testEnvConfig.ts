@@ -17,6 +17,7 @@ export const config: TestConfig = {
     enableFullWidthHeader: false,
     enableGroupIdRender: true,
     disableVirtualScrolling: false,
+    moveRightOnEnter: true,
 
     cellHeight: 25,
     cellWidth: 150,
@@ -208,6 +209,7 @@ export interface TestConfig {
     enableFullWidthHeader: boolean;
     enableGroupIdRender: boolean;
     disableVirtualScrolling: boolean;
+    moveRightOnEnter: boolean;
 
     columns: number;
     rows: number;
