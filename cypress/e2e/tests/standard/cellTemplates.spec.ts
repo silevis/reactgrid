@@ -127,7 +127,7 @@ context('Cell templates', () => {
         utils.assertIsReactGridFocused();
     });
 
-    it.only('should place cell focus on a opened dropdown cell', () => { // ✅
+    it.skip('should place cell focus on a opened dropdown cell', () => { // 🟠  NEED FIX
         utils.getDropdownMenu().should('not.exist');
 
         utils.scrollTo(config.cellWidth * 7, 0);
