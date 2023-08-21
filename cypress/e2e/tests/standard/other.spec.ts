@@ -10,7 +10,7 @@ context('Other', () => {
         visit();
     });
 
-    it('should dont not "copy" values between cells after change focus position', () => { // ✅
+    it('shouldn\'t "copy" values between cells after change focus position', () => { // ✅
         const x = utils.getCellXCenter();
         const y = utils.getCellYCenter() + (config.cellHeight * 2);
         utils.getCell(1, 2).invoke('text').then(text => {
@@ -20,7 +20,7 @@ context('Other', () => {
         });
     });
 
-    it('should not open cell editor on non editable cell', () => { // ✅
+    it('shouldn\'t open cell editor on non editable cell', () => { // ✅
         utils.scrollTo(config.cellWidth * 8, 0);
         cy.wait(utils.wait());
         utils.selectCellInEditMode(utils.getCellXCenter(), config.cellHeight * 2 + utils.getCellYCenter());
