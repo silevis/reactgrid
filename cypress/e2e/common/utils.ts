@@ -197,6 +197,10 @@ export class Utilities {
     // this.getScrollableElement().trigger("pointerdown", x, y, {
     //   pointerType: "mouse",
     // });
+    // cy.wait(100);
+    // this.getScrollableElement().trigger("pointerup", x, y, {
+    //   pointerType: "mouse",
+    // });
     // this.getBody().trigger("pointerup", 0, 0, {
     //   pointerType: "mouse",
     //   force: true,
@@ -289,7 +293,7 @@ export class Utilities {
                         $e
                     )
                   ).to.be.most(
-                    this.round($e + $d[0].clientHeight) + 1,
+                    this.round($e + $d.clientHeight) + 1,
                     "bottom"
                   );
                 });
@@ -313,7 +317,7 @@ export class Utilities {
                         reactgridRect.x +
                         $e
                     )
-                  ).to.be.most(this.round($e + $d[0].clientWidth) + 1, "right");
+                  ).to.be.most(this.round($e + $d.clientWidth) + 1, "right");
                 });
             });
           });
@@ -377,7 +381,7 @@ export class Utilities {
               .then(($d) => {
                 const expected =
                   $e -
-                  $d[0].clientHeight +
+                  $d.clientHeight +
                   reactgridRect.y +
                   this.getConfig().rows * this.getConfig().cellHeight;
                 expect(this.round($e), "Scroll bottom").to.be.least(
@@ -434,7 +438,7 @@ export class Utilities {
               .then(($d) => {
                 const toBeExpected =
                   $e -
-                  $d[0].clientWidth +
+                  $d.clientWidth +
                   reactgridRect.x +
                   this.getConfig().columns * this.getConfig().cellWidth;
                 expect(expectedValue, "Scroll Right").to.be.least(

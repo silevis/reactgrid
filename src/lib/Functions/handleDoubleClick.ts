@@ -9,7 +9,7 @@ export function handleDoubleClick(event: PointerEvent, location: Location, state
     if (areLocationsEqual(location, state.focusedLocation)) {
         const { cell, cellTemplate } = getCompatibleCellAndTemplate(state, location);
         if (cellTemplate.handleKeyDown) {
-            const { cell: newCell, enableEditMode } = cellTemplate.handleKeyDown(cell, 1, isSelectionKey(event), event.shiftKey, event.altKey);
+            const { cell: newCell, enableEditMode } = cellTemplate.handleKeyDown(cell, 1, isSelectionKey(event), event.shiftKey, event.altKey, "DoubleClick");
             if (enableEditMode && !cell.nonEditable) {
                 return { ...state, currentlyEditedCell: newCell };
             }
