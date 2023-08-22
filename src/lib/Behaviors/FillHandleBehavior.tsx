@@ -140,71 +140,108 @@ export class FillHandleBehavior extends Behavior {
     };
 
     switch (this.fillDirection) {
-      case "right":
+      case "right": {
+        const newRange = cellMatrix.getRange(
+          activeSelectedRange.first,
+          newLocation(activeSelectedRange.last.row, location.column)
+        );
+
         state = fillHorizontally(state, activeSelectedRange, "right");
+
+        if (state?.props?.onSelectionChanging && !state.props.onSelectionChanging([newRange])) {
+          return state;
+        }
+
         state = {
           ...state,
-          selectedRanges: [
-            cellMatrix.getRange(
-              activeSelectedRange.first,
-              newLocation(activeSelectedRange.last.row, location.column)
-            ),
-          ],
+          selectedRanges: [newRange],
           selectedIds: [
             ...activeSelectedRange.columns.map((col) => col.columnId),
             ...this.fillRange.columns.map((col) => col.columnId),
           ],
         };
+
+        state.props?.onSelectionChanged && state.props.onSelectionChanged(state.selectedRanges);
+        
         break;
-      case "left":
+      }
+      case "left": {
+        const newRange = cellMatrix.getRange(
+          activeSelectedRange.last,
+          newLocation(activeSelectedRange.first.row, location.column)
+        );
+
         state = fillHorizontally(state, activeSelectedRange, "left");
+
+        if (state?.props?.onSelectionChanging && !state.props.onSelectionChanging([newRange])) {
+          return state;
+        }
+
         state = {
           ...state,
-          selectedRanges: [
-            cellMatrix.getRange(
-              activeSelectedRange.last,
-              newLocation(activeSelectedRange.first.row, location.column)
-            ),
-          ],
+          selectedRanges: [newRange],
           selectedIds: [
             ...activeSelectedRange.columns.map((col) => col.columnId),
             ...this.fillRange.columns.map((col) => col.columnId),
           ],
         };
+
+        state.props?.onSelectionChanged && state.props.onSelectionChanged(state.selectedRanges);
+
         break;
-      case "up":
+      }
+      case "up": {
+        const newRange = cellMatrix.getRange(activeSelectedRange.last, {
+          row: location.row,
+          column: activeSelectedRange.first.column,
+        });
+
         state = fillVertically(state, activeSelectedRange, "up");
+
+        if (state?.props?.onSelectionChanging && !state.props.onSelectionChanging([newRange])) {
+          return state;
+        }
+
         state = {
           ...state,
-          selectedRanges: [
-            cellMatrix.getRange(activeSelectedRange.last, {
-              row: location.row,
-              column: activeSelectedRange.first.column,
-            }),
-          ],
+          selectedRanges: [newRange],
           selectedIds: [
             ...activeSelectedRange.rows.map((row) => row.rowId),
             ...this.fillRange.rows.map((row) => row.rowId),
           ],
         };
+
+        state.props?.onSelectionChanged && state.props.onSelectionChanged(state.selectedRanges);
+
         break;
-      case "down":
+      }
+      case "down": {
+        const newRange = cellMatrix.getRange(
+          activeSelectedRange.first,
+          newLocation(location.row, activeSelectedRange.last.column)
+        );
+
         state = fillVertically(state, activeSelectedRange, "down");
+
+        if (state?.props?.onSelectionChanging && !state.props.onSelectionChanging([newRange])) {
+          return state;
+        }
+
         state = {
           ...state,
-          selectedRanges: [
-            cellMatrix.getRange(
-              activeSelectedRange.first,
-              newLocation(location.row, activeSelectedRange.last.column)
-            ),
-          ],
+          selectedRanges: [newRange],
           selectedIds: [
             ...activeSelectedRange.rows.map((row) => row.rowId),
             ...this.fillRange.rows.map((row) => row.rowId),
           ],
         };
+
+        state.props?.onSelectionChanged && state.props.onSelectionChanged(state.selectedRanges);
+
         break;
+      }
     }
+
     return state;
   }
 

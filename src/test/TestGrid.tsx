@@ -1,25 +1,13 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
 import React from "react";
 import {
-  Column,
-  Row,
-  Id,
-  MenuOption,
-  SelectionMode,
-  DropPosition,
-  CellLocation,
-  DefaultCellTypes,
-  CellChange,
-  ReactGridProps,
-  TextCell,
-  NumberCell,
-  CellStyle,
-  HeaderCell,
-  ChevronCell,
-} from "./../reactgrid";
-import { TestConfig } from "./testEnvConfig";
-import "../styles.scss";
-import { FlagCell, FlagCellTemplate } from "./flagCell/FlagCellTemplate";
+    Column, Row, Id, MenuOption, SelectionMode, DropPosition, CellLocation,
+    DefaultCellTypes, CellChange, ReactGridProps, TextCell, NumberCell, CellStyle, HeaderCell, ChevronCell, Range
+} from './../reactgrid';
+import { TestConfig } from './testEnvConfig';
+import '../styles.scss';
+import { FlagCell, FlagCellTemplate } from './flagCell/FlagCellTemplate';
+
 
 type TestGridCells = DefaultCellTypes | FlagCell;
 
@@ -478,129 +466,120 @@ export const TestGrid: React.FC<TestGridProps> = (props) => {
     ];
   };
 
-  const handleFocusLocationChanged = (location: CellLocation): void => {};
+  const handleFocusLocationChanged = (location: CellLocation): void => { }
 
-  const handleFocusLocationChanging = (location: CellLocation): boolean => {
-    return true;
+  const handleFocusLocationChanging = (location: CellLocation): boolean => true;
+
+  const handleSelectionChanged = (range: Range[]): void => { }
+
+  const BANNED_LOCATION = { rowIdx: 5, colIdx: 10 };
+
+  const doesRangeContainLocationByIdx = (range: Range, location: { rowIdx: number, colIdx: number }): boolean => {
+      return location.colIdx >= range.first.column.idx &&
+          location.colIdx <= range.last.column.idx &&
+          location.rowIdx >= range.first.row.idx &&
+          location.rowIdx <= range.last.row.idx;
+  };
+
+  const handleSelectionChanging = (ranges: Range[]): boolean => {
+      // Returns false if any range contains the banned location
+      return !ranges.some(range => doesRangeContainLocationByIdx(range, BANNED_LOCATION));
   };
 
   const Component = component;
   return (
-    <>
-      <div
-        className="test-grid-container"
-        data-cy="div-scrollable-element"
-        style={{
-          ...(!config.pinToBody && {
-            height: config.fillViewport
-              ? `calc(100vh - 30px)`
-              : config.rgViewportHeight,
-            width: config.fillViewport
-              ? `calc(100vw - 45px)`
-              : config.rgViewportWidth,
-            margin: config.margin,
-            overflow: "auto",
-          }),
-          position: "relative",
-          ...(config.flexRow && {
-            display: "flex",
-            flexDirection: "row",
-          }),
-        }}
-      >
-        {config.additionalContent && (
-          <div
-            style={{
-              height: `${config.rgViewportHeight}px`,
-              backgroundColor: "#fafff3",
-            }}
-          >
-            <Logo width={config.rgViewportWidth} />
-            <Logo width={config.rgViewportWidth} />
-            <Logo width={config.rgViewportWidth} />
+      <>
+          <div className='test-grid-container' data-cy='div-scrollable-element' style={{
+              ...(!config.pinToBody && {
+                  height: config.fillViewport ? `calc(100vh - 30px)` : config.rgViewportHeight,
+                  width: config.fillViewport ? `calc(100vw - 45px)` : config.rgViewportWidth,
+                  margin: config.margin,
+                  overflow: 'auto',
+              }),
+              position: 'relative',
+              ...(config.flexRow && {
+                  display: 'flex',
+                  flexDirection: 'row'
+              }),
+          }}>
+              {config.additionalContent &&
+                  <div style={{ height: `${config.rgViewportHeight}px`, backgroundColor: '#fafff3' }}>
+                      <Logo width={config.rgViewportWidth} />
+                      <Logo width={config.rgViewportWidth} />
+                      <Logo width={config.rgViewportWidth} />
+                  </div>
+              }
+              {render && <Component
+                  rows={rows}
+                  columns={columns}
+                  initialFocusLocation={config.initialFocusLocation}
+                  focusLocation={enableFrozenFocus ? config.focusLocation : undefined}
+                  // onCellsChanged={handleChangesTest2} // TODO This handler should be allowed
+                  onCellsChanged={handleChanges}
+                  onColumnResized={handleColumnResize}
+                  customCellTemplates={{ 'flag': new FlagCellTemplate() }}
+                  highlights={config.highlights}
+                  stickyLeftColumns={enableSticky ? config.stickyLeft : undefined}
+                  stickyRightColumns={enableSticky ? config.stickyRight : undefined}
+                  stickyTopRows={enableSticky ? config.stickyTop : undefined}
+                  stickyBottomRows={enableSticky ? config.stickyBottom : undefined}
+                  canReorderColumns={handleCanReorderColumns}
+                  canReorderRows={handleCanReorderRows}
+                  onColumnsReordered={handleColumnsReorder}
+                  onRowsReordered={handleRowsReorder}
+                  onContextMenu={handleContextMenu}
+                  onFocusLocationChanged={handleFocusLocationChanged}
+                  onFocusLocationChanging={handleFocusLocationChanging}
+                  enableRowSelection={enableColumnAndRowSelection || false}
+                  enableColumnSelection={enableColumnAndRowSelection || false}
+                  enableFullWidthHeader={config.enableFullWidthHeader || false}
+                  enableRangeSelection={config.enableRangeSelection}
+                  enableFillHandle={config.enableFillHandle}
+                  enableGroupIdRender={config.enableGroupIdRender}
+                  labels={config.labels}
+                  horizontalStickyBreakpoint={config.horizontalStickyBreakpoint}
+                  verticalStickyBreakpoint={config.verticalStickyBreakpoint}
+                  disableVirtualScrolling={config.disableVirtualScrolling}
+                  onSelectionChanged={handleSelectionChanged}
+                  onSelectionChanging={handleSelectionChanging}
+              />}
+              {config.additionalContent &&
+                  <div style={{ height: `${config.rgViewportHeight}px`, backgroundColor: '#fafff3' }}>
+                      <Logo width={config.rgViewportWidth} />
+                      <Logo width={config.rgViewportWidth} />
+                      <Logo width={config.rgViewportWidth} />
+                  </div>
+              }
           </div>
-        )}
-        {render && (
-          <Component
-            rows={rows}
-            columns={columns}
-            initialFocusLocation={config.initialFocusLocation}
-            focusLocation={enableFrozenFocus ? config.focusLocation : undefined}
-            // onCellsChanged={handleChangesTest2} // TODO This handler should be allowed
-            onCellsChanged={handleChanges}
-            moveRightOnEnter
-            onColumnResized={handleColumnResize}
-            customCellTemplates={{ flag: new FlagCellTemplate() }}
-            highlights={config.highlights}
-            stickyLeftColumns={enableSticky ? config.stickyLeft : undefined}
-            stickyRightColumns={enableSticky ? config.stickyRight : undefined}
-            stickyTopRows={enableSticky ? config.stickyTop : undefined}
-            stickyBottomRows={enableSticky ? config.stickyBottom : undefined}
-            canReorderColumns={handleCanReorderColumns}
-            canReorderRows={handleCanReorderRows}
-            onColumnsReordered={handleColumnsReorder}
-            onRowsReordered={handleRowsReorder}
-            onContextMenu={handleContextMenu}
-            onFocusLocationChanged={handleFocusLocationChanged}
-            onFocusLocationChanging={handleFocusLocationChanging}
-            enableRowSelection={enableColumnAndRowSelection || false}
-            enableColumnSelection={enableColumnAndRowSelection || false}
-            enableFullWidthHeader={config.enableFullWidthHeader || false}
-            enableRangeSelection={config.enableRangeSelection}
-            enableFillHandle={config.enableFillHandle}
-            enableGroupIdRender={config.enableGroupIdRender}
-            labels={config.labels}
-            horizontalStickyBreakpoint={config.horizontalStickyBreakpoint}
-            verticalStickyBreakpoint={config.verticalStickyBreakpoint}
-            disableVirtualScrolling={config.disableVirtualScrolling}
-          />
-        )}
-        {config.additionalContent && (
-          <div
-            style={{
-              height: `${config.rgViewportHeight}px`,
-              backgroundColor: "#fafff3",
-            }}
-          >
-            <Logo width={config.rgViewportWidth} />
-            <Logo width={config.rgViewportWidth} />
-            <Logo width={config.rgViewportWidth} />
-          </div>
-        )}
-      </div>
-      {!config.fillViewport && (
-        <>
-          <input type="text" data-cy="outer-input" />
-          <Logo />
+          {!config.fillViewport &&
+                <>
+                    <input type='text' data-cy='outer-input' />
+                    <Logo />
+                </>
+            }
+            <TestGridOptionsSelect></TestGridOptionsSelect>
+            <button onClick={() => {
+                setRender((render) => !render);
+            }}>Mount / Unmount</button>
+            {config.additionalContent &&
+                <>
+                    <h1 style={{ width: 3000 }}>TEXT</h1> Test WITH IT
+                    <h1>TEXT</h1> Test WITH IT
+                    <h1>TEXT</h1> Test WITH IT
+                    <h1>TEXT</h1> Test WITH IT
+                    <h1>TEXT</h1> Test WITH IT
+                    <h1>TEXT</h1> Test WITH IT
+                    <h1>TEXT</h1> Test WITH IT
+                    <h1>TEXT</h1> Test WITH IT
+                    <h1>TEXT</h1> Test WITH IT
+                    <h1>TEXT</h1> Test WITH IT
+                    <h1>TEXT</h1> Test WITH IT
+                    <h1>TEXT</h1> Test WITH IT
+                </>
+            }
         </>
-      )}
-      <TestGridOptionsSelect></TestGridOptionsSelect>
-      <button
-        onClick={() => {
-          setRender((render) => !render);
-        }}
-      >
-        Mount / Unmount
-      </button>
-      {config.additionalContent && (
-        <>
-          <h1 style={{ width: 3000 }}>TEXT</h1> Test WITH IT
-          <h1>TEXT</h1> Test WITH IT
-          <h1>TEXT</h1> Test WITH IT
-          <h1>TEXT</h1> Test WITH IT
-          <h1>TEXT</h1> Test WITH IT
-          <h1>TEXT</h1> Test WITH IT
-          <h1>TEXT</h1> Test WITH IT
-          <h1>TEXT</h1> Test WITH IT
-          <h1>TEXT</h1> Test WITH IT
-          <h1>TEXT</h1> Test WITH IT
-          <h1>TEXT</h1> Test WITH IT
-          <h1>TEXT</h1> Test WITH IT
-        </>
-      )}
-    </>
-  );
-};
+    )
+}
 
 const Logo: React.FC<{ width?: number }> = ({ width }) => {
   return (
