@@ -666,6 +666,10 @@ export class Utilities {
     return cy.get(".rg-line");
   }
 
+  getReorderShadow() {
+    return cy.get(".rg-shadow");
+  }
+
   resizeHint() {
     return cy.get(".rg-column-resize-hint");
   }

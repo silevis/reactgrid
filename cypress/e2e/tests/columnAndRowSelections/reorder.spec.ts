@@ -11,8 +11,7 @@ context("Reorder", () => {
     visitColumnAndRowSelections();
   });
 
-  it("Should reorder column to right", () => {
-    // ✅
+  it("Should reorder column to right", () => { // ✅
     const cellVerticalMiddle = utils.getCellYCenter();
     const cellHorizontalMiddle = utils.getCellXCenter();
     const moveDistance = config.cellWidth * 2;
@@ -33,8 +32,7 @@ context("Reorder", () => {
       );
   });
 
-  it("Should reorder column to left", () => {
-    // ✅
+  it("Should reorder column to left", () => { // ✅
     const cellVerticalMiddle = utils.getCellYCenter();
     const cellHorizontalMiddle = utils.getCellXCenter();
     const moveDistance = -config.cellWidth * 2;
@@ -56,8 +54,7 @@ context("Reorder", () => {
       .should(($cell) => expect($cell.eq(0)).to.contain(selectedCellsContent));
   });
 
-  it("Should select more columns and reorder to right", () => {
-    // ✅
+  it("Should select more columns and reorder to right", () => { // ✅
     const cellVerticalMiddle = utils.getCellYCenter();
     const cellHorizontalMiddle = utils.getCellXCenter();
     const moveDistance = config.cellWidth * 2;
@@ -91,8 +88,7 @@ context("Reorder", () => {
       );
   });
 
-  it("Should select more columns and reorder to left", () => {
-    // ✅
+  it("Should select more columns and reorder to left", () => { // ✅
     const cellVerticalMiddle = utils.getCellYCenter();
     const cellHorizontalMiddle = utils.getCellXCenter();
     const moveDistance = -config.cellWidth * 2;
@@ -128,8 +124,7 @@ context("Reorder", () => {
       );
   });
 
-  it("Should select more columns and reorder to end", () => {
-    // ✅
+  it("Should select more columns and reorder to end", () => { // ✅
     const cellVerticalMiddle = utils.getCellYCenter();
     const cellHorizontalMiddle = utils.getCellXCenter();
     const moveDistance =
@@ -154,8 +149,7 @@ context("Reorder", () => {
     // Utils.getCell(config.columns - 1, 0).should(($cell) => expect($cell.eq(0)).to.contain(selectedCellsContent[1]));
   });
 
-  it("Should select more columns and reorder to start", () => {
-    // ✅
+  it("Should select more columns and reorder to start", () => { // ✅
     const cellVerticalMiddle = utils.getCellYCenter();
     const cellHorizontalMiddle = utils.getCellXCenter();
     const moveDistance =
@@ -192,8 +186,7 @@ context("Reorder", () => {
       );
   });
 
-  it("Should reorder one row below", () => {
-    // ✅
+  it("Should reorder one row below", () => { // ✅
     const cellVerticalMiddle = utils.getCellYCenter();
     const cellHorizontalMiddle = utils.getCellXCenter();
     const moveDistance = config.cellHeight * 2;
@@ -220,8 +213,7 @@ context("Reorder", () => {
       );
   });
 
-  it("Should reorder one row to top", () => {
-    // ✅
+  it("Should reorder one row to top", () => { // ✅
     const cellVerticalMiddle = utils.getCellYCenter();
     const cellHorizontalMiddle = utils.getCellXCenter();
     const moveDistance = -config.cellHeight;
@@ -248,8 +240,7 @@ context("Reorder", () => {
       );
   });
 
-  it("Should select more rows and reorder to bottom", () => {
-    // ✅
+  it("Should select more rows and reorder to bottom", () => { // ✅
     const cellVerticalMiddle = utils.getCellYCenter();
     const cellHorizontalMiddle = utils.getCellXCenter();
     const moveDistance = config.cellHeight * 5;
@@ -284,8 +275,7 @@ context("Reorder", () => {
       );
   });
 
-  it("Should select more rows and reorder to top", () => {
-    // ✅
+  it("Should select more rows and reorder to top", () => { // ✅
     const cellVerticalMiddle = utils.getCellYCenter();
     const cellHorizontalMiddle = utils.getCellXCenter();
     const moveDistance = -config.cellHeight * 3 - cellVerticalMiddle;
@@ -324,8 +314,7 @@ context("Reorder", () => {
       );
   });
 
-  it("Should select 3 rows and reorder to end", () => {
-    // ✅
+  it("Should select 3 rows and reorder to end", () => { // ✅
     const cellVerticalMiddle = utils.getCellYCenter();
     const cellHorizontalMiddle = utils.getCellXCenter();
     const moveDistance = config.rows * config.cellHeight + cellVerticalMiddle;
@@ -365,8 +354,7 @@ context("Reorder", () => {
       );
   });
 
-  it("Should select 3 rows and reorder to start", () => {
-    // ✅
+  it("Should select 3 rows and reorder to start", () => { // ✅
     const cellVerticalMiddle = utils.getCellYCenter();
     const cellHorizontalMiddle = utils.getCellXCenter();
     const moveDistance = -(config.rows * config.cellHeight);
@@ -409,11 +397,106 @@ context("Reorder", () => {
       );
   });
 
-  it("should display shadow on reordering by touch", () => {
-    // ✅
+  it("Should display shadow on reordering by touch", () => { // ✅
+    const cellVerticalMiddle = utils.getCellYCenter();
+    const cellHorizontalMiddle = utils.getCellXCenter();
+    const moveDistance = config.cellWidth * 2;
+
+    utils.selectCell(cellHorizontalMiddle, cellVerticalMiddle);
+    const selectedCellsContent = [`0 - 0`];
+
+    const endingPoint = cellHorizontalMiddle + moveDistance;
+    const scrollableElement = utils.getScrollableElement();
+    scrollableElement.then(($el) => {
+      const { offsetLeft, offsetTop } = $el[0];
+      const body = utils.getBody();
+      scrollableElement.trigger(
+        "pointerdown",
+        cellHorizontalMiddle + offsetLeft,
+        cellVerticalMiddle + offsetTop,
+        { log: false, pointerType: "touch" }
+      );
+      for (
+        let x = cellHorizontalMiddle;
+        moveDistance < 0 ? x > endingPoint : x < endingPoint;
+        x += moveDistance > 0 ? 5 : -5
+      ) {
+        body
+          .wait(10, { log: false })
+          .trigger("pointermove", x, cellVerticalMiddle + (x % 2), { log: false, force: true, pointerType: "touch" });
+      }
+
+      utils.getReorderShadow().should("be.visible");
+
+      body.wait(10).trigger("pointerup", {
+        clientX: endingPoint,
+        clientY: cellVerticalMiddle,
+        force: true,
+        log: false,
+        pointerType: "touch",
+      });
+    });
+
+    utils.assertElementLeftIsEqual(
+      utils.getPartialArea(),
+      config.cellWidth * 2 - config.lineWidth
+    );
+
+    utils
+      .getCell(2, 0)
+      .should(($cell) =>
+        expect($cell.eq(0)).to.contain(selectedCellsContent[0])
+      );
   });
 
-  it("should hide shadow after reordering by touch", () => {
-    // ✅
+  it("Should hide shadow after reordering by touch", () => { // ✅
+    const cellVerticalMiddle = utils.getCellYCenter();
+    const cellHorizontalMiddle = utils.getCellXCenter();
+    const moveDistance = config.cellWidth * 2;
+
+    utils.selectCell(cellHorizontalMiddle, cellVerticalMiddle);
+    const selectedCellsContent = [`0 - 0`];
+
+    const endingPoint = cellHorizontalMiddle + moveDistance;
+    const scrollableElement = utils.getScrollableElement();
+    scrollableElement.then(($el) => {
+      const { offsetLeft, offsetTop } = $el[0];
+      const body = utils.getBody();
+      scrollableElement.trigger(
+        "pointerdown",
+        cellHorizontalMiddle + offsetLeft,
+        cellVerticalMiddle + offsetTop,
+        { log: false, pointerType: "touch" }
+      );
+      for (
+        let x = cellHorizontalMiddle;
+        moveDistance < 0 ? x > endingPoint : x < endingPoint;
+        x += moveDistance > 0 ? 5 : -5
+      ) {
+        body
+          .wait(10, { log: false })
+          .trigger("pointermove", x, cellVerticalMiddle + (x % 2), { log: false, force: true, pointerType: "touch" });
+      }
+      body.wait(10).trigger("pointerup", {
+        clientX: endingPoint,
+        clientY: cellVerticalMiddle,
+        force: true,
+        log: false,
+        pointerType: "touch",
+      });
+    });
+
+    utils.getReorderShadow().should("not.exist");
+
+    utils.assertElementLeftIsEqual(
+      utils.getPartialArea(),
+      config.cellWidth * 2 - config.lineWidth
+    );
+
+    utils
+      .getCell(2, 0)
+      .should(($cell) =>
+        expect($cell.eq(0)).to.contain(selectedCellsContent[0])
+      );
   });
 });
