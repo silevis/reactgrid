@@ -19,6 +19,7 @@ interface ResizeParams {
   step?: number;
   log?: boolean;
   beforePointerUp: () => void;
+  useTouch?: boolean;
 }
 
 export class Utilities {
@@ -35,22 +36,23 @@ export class Utilities {
   selectCell(
     clientX: number,
     clientY: number,
-    customEventArgs = undefined
+    customEventArgs = undefined,
+    useTouch = false
   ): void {
     const scrollableElement = this.getScrollableElement();
     if (customEventArgs !== undefined) {
       scrollableElement.trigger("pointerdown", clientX, clientY, {
         ...customEventArgs,
-        pointerType: "mouse",
+        pointerType: useTouch ? "touch" : "mouse",
       });
     } else {
       scrollableElement.trigger("pointerdown", clientX, clientY, {
-        pointerType: "mouse",
+        pointerType: useTouch ? "touch" : "mouse",
       });
     }
     scrollableElement.trigger("pointerup", clientX, clientY, {
       force: true,
-      pointerType: "mouse",
+      pointerType: useTouch ? "touch" : "mouse",
     });
     cy.wait(500);
   }
@@ -842,7 +844,7 @@ export class Utilities {
         "pointerdown",
         startX - resizeHandleClickOffset + offsetLeft,
         startY + offsetTop,
-        { log, pointerType: "mouse" }
+        { log, pointerType: options?.useTouch ? "touch" : "mouse" }
       );
       for (
         let x = startX;
@@ -854,7 +856,7 @@ export class Utilities {
           .trigger("pointermove", x + offsetLeft, startY + offsetTop, {
             log,
             force: true,
-            pointerType: "mouse",
+            pointerType: options?.useTouch ? "touch" : "mouse",
           });
       }
       this.getLine().should("exist");
@@ -865,7 +867,7 @@ export class Utilities {
         clientY: startY + offsetTop,
         force: true,
         log,
-        pointerType: "mouse",
+        pointerType: options?.useTouch ? "touch" : "mouse",
       });
     });
   }
