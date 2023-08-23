@@ -728,9 +728,6 @@ export class Utilities {
     });
   }
 
-  /**
-   * This is first not working draft
-   */
   selectRangeWithTouch(
     fromX: number,
     fromY: number,
@@ -739,7 +736,6 @@ export class Utilities {
     customEventArgs?: Record<string, unknown>,
     log = true
   ) {
-    // 🔴
     const scrollableElement = this.getScrollableElement();
     scrollableElement.then(($el) => {
       const { offsetLeft, offsetTop } = $el[0];
@@ -751,8 +747,8 @@ export class Utilities {
         isTrusted: true,
       });
       const body = this.getBody();
-      body.trigger("pointermove", toX, toY, {
-        log: true,
+      body.trigger("pointermove", toX + offsetLeft, toY + offsetTop, {
+        log,
         pointerType: "touch",
         button: 1,
       });
