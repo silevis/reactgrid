@@ -94,7 +94,13 @@ export class NumberCellTemplate implements CellTemplate<NumberCell> {
             onChange={e => onCellChanged(this.getCompatibleCell({ ...cell, value: parseFloat(e.currentTarget.value.replace(/,/g, '.')) }), false)}
             onBlur={e => { onCellChanged(this.getCompatibleCell({ ...cell, value: parseFloat(e.currentTarget.value.replace(/,/g, '.')) }), !this.wasEscKeyPressed); this.wasEscKeyPressed = false; }}
             onKeyDown={e => {
-                if (inNumericKey(e.keyCode) || isNavigationKey(e.keyCode) || isAllowedOnNumberTypingKey(e.keyCode)) e.stopPropagation();
+                if (
+                  inNumericKey(e.keyCode) ||
+                  isNavigationKey(e.keyCode) ||
+                  isAllowedOnNumberTypingKey(e.keyCode) ||
+                  (e.ctrlKey && e.keyCode === keyCodes.KEY_A)
+                )
+                  e.stopPropagation();
                 if (!inNumericKey(e.keyCode) && !isNavigationKey(e.keyCode) && !isCharAllowedOnNumberInput(getCharFromKey(e.key))) e.preventDefault();
                 if (e.keyCode === keyCodes.ESCAPE) this.wasEscKeyPressed = true;
             }}
