@@ -612,7 +612,7 @@ export class Utilities {
                 : 0) -
               // - (isClickedOnLeftStickyOnPinnedToBody
               //     ? reactgridRect.left + scroll.x - 1
-              //     : this.getConfig().cellWidth)
+              //     : this.getConfig().cellWidth),
               this.getConfig().cellWidth,
             0
           );
@@ -625,7 +625,7 @@ export class Utilities {
                 : 0) -
               // - (isClickedOnTopStickyOnPinnedToBody
               //     ? reactgridRect.top + scroll.y - 1
-              //     : this.getConfig().cellHeight)
+              //     : this.getConfig().cellHeight),
               this.getConfig().cellHeight,
             0
           );
@@ -860,6 +860,8 @@ export class Utilities {
         pointerType: options?.useTouch ? "touch" : "mouse",
       });
     });
+
+    cy.wait(200);
   }
 
   reorderColumn(
