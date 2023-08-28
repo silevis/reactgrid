@@ -78,7 +78,7 @@ export class DateCellTemplate implements CellTemplate<DateCell> {
                   isNavigationKey(e.keyCode) ||
                   e.keyCode === keyCodes.COMMA ||
                   e.keyCode === keyCodes.PERIOD ||
-                  (e.ctrlKey && e.keyCode === keyCodes.KEY_A)
+                  ((e.ctrlKey || e.metaKey) && e.keyCode === keyCodes.KEY_A)
                 )
                   e.stopPropagation();
                 if (!inNumericKey(e.keyCode) && !isNavigationKey(e.keyCode) && (e.keyCode !== keyCodes.COMMA && e.keyCode !== keyCodes.PERIOD)) e.preventDefault();

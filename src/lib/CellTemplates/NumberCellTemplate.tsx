@@ -98,7 +98,7 @@ export class NumberCellTemplate implements CellTemplate<NumberCell> {
                   inNumericKey(e.keyCode) ||
                   isNavigationKey(e.keyCode) ||
                   isAllowedOnNumberTypingKey(e.keyCode) ||
-                  (e.ctrlKey && e.keyCode === keyCodes.KEY_A)
+                  ((e.ctrlKey || e.metaKey) && e.keyCode === keyCodes.KEY_A)
                 )
                   e.stopPropagation();
                 if (!inNumericKey(e.keyCode) && !isNavigationKey(e.keyCode) && !isCharAllowedOnNumberInput(getCharFromKey(e.key))) e.preventDefault();
