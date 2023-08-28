@@ -12,7 +12,7 @@ context('Cell editor position', () => {
     visitSymetric();
   });
 
-  it('should open cell editor on scrollable on NON scrolled view', () => { // ✅
+  it('Should open cell editor on scrollable on NON scrolled view', () => { // ✅
     [{
       click: {
         x: config.cellWidth * (config.stickyLeft + 1),
@@ -26,7 +26,7 @@ context('Cell editor position', () => {
     }].forEach(utils.testCellEditorOnSticky.bind(utils));
   });
 
-  it('should open cell editor on scrollable on scrolled view', () => { // ✅
+  it('Should open cell editor on scrollable on scrolled view', () => { // ✅
     [{
       click: {
         x: config.cellWidth * (config.stickyLeft + 1),
@@ -50,7 +50,7 @@ context('Cell editor position', () => {
     ].forEach(utils.testCellEditorOnSticky.bind(utils));
   });
 
-  it('should open cell editor on NON scrolled left sticky', () => { // ✅
+  it('Should open cell editor on NON scrolled left sticky', () => { // ✅
     [
       {
         click: {
@@ -67,7 +67,7 @@ context('Cell editor position', () => {
     ].forEach(utils.testCellEditorOnSticky.bind(utils));
   });
 
-  it('should open cell editor on scrolled left sticky', () => { // ✅
+  it('Should open cell editor on scrolled left sticky', () => { // ✅
     [
       {
         click: {
@@ -92,7 +92,7 @@ context('Cell editor position', () => {
     ].forEach(utils.testCellEditorOnSticky.bind(utils));
   });
 
-  it('should open cell editor on NON scrolled top-left sticky', () => { // ✅
+  it('Should open cell editor on NON scrolled top-left sticky', () => { // ✅
     [
       {
         click: {
@@ -109,7 +109,7 @@ context('Cell editor position', () => {
     ].forEach(utils.testCellEditorOnSticky.bind(utils));
   });
 
-  it('should open cell editor on scrolled top-left sticky', () => { // ✅
+  it('Should open cell editor on scrolled top-left sticky', () => { // ✅
     [
       {
         click: {
@@ -126,7 +126,7 @@ context('Cell editor position', () => {
     ].forEach(utils.testCellEditorOnSticky.bind(utils));
   });
 
-  it('should open cell editor on NON scrolled top sticky', () => { // ✅
+  it('Should open cell editor on NON scrolled top sticky', () => { // ✅
     [
       {
         click: {
@@ -143,7 +143,7 @@ context('Cell editor position', () => {
     ].forEach(utils.testCellEditorOnSticky.bind(utils));
   });
 
-  it('should open cell editor on scrolled top sticky', () => { // ✅
+  it('Should open cell editor on scrolled top sticky', () => { // ✅
     [
       {
         click: {
@@ -168,7 +168,7 @@ context('Cell editor position', () => {
     ].forEach(utils.testCellEditorOnSticky.bind(utils));
   });
 
-  it('cell editor should be fully visible on double click on horizontally partially visible cell focus', () => { // ✅
+  it('Cell editor should be fully visible on double click on horizontally partially visible cell focus', () => { // ✅
     utils.selectCell((utils.getConfig().cellWidth * 3) - 10, (utils.getConfig().cellHeight * 3) - 10);
     utils.getCellFocus().should('be.visible');
     utils.scrollTo(utils.getCellXCenter(), 0);
@@ -182,13 +182,13 @@ context('Cell editor position', () => {
       utils.getScrollableElement().then($scrollable => {
         const v2 = $scrollable[0];
         cy.wait(utils.wait());
-        const secondSrollValue = utils.round(v2.scrollLeft);
-        expect(v.scrollLeft, 'Scroll left').to.be.equal(secondSrollValue);
+        const secondScrollValue = utils.round(v2.scrollLeft);
+        expect(v.scrollLeft, 'Scroll left').to.be.equal(secondScrollValue);
       });
     });
   });
 
-  it('cell editor should be fully visible on double click on vertically partially visible cell focus', () => { // ✅
+  it('Cell editor should be fully visible on double click on vertically partially visible cell focus', () => { // ✅
     utils.selectCell((utils.getConfig().cellWidth * 3) - 10, (utils.getConfig().cellHeight * 3) - 10);
     utils.getCellFocus().should('be.visible');
     utils.scrollTo(0, utils.getCellYCenter());
@@ -202,13 +202,13 @@ context('Cell editor position', () => {
       utils.getScrollableElement().then($scrollable => {
         const v2 = $scrollable[0];
         cy.wait(utils.wait());
-        const secondSrollValue = utils.round(v2.scrollTop);
-        expect(v.scrollTop, 'Scroll Top').to.be.equal(secondSrollValue);
+        const secondScrollValue = utils.round(v2.scrollTop);
+        expect(v.scrollTop, 'Scroll Top').to.be.equal(secondScrollValue);
       });
     });
   });
 
-  it('should open cell editor on NON scrolled top-right sticky', () => { // ✅
+  it('Should open cell editor on NON scrolled top-right sticky', () => { // ✅
     utils.getScrollableElement().then($sc => {
       const { clientWidth } = $sc[0];
       [
@@ -228,7 +228,7 @@ context('Cell editor position', () => {
     });
   });
 
-  it('should open cell editor on scrolled top-right sticky', () => { // ✅
+  it('Should open cell editor on scrolled top-right sticky', () => { // ✅
     utils.getScrollableElement().then($sc => {
       const { clientWidth } = $sc[0];
       [
@@ -256,7 +256,7 @@ context('Cell editor position', () => {
     });
   });
 
-  it('should open cell editor on NON scrolled right sticky', () => { // ✅
+  it('Should open cell editor on NON scrolled right sticky', () => { // ✅
     utils.getScrollableElement().then($sc => {
       const { clientWidth } = $sc[0];
       [
@@ -276,7 +276,7 @@ context('Cell editor position', () => {
     });
   });
 
-  it('should open cell editor on scrolled right sticky', () => { // ✅
+  it('Should open cell editor on scrolled right sticky', () => { // ✅
     utils.getScrollableElement().then($sc => {
       const { clientWidth } = $sc[0];
       [
@@ -304,7 +304,7 @@ context('Cell editor position', () => {
     });
   });
 
-  it('should open cell editor on NON scrolled bottom-right sticky', () => { // ✅
+  it('Should open cell editor on NON scrolled bottom-right sticky', () => { // ✅
     utils.getScrollableElement().then($sc => {
       const { clientWidth, clientHeight } = $sc[0];
       [
@@ -324,7 +324,7 @@ context('Cell editor position', () => {
     });
   });
 
-  it('should open cell editor on scrolled bottom-right sticky', () => { // ✅
+  it('Should open cell editor on scrolled bottom-right sticky', () => { // ✅
     utils.getScrollableElement().then($sc => {
       const { clientWidth, clientHeight } = $sc[0];
       [
@@ -352,7 +352,7 @@ context('Cell editor position', () => {
     });
   });
 
-  it('should open cell editor on NON scrolled bottom sticky', () => { // ✅
+  it('Should open cell editor on NON scrolled bottom sticky', () => { // ✅
     utils.getScrollableElement().then($sc => {
       const { clientHeight } = $sc[0];
       [
@@ -372,7 +372,7 @@ context('Cell editor position', () => {
     });
   });
 
-  it('should open cell editor on scrolled bottom sticky', () => { // ✅
+  it('Should open cell editor on scrolled bottom sticky', () => { // ✅
     utils.getScrollableElement().then($sc => {
       const { clientHeight } = $sc[0];
       [
@@ -400,7 +400,7 @@ context('Cell editor position', () => {
     });
   });
 
-  it('should open cell editor on NON scrolled bottom-left sticky', () => { // ✅
+  it('Should open cell editor on NON scrolled bottom-left sticky', () => { // ✅
     utils.getScrollableElement().then($sc => {
       const { clientHeight } = $sc[0];
       [
@@ -420,7 +420,7 @@ context('Cell editor position', () => {
     });
   });
 
-  it('should open cell editor on scrolled bottom-left sticky', () => { // ✅
+  it('Should open cell editor on scrolled bottom-left sticky', () => { // ✅
     utils.getScrollableElement().then($sc => {
       const { clientHeight } = $sc[0];
       [
@@ -448,9 +448,16 @@ context('Cell editor position', () => {
     });
   });
 
-  it.skip('cell editor should be fully visible on double click on partially visible cell focus', () => {
-    // 🟠 TODO fix it
-  });
+  it('Cell editor should be fully visible on double click on partially visible cell focus', () => {
+    utils.selectCell((utils.getConfig().cellWidth * 3) - 10, (utils.getConfig().cellHeight * 3) - 10);
+    utils.getCellFocus().should('be.visible');
+    utils.scrollTo(utils.getCellXCenter(), 0);
 
+    cy.wait(utils.wait());
+
+    utils.getCell(2, 2).should('be.visible');
+    utils.getCell(2, 2).dblclick({ force: true });
+    utils.getCellEditor().should('be.visible');
+  });
 
 });
