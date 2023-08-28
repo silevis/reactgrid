@@ -774,22 +774,16 @@ export class Utilities {
     customEventArgs?: Record<string, unknown>
   ) {
     this.getFillHandle().trigger("pointerdown", {
-      force: true,
       log,
       pointerType: "mouse",
     });
-    this.getReactGridContent().trigger("pointermove", {
-      clientX: toX,
-      clientY: toY,
-      force: true,
+    this.getReactGridContent().should('be.visible');
+    this.getReactGridContent().trigger("pointermove", toX, toY, {
       pointerType: "mouse",
       log,
     });
     cy.wait(200, { log });
-    this.getReactGridContent().trigger("pointerup", {
-      clientX: toX,
-      clientY: toY,
-      force: true,
+    this.getReactGridContent().trigger("pointerup", toX, toY,{
       pointerType: "mouse",
       log,
       ...customEventArgs,

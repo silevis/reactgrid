@@ -23,7 +23,7 @@ context("Fill handle", () => {
         const endCellY = config.cellHeight * (cellColIdx + 1);
 
         utils.selectCell(startCellX, endCellY);
-        utils.fillCells(startCellX, endCellY - (config.cellHeight * 2 + 3));
+        utils.fillCells(startCellX, endCellY - (config.cellHeight * 3));
         utils
           .getCell(cellRowIdx, cellColIdx - 3)
           .should(($cell) => expect($cell.eq(0)).to.contain($originCellText));
@@ -43,7 +43,7 @@ context("Fill handle", () => {
 
         utils.selectCell(startCellX, endCellY);
 
-        utils.fillCells(startCellX, endCellY - (config.cellHeight * 2 + 3));
+        utils.fillCells(startCellX, endCellY - (config.cellHeight * 3));
         utils
           .getCell(cellRowIdx, cellColIdx - 3)
           .should(($cell) => expect($cell.eq(0)).to.contain($originCellText));
@@ -63,7 +63,7 @@ context("Fill handle", () => {
 
         utils.selectCell(startCellX, endCellY);
 
-        utils.fillCells(startCellX, endCellY - config.cellHeight * 3);
+        utils.fillCells(startCellX, endCellY - config.cellHeight * 4);
         utils
           .getCell(cellRowIdx, cellColIdx - 1)
           .should(($cell) => expect($cell.eq(0)).to.contain($originCellText));
@@ -91,7 +91,7 @@ context("Fill handle", () => {
     }
     const colsCount = endColIdx - startColIdx + 1;
     const rowsCount = endRowIdx - startRowIdx + 1;
-    utils.fillCells(endX, endY - config.cellHeight * (rowsCount - 1), true, {
+    utils.fillCells(endX, endY - config.cellHeight * rowsCount, true, {
       altKey: utils.isMacOs(),
       ctrlKey: !utils.isMacOs() && true,
       force: true,
