@@ -437,6 +437,8 @@ context("Reorder", () => {
       });
     });
 
+    cy.wait(200);
+
     utils.assertElementLeftIsEqual(
       utils.getPartialArea(),
       config.cellWidth * 2 - config.lineWidth

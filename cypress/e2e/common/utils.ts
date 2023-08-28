@@ -902,6 +902,8 @@ export class Utilities {
         log,
       });
     });
+
+    cy.wait(200);
   }
 
   reorderRow(
@@ -943,6 +945,8 @@ export class Utilities {
         log,
       });
     });
+
+    cy.wait(200);
   }
 
   moveCursorHorizontallyOnScrollable(

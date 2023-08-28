@@ -50,6 +50,8 @@ context("Scroll", () => {
       },
     });
 
+    cy.wait(100);
+
     utils.assertElementWidthIsEqual(utils.getCell(0, 0), NEW_WIDTH);
 
     utils.getScrollableElement().should("have.prop", "scrollLeft", 0);
