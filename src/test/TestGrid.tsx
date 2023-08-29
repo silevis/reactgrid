@@ -475,15 +475,16 @@ export const TestGrid: React.FC<TestGridProps> = (props) => {
   const BANNED_LOCATION = { rowIdx: 5, colIdx: 10 };
 
   const doesRangeContainLocationByIdx = (range: Range, location: { rowIdx: number, colIdx: number }): boolean => {
-      return location.colIdx >= range.first.column.idx &&
-          location.colIdx <= range.last.column.idx &&
-          location.rowIdx >= range.first.row.idx &&
-          location.rowIdx <= range.last.row.idx;
+    return location.colIdx >= range.first.column.idx &&
+        location.colIdx <= range.last.column.idx &&
+        location.rowIdx >= range.first.row.idx &&
+        location.rowIdx <= range.last.row.idx;
   };
 
   const handleSelectionChanging = (ranges: Range[]): boolean => {
-      // Returns false if any range contains the banned location
-      return !ranges.some(range => doesRangeContainLocationByIdx(range, BANNED_LOCATION));
+    return true;
+    // Returns false if any range contains the banned location
+    return !ranges.some(range => doesRangeContainLocationByIdx(range, BANNED_LOCATION));
   };
 
   const Component = component;

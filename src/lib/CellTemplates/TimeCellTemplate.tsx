@@ -73,7 +73,14 @@ export class TimeCellTemplate implements CellTemplate<TimeCell> {
                 if (!Number.isNaN(timestamp)) { onCellChanged(this.getCompatibleCell({ ...cell, time: new Date(timestamp) }), !this.wasEscKeyPressed); this.wasEscKeyPressed = false; }
             }}
             onKeyDown={e => {
-                if (inNumericKey(e.keyCode) || isNavigationKey(e.keyCode) || (e.keyCode === keyCodes.COMMA || e.keyCode === keyCodes.PERIOD)) e.stopPropagation();
+                if (
+                  inNumericKey(e.keyCode) ||
+                  isNavigationKey(e.keyCode) ||
+                  e.keyCode === keyCodes.COMMA ||
+                  e.keyCode === keyCodes.PERIOD ||
+                  ((e.ctrlKey || e.metaKey) && e.keyCode === keyCodes.KEY_A)
+                )
+                  e.stopPropagation();
                 if (!inNumericKey(e.keyCode) && !isNavigationKey(e.keyCode) && (e.keyCode !== keyCodes.COMMA && e.keyCode !== keyCodes.PERIOD)) e.preventDefault();
                 if (e.keyCode === keyCodes.ESCAPE) this.wasEscKeyPressed = true;
             }}
