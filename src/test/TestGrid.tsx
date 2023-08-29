@@ -543,6 +543,7 @@ export const TestGrid: React.FC<TestGridProps> = (props) => {
                   disableVirtualScrolling={config.disableVirtualScrolling}
                   onSelectionChanged={handleSelectionChanged}
                   onSelectionChanging={handleSelectionChanging}
+                  moveRightOnEnter={config.moveRightOnEnter}
               />}
               {config.additionalContent &&
                   <div style={{ height: `${config.rgViewportHeight}px`, backgroundColor: '#fafff3' }}>

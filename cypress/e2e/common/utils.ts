@@ -19,6 +19,7 @@ interface ResizeParams {
   step?: number;
   log?: boolean;
   beforePointerUp: () => void;
+  useTouch?: boolean;
 }
 
 export class Utilities {
@@ -35,22 +36,23 @@ export class Utilities {
   selectCell(
     clientX: number,
     clientY: number,
-    customEventArgs = undefined
+    customEventArgs = undefined,
+    useTouch = false
   ): void {
     const scrollableElement = this.getScrollableElement();
     if (customEventArgs !== undefined) {
       scrollableElement.trigger("pointerdown", clientX, clientY, {
         ...customEventArgs,
-        pointerType: "mouse",
+        pointerType: useTouch ? "touch" : "mouse",
       });
     } else {
       scrollableElement.trigger("pointerdown", clientX, clientY, {
-        pointerType: "mouse",
+        pointerType: useTouch ? "touch" : "mouse",
       });
     }
     scrollableElement.trigger("pointerup", clientX, clientY, {
       force: true,
-      pointerType: "mouse",
+      pointerType: useTouch ? "touch" : "mouse",
     });
     cy.wait(500);
   }
@@ -197,6 +199,10 @@ export class Utilities {
     // this.getScrollableElement().trigger("pointerdown", x, y, {
     //   pointerType: "mouse",
     // });
+    // cy.wait(100);
+    // this.getScrollableElement().trigger("pointerup", x, y, {
+    //   pointerType: "mouse",
+    // });
     // this.getBody().trigger("pointerup", 0, 0, {
     //   pointerType: "mouse",
     //   force: true,
@@ -289,7 +295,7 @@ export class Utilities {
                         $e
                     )
                   ).to.be.most(
-                    this.round($e + $d[0].clientHeight) + 1,
+                    this.round($e + $d.clientHeight) + 1,
                     "bottom"
                   );
                 });
@@ -313,7 +319,7 @@ export class Utilities {
                         reactgridRect.x +
                         $e
                     )
-                  ).to.be.most(this.round($e + $d[0].clientWidth) + 1, "right");
+                  ).to.be.most(this.round($e + $d.clientWidth) + 1, "right");
                 });
             });
           });
@@ -377,7 +383,7 @@ export class Utilities {
               .then(($d) => {
                 const expected =
                   $e -
-                  $d[0].clientHeight +
+                  $d.clientHeight +
                   reactgridRect.y +
                   this.getConfig().rows * this.getConfig().cellHeight;
                 expect(this.round($e), "Scroll bottom").to.be.least(
@@ -434,7 +440,7 @@ export class Utilities {
               .then(($d) => {
                 const toBeExpected =
                   $e -
-                  $d[0].clientWidth +
+                  $d.clientWidth +
                   reactgridRect.x +
                   this.getConfig().columns * this.getConfig().cellWidth;
                 expect(expectedValue, "Scroll Right").to.be.least(
@@ -606,7 +612,7 @@ export class Utilities {
                 : 0) -
               // - (isClickedOnLeftStickyOnPinnedToBody
               //     ? reactgridRect.left + scroll.x - 1
-              //     : this.getConfig().cellWidth)
+              //     : this.getConfig().cellWidth),
               this.getConfig().cellWidth,
             0
           );
@@ -619,7 +625,7 @@ export class Utilities {
                 : 0) -
               // - (isClickedOnTopStickyOnPinnedToBody
               //     ? reactgridRect.top + scroll.y - 1
-              //     : this.getConfig().cellHeight)
+              //     : this.getConfig().cellHeight),
               this.getConfig().cellHeight,
             0
           );
@@ -660,6 +666,10 @@ export class Utilities {
 
   getLine() {
     return cy.get(".rg-line");
+  }
+
+  getReorderShadow() {
+    return cy.get(".rg-shadow");
   }
 
   resizeHint() {
@@ -718,9 +728,6 @@ export class Utilities {
     });
   }
 
-  /**
-   * This is first not working draft
-   */
   selectRangeWithTouch(
     fromX: number,
     fromY: number,
@@ -729,7 +736,6 @@ export class Utilities {
     customEventArgs?: Record<string, unknown>,
     log = true
   ) {
-    // 🔴
     const scrollableElement = this.getScrollableElement();
     scrollableElement.then(($el) => {
       const { offsetLeft, offsetTop } = $el[0];
@@ -741,8 +747,8 @@ export class Utilities {
         isTrusted: true,
       });
       const body = this.getBody();
-      body.trigger("pointermove", toX, toY, {
-        log: true,
+      body.trigger("pointermove", toX + offsetLeft, toY + offsetTop, {
+        log,
         pointerType: "touch",
         button: 1,
       });
@@ -768,22 +774,16 @@ export class Utilities {
     customEventArgs?: Record<string, unknown>
   ) {
     this.getFillHandle().trigger("pointerdown", {
-      force: true,
       log,
       pointerType: "mouse",
     });
-    this.getReactGridContent().trigger("pointermove", {
-      clientX: toX,
-      clientY: toY,
-      force: true,
+    this.getReactGridContent().should('be.visible');
+    this.getReactGridContent().trigger("pointermove", toX, toY, {
       pointerType: "mouse",
       log,
     });
     cy.wait(200, { log });
-    this.getReactGridContent().trigger("pointerup", {
-      clientX: toX,
-      clientY: toY,
-      force: true,
+    this.getReactGridContent().trigger("pointerup", toX, toY,{
       pointerType: "mouse",
       log,
       ...customEventArgs,
@@ -834,7 +834,7 @@ export class Utilities {
         "pointerdown",
         startX - resizeHandleClickOffset + offsetLeft,
         startY + offsetTop,
-        { log, pointerType: "mouse" }
+        { log, pointerType: options?.useTouch ? "touch" : "mouse" }
       );
       for (
         let x = startX;
@@ -846,7 +846,7 @@ export class Utilities {
           .trigger("pointermove", x + offsetLeft, startY + offsetTop, {
             log,
             force: true,
-            pointerType: "mouse",
+            pointerType: options?.useTouch ? "touch" : "mouse",
           });
       }
       this.getLine().should("exist");
@@ -857,9 +857,11 @@ export class Utilities {
         clientY: startY + offsetTop,
         force: true,
         log,
-        pointerType: "mouse",
+        pointerType: options?.useTouch ? "touch" : "mouse",
       });
     });
+
+    cy.wait(200);
   }
 
   reorderColumn(
@@ -896,6 +898,8 @@ export class Utilities {
         log,
       });
     });
+
+    cy.wait(200);
   }
 
   reorderRow(
@@ -937,6 +941,8 @@ export class Utilities {
         log,
       });
     });
+
+    cy.wait(200);
   }
 
   moveCursorHorizontallyOnScrollable(

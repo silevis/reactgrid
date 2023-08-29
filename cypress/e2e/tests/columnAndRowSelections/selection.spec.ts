@@ -8,11 +8,11 @@ const utils = new Utilities(config);
 
 context("Selection", () => {
   beforeEach(() => {
+    cy.reload(); // Seems to be necessary to avoid random failures
     visitColumnAndRowSelections();
   });
 
-  it("Select one column", () => {
-    // ✅
+  it("Select one column", () => { // ✅
     utils.selectCell(100, 10);
     utils.getPartialArea().should("be.visible").and("have.length", 1);
     utils.assertElementTopIsEqual(utils.getPartialArea(), 0);
@@ -31,8 +31,7 @@ context("Selection", () => {
     // Utils.assertElementHeightIsEqual(utils.getPartialArea(), config.rgViewportHeight);
   });
 
-  it("Select columns and unselect with ctrl or meta key", () => {
-    // ✅
+  it("Select columns and unselect with ctrl or meta key", () => { // ✅
     utils.selectCell(100, 10);
     utils.selectCell(350, 10, {
       metaKey: true,
@@ -59,8 +58,7 @@ context("Selection", () => {
     );
   });
 
-  it("Select many columns", () => {
-    // ✅
+  it("Select many columns", () => { // ✅
     const columnsToSelect = 4;
     utils.selectRange(
       utils.getCellXCenter(),
@@ -74,8 +72,7 @@ context("Selection", () => {
     );
   });
 
-  it("Select one row without selection meta key or ctrl", () => {
-    // ✅
+  it("Select one row without selection meta key or ctrl", () => { // ✅
     utils.selectCell(
       utils.getCellXCenter(),
       config.cellHeight + utils.getCellYCenter()
@@ -113,8 +110,7 @@ context("Selection", () => {
     );
   });
 
-  it("Select and unselect rows with ctrl or meta key", () => {
-    // ✅
+  it("Select and unselect rows with ctrl or meta key", () => { // ✅
     utils.selectCell(
       utils.getCellXCenter(),
       config.cellHeight * 2 + utils.getCellYCenter()
@@ -156,8 +152,7 @@ context("Selection", () => {
     utils.getPartialArea().should("be.visible").and("have.length", 1);
   });
 
-  it("Select many rows", () => {
-    // ✅
+  it("Select many rows", () => { // ✅
     utils.selectRange(
       utils.getCellXCenter(),
       utils.getCellYCenter() + config.cellHeight * 3,
@@ -171,9 +166,7 @@ context("Selection", () => {
     );
   });
 
-  it.skip("Select many columns with touch from right to left", () => {
-    // 🔴
-    // 🟠 TODO
+  it("Select many columns with touch from right to left", () => { // ✅
     const columnsToSelect = 2;
     utils.selectRangeWithTouch(
       config.cellWidth * columnsToSelect,
@@ -181,11 +174,21 @@ context("Selection", () => {
       utils.getCellXCenter(),
       utils.getCellYCenter()
     );
-    // utils.assertElementWidthIsEqual(utils.getPartialArea(), config.cellWidth * columnsToSelect);
+
+    utils.assertElementWidthIsEqual(utils.getPartialArea(), config.cellWidth * columnsToSelect);
   });
 
-  it.skip("Select many rows with touch", () => {
-    // 🔴
-    // 🟠 TODO
+  it("Select many rows with touch", () => { // ✅
+    utils.selectRangeWithTouch(
+      utils.getCellXCenter(),
+      utils.getCellYCenter() + config.cellHeight * 3,
+      10,
+      config.cellHeight * 10 + utils.getCellYCenter()
+    );
+
+    utils.assertElementHeightIsEqual(
+      utils.getPartialArea().eq(0),
+      config.cellHeight * 8 + config.lineWidth
+    );
   });
 });

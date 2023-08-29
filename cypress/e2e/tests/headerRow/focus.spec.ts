@@ -106,8 +106,8 @@ context('Focus', () => {
         });
     });
 
-    it.skip('should reach first left focusable cell on ctrl + home key', () => { // ✅
-        // 🟠  TODO
+    // 🟠  TODO: Doesn't currently work with headers. Isn't so trivial to fix.
+    it.skip('should reach first left focusable cell on ctrl + home key', () => { 
         utils.selectCell(config.cellWidth * 3 + utils.getCellXCenter(), config.cellHeight * 5 + utils.getCellYCenter());
         utils.keyDown(constants.keyCodes.Home, { force: true, metaKey: true, ctrlKey: !utils.isMacOs() && true });
 
@@ -115,8 +115,8 @@ context('Focus', () => {
 
     });
 
-    it.skip('should reach first left focusable cell on crtl + end key', () => { // ✅
-        // 🟠 TODO
+    // 🟠 TODO: Same as above
+    it.skip('should reach first left focusable cell on ctrl + end key', () => { // ✅
         utils.selectCell(config.cellWidth * 3 + utils.getCellXCenter(), config.cellHeight * 5 + utils.getCellYCenter());
         utils.keyDown(constants.keyCodes.End, { force: true, metaKey: true, ctrlKey: !utils.isMacOs() && true });
 

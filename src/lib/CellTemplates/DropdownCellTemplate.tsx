@@ -147,7 +147,14 @@ const DropdownInput: FC<DIProps> = ({ onCellChanged, cell }) => {
             value={selectedValue}
             isDisabled={cell.isDisabled}
             options={cell.values}
-            onKeyDown={e => e.stopPropagation()}
+            onKeyDown={e => {
+                e.stopPropagation(); 
+
+                if (e.key === "Escape") {
+                    selectRef.current.blur();
+                    return onCellChanged({ ...cell, isOpen: false, inputValue: undefined })
+                }
+            }}
             components={{
                 Option: CustomOption,
                 Menu: CustomMenu,
