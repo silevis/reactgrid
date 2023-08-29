@@ -43,13 +43,13 @@ export class ResizeColumnBehavior extends Behavior {
     if (
       !(
         (location.column.idx === this.resizedColumn.idx &&
-          location.cellX > CellMatrix.MIN_COLUMN_WIDTH) ||
+          location.cellX > (state.props?.minColumnWidth ?? CellMatrix.MIN_COLUMN_WIDTH)) ||
         location.column.idx > this.resizedColumn.idx
       )
     ) {
       const offset = this.getLinePositionOffset(state);
       linePosition =
-        CellMatrix.MIN_COLUMN_WIDTH + this.resizedColumn.left + offset;
+        (state.props?.minColumnWidth ?? CellMatrix.MIN_COLUMN_WIDTH) + this.resizedColumn.left + offset;
     }
     return { ...state, linePosition, lineOrientation: "vertical" };
   }
@@ -65,9 +65,9 @@ export class ResizeColumnBehavior extends Behavior {
       this.initialLocation.viewportX;
     if (state.props?.onColumnResized) {
       const newColWidth =
-        newWidth >= CellMatrix.MIN_COLUMN_WIDTH
+        newWidth >= (state.props?.minColumnWidth ?? CellMatrix.MIN_COLUMN_WIDTH)
           ? newWidth
-          : CellMatrix.MIN_COLUMN_WIDTH;
+          : (state.props?.minColumnWidth ?? CellMatrix.MIN_COLUMN_WIDTH);
       state.props.onColumnResized(
         this.resizedColumn.columnId,
         newColWidth,
