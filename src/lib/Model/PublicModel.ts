@@ -82,6 +82,12 @@ export interface ReactGridProps {
      */
     readonly moveRightOnEnter?: boolean;
 
+    /**
+     * Minimum column width (by default `40`), in pixels
+     * Used to limit the width column can be resized down to.
+     */
+    readonly minColumnWidth?: number;
+
     /** 
      * Called when cell was changed (e.g. property `value`)
      * 

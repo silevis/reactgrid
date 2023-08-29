@@ -85,8 +85,8 @@ export class CellMatrixBuilder implements ICellMatrixBuilder {
           cols
         );
         const width = column.width
-          ? column.width < CellMatrix.MIN_COLUMN_WIDTH
-            ? CellMatrix.MIN_COLUMN_WIDTH
+          ? column.width < (this.cellMatrix.props?.minColumnWidth ?? CellMatrix.MIN_COLUMN_WIDTH)
+            ? (this.cellMatrix.props?.minColumnWidth ?? CellMatrix.MIN_COLUMN_WIDTH)
             : column.width
           : CellMatrix.DEFAULT_COLUMN_WIDTH;
         cols.push({ ...column, idx, left, width, right: left + width });
