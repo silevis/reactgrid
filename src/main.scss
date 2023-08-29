@@ -11,6 +11,7 @@
     flex-wrap: wrap;
     justify-content: flex-start;
     align-items: flex-start;
+    color: $rg-content-text-color;
     .rg-pane {
         &.rg-pane-top,
         &.rg-pane-bottom,
@@ -45,6 +46,7 @@
             outline: none;
             touch-action: auto;
             border-color: $cell-border-color;
+            color: $cell-text-color;
             
             .rg-touch-resize-handle {
                 position: absolute;
