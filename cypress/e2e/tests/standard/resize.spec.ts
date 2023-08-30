@@ -9,8 +9,7 @@ context("Resize", () => {
     visit();
   });
 
-  it("should increase and reduce column width on scrolled view with content in horizontal axis", () => {
-    // ✅
+  it("Should increase and reduce column width on scrolled view with content in horizontal axis", () => { // ✅
     const RESIZE_WIDTH = 100;
     const SCROLL = 200;
 
@@ -44,8 +43,7 @@ context("Resize", () => {
     utils.assertElementWidthIsEqual(utils.getCell(2, 0), config.cellWidth);
   });
 
-  it("column should shrink to min width", () => {
-    // ✅
+  it("Column should shrink to min width", () => { // ✅
     const RESIZE_WIDTH = -config.cellWidth;
 
     utils.resizeColumn(config.cellWidth, utils.getCellYCenter(), RESIZE_WIDTH, {
@@ -60,8 +58,7 @@ context("Resize", () => {
     utils.assertElementWidthIsEqual(utils.getCell(0, 0), config.minCellWidth);
   });
 
-  it("column should shrink to its min width in last column", () => {
-    // 🔴 fix on macbook pro
+  it("Column should shrink to its min width in last column", () => { // 🔴 fix on MacOS
     const RESIZE_WIDTH = -config.cellWidth;
 
     utils.scrollToRight();
@@ -91,8 +88,7 @@ context("Resize", () => {
     );
   });
 
-  it("column should extend last column", () => {
-    // 🔴 fix on macbook pro
+  it("Column should extend last column", () => { // 🔴 fix on MacOS
     const RESIZE_WIDTH = config.cellWidth;
 
     utils.scrollToRight();
@@ -109,7 +105,7 @@ context("Resize", () => {
         // 17 px - scroll width
         beforePointerUp: () => {
           // 🟠 TODO - hint should contain exact value
-          // utils.resizeHint().and('contain.text', `Width: ${config.cellWidth + RESIZE_WIDTH}px`)
+          utils.resizeHint().and('contain.text', `Width: ${config.cellWidth + RESIZE_WIDTH + 3}px`)
         },
       }
     );

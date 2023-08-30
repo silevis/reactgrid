@@ -5,6 +5,7 @@ import { visit } from '../../common/visit';
 
 const utils = new Utilities(config);
 const INVALID_CLASS_NAME = "rg-invalid";
+
 context('Cell validation', () => {
 
     beforeEach(() => {
@@ -16,7 +17,7 @@ context('Cell validation', () => {
         const cellIdy = 2;
 
         utils.selectCell(config.cellWidth * 2 + utils.getCellXCenter(), config.cellHeight * 4);
-        
+   
         utils.getCell(cellIdx, cellIdy).should('not.have.class', INVALID_CLASS_NAME);
     });
 

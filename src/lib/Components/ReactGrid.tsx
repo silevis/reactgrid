@@ -86,6 +86,9 @@ export class ReactGrid extends React.Component<ReactGridProps, State> {
       "scroll",
       this.eventHandlers.scrollHandler
     );
+    this.setState({
+      contextMenuPosition: { top: -1, left: -1 }
+    });
   }
 
   render(): React.ReactNode {

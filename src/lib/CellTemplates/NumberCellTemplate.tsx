@@ -4,7 +4,8 @@ import * as React from 'react';
 import { getCellProperty } from '../Functions/getCellProperty';
 import { keyCodes } from '../Functions/keyCodes';
 import { Cell, CellTemplate, Compatible, Uncertain, UncertainCompatible } from '../Model/PublicModel';
-import { inNumericKey, isNavigationKey, isNumpadNumericKey, isAllowedOnNumberTypingKey } from './keyCodeCheckings';
+import { inNumericKey, isNavigationKey, isNumpadNumericKey, isAllowedOnNumberTypingKey, isCharAllowedOnNumberInput } from './keyCodeCheckings';
+import { getCharFromKey } from './getCharFromKeyCode';
 
 export interface NumberCell extends Cell {
     type: 'number';
@@ -17,6 +18,7 @@ export interface NumberCell extends Cell {
 }
 
 export class NumberCellTemplate implements CellTemplate<NumberCell> {
+    private wasEscKeyPressed = false;
 
     getCompatibleCell(uncertainCell: Uncertain<NumberCell>): Compatible<NumberCell> {
         let value: number;
@@ -31,12 +33,13 @@ export class NumberCellTemplate implements CellTemplate<NumberCell> {
         return { ...uncertainCell, value: displayValue, text }
     }
 
-    handleKeyDown(cell: Compatible<NumberCell>, keyCode: number, ctrl: boolean, shift: boolean, alt: boolean): { cell: Compatible<NumberCell>; enableEditMode: boolean } {
+    handleKeyDown(cell: Compatible<NumberCell>, keyCode: number, ctrl: boolean, shift: boolean, alt: boolean, key: string): { cell: Compatible<NumberCell>; enableEditMode: boolean } {
         if (isNumpadNumericKey(keyCode)) keyCode -= 48;
-        const char = String.fromCharCode(keyCode);
-        if (!ctrl && !alt && !shift && (inNumericKey(keyCode) || isAllowedOnNumberTypingKey(keyCode))) {
+        const char = getCharFromKey(key);
+        if (!ctrl && isCharAllowedOnNumberInput(char)) {
             const value = Number(char);
-            if (Number.isNaN(value) && isAllowedOnNumberTypingKey(keyCode))
+
+            if (Number.isNaN(value) && isCharAllowedOnNumberInput(char))
                 return { cell: { ...this.getCompatibleCell({ ...cell, value }), text: char }, enableEditMode: true }
             return { cell: this.getCompatibleCell({ ...cell, value }), enableEditMode: true }
         }
@@ -89,10 +92,17 @@ export class NumberCellTemplate implements CellTemplate<NumberCell> {
             }}
             defaultValue={Number.isNaN(cell.value) ? this.getTextFromCharCode(cell.text) : format.format(cell.value)}
             onChange={e => onCellChanged(this.getCompatibleCell({ ...cell, value: parseFloat(e.currentTarget.value.replace(/,/g, '.')) }), false)}
-            onBlur={e => onCellChanged(this.getCompatibleCell({ ...cell, value: parseFloat(e.currentTarget.value.replace(/,/g, '.')) }), true)}
+            onBlur={e => { onCellChanged(this.getCompatibleCell({ ...cell, value: parseFloat(e.currentTarget.value.replace(/,/g, '.')) }), !this.wasEscKeyPressed); this.wasEscKeyPressed = false; }}
             onKeyDown={e => {
-                if (inNumericKey(e.keyCode) || isNavigationKey(e.keyCode) || isAllowedOnNumberTypingKey(e.keyCode)) e.stopPropagation();
-                if ((!inNumericKey(e.keyCode) && !isNavigationKey(e.keyCode) && !isAllowedOnNumberTypingKey(e.keyCode)) || e.shiftKey) e.preventDefault();
+                if (
+                  inNumericKey(e.keyCode) ||
+                  isNavigationKey(e.keyCode) ||
+                  isAllowedOnNumberTypingKey(e.keyCode) ||
+                  ((e.ctrlKey || e.metaKey) && e.keyCode === keyCodes.KEY_A)
+                )
+                  e.stopPropagation();
+                if (!inNumericKey(e.keyCode) && !isNavigationKey(e.keyCode) && !isCharAllowedOnNumberInput(getCharFromKey(e.key))) e.preventDefault();
+                if (e.keyCode === keyCodes.ESCAPE) this.wasEscKeyPressed = true;
             }}
             onCopy={e => e.stopPropagation()}
             onCut={e => e.stopPropagation()}

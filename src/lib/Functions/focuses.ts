@@ -4,7 +4,7 @@ import { focusLocation } from './focusLocation';
 import { getCompatibleCellAndTemplate } from './getCompatibleCellAndTemplate';
 import { getVisibleScrollAreaHeight, isFocusLocationOnTopSticky } from './scrollIntoView';
 
-
+// TODO: rewrite and simplify if possible
 export type FocusLocationFn = (state: State, location: Location) => State;
 export type FocusCellFn = (colIdx: number, rowIdx: number, state: State) => State;
 export type RowCalcFn = (state: State, location: Location) => number;

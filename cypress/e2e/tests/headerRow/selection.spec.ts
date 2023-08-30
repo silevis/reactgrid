@@ -11,8 +11,7 @@ context("Selection", () => {
     visitHeaders();
   });
 
-  it("should select column without focus", () => {
-    // ✅
+  it("Should select column without focus", () => { // ✅
     utils.selectCell(
       config.cellWidth * 3 + utils.getCellXCenter(),
       utils.getCellYCenter()
@@ -25,8 +24,7 @@ context("Selection", () => {
     );
   });
 
-  it("should select row without focus", () => {
-    // ✅
+  it("Should select row without focus", () => { // ✅
     utils.selectCell(
       utils.getCellXCenter(),
       config.cellHeight * 9 + utils.getCellYCenter()
@@ -39,8 +37,7 @@ context("Selection", () => {
     );
   });
 
-  it("should select multiple columns without moving focus", () => {
-    // ✅
+  it("Should select multiple columns without moving focus", () => { // ✅
     const columnsToSelect = 3;
     const startIdx = 4;
     const fromX = config.cellWidth * startIdx + utils.getCellXCenter();
@@ -61,16 +58,15 @@ context("Selection", () => {
     );
   });
 
-  it.skip("should select multiple rows without moving focus", () => {
-    // ✅
-    // TODO 🟠 need fix
-
+  it("Should select multiple rows without moving focus", () => { // ✅
     const rowsToSelect = 5;
     const startIdx = 6;
     const fromX = utils.getCellXCenter();
     const fromY = config.cellHeight * startIdx + utils.getCellYCenter();
     const toX = utils.getCellYCenter();
     const toY = config.cellHeight * (rowsToSelect + startIdx);
+
+    utils.selectCell(config.cellWidth + utils.getCellXCenter(), config.cellHeight * 3 + utils.getCellYCenter() * 2);
 
     utils.selectRange(fromX, fromY, toX, toY);
 
@@ -81,7 +77,16 @@ context("Selection", () => {
     );
     utils.assertElementTopIsEqual(
       utils.getPartialArea(),
-      config.cellHeight * rowsToSelect - config.lineWidth
+      config.cellHeight * startIdx - config.lineWidth
+    );
+
+    utils.assertElementTopIsEqual(
+      utils.getCellFocus(),
+      config.cellHeight * 3 - config.lineWidth
+    );
+    utils.assertElementLeftIsEqual(
+      utils.getCellFocus(),
+      config.cellWidth - config.lineWidth
     );
   });
 });

@@ -28,10 +28,7 @@ import { scrollCalculator } from "./componentDidUpdate";
 import { resetSelection } from "./selectRange";
 import { newLocation } from "./newLocation";
 
-export function handleKeyDown(
-  state: State,
-  event: KeyboardEvent
-): State {
+export function handleKeyDown(state: State, event: KeyboardEvent): State {
   const newState = handleKeyDownInternal(state, event);
   if (newState !== state) {
     event.stopPropagation();
@@ -40,6 +37,7 @@ export function handleKeyDown(
   return newState;
 }
 
+// TODO: rewrite/simplify if possible
 function handleKeyDownInternal(
   state: State,
   event: KeyboardEvent
@@ -69,7 +67,11 @@ function handleKeyDownInternal(
   const newState = handleKeyDownOnCellTemplate(state, event) as State;
   if (newState !== state) {
     if (!isSingleCellSelected && event.keyCode === keyCodes.ENTER) {
-      const direction = event.shiftKey ? "up" : "down";
+      const direction = event.shiftKey
+        ? "up"
+        : state.props?.moveRightOnEnter
+        ? "right"
+        : "down";
       state.hiddenFocusElement?.focus();
       return moveFocusInsideSelectedRange(
         state,
@@ -105,7 +107,7 @@ function handleKeyDownInternal(
   } else if (isSelectionKey(event)) {
     const cm = state.cellMatrix;
     switch (event.keyCode) {
-      case keyCodes.KEY_A:
+      case keyCodes.KEY_A: {
         if (
           state.selectedRanges.length === 1 &&
           areLocationsEqual(state.selectedRanges[0].first, cm.first) &&
@@ -113,12 +115,20 @@ function handleKeyDownInternal(
         ) {
           return resetSelection(state, location);
         }
+
+        const newRange = cm.getRange(cm.first, cm.last);
+
+        if (state.props?.onSelectionChanging && !state.props.onSelectionChanging([newRange])) {  
+          return state;
+        }
+
         return {
           ...state,
-          selectedRanges: [cm.getRange(cm.first, cm.last)],
+          selectedRanges: [newRange],
           selectionMode: "range",
           activeSelectedRangeIdx: 0,
         };
+      }
       case keyCodes.HOME:
         return focusLocation(state, state.cellMatrix.first);
       case keyCodes.END:
@@ -224,13 +234,17 @@ function handleKeyDownInternal(
       case keyCodes.PAGE_DOWN:
         state.hiddenFocusElement?.focus();
         return moveFocusPageDown(state) as State;
-      case keyCodes.ENTER:
+      case keyCodes.ENTER: {
+        const isMoveRightEnable = state.props?.moveRightOnEnter
+          ? { ...moveFocusRight(state), currentlyEditedCell: undefined }
+          : { ...moveFocusDown(state), currentlyEditedCell: undefined };
         state.hiddenFocusElement?.focus();
         return (
           isSingleCellSelected
-            ? { ...moveFocusDown(state), currentlyEditedCell: undefined }
-            : moveFocusInsideSelectedRange(state, "down", asr, location)
+            ? isMoveRightEnable
+            : moveFocusInsideSelectedRange(state, "right", asr, location)
         ) as State;
+      }
       case keyCodes.ESCAPE:
         event.preventDefault();
         state.hiddenFocusElement?.focus();
@@ -674,6 +688,15 @@ function resizeSelection(
     );
     scrollIntoView(state, top, left);
   }
+
+  if (state.props?.onSelectionChanging && !state.props.onSelectionChanging(selectedRanges)) {
+    // If selection change is canceled we can just return the state here
+    // TODO: We could try to find the "best possible selection", but I've not yet found a use case for this and - as I discovered - it isn't trivial
+    // TODO: Also, we could add a external way to change the selection so the users could implement this themselves
+    return state;
+  }
+
+  state.props?.onSelectionChanged?.(selectedRanges);
 
   return { ...state, selectedRanges };
 }

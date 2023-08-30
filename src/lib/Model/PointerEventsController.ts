@@ -226,6 +226,7 @@ export class PointerEventsController extends AbstractPointerEventsController {
           );
         }
         state.hiddenFocusElement?.focus();
+
         return state;
       });
     };

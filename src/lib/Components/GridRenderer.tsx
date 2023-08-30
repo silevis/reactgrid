@@ -24,6 +24,7 @@ export const GridRenderer: React.FC<GridRendererProps> = ({ eventHandlers, child
                     className="reactgrid-content"
                     onKeyDown={eventHandlers.keyDownHandler}
                     onKeyUp={eventHandlers.keyUpHandler}
+                    onCompositionEnd={eventHandlers.compositionEndHandler as any}
                     onPointerDown={eventHandlers.pointerDownHandler}
                     onPasteCapture={eventHandlers.pasteCaptureHandler}
                     onPaste={eventHandlers.pasteHandler}

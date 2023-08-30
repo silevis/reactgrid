@@ -4,8 +4,9 @@ import * as React from 'react';
 import { getCellProperty } from '../Functions/getCellProperty';
 import { Cell, CellTemplate, Compatible, Uncertain, UncertainCompatible } from '../Model/PublicModel';
 import { keyCodes } from '../Functions/keyCodes';
-import { inNumericKey, isNavigationKey, isAlphaNumericKey } from './keyCodeCheckings';
+import { inNumericKey, isNavigationKey, isAlphaNumericKey, isCharAlphaNumeric } from './keyCodeCheckings';
 import { getTimestamp, getFormattedTimeUnit } from './timeUtils';
+import { getCharFromKey } from './getCharFromKeyCode';
 
 export interface DateCell extends Cell {
     type: 'date';
@@ -14,6 +15,7 @@ export interface DateCell extends Cell {
 }
 
 export class DateCellTemplate implements CellTemplate<DateCell> {
+    private wasEscKeyPressed = false;
 
     getCompatibleCell(uncertainCell: Uncertain<DateCell>): Compatible<DateCell> {
         const date = uncertainCell.date ? getCellProperty(uncertainCell, 'date', 'object') : new Date(NaN);
@@ -23,8 +25,8 @@ export class DateCellTemplate implements CellTemplate<DateCell> {
         return { ...uncertainCell, date, value, text }
     }
 
-    handleKeyDown(cell: Compatible<DateCell>, keyCode: number, ctrl: boolean, shift: boolean, alt: boolean): { cell: Compatible<DateCell>, enableEditMode: boolean } {
-        if (!ctrl && !alt && !shift && isAlphaNumericKey(keyCode))
+    handleKeyDown(cell: Compatible<DateCell>, keyCode: number, ctrl: boolean, shift: boolean, alt: boolean, key: string): { cell: Compatible<DateCell>, enableEditMode: boolean } {
+        if (!ctrl && isCharAlphaNumeric(getCharFromKey(key)))
             return { cell: this.getCompatibleCell({ ...cell }), enableEditMode: true }
         return { cell, enableEditMode: keyCode === keyCodes.POINTER || keyCode === keyCodes.ENTER }
     }
@@ -66,12 +68,21 @@ export class DateCellTemplate implements CellTemplate<DateCell> {
             onBlur={e => {
                 const timestamp = getTimestamp(e.currentTarget.value, '');
                 if (!Number.isNaN(timestamp)) {
-                    onCellChanged(this.getCompatibleCell({ ...cell, date: new Date(timestamp) }), true);
+                    onCellChanged(this.getCompatibleCell({ ...cell, date: new Date(timestamp) }), !this.wasEscKeyPressed);
+                    this.wasEscKeyPressed = false;
                 }
             }}
             onKeyDown={e => {
-                if (inNumericKey(e.keyCode) || isNavigationKey(e.keyCode) || (e.keyCode === keyCodes.COMMA || e.keyCode === keyCodes.PERIOD)) e.stopPropagation();
+                if (
+                  inNumericKey(e.keyCode) ||
+                  isNavigationKey(e.keyCode) ||
+                  e.keyCode === keyCodes.COMMA ||
+                  e.keyCode === keyCodes.PERIOD ||
+                  ((e.ctrlKey || e.metaKey) && e.keyCode === keyCodes.KEY_A)
+                )
+                  e.stopPropagation();
                 if (!inNumericKey(e.keyCode) && !isNavigationKey(e.keyCode) && (e.keyCode !== keyCodes.COMMA && e.keyCode !== keyCodes.PERIOD)) e.preventDefault();
+                if (e.keyCode === keyCodes.ESCAPE) this.wasEscKeyPressed = true;
             }}
             onCopy={e => e.stopPropagation()}
             onCut={e => e.stopPropagation()}

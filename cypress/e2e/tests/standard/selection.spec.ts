@@ -12,8 +12,7 @@ context("Selection", () => {
     visit();
   });
 
-  it("Select many one cell ranges with ctrl or meta key", () => {
-    // ✅
+  it("Select many one cell ranges with ctrl or meta key", () => { // ✅
     utils.selectCell(500, 100);
 
     const ctrlKey = !utils.isMacOs() && true;
@@ -24,8 +23,7 @@ context("Selection", () => {
     utils.getCellFocus().should("be.visible").and("have.length", 1);
   });
 
-  it("Select one range, selection range should be changed, shift key pressed", () => {
-    // ✅
+  it("Select one range, selection range should be changed, shift key pressed", () => { // ✅
     const cellStartX = 2;
     const cellStartY = 3;
 
@@ -90,8 +88,7 @@ context("Selection", () => {
     );
   });
 
-  it("Shift key pressed + arrow up should resize selection range up", () => {
-    // ✅
+  it("Shift key pressed + arrow up should resize selection range up", () => { // ✅
     const cellToSelect = 3;
 
     utils.selectCell(config.cellWidth * 3, config.cellHeight * 10);
@@ -111,8 +108,7 @@ context("Selection", () => {
     );
   });
 
-  it("Shift key pressed + arrow right should resize selection range right", () => {
-    // ✅
+  it("Shift key pressed + arrow right should resize selection range right", () => { // ✅
     const cellToSelect = 2;
 
     utils.selectCell(config.cellWidth * 3, config.cellHeight * 10);
@@ -132,8 +128,7 @@ context("Selection", () => {
     );
   });
 
-  it("Shift key pressed + arrow left should resize selection range left", () => {
-    // ✅
+  it("Shift key pressed + arrow left should resize selection range left", () => { // ✅
     const cellToSelect = 4;
 
     utils.selectCell(config.cellWidth * 5, config.cellHeight * 10);
@@ -153,8 +148,7 @@ context("Selection", () => {
     ); // no line width
   });
 
-  it("Shift key pressed + arrow down should resize selection range down", () => {
-    // ✅
+  it("Shift key pressed + arrow down should resize selection range down", () => { // ✅
     const cellToSelect = 5;
 
     utils.selectCell(config.cellWidth * 3, config.cellHeight * 10);
@@ -174,8 +168,7 @@ context("Selection", () => {
     );
   });
 
-  it("Ctrl or meta + A should select whole grid", () => {
-    // ✅
+  it("Ctrl or meta + A should select whole grid", () => { // ✅
     utils.scrollTo(
       config.cellWidth * config.columns,
       config.cellHeight * config.rows
@@ -200,8 +193,7 @@ context("Selection", () => {
     utils.assertElementLeftIsEqual(utils.getPartialArea(), 0);
   });
 
-  it("Shift + end should select row at begging of cell focus", () => {
-    // ✅
+  it("Shift + end should select row at begging of cell focus", () => { // ✅
     utils.selectCell(
       config.cellWidth + utils.getCellXCenter(),
       config.cellHeight * 4 + utils.getCellYCenter()
@@ -219,8 +211,7 @@ context("Selection", () => {
     utils.assertElementRightIsEqual(utils.getPartialArea(), 0);
   });
 
-  it("Shift + PageUp should select area above focus location", () => {
-    // ✅
+  it("Shift + PageUp should select area above focus location", () => { // ✅
     utils.selectCell(
       config.cellWidth * 2 - utils.getCellXCenter(),
       config.cellHeight * 4 + utils.getCellYCenter()
@@ -234,8 +225,7 @@ context("Selection", () => {
     utils.assertElementTopIsEqual(utils.getPartialArea(), 0);
   });
 
-  it("Shift + PageDown should select rows below focus", () => {
-    // ✅
+  it("Shift + PageDown should select rows below focus", () => { // ✅
     utils.selectCell(
       config.cellWidth * 2 - utils.getCellXCenter(),
       config.cellHeight * 4 + utils.getCellYCenter()
@@ -252,8 +242,7 @@ context("Selection", () => {
     );
   });
 
-  it("Shift + home should select row to end of cell focus", () => {
-    // ✅
+  it("Shift + home should select row to end of cell focus", () => { // ✅
     utils.scrollToRight();
 
     utils.selectCell(
@@ -270,8 +259,7 @@ context("Selection", () => {
     utils.assertElementLeftIsEqual(utils.getPartialArea(), 0);
   });
 
-  it("CTRL or META + home should select cell in first row and column", () => {
-    // ✅
+  it("CTRL or META + home should select cell in first row and column", () => { // ✅
     utils.selectCell(
       config.rgViewportWidth - config.cellWidth - utils.getCellXCenter(),
       config.cellHeight * 4 + utils.getCellYCenter()
@@ -293,8 +281,7 @@ context("Selection", () => {
     );
   });
 
-  it("SHIFT + SPACE should select single row", () => {
-    // ✅
+  it("SHIFT + SPACE should select single row", () => { // ✅
     utils.selectCell(
       config.cellWidth * 3 - utils.getCellXCenter(),
       config.cellHeight * 4 + utils.getCellYCenter()
@@ -309,8 +296,7 @@ context("Selection", () => {
     );
   });
 
-  it("CTRL + SPACE should select single column", () => {
-    // ✅
+  it("CTRL + SPACE should select single column", () => { // ✅
     utils.selectCell(
       config.cellWidth * 3 - utils.getCellXCenter(),
       config.cellHeight * 4 + utils.getCellYCenter()

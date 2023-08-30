@@ -1,8 +1,0 @@
-{
-  "video": false,
-  "baseUrl": "http://localhost:3000",
-  "viewportWidth": 1200,
-  "viewportHeight": 770,
-  "scrollBehavior": false,
-  "testFiles": "**/*.spec.*"
-}
