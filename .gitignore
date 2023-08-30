@@ -11,8 +11,8 @@
 /coverage
 
 # production
-/dist
-/build
+# /dist
+# /build
 # public
 .cache
 
