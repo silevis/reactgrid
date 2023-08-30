@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 import { ReactGridProps, TextCell, HeaderCell, ChevronCell } from './../reactgrid';
 import { TestConfig } from './testEnvConfig';
 import '../styles.scss';
@@ -6,9 +6,9 @@ interface TestGridProps {
     enableSticky?: boolean;
     enableColumnAndRowSelection?: boolean;
     enableFrozenFocus?: boolean;
-    firstRowType?: TextCell['type'] | HeaderCell['type'];
-    firstColType?: ChevronCell['type'] | HeaderCell['type'];
-    cellType?: TextCell['type'] | HeaderCell['type'];
+    firstRowType?: TextCell["type"] | HeaderCell["type"];
+    firstColType?: ChevronCell["type"] | HeaderCell["type"];
+    cellType?: TextCell["type"] | HeaderCell["type"];
     config: TestConfig;
     component: React.ComponentClass<ReactGridProps>;
 }

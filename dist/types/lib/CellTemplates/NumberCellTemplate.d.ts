@@ -10,8 +10,9 @@ export interface NumberCell extends Cell {
     errorMessage?: string;
 }
 export declare class NumberCellTemplate implements CellTemplate<NumberCell> {
+    private wasEscKeyPressed;
     getCompatibleCell(uncertainCell: Uncertain<NumberCell>): Compatible<NumberCell>;
-    handleKeyDown(cell: Compatible<NumberCell>, keyCode: number, ctrl: boolean, shift: boolean, alt: boolean): {
+    handleKeyDown(cell: Compatible<NumberCell>, keyCode: number, ctrl: boolean, shift: boolean, alt: boolean, key: string): {
         cell: Compatible<NumberCell>;
         enableEditMode: boolean;
     };

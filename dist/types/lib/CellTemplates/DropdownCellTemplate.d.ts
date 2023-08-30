@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Cell, CellTemplate, Compatible, Uncertain, UncertainCompatible } from '../Model/PublicModel';
-export declare type OptionType = {
+export type OptionType = {
     label: string;
     value: string;
 };
@@ -16,7 +16,11 @@ export declare class DropdownCellTemplate implements CellTemplate<DropdownCell> 
     getCompatibleCell(uncertainCell: Uncertain<DropdownCell>): Compatible<DropdownCell>;
     update(cell: Compatible<DropdownCell>, cellToMerge: UncertainCompatible<DropdownCell>): Compatible<DropdownCell>;
     getClassName(cell: Compatible<DropdownCell>, isInEditMode: boolean): string;
-    handleKeyDown(cell: Compatible<DropdownCell>, keyCode: number, ctrl: boolean, shift: boolean, alt: boolean): {
+    handleKeyDown(cell: Compatible<DropdownCell>, keyCode: number, ctrl: boolean, shift: boolean, alt: boolean, key: string): {
+        cell: Compatible<DropdownCell>;
+        enableEditMode: boolean;
+    };
+    handleCompositionEnd(cell: Compatible<DropdownCell>, eventData: any): {
         cell: Compatible<DropdownCell>;
         enableEditMode: boolean;
     };

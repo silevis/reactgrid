@@ -168,6 +168,7 @@
   flex-wrap: wrap;
   justify-content: flex-start;
   align-items: flex-start;
+  color: #ffffff;
 }
 .reactgrid-content .rg-pane.rg-pane-top, .reactgrid-content .rg-pane.rg-pane-bottom, .reactgrid-content .rg-pane.rg-pane-left, .reactgrid-content .rg-pane.rg-pane-right {
   position: sticky;
@@ -199,6 +200,7 @@
   outline: none;
   touch-action: auto;
   border-color: #e8e8e8;
+  color: #ffffff;
 }
 .reactgrid-content .rg-pane .rg-cell .rg-touch-resize-handle {
   position: absolute;

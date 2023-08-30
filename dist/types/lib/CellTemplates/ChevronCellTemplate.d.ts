@@ -9,9 +9,14 @@ export interface ChevronCell extends Cell {
     indent?: number;
 }
 export declare class ChevronCellTemplate implements CellTemplate<ChevronCell> {
+    private wasEscKeyPressed;
     getCompatibleCell(uncertainCell: Uncertain<ChevronCell>): Compatible<ChevronCell>;
     update(cell: Compatible<ChevronCell>, cellToMerge: UncertainCompatible<ChevronCell>): Compatible<ChevronCell>;
-    handleKeyDown(cell: Compatible<ChevronCell>, keyCode: number, ctrl: boolean, shift: boolean, alt: boolean): {
+    handleKeyDown(cell: Compatible<ChevronCell>, keyCode: number, ctrl: boolean, shift: boolean, alt: boolean, key: string): {
+        cell: Compatible<ChevronCell>;
+        enableEditMode: boolean;
+    };
+    handleCompositionEnd(cell: Compatible<ChevronCell>, eventData: any): {
         cell: Compatible<ChevronCell>;
         enableEditMode: boolean;
     };

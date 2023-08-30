@@ -7,6 +7,7 @@ export declare abstract class Behavior<PointerUpEvent = PointerEvent | MouseEven
     handleKeyDown(event: KeyboardEvent, state: State): State;
     handlePointerUp(event: PointerUpEvent, location: PointerLocation, state: State): State;
     handleKeyUp(event: KeyboardEvent, state: State): State;
+    handleCompositionEnd(event: CompositionEvent, state: State): State;
     handleCopy(event: ClipboardEvent, state: State): State;
     handlePaste(event: ClipboardEvent, state: State): State;
     handleCut(event: ClipboardEvent, state: State): State;

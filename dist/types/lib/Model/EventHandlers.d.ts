@@ -8,6 +8,7 @@ export declare class EventHandlers {
     pointerDownHandler: (event: PointerEvent) => void;
     keyDownHandler: (event: KeyboardEvent) => void;
     keyUpHandler: (event: KeyboardEvent) => void;
+    compositionEndHandler: (event: CompositionEvent) => void;
     copyHandler: (event: ClipboardEvent) => void;
     pasteHandler: (event: ClipboardEvent) => void;
     cutHandler: (event: ClipboardEvent) => void;

@@ -34,6 +34,7 @@ export interface TestConfig {
     enableFullWidthHeader: boolean;
     enableGroupIdRender: boolean;
     disableVirtualScrolling: boolean;
+    moveRightOnEnter: boolean;
     columns: number;
     rows: number;
     lineWidth: number;

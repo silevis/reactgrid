@@ -25,8 +25,9 @@ interface DateCell extends Cell {
     format?: Intl.DateTimeFormat;
 }
 declare class DateCellTemplate implements CellTemplate<DateCell> {
+    private wasEscKeyPressed;
     getCompatibleCell(uncertainCell: Uncertain<DateCell>): Compatible<DateCell>;
-    handleKeyDown(cell: Compatible<DateCell>, keyCode: number, ctrl: boolean, shift: boolean, alt: boolean): {
+    handleKeyDown(cell: Compatible<DateCell>, keyCode: number, ctrl: boolean, shift: boolean, alt: boolean, key: string): {
         cell: Compatible<DateCell>;
         enableEditMode: boolean;
     };
@@ -43,8 +44,13 @@ interface EmailCell extends Cell {
     errorMessage?: string;
 }
 declare class EmailCellTemplate implements CellTemplate<EmailCell> {
+    private wasEscKeyPressed;
     getCompatibleCell(uncertainCell: Uncertain<EmailCell>): Compatible<EmailCell>;
-    handleKeyDown(cell: Compatible<EmailCell>, keyCode: number, ctrl: boolean, shift: boolean, alt: boolean): {
+    handleKeyDown(cell: Compatible<EmailCell>, keyCode: number, ctrl: boolean, shift: boolean, alt: boolean, key: string): {
+        cell: Compatible<EmailCell>;
+        enableEditMode: boolean;
+    };
+    handleCompositionEnd(cell: Compatible<EmailCell>, eventData: any): {
         cell: Compatible<EmailCell>;
         enableEditMode: boolean;
     };
@@ -62,9 +68,14 @@ interface ChevronCell extends Cell {
     indent?: number;
 }
 declare class ChevronCellTemplate implements CellTemplate<ChevronCell> {
+    private wasEscKeyPressed;
     getCompatibleCell(uncertainCell: Uncertain<ChevronCell>): Compatible<ChevronCell>;
     update(cell: Compatible<ChevronCell>, cellToMerge: UncertainCompatible<ChevronCell>): Compatible<ChevronCell>;
-    handleKeyDown(cell: Compatible<ChevronCell>, keyCode: number, ctrl: boolean, shift: boolean, alt: boolean): {
+    handleKeyDown(cell: Compatible<ChevronCell>, keyCode: number, ctrl: boolean, shift: boolean, alt: boolean, key: string): {
+        cell: Compatible<ChevronCell>;
+        enableEditMode: boolean;
+    };
+    handleCompositionEnd(cell: Compatible<ChevronCell>, eventData: any): {
         cell: Compatible<ChevronCell>;
         enableEditMode: boolean;
     };
@@ -95,8 +106,9 @@ interface NumberCell extends Cell {
     errorMessage?: string;
 }
 declare class NumberCellTemplate implements CellTemplate<NumberCell> {
+    private wasEscKeyPressed;
     getCompatibleCell(uncertainCell: Uncertain<NumberCell>): Compatible<NumberCell>;
-    handleKeyDown(cell: Compatible<NumberCell>, keyCode: number, ctrl: boolean, shift: boolean, alt: boolean): {
+    handleKeyDown(cell: Compatible<NumberCell>, keyCode: number, ctrl: boolean, shift: boolean, alt: boolean, key: string): {
         cell: Compatible<NumberCell>;
         enableEditMode: boolean;
     };
@@ -115,9 +127,14 @@ interface TextCell extends Cell {
     errorMessage?: string;
 }
 declare class TextCellTemplate implements CellTemplate<TextCell> {
+    private wasEscKeyPressed;
     getCompatibleCell(uncertainCell: Uncertain<TextCell>): Compatible<TextCell>;
     update(cell: Compatible<TextCell>, cellToMerge: UncertainCompatible<TextCell>): Compatible<TextCell>;
-    handleKeyDown(cell: Compatible<TextCell>, keyCode: number, ctrl: boolean, shift: boolean, alt: boolean): {
+    handleKeyDown(cell: Compatible<TextCell>, keyCode: number, ctrl: boolean, shift: boolean, alt: boolean, key: string): {
+        cell: Compatible<TextCell>;
+        enableEditMode: boolean;
+    };
+    handleCompositionEnd(cell: Compatible<TextCell>, eventData: any): {
         cell: Compatible<TextCell>;
         enableEditMode: boolean;
     };
@@ -133,8 +150,9 @@ interface TimeCell extends Cell {
 declare class TimeCellTemplate implements CellTemplate<TimeCell> {
     static dayInMillis: number;
     static defaultDate: string;
+    private wasEscKeyPressed;
     getCompatibleCell(uncertainCell: Uncertain<TimeCell>): Compatible<TimeCell>;
-    handleKeyDown(cell: Compatible<TimeCell>, keyCode: number, ctrl: boolean, shift: boolean, alt: boolean): {
+    handleKeyDown(cell: Compatible<TimeCell>, keyCode: number, ctrl: boolean, shift: boolean, alt: boolean, key: string): {
         cell: Compatible<TimeCell>;
         enableEditMode: boolean;
     };
@@ -143,7 +161,7 @@ declare class TimeCellTemplate implements CellTemplate<TimeCell> {
     render(cell: Compatible<TimeCell>, isInEditMode: boolean, onCellChanged: (cell: Compatible<TimeCell>, commit: boolean) => void): React$1.ReactNode;
 }
 
-declare type OptionType = {
+type OptionType = {
     label: string;
     value: string;
 };
@@ -159,7 +177,11 @@ declare class DropdownCellTemplate implements CellTemplate<DropdownCell> {
     getCompatibleCell(uncertainCell: Uncertain<DropdownCell>): Compatible<DropdownCell>;
     update(cell: Compatible<DropdownCell>, cellToMerge: UncertainCompatible<DropdownCell>): Compatible<DropdownCell>;
     getClassName(cell: Compatible<DropdownCell>, isInEditMode: boolean): string;
-    handleKeyDown(cell: Compatible<DropdownCell>, keyCode: number, ctrl: boolean, shift: boolean, alt: boolean): {
+    handleKeyDown(cell: Compatible<DropdownCell>, keyCode: number, ctrl: boolean, shift: boolean, alt: boolean, key: string): {
+        cell: Compatible<DropdownCell>;
+        enableEditMode: boolean;
+    };
+    handleCompositionEnd(cell: Compatible<DropdownCell>, eventData: any): {
         cell: Compatible<DropdownCell>;
         enableEditMode: boolean;
     };
@@ -175,6 +197,19 @@ declare class DropdownCellTemplate implements CellTemplate<DropdownCell> {
  * @see https://reactgrid.com/docs/3.1/7-api/2-functions/
  */
 declare const isAlphaNumericKey: (keyCode: number) => boolean;
+/**
+ * Similar to {@link isAlphaNumericKey} - checks that the provided `char` is one of alphanumeric characters
+ *
+ * @param {string} char character produced by `KeyboardEvent.key` field
+ * @returns {boolean} Returns `true` if `char` is one of alphanumeric characters
+ */
+declare const isCharAlphaNumeric: (char: string) => boolean;
+/**
+ * Helper function to check that the provided `key` produces printable character
+ * @param key field from `KeyboardEvent` interface
+ * @returns Returns `true` if `key` is one of printable characters
+ */
+declare const isKeyPrintable: (key: string) => boolean;
 /**
  * Checks that the pressed key's `keyCode` is one of numeric keys
  *
@@ -203,6 +238,13 @@ declare const isNumpadNumericKey: (keyCode: number) => boolean;
  */
 declare const isAllowedOnNumberTypingKey: (keyCode: number) => boolean;
 /**
+ * Similar to {@link isAllowedOnNumberTypingKey} - checks that the provided `char` is allowed while typing numeric value e.g. `-3.14`
+ *
+ * @param {string} char character produced by `KeyboardEvent.key` field
+ * @returns {boolean} Returns `true` if `char` is one of allowed while typing numeric value
+ */
+declare const isCharAllowedOnNumberInput: (char: string) => boolean;
+/**
  * Checks that the pressed key's `keyCode` is one of navigation keys
  *
  * @param {number} keyCode `keyCode` field from `KeyboardEvent` interface
@@ -213,6 +255,20 @@ declare const isAllowedOnNumberTypingKey: (keyCode: number) => boolean;
 declare const isNavigationKey: (keyCode: number) => boolean;
 
 declare const getCharFromKeyCode: (keyCode: number, isShiftKey?: boolean) => string;
+declare const getCharFromKey: (key: string, isShiftKey?: boolean) => string;
+
+type SliceDirection = 'columns' | 'rows' | 'both';
+declare class Range {
+    readonly rows: GridRow[];
+    readonly columns: GridColumn[];
+    readonly width: number;
+    readonly height: number;
+    readonly first: Location;
+    readonly last: Location;
+    constructor(rows: GridRow[], columns: GridColumn[]);
+    contains(location: Location): boolean;
+    slice(range: Range, direction: SliceDirection): Range;
+}
 
 /**
  * This is the public API for ReactGrid
@@ -227,7 +283,7 @@ declare const getCharFromKeyCode: (keyCode: number, isShiftKey?: boolean) => str
  *
  * @see https://reactgrid.com/docs/3.1/7-api/1-types/7-selection-mode/
  */
-declare type SelectionMode = 'row' | 'column' | 'range';
+type SelectionMode = 'row' | 'column' | 'range';
 /**
  * `ReactGrid`'s component props
  *
@@ -274,14 +330,23 @@ interface ReactGridProps {
      * Horizontal breakpoint in percents (%) of ReactGrid scrollable parent element width.
      * Disables sticky when the sum of the sizes of sticky panes overflows
      * given breakpoint value (by default `50`).
-    */
+     */
     readonly horizontalStickyBreakpoint?: number;
     /**
      * Vertical breakpoint in percents (%) of ReactGrid scrollable parent element height.
      * Disables sticky when the sum of the sizes of sticky panes overflows
      * given breakpoint value (by default `50`).
-    */
+     */
     readonly verticalStickyBreakpoint?: number;
+    /**
+     * When pressing `Enter` key, move focus to the next column (by default `false`)
+     */
+    readonly moveRightOnEnter?: boolean;
+    /**
+     * Minimum column width (by default `40`), in pixels
+     * Used to limit the width column can be resized down to.
+     */
+    readonly minColumnWidth?: number;
     /**
      * Called when cell was changed (e.g. property `value`)
      *
@@ -304,6 +369,21 @@ interface ReactGridProps {
      * @returns {boolean} Return `false` to prevent position changing
      */
     readonly onFocusLocationChanging?: (location: CellLocation) => boolean;
+    /**
+     * Called when selection has been changed.
+     *
+     * @param {Range[]} selectedRanges array of selected cell locations
+     * @returns {void}
+     */
+    readonly onSelectionChanged?: (selectedRanges: Range[]) => void;
+    /**
+     * Called when trying to change selection.
+     * You are able to prevent selection changing.
+     *
+     * @param {Range[]} selectedRanges array of selected cell locations
+     * @returns {boolean} Return `false` to prevent selection changing
+     */
+    readonly onSelectionChanging?: (selectedRanges: Range[]) => boolean;
     /**
      * Called when column resize action was finished
      *
@@ -449,13 +529,13 @@ interface Highlight {
  *
  * @see https://reactgrid.com/docs/3.1/7-api/1-types/6-default-cells/
  */
-declare type DefaultCellTypes = CheckboxCell | DateCell | EmailCell | ChevronCell | HeaderCell | NumberCell | TextCell | TimeCell | DropdownCell;
+type DefaultCellTypes = CheckboxCell | DateCell | EmailCell | ChevronCell | HeaderCell | NumberCell | TextCell | TimeCell | DropdownCell;
 /**
  * `CellChange` type is used by `onCellsChanged`. It represents mutually exclusive changes on a single cell.
  *
  * @see https://reactgrid.com/docs/3.1/7-api/1-types/2-cell-change/
  */
-declare type CellChange<TCell extends Cell = DefaultCellTypes & Cell> = TCell extends Cell ? {
+type CellChange<TCell extends Cell = DefaultCellTypes & Cell> = TCell extends Cell ? {
     /** Row's `Id` where the change ocurred */
     readonly rowId: Id;
     /** Column's `Id` where the change ocurred */
@@ -507,9 +587,21 @@ interface CellTemplate<TCell extends Cell = Cell> {
      * @param {boolean} ctrl Is `ctrl` pressed when event is called ()
      * @param {boolean} shift Is `shift` pressed when event is called
      * @param {boolean} alt Is `alt` pressed when event is called
+     * @param {string} [key] Represents the value of the key pressed by the user. Optional for backwards compatibility.
      * @returns {{ cell: Compatible<TCell>; enableEditMode: boolean }} Cell data and edit mode either affected by the event or not
     */
-    handleKeyDown?(cell: Compatible<TCell>, keyCode: number, ctrl: boolean, shift: boolean, alt: boolean): {
+    handleKeyDown?(cell: Compatible<TCell>, keyCode: number, ctrl: boolean, shift: boolean, alt: boolean, key?: string): {
+        cell: Compatible<TCell>;
+        enableEditMode: boolean;
+    };
+    /**
+     * Handles compositionEnd event on cell template (opening cell in edit mode)
+     *
+     * @param {Compatible<TCell>} cell Incoming `Compatible` cell
+     * @param {string} eventData The characters generated by the input method that raised the event
+     * @returns {{ cell: Compatible<TCell>; enableEditMode: boolean }} Cell data and edit mode either affected by the event or not
+    */
+    handleCompositionEnd?(cell: Compatible<TCell>, eventData: string): {
         cell: Compatible<TCell>;
         enableEditMode: boolean;
     };
@@ -545,13 +637,13 @@ interface CellTemplate<TCell extends Cell = Cell> {
  *
  * @see https://reactgrid.com/docs/3.1/7-api/1-types/4-id/
  */
-declare type Id = number | string;
+type Id = number | string;
 /**
  * Indicates where row/column was dropped relatively to its origin and target object
  *
  * @see https://reactgrid.com/docs/3.1/7-api/1-types/5-drop-position/
  */
-declare type DropPosition = 'before' | 'on' | 'after';
+type DropPosition = 'before' | 'on' | 'after';
 /**
  * Represents column in the grid
  *
@@ -641,13 +733,13 @@ interface Cell {
  *
  * @see https://reactgrid.com/docs/3.1/7-api/1-types/2-uncertain-cell/
  */
-declare type Uncertain<TCell extends Cell> = Partial<TCell> & Cell;
+type Uncertain<TCell extends Cell> = Partial<TCell> & Cell;
 /**
  * Cell type marker - extended & exchangeable cell (compatible with different types)
  *
  * @see https://reactgrid.com/docs/3.1/7-api/1-types/1-compatible-cell/
  */
-declare type Compatible<TCell extends Cell> = TCell & {
+type Compatible<TCell extends Cell> = TCell & {
     /** Text value of a cell */
     text: string;
     /**  Numeric value of a cell, if there is no numeric value representation use `NaN` */
@@ -659,7 +751,7 @@ declare type Compatible<TCell extends Cell> = TCell & {
  *
  * @see https://reactgrid.com/docs/3.1/7-api/1-types/3-uncertain-compatible-cell/
  */
-declare type UncertainCompatible<TCell extends Cell> = Uncertain<TCell> & {
+type UncertainCompatible<TCell extends Cell> = Uncertain<TCell> & {
     /** Text value of a cell */
     text: string;
     /** Numeric value of a cell, if there is no numeric value representation use `NaN` */
@@ -706,27 +798,15 @@ interface MenuOption {
     handler: (selectedRowIds: Id[], selectedColIds: Id[], selectionMode: SelectionMode, selectedRanges: Array<CellLocation[]>) => void;
 }
 
-declare type ClipboardEvent = React$1.ClipboardEvent<HTMLDivElement>;
-declare type KeyboardEvent = React$1.KeyboardEvent<HTMLDivElement>;
-declare type PointerEvent = React$1.PointerEvent<HTMLDivElement> | globalThis.PointerEvent;
-
-declare type SliceDirection = 'columns' | 'rows' | 'both';
-declare class Range {
-    readonly rows: GridRow[];
-    readonly columns: GridColumn[];
-    readonly width: number;
-    readonly height: number;
-    readonly first: Location;
-    readonly last: Location;
-    constructor(rows: GridRow[], columns: GridColumn[]);
-    contains(location: Location): boolean;
-    slice(range: Range, direction: SliceDirection): Range;
-}
+type ClipboardEvent = React$1.ClipboardEvent<HTMLDivElement>;
+type KeyboardEvent = React$1.KeyboardEvent<HTMLDivElement>;
+type PointerEvent = React$1.PointerEvent<HTMLDivElement> | globalThis.PointerEvent;
 
 declare abstract class Behavior<PointerUpEvent = PointerEvent | MouseEvent> {
     handleKeyDown(event: KeyboardEvent, state: State): State;
     handlePointerUp(event: PointerUpEvent, location: PointerLocation, state: State): State;
     handleKeyUp(event: KeyboardEvent, state: State): State;
+    handleCompositionEnd(event: CompositionEvent, state: State): State;
     handleCopy(event: ClipboardEvent, state: State): State;
     handlePaste(event: ClipboardEvent, state: State): State;
     handleCut(event: ClipboardEvent, state: State): State;
@@ -749,6 +829,7 @@ interface CellMatrixProps {
     stickyLeftColumns?: number;
     stickyRightColumns?: number;
     stickyBottomRows?: number;
+    minColumnWidth?: number;
 }
 interface StickyRanges {
     stickyTopRange: Range;
@@ -789,8 +870,8 @@ declare class CellMatrix {
     getCell(location: Location): Cell;
 }
 
-declare type StateModifier<TState extends State = State> = (state: TState) => TState;
-declare type StateUpdater = (modifier: StateModifier) => void;
+type StateModifier<TState extends State = State> = (state: TState) => TState;
+type StateUpdater = (modifier: StateModifier) => void;
 interface State<TCellMatrix extends CellMatrix = CellMatrix, TBehavior extends Behavior = Behavior> {
     update: StateUpdater;
     readonly props?: ReactGridProps;
@@ -837,8 +918,8 @@ interface State<TCellMatrix extends CellMatrix = CellMatrix, TBehavior extends B
     readonly bottomStickyRows: number | undefined;
 }
 
-declare type Orientation = 'horizontal' | 'vertical';
-declare type Direction = 'horizontal' | 'vertical' | 'both';
+type Orientation = 'horizontal' | 'vertical';
+type Direction = 'horizontal' | 'vertical' | 'both';
 interface GridColumn extends Column {
     readonly idx: number;
     readonly left: number;
@@ -864,19 +945,17 @@ interface PointerLocation extends Location {
     readonly cellY: number;
 }
 
-declare class ReactGrid extends React$1.Component<ReactGridProps, State> {
-    private updateState;
-    private stateUpdater;
-    private pointerEventsController;
-    private eventHandlers;
-    private cellMatrixBuilder;
-    state: State;
-    static getDerivedStateFromProps(props: ReactGridProps, state: State): State | null;
-    componentDidUpdate(prevProps: ReactGridProps, prevState: State): void;
-    componentDidMount(): void;
-    componentWillUnmount(): void;
-    render(): React$1.ReactNode;
-}
+/**
+ * Gets property cell's value
+ *
+ * @param uncertainCell Cell to extract its property
+ * @param propName Property name to extract
+ * @param expectedType Expected `typeof` of extracted property from "uncertain" cell
+ * @returns Value of property of given cell
+ *
+ * @see https://reactgrid.com/docs/3.1/7-api/2-functions/
+ */
+declare const getCellProperty: <TCell extends Cell, TKey extends keyof TCell>(uncertainCell: Uncertain<TCell>, propName: TKey, expectedType: 'string' | 'number' | 'boolean' | 'undefined' | 'function' | 'object' | 'symbol' | 'bigint') => any;
 
 /**
  * Set of key codes.
@@ -988,16 +1067,18 @@ declare enum keyCodes {
     SINGLE_QUOTE = 222
 }
 
-/**
- * Gets property cell's value
- *
- * @param uncertainCell Cell to extract its property
- * @param propName Property name to extract
- * @param expectedType Expected `typeof` of extracted property from "uncertain" cell
- * @returns Value of property of given cell
- *
- * @see https://reactgrid.com/docs/3.1/7-api/2-functions/
- */
-declare const getCellProperty: <TCell extends Cell, TKey extends keyof TCell>(uncertainCell: Uncertain<TCell>, propName: TKey, expectedType: 'string' | 'number' | 'boolean' | 'undefined' | 'function' | 'object' | 'symbol' | 'bigint') => any;
+declare class ReactGrid extends React$1.Component<ReactGridProps, State> {
+    private updateState;
+    private stateUpdater;
+    private pointerEventsController;
+    private eventHandlers;
+    private cellMatrixBuilder;
+    state: State;
+    static getDerivedStateFromProps(props: ReactGridProps, state: State): State | null;
+    componentDidUpdate(prevProps: ReactGridProps, prevState: State): void;
+    componentDidMount(): void;
+    componentWillUnmount(): void;
+    render(): React$1.ReactNode;
+}
 
-export { BorderProps, Cell, CellChange, CellLocation, CellStyle, CellTemplate, CellTemplates, CheckboxCell, CheckboxCellTemplate, ChevronCell, ChevronCellTemplate, Column, Compatible, DateCell, DateCellTemplate, DefaultCellTypes, DropPosition, DropdownCell, DropdownCellTemplate, EmailCell, EmailCellTemplate, HeaderCell, HeaderCellTemplate, Highlight, Id, MenuOption, NumberCell, NumberCellTemplate, OptionType, ReactGrid, ReactGridProps, Row, SelectionMode, Span, TextCell, TextCellTemplate, TextLabels, TimeCell, TimeCellTemplate, Uncertain, UncertainCompatible, getCellProperty, getCharFromKeyCode, inNumericKey, isAllowedOnNumberTypingKey, isAlphaNumericKey, isNavigationKey, isNumpadNumericKey, keyCodes };
+export { BorderProps, Cell, CellChange, CellLocation, CellStyle, CellTemplate, CellTemplates, CheckboxCell, CheckboxCellTemplate, ChevronCell, ChevronCellTemplate, Column, Compatible, DateCell, DateCellTemplate, DefaultCellTypes, DropPosition, DropdownCell, DropdownCellTemplate, EmailCell, EmailCellTemplate, HeaderCell, HeaderCellTemplate, Highlight, Id, MenuOption, NumberCell, NumberCellTemplate, OptionType, ReactGrid, ReactGridProps, Row, SelectionMode, Span, TextCell, TextCellTemplate, TextLabels, TimeCell, TimeCellTemplate, Uncertain, UncertainCompatible, getCellProperty, getCharFromKey, getCharFromKeyCode, inNumericKey, isAllowedOnNumberTypingKey, isAlphaNumericKey, isCharAllowedOnNumberInput, isCharAlphaNumeric, isKeyPrintable, isNavigationKey, isNumpadNumericKey, keyCodes };

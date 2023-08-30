@@ -9,9 +9,14 @@ export interface TextCell extends Cell {
     errorMessage?: string;
 }
 export declare class TextCellTemplate implements CellTemplate<TextCell> {
+    private wasEscKeyPressed;
     getCompatibleCell(uncertainCell: Uncertain<TextCell>): Compatible<TextCell>;
     update(cell: Compatible<TextCell>, cellToMerge: UncertainCompatible<TextCell>): Compatible<TextCell>;
-    handleKeyDown(cell: Compatible<TextCell>, keyCode: number, ctrl: boolean, shift: boolean, alt: boolean): {
+    handleKeyDown(cell: Compatible<TextCell>, keyCode: number, ctrl: boolean, shift: boolean, alt: boolean, key: string): {
+        cell: Compatible<TextCell>;
+        enableEditMode: boolean;
+    };
+    handleCompositionEnd(cell: Compatible<TextCell>, eventData: any): {
         cell: Compatible<TextCell>;
         enableEditMode: boolean;
     };

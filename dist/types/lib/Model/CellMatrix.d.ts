@@ -11,6 +11,7 @@ export interface CellMatrixProps {
     stickyLeftColumns?: number;
     stickyRightColumns?: number;
     stickyBottomRows?: number;
+    minColumnWidth?: number;
 }
 export interface StickyRanges {
     stickyTopRange: Range;

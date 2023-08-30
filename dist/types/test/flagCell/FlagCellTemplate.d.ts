@@ -6,8 +6,13 @@ export interface FlagCell extends Cell {
     text: string;
 }
 export declare class FlagCellTemplate implements CellTemplate<FlagCell> {
+    private wasEscKeyPressed;
     getCompatibleCell(uncertainCell: Uncertain<FlagCell>): Compatible<FlagCell>;
-    handleKeyDown(cell: Compatible<FlagCell>, keyCode: number, ctrl: boolean, shift: boolean, alt: boolean): {
+    handleKeyDown(cell: Compatible<FlagCell>, keyCode: number, ctrl: boolean, shift: boolean, alt: boolean, key: string): {
+        cell: Compatible<FlagCell>;
+        enableEditMode: boolean;
+    };
+    handleCompositionEnd(cell: Compatible<FlagCell>, eventData: any): {
         cell: Compatible<FlagCell>;
         enableEditMode: boolean;
     };

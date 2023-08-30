@@ -1,5 +1,5 @@
 import { GridColumn, GridRow, Location } from './InternalModel';
-export declare type SliceDirection = 'columns' | 'rows' | 'both';
+export type SliceDirection = 'columns' | 'rows' | 'both';
 export declare class Range {
     readonly rows: GridRow[];
     readonly columns: GridColumn[];

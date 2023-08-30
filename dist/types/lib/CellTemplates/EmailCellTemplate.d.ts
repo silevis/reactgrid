@@ -8,8 +8,13 @@ export interface EmailCell extends Cell {
     errorMessage?: string;
 }
 export declare class EmailCellTemplate implements CellTemplate<EmailCell> {
+    private wasEscKeyPressed;
     getCompatibleCell(uncertainCell: Uncertain<EmailCell>): Compatible<EmailCell>;
-    handleKeyDown(cell: Compatible<EmailCell>, keyCode: number, ctrl: boolean, shift: boolean, alt: boolean): {
+    handleKeyDown(cell: Compatible<EmailCell>, keyCode: number, ctrl: boolean, shift: boolean, alt: boolean, key: string): {
+        cell: Compatible<EmailCell>;
+        enableEditMode: boolean;
+    };
+    handleCompositionEnd(cell: Compatible<EmailCell>, eventData: any): {
         cell: Compatible<EmailCell>;
         enableEditMode: boolean;
     };

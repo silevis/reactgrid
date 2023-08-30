@@ -1,5 +1,5 @@
 import * as React from 'react';
-export declare type ClipboardEvent = React.ClipboardEvent<HTMLDivElement>;
-export declare type KeyboardEvent = React.KeyboardEvent<HTMLDivElement>;
-export declare type PointerEvent = React.PointerEvent<HTMLDivElement> | globalThis.PointerEvent;
-export declare type FocusEvent = React.FocusEvent<HTMLDivElement>;
+export type ClipboardEvent = React.ClipboardEvent<HTMLDivElement>;
+export type KeyboardEvent = React.KeyboardEvent<HTMLDivElement>;
+export type PointerEvent = React.PointerEvent<HTMLDivElement> | globalThis.PointerEvent;
+export type FocusEvent = React.FocusEvent<HTMLDivElement>;

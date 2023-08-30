@@ -4,8 +4,8 @@ import { CellMatrix } from './CellMatrix';
 import { Behavior } from './Behavior';
 import { Location, Orientation } from './InternalModel';
 import { Range } from './Range';
-export declare type StateModifier<TState extends State = State> = (state: TState) => TState;
-export declare type StateUpdater = (modifier: StateModifier) => void;
+export type StateModifier<TState extends State = State> = (state: TState) => TState;
+export type StateUpdater = (modifier: StateModifier) => void;
 export interface State<TCellMatrix extends CellMatrix = CellMatrix, TBehavior extends Behavior = Behavior> {
     update: StateUpdater;
     readonly props?: ReactGridProps;

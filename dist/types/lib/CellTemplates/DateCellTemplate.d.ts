@@ -6,8 +6,9 @@ export interface DateCell extends Cell {
     format?: Intl.DateTimeFormat;
 }
 export declare class DateCellTemplate implements CellTemplate<DateCell> {
+    private wasEscKeyPressed;
     getCompatibleCell(uncertainCell: Uncertain<DateCell>): Compatible<DateCell>;
-    handleKeyDown(cell: Compatible<DateCell>, keyCode: number, ctrl: boolean, shift: boolean, alt: boolean): {
+    handleKeyDown(cell: Compatible<DateCell>, keyCode: number, ctrl: boolean, shift: boolean, alt: boolean, key: string): {
         cell: Compatible<DateCell>;
         enableEditMode: boolean;
     };

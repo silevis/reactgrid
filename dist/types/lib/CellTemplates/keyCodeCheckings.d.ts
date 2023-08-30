@@ -8,6 +8,19 @@
  */
 export declare const isAlphaNumericKey: (keyCode: number) => boolean;
 /**
+ * Similar to {@link isAlphaNumericKey} - checks that the provided `char` is one of alphanumeric characters
+ *
+ * @param {string} char character produced by `KeyboardEvent.key` field
+ * @returns {boolean} Returns `true` if `char` is one of alphanumeric characters
+ */
+export declare const isCharAlphaNumeric: (char: string) => boolean;
+/**
+ * Helper function to check that the provided `key` produces printable character
+ * @param key field from `KeyboardEvent` interface
+ * @returns Returns `true` if `key` is one of printable characters
+ */
+export declare const isKeyPrintable: (key: string) => boolean;
+/**
  * Checks that the pressed key's `keyCode` is one of numeric keys
  *
  * @param {number} keyCode `keyCode` field from `KeyboardEvent` interface
@@ -34,6 +47,13 @@ export declare const isNumpadNumericKey: (keyCode: number) => boolean;
  * @see https://reactgrid.com/docs/3.1/7-api/2-functions/
  */
 export declare const isAllowedOnNumberTypingKey: (keyCode: number) => boolean;
+/**
+ * Similar to {@link isAllowedOnNumberTypingKey} - checks that the provided `char` is allowed while typing numeric value e.g. `-3.14`
+ *
+ * @param {string} char character produced by `KeyboardEvent.key` field
+ * @returns {boolean} Returns `true` if `char` is one of allowed while typing numeric value
+ */
+export declare const isCharAllowedOnNumberInput: (char: string) => boolean;
 /**
  * Checks that the pressed key's `keyCode` is one of navigation keys
  *

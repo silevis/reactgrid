@@ -8,8 +8,9 @@ export interface TimeCell extends Cell {
 export declare class TimeCellTemplate implements CellTemplate<TimeCell> {
     static dayInMillis: number;
     static defaultDate: string;
+    private wasEscKeyPressed;
     getCompatibleCell(uncertainCell: Uncertain<TimeCell>): Compatible<TimeCell>;
-    handleKeyDown(cell: Compatible<TimeCell>, keyCode: number, ctrl: boolean, shift: boolean, alt: boolean): {
+    handleKeyDown(cell: Compatible<TimeCell>, keyCode: number, ctrl: boolean, shift: boolean, alt: boolean, key: string): {
         cell: Compatible<TimeCell>;
         enableEditMode: boolean;
     };
