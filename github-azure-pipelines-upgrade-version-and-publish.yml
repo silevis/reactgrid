@@ -35,9 +35,12 @@ stages:
             displayName: "Build TypeScript code"
           - task: Npm@1
             inputs:
-              command: "custom"
-              customCommand: "publish dist --access=public"
-              customEndpoint: "npm ReactGrid deployment service"
+              command: "publish"
+              # customCommand: "publish dist --access=public"
+              workingDir: 'dist'
+              publishRegistry: useExternalRegistry
+              publishEndpoint: 'npm-reactgrid'
+              # customEndpoint: "npm ReactGrid deployment service"
           - script: git config --global user.email "$(GIT_USER_MAIL)" && git config --global user.name "$(GIT_USER_NAME)"
             displayName: "Set configuration"
           - script: git add .
