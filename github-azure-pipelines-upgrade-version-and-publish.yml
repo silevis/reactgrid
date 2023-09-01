@@ -35,8 +35,9 @@ stages:
             displayName: "Build TypeScript code"
           - task: Npm@1
             inputs:
-              command: "custom"
-              customCommand: "publish dist --access=public"
+              command: "publish"
+              # customCommand: "publish dist --access=public"
+              workingDir: 'dist'
               publishRegistry: useExternalRegistry
               publishEndpoint: 'npm-reactgrid'
               # customEndpoint: "npm ReactGrid deployment service"
