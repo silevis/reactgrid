@@ -1,3 +1,6 @@
+type ColumnsTemplateFunction = ({ amount, widths }: { amount: number, widths: string[] }) => string;
+type RowsTemplateFunction = ({ amount, heights }: { amount: number, heights: string[] }) => string;
+
 export interface RGTheme {
   colors: {
     primary: string;
@@ -21,8 +24,8 @@ export interface RGTheme {
     gap: string;
 
     templates: {
-      columns: ({ amount, widths, ...other }: { amount?: number, widths?: number[], other?: unknown }) => string;
-      rows: ({ amount, widths, ...other }: { amount?: number, widths?: number[], other?: unknown }) => string;
+      columns: ColumnsTemplateFunction;
+      rows: RowsTemplateFunction;
     }
 
     padding: {
@@ -72,5 +75,14 @@ type DeepPartial<T> = {
 
 // This tells Emotion's ThemeProvider that the theme object is of type RGTheme
 declare module '@emotion/react' {
-  export interface Theme extends DeepPartial<RGTheme> {}
+  export interface Theme extends DeepPartial<RGTheme> {
+    // We need to provide types to parameters that accept functions again
+    // as DeepPartial makes their parameters optional
+    grid: {
+      templates: {
+        columns?: ColumnsTemplateFunction;
+        rows?: RowsTemplateFunction;
+      }
+    }
+  }
 }

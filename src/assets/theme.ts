@@ -21,7 +21,7 @@ const lightTheme: RGTheme = {
     gap: "0",
 
     templates: {
-      columns: ({ amount }) => `repeat(${amount}, max-content)`,
+      columns: ({ amount }) => `repeat(${amount}, 1fr)`,
       rows: ({ amount }) => `repeat(${amount}, max-content)`
     },
     
@@ -40,7 +40,7 @@ const lightTheme: RGTheme = {
     border: {
       width: "1px",
       style: "solid",
-      color: "#fff"
+      color: "#000"
     }
   },
   cells: {
@@ -59,7 +59,7 @@ const lightTheme: RGTheme = {
     border: {
       width: "1px",
       style: "solid",
-      color: "#fff"
+      color: "#000"
     }
   }
 };
