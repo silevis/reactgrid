@@ -1,3 +1,5 @@
+import React, { FC } from "react";
+
 interface Behavior {
   name: string;
   order: number;
@@ -6,28 +8,24 @@ interface Behavior {
   stateUpdater: (state: ReactGridState) => ReactGridState;
 }
 
-type CellTemplates = {
-  // Type `any` is required to use React.ElementType
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  [key: string]: React.ComponentType<any>;
+export interface Row<Id = string> {
+  id: Id;
+  height: string;
 }
 
-interface Column {
-  width: number;
-  sticky?: boolean;
+export interface Column<Id = string> {
+  id: Id;
+  width: string;
 }
 
-interface Row {
-  height: number;
-  sticky?: boolean;
-}
+export type Cell<RowIdType extends string = string, ColIdType extends string = string> = {
+  rowId: RowIdType;
+  colId: ColIdType;
 
-export type Cell = {
   // Type `any` is required to use React.ElementType
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   Template: React.ComponentType<any>;
   props?: React.ComponentPropsWithRef<Cell['Template']>;
-  value: string;
 
   // styles?: React.CSSProperties;
   // className?: string;
@@ -37,16 +35,17 @@ export type Cell = {
   // cellSpanMember?: [number, number];
 }
 
+export type CellMap<RowIdType extends string = string, ColIdType extends string = string> = Map<RowIdType, Map<ColIdType, Cell<RowIdType, ColIdType> | null>>;
+
 export interface ReactGridProps {
   id: string;
 
-  columns: Column[];
-  rows: Row[];
-  /**
-   * 2D array of cells - contains their values and templates
-   * Access: `cells[rowIndex][columnIndex]`
-   */
-  cells: Cell[][];
+  style?: React.CSSProperties;
+
+  columns: ReadonlyArray<Column>;
+  rows: ReadonlyArray<Row>;
+
+  cells: CellMap;
 
   // templates?: CellTemplates;
   behaviors?: Behavior[]
@@ -57,14 +56,3 @@ export interface ReactGridProps {
   onFocusLocationChanging?: ({ location }: { location: [number, number] }) => boolean;
   onFocusLocationChanged?: ({ location }: { location: [number, number] }) => void;
 }
-
-
-// type Cells2 = {
-//   // "0-0": Cell;
-//   [{x: number, y: number}]: Cell;
-// }
-
-// type Cells2 = Map<[number, number], Cell>;
-
-// const z: Cells2 = new Map();
-// z.set([0, 0], { value: "0-0", Template: () => <div>0-0</div> });
