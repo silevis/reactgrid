@@ -21,8 +21,8 @@ const lightTheme: RGTheme = {
     gap: "0",
 
     templates: {
-      columns: ({ amount }) => `repeat(${amount}, 1fr)`,
-      rows: ({ amount }) => `repeat(${amount}, max-content)`
+      columns: ({ widths }) => widths.map(width => `${width}px`).join(" "),
+      rows: ({ heights }) => heights.map(height => `${height}px`).join(" ")
     },
     
     padding: {

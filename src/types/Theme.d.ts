@@ -1,5 +1,5 @@
-type ColumnsTemplateFunction = ({ amount, widths }: { amount: number, widths: string[] }) => string;
-type RowsTemplateFunction = ({ amount, heights }: { amount: number, heights: string[] }) => string;
+type ColumnsTemplateFunction = ({ amount, widths }: { amount: number, widths: number[] }) => string;
+type RowsTemplateFunction = ({ amount, heights }: { amount: number, heights: number[] }) => string;
 
 export interface RGTheme {
   colors: {

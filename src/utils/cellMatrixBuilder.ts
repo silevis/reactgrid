@@ -1,53 +1,11 @@
+import { CellMatrix, GridColumn, GridRow, StickyAmount } from "../types/CellMatrix";
 import { Row, Column, Cell, CellMap } from "../types/PublicModel";
 
-/**
- * Small utility which whole purpose is to help you define your rows 
- * (and cell's rowId's) in a type-safe way. <br />
- * 
- * **Downside!: can't use mutable arrays :(** <br />
- * 
- * If you need to use mutable arrays you can:
- * - define a type for your row ids manually (e.g. `type RowIds = 'gasBills' | 'salaries'`) [optional]
- * - use {@link Row `Row<RowIds>[]`} as the type of your rows array and ignore this utility
- * (see {@link Row} type for more info)
- * 
- * @example
- * const rows = Rows([
- *   { id: 'Jane', height: 100 },
- *   { id: 'Joe', height: 50 },
- * ] as const); // ! as const is required
- * 
- * type RowId = typeof rows[number]['id']; // 'Jane' | 'Joe'
- * 
- * @param rows Your array of row definitions 
- * @returns readonly array of row definitions
- */
-export const Rows = <T>(rows: readonly Row<T>[]) => rows;
+type AddRowsFn<TRowId extends string> = (...newRows: Array<Row<TRowId>>) => void;
 
-/**
- * Small utility which whole purpose is to help you define your columns 
- * (and cell's colId's) in a type-safe way. <br />
- * 
- * **Downside!: can't use mutable arrays :(** <br />
- * 
- * If you need to use mutable arrays you can:
- * - define a type for your column ids manually (e.g. `type ColIds = 'gasBills' | 'salaries'`) [optional]
- * - use {@link Column `Column<ColIds>[]`} as the type of your columns array and ignore this utility
- * (see {@link Column} type for more info)
- * 
- * @example
- * const columns = Columns([
- *   { id: 'name', width: 100 },
- *   { id: 'age', width: 50 },
- * ] as const); // ! as const is required
- * 
- * type ColumnId = typeof columns[number]['id']; // 'name' | 'age'
- * @param columns Your array of column definitions 
- * @returns readonly array of column definitions
- */
-export const Columns = <T>(columns: readonly Column<T>[]) => columns;
+type AddColumnsFn<TColumnId extends string> = (...newColumns: Column<TColumnId>[]) => void;
 
-// Type `any` is required to use React.ElementType
+// Type `any` is required to use React.ComponentType here
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type SetCellFn<TRowId extends string, TColumnId extends string> = <TComponent extends React.ComponentType<any>>(
   rowId: TRowId,
@@ -57,9 +15,7 @@ type SetCellFn<TRowId extends string, TColumnId extends string> = <TComponent ex
   { ...args }?: Omit<Cell<TRowId, TColumnId>, 'rowId' | 'colId' | 'Template' | 'props'>,
 ) => void;
 
-type AddRowsFn<TRowId extends string> = (...newRows: Array<Row<TRowId>>) => void;
-
-type AddColumnsFn<TColumnId extends string> = (...newColumns: Column<TColumnId>[]) => void;
+type SetStickyAmountFn = (newStickyAmount: Partial<StickyAmount>) => void;
 
 // type InsertRowsFn<TRowId extends string> = (newRows: Array<Row<TRowId>>, id: TRowId, position: 'before' | 'after') => void;
 
@@ -70,6 +26,8 @@ interface CellMatrixBuilderTools<TRowId extends string, TColumnId extends string
   addColumns: AddColumnsFn<TColumnId>;
   setCell: SetCellFn<TRowId, TColumnId>;
 
+  setStickyAmount: SetStickyAmountFn;
+
   // insertRows: InsertRowsFn<TRowId>;
   // insertColumns: InsertColumnsFn<TColumnId>;
 
@@ -79,21 +37,20 @@ interface CellMatrixBuilderTools<TRowId extends string, TColumnId extends string
 }
 
 /**
- * Utility which helps you build your cell matrix in easy and type-safe way. <br />
- * 
- * You don't really have to use this if you don't need type safety 
- * as long as you keep proper structure of your rows, columns and cells.
+ * Utility which helps you build your cell matrix in easy and type-safe way.
+ * _You don't really have to use this if you don't need type safety 
+ * as long as you keep proper structure of your cellMatrix._
  * 
  * It's `setCell` method infers the `props` type based on the provided `Template` 
- * so you don't have to specify it manually. <br />
+ * so that you don't have to specify it manually.
  * 
  * You can also provide `RowId` and `ColumnId` types to make sure you don't make any typos
- * when providing coordinates for your cells and definitions for rows and columns. <br />
- * 
- * To get those types you can use {@link Rows} and {@link Columns} utilities if you use immutable arrays,
- * or define them manually (e.g. `type RowId = 'gasBills' | 'salaries'`).
+ * when defining rows and columns and providing coordinates for your cells.
  * 
  * @example
+ * type RowId = 'Player1' | 'Player2';
+ * type ColumnId = 'name' | 'score';
+ * 
  * const [players, setPlayers] = useState<Map<RowId, { name: string, score: number }>>(new Map([
  *  ["Player1", { name: "John", score: 70 }],
  *  ["Player2", { name: "Jane", score: 45 }],
@@ -115,32 +72,52 @@ interface CellMatrixBuilderTools<TRowId extends string, TColumnId extends string
  * @param builder Function which receives {@link CellMatrixBuilderTools} as an argument and is used to build your cell matrix
  * @returns rows, columns and cellMap
  */
-export const cellMatrixBuilder = <TRowId extends string, TColumnId extends string>(
+export const cellMatrixBuilder = <TRowId extends string = string, TColumnId extends string = string>(
   builder: ({ ...tools }: CellMatrixBuilderTools<TRowId, TColumnId>) => void,
-) => { 
-  const rows: Row<TRowId>[] = [];
-  const columns: Column<TColumnId>[] = [];
-  const cellMatrix: CellMap<TRowId, TColumnId> = new Map();
+): CellMatrix<TRowId, TColumnId> => { 
+  const rows: GridRow<TRowId>[] = [];
+  const columns: GridColumn<TColumnId>[] = [];
+  const cells: CellMap<TRowId, TColumnId> = new Map();
+  const stickyAmount: StickyAmount = { top: 0, right: 0, bottom: 0, left: 0 };
+
+  let totalHeight = 0;
+  let totalWidth = 0;
+
+  const getTop = (rowIndex: number) => {
+    if (rowIndex === 0) return 0;
+    return rows[rowIndex - 1].top - rows[rowIndex - 1].height;
+  }
+
+  const getLeft = (colIndex: number) => {
+    if (colIndex === 0) return 0;
+    return columns[colIndex - 1].left - columns[colIndex - 1].width;
+  }
 
   const addRows: AddRowsFn<TRowId> = (...newRows) => {
-    const duplicates = newRows.filter(newRow => rows.some(row => row.id === newRow.id));
-    if (duplicates.length > 0) throw new Error(`Duplicate IDs!: Rows with ids "${duplicates.map(row => row.id).join(', ')}" already exist!`);
+    newRows.forEach((row, idx) => {
+      if (rows.some(r => r.id === row.id)) throw new Error(`Duplicate IDs!: Row with id "${row.id}" already exists!`);
 
-    rows.push(...newRows);
+      const top = getTop(idx);
+      totalHeight += row.height;
+      rows.push({ ...row, top, bottom: top + row.height });
+    });
   }
 
   const addColumns: AddColumnsFn<TColumnId> = (...newColumns) => {
-    const duplicates = newColumns.filter(newCol => columns.some(col => col.id === newCol.id));
-    if (duplicates.length > 0) throw new Error(`Duplicate IDs!: Columns with ids "${duplicates.map(col => col.id).join(', ')}" already exist!`);
+    newColumns.forEach((col, idx) => {
+      if (columns.some(c => c.id === col.id)) throw new Error(`Duplicate IDs!: Column with id "${col.id}" already exists!`);
 
-    columns.push(...newColumns);
+      const left = getLeft(idx);
+      totalWidth += col.width;
+      columns.push({ ...col, left, right: left + col.width });
+    });
   }
 
   const setCell: SetCellFn<TRowId, TColumnId> = (rowId, colId, Template, props, { ...args } = {}) => {
     if (!rows.some(row => row.id === rowId)) throw new Error(`Row with id "${rowId}" isn't defined in rows array`);
     if (!columns.some(col => col.id === colId)) throw new Error(`Column with id "${colId}" isn't defined in columns array`);    
 
-    let rowMap = cellMatrix.get(rowId);
+    let rowMap = cells.get(rowId);
     if (!rowMap) {
       rowMap = new Map<TColumnId, Cell<TRowId, TColumnId> | null>();
     } else if (rowMap.has(colId) && process.env.NODE_ENV === 'development') {
@@ -149,14 +126,24 @@ export const cellMatrixBuilder = <TRowId extends string, TColumnId extends strin
 
     const cell = { rowId, colId, Template, props, ...args };
     rowMap.set(colId, cell);
-    cellMatrix.set(rowId, rowMap);
+    cells.set(rowId, rowMap);
   }
 
-  builder({ addRows, addColumns, setCell });
+  const setStickyAmount: SetStickyAmountFn = (newStickyAmount) => {
+    stickyAmount.top = newStickyAmount.top ?? stickyAmount.top;
+    stickyAmount.right = newStickyAmount.right ?? stickyAmount.right;
+    stickyAmount.bottom = newStickyAmount.bottom ?? stickyAmount.bottom;
+    stickyAmount.left = newStickyAmount.left ?? stickyAmount.left;
+  }
+
+  builder({ addRows, addColumns, setCell, setStickyAmount });
 
   return {
     rows,
     columns,
-    cellMatrix,
+    cells,
+    stickyAmount,
+    totalHeight,
+    totalWidth,
   }
 }
