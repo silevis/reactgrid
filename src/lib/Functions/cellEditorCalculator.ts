@@ -67,19 +67,20 @@ export const calculateCellEditorPosition = (positionState: PositionState): CellE
       offsetTop = top;
   }
 
+  const getCellEditorPosition = (isFixedDisabled = false) => {
+    if (isFixedDisabled) return { left: location.column.left, top: location.row.top };
+    return {
+      left: location.column.left + calculatedXAxisOffset(location, state) + offsetLeft + left - scrollLeft,
+      top: location.row.top + calculatedYAxisOffset(location, state) + offsetTop + top - scrollTop,
+    };
+  };
+
   // React StrictMode calls reducer two times to eliminate any side-effects
   // this function is a reducer so we need to add the state and location to positionState
   // in order to get them in the second call
   return {
     state,
     location,
-    left: location.column.left + calculatedXAxisOffset(location, state as State)
-        + offsetLeft
-        + left
-        - scrollLeft,
-    top: location.row.top + calculatedYAxisOffset(location, state as State)
-        + offsetTop
-        + top
-        - scrollTop
+    ...getCellEditorPosition(state.props?.disableFixedCellEditor)
   };
 }
