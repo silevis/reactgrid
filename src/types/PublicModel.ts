@@ -1,4 +1,4 @@
-import React, { FC } from "react";
+import React from "react";
 import { CellMatrix, GridColumn, GridRow } from "./CellMatrix";
 
 interface Behavior {
@@ -18,7 +18,7 @@ export interface Row<Id = string> {
    * (because it's based on absolute, measured-in-pixels cell's dimensions) 
    * and provide different template in theme (grid.templates.rows)
    */
-  height: number;
+  height: string;
 }
 
 export interface Column<Id = string> {
@@ -30,7 +30,7 @@ export interface Column<Id = string> {
    * (because it's based on absolute, measured-in-pixels cell's dimensions)
    * and provide different template in theme (grid.templates.columns)
    */
-  width: number;
+  width: string;
 }
 
 export type Cell<RowIdType extends string = string, ColIdType extends string = string> = {
@@ -39,7 +39,7 @@ export type Cell<RowIdType extends string = string, ColIdType extends string = s
 
   // Type `any` is required to use React.ComponentType here
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  Template: React.ComponentType<any>;
+  Template: React.FunctionComponent<any>;
   props?: React.ComponentPropsWithRef<Cell['Template']>;
 
   // styles?: React.CSSProperties;
@@ -56,11 +56,18 @@ export interface ReactGridProps {
 
   style?: React.CSSProperties;
 
-  // columns: ReadonlyArray<GridColumn>;
-  // rows: ReadonlyArray<GridRow>;
+  columns: Column[];
+  rows: Row[];
 
-  // cells: CellMap;
-  cellMatrix: CellMatrix;
+  cells: CellMap;
+
+  stickyTopRows?: number;
+  stickyBottomRows?: number;
+  stickyLeftColumns?: number;
+  stickyRightColumns?: number;
+
+  // enableVirtualization?: boolean;
+  // cellMatrix: CellMatrix;
 
   // templates?: CellTemplates;
   behaviors?: Behavior[]

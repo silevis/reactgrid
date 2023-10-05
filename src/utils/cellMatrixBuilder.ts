@@ -1,5 +1,5 @@
-import { CellMatrix, GridColumn, GridRow, StickyAmount } from "../types/CellMatrix";
-import { Row, Column, Cell, CellMap } from "../types/PublicModel";
+import { CellMatrix } from "../types/CellMatrix";
+import { Cell, CellMap, Column, Row } from "../types/PublicModel";
 
 type AddRowsFn<TRowId extends string> = (...newRows: Array<Row<TRowId>>) => void;
 
@@ -15,8 +15,6 @@ type SetCellFn<TRowId extends string, TColumnId extends string> = <TComponent ex
   { ...args }?: Omit<Cell<TRowId, TColumnId>, 'rowId' | 'colId' | 'Template' | 'props'>,
 ) => void;
 
-type SetStickyAmountFn = (newStickyAmount: Partial<StickyAmount>) => void;
-
 // type InsertRowsFn<TRowId extends string> = (newRows: Array<Row<TRowId>>, id: TRowId, position: 'before' | 'after') => void;
 
 // type InsertColumnsFn<TColumnId extends string> = (newColumns: Array<Column<TColumnId>>, id: TColumnId, position: 'before' | 'after') => void;
@@ -25,8 +23,6 @@ interface CellMatrixBuilderTools<TRowId extends string, TColumnId extends string
   addRows: AddRowsFn<TRowId>;
   addColumns: AddColumnsFn<TColumnId>;
   setCell: SetCellFn<TRowId, TColumnId>;
-
-  setStickyAmount: SetStickyAmountFn;
 
   // insertRows: InsertRowsFn<TRowId>;
   // insertColumns: InsertColumnsFn<TColumnId>;
@@ -75,31 +71,15 @@ interface CellMatrixBuilderTools<TRowId extends string, TColumnId extends string
 export const cellMatrixBuilder = <TRowId extends string = string, TColumnId extends string = string>(
   builder: ({ ...tools }: CellMatrixBuilderTools<TRowId, TColumnId>) => void,
 ): CellMatrix<TRowId, TColumnId> => { 
-  const rows: GridRow<TRowId>[] = [];
-  const columns: GridColumn<TColumnId>[] = [];
+  const rows: Row<TRowId>[] = [];
+  const columns: Column<TColumnId>[] = [];
   const cells: CellMap<TRowId, TColumnId> = new Map();
-  const stickyAmount: StickyAmount = { top: 0, right: 0, bottom: 0, left: 0 };
-
-  let totalHeight = 0;
-  let totalWidth = 0;
-
-  const getTop = (rowIndex: number) => {
-    if (rowIndex === 0) return 0;
-    return rows[rowIndex - 1].top - rows[rowIndex - 1].height;
-  }
-
-  const getLeft = (colIndex: number) => {
-    if (colIndex === 0) return 0;
-    return columns[colIndex - 1].left - columns[colIndex - 1].width;
-  }
 
   const addRows: AddRowsFn<TRowId> = (...newRows) => {
     newRows.forEach((row, idx) => {
       if (rows.some(r => r.id === row.id)) throw new Error(`Duplicate IDs!: Row with id "${row.id}" already exists!`);
 
-      const top = getTop(idx);
-      totalHeight += row.height;
-      rows.push({ ...row, top, bottom: top + row.height });
+      rows.push({ ...row });
     });
   }
 
@@ -107,9 +87,7 @@ export const cellMatrixBuilder = <TRowId extends string = string, TColumnId exte
     newColumns.forEach((col, idx) => {
       if (columns.some(c => c.id === col.id)) throw new Error(`Duplicate IDs!: Column with id "${col.id}" already exists!`);
 
-      const left = getLeft(idx);
-      totalWidth += col.width;
-      columns.push({ ...col, left, right: left + col.width });
+      columns.push({ ...col });
     });
   }
 
@@ -129,21 +107,11 @@ export const cellMatrixBuilder = <TRowId extends string = string, TColumnId exte
     cells.set(rowId, rowMap);
   }
 
-  const setStickyAmount: SetStickyAmountFn = (newStickyAmount) => {
-    stickyAmount.top = newStickyAmount.top ?? stickyAmount.top;
-    stickyAmount.right = newStickyAmount.right ?? stickyAmount.right;
-    stickyAmount.bottom = newStickyAmount.bottom ?? stickyAmount.bottom;
-    stickyAmount.left = newStickyAmount.left ?? stickyAmount.left;
-  }
-
-  builder({ addRows, addColumns, setCell, setStickyAmount });
+  builder({ addRows, addColumns, setCell });
 
   return {
     rows,
     columns,
     cells,
-    stickyAmount,
-    totalHeight,
-    totalWidth,
   }
 }
