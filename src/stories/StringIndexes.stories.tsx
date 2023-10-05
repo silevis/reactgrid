@@ -1,9 +1,11 @@
 import { ThemeProvider } from "@emotion/react";
 import { StoryDefault } from "@ladle/react";
-import { CSSProperties, FC, useMemo, useState } from "react";
+import { CSSProperties, FC, useEffect, useMemo, useState } from "react";
 import ReactGrid from "../ReactGrid";
 import { ErrorBoundary } from "../components/ErrorBoundary";
 import { cellMatrixBuilder } from "../utils/cellMatrixBuilder";
+import { useReactGridId } from "../components/ReactGridIdProvider";
+import React from "react";
 
 type Budget = Record<string, number[]>;
 
@@ -33,7 +35,18 @@ const centerContentStyles = {
 const TextCell: FC<{ value: string; style?: CSSProperties }> = ({
   value,
   style,
-}) => <div style={{ ...centerContentStyles, ...style }}>{value}</div>;
+}) => {
+  return <div style={{ ...centerContentStyles, ...style }}>{value}</div>;
+};
+const ConverterCell: FC<{ value: string; style?: CSSProperties }> = ({
+  value,
+  style,
+}) => {
+  const getStringValue = () => console.log(`it works!: ${value}`);
+  getStringValue();
+
+  return <div style={{ ...centerContentStyles, ...style }}>{value}</div>;
+};
 
 const SpacerCell: FC = () => <div />;
 
@@ -77,6 +90,21 @@ const ChevronCell: FC<{
   </div>
 );
 
+// const CellContainer: FC<{ style?: CSSProperties }> = ({ children, style }) => {
+//   const id = useReactGridId();
+//   // const
+// }
+
+// const ConverterCell: FC<{ value: string }> = ({ value }) => {
+//   const id = useReactGridId();
+
+//   useEffect(() => {
+//     console.log("ConverterCell rendered");
+//   }, []);
+
+//   return <div>{value}</div>;
+// };
+
 export const StringIndexes = () => {
   type RowId =
     | "header"
@@ -100,7 +128,7 @@ export const StringIndexes = () => {
     personExpenses: { isExpanded: true },
   });
 
-  const { rows, columns, cellMatrix } = useMemo(
+  const cellMatrix = useMemo(
     () =>
       cellMatrixBuilder<RowId, ColumnId>(({ addRows, addColumns, setCell }) => {
         const personBudget: Budget = {
@@ -115,35 +143,30 @@ export const StringIndexes = () => {
           Rent: [2200.0, 2200.0, 2200.0],
         };
 
-        
         const defineRows = () => {
           addRows(
             { id: "header", height: "max-content" },
-            { id: "labels", height: "1.2fr" },
+            { id: "labels", height: "1.2fr" }
           );
 
           // Call below should throw an "duplicate ids" error
           // addRows({ id: "labels", height: "1.2fr" }, { id: "header", height: "max-content" });
 
-          addRows(
-            { id: "officeExpenses", height: "1fr" },
-          );
+          addRows({ id: "officeExpenses", height: "1fr" });
           if (chevronConfig["officeExpenses"].isExpanded) {
             addRows(
               { id: "officeExpenses.Gas", height: "1fr" },
               { id: "officeExpenses.Electricity", height: "1fr" },
-              { id: "officeExpenses.Rent", height: "1fr" },
+              { id: "officeExpenses.Rent", height: "1fr" }
             );
           }
 
-          addRows(
-            { id: "personExpenses", height: "1fr" },
-          );
+          addRows({ id: "personExpenses", height: "1fr" });
           if (chevronConfig["personExpenses"].isExpanded) {
             addRows(
               { id: "personExpenses.John", height: "1fr" },
               { id: "personExpenses.Jane", height: "1fr" },
-              { id: "personExpenses.Joe", height: "1fr" },
+              { id: "personExpenses.Joe", height: "1fr" }
             );
           }
         };
@@ -151,7 +174,7 @@ export const StringIndexes = () => {
         const defineColumns = () => {
           addColumns(
             { id: "labels", width: "20rem" },
-            { id: "2023", width: "1fr" },
+            { id: "2023", width: "1fr" }
           );
 
           // Call below should throw an "duplicate ids" error
@@ -161,7 +184,7 @@ export const StringIndexes = () => {
             addColumns(
               { id: "Jan", width: "1fr" },
               { id: "Feb", width: "1fr" },
-              { id: "Mar", width: "1fr" },
+              { id: "Mar", width: "1fr" }
             );
           }
         };
@@ -174,7 +197,7 @@ export const StringIndexes = () => {
             { value: "Budget planner" },
             { colSpan: 5 }
           );
-          setCell("labels", "labels", TextCell, { value: "Entry name" });
+          setCell("labels", "labels", ConverterCell, { value: "Entry name" });
           setCell("labels", "2023", ChevronCell, {
             value: "2023",
             isExpanded: chevronConfig["2023"].isExpanded,
@@ -365,10 +388,17 @@ export const StringIndexes = () => {
         addLabels();
         addData();
 
-        setCell("labels", "labels", SpacerCell, {});
+
+        // Call below should log an "cell overwrite" warning
+        // setCell("labels", "labels", SpacerCell, {});
       }),
-    [chevronConfig]
-  );
+      [chevronConfig]
+      );
+
+      const noop = () => null;
+      const Cell = cellMatrix.cells.get("labels")?.get("labels")?.Template ?? noop;
+      <Cell />;
+      Cell(cellMatrix.cells.get("labels")?.get("labels")?.props ?? { value: "not found" });
 
   return (
     <ThemeProvider
@@ -382,12 +412,7 @@ export const StringIndexes = () => {
         },
       }}
     >
-      <ReactGrid
-        id={"rg-string-indexes"}
-        columns={columns}
-        rows={rows}
-        cells={cellMatrix}
-      />
+      <ReactGrid id={"rg-string-indexes"} {...cellMatrix} />
     </ThemeProvider>
   );
 };
