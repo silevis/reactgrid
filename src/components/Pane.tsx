@@ -1,158 +1,119 @@
-import React, { useEffect, useRef } from 'react'
-import { CellMap, Column, Row } from '../types/PublicModel';
-import { useTheme } from '../utils/useTheme';
-import { useReactGridStore } from '../utils/reactGridStore';
-import { useReactGridId } from './ReactGridIdProvider';
-import { NumericalRange } from '../types/CellMatrix';
-import { CellContextProvider } from './CellContext';
-
-export interface PaneProps {
-  renderChildren: boolean;
-  children: React.ReactNode;
-  style: React.CSSProperties;
-  className: string;
-}
+import React, { useEffect } from "react";
+import { NumericalRange } from "../types/CellMatrix";
+import { useReactGridStore } from "../utils/reactGridStore";
+import { useTheme } from "../utils/useTheme";
+import { CellWrapper } from "./CellWrapper";
+import { useReactGridId } from "./ReactGridIdProvider";
 
 interface PaneGridContentProps {
-  // rows: Row[];
-  // columns: Column[];
-  // cells: CellMap;
   range: NumericalRange;
+  className?: string;
   style?: React.CSSProperties;
+  getCellOffset?: (
+    rowIdx: number,
+    colIdx: number,
+    rowSpan: number,
+    colSpan: number
+  ) => { top?: number; right?: number; bottom?: number; left?: number };
 }
 
-export interface PaneContentProps {
+interface PaneProps {
+  className: string;
+  style?: React.CSSProperties;
+
+  gridContentRange: NumericalRange;
+  getCellOffset?: (
+    rowIdx: number,
+    colIdx: number,
+    rowSpan: number,
+    colSpan: number
+  ) => { top?: number; right?: number; bottom?: number; left?: number };
 }
 
-const shouldMemoPaneGridContent = (prevProps: PaneGridContentProps, nextProps: PaneGridContentProps) => {
-  const { 
-    startRowIdx: prevStartRowIdx, 
-    endRowIdx: prevEndRowIdx,
-    startColIdx: prevStartColIdx,
-    endColIdx: prevEndColIdx
-  } = prevProps.range;
-
-  const { 
-    startRowIdx: nextStartRowIdx, 
-    endRowIdx: nextEndRowIdx,
-    startColIdx: nextStartColIdx,
-    endColIdx: nextEndColIdx
-  } = nextProps.range;
-
-  if (
-    prevStartRowIdx !== nextStartRowIdx ||
-    prevEndRowIdx !== nextEndRowIdx ||
-    prevStartColIdx !== nextStartColIdx ||
-    prevEndColIdx !== nextEndColIdx
-  ) {
-    return false;
-  }
-
-  return true;
-};
-
-export const PaneGridContent: React.NamedExoticComponent<PaneGridContentProps> = React.memo(({ range, style }) => {
+export const PaneGridContent: React.FC<PaneGridContentProps> = ({
+  range,
+  getCellOffset,
+}) => {
   const theme = useTheme();
   const { startRowIdx, endRowIdx, startColIdx, endColIdx } = range;
-  // const cellWidths = columns.map(({ width }) => width);
-  // const cellHeights = rows.map(({ height }) => height);
-  // const totalWidth = cellWidths.reduce((acc, curr) => acc + curr, 0);
-  // const totalHeight = cellHeights.reduce((acc, curr) => acc + curr, 0);
-  const id = useReactGridId();
-  const rows = useReactGridStore(id, store => store.rows);
-  const columns = useReactGridStore(id, store => store.columns);
-  const cells = useReactGridStore(id, store => store.cells);
-  const measurements = useReactGridStore(id, store => store.measurements);
-  const setMeasurements = useReactGridStore(id, store => store.setMeasurements);
 
-  useEffect(() => {
-    // console.log('PaneGridContent', rows, columns, cells);
-    const pane = document.querySelector('.rgPaneGridContent');
-    if (pane) {
-      setMeasurements({
-        ...measurements,
-        totalWidth: pane.scrollWidth,
-        totalHeight: pane.scrollHeight,
-      })
-    }
-  }, [rows, columns, cells, setMeasurements]);
+  const id = useReactGridId();
+  const rows = useReactGridStore(id, store => store.rows).slice(
+    startRowIdx,
+    endRowIdx
+  );
+  const columns = useReactGridStore(id, store => store.columns).slice(
+    startColIdx,
+    endColIdx
+  );
+  const cells = useReactGridStore(id, store => store.cells);
+
+  const focusedCell = useReactGridStore(id, store => store.focusedCell);
+  const currentlyEditedCell = useReactGridStore(id, store => store.currentlyEditedCell);
+
+  return rows.map((row, rowIndex) => {
+    return columns.map((col, colIndex) => {
+      const cell = cells.get(`${row.id} ${col.id}`);
+
+      if (!cell) return null;
+
+      const realRowIndex = startRowIdx + rowIndex;
+      const realColumnIndex = startColIdx + colIndex;
+
+      const isFocused = focusedCell.rowIndex === realRowIndex && focusedCell.colIndex === realColumnIndex;
+      const isInEditMode = currentlyEditedCell.rowIndex === realRowIndex && currentlyEditedCell.colIndex === realColumnIndex;
+
+      const { Template, props } = cell;
+
+      return (
+        <CellWrapper
+          key={`${realRowIndex}-${realColumnIndex}`}
+          className={`rgRowIdx-${realRowIndex} rgColIdx-${realColumnIndex}`}
+          style={{
+            ...(cell.rowSpan && {
+              gridRowEnd: `span ${cell.rowSpan}`,
+            }),
+            ...(cell.colSpan && {
+              gridColumnEnd: `span ${cell.colSpan}`,
+            }),
+            ...getCellOffset?.(
+              rowIndex,
+              colIndex,
+              cell.rowSpan ?? 1,
+              cell.colSpan ?? 1
+            ),
+            gridRowStart: realRowIndex + 1,
+            gridColumnStart: realColumnIndex + 1,
+          }}
+          rowId={row.id}
+          colId={col.id}
+          realRowIndex={realRowIndex}
+          realColumnIndex={realColumnIndex}
+          isFocused={isFocused}
+          isInEditMode={isInEditMode}
+        >
+          <Template {...props} />
+        </CellWrapper>
+      );
+    });
+  });
+};
+
+export const Pane: React.FC<PaneProps> = ({
+  className,
+  style,
+  gridContentRange,
+  getCellOffset,
+}) => {
+  // const { state, range, borders, cellRenderer } = props;
 
   return (
     <div
-      className='rgPaneGridContent'
-      style={{
-        display: "grid",
-        // width: totalWidth,
-        // height: totalHeight,
-        gridTemplateColumns: theme.grid.templates.columns({
-          amount: columns.length,
-          widths: columns.map(({ width }) => width),
-        }),
-        gridTemplateRows: theme.grid.templates.rows({
-          amount: rows.length,
-          heights: rows.map(({ height }) => height),
-        }),
-        borderWidth: `${theme.grid.border.width} 0 0 ${theme.grid.border.width}`,
-        borderStyle: theme.grid.border.style,
-        borderColor: theme.grid.border.color,
-        gap: theme.grid.gap,
-        ...style,
-      }}
+      className={`rgPane ${className}`}
+      style={{ display: "contents", ...style }}
     >
-      {rows.slice(startRowIdx, endRowIdx).map((row, rowIndex) => {
-        return columns.slice(startColIdx, endColIdx).map((col, colIndex) => {
-          const cell = cells.get(row.id)?.get(col.id);
-
-          if (!cell || row.id === 'labels' && col.id === "labels") return null;
-
-          const { Template, props } = cell;
-
-          return (
-            <div
-              key={`${rowIndex}-${colIndex}`}
-              className={`rgCellWrapper rgRowId-${rowIndex} rgColId-${colIndex}`}
-              style={{
-                ...(cell.rowSpan && { gridRowEnd: `span ${cell.rowSpan}` }),
-                ...(cell.colSpan && { gridColumnEnd: `span ${cell.colSpan}` }),
-                gridRowStart: rowIndex + 1,
-                gridColumnStart: colIndex + 1,
-                borderWidth: `0 ${theme.cells.border.width} ${theme.cells.border.width} 0`,
-                borderStyle: theme.cells.border.style,
-                borderColor: theme.cells.border.color,
-              }}
-            >
-              <CellContextProvider value={{ rowId: row.id, colId: col.id }}>
-                <Template {...props} />
-              </CellContextProvider>
-            </div>
-          );
-        });
-      })}
-    </div>
-  );
-}, shouldMemoPaneGridContent); 
-
-export const Pane: React.FC<PaneProps> = ({ className, style, renderChildren, children }) => {
-  if (!style.width || !style.height) {
-      return null;
-  } else {
-      return (
-        <div className={`rgPane ${className}`} style={style}>
-          {renderChildren && children}
-        </div>
-      );
-  }
-};
-
-export const PaneContent: React.FC<PaneContentProps> = (props) => {
-  // const { state, range, borders, cellRenderer } = props;
-
-  // const calculatedRange = range();
-
-  return (
-      <>
-          {/* <PaneGridContent  /> */}
-          {/* {renderHighlights(state, calculatedRange)}
+      <PaneGridContent range={gridContentRange} getCellOffset={getCellOffset} />
+      {/* {renderHighlights(state, calculatedRange)}
           {state.focusedLocation && !(state.currentlyEditedCell && isMobileDevice()) && calculatedRange.contains(state.focusedLocation) &&
               <CellFocus location={state.focusedLocation} />}
           <SelectedRanges
@@ -167,6 +128,6 @@ export const PaneContent: React.FC<PaneContentProps> = (props) => {
               state={state}
               calculatedRange={calculatedRange}
           /> */}
-      </>
-  )
-}
+    </div>
+  );
+};
