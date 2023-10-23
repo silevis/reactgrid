@@ -1,97 +1,90 @@
-import { FC, useEffect, useState } from "react";
-import { ReactGridProps } from "./types/PublicModel";
-import { useTheme } from "./utils/useTheme";
-import { ReactGridIdProvider } from "./components/ReactGridIdProvider";
-import { useReactGridStore } from "./utils/reactGridStore";
-import GridRenderer from "./components/GridRenderer";
+import { keyframes } from "@emotion/react";
+import { FC, useEffect, useState, useTransition } from "react";
+import { ErrorBoundary } from "./components/ErrorBoundary";
 import PanesRenderer from "./components/PanesRenderer";
-import { GridColumn, GridRow } from "./types/CellMatrix";
+import { ReactGridIdProvider } from "./components/ReactGridIdProvider";
+import { ReactGridProps } from "./types/PublicModel";
+import { useReactGridStore } from "./utils/reactGridStore";
 
-const ReactGrid: FC<ReactGridProps> = ({ id, rows, columns, cells, style }) => {
-  // const { rows, columns, cells } = useReactGridStore(id, store => );
-  // const storedProps = useReactGridStore(id, store => store.props);
-  // const setProps = useReactGridStore(id, store => store.setProps);
-  // setProps({ id, cellMatrix, style });
+const spin = keyframes`
+  100% {
+    transform: rotate(360deg);
+  }`
 
-  // const setCellMatrix = useReactGridStore(id, store => store.setCellMatrix);
-  const setRows = useReactGridStore(id, store => store.setRows);
-  const setColumns = useReactGridStore(id, store => store.setColumns);
-  const setCells = useReactGridStore(id, store => store.setCells);
-  const setMeasurements = useReactGridStore(id, store => store.setMeasurements);
-  const setVisibleRange = useReactGridStore(id, store => store.setVisibleRange);
-  
+const ReactGrid: FC<ReactGridProps> = ({ id, rows, columns, cells, stickyTopRows, stickyBottomRows, stickyLeftColumns, stickyRightColumns, style }) => {
+  const setRows = useReactGridStore(id, (store) => store.setRows);
+  const setColumns = useReactGridStore(id, (store) => store.setColumns);
+  const setCells = useReactGridStore(id, (store) => store.setCells);
+  const [bypassSizeWarning, setBypassSizeWarning] = useState(false);
+  const [isPending, startTransition] = useTransition();
+
   useEffect(() => {
     setRows(rows);
     setColumns(columns);
     setCells(cells);
-    setVisibleRange({
-      startRowIdx: 0,
-      endRowIdx: rows.length,
-      startColIdx: 0,
-      endColIdx: columns.length,
-    });
+  }, [cells, columns, rows]);
 
-    const rowsMeasurements: GridRow[] = [];
-    const columnsMeasurements: GridColumn[] = [];
-    
-    const getTop = (rowIndex: number) => {
-      if (rowIndex === 0) return 0;
-      return rowsMeasurements[rowIndex - 1].top + rowsMeasurements[rowIndex - 1].heightInPx;
-    }
-  
-    const getLeft = (colIndex: number) => {
-      if (colIndex === 0) return 0;
-      return columnsMeasurements[colIndex - 1].left + columnsMeasurements[colIndex - 1].widthInPx;
-    }
-
-    rows.map((row, idx) => {
-      const height = document.querySelector(`.rgRowId-${idx}.rgColId-0`)?.clientHeight ?? 0;
-      const top = getTop(idx);
-
-      rowsMeasurements.push({
-        ...row,
-        heightInPx: height,
-        top,
-        bottom: top + height
-      });
-    });
-    columns.map((col, idx) => {
-      const width = document.querySelector(`.rgRowId-0.rgColId-${idx}`)?.clientWidth ?? 0;
-      const left = getLeft(idx);
-
-      columnsMeasurements.push({
-        ...col,
-        widthInPx: width,
-        left,
-        right: left + width
-      });
-    });
-
-    const measurements = {
-      rows: rowsMeasurements,
-      columns: columnsMeasurements,
-      totalHeight: 0,
-      totalWidth: 0,
+  if (
+    process.env.NODE_ENV === "development" &&
+    !bypassSizeWarning &&
+    (rows.length * columns.length > 25_000)
+  ) {
+    if (isPending) {
+      return (
+        <div css={{
+          width: "10em",
+          height: "10em",
+          borderTop: "1em solid #d5fff7",
+          borderRight: "1em solid transparent",
+          borderRadius: "50%",
+          margin: "auto",
+          animation: `${spin} 1s linear infinite`,
+        }}>
+          <div style={{
+            width: "1em",
+            height: "1em",
+            backgroundColor: "#d5fff7",
+            borderRadius: "50%",
+            marginLeft: "8.5em",
+            marginTop: "0.5em",
+          }}></div>
+        </div>
+      )
     }
 
-    setMeasurements(measurements);
-  }, [cells, columns, rows, setCells, setColumns, setMeasurements, setRows, setVisibleRange]);
+    return (
+      <>
+        <h1>You're about to render a huge grid!</h1>
+        <p>
+          The grid you provided exceeds a safety data size limit {"(>25k cells)"}. 
+          You might experience performance problems.
+        </p>
+        <p>Are you sure you want to render it all?</p>
+        <button onClick={() => startTransition(() => setBypassSizeWarning(true))}>
+          I understand the risk, proceed anyway.
+        </button>
+      </>
+    );
+  }
 
   return (
     <ReactGridIdProvider id={id}>
-      <GridRenderer>
-        <PanesRenderer
-          cells={cells}
-          rows={rows}
-          columns={columns}
-          range={{
-            startRowIdx: 0,
-            endRowIdx: rows.length,
-            startColIdx: 0,
-            endColIdx: columns.length,
-          }}
-        />
-      </GridRenderer>
+      <ErrorBoundary>
+        <div id={`ReactGrid-${id}`} style={style}>
+          <PanesRenderer 
+            rowAmount={rows.length}
+            columnAmount={columns.length}
+            stickyTopRows={stickyTopRows ?? 0}
+            stickyBottomRows={stickyBottomRows ?? 0}
+            stickyLeftColumns={stickyLeftColumns ?? 0}
+            stickyRightColumns={stickyRightColumns ?? 0}
+          />
+
+          {/* Shadow? */}
+          {/* ContextMenu? */}
+          {/* CellEditor */}
+        </div>
+      </ErrorBoundary>
     </ReactGridIdProvider>
   );
 };
