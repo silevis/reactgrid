@@ -95,16 +95,12 @@ export const cellMatrixBuilder = <TRowId extends string = string, TColumnId exte
     if (!rows.some(row => row.id === rowId)) throw new Error(`Row with id "${rowId}" isn't defined in rows array`);
     if (!columns.some(col => col.id === colId)) throw new Error(`Column with id "${colId}" isn't defined in columns array`);    
 
-    let rowMap = cells.get(rowId);
-    if (!rowMap) {
-      rowMap = new Map<TColumnId, Cell<TRowId, TColumnId> | null>();
-    } else if (rowMap.has(colId) && process.env.NODE_ENV === 'development') {
+    if (cells.has(`${rowId} ${colId}`) && process.env.NODE_ENV === 'development') {
       console.warn(`Cell with coordinates [${rowId}, ${colId}] already exists and will be overwritten!`);
     }
 
     const cell = { rowId, colId, Template, props, ...args };
-    rowMap.set(colId, cell);
-    cells.set(rowId, rowMap);
+    cells.set(`${rowId} ${colId}`, cell);
   }
 
   builder({ addRows, addColumns, setCell });

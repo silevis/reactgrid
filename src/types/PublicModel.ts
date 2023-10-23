@@ -1,36 +1,20 @@
 import React from "react";
-import { CellMatrix, GridColumn, GridRow } from "./CellMatrix";
 
 interface Behavior {
   name: string;
-  order: number;
 
-  state: ReactGridState;
-  stateUpdater: (state: ReactGridState) => ReactGridState;
+  // state: ReactGridState;
+  // stateUpdater: (state: ReactGridState) => ReactGridState;
 }
 
 export interface Row<Id = string> {
   id: Id;
-  /**
-   * **Unit: px**
-   * 
-   * If you need to use other units, you'd need to disable virtualization
-   * (because it's based on absolute, measured-in-pixels cell's dimensions) 
-   * and provide different template in theme (grid.templates.rows)
-   */
-  height: string;
+  height: string | number;
 }
 
 export interface Column<Id = string> {
   id: Id;
-  /**
-   * **Unit: px**
-   * 
-   * If you need to use other units, you'd need to disable virtualization
-   * (because it's based on absolute, measured-in-pixels cell's dimensions)
-   * and provide different template in theme (grid.templates.columns)
-   */
-  width: string;
+  width: string | number;
 }
 
 export type Cell<RowIdType extends string = string, ColIdType extends string = string> = {
@@ -39,7 +23,7 @@ export type Cell<RowIdType extends string = string, ColIdType extends string = s
 
   // Type `any` is required to use React.ComponentType here
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  Template: React.FunctionComponent<any>;
+  Template: React.ComponentType<any>;
   props?: React.ComponentPropsWithRef<Cell['Template']>;
 
   // styles?: React.CSSProperties;
@@ -49,7 +33,7 @@ export type Cell<RowIdType extends string = string, ColIdType extends string = s
   colSpan?: number;
 }
 
-export type CellMap<RowIdType extends string = string, ColIdType extends string = string> = Map<RowIdType, Map<ColIdType, Cell<RowIdType, ColIdType> | null>>;
+export type CellMap<RowIdType extends string = string, ColIdType extends string = string> = Map<`${RowIdType} ${ColIdType}`, Cell<RowIdType, ColIdType> | null>;
 
 export interface ReactGridProps {
   id: string;
@@ -67,9 +51,7 @@ export interface ReactGridProps {
   stickyRightColumns?: number;
 
   // enableVirtualization?: boolean;
-  // cellMatrix: CellMatrix;
 
-  // templates?: CellTemplates;
   behaviors?: Behavior[]
 
   focusLocation?: [number, number]
