@@ -18,50 +18,47 @@ const lightTheme: RGTheme = {
     weight: ""
   },
   grid: {
-    gap: "0",
-
     templates: {
       columns: ({ widths }) => widths.join(" "),
       rows: ({ heights }) => heights.join(" ")
     },
     
-    padding: {
-      top: "",
-      right: "",
-      bottom: "",
-      left: ""
-    },
-    margin: {
-      top: "",
-      right: "",
-      bottom: "",
-      left: ""
-    },
-    border: {
+    // padding: {
+    //   top: "",
+    //   right: "",
+    //   bottom: "",
+    //   left: ""
+    // },
+    // margin: {
+    //   top: "",
+    //   right: "",
+    //   bottom: "",
+    //   left: ""
+    // },
+    gap: {
       width: "1px",
-      style: "solid",
       color: "#000"
     }
   },
-  cells: {
-    padding: {
-      top: "2px",
-      right: "2px",
-      bottom: "2px",
-      left: "2px"
-    },
-    margin: {
-      top: "0",
-      right: "0",
-      bottom: "0",
-      left: "0"
-    },
-    border: {
-      width: "1px",
-      style: "solid",
-      color: "#000"
-    }
-  }
+  // cells: {
+  //   padding: {
+  //     top: "2px",
+  //     right: "2px",
+  //     bottom: "2px",
+  //     left: "2px"
+  //   },
+  //   margin: {
+  //     top: "0",
+  //     right: "0",
+  //     bottom: "0",
+  //     left: "0"
+  //   },
+  //   border: {
+  //     width: "1px",
+  //     style: "solid",
+  //     color: "#000"
+  //   }
+  // }
 };
 
 export const darkTheme: RGTheme = {

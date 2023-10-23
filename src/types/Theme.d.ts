@@ -21,68 +21,64 @@ export interface RGTheme {
     weight: string;
   },
   grid: {
-    gap: string;
-
     templates: {
       columns: ColumnsTemplateFunction;
       rows: RowsTemplateFunction;
     }
 
-    padding: {
-      top: string;
-      right: string;
-      bottom: string;
-      left: string;
-    };
-    margin: {
-      top: string;
-      right: string;
-      bottom: string;
-      left: string;
-    };
-    border: {
+    gap: {
       width: string;
-      style: string;
       color: string;
-    };
+    }
+
+    // padding: {
+    //   top: string;
+    //   right: string;
+    //   bottom: string;
+    //   left: string;
+    // };
+    // margin: {
+    //   top: string;
+    //   right: string;
+    //   bottom: string;
+    //   left: string;
+    // };
+    // border: {
+    //   width: string;
+    //   style: string;
+    //   color: string;
+    // };
 
   }
-  cells: {
-    padding: {
-      top: string;
-      right: string;
-      bottom: string;
-      left: string;
-    };
-    margin: {
-      top: string;
-      right: string;
-      bottom: string;
-      left: string;
-    };
-    border: {
-      width: string;
-      style: string;
-      color: string;
-    };
-  }
+  // cells: {
+    // padding: {
+    //   top: string;
+    //   right: string;
+    //   bottom: string;
+    //   left: string;
+    // };
+    // margin: {
+    //   top: string;
+    //   right: string;
+    //   bottom: string;
+    //   left: string;
+    // };
+    // border: {
+    //   width: string;
+    //   style: string;
+    //   color: string;
+    // };
+  // }
 }
 
-// Makes all properties in T optional, including nested properties
+// Makes all properties in T optional, including nested properties, but excluding functions
 type DeepPartial<T> = {
-  [P in keyof T]?: DeepPartial<T[P]>;
+  // Any is needed to catch all functions
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  [P in keyof T]?: T[P] extends (...args: any[]) => any ? T[P] : DeepPartial<T[P]>;
 };
 
 // This tells Emotion's ThemeProvider that the theme object is of type RGTheme
 declare module '@emotion/react' {
-  export interface Theme extends DeepPartial<RGTheme> {
-    // We need to provide types to parameters that accept functions again
-    // as DeepPartial makes their parameters optional
-    grid: {
-      templates?: {
-        columns?: ColumnsTemplateFunction;
-        rows?: RowsTemplateFunction;
-      }
-    }
-  }
+  export interface Theme extends  DeepPartial<RGTheme> {}
 }
