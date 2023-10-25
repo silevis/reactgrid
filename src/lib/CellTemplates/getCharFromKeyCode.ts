@@ -211,5 +211,7 @@ export const getCharFromKeyCode = (keyCode: number, isShiftKey = false): string 
 }
 
 export const getCharFromKey = (key: string, isShiftKey = false): string => {
-    return isKeyPrintable(key) ? key : "";
+    const activeLanguage = navigator.language || 'en-US';
+
+    return !isShiftKey ? key.toLocaleLowerCase(activeLanguage) : key.toLocaleUpperCase(activeLanguage);
 }
