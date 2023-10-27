@@ -2,8 +2,8 @@ import * as React from 'react';
 
 // NOTE: all modules imported below may be imported from '@silevis/reactgrid'
 import { getCellProperty } from '../Functions/getCellProperty';
-import { getCharFromKey, getCharFromKeyCode } from './getCharFromKeyCode';
-import { isAlphaNumericKey, isKeyPrintable } from './keyCodeCheckings';
+import { getCharFromKey } from './getCharFromKeyCode';
+import { isAlphaNumericKey } from './keyCodeCheckings';
 import { Cell, CellTemplate, Compatible, Uncertain, UncertainCompatible } from '../Model/PublicModel';
 import { keyCodes } from '../Functions/keyCodes';
 
@@ -83,9 +83,9 @@ export class DropdownCellTemplate implements CellTemplate<DropdownCell> {
             return { cell: this.getCompatibleCell({ ...cell, isOpen: !cell.isOpen }), enableEditMode: false };
         }
 
-        const char = getCharFromKey(key);
+        const char = getCharFromKey(key, shift);
 
-        if (!ctrl && isKeyPrintable(key) && !(shift && keyCode === keyCodes.SPACE))
+        if (!ctrl && !alt && isAlphaNumericKey(keyCode) && !(shift && keyCode === keyCodes.SPACE))
             return { cell: this.getCompatibleCell({ ...cell, inputValue: char, isOpen: !cell.isOpen }), enableEditMode: false }
 
         return { cell, enableEditMode: false };

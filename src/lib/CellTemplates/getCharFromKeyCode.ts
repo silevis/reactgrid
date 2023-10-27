@@ -1,5 +1,3 @@
-import { isKeyPrintable } from "./keyCodeCheckings";
-
 const characterMapShift: string[] = [];
 characterMapShift[8] = "";
 characterMapShift[9] = "";
@@ -211,5 +209,8 @@ export const getCharFromKeyCode = (keyCode: number, isShiftKey = false): string 
 }
 
 export const getCharFromKey = (key: string, isShiftKey = false): string => {
-    return isKeyPrintable(key) ? key : "";
-}
+  const language = navigator.language || "en-US";
+  return !isShiftKey
+    ? key.toLocaleLowerCase(language)
+    : key.toLocaleUpperCase(language);
+};
