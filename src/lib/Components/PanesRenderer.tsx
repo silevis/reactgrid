@@ -121,6 +121,7 @@ export const PanesRenderer: React.FC<PanesProps> = ({ cellRenderer }) => {
                   marginRight,
                   marginTop: marginTopOnScrollable,
                   order: 7,
+                  ...(isBrowserFirefox() && { zIndex: 2 }),
               }}
           >
               <PaneContent
@@ -145,6 +146,7 @@ export const PanesRenderer: React.FC<PanesProps> = ({ cellRenderer }) => {
                   marginBottom,
                   marginLeft: marginLeftOnScrollable,
                   order: 5,
+                  ...(isBrowserFirefox() && { zIndex: 2 }),
               }}
           >
               <PaneContent
@@ -168,7 +170,7 @@ export const PanesRenderer: React.FC<PanesProps> = ({ cellRenderer }) => {
                   marginLeft,
                   marginRight,
                   order: 1,
-                  ...(isBrowserFirefox() && { zIndex: 1 }),
+                  ...(isBrowserFirefox() && { zIndex: 2 }),
               }}
           >
               <PaneContent
@@ -192,7 +194,7 @@ export const PanesRenderer: React.FC<PanesProps> = ({ cellRenderer }) => {
                   marginBottom,
                   marginTop,
                   order: 3,
-                  ...(isBrowserFirefox() && { zIndex: 1 }),
+                  ...(isBrowserFirefox() && { zIndex: 2 }),
               }}
           >
               <PaneContent
@@ -215,7 +217,7 @@ export const PanesRenderer: React.FC<PanesProps> = ({ cellRenderer }) => {
                   marginTop: marginTopOnScrollable,
                   marginLeft: marginLeftOnScrollable,
                   order: 8,
-                  ...(isBrowserFirefox() && { zIndex: 1 }),
+                  ...(isBrowserFirefox() && { zIndex: 4 }),
               }}
           >
               <PaneContent
@@ -239,7 +241,7 @@ export const PanesRenderer: React.FC<PanesProps> = ({ cellRenderer }) => {
                   marginRight: marginRightOnScrollable,
                   marginTop: marginTopOnScrollable,
                   order: 6,
-                  ...(isBrowserFirefox() && { zIndex: 2 }),
+                  ...(isBrowserFirefox() && { zIndex: 4 }),
               }}
           >
               <PaneContent
@@ -263,7 +265,7 @@ export const PanesRenderer: React.FC<PanesProps> = ({ cellRenderer }) => {
                   marginLeft: marginLeftOnScrollable,
                   marginBottom: marginBottomOnScrollable,
                   order: 2,
-                  ...(isBrowserFirefox() && { zIndex: 2 })
+                  ...(isBrowserFirefox() && { zIndex: 4 })
               }}
           >
               <PaneContent
@@ -287,7 +289,7 @@ export const PanesRenderer: React.FC<PanesProps> = ({ cellRenderer }) => {
                   marginRight: marginRightOnScrollable,
                   marginBottom: marginBottomOnScrollable,
                   order: 0,
-                  ...(isBrowserFirefox() && { zIndex: 3 }),
+                  ...(isBrowserFirefox() && { zIndex: 4 }),
               }}
           >
               <PaneContent

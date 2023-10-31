@@ -3,7 +3,7 @@ import { getReactGridOffsets, getStickyOffset } from '../Functions/elementSizeHe
 import { getScrollOfScrollableElement, getTopScrollableElement } from '../Functions/scrollHelpers';
 import { tryAppendChange } from '../Functions/tryAppendChange';
 import { Location } from '../Model/InternalModel';
-import { CellMatrix } from '../Model/CellMatrix';
+import { CellMatrix, StickyRanges } from '../Model/CellMatrix';
 import { Compatible, Cell } from '../Model/PublicModel';
 import { State } from '../Model/State';
 import { calculateCellEditorPosition } from '../Functions/cellEditorCalculator';
@@ -25,6 +25,50 @@ export interface PositionState<TState extends State = State> {
     state: TState;
     location: Location;
 }
+
+const getZIndex = (stickyRanges: StickyRanges, location: Location) => {
+    if (!location) return 5;
+
+    const isStickyTop = stickyRanges.stickyTopRange.contains(location);
+    const isStickyRight = stickyRanges.stickyRightRange.contains(location);
+    const isStickyBottom = stickyRanges.stickyBottomRange.contains(location);
+    const isStickyLeft = stickyRanges.stickyLeftRange.contains(location);
+
+    switch (true) {
+      // Top Left
+      case isStickyTop && isStickyLeft:
+        return 5;
+      // Top Center
+      case isStickyTop && !(isStickyLeft || isStickyRight):
+        return 3;
+      // Top Right
+      case isStickyTop && isStickyRight:
+        return 5;
+
+      // Center Left
+      case !isStickyTop && isStickyLeft && !isStickyBottom:
+        return 3;
+      // Center Center
+      case !isStickyTop && !isStickyLeft && !isStickyRight && !isStickyBottom:
+        return 1;
+      // Center Right
+      case !isStickyTop && isStickyRight && !isStickyBottom:
+        return 3;
+
+      // Bottom Left
+      case isStickyBottom && isStickyLeft:
+        return 5;
+      // Bottom Center
+      case isStickyBottom && !(isStickyLeft || isStickyRight):
+        return 3;
+      // Bottom Right
+      case isStickyBottom && isStickyRight:
+        return 5;
+
+      default:
+        return 5;
+    }
+  };
 
 export const CellEditorRenderer: React.FC = () => {
     const state = useReactGridState();
@@ -52,6 +96,7 @@ export const CellEditorRenderer: React.FC = () => {
             height: location.row.height + 1,
             width: location.column.width + 1,
             position: state.props?.disableFixedCellEditor ? 'absolute' : 'fixed',
+            zIndex: state.props?.disableFixedCellEditor ? getZIndex(state.cellMatrix.ranges, location) : 5
         }}
     >
         {cellTemplate.render(currentlyEditedCell, true, (cell: Compatible<Cell>, commit: boolean) => {
