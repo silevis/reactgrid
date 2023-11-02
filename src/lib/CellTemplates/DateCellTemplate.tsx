@@ -5,7 +5,7 @@ import { getCellProperty } from '../Functions/getCellProperty';
 import { Cell, CellTemplate, Compatible, Uncertain, UncertainCompatible } from '../Model/PublicModel';
 import { keyCodes } from '../Functions/keyCodes';
 import { inNumericKey, isNavigationKey, isAlphaNumericKey, isCharAlphaNumeric } from './keyCodeCheckings';
-import { getTimestamp, getFormattedTimeUnit } from './timeUtils';
+import { getFormattedTimeUnit } from './timeUtils';
 import { getCharFromKey } from './getCharFromKeyCode';
 
 export interface DateCell extends Cell {
@@ -60,15 +60,15 @@ export class DateCellTemplate implements CellTemplate<DateCell> {
             type='date'
             defaultValue={`${year}-${month}-${day}`}
             onChange={e => {
-                const timestamp = getTimestamp(e.currentTarget.value, '');
-                if (!Number.isNaN(timestamp)) {
-                    onCellChanged(this.getCompatibleCell({ ...cell, date: new Date(timestamp) }), false);
+                if (e.currentTarget.value) {
+                    const [year, month, day] = e.currentTarget.value.split('-').map(v => parseInt(v));
+                    onCellChanged(this.getCompatibleCell({ ...cell, date: new Date(year, month - 1, day) }), false);
                 }
             }}
             onBlur={e => {
-                const timestamp = getTimestamp(e.currentTarget.value, '');
-                if (!Number.isNaN(timestamp)) {
-                    onCellChanged(this.getCompatibleCell({ ...cell, date: new Date(timestamp) }), !this.wasEscKeyPressed);
+                if (e.currentTarget.value) {
+                    const [year, month, day] = e.currentTarget.value.split('-').map(v => parseInt(v));
+                    onCellChanged(this.getCompatibleCell({ ...cell, date: new Date(year, month - 1, day) }), !this.wasEscKeyPressed);
                     this.wasEscKeyPressed = false;
                 }
             }}

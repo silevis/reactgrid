@@ -47,7 +47,7 @@ function handleKeyDownInternal(
     return state;
   }
 
-  const asr = getActiveSelectedRange(state);
+  const asr = getActiveSelectedRange(state) ?? state.cellMatrix.getRange(location, location);
 
   if (event.ctrlKey && isMacOs()) {
     switch (event.keyCode) {

@@ -127,7 +127,7 @@ function handleContextMenuPaste(state: State) {
           const proState = state as State;
           const { copyRange } = proState;
           let applyMetaData = false;
-          const clipboardRows = isMacOs() ? e.split("\n") : e.split("\r\n");
+          const clipboardRows = isMacOs() ? e.split("\n").filter(Boolean) : e.split("\r\n").filter(Boolean);
           const clipboard = clipboardRows.map((line) => line.split("\t"));
           if (copyRange && copyRange.rows && copyRange.columns) {
             const isSizeEqual =

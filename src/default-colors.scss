@@ -16,8 +16,8 @@ $checkbox-checked: $primary-color !default;
 $checkbox-unchecked: #eeeeee !default;
 $checkbox-hover: #cccccc !default;
 $checkbox-mark: #ffffff !default;
-$rg-content-text-color: #ffffff !default;
-$cell-text-color: #ffffff !default;
+$rg-content-text-color: #000000 !default;
+$cell-text-color: #000000 !default;
 
 $dropdown-focused-item-bg-color: lighten(
   $color: $primary-color,
