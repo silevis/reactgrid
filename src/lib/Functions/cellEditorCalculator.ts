@@ -13,7 +13,7 @@ import {
   CellEditorOffset,
 } from "../../core";
 import { State } from "../Model/State";
-import { CellMatrix } from "../Model/CellMatrix";
+import { CellMatrix, StickyRanges } from "../Model/CellMatrix";
 
 const calculatedXAxisOffset = (location: Location, state: State) => {
   const cellMatrix = state.cellMatrix;
@@ -55,8 +55,18 @@ const calculatedYAxisOffset = (location: Location, state: State): number => {
   return 0;
 }
 
-export const calculateCellEditorPosition = (positionState: PositionState): CellEditorOffset => {
-  const { state, location } = positionState;
+export type EditorPosition = {
+  width: number;
+  height: number;
+  top?: number;
+  right?: number;
+  bottom?: number;
+  left?: number;
+  position: 'fixed' | 'absolute' | 'sticky';
+  zIndex: number;
+}
+
+export const calculateCellEditorPosition = (stickyRanges: StickyRanges, location: Location, state: State): EditorPosition => {
   const { scrollTop, scrollLeft } = getScrollOfScrollableElement(state.scrollableElement);
   const { top, left } = getReactGridOffsets(state);
   let offsetLeft = 0,
@@ -67,79 +77,165 @@ export const calculateCellEditorPosition = (positionState: PositionState): CellE
       offsetTop = top;
   }
 
-  const getCellEditorPosition = (isFixedDisabled = false) => {
-    if (isFixedDisabled) {
-      let leftOffset = location.column.left;
-      let topOffset = location.row.top;
+  const fixedPosition: EditorPosition = {
+    width: location.column.width + 1,
+    height: location.row.height + 1,
+    top:
+      location.row.top +
+      calculatedYAxisOffset(location, state) +
+      offsetTop +
+      top -
+      scrollTop,
+    left:
+      location.column.left +
+      calculatedXAxisOffset(location, state) +
+      offsetLeft +
+      left -
+      scrollLeft,
+    position: 'fixed',
+    zIndex: 5,
+  };
 
-      const isStickyTop = state.cellMatrix.ranges.stickyTopRange.contains(location);
-      const isStickyRight = state.cellMatrix.ranges.stickyRightRange.contains(location);
-      const isStickyBottom = state.cellMatrix.ranges.stickyBottomRange.contains(location);
-      const isStickyLeft = state.cellMatrix.ranges.stickyLeftRange.contains(location);
+  if (!state.props?.disableFixedCellEditor) return fixedPosition;
+  // Else: calculate position for non-fixed cell editor
 
-      switch (true) {
-        // Top Left
-        case isStickyTop && isStickyLeft:
-          topOffset += scrollTop;
-          break;
-        // Top Center
-        case isStickyTop && !(isStickyLeft || isStickyRight):
-          leftOffset += state.cellMatrix.ranges.stickyLeftRange.width;
-          break;
-        // Top Right
-        case isStickyTop && isStickyRight:
-          leftOffset += state.cellMatrix.scrollableRange.width + state.cellMatrix.ranges.stickyLeftRange.width;
-          break;
+  const isStickyTop = stickyRanges.stickyTopRange.contains(location);
+  const isStickyRight = stickyRanges.stickyRightRange.contains(location);
+  const isStickyBottom = stickyRanges.stickyBottomRange.contains(location);
+  const isStickyLeft = stickyRanges.stickyLeftRange.contains(location);
 
-        // Center Left
-        case !isStickyTop && isStickyLeft && !isStickyBottom:
-          topOffset += state.cellMatrix.ranges.stickyTopRange.height;
-          break;
-        // Center Center
-        case !isStickyTop && !isStickyLeft && !isStickyRight && !isStickyBottom:
-          topOffset += state.cellMatrix.ranges.stickyTopRange.height;
-          leftOffset += state.cellMatrix.ranges.stickyLeftRange.width;
-          break;
-        // Center Right
-        case !isStickyTop && isStickyRight && !isStickyBottom:
-          topOffset += state.cellMatrix.ranges.stickyTopRange.height;
-          leftOffset += state.cellMatrix.scrollableRange.width + state.cellMatrix.ranges.stickyLeftRange.width;
-          break;
-        
-        // Bottom Left
-        case isStickyBottom && isStickyLeft:
-          topOffset += state.cellMatrix.scrollableRange.height + state.cellMatrix.ranges.stickyTopRange.height;
-          break;
-        // Bottom Center
-        case isStickyBottom && !(isStickyLeft || isStickyRight):
-          topOffset += state.cellMatrix.scrollableRange.height + state.cellMatrix.ranges.stickyTopRange.height;
-          leftOffset += state.cellMatrix.ranges.stickyLeftRange.width;
-          break;
-        // Bottom Right
-        case isStickyBottom && isStickyRight:
-          topOffset += state.cellMatrix.scrollableRange.height + state.cellMatrix.ranges.stickyTopRange.height;
-          leftOffset += state.cellMatrix.scrollableRange.width + state.cellMatrix.ranges.stickyLeftRange.width;
-          break;
+  // TODO: Editor on corner panes fallbacks to fixed positioning, because I couldn't figure out how to sensibly update its position on scroll
+  switch (true) {
+    // Top Left
+    case isStickyTop && isStickyLeft:
+      return fixedPosition;
+    // Top Center
+    case isStickyTop && !(isStickyLeft || isStickyRight):
+      return {
+        width: location.column.width + 1,
+        height: location.row.height + 1,
+        top: location.row.top,
+        left: location.column.left + state.cellMatrix.ranges.stickyLeftRange.width,
+        position: 'absolute',
+        zIndex: 3
+      }
+    // Top Right
+    case isStickyTop && isStickyRight:
+      return fixedPosition;
+
+    // Center Left
+    case !isStickyTop && isStickyLeft && !isStickyBottom:
+      return {
+        ...fixedPosition,
+        top: location.row.top + state.cellMatrix.ranges.stickyTopRange.height,
+        left: location.column.left,
+        position: 'absolute',
+        zIndex: 3
+      };
+    // Center Center
+    case !isStickyTop && !isStickyLeft && !isStickyRight && !isStickyBottom:
+      return {
+        ...fixedPosition,
+        top: location.row.top + state.cellMatrix.ranges.stickyTopRange.height,
+        left: location.column.left + state.cellMatrix.ranges.stickyLeftRange.width,
+        position: 'absolute',
+        zIndex: 1
+      }
+    // Center Right
+    case !isStickyTop && isStickyRight && !isStickyBottom:
+      return {
+        ...fixedPosition,
+        top: location.row.top + state.cellMatrix.ranges.stickyTopRange.height,
+        left: location.column.left + state.cellMatrix.scrollableRange.width + state.cellMatrix.ranges.stickyLeftRange.width,
+        position: 'absolute',
+        zIndex: 3
       }
 
-      return { 
-        left: leftOffset, 
-        top: topOffset
+    // Bottom Left
+    case isStickyBottom && isStickyLeft:
+      return fixedPosition;
+    // Bottom Center
+    case isStickyBottom && !(isStickyLeft || isStickyRight):
+      return {
+        ...fixedPosition,
+        // top: location.row.top + state.cellMatrix.scrollableRange.height + state.cellMatrix.ranges.stickyTopRange.height,
+        bottom: location.row.bottom,
+        left: location.column.left + state.cellMatrix.ranges.stickyLeftRange.width,
+        position: 'absolute',
+        zIndex: 3
       };
-    }
+    // Bottom Right
+    case isStickyBottom && isStickyRight:
+      return fixedPosition;
 
-    return {
-      left: location.column.left + calculatedXAxisOffset(location, state) + offsetLeft + left - scrollLeft,
-      top: location.row.top + calculatedYAxisOffset(location, state) + offsetTop + top - scrollTop,
-    };
-  };
-
-  // React StrictMode calls reducer two times to eliminate any side-effects
-  // this function is a reducer so we need to add the state and location to positionState
-  // in order to get them in the second call
-  return {
-    state,
-    location,
-    ...getCellEditorPosition(state.props?.disableFixedCellEditor)
-  };
+    default:
+      return fixedPosition;
+  }
 }
+
+//   if (isFixedDisabled) {
+//     let leftOffset = location.column.left;
+//     let topOffset = location.row.top;
+
+//     const isStickyTop = state.cellMatrix.ranges.stickyTopRange.contains(location);
+//     const isStickyRight = state.cellMatrix.ranges.stickyRightRange.contains(location);
+//     const isStickyBottom = state.cellMatrix.ranges.stickyBottomRange.contains(location);
+//     const isStickyLeft = state.cellMatrix.ranges.stickyLeftRange.contains(location);
+
+//     switch (true) {
+//       // Top Left
+//       case isStickyTop && isStickyLeft:
+//         // topOffset += scrollTop;
+        
+//         break;
+//       // Top Center
+//       case isStickyTop && !(isStickyLeft || isStickyRight):
+//         leftOffset += state.cellMatrix.ranges.stickyLeftRange.width;
+//         break;
+//       // Top Right
+//       case isStickyTop && isStickyRight:
+//         leftOffset += state.cellMatrix.scrollableRange.width + state.cellMatrix.ranges.stickyLeftRange.width + scrollTop;
+//         break;
+
+//       // Center Left
+//       case !isStickyTop && isStickyLeft && !isStickyBottom:
+//         topOffset += state.cellMatrix.ranges.stickyTopRange.height;
+//         break;
+//       // Center Center
+//       case !isStickyTop && !isStickyLeft && !isStickyRight && !isStickyBottom:
+//         topOffset += state.cellMatrix.ranges.stickyTopRange.height;
+//         leftOffset += state.cellMatrix.ranges.stickyLeftRange.width;
+//         break;
+//       // Center Right
+//       case !isStickyTop && isStickyRight && !isStickyBottom:
+//         topOffset += state.cellMatrix.ranges.stickyTopRange.height;
+//         leftOffset += state.cellMatrix.scrollableRange.width + state.cellMatrix.ranges.stickyLeftRange.width;
+//         break;
+      
+//       // Bottom Left
+//       case isStickyBottom && isStickyLeft:
+//         topOffset += state.cellMatrix.scrollableRange.height + state.cellMatrix.ranges.stickyTopRange.height + scrollTop;
+//         break;
+//       // Bottom Center
+//       case isStickyBottom && !(isStickyLeft || isStickyRight):
+//         topOffset += state.cellMatrix.scrollableRange.height + state.cellMatrix.ranges.stickyTopRange.height;
+//         leftOffset += state.cellMatrix.ranges.stickyLeftRange.width;
+//         break;
+//       // Bottom Right
+//       case isStickyBottom && isStickyRight:
+//         topOffset += state.cellMatrix.scrollableRange.height + state.cellMatrix.ranges.stickyTopRange.height;
+//         leftOffset += state.cellMatrix.scrollableRange.width + state.cellMatrix.ranges.stickyLeftRange.width;
+//         break;
+//     }
+
+//     return { 
+//       left: leftOffset,
+//       top: topOffset
+//     };
+//   }
+
+//   return {
+//     left: location.column.left + calculatedXAxisOffset(location, state) + offsetLeft + left - scrollLeft,
+//     top: location.row.top + calculatedYAxisOffset(location, state) + offsetTop + top - scrollTop,
+//   };
+// };

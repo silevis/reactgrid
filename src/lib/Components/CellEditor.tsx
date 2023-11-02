@@ -6,7 +6,7 @@ import { Location } from '../Model/InternalModel';
 import { CellMatrix, StickyRanges } from '../Model/CellMatrix';
 import { Compatible, Cell } from '../Model/PublicModel';
 import { State } from '../Model/State';
-import { calculateCellEditorPosition } from '../Functions/cellEditorCalculator';
+import { EditorPosition, calculateCellEditorPosition } from '../Functions/cellEditorCalculator';
 import { useReactGridState } from './StateProvider';
 
 export interface CellEditorOffset<TState extends State = State> {
@@ -26,78 +26,58 @@ export interface PositionState<TState extends State = State> {
     location: Location;
 }
 
-const getZIndex = (stickyRanges: StickyRanges, location: Location) => {
-    if (!location) return 5;
-
-    const isStickyTop = stickyRanges.stickyTopRange.contains(location);
-    const isStickyRight = stickyRanges.stickyRightRange.contains(location);
-    const isStickyBottom = stickyRanges.stickyBottomRange.contains(location);
-    const isStickyLeft = stickyRanges.stickyLeftRange.contains(location);
-
-    switch (true) {
-      // Top Left
-      case isStickyTop && isStickyLeft:
-        return 5;
-      // Top Center
-      case isStickyTop && !(isStickyLeft || isStickyRight):
-        return 3;
-      // Top Right
-      case isStickyTop && isStickyRight:
-        return 5;
-
-      // Center Left
-      case !isStickyTop && isStickyLeft && !isStickyBottom:
-        return 3;
-      // Center Center
-      case !isStickyTop && !isStickyLeft && !isStickyRight && !isStickyBottom:
-        return 1;
-      // Center Right
-      case !isStickyTop && isStickyRight && !isStickyBottom:
-        return 3;
-
-      // Bottom Left
-      case isStickyBottom && isStickyLeft:
-        return 5;
-      // Bottom Center
-      case isStickyBottom && !(isStickyLeft || isStickyRight):
-        return 3;
-      // Bottom Right
-      case isStickyBottom && isStickyRight:
-        return 5;
-
-      default:
-        return 5;
-    }
-  };
-
 export const CellEditorRenderer: React.FC = () => {
     const state = useReactGridState();
     const { currentlyEditedCell, focusedLocation: location } = state;
 
     const renders = React.useRef(0);
 
-    const [position, dispatch] = React.useReducer(calculateCellEditorPosition as (options: PositionState) => any, {state, location}); // used to lock cell editor position
+    // const [position, dispatch] = React.useReducer(calculateCellEditorPosition(state.cellMatrix.ranges, location, state), {state, location}); // used to lock cell editor position
+    const [position, setPosition] = React.useState<EditorPosition>();
+
+    // const scrollLeft = React.useRef(0);
+    // const scrollTop = React.useRef(0);
+
+    // const currentScroll = getScrollOfScrollableElement(state.scrollableElement);
+    // scrollLeft.current = currentScroll.scrollLeft;
+    // scrollTop.current = currentScroll.scrollTop;
+    // if (state.scrollableElement !== getTopScrollableElement()) {
+    //     const { left, top } = (state.scrollableElement as HTMLElement).getBoundingClientRect();
+    //     scrollLeft.current = left;
+    //     scrollTop.current = top;
+    // }
+
+    // React.useEffect(() => {
+    //     if (!location) return;
+
+    //     setPosition(calculateCellEditorPosition(state.cellMatrix.ranges, location, state));
+    // }, [location, state, scrollLeft, scrollTop])
 
     React.useEffect(() => {
         renders.current += 1;
-        dispatch();
+
+        if (!location || !state.cellMatrix.ranges) return;
+
+        setPosition(calculateCellEditorPosition(state.cellMatrix.ranges, location, state));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
-    if (!currentlyEditedCell || !location || renders.current === 0) { // prevents to unexpectly opening cell editor on cypress
+    if (!currentlyEditedCell || !location || !position || renders.current === 0) { // prevents to unexpectly opening cell editor on cypress
         return null;
     }
 
     const cellTemplate = state.cellTemplates[currentlyEditedCell.type];
     return <CellEditor
         cellType={currentlyEditedCell.type}
-        style={{
-            top: position.top && position.top - 1,
-            left: position.left && position.left - 1,
-            height: location.row.height + 1,
-            width: location.column.width + 1,
-            position: state.props?.disableFixedCellEditor ? 'absolute' : 'fixed',
-            zIndex: state.props?.disableFixedCellEditor ? getZIndex(state.cellMatrix.ranges, location) : 5
-        }}
+        style={position}
+        // style={{
+        //     top: position.top && position.top - 1,
+        //     left: position.left && position.left - 1,
+        //     height: location.row.height + 1,
+        //     width: location.column.width + 1,
+        //     position: state.props?.disableFixedCellEditor ? 'absolute' : 'fixed',
+        //     zIndex: state.props?.disableFixedCellEditor ? getZIndex(state.cellMatrix.ranges, location) : 5
+        // }}
     >
         {cellTemplate.render(currentlyEditedCell, true, (cell: Compatible<Cell>, commit: boolean) => {
             state.currentlyEditedCell = commit ? undefined : cell;
@@ -108,11 +88,13 @@ export const CellEditorRenderer: React.FC = () => {
 
 const CellEditor: React.FC<CellEditorProps> = ({ style, cellType, children }) => {
     return (
-        <div
-            className={`rg-celleditor rg-${cellType}-celleditor`}
-            style={style}
-        >
-            {children}
+        <div style={{ position: 'absolute' }}>
+            <div
+                className={`rg-celleditor rg-${cellType}-celleditor`}
+                style={style}
+            >
+                {children}
+            </div>
         </div>
     )
 }
@@ -171,33 +153,4 @@ export function getTopStickyOffset(cellMatrix: CellMatrix, location: Location, s
         const topStickyOffset = getStickyOffset(scrollTop, top);
         return topStickyOffset;
     }
-}
-
-export const cellEditorCalculator = (options: PositionState): CellEditorOffset => {
-    const { state, location } = options;
-    const { scrollTop, scrollLeft } = getScrollOfScrollableElement(state.scrollableElement);
-    const { top, left } = getReactGridOffsets(state);
-    let offsetLeft = 0,
-        offsetTop = 0;
-    if (state.scrollableElement !== getTopScrollableElement()) {
-        const { left, top } = (state.scrollableElement as HTMLElement).getBoundingClientRect();
-        offsetLeft = left;
-        offsetTop = top;
-    }
-
-    // React StrictMode calls reducer two times to eliminate any side-effects
-    // this function is a reducer so we need to add the state and location to positionState
-    // in order to get them in the second call
-    return {
-        state,
-        location,
-        left: location.column.left + calculatedXAxisOffset(location, state)
-            + offsetLeft
-            + left
-            - scrollLeft,
-        top: location.row.top + calculatedYAxisOffset(location, state)
-            + offsetTop
-            + top
-            - scrollTop
-    };
 }
