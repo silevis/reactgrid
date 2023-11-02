@@ -78,6 +78,16 @@ export interface ReactGridProps {
     readonly verticalStickyBreakpoint?: number;
 
     /**
+     * Defines a base for z-indexes used by ReactGrid.
+     * Internally used as: zIndexBase + <value> (e.g. zIndexBase + 1)
+     * 
+     * Why?: Chrome update v.117 broke sticky rows/columns feature
+     * and because we're not sure what changed internally that caused this issue,
+     * we decided the easiest way to fix this will be to use z-indexes.
+     */
+    readonly zIndexBase?: number;
+
+    /**
      * When pressing `Enter` key, move focus to the next column (by default `false`)
      */
     readonly moveRightOnEnter?: boolean;
