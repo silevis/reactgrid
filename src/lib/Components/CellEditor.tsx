@@ -51,7 +51,7 @@ export const CellEditorRenderer: React.FC = () => {
             left: position.left && position.left - 1,
             height: location.row.height + 1,
             width: location.column.width + 1,
-            position: state.props?.disableFixedCellEditor ? 'absolute' : 'fixed',
+            position: 'fixed'
         }}
     >
         {cellTemplate.render(currentlyEditedCell, true, (cell: Compatible<Cell>, commit: boolean) => {

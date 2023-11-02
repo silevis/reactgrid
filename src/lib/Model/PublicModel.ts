@@ -64,8 +64,6 @@ export interface ReactGridProps {
     readonly enableGroupIdRender?: boolean;
     /** Set `true` to disable virtual scrolling (by default `false`) */
     readonly disableVirtualScrolling?: boolean;
-    /** Set `true` to disable "scroll following" feature of cell editor */
-    readonly disableFixedCellEditor?: boolean;
     /** 
      * Horizontal breakpoint in percents (%) of ReactGrid scrollable parent element width. 
      * Disables sticky when the sum of the sizes of sticky panes overflows
