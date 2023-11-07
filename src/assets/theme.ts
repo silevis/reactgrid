@@ -22,7 +22,11 @@ const lightTheme: RGTheme = {
       columns: ({ widths }) => widths.join(" "),
       rows: ({ heights }) => heights.join(" ")
     },
-    
+
+    gap: {
+      width: "2px",
+      color: "#000"
+    },
     // padding: {
     //   top: "",
     //   right: "",
@@ -35,30 +39,20 @@ const lightTheme: RGTheme = {
     //   bottom: "",
     //   left: ""
     // },
-    gap: {
-      width: "1px",
+  },
+  cellContainer: {
+    padding: {
+      top: "2px",
+      right: "2px",
+      bottom: "2px",
+      left: "2px"
+    },
+    border: {
+      width: "2px",
+      style: "solid",
       color: "#000"
     }
-  },
-  // cells: {
-  //   padding: {
-  //     top: "2px",
-  //     right: "2px",
-  //     bottom: "2px",
-  //     left: "2px"
-  //   },
-  //   margin: {
-  //     top: "0",
-  //     right: "0",
-  //     bottom: "0",
-  //     left: "0"
-  //   },
-  //   border: {
-  //     width: "1px",
-  //     style: "solid",
-  //     color: "#000"
-  //   }
-  // }
+  }
 };
 
 export const darkTheme: RGTheme = {

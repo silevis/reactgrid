@@ -24,10 +24,11 @@ export interface RGTheme {
     templates: {
       columns: ColumnsTemplateFunction;
       rows: RowsTemplateFunction;
-    }
+    };
 
     gap: {
       width: string;
+      /** Changes grid's background color for the gap to appear colored */
       color: string;
     }
 
@@ -37,38 +38,20 @@ export interface RGTheme {
     //   bottom: string;
     //   left: string;
     // };
-    // margin: {
-    //   top: string;
-    //   right: string;
-    //   bottom: string;
-    //   left: string;
-    // };
-    // border: {
-    //   width: string;
-    //   style: string;
-    //   color: string;
-    // };
-
   }
-  // cells: {
-    // padding: {
-    //   top: string;
-    //   right: string;
-    //   bottom: string;
-    //   left: string;
-    // };
-    // margin: {
-    //   top: string;
-    //   right: string;
-    //   bottom: string;
-    //   left: string;
-    // };
-    // border: {
-    //   width: string;
-    //   style: string;
-    //   color: string;
-    // };
-  // }
+  cellContainer: {
+    padding: {
+      top: string;
+      right: string;
+      bottom: string;
+      left: string;
+    };
+    border: {
+      width: string;
+      style: string;
+      color: string;
+    };
+  }
 }
 
 // Makes all properties in T optional, including nested properties, but excluding functions
@@ -80,5 +63,5 @@ type DeepPartial<T> = {
 
 // This tells Emotion's ThemeProvider that the theme object is of type RGTheme
 declare module '@emotion/react' {
-  export interface Theme extends  DeepPartial<RGTheme> {}
+  export interface Theme extends DeepPartial<RGTheme> {}
 }
