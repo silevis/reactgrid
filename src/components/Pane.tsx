@@ -1,9 +1,12 @@
-import React, { useEffect } from "react";
+import React, { CSSProperties } from "react";
 import { NumericalRange } from "../types/CellMatrix";
+import { GetCellOffsets, PaneName } from "../types/InternalModel";
 import { useReactGridStore } from "../utils/reactGridStore";
 import { useTheme } from "../utils/useTheme";
 import { CellWrapper } from "./CellWrapper";
 import { useReactGridId } from "./ReactGridIdProvider";
+import { RGTheme } from "../types/Theme";
+import { css, keyframes } from "@emotion/react";
 
 interface PaneGridContentProps {
   range: NumericalRange;
@@ -14,20 +17,7 @@ interface PaneGridContentProps {
     colIdx: number,
     rowSpan: number,
     colSpan: number
-  ) => { top?: number; right?: number; bottom?: number; left?: number };
-}
-
-interface PaneProps {
-  className: string;
-  style?: React.CSSProperties;
-
-  gridContentRange: NumericalRange;
-  getCellOffset?: (
-    rowIdx: number,
-    colIdx: number,
-    rowSpan: number,
-    colSpan: number
-  ) => { top?: number; right?: number; bottom?: number; left?: number };
+  ) => CSSProperties;
 }
 
 export const PaneGridContent: React.FC<PaneGridContentProps> = ({
@@ -68,8 +58,11 @@ export const PaneGridContent: React.FC<PaneGridContentProps> = ({
       return (
         <CellWrapper
           key={`${realRowIndex}-${realColumnIndex}`}
-          className={`rgRowIdx-${realRowIndex} rgColIdx-${realColumnIndex}`}
-          style={{
+          rowId={row.id}
+          colId={col.id}
+          realRowIndex={realRowIndex}
+          realColumnIndex={realColumnIndex}
+          getContainerStyle={() => ({
             ...(cell.rowSpan && {
               gridRowEnd: `span ${cell.rowSpan}`,
             }),
@@ -84,11 +77,7 @@ export const PaneGridContent: React.FC<PaneGridContentProps> = ({
             ),
             gridRowStart: realRowIndex + 1,
             gridColumnStart: realColumnIndex + 1,
-          }}
-          rowId={row.id}
-          colId={col.id}
-          realRowIndex={realRowIndex}
-          realColumnIndex={realColumnIndex}
+          })}
           isFocused={isFocused}
           isInEditMode={isInEditMode}
         >
@@ -99,20 +88,108 @@ export const PaneGridContent: React.FC<PaneGridContentProps> = ({
   });
 };
 
+const getPaneBackgroundStyle = (paneName: PaneName, range: NumericalRange, gap: RGTheme['grid']['gap']) => {
+  let style: CSSProperties = {
+    position: "sticky",
+    gridRowStart: range.startRowIdx + 1,
+    gridRowEnd: range.endRowIdx + 1,
+    gridColumnStart: range.startColIdx + 1,
+    gridColumnEnd: range.endColIdx + 1,
+    backgroundColor: gap.color,
+    // ...(css`animation: ${fadeIn} 0.2s ease-in-out`),
+    transition: "width 0.2s ease-in-out, height 0.2s ease-in-out"
+  };
+
+  if (paneName.startsWith("Top")) {
+    style = {
+      ...style,
+      top: 0,
+      height: `calc(100% + 2*${gap.width})`,
+      marginTop: `-${gap.width}`,
+    };
+  }
+  if (paneName.endsWith("Right")) {
+    style = {
+      ...style,
+      right: 0,
+      width: `calc(100% + 2*${gap.width})`,
+      marginLeft: `-${gap.width}`,
+    };
+  }
+  if (paneName.startsWith("Bottom")) {
+    style = {
+      ...style,
+      bottom: 0,
+      height: `calc(100% + 2*${gap.width})`,
+      marginTop: `-${gap.width}`,
+    };
+  }
+  if (paneName.endsWith("Left")) {
+    style = {
+      ...style,
+      left: 0,
+      width: `calc(100% + 2*${gap.width})`,
+      marginLeft: `-${gap.width}`,
+    };
+  }
+
+  return style;
+};
+
+interface PaneProps {
+  paneName: PaneName;
+  style?: React.CSSProperties;
+
+  gridContentRange: NumericalRange;
+  getCellOffset?: GetCellOffsets;
+
+  shouldRender?: boolean;
+}
+const fadeIn = keyframes`
+from {
+  opacity: 0;
+}
+to {
+  opacity: 1;
+}
+`;
+
 export const Pane: React.FC<PaneProps> = ({
-  className,
+  paneName,
   style,
   gridContentRange,
   getCellOffset,
+  shouldRender = true,
 }) => {
+  const theme = useTheme();
   // const { state, range, borders, cellRenderer } = props;
 
+  if (!shouldRender) return null;
+
   return (
-    <div
-      className={`rgPane ${className}`}
-      style={{ display: "contents", ...style }}
-    >
+    <div className={`rgPane rgPane-${paneName}`} style={{ display: "contents", ...style }} >
+      {paneName !== "Center" && (
+        <div
+          className={`rgPaneBackground rgPaneBackground-${paneName}`}
+          style={getPaneBackgroundStyle(paneName, gridContentRange, theme.grid.gap)}
+        />
+      )}
       <PaneGridContent range={gridContentRange} getCellOffset={getCellOffset} />
+      {paneName === "Center" && (<div className="rgFocusIndicator" style={{
+        gridArea: "5 / 5 / 6 / 6",
+        // width: "calc(100% + 10px)",
+        // height: "calc(100% + 10px)",
+        width: "100%",
+        height: "100%",
+        marginTop: "-4px",
+        marginLeft: "-4px",
+        // marginRight: "-5px",
+        // marginBottom: "-5px",
+        // backgroundColor: "aliceblue",
+        // opacity: 0.5,
+        border: "4px solid blue",
+        // pointerEvents: "none",
+      }} />)}
       {/* {renderHighlights(state, calculatedRange)}
           {state.focusedLocation && !(state.currentlyEditedCell && isMobileDevice()) && calculatedRange.contains(state.focusedLocation) &&
               <CellFocus location={state.focusedLocation} />}

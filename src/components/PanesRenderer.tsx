@@ -1,10 +1,11 @@
-import { FC, useEffect, useRef, useState } from "react";
+import { FC, Suspense, useEffect, useRef, useState } from "react";
 import { NumericalRange } from "../types/CellMatrix";
-import { StickyOffsets } from "../types/InternalModel";
+import { PaneName, StickyOffsets } from "../types/InternalModel";
 import { useReactGridStore } from "../utils/reactGridStore";
 import { useTheme } from "../utils/useTheme";
 import { Pane } from "./Pane";
 import { useReactGridId } from "./ReactGridIdProvider";
+import { css, keyframes } from "@emotion/react";
 
 interface PanesRendererProps {
   rowAmount: number;
@@ -14,17 +15,6 @@ interface PanesRendererProps {
   stickyLeftColumns: number;
   stickyRightColumns: number;
 }
-
-type Pane =
-  | "topLeft"
-  | "topCenter"
-  | "topRight"
-  | "left"
-  | "center"
-  | "right"
-  | "bottomLeft"
-  | "bottomCenter"
-  | "bottomRight";
 
 const PanesRenderer: FC<PanesRendererProps> = ({
   rowAmount,
@@ -39,56 +29,56 @@ const PanesRenderer: FC<PanesRendererProps> = ({
   const rows = useReactGridStore(id, (store) => store.rows);
   const columns = useReactGridStore(id, (store) => store.columns);
 
-  const ranges: Record<Pane, NumericalRange> = {
-    topLeft: {
+  const ranges: Record<PaneName, NumericalRange> = {
+    TopLeft: {
       startRowIdx: 0,
       endRowIdx: stickyTopRows,
       startColIdx: 0,
       endColIdx: stickyLeftColumns,
     },
-    topCenter: {
+    TopCenter: {
       startRowIdx: 0,
       endRowIdx: stickyTopRows,
       startColIdx: stickyLeftColumns,
       endColIdx: columnAmount - stickyRightColumns,
     },
-    topRight: {
+    TopRight: {
       startRowIdx: 0,
       endRowIdx: stickyTopRows,
       startColIdx: columnAmount - stickyRightColumns,
       endColIdx: columnAmount,
     },
-    left: {
+    Left: {
       startRowIdx: stickyTopRows,
       endRowIdx: rowAmount - stickyBottomRows,
       startColIdx: 0,
       endColIdx: stickyLeftColumns,
     },
-    center: {
+    Center: {
       startRowIdx: stickyTopRows,
       endRowIdx: rowAmount - stickyBottomRows,
       startColIdx: stickyLeftColumns,
       endColIdx: columnAmount - stickyRightColumns,
     },
-    right: {
+    Right: {
       startRowIdx: stickyTopRows,
       endRowIdx: rowAmount - stickyBottomRows,
       startColIdx: columnAmount - stickyRightColumns,
       endColIdx: columnAmount,
     },
-    bottomLeft: {
+    BottomLeft: {
       startRowIdx: rowAmount - stickyBottomRows,
       endRowIdx: rowAmount,
       startColIdx: 0,
       endColIdx: stickyLeftColumns,
     },
-    bottomCenter: {
+    BottomCenter: {
       startRowIdx: rowAmount - stickyBottomRows,
       endRowIdx: rowAmount,
       startColIdx: stickyLeftColumns,
       endColIdx: columnAmount - stickyRightColumns,
     },
-    bottomRight: {
+    BottomRight: {
       startRowIdx: rowAmount - stickyBottomRows,
       endRowIdx: rowAmount,
       startColIdx: columnAmount - stickyRightColumns,
@@ -104,52 +94,61 @@ const PanesRenderer: FC<PanesRendererProps> = ({
   });
 
   const gridContainerRef = useRef<HTMLDivElement>(null);
+  const resizeObserver = useRef<ResizeObserver>(new ResizeObserver(() => {
+    setStickyOffsets(() => ({
+      topRows: getRowsOffsets(stickyTopRows),
+      bottomRows: getRowsOffsets(stickyBottomRows, "backward"),
+      leftColumns: getColumnsOffsets(stickyLeftColumns),
+      rightColumns: getColumnsOffsets(stickyRightColumns, "backward"),
+    }));
+    console.log("resize");
+  }));
+
+  useEffect(() => {
+    if (!gridContainerRef.current) return;
+
+    const observer = resizeObserver.current;
+    observer.observe(gridContainerRef.current);
+
+    return () => observer.disconnect();
+  }, []);
 
   /**
    * Finds the offsets of the sticky rows. Fetches the cells until it finds a cell that is not spanned.
    * @param {number} stickyRowsAmount defines the amount of rows to get offsets for
    * @param {"forward" | "backward"} direction defines the direction in which the offsets should be fetched
    */
-  const getRowsOffsets = (
-    stickyRowsAmount: number,
-    direction: "forward" | "backward" = "forward"
-  ) => {
+  const getRowsOffsets = (stickyRowsAmount: number, direction: "forward" | "backward" = "forward") => {
     if (stickyRowsAmount === 0 || !gridContainerRef.current) return [];
-    const offsets: number[] = [];
+    const offsets: number[] = [parseFloat(window.getComputedStyle(gridContainerRef.current).gap ?? "0")];
     let rowIndex = 1;
     let colOffset = 0;
 
     do {
       const cellElement = gridContainerRef.current.getElementsByClassName(
-        `rgRowIdx-${
-          direction === "forward" ? rowIndex - 1 : rowAmount - 1 - rowIndex
-        } rgColIdx-${colOffset}`
+        `rgRowIdx-${direction === "forward" ? rowIndex - 1 : rowAmount - rowIndex} rgColIdx-${colOffset}`
       )[0];
 
       if (cellElement) {
         const cellElementStyle = window.getComputedStyle(cellElement);
-        // If the cell is spanned skip it and look for another one
+        // If the cell is spanned skip it and look for another one...
         if (cellElementStyle.gridRowEnd.includes("span")) {
-          colOffset += parseInt(
-            cellElementStyle.gridRowEnd.split(" ").at(-1) ?? "1"
-          );
+          colOffset += parseInt(cellElementStyle.gridRowEnd.split(" ").at(-1) ?? "1");
           continue;
         }
 
-        // Else, get real (px) cell height (which represents row height in this context) and add it to the offsets array
-        const rowHeight = parseFloat(cellElementStyle.height);
-        // The first offset is always the width of the grid gap/cell outline
-        // If its undefined, get it from the current cell's style
-        if (offsets[0] === undefined) {
-          const gridGap = parseFloat(
-            cellElementStyle.boxShadow.split(" ").at(-1) ?? "0"
-          );
-          offsets[0] = gridGap;
-        }
+        // ...else, get real (px) cell height (which represents row height in this context)...
+        const rowHeight = cellElement.getBoundingClientRect().height;
 
-        offsets.push(offsets[rowIndex - 1] + offsets[0] + rowHeight);
+        // ... and store total offset, i.e. the sum of the previous offset, current width and grid gap
+        offsets.push(offsets[rowIndex - 1] + rowHeight + offsets[0]);
+
+        // Reset colOffset and increment rowIndex
         colOffset = 0;
         rowIndex++;
+
+        // In the end register the element in the observer (required for the offset to update on cell resize)
+        resizeObserver.current.observe(cellElement);
         continue;
       }
 
@@ -166,46 +165,37 @@ const PanesRenderer: FC<PanesRendererProps> = ({
    * @param {"forward" | "backward"} direction defines the direction in which the offsets should be fetched
    * @returns an array of offsets
    */
-  const getColumnsOffsets = (
-    stickyColumnsAmount: number,
-    direction: "forward" | "backward" = "forward"
-  ) => {
+  const getColumnsOffsets = (stickyColumnsAmount: number, direction: "forward" | "backward" = "forward") => {
     if (stickyColumnsAmount === 0 || !gridContainerRef.current) return [];
-    const offsets: number[] = [];
+    const offsets: number[] = [parseFloat(window.getComputedStyle(gridContainerRef.current).gap ?? "0")];
     let colIndex = 1;
     let rowOffset = 0;
 
     do {
       const cellElement = gridContainerRef.current.getElementsByClassName(
-        `rgColIdx-${
-          direction === "forward" ? colIndex - 1 : columnAmount - 1 - colIndex
-        } rgRowIdx-${rowOffset}`
+        `rgColIdx-${direction === "forward" ? colIndex - 1 : columnAmount - colIndex} rgRowIdx-${rowOffset}`
       )[0];
 
       if (cellElement) {
         const cellElementStyle = window.getComputedStyle(cellElement);
-        // If the cell is spanned skip it and look for another one
+        // If the cell is spanned skip it and look for another one...
         if (cellElementStyle.gridColumnEnd.includes("span")) {
-          rowOffset += parseInt(
-            cellElementStyle.gridColumnEnd.split(" ").at(-1) ?? "1"
-          );
+          rowOffset += parseInt(cellElementStyle.gridColumnEnd.split(" ").at(-1) ?? "1");
           continue;
         }
 
-        // Else, get real (px) cell height (which represents col width in this context) and add it to the offsets array
-        const colWidth = parseFloat(cellElementStyle.width);
-        // The first offset is always the width of the grid gap/cell outline
-        // If its undefined, get it from the current cell's style
-        if (offsets[0] === undefined) {
-          const gridGap = parseFloat(
-            cellElementStyle.boxShadow.split(" ").at(-1) ?? "0"
-          );
-          offsets[0] = gridGap;
-        }
+        //...else, get real (px) cell height (which represents col width in this context)...
+        const colWidth = cellElement.getBoundingClientRect().width;
 
-        offsets.push(offsets[colIndex - 1] + offsets[0] + colWidth);
+        // ...and store total offset, i.e. the sum of the previous offset, current width and grid gap
+        offsets.push(offsets[colIndex - 1] + colWidth + offsets[0]);
+
+        // Reset rowOffset and increment colIndex
         rowOffset = 0;
         colIndex++;
+
+        // In the end register the element in the observer (required for the offset to update on cell resize)
+        resizeObserver.current.observe(cellElement);
         continue;
       }
 
@@ -216,32 +206,27 @@ const PanesRenderer: FC<PanesRendererProps> = ({
     return offsets;
   };
 
-  useEffect(() => {
-    const gridContainer = gridContainerRef.current;
-    if (!gridContainer) return;
-
-    const observer = new ResizeObserver(() => {
-      setStickyOffsets(() => ({
-        topRows: getRowsOffsets(stickyTopRows),
-        bottomRows: getRowsOffsets(stickyBottomRows, "backward"),
-        leftColumns: getColumnsOffsets(stickyLeftColumns),
-        rightColumns: getColumnsOffsets(stickyRightColumns, "backward"),
-      }));
-      console.log("resize");
-    });
-
-    observer.observe(gridContainer);
-
-    return () => observer.disconnect();
-  }, []);
+  const fadeIn = keyframes`
+from {
+  opacity: 0;
+}
+to {
+  opacity: 1;
+}
+`;
 
   return (
     <div
       css={{
         display: "grid",
 
-        ".rgCellWrapper": {
-          boxShadow: `0 0 0 ${theme.grid.gap.width} ${theme.grid.gap.color}`,
+        ".rgCellContainer": {
+          paddingTop: theme.cellContainer.padding.top,
+          paddingLeft: theme.cellContainer.padding.left,
+          paddingBottom: theme.cellContainer.padding.bottom,
+          paddingRight: theme.cellContainer.padding.right,
+          backgroundColor: "white",
+          transition: "left 0.2s ease-in-out, top 0.2s ease-in-out, right 0.2s ease-in-out, bottom 0.2s ease-in-out",
         },
       }}
     >
@@ -251,96 +236,103 @@ const PanesRenderer: FC<PanesRendererProps> = ({
           display: "grid",
           gridTemplateColumns: theme.grid.templates.columns({
             amount: columns.length,
-            widths: columns.map(({ width }) =>
-              typeof width === "number" ? `${width}px` : width
-            ),
+            widths: columns.map(({ width }) => (typeof width === "number" ? `${width}px` : width)),
           }),
           gridTemplateRows: theme.grid.templates.rows({
             amount: rows.length,
-            heights: rows.map(({ height }) =>
-              typeof height === "number" ? `${height}px` : height
-            ),
+            heights: rows.map(({ height }) => (typeof height === "number" ? `${height}px` : height)),
           }),
           gap: theme.grid.gap.width,
+          backgroundColor: theme.grid.gap.color,
+          padding: theme.grid.gap.width,
         }}
+        // css={css`animation: ${fadeIn} 1s ease-in`}
         ref={gridContainerRef}
       >
-        <Pane className="rgPane-Center" gridContentRange={ranges.center} />
+        <Pane paneName="Center" gridContentRange={ranges.Center} />
         <Pane
-          className="rgPane-BottomCenter"
-          gridContentRange={ranges.bottomCenter}
+          paneName="BottomCenter"
+          gridContentRange={ranges.BottomCenter}
           getCellOffset={(rowIndex, _colIndex, rowSpan) => ({
             position: "sticky",
             backgroundColor: "floralwhite",
             bottom: stickyOffsets.bottomRows.at(-rowIndex - rowSpan),
           })}
+          shouldRender={stickyBottomRows > 0}
         />
         <Pane
-          className="rgPane-Right"
-          gridContentRange={ranges.right}
+          paneName="Right"
+          gridContentRange={ranges.Right}
           getCellOffset={(_rowIndex, colIndex, _rowSpan, colSpan) => ({
             position: "sticky",
             backgroundColor: "floralwhite",
             right: stickyOffsets.rightColumns.at(-colIndex - colSpan),
           })}
+          shouldRender={stickyRightColumns > 0}
         />
         <Pane
-          className="rgPane-TopCenter"
-          gridContentRange={ranges.topCenter}
+          paneName="TopCenter"
+          gridContentRange={ranges.TopCenter}
           getCellOffset={(rowIndex) => ({
             position: "sticky",
             backgroundColor: "floralwhite",
             top: stickyOffsets.topRows[rowIndex],
           })}
+          shouldRender={stickyTopRows > 0}
         />
         <Pane
-          className="rgPane-Left"
-          gridContentRange={ranges.left}
+          paneName="Left"
+          gridContentRange={ranges.Left}
           getCellOffset={(_rowIndex, colIndex) => ({
             position: "sticky",
             backgroundColor: "floralwhite",
             left: stickyOffsets.leftColumns[colIndex],
           })}
+          shouldRender={stickyLeftColumns > 0}
         />
         <Pane
-          className="rgPane-BottomRight"
-          gridContentRange={ranges.bottomRight}
+          paneName="BottomRight"
+          gridContentRange={ranges.BottomRight}
           getCellOffset={(rowIndex, colIndex, rowSpan, colSpan) => ({
             position: "sticky",
             backgroundColor: "floralwhite",
             bottom: stickyOffsets.bottomRows.at(-rowIndex - rowSpan),
             right: stickyOffsets.rightColumns.at(-colIndex - colSpan),
           })}
+          shouldRender={stickyBottomRows > 0 && stickyRightColumns > 0}
         />
         <Pane
-          className="rgPane-BottomLeft"
-          gridContentRange={ranges.bottomLeft}
+          paneName="BottomLeft"
+          gridContentRange={ranges.BottomLeft}
           getCellOffset={(rowIndex, colIndex, rowSpan) => ({
             position: "sticky",
             backgroundColor: "floralwhite",
             bottom: stickyOffsets.bottomRows.at(-rowIndex - rowSpan),
             left: stickyOffsets.leftColumns[colIndex],
           })}
+          shouldRender={stickyBottomRows > 0 && stickyLeftColumns > 0}
         />
         <Pane
-          className="rgPane-TopRight"
-          gridContentRange={ranges.topRight}
+          paneName="TopRight"
+          gridContentRange={ranges.TopRight}
           getCellOffset={(rowIndex, colIndex, _rowSpan, colSpan) => ({
             position: "sticky",
             backgroundColor: "floralwhite",
             top: stickyOffsets.topRows[rowIndex],
             right: stickyOffsets.rightColumns.at(-colIndex - colSpan),
           })}
+          shouldRender={stickyTopRows > 0 && stickyRightColumns > 0}
         />
         <Pane
-          className="rgPane-TopLeft"
-          gridContentRange={ranges.topLeft}
+          paneName="TopLeft"
+          gridContentRange={ranges.TopLeft}
           getCellOffset={(rowIndex, colIndex) => ({
             position: "sticky",
             backgroundColor: "floralwhite",
             top: stickyOffsets.topRows[rowIndex],
             left: stickyOffsets.leftColumns[colIndex],
           })}
+          shouldRender={stickyTopRows > 0 && stickyLeftColumns > 0}
         />
       </div>
     </div>
