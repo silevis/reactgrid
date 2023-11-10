@@ -1,13 +1,12 @@
 import React, { CSSProperties } from "react";
 import { NumericalRange } from "../types/CellMatrix";
 import { GetCellOffsets, PaneName } from "../types/InternalModel";
+import { RGTheme } from "../types/Theme";
 import { useReactGridStore } from "../utils/reactGridStore";
 import { useTheme } from "../utils/useTheme";
 import { CellWrapper } from "./CellWrapper";
+import { PartialArea } from "./PartialArea";
 import { useReactGridId } from "./ReactGridIdProvider";
-import { RGTheme } from "../types/Theme";
-import { css, keyframes } from "@emotion/react";
-import { PartialHighlight } from "./PartialHighlight";
 
 interface PaneGridContentProps {
   range: NumericalRange;
@@ -170,57 +169,58 @@ export const Pane: React.FC<PaneProps> = ({
         />
       )}
       <PaneGridContent range={gridContentRange} getCellOffset={getCellOffset} />
-      <PartialHighlight
-        highlightRange={{ startRowIdx: 0, endRowIdx: 50, startColIdx: 0, endColIdx: 1 }}
+      <PartialArea
+        areaRange={{ startRowIdx: 0, endRowIdx: 50, startColIdx: 0, endColIdx: 1 }}
         parentPaneName={paneName}
         parentPaneRange={gridContentRange}
         border={{ color: "lawngreen", style: "solid", width: "4px" }}
         getCellOffset={getCellOffset}
       />
-      <PartialHighlight
-        highlightRange={{ startRowIdx: 8, endRowIdx: 9, startColIdx: 0, endColIdx: 40 }}
+      <PartialArea
+        areaRange={{ startRowIdx: 8, endRowIdx: 9, startColIdx: 0, endColIdx: 40 }}
         parentPaneName={paneName}
         parentPaneRange={gridContentRange}
         border={{ color: "cornflowerblue", style: "solid", width: "4px" }}
         getCellOffset={getCellOffset}
       />
-      <PartialHighlight
-        highlightRange={{ startRowIdx: 1, endRowIdx: 4, startColIdx: 2, endColIdx: 5 }}
+      <PartialArea
+        areaRange={{ startRowIdx: 3, endRowIdx: 6, startColIdx: 2, endColIdx: 5 }}
         parentPaneName={paneName}
         parentPaneRange={gridContentRange}
         border={{ color: "red", style: "solid", width: "4px" }}
         getCellOffset={getCellOffset}
+        style={{ backgroundColor: "#ff000050" }}
       />
-      <PartialHighlight
-        highlightRange={{ startRowIdx: 1, endRowIdx: 2, startColIdx: 7, endColIdx: 10 }}
+      <PartialArea
+        areaRange={{ startRowIdx: 1, endRowIdx: 2, startColIdx: 7, endColIdx: 10 }}
         parentPaneName={paneName}
         parentPaneRange={gridContentRange}
         border={{ color: "teal", style: "solid", width: "4px" }}
         getCellOffset={getCellOffset}
       />
-      <PartialHighlight
-        highlightRange={{ startRowIdx: 5, endRowIdx: 7, startColIdx: 5, endColIdx: 8 }}
+      <PartialArea
+        areaRange={{ startRowIdx: 5, endRowIdx: 7, startColIdx: 4, endColIdx: 8 }}
         parentPaneName={paneName}
         parentPaneRange={gridContentRange}
         border={{ color: "goldenrod", style: "solid", width: "4px" }}
         getCellOffset={getCellOffset}
       />
-      <PartialHighlight
-        highlightRange={{ startRowIdx: 1, endRowIdx: 4, startColIdx: 36, endColIdx: 39 }}
+      <PartialArea
+        areaRange={{ startRowIdx: 1, endRowIdx: 4, startColIdx: 36, endColIdx: 39 }}
         parentPaneName={paneName}
         parentPaneRange={gridContentRange}
-        border={{ color: "green", style: "solid", width: "24px" }}
+        border={{ color: "green", style: "solid", width: "4px" }}
         getCellOffset={getCellOffset}
       />
-      <PartialHighlight
-        highlightRange={{ startRowIdx: 46, endRowIdx: 49, startColIdx: 2, endColIdx: 5 }}
+      <PartialArea
+        areaRange={{ startRowIdx: 46, endRowIdx: 49, startColIdx: 2, endColIdx: 5 }}
         parentPaneName={paneName}
         parentPaneRange={gridContentRange}
         border={{ color: "blue", style: "solid", width: "4px" }}
         getCellOffset={getCellOffset}
       />
-      <PartialHighlight
-        highlightRange={{ startRowIdx: 46, endRowIdx: 49, startColIdx: 36, endColIdx: 39 }}
+      <PartialArea
+        areaRange={{ startRowIdx: 46, endRowIdx: 49, startColIdx: 36, endColIdx: 39 }}
         parentPaneName={paneName}
         parentPaneRange={gridContentRange}
         border={{ color: "magenta", style: "solid", width: "4px" }}

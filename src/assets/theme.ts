@@ -52,6 +52,13 @@ const lightTheme: RGTheme = {
       style: "solid",
       color: "#000"
     }
+  },
+  area: {
+    border: {
+      color: "lightblue",
+      style: "solid",
+      width: "2px",
+    }
   }
 };
 

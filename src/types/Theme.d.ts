@@ -58,7 +58,7 @@ export interface RGTheme {
     };
     border: Border;
   },
-  highlight: {
+  area: {
     border: Border;
   }
 }

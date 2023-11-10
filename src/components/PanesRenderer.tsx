@@ -1,11 +1,11 @@
-import { FC, Suspense, useEffect, useRef, useState } from "react";
+import { keyframes } from "@emotion/react";
+import { FC, useEffect, useRef, useState } from "react";
 import { NumericalRange } from "../types/CellMatrix";
 import { PaneName, StickyOffsets } from "../types/InternalModel";
 import { useReactGridStore } from "../utils/reactGridStore";
 import { useTheme } from "../utils/useTheme";
 import { Pane } from "./Pane";
 import { useReactGridId } from "./ReactGridIdProvider";
-import { css, keyframes } from "@emotion/react";
 
 interface PanesRendererProps {
   rowAmount: number;
