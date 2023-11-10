@@ -1,5 +1,15 @@
+import { CSSProperties } from "react";
+
 type ColumnsTemplateFunction = ({ amount, widths }: { amount: number, widths: string[] }) => string;
 type RowsTemplateFunction = ({ amount, heights }: { amount: number, heights: string[] }) => string;
+
+export type Border = {
+  width: CSSProperties['borderWidth'];
+  style: CSSProperties['borderStyle'];
+  color: CSSProperties['borderColor'];
+}
+
+export type Offset = { top?: number; right?: number; bottom?: number; left?: number; };
 
 export interface RGTheme {
   colors: {
@@ -38,7 +48,7 @@ export interface RGTheme {
     //   bottom: string;
     //   left: string;
     // };
-  }
+  },
   cellContainer: {
     padding: {
       top: string;
@@ -46,11 +56,10 @@ export interface RGTheme {
       bottom: string;
       left: string;
     };
-    border: {
-      width: string;
-      style: string;
-      color: string;
-    };
+    border: Border;
+  },
+  highlight: {
+    border: Border;
   }
 }
 

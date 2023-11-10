@@ -7,6 +7,7 @@ import { CellWrapper } from "./CellWrapper";
 import { useReactGridId } from "./ReactGridIdProvider";
 import { RGTheme } from "../types/Theme";
 import { css, keyframes } from "@emotion/react";
+import { PartialHighlight } from "./PartialHighlight";
 
 interface PaneGridContentProps {
   range: NumericalRange;
@@ -96,10 +97,9 @@ const getPaneBackgroundStyle = (paneName: PaneName, range: NumericalRange, gap: 
     gridColumnStart: range.startColIdx + 1,
     gridColumnEnd: range.endColIdx + 1,
     backgroundColor: gap.color,
-    // ...(css`animation: ${fadeIn} 0.2s ease-in-out`),
-    transition: "width 0.2s ease-in-out, height 0.2s ease-in-out"
   };
 
+  // Matches "TopLeft", "TopCenter" and "TopRight"
   if (paneName.startsWith("Top")) {
     style = {
       ...style,
@@ -108,6 +108,7 @@ const getPaneBackgroundStyle = (paneName: PaneName, range: NumericalRange, gap: 
       marginTop: `-${gap.width}`,
     };
   }
+  // Matches "TopRight", "Right" and "BottomRight"
   if (paneName.endsWith("Right")) {
     style = {
       ...style,
@@ -116,6 +117,7 @@ const getPaneBackgroundStyle = (paneName: PaneName, range: NumericalRange, gap: 
       marginLeft: `-${gap.width}`,
     };
   }
+  // Matches "BottomLeft", "BottomCenter" and "BottomRight"
   if (paneName.startsWith("Bottom")) {
     style = {
       ...style,
@@ -124,6 +126,7 @@ const getPaneBackgroundStyle = (paneName: PaneName, range: NumericalRange, gap: 
       marginTop: `-${gap.width}`,
     };
   }
+  // Matches "TopLeft", "Left" and "BottomLeft"
   if (paneName.endsWith("Left")) {
     style = {
       ...style,
@@ -145,14 +148,6 @@ interface PaneProps {
 
   shouldRender?: boolean;
 }
-const fadeIn = keyframes`
-from {
-  opacity: 0;
-}
-to {
-  opacity: 1;
-}
-`;
 
 export const Pane: React.FC<PaneProps> = ({
   paneName,
@@ -175,21 +170,62 @@ export const Pane: React.FC<PaneProps> = ({
         />
       )}
       <PaneGridContent range={gridContentRange} getCellOffset={getCellOffset} />
-      {paneName === "Center" && (<div className="rgFocusIndicator" style={{
-        gridArea: "5 / 5 / 6 / 6",
-        // width: "calc(100% + 10px)",
-        // height: "calc(100% + 10px)",
-        width: "100%",
-        height: "100%",
-        marginTop: "-4px",
-        marginLeft: "-4px",
-        // marginRight: "-5px",
-        // marginBottom: "-5px",
-        // backgroundColor: "aliceblue",
-        // opacity: 0.5,
-        border: "4px solid blue",
-        // pointerEvents: "none",
-      }} />)}
+      <PartialHighlight
+        highlightRange={{ startRowIdx: 0, endRowIdx: 50, startColIdx: 0, endColIdx: 1 }}
+        parentPaneName={paneName}
+        parentPaneRange={gridContentRange}
+        border={{ color: "lawngreen", style: "solid", width: "4px" }}
+        getCellOffset={getCellOffset}
+      />
+      <PartialHighlight
+        highlightRange={{ startRowIdx: 8, endRowIdx: 9, startColIdx: 0, endColIdx: 40 }}
+        parentPaneName={paneName}
+        parentPaneRange={gridContentRange}
+        border={{ color: "cornflowerblue", style: "solid", width: "4px" }}
+        getCellOffset={getCellOffset}
+      />
+      <PartialHighlight
+        highlightRange={{ startRowIdx: 1, endRowIdx: 4, startColIdx: 2, endColIdx: 5 }}
+        parentPaneName={paneName}
+        parentPaneRange={gridContentRange}
+        border={{ color: "red", style: "solid", width: "4px" }}
+        getCellOffset={getCellOffset}
+      />
+      <PartialHighlight
+        highlightRange={{ startRowIdx: 1, endRowIdx: 2, startColIdx: 7, endColIdx: 10 }}
+        parentPaneName={paneName}
+        parentPaneRange={gridContentRange}
+        border={{ color: "teal", style: "solid", width: "4px" }}
+        getCellOffset={getCellOffset}
+      />
+      <PartialHighlight
+        highlightRange={{ startRowIdx: 5, endRowIdx: 7, startColIdx: 5, endColIdx: 8 }}
+        parentPaneName={paneName}
+        parentPaneRange={gridContentRange}
+        border={{ color: "goldenrod", style: "solid", width: "4px" }}
+        getCellOffset={getCellOffset}
+      />
+      <PartialHighlight
+        highlightRange={{ startRowIdx: 1, endRowIdx: 4, startColIdx: 36, endColIdx: 39 }}
+        parentPaneName={paneName}
+        parentPaneRange={gridContentRange}
+        border={{ color: "green", style: "solid", width: "24px" }}
+        getCellOffset={getCellOffset}
+      />
+      <PartialHighlight
+        highlightRange={{ startRowIdx: 46, endRowIdx: 49, startColIdx: 2, endColIdx: 5 }}
+        parentPaneName={paneName}
+        parentPaneRange={gridContentRange}
+        border={{ color: "blue", style: "solid", width: "4px" }}
+        getCellOffset={getCellOffset}
+      />
+      <PartialHighlight
+        highlightRange={{ startRowIdx: 46, endRowIdx: 49, startColIdx: 36, endColIdx: 39 }}
+        parentPaneName={paneName}
+        parentPaneRange={gridContentRange}
+        border={{ color: "magenta", style: "solid", width: "4px" }}
+        getCellOffset={getCellOffset}
+      />
       {/* {renderHighlights(state, calculatedRange)}
           {state.focusedLocation && !(state.currentlyEditedCell && isMobileDevice()) && calculatedRange.contains(state.focusedLocation) &&
               <CellFocus location={state.focusedLocation} />}

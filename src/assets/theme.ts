@@ -25,7 +25,7 @@ const lightTheme: RGTheme = {
 
     gap: {
       width: "2px",
-      color: "#000"
+      color: "#efefef"
     },
     // padding: {
     //   top: "",

@@ -101,7 +101,6 @@ const PanesRenderer: FC<PanesRendererProps> = ({
       leftColumns: getColumnsOffsets(stickyLeftColumns),
       rightColumns: getColumnsOffsets(stickyRightColumns, "backward"),
     }));
-    console.log("resize");
   }));
 
   useEffect(() => {
@@ -226,7 +225,7 @@ to {
           paddingBottom: theme.cellContainer.padding.bottom,
           paddingRight: theme.cellContainer.padding.right,
           backgroundColor: "white",
-          transition: "left 0.2s ease-in-out, top 0.2s ease-in-out, right 0.2s ease-in-out, bottom 0.2s ease-in-out",
+          // transition: "left 0.2s ease-in-out, top 0.2s ease-in-out, right 0.2s ease-in-out, bottom 0.2s ease-in-out",
         },
       }}
     >
@@ -334,6 +333,21 @@ to {
           })}
           shouldRender={stickyTopRows > 0 && stickyLeftColumns > 0}
         />
+        {/* <div className="rgFocusIndicator" style={{
+        gridArea: "5 / 2 / 6 / 6",
+        // width: "calc(100% + 10px)",
+        // height: "calc(100% + 10px)",
+        width: "100%",
+        height: "100%",
+        marginTop: "-4px",
+        marginLeft: "-4px",
+        // marginRight: "-5px",
+        // marginBottom: "-5px",
+        // backgroundColor: "aliceblue",
+        // opacity: 0.5,
+        border: "4px solid blue",
+        // pointerEvents: "none",
+      }} /> */}
       </div>
     </div>
   );
