@@ -31,6 +31,8 @@ export function getDerivedStateFromProps(
     state = stateDeriverWithProps(state)(updateResponsiveSticky)
     
     state = stateDeriverWithProps(state)(disableVirtualScrolling)
+
+    state = stateDeriverWithProps(state)(allowExtendPasteRange)
   
     if (hasChanged) {
       state = stateDeriverWithProps(state)(updateCellMatrix);
@@ -171,6 +173,13 @@ function disableVirtualScrolling(props: ReactGridProps, state: State): State {
   return {
       ...state,
       disableVirtualScrolling: !!props.disableVirtualScrolling
+  }
+}
+
+function allowExtendPasteRange(props: ReactGridProps, state: State): State {
+  return {
+      ...state,
+      allowExtendPasteRange: !!props.allowExtendPasteRange
   }
 }
 
