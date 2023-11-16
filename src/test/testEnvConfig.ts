@@ -18,6 +18,7 @@ export const config: TestConfig = {
     enableGroupIdRender: true,
     disableVirtualScrolling: false,
     moveRightOnEnter: true,
+    allowExtendPasteRange: false,
 
     cellHeight: 25,
     cellWidth: 150,
@@ -84,6 +85,11 @@ export const config: TestConfig = {
 /**
  * Optional properties to override main config
  */
+export const allowExtendPasteRangeConfig: TestConfig = {
+    ...config,
+    allowExtendPasteRange: true,
+}
+
 export const enablePinnedToBodyConfig: TestConfig = {
     ...config,
     pinToBody: true,
@@ -210,6 +216,7 @@ export interface TestConfig {
     enableGroupIdRender: boolean;
     disableVirtualScrolling: boolean;
     moveRightOnEnter: boolean;
+    allowExtendPasteRange: boolean;
 
     columns: number;
     rows: number;

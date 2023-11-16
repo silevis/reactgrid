@@ -544,6 +544,7 @@ export const TestGrid: React.FC<TestGridProps> = (props) => {
                   onSelectionChanged={handleSelectionChanged}
                   onSelectionChanging={handleSelectionChanging}
                   moveRightOnEnter={config.moveRightOnEnter}
+                  allowExtendPasteRange={config.allowExtendPasteRange}
               />}
               {config.additionalContent &&
                   <div style={{ height: `${config.rgViewportHeight}px`, backgroundColor: '#fafff3' }}>
@@ -635,6 +636,9 @@ export const TestGridOptionsSelect: React.FC = () => {
         </option>
         <option value="/disableVirtualScrolling">
           Disable virtual scrolling
+        </option>
+        <option value="/allowExtendPasteRange">
+          Copy a range of cells and paste it into another range, extending the target range if it is too small.
         </option>
       </select>
     </form>
