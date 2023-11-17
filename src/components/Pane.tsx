@@ -7,6 +7,7 @@ import { useTheme } from "../utils/useTheme";
 import { CellWrapper } from "./CellWrapper";
 import { PartialArea } from "./PartialArea";
 import { useReactGridId } from "./ReactGridIdProvider";
+import SelectedArea from "./SelectedArea";
 
 interface PaneGridContentProps {
   range: NumericalRange;
@@ -20,11 +21,39 @@ interface PaneGridContentProps {
   ) => CSSProperties;
 }
 
-export const PaneGridContent: React.FC<PaneGridContentProps> = ({
+const shouldMemoGridContent = (prevProps: PaneGridContentProps, nextProps: PaneGridContentProps) => {
+  const { 
+    startRowIdx: prevStartRowIdx, 
+    endRowIdx: prevEndRowIdx,
+    startColIdx: prevStartColIdx,
+    endColIdx: prevEndColIdx
+  } = prevProps.range;
+
+  const { 
+    startRowIdx: nextStartRowIdx, 
+    endRowIdx: nextEndRowIdx,
+    startColIdx: nextStartColIdx,
+    endColIdx: nextEndColIdx
+  } = nextProps.range;
+
+  if (
+    prevStartRowIdx !== nextStartRowIdx ||
+    prevEndRowIdx !== nextEndRowIdx ||
+    prevStartColIdx !== nextStartColIdx ||
+    prevEndColIdx !== nextEndColIdx ||
+    prevProps.style !== nextProps.style ||
+    prevProps.getCellOffset !== nextProps.getCellOffset
+  ) {
+    return false;
+  }
+
+  return true;
+};
+
+export const PaneGridContent: React.FC<PaneGridContentProps> = React.memo(({
   range,
   getCellOffset,
 }) => {
-  const theme = useTheme();
   const { startRowIdx, endRowIdx, startColIdx, endColIdx } = range;
 
   const id = useReactGridId();
@@ -38,7 +67,7 @@ export const PaneGridContent: React.FC<PaneGridContentProps> = ({
   );
   const cells = useReactGridStore(id, store => store.cells);
 
-  const focusedCell = useReactGridStore(id, store => store.focusedCell);
+  const focusedCell = useReactGridStore(id, store => store.focusedLocation);
   const currentlyEditedCell = useReactGridStore(id, store => store.currentlyEditedCell);
 
   return rows.map((row, rowIndex) => {
@@ -86,7 +115,7 @@ export const PaneGridContent: React.FC<PaneGridContentProps> = ({
       );
     });
   });
-};
+}, shouldMemoGridContent);
 
 const getPaneBackgroundStyle = (paneName: PaneName, range: NumericalRange, gap: RGTheme['grid']['gap']) => {
   let style: CSSProperties = {
@@ -156,12 +185,15 @@ export const Pane: React.FC<PaneProps> = ({
   shouldRender = true,
 }) => {
   const theme = useTheme();
+  const id = useReactGridId();
+  const focusedCell = useReactGridStore(id, store => store.getFocusedCell());
+  const selectedArea = useReactGridStore(id, (store) => store.selectedArea);
   // const { state, range, borders, cellRenderer } = props;
 
   if (!shouldRender) return null;
 
   return (
-    <div className={`rgPane rgPane-${paneName}`} style={{ display: "contents", ...style }} >
+    <div className={`rgPane rgPane-${paneName}`} style={{ display: "contents", ...style }}>
       {paneName !== "Center" && (
         <div
           className={`rgPaneBackground rgPaneBackground-${paneName}`}
@@ -169,63 +201,33 @@ export const Pane: React.FC<PaneProps> = ({
         />
       )}
       <PaneGridContent range={gridContentRange} getCellOffset={getCellOffset} />
-      <PartialArea
-        areaRange={{ startRowIdx: 0, endRowIdx: 50, startColIdx: 0, endColIdx: 1 }}
-        parentPaneName={paneName}
-        parentPaneRange={gridContentRange}
-        border={{ color: "lawngreen", style: "solid", width: "4px" }}
-        getCellOffset={getCellOffset}
-      />
-      <PartialArea
-        areaRange={{ startRowIdx: 8, endRowIdx: 9, startColIdx: 0, endColIdx: 40 }}
-        parentPaneName={paneName}
-        parentPaneRange={gridContentRange}
-        border={{ color: "cornflowerblue", style: "solid", width: "4px" }}
-        getCellOffset={getCellOffset}
-      />
-      <PartialArea
-        areaRange={{ startRowIdx: 3, endRowIdx: 6, startColIdx: 2, endColIdx: 5 }}
-        parentPaneName={paneName}
-        parentPaneRange={gridContentRange}
-        border={{ color: "red", style: "solid", width: "4px" }}
-        getCellOffset={getCellOffset}
-        style={{ backgroundColor: "#ff000050" }}
-      />
-      <PartialArea
-        areaRange={{ startRowIdx: 1, endRowIdx: 2, startColIdx: 7, endColIdx: 10 }}
-        parentPaneName={paneName}
-        parentPaneRange={gridContentRange}
-        border={{ color: "teal", style: "solid", width: "4px" }}
-        getCellOffset={getCellOffset}
-      />
-      <PartialArea
-        areaRange={{ startRowIdx: 5, endRowIdx: 7, startColIdx: 4, endColIdx: 8 }}
-        parentPaneName={paneName}
-        parentPaneRange={gridContentRange}
-        border={{ color: "goldenrod", style: "solid", width: "4px" }}
-        getCellOffset={getCellOffset}
-      />
-      <PartialArea
-        areaRange={{ startRowIdx: 1, endRowIdx: 4, startColIdx: 36, endColIdx: 39 }}
-        parentPaneName={paneName}
-        parentPaneRange={gridContentRange}
-        border={{ color: "green", style: "solid", width: "4px" }}
-        getCellOffset={getCellOffset}
-      />
-      <PartialArea
-        areaRange={{ startRowIdx: 46, endRowIdx: 49, startColIdx: 2, endColIdx: 5 }}
-        parentPaneName={paneName}
-        parentPaneRange={gridContentRange}
-        border={{ color: "blue", style: "solid", width: "4px" }}
-        getCellOffset={getCellOffset}
-      />
-      <PartialArea
-        areaRange={{ startRowIdx: 46, endRowIdx: 49, startColIdx: 36, endColIdx: 39 }}
-        parentPaneName={paneName}
-        parentPaneRange={gridContentRange}
-        border={{ color: "magenta", style: "solid", width: "4px" }}
-        getCellOffset={getCellOffset}
-      />
+      {focusedCell && (
+        <PartialArea
+          areaRange={{
+            startRowIdx: focusedCell.rowIndex,
+            endRowIdx: focusedCell.rowIndex + (focusedCell.rowSpan ?? 1),
+            startColIdx: focusedCell.colIndex,
+            endColIdx: focusedCell.colIndex + (focusedCell.colSpan ?? 1),
+          }}
+          parentPaneRange={gridContentRange}
+          parentPaneName={paneName}
+          getCellOffset={getCellOffset}
+        />
+      )}
+      {selectedArea && (
+        <PartialArea
+          areaRange={{
+            startRowIdx: selectedArea.startRowIdx,
+            endRowIdx: selectedArea.endRowIdx,
+            startColIdx: selectedArea.startColIdx,
+            endColIdx: selectedArea.endColIdx,
+          }}
+          parentPaneRange={gridContentRange}
+          parentPaneName={paneName}
+          getCellOffset={getCellOffset}
+        />
+      )}
+      {/* <SelectedArea parentPaneName={paneName} parentPaneRange={gridContentRange} getCellOffset={getCellOffset} /> */}
       {/* {renderHighlights(state, calculatedRange)}
           {state.focusedLocation && !(state.currentlyEditedCell && isMobileDevice()) && calculatedRange.contains(state.focusedLocation) &&
               <CellFocus location={state.focusedLocation} />}

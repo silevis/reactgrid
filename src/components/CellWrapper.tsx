@@ -68,6 +68,7 @@ export const useCellContext = ({
 
       ctx.assignRefs(containerRef.current, targetInputRef.current);
     }
+
   }, [containerRef, targetInputRef, ctx])
   
   return ctx;
@@ -87,7 +88,7 @@ export const CellWrapper: FC<CellWrapperProps> = ({
 }) => {
   const id = useReactGridId();
 
-  const setFocusedCell = useReactGridStore(id, (store) => store.setFocusedCell);
+  const setFocusedLocation = useReactGridStore(id, (store) => store.setFocusedLocation);
   const setCurrentlyEditedCell = useReactGridStore(id, (store) => store.setCurrentlyEditedCell);
   
   const disableEditMode = useCallback(() => setCurrentlyEditedCell(-1, -1), []);
@@ -106,7 +107,7 @@ export const CellWrapper: FC<CellWrapperProps> = ({
         setCurrentlyEditedCell(realRowIndex, realColumnIndex);
       }
 
-      setFocusedCell(realRowIndex, realColumnIndex);
+      setFocusedLocation(realRowIndex, realColumnIndex);
     },
     [realRowIndex, realColumnIndex]
   );

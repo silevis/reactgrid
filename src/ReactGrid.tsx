@@ -1,20 +1,22 @@
 import { keyframes } from "@emotion/react";
 import { FC, useEffect, useState, useTransition } from "react";
 import { ErrorBoundary } from "./components/ErrorBoundary";
+import GridWrapper from "./components/GridWrapper";
 import PanesRenderer from "./components/PanesRenderer";
 import { ReactGridIdProvider } from "./components/ReactGridIdProvider";
 import { ReactGridProps } from "./types/PublicModel";
 import { useReactGridStore } from "./utils/reactGridStore";
 
 const spin = keyframes`
-  100% {
-    transform: rotate(360deg);
-  }`
+100% {
+  transform: rotate(360deg);
+}`
 
-const ReactGrid: FC<ReactGridProps> = ({ id, rows, columns, cells, stickyTopRows, stickyBottomRows, stickyLeftColumns, stickyRightColumns, style }) => {
+const ReactGrid: FC<ReactGridProps> = ({ id, rows, columns, cells, stickyTopRows, stickyBottomRows, stickyLeftColumns, stickyRightColumns, behaviors, style }) => {
   const setRows = useReactGridStore(id, (store) => store.setRows);
   const setColumns = useReactGridStore(id, (store) => store.setColumns);
   const setCells = useReactGridStore(id, (store) => store.setCells);
+
   const [bypassSizeWarning, setBypassSizeWarning] = useState(false);
   const [isPending, startTransition] = useTransition();
 
@@ -23,6 +25,7 @@ const ReactGrid: FC<ReactGridProps> = ({ id, rows, columns, cells, stickyTopRows
     setColumns(columns);
     setCells(cells);
   }, [cells, columns, rows]);
+
 
   if (
     process.env.NODE_ENV === "development" &&
@@ -70,7 +73,11 @@ const ReactGrid: FC<ReactGridProps> = ({ id, rows, columns, cells, stickyTopRows
   return (
     <ReactGridIdProvider id={id}>
       <ErrorBoundary>
-        <div id={`ReactGrid-${id}`} style={style}>
+        <GridWrapper
+          reactGridId={id}
+          customBehaviors={behaviors}
+          style={style}
+        >
           <PanesRenderer 
             rowAmount={rows.length}
             columnAmount={columns.length}
@@ -83,7 +90,7 @@ const ReactGrid: FC<ReactGridProps> = ({ id, rows, columns, cells, stickyTopRows
           {/* Shadow? */}
           {/* ContextMenu? */}
           {/* CellEditor */}
-        </div>
+        </GridWrapper>
       </ErrorBoundary>
     </ReactGridIdProvider>
   );

@@ -1,5 +1,5 @@
 import { keyframes } from "@emotion/react";
-import { FC, useEffect, useRef, useState } from "react";
+import { FC, useCallback, useEffect, useRef, useState } from "react";
 import { NumericalRange } from "../types/CellMatrix";
 import { PaneName, StickyOffsets } from "../types/InternalModel";
 import { useReactGridStore } from "../utils/reactGridStore";
@@ -205,19 +205,11 @@ const PanesRenderer: FC<PanesRendererProps> = ({
     return offsets;
   };
 
-  const fadeIn = keyframes`
-from {
-  opacity: 0;
-}
-to {
-  opacity: 1;
-}
-`;
-
   return (
     <div
       css={{
         display: "grid",
+        userSelect: "none",
 
         ".rgCellContainer": {
           paddingTop: theme.cellContainer.padding.top,
@@ -225,7 +217,6 @@ to {
           paddingBottom: theme.cellContainer.padding.bottom,
           paddingRight: theme.cellContainer.padding.right,
           backgroundColor: "white",
-          // transition: "left 0.2s ease-in-out, top 0.2s ease-in-out, right 0.2s ease-in-out, bottom 0.2s ease-in-out",
         },
       }}
     >
@@ -245,18 +236,17 @@ to {
           backgroundColor: theme.grid.gap.color,
           padding: theme.grid.gap.width,
         }}
-        // css={css`animation: ${fadeIn} 1s ease-in`}
         ref={gridContainerRef}
       >
         <Pane paneName="Center" gridContentRange={ranges.Center} />
         <Pane
           paneName="BottomCenter"
           gridContentRange={ranges.BottomCenter}
-          getCellOffset={(rowIndex, _colIndex, rowSpan) => ({
+          getCellOffset={useCallback((rowIndex, _colIndex, rowSpan) => ({
             position: "sticky",
             backgroundColor: "floralwhite",
             bottom: stickyOffsets.bottomRows.at(-rowIndex - rowSpan),
-          })}
+          }), [stickyOffsets.bottomRows])}
           shouldRender={stickyBottomRows > 0}
         />
         <Pane

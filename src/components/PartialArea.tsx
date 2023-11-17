@@ -19,6 +19,33 @@ interface PartialAreaProps {
   style?: React.CSSProperties;
 }
 
+const shouldMemoPartialArea = (prevProps: PartialAreaProps, nextProps: PartialAreaProps) => {
+  const {
+    startRowIdx: prevStartRowIdx,
+    endRowIdx: prevEndRowIdx,
+    startColIdx: prevStartColIdx,
+    endColIdx: prevEndColIdx,
+  } = prevProps.areaRange;
+
+  const {
+    startRowIdx: nextStartRowIdx,
+    endRowIdx: nextEndRowIdx,
+    startColIdx: nextStartColIdx,
+    endColIdx: nextEndColIdx,
+  } = nextProps.areaRange;
+
+  if (
+    prevStartRowIdx !== nextStartRowIdx ||
+    prevEndRowIdx !== nextEndRowIdx ||
+    prevStartColIdx !== nextStartColIdx ||
+    prevEndColIdx !== nextEndColIdx
+  ) {
+    return false;
+  }
+
+  return true;
+}
+
 /**
  * Renders a partial area over a grid pane.
  * @param areaRange - The range of cells to area.
@@ -29,10 +56,12 @@ interface PartialAreaProps {
  * @param style - Additional styles to apply to the area.
  * @returns A React component that renders the partial area.
  */
-export const PartialArea: FC<PartialAreaProps> = ({ areaRange, parentPaneName, parentPaneRange, getCellOffset, border, style }) => {
+export const PartialArea: FC<PartialAreaProps> = React.memo(({ areaRange, parentPaneName, parentPaneRange, getCellOffset, border, style }) => {
   const theme = useTheme();
   const offset: Offset = {};
   const areaBorder = border ?? theme.area.border;
+
+  if (areaRange.startRowIdx < 0 || areaRange.startColIdx < 0 || areaRange.endRowIdx < 0 || areaRange.endColIdx < 0) return null;
 
   if (areaRange.startRowIdx > areaRange.endRowIdx) throw new Error("Invalid range! Start row index is greater than end row index!");
   if (areaRange.startColIdx > areaRange.endColIdx) throw new Error("Invalid range! Start column index is greater than end column index!");
@@ -107,6 +136,7 @@ export const PartialArea: FC<PartialAreaProps> = ({ areaRange, parentPaneName, p
     <div
       className="rgPartialArea"
       style={{
+        pointerEvents: "none",
         ...style,
         width,
         height,
@@ -114,4 +144,4 @@ export const PartialArea: FC<PartialAreaProps> = ({ areaRange, parentPaneName, p
         ...baseStyle,
       }} />
   );
-};
+}, shouldMemoPartialArea);

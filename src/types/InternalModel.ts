@@ -1,3 +1,5 @@
+import { Cell } from "./PublicModel";
+
 export interface StickyOffsets {
   topRows: number[];
   bottomRows: number[];
@@ -21,5 +23,10 @@ export interface IndexedLocation {
   rowIndex: number;
   colIndex: number;
 }
+
+export type FocusedCell = Cell & {
+  rowIndex: number;
+  colIndex: number;
+};
 
 export type PaneName = "TopLeft" | "TopCenter" | "TopRight" | "Left" | "Center" | "Right" | "BottomLeft" | "BottomCenter" | "BottomRight";

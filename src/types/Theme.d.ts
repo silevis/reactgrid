@@ -42,6 +42,13 @@ export interface RGTheme {
       color: string;
     }
 
+    paneShadow: {
+      offsetX: string;
+      offsetY: string;
+      blurRadius: string;
+      color: string;
+    }
+
     // padding: {
     //   top: string;
     //   right: string;
