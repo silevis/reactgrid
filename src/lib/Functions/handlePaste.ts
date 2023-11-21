@@ -4,6 +4,18 @@ import { ClipboardEvent } from '../Model/domEventsTypes';
 import { getActiveSelectedRange } from './getActiveSelectedRange';
 import { pasteData } from './pasteData';
 
+const decimalSeparator = (1.1).toLocaleString().substring(1, 2);
+const thousandSeparator = (1000).toLocaleString().substring(1, 2);
+
+function parseFloatLocale(text: string): number {
+    return parseFloat(
+      text
+        .replace(thousandSeparator, "")
+        .replace(decimalSeparator, ".")
+        .replace(/[^0-9.-]/g, "")
+    );
+}
+
 export function handlePaste(event: ClipboardEvent, state: State): State {
     const activeSelectedRange = getActiveSelectedRange(state);
     if (!activeSelectedRange) {
@@ -31,7 +43,7 @@ export function handlePaste(event: ClipboardEvent, state: State): State {
             tableRows[ri].children[ci].getAttribute("data-reactgrid");
           const data = rawData && JSON.parse(rawData);
           const text = tableRows[ri].children[ci].innerHTML;
-          row.push(data ? data : { type: "text", text, value: parseFloat(text) });
+          row.push(data ? data : { type: "text", text, value: parseFloatLocale(text) });
         }
         pastedRows.push(row);
       }
@@ -42,10 +54,9 @@ export function handlePaste(event: ClipboardEvent, state: State): State {
         .map((line: string) =>
           line
             .split("\t")
-            .map((t) => ({ type: "text", text: t, value: parseFloat(t) }))
+            .map((t) => ({ type: "text", text: t, value: parseFloatLocale(t) }))
         );
     }
     event.preventDefault();
     return { ...pasteData(state, pastedRows) };
-  }
-  
+}
