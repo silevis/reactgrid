@@ -13,6 +13,7 @@ import { FC } from 'react';
 export type OptionType = {
     label: string;
     value: string;
+    isDisabled?: boolean;
 }
 
 export interface DropdownCell extends Cell {
@@ -203,11 +204,11 @@ const DropdownInput: FC<DIProps> = ({ onCellChanged, cell }) => {
     </div >
 }
 
-const CustomOption: React.FC<OptionProps<OptionType, false>> = ({ innerProps, label, isSelected, isFocused }) => (
+const CustomOption: React.FC<OptionProps<OptionType, false>> = ({ innerProps, label, isSelected, isFocused, isDisabled }) => (
     <div
         {...innerProps}
         onPointerDown={e => e.stopPropagation()}
-        className={`rg-dropdown-option${isSelected ? ' selected' : ''}${isFocused ? ' focused' : ''}`}
+        className={`rg-dropdown-option${isSelected ? ' selected' : ''}${isFocused ? ' focused' : ''}${isDisabled ? ' disabled' : ''}`}
     >
         {label}
     </div>
