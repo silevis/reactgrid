@@ -69,7 +69,7 @@ export const CellRenderer: React.FC<CellRendererProps> = ({
     const storePropertyAndDefaultValue = storeBorderAndCell(borders, cell);
     const bordersWidth = getBorderProperties(storePropertyAndDefaultValue('width', '1px')),
         bordersStyle = getBorderProperties(storePropertyAndDefaultValue('style', 'solid')),
-        bordersColor = getBorderProperties(storePropertyAndDefaultValue('color', 'e8e8e8'));
+        bordersColor = getBorderProperties(storePropertyAndDefaultValue('color', '#e8e8e8'));
 
     const bordersProps = {
         borderLeftWidth: bordersWidth.left,
