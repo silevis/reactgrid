@@ -43,7 +43,7 @@ export function handlePaste(event: ClipboardEvent, state: State): State {
             tableRows[ri].children[ci].getAttribute("data-reactgrid");
           const data = rawData && JSON.parse(rawData);
           const text = tableRows[ri].children[ci].innerHTML;
-          row.push(data ? data : { type: "text", text, value: parseFloatLocale(text) });
+          row.push(data ? data : { type: "text", text, value: localeParseFloat(text) });
         }
         pastedRows.push(row);
       }
@@ -54,7 +54,7 @@ export function handlePaste(event: ClipboardEvent, state: State): State {
         .map((line: string) =>
           line
             .split("\t")
-            .map((t) => ({ type: "text", text: t, value: parseFloatLocale(t) }))
+            .map((t) => ({ type: "text", text: t, value: localeParseFloat(t) }))
         );
     }
     event.preventDefault();
