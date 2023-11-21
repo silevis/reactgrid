@@ -7,7 +7,7 @@ import { pasteData } from './pasteData';
 const decimalSeparator = (1.1).toLocaleString().substring(1, 2);
 const thousandSeparator = (1000).toLocaleString().substring(1, 2);
 
-function parseFloatLocale(text: string): number {
+function localeParseFloat(text: string): number {
     return parseFloat(
       text
         .replace(thousandSeparator, "")
