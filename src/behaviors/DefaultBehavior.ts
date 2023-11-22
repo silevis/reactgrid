@@ -49,7 +49,6 @@ export const DefaultBehavior: BehaviorConstructor = (setCurrentBehavior) => {
         const { rowIndex, colIndex } = getCellContainerLocation(element);
         newRowIndex = rowIndex;
         newColIndex = colIndex;
-        // store.setSelectedArea({ startRowIdx: newRowIndex, endRowIdx: newRowIndex + 1, startColIdx: newColIndex, endColIdx: newColIndex + 1 });
       }
 
       // timer = setTimeout(() => {
@@ -63,12 +62,7 @@ export const DefaultBehavior: BehaviorConstructor = (setCurrentBehavior) => {
       return {
         ...store,
         focusedLocation: { rowIndex: newRowIndex, colIndex: newColIndex },
-        selectedArea: {
-          startRowIdx: newRowIndex,
-          endRowIdx: newRowIndex + 1,
-          startColIdx: newColIndex,
-          endColIdx: newColIndex + 1,
-        },
+        selectedArea: { startRowIdx: -1, endRowIdx: -1, startColIdx: -1, endColIdx: -1 },
       };
     },
     handlePointerMove: (event, store) => {
