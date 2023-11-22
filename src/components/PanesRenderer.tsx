@@ -1,5 +1,4 @@
-import { keyframes } from "@emotion/react";
-import { FC, useCallback, useEffect, useRef, useState } from "react";
+import { FC, useEffect, useRef, useState } from "react";
 import { NumericalRange } from "../types/CellMatrix";
 import { PaneName, StickyOffsets } from "../types/InternalModel";
 import { useReactGridStore } from "../utils/reactGridStore";
@@ -242,11 +241,11 @@ const PanesRenderer: FC<PanesRendererProps> = ({
         <Pane
           paneName="BottomCenter"
           gridContentRange={ranges.BottomCenter}
-          getCellOffset={useCallback((rowIndex, _colIndex, rowSpan) => ({
+          getCellOffset={(rowIndex, _colIndex, rowSpan) => ({
             position: "sticky",
             backgroundColor: "floralwhite",
             bottom: stickyOffsets.bottomRows.at(-rowIndex - rowSpan),
-          }), [stickyOffsets.bottomRows])}
+          })}
           shouldRender={stickyBottomRows > 0}
         />
         <Pane

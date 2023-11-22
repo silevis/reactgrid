@@ -1,7 +1,8 @@
 import { StoreApi, create, createStore, useStore } from "zustand";
 import { NumericalRange } from "../types/CellMatrix";
 import { FocusedCell, IndexedLocation } from "../types/InternalModel";
-import { Cell, CellMap, Column, Row } from "../types/PublicModel";
+import { Cell, CellMap, Column, Row, SpanMember } from "../types/PublicModel";
+import { isSpanMember } from "./cellUtils";
 
 export interface ReactGridStore {
   rows: Row[];
@@ -60,14 +61,24 @@ export function useReactGridStore<T>(id: string, selector: (store: ReactGridStor
         getColumnAmount: () => get().columns.length,
         cells: new Map(),
         setCells: (cells) => set(() => ({ cells })),
-        getCellByIds: (rowId, colId) => get().cells.get(`${rowId} ${colId}`) || null,
+        getCellByIds: (rowId, colId) => {
+          const cell = get().cells.get(`${rowId} ${colId}`);
+
+          if (!cell) return null;
+
+          if (isSpanMember(cell)) {
+            return get().getCellByIds(cell.originRowId, cell.originColId) || null;
+          }
+
+          return cell;
+        },
         getCellByIndexes: (rowIndex, colIndex) => {
           const row = get().rows[rowIndex];
           const col = get().columns[colIndex];
 
           if (!row || !col) return null;
 
-          return get().cells.get(`${row.id} ${col.id}`) || null;
+          return get().getCellByIds(row.id, col.id) || null;
         },
 
         focusedLocation: { rowIndex: -1, colIndex: -1 },

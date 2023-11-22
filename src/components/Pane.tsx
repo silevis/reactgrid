@@ -7,7 +7,7 @@ import { useTheme } from "../utils/useTheme";
 import { CellWrapper } from "./CellWrapper";
 import { PartialArea } from "./PartialArea";
 import { useReactGridId } from "./ReactGridIdProvider";
-import SelectedArea from "./SelectedArea";
+import { isSpanMember } from "../utils/cellUtils";
 
 interface PaneGridContentProps {
   range: NumericalRange;
@@ -74,7 +74,7 @@ export const PaneGridContent: React.FC<PaneGridContentProps> = React.memo(({
     return columns.map((col, colIndex) => {
       const cell = cells.get(`${row.id} ${col.id}`);
 
-      if (!cell) return null;
+      if (!cell || isSpanMember(cell)) return null;
 
       const realRowIndex = startRowIdx + rowIndex;
       const realColumnIndex = startColIdx + colIndex;
@@ -201,19 +201,6 @@ export const Pane: React.FC<PaneProps> = ({
         />
       )}
       <PaneGridContent range={gridContentRange} getCellOffset={getCellOffset} />
-      {focusedCell && (
-        <PartialArea
-          areaRange={{
-            startRowIdx: focusedCell.rowIndex,
-            endRowIdx: focusedCell.rowIndex + (focusedCell.rowSpan ?? 1),
-            startColIdx: focusedCell.colIndex,
-            endColIdx: focusedCell.colIndex + (focusedCell.colSpan ?? 1),
-          }}
-          parentPaneRange={gridContentRange}
-          parentPaneName={paneName}
-          getCellOffset={getCellOffset}
-        />
-      )}
       {selectedArea && (
         <PartialArea
           areaRange={{
@@ -225,6 +212,23 @@ export const Pane: React.FC<PaneProps> = ({
           parentPaneRange={gridContentRange}
           parentPaneName={paneName}
           getCellOffset={getCellOffset}
+          border={theme.selectionIndicator.border}
+          style={{ background: theme.selectionIndicator.background }}
+        />
+      )}
+      {focusedCell && (
+        <PartialArea
+          areaRange={{
+            startRowIdx: focusedCell.rowIndex,
+            endRowIdx: focusedCell.rowIndex + (focusedCell.rowSpan ?? 1),
+            startColIdx: focusedCell.colIndex,
+            endColIdx: focusedCell.colIndex + (focusedCell.colSpan ?? 1),
+          }}
+          parentPaneRange={gridContentRange}
+          parentPaneName={paneName}
+          getCellOffset={getCellOffset}
+          border={theme.focusIndicator.border}
+          style={{ background: theme.focusIndicator.background }}
         />
       )}
       {/* <SelectedArea parentPaneName={paneName} parentPaneRange={gridContentRange} getCellOffset={getCellOffset} /> */}
