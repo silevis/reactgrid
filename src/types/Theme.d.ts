@@ -12,19 +12,6 @@ export type Border = {
 export type Offset = { top?: number; right?: number; bottom?: number; left?: number; };
 
 export interface RGTheme {
-  colors: {
-    primary: string;
-    secondary: string;
-
-    background: string;
-
-    shadow: string;
-  },
-  shadows: {
-    sm: string;
-    md: string;
-    lg: string;
-  },
   font: {
     family: string;
     size: string;
@@ -66,6 +53,14 @@ export interface RGTheme {
     border: Border;
   },
   area: {
+    border: Border;
+  }
+  focusIndicator: {
+    background: string;
+    border: Border;
+  }
+  selectionIndicator: {
+    background: string;
     border: Border;
   }
 }

@@ -59,6 +59,23 @@ const lightTheme: RGTheme = {
       style: "solid",
       width: "2px",
     }
+  },
+  focusIndicator: {
+    background: "#add8e630",
+    border: {
+      color: "#3bb6df",
+      style: "solid",
+      width: "2px",
+    }
+  },
+  selectionIndicator: {
+    background: "#add8e630",
+    border: {
+      color: "lightblue",
+      style: "solid",
+      width: "2px",
+    }
+  
   }
 };
 
