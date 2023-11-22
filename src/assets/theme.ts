@@ -61,7 +61,7 @@ const lightTheme: RGTheme = {
     }
   },
   focusIndicator: {
-    background: "#add8e630",
+    background: "transparent",
     border: {
       color: "#3bb6df",
       style: "solid",
