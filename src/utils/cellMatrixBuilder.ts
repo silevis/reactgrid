@@ -1,5 +1,5 @@
 import { CellMatrix } from "../types/CellMatrix";
-import { Cell, CellMap, Column, Row } from "../types/PublicModel";
+import { Cell, CellMap, Column, Row, SpanMember } from "../types/PublicModel";
 
 type AddRowsFn<TRowId extends string> = (...newRows: Array<Row<TRowId>>) => void;
 
@@ -15,27 +15,18 @@ type SetCellFn<TRowId extends string, TColumnId extends string> = <TComponent ex
   { ...args }?: Omit<Cell<TRowId, TColumnId>, 'rowId' | 'colId' | 'Template' | 'props'>,
 ) => void;
 
-// type InsertRowsFn<TRowId extends string> = (newRows: Array<Row<TRowId>>, id: TRowId, position: 'before' | 'after') => void;
-
 // type InsertColumnsFn<TColumnId extends string> = (newColumns: Array<Column<TColumnId>>, id: TColumnId, position: 'before' | 'after') => void;
 
 interface CellMatrixBuilderTools<TRowId extends string, TColumnId extends string> {
   addRows: AddRowsFn<TRowId>;
   addColumns: AddColumnsFn<TColumnId>;
   setCell: SetCellFn<TRowId, TColumnId>;
-
-  // insertRows: InsertRowsFn<TRowId>;
-  // insertColumns: InsertColumnsFn<TColumnId>;
-
-  // removeRowsAndTheirCells: (ids: TRowId[]) => void;
-  // removeColumnsAndTheirCells: (ids: TColumnId[]) => void;
-  // removeCells: (ids: [TRowId, TColumnId][]) => void;
 }
 
 /**
  * Utility which helps you build your cell matrix in easy and type-safe way.
  * _You don't really have to use this if you don't need type safety 
- * as long as you keep proper structure of your cellMatrix._
+ * as long as you **keep proper structure** of your cellMatrix._
  * 
  * It's `setCell` method infers the `props` type based on the provided `Template` 
  * so that you don't have to specify it manually.
@@ -92,14 +83,38 @@ export const cellMatrixBuilder = <TRowId extends string = string, TColumnId exte
   }
 
   const setCell: SetCellFn<TRowId, TColumnId> = (rowId, colId, Template, props, { ...args } = {}) => {
-    if (!rows.some(row => row.id === rowId)) throw new Error(`Row with id "${rowId}" isn't defined in rows array`);
-    if (!columns.some(col => col.id === colId)) throw new Error(`Column with id "${colId}" isn't defined in columns array`);    
+    const baseRowIdIndex = rows.findIndex(row => row.id === rowId);
+    const baseColIdIndex = columns.findIndex(col => col.id === colId);
 
-    if (cells.has(`${rowId} ${colId}`) && process.env.NODE_ENV === 'development') {
+    if (baseRowIdIndex === -1) throw new Error(`Row with id "${rowId}" isn't defined in rows array`);
+    if (baseColIdIndex === -1) throw new Error(`Column with id "${colId}" isn't defined in columns array`);    
+
+    if (process.env.NODE_ENV === 'development' && cells.has(`${rowId} ${colId}`)) {
       console.warn(`Cell with coordinates [${rowId}, ${colId}] already exists and will be overwritten!`);
     }
 
     const cell = { rowId, colId, Template, props, ...args };
+
+    const rowSpan = cell.rowSpan ?? 1;
+    const colSpan = cell.colSpan ?? 1;
+
+    for (let rowIdx = 0; rowIdx < rowSpan; rowIdx++) {
+      const rowIdIndex = baseRowIdIndex + rowIdx;
+
+      for (let colIdx = 0; colIdx < colSpan; colIdx++) {
+        const colIdIndex = baseColIdIndex + colIdx;
+
+        if (rowIdx === 0 && colIdx === 0) continue;
+
+        const spanMember: SpanMember = {
+          originRowId: rowId,
+          originColId: colId,
+        };
+
+        cells.set(`${rows[rowIdIndex].id} ${columns[colIdIndex].id}`, spanMember);
+      }
+    }
+
     cells.set(`${rowId} ${colId}`, cell);
   }
 

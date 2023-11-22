@@ -30,6 +30,11 @@ export type Cell<RowIdType extends string = string, ColIdType extends string = s
   colSpan?: number;
 }
 
+export type SpanMember = {
+  originRowId: string;
+  originColId: string;
+}
+
 export interface CellContextType {
   /** User defined row ID. */
   rowId: string;
@@ -61,7 +66,7 @@ export interface CellContextType {
   assignRefs(container: HTMLElement | null, input: HTMLElement | null): void;
 }
 
-export type CellMap<RowIdType extends string = string, ColIdType extends string = string> = Map<`${RowIdType} ${ColIdType}`, Cell<RowIdType, ColIdType> | null>;
+export type CellMap<RowIdType extends string = string, ColIdType extends string = string> = Map<`${RowIdType} ${ColIdType}`, Cell<RowIdType, ColIdType> | SpanMember>;
 
 export interface ReactGridProps {
   id: string;
