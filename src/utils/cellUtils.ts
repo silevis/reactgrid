@@ -15,7 +15,7 @@ export const isCellSpanned = (cell: Cell | SpanMember): cell is SpannedCell => {
   return 'rowSpan' in cell || 'colSpan' in cell;
 }
 
-export const getOriginCell = (cell: Cell | SpanMember, store: ReactGridStore): Cell => {
+export const getOriginCell = (store: ReactGridStore, cell: Cell | SpanMember): Cell => {
   if (isSpanMember(cell)) {
     return store.getCellByIds(cell.originRowId, cell.originColId) as Cell;
   } 
@@ -23,8 +23,8 @@ export const getOriginCell = (cell: Cell | SpanMember, store: ReactGridStore): C
   return cell;
 }
 
-export const getCellArea = (cell: Cell | SpanMember, store: ReactGridStore): NumericalRange => {
-  const originCell = getOriginCell(cell, store);
+export const getCellArea = (store: ReactGridStore, cell: Cell | SpanMember): NumericalRange => {
+  const originCell = getOriginCell(store, cell);
   const rowIndex = store.rows.findIndex(row => row.id === originCell.rowId);
   const colIndex = store.columns.findIndex(col => col.id === originCell.colId);
 
@@ -52,7 +52,16 @@ export const areAreasEqual = (area1: NumericalRange, area2: NumericalRange): boo
     area1.endColIdx === area2.endColIdx;
 }
 
-export const findMinimalSelectedArea = (currentArea: NumericalRange, store: ReactGridStore): NumericalRange => {
+export const isCellInRange = (store: ReactGridStore, cell: Cell | SpanMember, range: NumericalRange): boolean => {
+  const cellArea = getCellArea(store, cell);
+
+  return cellArea.startRowIdx >= range.startRowIdx &&
+    cellArea.endRowIdx <= range.endRowIdx &&
+    cellArea.startColIdx >= range.startColIdx &&
+    cellArea.endColIdx <= range.endColIdx;
+}
+
+export const findMinimalSelectedArea = (store: ReactGridStore, currentArea: NumericalRange): NumericalRange => {
   let didChange = false;
   const minimalArea: NumericalRange = { ...currentArea };
 
@@ -61,7 +70,7 @@ export const findMinimalSelectedArea = (currentArea: NumericalRange, store: Reac
       const cell = store.getCellByIndexes(rowIndex, colIndex);
       if (!cell) continue;
 
-      const area = getCellArea(cell, store);
+      const area = getCellArea(store, cell);
 
       if (area.startRowIdx < minimalArea.startRowIdx) {
         minimalArea.startRowIdx = area.startRowIdx;
@@ -83,7 +92,7 @@ export const findMinimalSelectedArea = (currentArea: NumericalRange, store: Reac
   }
 
   if (didChange) {
-    return findMinimalSelectedArea(minimalArea, store);
+    return findMinimalSelectedArea(store, minimalArea);
   }
 
   return minimalArea;
