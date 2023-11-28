@@ -1,17 +1,20 @@
-import React, { FC, PropsWithChildren, useEffect, useState } from "react";
-import { useReactGridStoreApi } from "../utils/reactGridStore";
+import React, { FC, PropsWithChildren, useEffect, useRef, useState } from "react";
+import { useReactGridStore, useReactGridStoreApi } from "../utils/reactGridStore";
 import { Behavior, BehaviorConstructor } from "../types/Behavior";
 import { DefaultBehavior } from "../behaviors/DefaultBehavior";
 
 interface GridWrapperProps {
   reactGridId: string;
-  customBehaviors?: Record<string, BehaviorConstructor>;
+  // customBehaviors?: Record<string, BehaviorConstructor>;
   style?: React.CSSProperties;
 }
 
 const GridWrapper: FC<PropsWithChildren<GridWrapperProps>> = ({ reactGridId, customBehaviors, style, children }) => {
   const storeApi = useReactGridStoreApi(reactGridId);
   const [currentBehavior, setCurrentBehavior] = useState<Behavior>();
+
+  const reactGridElement = useRef<HTMLDivElement>(null);
+  const assignReactGridRef = useReactGridStore(reactGridId, store => store.assignReactGridRef);
 
   useEffect(() => {
     if (!customBehaviors) {
@@ -21,10 +24,15 @@ const GridWrapper: FC<PropsWithChildren<GridWrapperProps>> = ({ reactGridId, cus
     setCurrentBehavior(customBehaviors["Default"](setCurrentBehavior));
   }, [customBehaviors]);
 
+  useEffect(() => {
+    if (reactGridElement.current) assignReactGridRef(reactGridElement.current);
+  }, [reactGridElement.current]);
+
   return (
     <div
       id={`ReactGrid-${reactGridId}`}
       className="ReactGrid"
+      ref={reactGridElement}
       style={style}
       onPointerDown={(e) =>
         storeApi.setState(
