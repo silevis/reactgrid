@@ -63,6 +63,7 @@ export const DefaultBehavior: BehaviorConstructor = (setCurrentBehavior) => {
         ...store,
         focusedLocation: { rowIndex: newRowIndex, colIndex: newColIndex },
         selectedArea: { startRowIdx: -1, endRowIdx: -1, startColIdx: -1, endColIdx: -1 },
+        currentlyEditedCell: { rowIndex: -1, colIndex: -1 },
       };
     },
     handlePointerMove: (event, store) => {
@@ -76,9 +77,9 @@ export const DefaultBehavior: BehaviorConstructor = (setCurrentBehavior) => {
         if (distanceMoved > 10) {
           timer && clearTimeout(timer);
           // TODO: onSelectionActivated();
-          const selectionBehavior = CellSelectionBehavior(setCurrentBehavior);
+          const SelectionBehavior = store.getBehavior("CellSelection");
 
-          setCurrentBehavior(selectionBehavior);
+          setCurrentBehavior(SelectionBehavior(setCurrentBehavior));
         }
       }
 

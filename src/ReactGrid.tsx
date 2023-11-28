@@ -10,12 +10,24 @@ import { useReactGridStore } from "./utils/reactGridStore";
 const spin = keyframes`
 100% {
   transform: rotate(360deg);
-}`
+}`;
 
-const ReactGrid: FC<ReactGridProps> = ({ id, rows, columns, cells, stickyTopRows, stickyBottomRows, stickyLeftColumns, stickyRightColumns, behaviors, style }) => {
+const ReactGrid: FC<ReactGridProps> = ({
+  id,
+  rows,
+  columns,
+  cells,
+  stickyTopRows,
+  stickyBottomRows,
+  stickyLeftColumns,
+  stickyRightColumns,
+  behaviors,
+  style,
+}) => {
   const setRows = useReactGridStore(id, (store) => store.setRows);
   const setColumns = useReactGridStore(id, (store) => store.setColumns);
   const setCells = useReactGridStore(id, (store) => store.setCells);
+  const setBehaviors = useReactGridStore(id, (store) => store.setBehaviors);
 
   const [bypassSizeWarning, setBypassSizeWarning] = useState(false);
   const [isPending, startTransition] = useTransition();
@@ -26,41 +38,44 @@ const ReactGrid: FC<ReactGridProps> = ({ id, rows, columns, cells, stickyTopRows
     setCells(cells);
   }, [cells, columns, rows]);
 
+  useEffect(() => {
+    if (behaviors) setBehaviors(behaviors);
+  }, [behaviors]);
 
-  if (
-    process.env.NODE_ENV === "development" &&
-    !bypassSizeWarning &&
-    (rows.length * columns.length > 25_000)
-  ) {
+  if (process.env.NODE_ENV === "development" && !bypassSizeWarning && rows.length * columns.length > 25_000) {
     if (isPending) {
       return (
-        <div css={{
-          width: "10em",
-          height: "10em",
-          borderTop: "1em solid #d5fff7",
-          borderRight: "1em solid transparent",
-          borderRadius: "50%",
-          margin: "auto",
-          animation: `${spin} 1s linear infinite`,
-        }}>
-          <div style={{
-            width: "1em",
-            height: "1em",
-            backgroundColor: "#d5fff7",
+        <div
+          css={{
+            width: "10em",
+            height: "10em",
+            borderTop: "1em solid #d5fff7",
+            borderRight: "1em solid transparent",
             borderRadius: "50%",
-            marginLeft: "8.5em",
-            marginTop: "0.5em",
-          }}></div>
+            margin: "auto",
+            animation: `${spin} 1s linear infinite`,
+          }}
+        >
+          <div
+            style={{
+              width: "1em",
+              height: "1em",
+              backgroundColor: "#d5fff7",
+              borderRadius: "50%",
+              marginLeft: "8.5em",
+              marginTop: "0.5em",
+            }}
+          ></div>
         </div>
-      )
+      );
     }
 
     return (
       <>
         <h1>You're about to render a huge grid!</h1>
         <p>
-          The grid you provided exceeds a safety data size limit {"(>25k cells)"}. 
-          You might experience performance problems.
+          The grid you provided exceeds a safety data size limit {"(>25k cells)"}. You might experience performance
+          problems.
         </p>
         <p>Are you sure you want to render it all?</p>
         <button onClick={() => startTransition(() => setBypassSizeWarning(true))}>
@@ -73,12 +88,8 @@ const ReactGrid: FC<ReactGridProps> = ({ id, rows, columns, cells, stickyTopRows
   return (
     <ReactGridIdProvider id={id}>
       <ErrorBoundary>
-        <GridWrapper
-          reactGridId={id}
-          customBehaviors={behaviors}
-          style={style}
-        >
-          <PanesRenderer 
+        <GridWrapper reactGridId={id} style={style}>
+          <PanesRenderer
             rowAmount={rows.length}
             columnAmount={columns.length}
             stickyTopRows={stickyTopRows ?? 0}

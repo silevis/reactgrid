@@ -1,7 +1,10 @@
 import { StoreApi, create, createStore, useStore } from "zustand";
+import { CellSelectionBehavior } from "../behaviors/CellSelectionBehavior";
+import { DefaultBehavior } from "../behaviors/DefaultBehavior";
+import { BehaviorConstructor } from "../types/Behavior";
 import { NumericalRange } from "../types/CellMatrix";
-import { FocusedCell, IndexedLocation } from "../types/InternalModel";
-import { Cell, CellMap, Column, Row, SpanMember } from "../types/PublicModel";
+import { FocusedCell, IndexedLocation, PaneName } from "../types/InternalModel";
+import { Cell, CellMap, Column, Row } from "../types/PublicModel";
 import { isSpanMember } from "./cellUtils";
 
 export interface ReactGridStore {
@@ -16,9 +19,15 @@ export interface ReactGridStore {
   readonly getCellByIds: (rowId: ReactGridStore['rows'][number]['id'], colId: ReactGridStore['rows'][number]['id']) => Cell | null;
   readonly getCellByIndexes: (rowIndex: number, colIndex: number) => Cell | null;
 
+  paneRanges: Record<PaneName, NumericalRange>;
+  readonly setPaneRanges: (paneRanges: Record<PaneName, NumericalRange>) => void;
+
   focusedLocation: IndexedLocation;
   readonly setFocusedLocation: (rowIndex: number, colIndex: number) => void;
   readonly getFocusedCell: () => FocusedCell | null;
+
+  selectedArea: NumericalRange;
+  readonly setSelectedArea: (selectedArea: NumericalRange) => void;
 
   currentlyEditedCell: IndexedLocation;
   readonly setCurrentlyEditedCell: (rowIndex: number, colIndex: number) => void;
@@ -31,8 +40,10 @@ export interface ReactGridStore {
   //   scrollableRef?: HTMLElement | (Window & typeof globalThis)
   // ) => void;
 
-  selectedArea: NumericalRange;
-  readonly setSelectedArea: (selectedArea: NumericalRange) => void;
+  /* == Behaviors == */
+  behaviors: Record<string, BehaviorConstructor>;
+  readonly setBehaviors: (behaviors: Record<string, BehaviorConstructor>) => void;
+  readonly getBehavior: (behaviorId: string) => BehaviorConstructor;
 
   // /* == Callbacks == */
   // onCellChange: NonNullable<ReactGridProps["onCellChange"]>;
@@ -81,6 +92,19 @@ export function useReactGridStore<T>(id: string, selector: (store: ReactGridStor
           return get().getCellByIds(row.id, col.id) || null;
         },
 
+        paneRanges: {
+          "TopLeft": { startRowIdx: 0, endRowIdx: 0, startColIdx: 0, endColIdx: 0 },
+          "TopCenter": { startRowIdx: 0, endRowIdx: 0, startColIdx: 0, endColIdx: 0 },
+          "TopRight": { startRowIdx: 0, endRowIdx: 0, startColIdx: 0, endColIdx: 0 },
+          "Left": { startRowIdx: 0, endRowIdx: 0, startColIdx: 0, endColIdx: 0 },
+          "Center": { startRowIdx: 0, endRowIdx: 0, startColIdx: 0, endColIdx: 0 },
+          "Right": { startRowIdx: 0, endRowIdx: 0, startColIdx: 0, endColIdx: 0 },
+          "BottomLeft": { startRowIdx: 0, endRowIdx: 0, startColIdx: 0, endColIdx: 0 },
+          "BottomCenter": { startRowIdx: 0, endRowIdx: 0, startColIdx: 0, endColIdx: 0 },
+          "BottomRight": { startRowIdx: 0, endRowIdx: 0, startColIdx: 0, endColIdx: 0 },
+        },
+        setPaneRanges: (paneRanges) => set(() => ({ paneRanges })),
+
         focusedLocation: { rowIndex: -1, colIndex: -1 },
         setFocusedLocation: (rowIndex, colIndex) => set(() => ({ focusedLocation: { rowIndex, colIndex } })),
         getFocusedCell: () => {
@@ -92,14 +116,27 @@ export function useReactGridStore<T>(id: string, selector: (store: ReactGridStor
           return { ...cell, ...focusedLocation };
         },
 
+        selectedArea: { startRowIdx: -1, endRowIdx: -1, startColIdx: -1, endColIdx: -1 },
+        setSelectedArea: (selectedArea) => set(() => ({ selectedArea })),
+
         currentlyEditedCell: { rowIndex: -1, colIndex: -1 },
         setCurrentlyEditedCell: (rowIndex, colIndex) => set(() => ({ currentlyEditedCell: { rowIndex, colIndex } })),
 
         reactGridRef: undefined,
         assignReactGridRef: (reactGridRef) => set(() => ({ reactGridRef })),
 
-        selectedArea: { startRowIdx: -1, endRowIdx: -1, startColIdx: -1, endColIdx: -1 },
-        setSelectedArea: (selectedArea) => set(() => ({ selectedArea })),
+        behaviors: {
+          "Default": DefaultBehavior,
+          "CellSelection": CellSelectionBehavior,
+        },
+        setBehaviors: (behaviors) => set(() => ({ ...get().behaviors, ...behaviors })),
+        getBehavior: (behaviorId) => {
+          const behavior = get().behaviors[behaviorId];
+
+          if (!behavior) throw new Error(`Behavior with id "${behaviorId}" doesn't exist!`);
+
+          return behavior;
+        },
       })),
     };
   });
