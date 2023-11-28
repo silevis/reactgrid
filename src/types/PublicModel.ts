@@ -79,9 +79,9 @@ export interface ReactGridProps {
   cells: CellMap;
 
   stickyTopRows?: number;
+  stickyRightColumns?: number;
   stickyBottomRows?: number;
   stickyLeftColumns?: number;
-  stickyRightColumns?: number;
 
   // enableVirtualization?: boolean;
 

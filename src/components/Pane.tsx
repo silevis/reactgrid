@@ -214,6 +214,7 @@ export const Pane: React.FC<PaneProps> = ({
           getCellOffset={getCellOffset}
           border={theme.selectionIndicator.border}
           style={{ background: theme.selectionIndicator.background }}
+          className="rgSelectionIndicator"
         />
       )}
       {focusedCell && (
@@ -229,6 +230,7 @@ export const Pane: React.FC<PaneProps> = ({
           getCellOffset={getCellOffset}
           border={theme.focusIndicator.border}
           style={{ background: theme.focusIndicator.background }}
+          className="rgFocusIndicator"
         />
       )}
       {/* <SelectedArea parentPaneName={paneName} parentPaneRange={gridContentRange} getCellOffset={getCellOffset} /> */}

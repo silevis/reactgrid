@@ -17,6 +17,8 @@ interface PartialAreaProps {
   getCellOffset?: GetCellOffsets;
   /** Additional styles to apply to the area. */
   style?: React.CSSProperties;
+  /** Additional class names to apply to the area. */
+  className?: string;
 }
 
 const shouldMemoPartialArea = (prevProps: PartialAreaProps, nextProps: PartialAreaProps) => {
@@ -54,9 +56,10 @@ const shouldMemoPartialArea = (prevProps: PartialAreaProps, nextProps: PartialAr
  * @param getCellOffset - A function that returns the offset of a cell relative to the grid.
  * @param border - The border style of the area.
  * @param style - Additional styles to apply to the area.
+ * @param className - Additional class names to apply to the area.
  * @returns A React component that renders the partial area.
  */
-export const PartialArea: FC<PartialAreaProps> = React.memo(({ areaRange, parentPaneName, parentPaneRange, getCellOffset, border, style }) => {
+export const PartialArea: FC<PartialAreaProps> = React.memo(({ areaRange, parentPaneName, parentPaneRange, getCellOffset, border, style, className }) => {
   const theme = useTheme();
   const offset: Offset = {};
   const areaBorder = border ?? theme.area.border;
@@ -134,7 +137,7 @@ export const PartialArea: FC<PartialAreaProps> = React.memo(({ areaRange, parent
 
   return (
     <div
-      className="rgPartialArea"
+      className={`rgPartialArea ${className ?? ""}`}
       style={{
         pointerEvents: "none",
         ...style,
