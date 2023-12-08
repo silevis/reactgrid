@@ -1,7 +1,8 @@
+import { useReactGridId } from "../components/ReactGridIdProvider";
 import { BehaviorConstructor } from "../types/Behavior";
 import { IndexedLocation } from "../types/InternalModel";
-import { ReactGridStore } from "../utils/reactGridStore";
-import { CellSelectionBehavior } from "./CellSelectionBehavior";
+import { handleKeyDown } from "../utils/handleKeyDown";
+import { ReactGridStore, useReactGridStore } from "../utils/reactGridStore";
 
 export const DefaultBehavior: BehaviorConstructor = (setCurrentBehavior) => {
   const timer: ReturnType<typeof setTimeout> | null = null;
@@ -96,6 +97,14 @@ export const DefaultBehavior: BehaviorConstructor = (setCurrentBehavior) => {
       }
 
       pointerDownPosition = null;
+
+      return store;
+    },
+
+    handleKeyDown: function (event, store) {
+      console.log("DB/handleKeyDown");
+
+      return handleKeyDown(event, store);
 
       return store;
     },

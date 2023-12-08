@@ -1,12 +1,12 @@
 import React from "react";
 import { BehaviorConstructor } from "./Behavior";
 
-export interface Row<Id = string> {
+export type Row<Id = string> = {
   id: Id;
   height: string | number;
 }
 
-export interface Column<Id = string> {
+export type Column<Id = string> = {
   id: Id;
   width: string | number;
 }
@@ -28,6 +28,10 @@ export type Cell<RowIdType extends string = string, ColIdType extends string = s
   rowSpan?: number;
   /** Represents how many columns should the cell occupy. */
   colSpan?: number;
+  /** Marks a cell as focusable or not */
+  isFocusable?: boolean;
+  /** Marks a cell as selectable or not */
+  isSelectable?: boolean;
 }
 
 export type SpanMember = {
@@ -35,7 +39,7 @@ export type SpanMember = {
   originColId: string;
 }
 
-export interface CellContextType {
+export type CellContextType = {
   /** User defined row ID. */
   rowId: string;
   /** User defined column ID. */
@@ -51,7 +55,7 @@ export interface CellContextType {
   /** Represents how many columns should the cell occupy. */
   colSpan?: number;
   
-  /** Provides sticky cell container's style  */
+  /** Internal: provides sticky cell container's style  */
   getContainerStyle: () => React.CSSProperties;
 
   /** Disables edit mode */
