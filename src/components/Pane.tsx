@@ -2,12 +2,12 @@ import React, { CSSProperties } from "react";
 import { NumericalRange } from "../types/CellMatrix";
 import { GetCellOffsets, PaneName } from "../types/InternalModel";
 import { RGTheme } from "../types/Theme";
-import { useReactGridStore } from "../utils/reactGridStore";
+import { useReactGridStore, useReactGridStoreApi } from "../utils/reactGridStore";
 import { useTheme } from "../utils/useTheme";
 import { CellWrapper } from "./CellWrapper";
 import { PartialArea } from "./PartialArea";
 import { useReactGridId } from "./ReactGridIdProvider";
-import { isSpanMember } from "../utils/cellUtils";
+import { areAreasEqual, getCellArea, isSpanMember } from "../utils/cellUtils";
 
 interface PaneGridContentProps {
   range: NumericalRange;
@@ -187,6 +187,12 @@ export const Pane: React.FC<PaneProps> = ({
   const theme = useTheme();
   const id = useReactGridId();
   const focusedCell = useReactGridStore(id, store => store.getFocusedCell());
+  const focusedCellArea = focusedCell ? {
+    startRowIdx: focusedCell.rowIndex,
+    endRowIdx: focusedCell.rowIndex + (focusedCell.rowSpan ?? 1),
+    startColIdx: focusedCell.colIndex,
+    endColIdx: focusedCell.colIndex + (focusedCell.colSpan ?? 1),
+  } : { startRowIdx: -1, endRowIdx: -1, startColIdx: -1, endColIdx: -1 };
   const selectedArea = useReactGridStore(id, (store) => store.selectedArea);
   // const { state, range, borders, cellRenderer } = props;
 
@@ -201,7 +207,7 @@ export const Pane: React.FC<PaneProps> = ({
         />
       )}
       <PaneGridContent range={gridContentRange} getCellOffset={getCellOffset} />
-      {selectedArea && (
+      {selectedArea && !areAreasEqual(focusedCellArea, selectedArea) && (
         <PartialArea
           areaRange={{
             startRowIdx: selectedArea.startRowIdx,
@@ -219,12 +225,7 @@ export const Pane: React.FC<PaneProps> = ({
       )}
       {focusedCell && (
         <PartialArea
-          areaRange={{
-            startRowIdx: focusedCell.rowIndex,
-            endRowIdx: focusedCell.rowIndex + (focusedCell.rowSpan ?? 1),
-            startColIdx: focusedCell.colIndex,
-            endColIdx: focusedCell.colIndex + (focusedCell.colSpan ?? 1),
-          }}
+          areaRange={focusedCellArea}
           parentPaneRange={gridContentRange}
           parentPaneName={paneName}
           getCellOffset={getCellOffset}

@@ -5,7 +5,7 @@ import { DefaultBehavior } from "../behaviors/DefaultBehavior";
 
 interface GridWrapperProps {
   reactGridId: string;
-  // customBehaviors?: Record<string, BehaviorConstructor>;
+  customBehaviors?: Record<string, BehaviorConstructor>;
   style?: React.CSSProperties;
 }
 
@@ -33,6 +33,7 @@ const GridWrapper: FC<PropsWithChildren<GridWrapperProps>> = ({ reactGridId, cus
       id={`ReactGrid-${reactGridId}`}
       className="ReactGrid"
       ref={reactGridElement}
+      tabIndex={0}
       style={style}
       onPointerDown={(e) =>
         storeApi.setState(
@@ -47,6 +48,11 @@ const GridWrapper: FC<PropsWithChildren<GridWrapperProps>> = ({ reactGridId, cus
       onPointerUp={(e) =>
         storeApi.setState(
           (currentBehavior ?? DefaultBehavior(setCurrentBehavior)).handlePointerUp(e, storeApi.getState())
+        )
+      }
+      onKeyDown={e => 
+        storeApi.setState(
+          (currentBehavior ?? DefaultBehavior(setCurrentBehavior)).handleKeyDown(e, storeApi.getState())
         )
       }
       // onPointerMove={(e) => currentBehavior?.handlePointerMove(e)}
