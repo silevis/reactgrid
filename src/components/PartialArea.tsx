@@ -104,8 +104,7 @@ export const PartialArea: FC<PartialAreaProps> = React.memo(({ areaRange, parent
     gridColumnEnd: areaRange.endColIdx > parentPaneRange.endColIdx ? parentPaneRange.endColIdx + 1 : areaRange.endColIdx + 1,
   };
 
-  // Matches: "TopLeft", "TopCenter" and "TopRight"
-  if (parentPaneName.startsWith("Top")) {
+  if (parentPaneName === "TopLeft" || parentPaneName === "TopCenter" || parentPaneName === "TopRight") {
     baseStyle.position = "sticky";
     offset.top = getCellOffset?.(areaRange.startRowIdx, areaRange.startColIdx, 1, 1).top;
 
@@ -113,22 +112,19 @@ export const PartialArea: FC<PartialAreaProps> = React.memo(({ areaRange, parent
     // we need to adjust the height/width such that the border sticks out a bit (at a length of gap width)
     if (!shouldRenderBottomBorder) height = `calc(100% - (${areaBorder.width} - ${theme.grid.gap.width}))`;
   }
-  // Matches: "TopRight", "Right" and "BottomRight"
-  if (parentPaneName.endsWith("Right")) {
+  if (parentPaneName === "TopRight" || parentPaneName === "Right" || parentPaneName === "BottomRight") {
     baseStyle.position = "sticky";
     offset.right = getCellOffset?.(areaRange.startRowIdx, areaRange.endColIdx - parentPaneRange.startColIdx - 1, 1, 1).right;
     
     if (!shouldRenderLeftBorder) width = `calc(100% - (${areaBorder.width} - ${theme.grid.gap.width}))`;
   }
-  // Matches: "BottomLeft", "BottomCenter" and "BottomRight"
-  if (parentPaneName.startsWith("Bottom")) {
+  if (parentPaneName === "BottomLeft" || parentPaneName === "BottomCenter" || parentPaneName === "BottomRight") {
     baseStyle.position = "sticky";
     offset.bottom = getCellOffset?.(areaRange.endRowIdx - parentPaneRange.startRowIdx - 1, areaRange.startColIdx, 1, 1).bottom;
     
     if (!shouldRenderTopBorder) height = `calc(100% - (${areaBorder.width} - ${theme.grid.gap.width}))`;
   }
-  // Matches: "TopLeft", "Left" and "BottomLeft"
-  if (parentPaneName.endsWith("Left")) {
+  if (parentPaneName === "TopLeft" || parentPaneName === "Left" || parentPaneName === "BottomLeft") {
     baseStyle.position = "sticky";
     offset.left = getCellOffset?.(areaRange.startRowIdx, areaRange.startColIdx, 1, 1).left;
     

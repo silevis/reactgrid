@@ -127,8 +127,7 @@ const getPaneBackgroundStyle = (paneName: PaneName, range: NumericalRange, gap: 
     backgroundColor: gap.color,
   };
 
-  // Matches "TopLeft", "TopCenter" and "TopRight"
-  if (paneName.startsWith("Top")) {
+  if (paneName === "TopLeft" || paneName === "TopCenter" || paneName === "TopRight") {
     style = {
       ...style,
       top: 0,
@@ -136,8 +135,7 @@ const getPaneBackgroundStyle = (paneName: PaneName, range: NumericalRange, gap: 
       marginTop: `-${gap.width}`,
     };
   }
-  // Matches "TopRight", "Right" and "BottomRight"
-  if (paneName.endsWith("Right")) {
+  if (paneName === "TopRight" || paneName === "Right" || paneName === "BottomRight") {
     style = {
       ...style,
       right: 0,
@@ -145,8 +143,7 @@ const getPaneBackgroundStyle = (paneName: PaneName, range: NumericalRange, gap: 
       marginLeft: `-${gap.width}`,
     };
   }
-  // Matches "BottomLeft", "BottomCenter" and "BottomRight"
-  if (paneName.startsWith("Bottom")) {
+  if (paneName === "BottomLeft" || paneName === "BottomCenter" || paneName === "BottomRight") {
     style = {
       ...style,
       bottom: 0,
@@ -154,8 +151,7 @@ const getPaneBackgroundStyle = (paneName: PaneName, range: NumericalRange, gap: 
       marginTop: `-${gap.width}`,
     };
   }
-  // Matches "TopLeft", "Left" and "BottomLeft"
-  if (paneName.endsWith("Left")) {
+  if (paneName === "TopLeft" || paneName === "Left" || paneName === "BottomLeft") {
     style = {
       ...style,
       left: 0,
