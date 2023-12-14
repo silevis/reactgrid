@@ -1,4 +1,4 @@
-import React from "react";
+import React, { CSSProperties } from "react";
 import { BehaviorConstructor } from "./Behavior";
 
 export type Row<Id = string> = {
@@ -55,8 +55,8 @@ export type CellContextType = {
   /** Represents how many columns should the cell occupy. */
   colSpan?: number;
   
-  /** Internal: provides sticky cell container's style  */
-  getContainerStyle: () => React.CSSProperties;
+  /** Internal: provides cell container's style  */
+  containerStyle: React.CSSProperties;
 
   /** Disables edit mode */
   disableEditMode: () => void;
@@ -65,9 +65,6 @@ export type CellContextType = {
 
   isInEditMode: boolean;
   isFocused: boolean;
-
-  /** Internal: stores ref for later use to limit dom calls */
-  assignRefs(container: HTMLElement | null, input: HTMLElement | null): void;
 }
 
 export type CellMap<RowIdType extends string = string, ColIdType extends string = string> = Map<`${RowIdType} ${ColIdType}`, Cell<RowIdType, ColIdType> | SpanMember>;

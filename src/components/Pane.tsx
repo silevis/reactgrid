@@ -2,12 +2,12 @@ import React, { CSSProperties } from "react";
 import { NumericalRange } from "../types/CellMatrix";
 import { GetCellOffsets, PaneName } from "../types/InternalModel";
 import { RGTheme } from "../types/Theme";
-import { useReactGridStore, useReactGridStoreApi } from "../utils/reactGridStore";
+import { areAreasEqual, isSpanMember } from "../utils/cellUtils";
+import { useReactGridStore } from "../utils/reactGridStore";
 import { useTheme } from "../utils/useTheme";
-import { CellWrapper } from "./CellWrapper";
+import { CellContext } from "./CellContext";
 import { PartialArea } from "./PartialArea";
 import { useReactGridId } from "./ReactGridIdProvider";
-import { areAreasEqual, getCellArea, isSpanMember } from "../utils/cellUtils";
 
 interface PaneGridContentProps {
   range: NumericalRange;
@@ -70,6 +70,9 @@ export const PaneGridContent: React.FC<PaneGridContentProps> = React.memo(({
   const focusedCell = useReactGridStore(id, store => store.focusedLocation);
   const currentlyEditedCell = useReactGridStore(id, store => store.currentlyEditedCell);
 
+  const setFocusedLocation = useReactGridStore(id, (store) => store.setFocusedLocation);
+  const setCurrentlyEditedCell = useReactGridStore(id, (store) => store.setCurrentlyEditedCell);
+
   return rows.map((row, rowIndex) => {
     return columns.map((col, colIndex) => {
       const cell = cells.get(`${row.id} ${col.id}`);
@@ -85,33 +88,45 @@ export const PaneGridContent: React.FC<PaneGridContentProps> = React.memo(({
       const { Template, props } = cell;
 
       return (
-        <CellWrapper
+        <CellContext.Provider
           key={`${realRowIndex}-${realColumnIndex}`}
-          rowId={row.id}
-          colId={col.id}
-          realRowIndex={realRowIndex}
-          realColumnIndex={realColumnIndex}
-          getContainerStyle={() => ({
-            ...(cell.rowSpan && {
-              gridRowEnd: `span ${cell.rowSpan}`,
-            }),
-            ...(cell.colSpan && {
-              gridColumnEnd: `span ${cell.colSpan}`,
-            }),
-            ...getCellOffset?.(
-              rowIndex,
-              colIndex,
-              cell.rowSpan ?? 1,
-              cell.colSpan ?? 1
-            ),
-            gridRowStart: realRowIndex + 1,
-            gridColumnStart: realColumnIndex + 1,
-          })}
-          isFocused={isFocused}
-          isInEditMode={isInEditMode}
+          value={{
+            rowId: row.id,
+            colId: col.id,
+            realRowIndex,
+            realColumnIndex,
+            rowSpan: cell.rowSpan,
+            colSpan: cell.colSpan,
+            containerStyle: {
+              ...(cell.rowSpan && {
+                gridRowEnd: `span ${cell.rowSpan}`,
+              }),
+              ...(cell.colSpan && {
+                gridColumnEnd: `span ${cell.colSpan}`,
+              }),
+              ...getCellOffset?.(
+                rowIndex,
+                colIndex,
+                cell.rowSpan ?? 1,
+                cell.colSpan ?? 1
+              ),
+              gridRowStart: realRowIndex + 1,
+              gridColumnStart: realColumnIndex + 1,
+            },
+            disableEditMode: () => setCurrentlyEditedCell(-1, -1),
+            requestFocus: (enableEditMode: boolean) => {
+              if (enableEditMode) {
+                setCurrentlyEditedCell(realRowIndex, realColumnIndex);
+              }
+
+              setFocusedLocation(realRowIndex, realColumnIndex);
+            },
+            isInEditMode,
+            isFocused,
+          }}
         >
           <Template {...props} />
-        </CellWrapper>
+        </CellContext.Provider>
       );
     });
   });

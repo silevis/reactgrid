@@ -40,7 +40,8 @@ const shouldMemoPartialArea = (prevProps: PartialAreaProps, nextProps: PartialAr
     prevStartRowIdx !== nextStartRowIdx ||
     prevEndRowIdx !== nextEndRowIdx ||
     prevStartColIdx !== nextStartColIdx ||
-    prevEndColIdx !== nextEndColIdx
+    prevEndColIdx !== nextEndColIdx ||
+    prevProps.getCellOffset !== nextProps.getCellOffset
   ) {
     return false;
   }
