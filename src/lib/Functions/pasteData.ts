@@ -4,6 +4,7 @@ import { Location } from "../Model/InternalModel";
 import { tryAppendChangeHavingGroupId } from "./tryAppendChangeHavingGroupId";
 import { getActiveSelectedRange } from "./getActiveSelectedRange";
 import { newLocation } from "./newLocation";
+import { expandGridIfNeeded } from "./expandGridIfNeeded";
 
 export function pasteData(state: State, rows: Compatible<Cell>[][]): State {
   const activeSelectedRange = getActiveSelectedRange(state);
@@ -12,7 +13,7 @@ export function pasteData(state: State, rows: Compatible<Cell>[][]): State {
     activeSelectedRange.rows.forEach((row) =>
       activeSelectedRange.columns.forEach((column) => {
         state = tryAppendChangeHavingGroupId(
-          state, 
+          state,
           newLocation(row, column),
           rows[0][0]
         ) as State;
@@ -35,6 +36,22 @@ export function pasteData(state: State, rows: Compatible<Cell>[][]): State {
             lastLocation,
             cell
           ) as State;
+        } else {
+          if (!state.allowExtendPasteRange) return;
+          const expandGridIfNeededState = expandGridIfNeeded(
+            state,
+            rowIdx,
+            columnIdx
+          );
+          lastLocation = expandGridIfNeededState.cellMatrix.getLocation(
+            rowIdx,
+            columnIdx
+          );
+          state = tryAppendChangeHavingGroupId(
+            expandGridIfNeededState,
+            lastLocation,
+            cell
+          ) as State;
         }
       })
     );
@@ -42,13 +59,20 @@ export function pasteData(state: State, rows: Compatible<Cell>[][]): State {
       return state;
     }
 
-    const newRange = cellMatrix.getRange(activeSelectedRange.first, lastLocation);
+    const newRange = cellMatrix.getRange(
+      activeSelectedRange.first,
+      lastLocation
+    );
 
-    if (state?.props?.onSelectionChanging && !state.props.onSelectionChanging([newRange])) {
+    if (
+      state?.props?.onSelectionChanging &&
+      !state.props.onSelectionChanging([newRange])
+    ) {
       return state;
     }
 
-    state?.props?.onSelectionChanged && state.props.onSelectionChanged([newRange]);
+    state?.props?.onSelectionChanged &&
+      state.props.onSelectionChanged([newRange]);
 
     return {
       ...state,

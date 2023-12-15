@@ -26,7 +26,7 @@ export const config: TestConfig = {
     fillHandleWidth: 18,
 
     columns: 30,
-    rows: 150,
+    rows: 10,
 
     lineWidth: 1,
 
