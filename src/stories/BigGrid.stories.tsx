@@ -5,8 +5,8 @@ import { ErrorBoundary } from "../components/ErrorBoundary";
 import TextCell from "../components/cellTemplates/TextCell";
 import { cellMatrixBuilder } from "../utils/cellMatrixBuilder";
 
-const ROW_COUNT = 50;
-const COLUMN_COUNT = 40;
+const ROW_COUNT = 20;
+const COLUMN_COUNT = 25;
 
 export const BigGrid = () => {
   const [data, setData] = useState<(string | null)[][]>(
@@ -15,6 +15,22 @@ export const BigGrid = () => {
         if (i === 0 && j === 1) return null;
         if (i === 1 && j === 0) return null;
         if (i === 1 && j === 1) return null;
+
+        if (i === 2 && j === 4) return null;
+        if (i === 3 && j === 3) return null;
+        if (i === 3 && j === 4) return null;
+        
+        if (i === 3 && j === 7) return null;
+        if (i === 4 && j === 6) return null;
+        if (i === 4 && j === 7) return null;
+
+        if (i === 5 && j === 6) return null;
+        if (i === 5 && j === 7) return null;
+        
+        if (i === 6 && j === 4) return null;
+        
+        if (i === 6 && j === 7) return null;
+        if (i === 6 && j === 8) return null;
 
         return [
           "Lorem ipsum dolor sit amet",
@@ -56,6 +72,11 @@ export const BigGrid = () => {
     });
 
     setCell("0", "0", TextCell, { text: data[0][0] ?? "", reverse: true }, { colSpan: 2, rowSpan: 2 });
+    setCell("2", "3", TextCell, { text: data[2][3] ?? "", reverse: true, onTextChanged: () => null }, { colSpan: 2, rowSpan: 2 });
+    setCell("3", "6", TextCell, { text: data[3][6] ?? "", reverse: true, onTextChanged: () => null }, { colSpan: 2, rowSpan: 2 });
+    setCell("5", "4", TextCell, { text: data[5][4] ?? "", reverse: true, onTextChanged: () => null }, { rowSpan: 2 });
+    setCell("5", "5", TextCell, { text: data[5][5] ?? "", reverse: true, onTextChanged: () => null }, { colSpan: 3 });
+    setCell("6", "6", TextCell, { text: data[5][4] ?? "", reverse: true, onTextChanged: () => null }, { colSpan: 3 });
   });
 
   cellMatrix.columns[1].width = "7rem";
