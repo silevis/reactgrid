@@ -1,6 +1,13 @@
 import { CellMatrix } from "../Model/CellMatrix";
 import { State } from "../Model/State";
 
+/**
+ * Expand the grid if needed
+ * @param state State object
+ * @param endRow End line
+ * @param endColumn End column number
+ * @returns Updated status object
+ */
 export const expandGridIfNeeded = (
   state: State,
   endRow: number,
@@ -9,11 +16,11 @@ export const expandGridIfNeeded = (
   const { cellMatrix } = state;
   let updated = false;
 
-  // 确定当前的行数和列数
+  // Determines the current number of rows and columns
   const currentRowCount = cellMatrix.rows.length;
   const currentColumnCount = cellMatrix.columns.length;
 
-  // 如果需要，添加新的行
+  // Add new rows if needed
   if (endRow >= currentRowCount) {
     const rowsToAdd = endRow - currentRowCount + 1;
     const prefix = cellMatrix.rows[currentRowCount - 1];
@@ -29,22 +36,29 @@ export const expandGridIfNeeded = (
     updated = true;
   }
 
-  // 如果需要，添加新的列
+  // Add new columns if needed
   if (endColumn >= currentColumnCount) {
     const columnsToAdd = endColumn - currentColumnCount + 1;
     const prefix = cellMatrix.columns[currentColumnCount - 1];
     for (let i = 0; i < columnsToAdd; i++) {
       cellMatrix.columns.push({
         ...prefix,
-        columnId: `column-${currentColumnCount + i}`,
+        columnId: `col-${currentColumnCount + i}`,
         idx: currentColumnCount + i,
         left: prefix.right,
         right: prefix.right + prefix.width || CellMatrix.DEFAULT_COLUMN_WIDTH,
+      });
+      cellMatrix.rows.map((_row) => {
+        _row.cells.push({
+          type: "text",
+          text: "",
+        });
+        return _row;
       });
     }
     updated = true;
   }
 
-  // 只有在确实更新了网格时才返回新的状态
+  // If needed, add a new status column that returns only when the grid is actually updated
   return updated ? { ...state, cellMatrix } : state;
 };

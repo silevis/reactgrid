@@ -324,6 +324,19 @@ export const TestGrid: React.FC<TestGridProps> = (props) => {
     setRows((prevRows) => {
       const currentRows = [...prevRows];
       changes.forEach((change) => {
+        let changeColumnIdx = columns.findIndex(
+          (el) => el.columnId === change.columnId
+        );
+        // Extension column
+        if (changeColumnIdx === -1) {
+          setColumns([
+            ...columns,
+            {
+              columnId: change.columnId,
+            } as Column,
+          ]);
+          changeColumnIdx = columns.length - 1;
+        }
         let changeRowIdx = currentRows.findIndex(
           (el) => el.rowId === change.rowId
         );
@@ -343,16 +356,7 @@ export const TestGrid: React.FC<TestGridProps> = (props) => {
             (el) => el.rowId === change.rowId
           );
         }
-        const changeColumnIdx = columns.findIndex(
-          (el) => el.columnId === change.columnId
-        );
-        // // Extended column
-        // if (changeColumnIdx === -1) {
-        //   currentRows[changeRowIdx].cells.push({
-        //     type: "text",
-        //     text: "",
-        //   });
-        // }
+
         if (change.type === "flag") {
           // console.log(change.newCell.text);
         }
