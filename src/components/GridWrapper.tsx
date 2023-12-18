@@ -33,7 +33,6 @@ const GridWrapper: FC<PropsWithChildren<GridWrapperProps>> = ({ reactGridId, cus
       id={`ReactGrid-${reactGridId}`}
       className="ReactGrid"
       ref={reactGridElement}
-      tabIndex={0}
       style={style}
       onPointerDown={(e) =>
         storeApi.setState(
@@ -53,6 +52,11 @@ const GridWrapper: FC<PropsWithChildren<GridWrapperProps>> = ({ reactGridId, cus
       onKeyDown={e => 
         storeApi.setState(
           (currentBehavior ?? DefaultBehavior(setCurrentBehavior)).handleKeyDown(e, storeApi.getState())
+        )
+      }
+      onKeyDownCapture={e => 
+        storeApi.setState(
+          (currentBehavior ?? DefaultBehavior(setCurrentBehavior)).handleKeyDownCapture(e, storeApi.getState())
         )
       }
       // onPointerMove={(e) => currentBehavior?.handlePointerMove(e)}

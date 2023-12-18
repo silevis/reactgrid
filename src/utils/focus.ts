@@ -1,5 +1,5 @@
 import { FocusedCell } from "../types/InternalModel";
-import { getOriginCell, isCellSpanned } from "./cellUtils";
+import { EMPTY_AREA, getOriginCell, isCellInRange, isCellSpanned, isSpanMember } from "./cellUtils";
 import { ReactGridStore } from "./reactGridStore";
 
 const absoluteLocation = {
@@ -27,7 +27,7 @@ export const moveFocusUp = (store: ReactGridStore, currentFocus: FocusedCell): R
       else absoluteLocation.rowIndex = rowIdx;
       absoluteLocation.colIndex = colIndex;
 
-      return { ...store, focusedLocation: { rowIndex: originRowIndex, colIndex: originColIndex } };
+      return { ...store, focusedLocation: { rowIndex: originRowIndex, colIndex: originColIndex }, selectedArea: EMPTY_AREA };
     }
   }
 
@@ -40,7 +40,7 @@ export const moveFocusRight = (store: ReactGridStore, currentFocus: FocusedCell)
   const rowIndex =
     "rowSpan" in currentFocus && absoluteLocation.rowIndex !== -1 ? absoluteLocation.rowIndex : currentFocus.rowIndex;
 
-  // Look for the next focusable cell in the rows below the current focus
+  // Look for the next focusable cell to the right of the current focus
   for (let colIdx = currentFocus.colIndex + (currentFocus.colSpan ?? 1); colIdx < store.columns.length; colIdx++) {
     const nextPossibleLocation = store.getCellByIndexes(rowIndex, colIdx);
 
@@ -53,7 +53,7 @@ export const moveFocusRight = (store: ReactGridStore, currentFocus: FocusedCell)
       absoluteLocation.rowIndex = rowIndex;
       absoluteLocation.colIndex = colIdx;
 
-      return { ...store, focusedLocation: { rowIndex: originRowIndex, colIndex: originColIndex } };
+      return { ...store, focusedLocation: { rowIndex: originRowIndex, colIndex: originColIndex }, selectedArea: EMPTY_AREA };
     }
   }
 
@@ -79,7 +79,7 @@ export const moveFocusDown = (store: ReactGridStore, currentFocus: FocusedCell) 
       absoluteLocation.rowIndex = rowIdx;
       absoluteLocation.colIndex = colIndex;
 
-      return { ...store, focusedLocation: { rowIndex: originRowIndex, colIndex: originColIndex } };
+      return { ...store, focusedLocation: { rowIndex: originRowIndex, colIndex: originColIndex }, selectedArea: EMPTY_AREA };
     }
   }
 
@@ -92,7 +92,7 @@ export const moveFocusLeft = (store: ReactGridStore, currentFocus: FocusedCell) 
   const rowIndex =
     "rowSpan" in currentFocus && absoluteLocation.rowIndex !== -1 ? absoluteLocation.rowIndex : currentFocus.rowIndex;
 
-  // Look for the next focusable cell in the rows below the current focus
+  // Look for the next focusable cell to the left of the current focus
   for (let colIdx = currentFocus.colIndex - 1; colIdx >= 0; colIdx--) {
     const nextPossibleLocation = store.getCellByIndexes(rowIndex, colIdx);
 
@@ -106,12 +106,122 @@ export const moveFocusLeft = (store: ReactGridStore, currentFocus: FocusedCell) 
       if (originCell.colSpan ?? 1 > 1) absoluteLocation.colIndex = originColIndex;
       else absoluteLocation.colIndex = colIdx;
 
-      return { ...store, focusedLocation: { rowIndex: originRowIndex, colIndex: originColIndex } };
+      return { ...store, focusedLocation: { rowIndex: originRowIndex, colIndex: originColIndex }, selectedArea: EMPTY_AREA };
     }
   }
 
   return store;
 };
+
+export const moveFocusInsideSelectedRange = (store: ReactGridStore, currentFocus: FocusedCell, direction: "up" | "right" | "down" | "left") => {
+  switch (direction) {
+    case "right": {
+      // Finding the next focusable cell - going from left to right starting at the currently focused position - that is inside the selected area, is focusable and optionally is spanned, but skipping every span member until the next valid cell is found.
+      let colIdx = currentFocus.colIndex;
+      let rowIdx = currentFocus.rowIndex;
+      let nextPossibleLocation = store.getCellOrSpanMemberByIndexes(rowIdx, colIdx);
+
+      do {
+        colIdx++;
+
+        // If we reached the end of the row, go to the next row
+        if (colIdx === store.selectedArea.endColIdx) {
+          colIdx = store.selectedArea.startColIdx;
+          rowIdx++;
+
+          // If we reached the end of the selected area, go to the first cell in the selected area
+          if (rowIdx === store.selectedArea.endRowIdx) {
+            rowIdx = store.selectedArea.startRowIdx;
+          }
+        }
+
+        nextPossibleLocation = store.getCellOrSpanMemberByIndexes(rowIdx, colIdx);
+      } while (!nextPossibleLocation || isSpanMember(nextPossibleLocation) || nextPossibleLocation?.isFocusable === false);
+
+      return { ...store, focusedLocation: { rowIndex: rowIdx, colIndex: colIdx } };
+    }
+
+    case "left": {
+      // Finding the next focusable cell - going from right to left starting at the currently focused position - that is inside the selected area, is focusable and optionally is spanned, but skipping every span member until the next valid cell is found.
+      let colIdx = currentFocus.colIndex;
+      let rowIdx = currentFocus.rowIndex;
+      let nextPossibleLocation = store.getCellOrSpanMemberByIndexes(rowIdx, colIdx);
+
+      do {
+        colIdx--;
+
+        // If we reached the start of the row, go to the previous row
+        if (colIdx === store.selectedArea.startColIdx - 1) {
+          colIdx = store.selectedArea.endColIdx - 1;
+          rowIdx--;
+
+          // If we reached the start of the selected area, go to the last cell in the selected area
+          if (rowIdx === store.selectedArea.startRowIdx - 1) {
+            rowIdx = store.selectedArea.endRowIdx - 1;
+          }
+        }
+
+        nextPossibleLocation = store.getCellOrSpanMemberByIndexes(rowIdx, colIdx);
+      } while (!nextPossibleLocation || isSpanMember(nextPossibleLocation) || nextPossibleLocation?.isFocusable === false);
+
+      return { ...store, focusedLocation: { rowIndex: rowIdx, colIndex: colIdx } };
+    }
+
+    case "down": {
+      // Finding the next focusable cell - going from top to bottom starting at the currently focused position - that is inside the selected area, is focusable and optionally is spanned, but skipping every span member until the next valid cell is found.
+      let colIdx = currentFocus.colIndex;
+      let rowIdx = currentFocus.rowIndex;
+      let nextPossibleLocation = store.getCellOrSpanMemberByIndexes(rowIdx, colIdx);
+
+      do {
+        rowIdx++;
+
+        // If we reached the end of the column, go to the next column
+        if (rowIdx === store.selectedArea.endRowIdx) {
+          rowIdx = store.selectedArea.startRowIdx;
+          colIdx++;
+
+          // If we reached the end of the selected area, go to the first cell in the selected area
+          if (colIdx === store.selectedArea.endColIdx) {
+            colIdx = store.selectedArea.startColIdx;
+          }
+        }
+
+        nextPossibleLocation = store.getCellOrSpanMemberByIndexes(rowIdx, colIdx);
+      } while (!nextPossibleLocation || isSpanMember(nextPossibleLocation) || nextPossibleLocation?.isFocusable === false);
+
+      return { ...store, focusedLocation: { rowIndex: rowIdx, colIndex: colIdx } };
+    }
+
+    case "up": {
+      // Finding the next focusable cell - going from bottom to top starting at the currently focused position - that is inside the selected area, is focusable and optionally is spanned, but skipping every span member until the next valid cell is found.
+      let colIdx = currentFocus.colIndex;
+      let rowIdx = currentFocus.rowIndex;
+      let nextPossibleLocation = store.getCellOrSpanMemberByIndexes(rowIdx, colIdx);
+
+      do {
+        rowIdx--;
+
+        // If we reached the start of the column, go to the previous column
+        if (rowIdx === store.selectedArea.startRowIdx - 1) {
+          rowIdx = store.selectedArea.endRowIdx - 1;
+          colIdx--;
+
+          // If we reached the start of the selected area, go to the last cell in the selected area
+          if (colIdx === store.selectedArea.startColIdx - 1) {
+            colIdx = store.selectedArea.endColIdx - 1;
+          }
+        }
+
+        nextPossibleLocation = store.getCellOrSpanMemberByIndexes(rowIdx, colIdx);
+      } while (!nextPossibleLocation || isSpanMember(nextPossibleLocation) || nextPossibleLocation?.isFocusable === false);
+
+      return { ...store, focusedLocation: { rowIndex: rowIdx, colIndex: colIdx } };
+    }
+  }
+
+  return store;
+}
 
 export const moveFocusPageUp = (store: ReactGridStore, currentFocus: FocusedCell) => {
   if (currentFocus.rowIndex === 0) return store;

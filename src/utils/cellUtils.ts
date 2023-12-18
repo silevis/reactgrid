@@ -11,6 +11,13 @@ type SpannedCell = Cell & {
   colSpan: number;
 }
 
+export const EMPTY_AREA = {
+  startRowIdx: -1,
+  endRowIdx: -1,
+  startColIdx: -1,
+  endColIdx: -1,
+} as const;
+
 export const isCellSpanned = (cell: Cell | SpanMember): cell is SpannedCell => {
   return 'rowSpan' in cell || 'colSpan' in cell;
 }
@@ -96,4 +103,11 @@ export const findMinimalSelectedArea = (store: ReactGridStore, currentArea: Nume
   }
 
   return minimalArea;
+}
+
+export const getContainerElementByIndexes = (rowIndex: number, colIndex: number): HTMLElement | null => {
+  const cellContainer = document.getElementsByClassName(`rgCellContainer rgRowIdx-${rowIndex} rgColIdx-${colIndex}`)[0];
+  if (!cellContainer) return null;
+
+  return cellContainer as HTMLElement;
 }

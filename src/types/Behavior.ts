@@ -15,6 +15,7 @@ export interface Behavior {
   handleDoubleClick: (event: React.MouseEvent<HTMLDivElement>, store: ReactGridStore) => ReactGridStore;
 
   handleKeyDown: (event: React.KeyboardEvent<HTMLDivElement>, store: ReactGridStore) => ReactGridStore;
+  handleKeyDownCapture: (event: React.KeyboardEvent<HTMLDivElement>, store: ReactGridStore) => ReactGridStore;
   handleKeyUp: (event: React.KeyboardEvent<HTMLDivElement>, store: ReactGridStore) => ReactGridStore;
 
   handleCompositionStart: (event: React.CompositionEvent<HTMLDivElement>, store: ReactGridStore) => ReactGridStore;

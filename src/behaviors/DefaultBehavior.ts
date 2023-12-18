@@ -1,6 +1,8 @@
 import { useReactGridId } from "../components/ReactGridIdProvider";
 import { BehaviorConstructor } from "../types/Behavior";
 import { IndexedLocation } from "../types/InternalModel";
+import { EMPTY_AREA, areAreasEqual } from "../utils/cellUtils";
+import { moveFocusInsideSelectedRange } from "../utils/focus";
 import { handleKeyDown } from "../utils/handleKeyDown";
 import { ReactGridStore, useReactGridStore } from "../utils/reactGridStore";
 
@@ -102,11 +104,35 @@ export const DefaultBehavior: BehaviorConstructor = (setCurrentBehavior) => {
     },
 
     handleKeyDown: function (event, store) {
-      console.log("DB/handleKeyDown");
-
       return handleKeyDown(event, store);
+    },
+
+    handleKeyDownCapture: function (event, store) {
+      let focusedCell = store.getFocusedCell();
+      if (!focusedCell) {
+        const firstCell = store.getCellByIndexes(0, 0);
+        if (!firstCell) return store;
+
+        focusedCell = {
+          rowIndex: 0,
+          colIndex: 0,
+          ...firstCell,
+        };
+      }
+
+      const isAnyAreaSelected = !areAreasEqual(store.selectedArea, EMPTY_AREA);
+      if (isAnyAreaSelected) {
+        switch (event.key) {  
+          case "Enter": {
+            event.preventDefault();
+    
+            if (event.shiftKey) return moveFocusInsideSelectedRange(store, focusedCell, "up");
+            else return moveFocusInsideSelectedRange(store, focusedCell, "down");
+          }
+        }
+      }
 
       return store;
-    },
+    }
   };
 };
