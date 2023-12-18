@@ -20,22 +20,6 @@ export const expandGridIfNeeded = (
   const currentRowCount = cellMatrix.rows.length;
   const currentColumnCount = cellMatrix.columns.length;
 
-  // Add new rows if needed
-  if (endRow >= currentRowCount) {
-    const rowsToAdd = endRow - currentRowCount + 1;
-    const prefix = cellMatrix.rows[currentRowCount - 1];
-    for (let i = 0; i < rowsToAdd; i++) {
-      cellMatrix.rows.push({
-        ...prefix,
-        idx: currentRowCount + i,
-        rowId: `row-${currentRowCount + i}`,
-        top: prefix.bottom,
-        bottom: prefix.bottom + prefix.height || CellMatrix.DEFAULT_ROW_HEIGHT,
-      });
-    }
-    updated = true;
-  }
-
   // Add new columns if needed
   if (endColumn >= currentColumnCount) {
     const columnsToAdd = endColumn - currentColumnCount + 1;
@@ -54,6 +38,22 @@ export const expandGridIfNeeded = (
           text: "",
         });
         return _row;
+      });
+    }
+    updated = true;
+  }
+
+  // Add new rows if needed
+  if (endRow >= currentRowCount) {
+    const rowsToAdd = endRow - currentRowCount + 1;
+    const prefix = cellMatrix.rows[currentRowCount - 1];
+    for (let i = 0; i < rowsToAdd; i++) {
+      cellMatrix.rows.push({
+        ...prefix,
+        idx: currentRowCount + i,
+        rowId: `row-${currentRowCount + i}`,
+        top: prefix.bottom,
+        bottom: prefix.bottom + prefix.height || CellMatrix.DEFAULT_ROW_HEIGHT,
       });
     }
     updated = true;

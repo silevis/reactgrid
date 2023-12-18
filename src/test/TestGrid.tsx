@@ -320,6 +320,7 @@ export const TestGrid: React.FC<TestGridProps> = (props) => {
   // eslint-disable-next-line
   rows[0].cells.find((cell) => cell.type === "text" && cell.text);
 
+
   const handleChanges = (changes: CellChange<TestGridCells>[]) => {
     setRows((prevRows) => {
       const currentRows = [...prevRows];
@@ -329,13 +330,16 @@ export const TestGrid: React.FC<TestGridProps> = (props) => {
         );
         // Extension column
         if (changeColumnIdx === -1) {
-          setColumns([
+          const newColumn = [
             ...columns,
             {
               columnId: change.columnId,
             } as Column,
-          ]);
-          changeColumnIdx = columns.length - 1;
+          ] as Column[];
+          setColumns(newColumn);
+          changeColumnIdx = newColumn.findIndex(
+            (el) => el.columnId === change.columnId
+          );
         }
         let changeRowIdx = currentRows.findIndex(
           (el) => el.rowId === change.rowId
@@ -372,7 +376,6 @@ export const TestGrid: React.FC<TestGridProps> = (props) => {
       return [...currentRows];
     });
   };
-
 
   const reorderArray = <T extends unknown>(
     arr: T[],
