@@ -1,5 +1,6 @@
 import React, { FC } from "react";
 import { useCellContext } from "./CellContext";
+import HiddenFocusTarget from "./HiddenFocusTarget";
 
 type CellWrapperProps = React.ClassAttributes<HTMLDivElement> &
   React.HTMLAttributes<HTMLDivElement> & {
@@ -28,7 +29,7 @@ const CellWrapper: FC<CellWrapperProps> = ({ children, targetInputRef, ...wrappe
       }}
     >
       {children}
-      {isFocused && <div className="rgCellFocus" />}
+      {isFocused && <HiddenFocusTarget />}
     </div>
   );
 };

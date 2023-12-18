@@ -4,7 +4,7 @@ import { DefaultBehavior } from "../behaviors/DefaultBehavior";
 import { BehaviorConstructor } from "../types/Behavior";
 import { NumericalRange } from "../types/CellMatrix";
 import { FocusedCell, IndexedLocation, PaneName } from "../types/InternalModel";
-import { Cell, CellMap, Column, Row } from "../types/PublicModel";
+import { Cell, CellMap, Column, Row, SpanMember } from "../types/PublicModel";
 import { isSpanMember } from "./cellUtils";
 
 export interface ReactGridStore {
@@ -18,6 +18,7 @@ export interface ReactGridStore {
   readonly setCells: (cellMap: CellMap) => void;
   readonly getCellByIds: (rowId: ReactGridStore['rows'][number]['id'], colId: ReactGridStore['rows'][number]['id']) => Cell | null;
   readonly getCellByIndexes: (rowIndex: number, colIndex: number) => Cell | null;
+  readonly getCellOrSpanMemberByIndexes: (rowIndex: number, colIndex: number) => Cell | SpanMember | null;
 
   paneRanges: Record<PaneName, NumericalRange>;
   readonly setPaneRanges: (paneRanges: Record<PaneName, NumericalRange>) => void;
@@ -34,6 +35,9 @@ export interface ReactGridStore {
 
   reactGridRef?: HTMLDivElement;
   readonly assignReactGridRef: (reactGridRef?: HTMLDivElement) => void;
+
+  hiddenFocusTargetRef?: HTMLDivElement;
+  readonly assignHiddenFocusTargetRef: (hiddenFocusTargetRef?: HTMLDivElement) => void;
   // scrollableRef?: HTMLElement | (Window & typeof globalThis);
   // readonly assignRefs: (
   //   reactGridRef?: HTMLDivElement,
@@ -91,6 +95,18 @@ export function useReactGridStore<T>(id: string, selector: (store: ReactGridStor
 
           return get().getCellByIds(row.id, col.id) || null;
         },
+        getCellOrSpanMemberByIndexes: (rowIndex, colIndex) => {
+          const row = get().rows[rowIndex];
+          const col = get().columns[colIndex];
+
+          if (!row || !col) return null;
+
+          const cell = get().cells.get(`${row.id} ${col.id}`);
+
+          if (!cell) return null;
+
+          return cell;
+        },
 
         paneRanges: {
           "TopLeft": { startRowIdx: 0, endRowIdx: 0, startColIdx: 0, endColIdx: 0 },
@@ -105,7 +121,7 @@ export function useReactGridStore<T>(id: string, selector: (store: ReactGridStor
         },
         setPaneRanges: (paneRanges) => set(() => ({ paneRanges })),
 
-        focusedLocation: { rowIndex: -1, colIndex: -1 },
+        focusedLocation: { rowIndex: 0, colIndex: 0 },
         setFocusedLocation: (rowIndex, colIndex) => set(() => ({ focusedLocation: { rowIndex, colIndex } })),
         getFocusedCell: () => {
           const { focusedLocation } = get();
@@ -124,6 +140,9 @@ export function useReactGridStore<T>(id: string, selector: (store: ReactGridStor
 
         reactGridRef: undefined,
         assignReactGridRef: (reactGridRef) => set(() => ({ reactGridRef })),
+
+        hiddenFocusTargetRef: undefined,
+        assignHiddenFocusTargetRef: (hiddenFocusTargetRef) => set(() => ({ hiddenFocusTargetRef })),
 
         behaviors: {
           "Default": DefaultBehavior,

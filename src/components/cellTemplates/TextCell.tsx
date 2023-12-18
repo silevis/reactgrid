@@ -17,7 +17,7 @@ const TextCell: FC<TextCellProps> = ({ text, onTextChanged, reverse }) => {
       style={{ padding: ".1rem .2rem", textAlign: "center", outline: "none" }}
       onDoubleClick={() => ctx.requestFocus(true)}
       onKeyDown={(e) => {
-        if (e.key === "Enter") {
+        if (!ctx.isInEditMode && e.key === "Enter") {
           e.preventDefault();
           e.stopPropagation();
           ctx.requestFocus(true);
@@ -37,7 +37,8 @@ const TextCell: FC<TextCellProps> = ({ text, onTextChanged, reverse }) => {
               ctx.disableEditMode();
             } else if (e.key === "Enter") {
               e.preventDefault();
-              e.stopPropagation();
+              // We don't stop propagation here, because we want to trigger the
+              // focus move event
               onTextChanged(e.currentTarget.value);
               ctx.disableEditMode();
             }
