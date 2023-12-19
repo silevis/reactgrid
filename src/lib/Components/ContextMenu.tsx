@@ -18,15 +18,29 @@ import { getSelectedLocations } from "../Functions/getSelectedLocations";
 import { useReactGridState } from "./StateProvider";
 
 export const ContextMenu: React.FC = () => {
+  const targetRef = React.useRef<HTMLDivElement>(null);
   const state = useReactGridState();
-
-  if (
-    state.contextMenuPosition.top === -1 &&
-    state.contextMenuPosition.left === -1
-  )
-    return null;
-
   const { contextMenuPosition, selectedIds, selectionMode } = state;
+  const clickX = contextMenuPosition.left;
+  const clickY = contextMenuPosition.top;
+  if (clickY === -1 && clickX === -1) return null;
+  const screenW = window.innerWidth;
+  const screenH = window.innerHeight;
+  const menuW = targetRef?.current?.offsetWidth || 194;
+  const menuH = targetRef?.current?.offsetHeight || 150;
+
+  // Check to see if it's near the bottom
+  if (screenH - clickY < menuH) {
+    contextMenuPosition.top = screenH - menuH - 10;
+  } else {
+    contextMenuPosition.top = clickY;
+  }
+  // Check to see if it's close to the right
+  if (screenW - clickX < menuW) {
+    contextMenuPosition.left = screenW - menuW - 10;
+  } else {
+    contextMenuPosition.left = clickX;
+  }
 
   let contextMenuOptions = customContextMenuOptions(state);
 
@@ -45,6 +59,7 @@ export const ContextMenu: React.FC = () => {
 
   return (
     <div
+      ref={targetRef}
       className="rg-context-menu"
       style={{
         top: contextMenuPosition.top + "px",
