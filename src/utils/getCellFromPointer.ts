@@ -4,6 +4,9 @@ import { ReactGridStore } from "./reactGridStore";
 import { getContainerFromPoint } from "./getLocationFromClient";
 import { getScrollOfScrollableElement, getScrollableParent } from "./scrollHelpers";
 import { calcScrollBy } from "./calcScrollBy";
+import { get } from "http";
+import { getNonStickyCell } from "./getNonStickyCell";
+import { createMultiplierFromDistance } from "./createMultiplierFromDistance";
 
 /**
  * Retrieves the grid cell or coordinates (rowIndex, colIndex) based on pointer coordinates.
@@ -32,25 +35,29 @@ export const getCellFromPointer = (
 
   const { rowIndex, colIndex } = rowsAndColumns;
   // Get information about cell based on its row and column
-  const stickyCell = store.getCellByIndexes(rowIndex, colIndex);
+  const hoveredCell = store.getCellByIndexes(rowIndex, colIndex);
 
-  if (!stickyCell) return defaultReturn;
+  if (!hoveredCell) return defaultReturn;
 
   // If cell is sticky, TRY to find cellContainer under the sticky. If there is no such element, select the sticky.
-  if (isCellSticky(store, stickyCell)) {
-    const cellUnderTheSticky = document
-      .elementsFromPoint(clientX, clientY)
-      .find((el) => el.classList.contains("rgCellContainer") && el.classList !== cellContainer.classList); // ! This creates a problem if there is a sticky under another sticky.
-
+  if (isCellSticky(store, hoveredCell)) {
+    const stickyCell = cellContainer;
+    const stickyPane = getCellPane(store, hoveredCell)!;
     // Get the direction of sticky cell pane and scroll in that direction.
-    const stickyPane = getCellPane(store, stickyCell);
     const direction = getStickyPaneDirection(stickyPane)!.toLowerCase();
     const scrollableElement = getScrollableParent(store.reactGridRef!, true);
-    const { x, y } = calcScrollBy(direction, 5);
+
+    const cellUnderTheSticky = getNonStickyCell(store, clientX, clientY);
+
+    const hoveredCellRowsAndColumns = getRowAndColumns(cellUnderTheSticky || stickyCell);
+    const { rowIndex: secondCellRowIndex, colIndex: secondCellColIndex } = hoveredCellRowsAndColumns || defaultReturn
+
+    const MIN_SCROLL_SPEED = 8;
+    const scrollSpeed = createMultiplierFromDistance(rowIndex, colIndex, secondCellColIndex, secondCellRowIndex)
+
+    const { x, y } = calcScrollBy(direction, MIN_SCROLL_SPEED > scrollSpeed ? MIN_SCROLL_SPEED : scrollSpeed);
     // Scroll by x and y
     scrollableElement?.scrollBy(x, y);
-
-    console.log(cellUnderTheSticky)
 
     // If there is no cell under sticky, try to select sticky cell.
     if (!cellUnderTheSticky) {
@@ -62,11 +69,19 @@ export const getCellFromPointer = (
 
     const stickyCellRowsAndColumns = getRowAndColumns(cellUnderTheSticky);
 
-    if (!stickyCellRowsAndColumns) return defaultReturn;
-    const { rowIndex, colIndex } = stickyCellRowsAndColumns;
+    if (!stickyCellRowsAndColumns) {
 
-    return { rowIndex, colIndex };
+      return defaultReturn;
+    } else {
+
+      
+      const { rowIndex, colIndex } = stickyCellRowsAndColumns;
+      return { rowIndex, colIndex };
+    }
+
   } else {
     return { rowIndex, colIndex };
   }
 };
+
+
