@@ -1,4 +1,4 @@
-import { getRowAndColumns } from "../behaviors/CellSelectionBehavior";
+import { getRowAndColumns } from "./getRowAndColumns";
 import { getCellPane, getStickyPaneDirection, isCellSticky } from "./cellUtils";
 import { ReactGridStore } from "./reactGridStore";
 import { getContainerFromPoint } from "./getLocationFromClient";
