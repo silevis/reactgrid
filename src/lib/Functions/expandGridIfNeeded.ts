@@ -27,7 +27,7 @@ export const expandGridIfNeeded = (
     for (let i = 0; i < columnsToAdd; i++) {
       cellMatrix.columns.push({
         ...prefix,
-        columnId: `col-${currentColumnCount + i}`,
+        columnId: currentColumnCount + i,
         idx: currentColumnCount + i,
         left: prefix.right,
         right: prefix.right + prefix.width || CellMatrix.DEFAULT_COLUMN_WIDTH,
@@ -50,8 +50,8 @@ export const expandGridIfNeeded = (
     for (let i = 0; i < rowsToAdd; i++) {
       cellMatrix.rows.push({
         ...prefix,
+        rowId: currentRowCount + i,
         idx: currentRowCount + i,
-        rowId: `row-${currentRowCount + i}`,
         top: prefix.bottom,
         bottom: prefix.bottom + prefix.height || CellMatrix.DEFAULT_ROW_HEIGHT,
       });
