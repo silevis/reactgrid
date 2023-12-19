@@ -324,20 +324,18 @@ export const TestGrid: React.FC<TestGridProps> = (props) => {
   const handleChanges = (changes: CellChange<TestGridCells>[]) => {
     setRows((prevRows) => {
       const currentRows = [...prevRows];
+      const currentColumns = [...columns];
       changes.forEach((change) => {
-        let changeColumnIdx = columns.findIndex(
+        let changeColumnIdx = currentColumns.findIndex(
           (el) => el.columnId === change.columnId
         );
         // Extension column
         if (changeColumnIdx === -1) {
-          const newColumn = [
-            ...columns,
-            {
-              columnId: change.columnId,
-            } as Column,
-          ] as Column[];
-          setColumns(newColumn);
-          changeColumnIdx = newColumn.findIndex(
+          currentColumns.push({
+            columnId: change.columnId,
+          } as Column);
+          setColumns(currentColumns);
+          changeColumnIdx = currentColumns.findIndex(
             (el) => el.columnId === change.columnId
           );
         }
@@ -346,7 +344,7 @@ export const TestGrid: React.FC<TestGridProps> = (props) => {
         );
         // Extension line
         if (changeRowIdx === -1) {
-          const _cells = columns.map((_c) => {
+          const _cells = currentColumns.map((_c) => {
             return {
               type: "text",
               text: "",
@@ -360,7 +358,6 @@ export const TestGrid: React.FC<TestGridProps> = (props) => {
             (el) => el.rowId === change.rowId
           );
         }
-
         if (change.type === "flag") {
           // console.log(change.newCell.text);
         }
@@ -370,7 +367,6 @@ export const TestGrid: React.FC<TestGridProps> = (props) => {
         if (change.type === "checkbox") {
           // console.log(change.previousCell.checked);
         }
-
         currentRows[changeRowIdx].cells[changeColumnIdx] = change.newCell;
       });
       return [...currentRows];
