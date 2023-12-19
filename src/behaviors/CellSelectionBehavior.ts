@@ -223,9 +223,10 @@ export const CellSelectionBehavior: BehaviorConstructor = (setCurrentBehavior) =
       // }
       console.log("CSB/handlePointerMove");
 
-      const { rowIndex, colIndex } = getLocationFromClient(store, event.clientX, event.clientY);
+      // Get cell data that is in the same spot as cursor.
+      const { rowIndex, colIndex } = getCellFromPointer(store, event.clientX, event.clientY);
       const cell = store.getCellByIndexes(rowIndex, colIndex);
-      
+
       if (!cell) return store;
       // TODO: Handle sticky panes. [It's partially handled, but it's not working properly so I've disabled it for now]
       // if (!isCellInRange(store, cell, store.paneRanges.Center)) {
