@@ -225,7 +225,7 @@ export const CellSelectionBehavior: BehaviorConstructor = (setCurrentBehavior) =
 
 
       const { clientX, clientY } = event;
-      const { rowIndex, colIndex } = getCellFromPointer(store, clientX, clientY);
+      const { rowIndex, colIndex } = getCellFromPointer( clientX, clientY);
       const cell = store.getCellByIndexes(rowIndex, colIndex);
 
       if (!cell) return store;
