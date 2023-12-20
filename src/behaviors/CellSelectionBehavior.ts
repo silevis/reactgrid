@@ -211,6 +211,8 @@ const handleSelectionOnStickyPane = (
   return store;
 };
 
+
+
 export const CellSelectionBehavior: BehaviorConstructor = (setCurrentBehavior) => {
   const behavior: Behavior = {
     id: "CellSelection",
@@ -218,18 +220,21 @@ export const CellSelectionBehavior: BehaviorConstructor = (setCurrentBehavior) =
     handlePointerMove(event, store) {
       console.log("CSB/handlePointerMove");
 
-      // Get cell data that is in the same spot as cursor.
-
 
       const { clientX, clientY } = event;
       const { rowIndex, colIndex } = getCellFromPointer( clientX, clientY);
       const cell = store.getCellByIndexes(rowIndex, colIndex);
 
-      if (!cell) return store;
+      if (!cell) {
+        
+        return store
+      };
 
       if (isCellSticky(store, cell)) {
         const cellUnderTheSticky = getNonStickyCell(store, clientX, clientY);
-
+        
+        scrollTowardsSticky(store, cell, {rowIndex, colIndex});
+        
         if (cellUnderTheSticky) {
           const nonStickyRowsAndColumns = getRowAndColumns(cellUnderTheSticky);
           const { rowIndex: secondCellRowIndex, colIndex: secondCellColIndex } = nonStickyRowsAndColumns || {
@@ -237,10 +242,10 @@ export const CellSelectionBehavior: BehaviorConstructor = (setCurrentBehavior) =
             colIndex: -1,
           };
 
-          scrollTowardsSticky(store, cell, { rowIndex: secondCellRowIndex, colIndex: secondCellColIndex });
           return tryExpandingTowardsCell(store, cell, secondCellRowIndex, secondCellColIndex);
         }
       }
+
 
       return tryExpandingTowardsCell(store, cell, rowIndex, colIndex);
     },
