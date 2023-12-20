@@ -3,12 +3,10 @@ import { Cell } from "../types/PublicModel";
 import {
   findMinimalSelectedArea,
   getCellPane,
-  getStickyDirection,
   getStickyPaneDirection,
   isCellInRange,
   isCellSticky,
 } from "../utils/cellUtils";
-import { getLocationFromClient } from "../utils/getLocationFromClient";
 import { getCellFromPointer } from "../utils/getCellFromPointer";
 import { ReactGridStore } from "../utils/reactGridStore";
 import { getScrollOfScrollableElement, getScrollableParent, getSizeOfScrollableElement } from "../utils/scrollHelpers";
@@ -224,6 +222,7 @@ export const CellSelectionBehavior: BehaviorConstructor = (setCurrentBehavior) =
       console.log("CSB/handlePointerMove");
 
       // Get cell data that is in the same spot as cursor.
+
 
       const { clientX, clientY } = event;
       const { rowIndex, colIndex } = getCellFromPointer(store, clientX, clientY);
