@@ -8,6 +8,14 @@ import { getScrollableParent } from "./scrollHelpers";
 import { createMultiplierFromDistance } from "./createMultiplierFromDistance";
 import { calcScrollBy } from "./calcScrollBy";
 
+
+/**
+ * Scrolls towards the sticky cell.
+ * @param store The react grid store.
+ * @param startingPointCell The cell from which the scroll should start.
+ * @param stickyCell The sticky cell to scroll towards.
+ */
+
 export function scrollTowardsSticky(
   store: ReactGridStore,
   startingPointCell: Cell,

@@ -1,14 +1,12 @@
 import { getRowAndColumns } from "./getRowAndColumns";
-import { ReactGridStore } from "./reactGridStore";
 import { getContainerFromPoint } from "./getLocationFromClient";
 
 
 /**
- * Retrieves the grid cell or coordinates (rowIndex, colIndex) based on pointer coordinates.
- * @param {ReactGridStore} store - The ReactGridStore instance.
- * @param {number} clientX - The X-coordinate of the pointer.
- * @param {number} clientY - The Y-coordinate of the pointer.
- * @returns {HTMLElement | { rowIndex: number; colIndex: number }} - Returns either an HTMLElement representing the cell container or an object containing rowIndex and colIndex.
+ * Returns the row and column index of the cell that contains the pointer
+ * @param clientX - The x coordinate of the pointer
+ * @param clientY - The y coordinate of the pointer
+ * @returns The row and column index of the cell that contains the pointer
  */
 
 export const getCellFromPointer = (

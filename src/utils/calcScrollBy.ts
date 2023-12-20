@@ -1,10 +1,10 @@
-// 1. get scrollable element
-// 2. get scroll of scrollable element
-// 3. get direction of sticky pane
-// 4. calculate X and Y based on direction
-// 5. scroll in that direction
 
-
+/**
+ * Calculates the scroll direction. It also can apply a multiplier to the scroll speed in selected direction.
+ * @param direction The direction to scroll.
+ * @param multiplier The multiplier to apply to the scroll direction.
+ * @returns The scroll direction.
+ */
 export const calcScrollBy = (direction: string, multiplier?: number): { x: number; y: number; } => {
   let x = 0;
   let y = 0;
