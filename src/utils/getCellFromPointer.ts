@@ -39,49 +39,18 @@ export const getCellFromPointer = (
 
   if (!hoveredCell) return defaultReturn;
 
-  // If cell is sticky, TRY to find cellContainer under the sticky. If there is no such element, select the sticky.
   if (isCellSticky(store, hoveredCell)) {
-    const stickyCell = cellContainer;
-    const stickyPane = getCellPane(store, hoveredCell)!;
-    // Get the direction of sticky cell pane and scroll in that direction.
-    const direction = getStickyPaneDirection(stickyPane)!.toLowerCase();
-    const scrollableElement = getScrollableParent(store.reactGridRef!, true);
-
     const cellUnderTheSticky = getNonStickyCell(store, clientX, clientY);
+    if (!cellUnderTheSticky) return { rowIndex, colIndex };
 
-    const hoveredCellRowsAndColumns = getRowAndColumns(cellUnderTheSticky || stickyCell);
-    const { rowIndex: secondCellRowIndex, colIndex: secondCellColIndex } = hoveredCellRowsAndColumns || defaultReturn
+    const nonStickyRowsAndColumns = getRowAndColumns(cellUnderTheSticky);
+    const { rowIndex: secondCellRowIndex, colIndex: secondCellColIndex } = nonStickyRowsAndColumns || {
+      rowIndex: -1,
+      colIndex: -1,
+    };
 
-    const MIN_SCROLL_SPEED = 8;
-    const scrollSpeed = createMultiplierFromDistance(rowIndex, colIndex, secondCellColIndex, secondCellRowIndex)
-
-    const { x, y } = calcScrollBy(direction, MIN_SCROLL_SPEED > scrollSpeed ? MIN_SCROLL_SPEED : scrollSpeed);
-    // Scroll by x and y
-    scrollableElement?.scrollBy(x, y);
-
-    // If there is no cell under sticky, try to select sticky cell.
-    if (!cellUnderTheSticky) {
-      if (!rowsAndColumns) return defaultReturn;
-
-      const { rowIndex, colIndex } = rowsAndColumns;
-      return { rowIndex, colIndex };
-    }
-
-    const stickyCellRowsAndColumns = getRowAndColumns(cellUnderTheSticky);
-
-    if (!stickyCellRowsAndColumns) {
-
-      return defaultReturn;
-    } else {
-
-      
-      const { rowIndex, colIndex } = stickyCellRowsAndColumns;
-      return { rowIndex, colIndex };
-    }
-
-  } else {
-    return { rowIndex, colIndex };
+    return { rowIndex: secondCellRowIndex, colIndex: secondCellColIndex };
   }
+
+  return { rowIndex, colIndex };
 };
-
-

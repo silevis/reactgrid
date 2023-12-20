@@ -4,6 +4,7 @@ import {
   findMinimalSelectedArea,
   getCellPane,
   getStickyDirection,
+  getStickyPaneDirection,
   isCellInRange,
   isCellSticky,
 } from "../utils/cellUtils";
@@ -11,6 +12,9 @@ import { getLocationFromClient } from "../utils/getLocationFromClient";
 import { getCellFromPointer } from "../utils/getCellFromPointer";
 import { ReactGridStore } from "../utils/reactGridStore";
 import { getScrollOfScrollableElement, getScrollableParent, getSizeOfScrollableElement } from "../utils/scrollHelpers";
+import { createMultiplierFromDistance } from "../utils/createMultiplierFromDistance";
+import { calcScrollBy } from "../utils/calcScrollBy";
+import { getRowAndColumns } from "../utils/getRowAndColumns";
 
 // const tryExpandingTowardsPointer = (store: ReactGridStore, x: number, y: number) => {
 //   if (!store.reactGridRef) return store;
@@ -224,10 +228,17 @@ export const CellSelectionBehavior: BehaviorConstructor = (setCurrentBehavior) =
       console.log("CSB/handlePointerMove");
 
       // Get cell data that is in the same spot as cursor.
-      const { rowIndex, colIndex } = getCellFromPointer(store, event.clientX, event.clientY);
+
+      const { clientX, clientY } = event;
+      const { rowIndex, colIndex } = getCellFromPointer(store, clientX, clientY);
       const cell = store.getCellByIndexes(rowIndex, colIndex);
 
       if (!cell) return store;
+
+      scrollTowardsSticky(store, cell);
+
+      // If cell is sticky, TRY to find cellContainer under the sticky. If there is no such element, select the sticky.
+
       // TODO: Handle sticky panes. [It's partially handled, but it's not working properly so I've disabled it for now]
       // if (!isCellInRange(store, cell, store.paneRanges.Center)) {
       //   // Targeted cell is on sticky pane
@@ -250,3 +261,22 @@ export const CellSelectionBehavior: BehaviorConstructor = (setCurrentBehavior) =
 
   return behavior;
 };
+
+function scrollTowardsSticky(store: ReactGridStore, cell: Cell): void {
+  const stickyPane = getCellPane(store, cell)!;
+  // Get the direction of sticky cell pane and scroll in that direction.
+  const direction = getStickyPaneDirection(stickyPane)!.toLowerCase();
+  const scrollableElement = getScrollableParent(store.reactGridRef!, true);
+
+  const MIN_SCROLL_SPEED = 8;
+  const scrollSpeed = createMultiplierFromDistance(
+    store.focusedLocation.rowIndex,
+    store.focusedLocation.colIndex,
+    Number(cell.rowId),
+    Number(cell.colId)
+  );
+
+  const { x, y } = calcScrollBy(direction, MIN_SCROLL_SPEED > scrollSpeed ? MIN_SCROLL_SPEED : scrollSpeed);
+  // Scroll by x and y
+  scrollableElement?.scrollBy(x, y);
+}
