@@ -1,12 +1,7 @@
 import { getRowAndColumns } from "./getRowAndColumns";
-import { getCellPane, getStickyPaneDirection, isCellSticky } from "./cellUtils";
 import { ReactGridStore } from "./reactGridStore";
 import { getContainerFromPoint } from "./getLocationFromClient";
-import { getScrollOfScrollableElement, getScrollableParent } from "./scrollHelpers";
-import { calcScrollBy } from "./calcScrollBy";
-import { get } from "http";
-import { getNonStickyCell } from "./getNonStickyCell";
-import { createMultiplierFromDistance } from "./createMultiplierFromDistance";
+
 
 /**
  * Retrieves the grid cell or coordinates (rowIndex, colIndex) based on pointer coordinates.
@@ -17,7 +12,6 @@ import { createMultiplierFromDistance } from "./createMultiplierFromDistance";
  */
 
 export const getCellFromPointer = (
-  store: ReactGridStore,
   clientX: number,
   clientY: number
 ): {  rowIndex: -1; colIndex: -1 } | { rowIndex: number; colIndex: number } => {
