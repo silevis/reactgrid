@@ -1,10 +1,6 @@
 import { Behavior, BehaviorConstructor } from "../types/Behavior";
 import { Cell } from "../types/PublicModel";
-import {
-  findMinimalSelectedArea,
-  isCellInRange,
-  isCellSticky,
-} from "../utils/cellUtils";
+import { findMinimalSelectedArea, isCellInRange, isCellSticky } from "../utils/cellUtils";
 import { getCellFromPointer } from "../utils/getCellFromPointer";
 import { ReactGridStore } from "../utils/reactGridStore";
 import { getScrollOfScrollableElement, getScrollableParent, getSizeOfScrollableElement } from "../utils/scrollHelpers";
@@ -211,8 +207,7 @@ const handleSelectionOnStickyPane = (
   return store;
 };
 
-
-
+let interval: ReturnType<typeof setInterval> | null = null;
 export const CellSelectionBehavior: BehaviorConstructor = (setCurrentBehavior) => {
   const behavior: Behavior = {
     id: "CellSelection",
@@ -220,21 +215,22 @@ export const CellSelectionBehavior: BehaviorConstructor = (setCurrentBehavior) =
     handlePointerMove(event, store) {
       console.log("CSB/handlePointerMove");
 
-
       const { clientX, clientY } = event;
-      const { rowIndex, colIndex } = getCellFromPointer( clientX, clientY);
+      const { rowIndex, colIndex } = getCellFromPointer(clientX, clientY);
       const cell = store.getCellByIndexes(rowIndex, colIndex);
 
-      if (!cell) {
-        
-        return store
-      };
+      if (!cell) return store;
 
       if (isCellSticky(store, cell)) {
         const cellUnderTheSticky = getNonStickyCell(store, clientX, clientY);
-        
-        scrollTowardsSticky(store, cell, {rowIndex, colIndex});
-        
+
+        if (!interval) {
+          interval = setInterval(() => {
+            console.log('interval')
+            scrollTowardsSticky(store, cell, { rowIndex, colIndex });
+          }, 300);
+        }
+
         if (cellUnderTheSticky) {
           const nonStickyRowsAndColumns = getRowAndColumns(cellUnderTheSticky);
           const { rowIndex: secondCellRowIndex, colIndex: secondCellColIndex } = nonStickyRowsAndColumns || {
@@ -246,7 +242,6 @@ export const CellSelectionBehavior: BehaviorConstructor = (setCurrentBehavior) =
         }
       }
 
-
       return tryExpandingTowardsCell(store, cell, rowIndex, colIndex);
     },
 
@@ -254,7 +249,12 @@ export const CellSelectionBehavior: BehaviorConstructor = (setCurrentBehavior) =
       // window.removeEventListener("pointermove", (e) => behavior.handlePointerMove(e, store));
       // window.removeEventListener("pointerup", (e) => behavior.handlePointerUp(e, store));
       const DefaultBehavior = store.getBehavior("Default");
+      console.log('up', interval)
+      if (interval) {
 
+        clearInterval(interval);
+        interval = null;
+      }
       setCurrentBehavior(DefaultBehavior(setCurrentBehavior));
 
       return store;
@@ -263,5 +263,3 @@ export const CellSelectionBehavior: BehaviorConstructor = (setCurrentBehavior) =
 
   return behavior;
 };
-
-
