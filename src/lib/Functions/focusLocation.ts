@@ -4,11 +4,21 @@ import { tryAppendChange } from './tryAppendChange';
 import { getCompatibleCellAndTemplate } from './getCompatibleCellAndTemplate';
 import { areLocationsEqual } from './areLocationsEqual';
 import { resetSelection } from './selectRange';
+import { keyCodes } from './keyCodes';
 
 
-export function focusLocation(state: State, location: Location, applyResetSelection = true): State {
-    if (state.focusedLocation && state.currentlyEditedCell) {
-        state = tryAppendChange(state, state.focusedLocation, state.currentlyEditedCell);
+export function focusLocation(state: State, location: Location, applyResetSelection = true, keyCode?: keyCodes): State {
+    // Need to determine if there is an edited cell &&The cell gets focus &&did not press Enter
+    if (
+      state.focusedLocation &&
+      state.currentlyEditedCell &&
+      !(keyCode === keyCodes.ENTER)
+    ) {
+      state = tryAppendChange(
+        state,
+        state.focusedLocation,
+        state.currentlyEditedCell
+      );
     }
 
     if (!state.props) {
