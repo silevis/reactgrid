@@ -1,12 +1,19 @@
-import { useReactGridId } from "../components/ReactGridIdProvider";
-import { BehaviorConstructor } from "../types/Behavior";
+import { Behavior } from "../types/Behavior";
 import { IndexedLocation } from "../types/InternalModel";
 import { EMPTY_AREA, areAreasEqual } from "../utils/cellUtils";
 import { moveFocusInsideSelectedRange } from "../utils/focus";
 import { handleKeyDown } from "../utils/handleKeyDown";
-import { ReactGridStore, useReactGridStore } from "../utils/reactGridStore";
+import { ReactGridStore } from "../utils/reactGridStore";
 
-export const DefaultBehavior: BehaviorConstructor = (setCurrentBehavior) => {
+type DefaultBehaviorConfig = {
+  moveHorizontallyOnEnter: boolean;
+};
+
+const CONFIG_DEFAULTS: DefaultBehaviorConfig = {
+  moveHorizontallyOnEnter: false,
+} as const;
+
+export const DefaultBehavior: Behavior<DefaultBehaviorConfig> = (setCurrentBehavior, config = CONFIG_DEFAULTS) => {
   const timer: ReturnType<typeof setTimeout> | null = null;
   let pointerDownPosition: { x: number; y: number } | null = null;
 
@@ -122,10 +129,10 @@ export const DefaultBehavior: BehaviorConstructor = (setCurrentBehavior) => {
 
       const isAnyAreaSelected = !areAreasEqual(store.selectedArea, EMPTY_AREA);
       if (isAnyAreaSelected) {
-        switch (event.key) {  
+        switch (event.key) {
           case "Enter": {
             event.preventDefault();
-    
+
             if (event.shiftKey) return moveFocusInsideSelectedRange(store, focusedCell, "up");
             else return moveFocusInsideSelectedRange(store, focusedCell, "down");
           }
@@ -133,6 +140,6 @@ export const DefaultBehavior: BehaviorConstructor = (setCurrentBehavior) => {
       }
 
       return store;
-    }
+    },
   };
 };

@@ -3,7 +3,10 @@ import { ReactGridStore } from "../utils/reactGridStore";
 
 export type BehaviorId = "Default" | "CellSelection" | string;
 
-export interface Behavior {
+export type Behavior<Config = unknown> = (
+  setCurrentBehavior: (behavior: Behavior) => void,
+  config?: Config
+) => {
   readonly id: BehaviorId;
 
   handlePointerDown: (event: React.PointerEvent<HTMLDivElement>, store: ReactGridStore) => ReactGridStore;
@@ -27,6 +30,6 @@ export interface Behavior {
   handlePaste: (event: React.ClipboardEvent<HTMLDivElement>, store: ReactGridStore) => ReactGridStore;
 
   handleContextMenu: (event: React.MouseEvent<HTMLDivElement>, store: ReactGridStore) => ReactGridStore;
-}
+};
 
-export type BehaviorConstructor = (setCurrentBehavior: (behavior: Behavior) => void) => Behavior;
+export type BehaviorInitializer = (setCurrentBehavior: (behavior: Behavior) => void) => Behavior;

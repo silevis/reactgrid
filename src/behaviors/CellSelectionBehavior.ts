@@ -1,4 +1,4 @@
-import { Behavior, BehaviorConstructor } from "../types/Behavior";
+import { Behavior } from "../types/Behavior";
 import { Cell } from "../types/PublicModel";
 import { findMinimalSelectedArea, isCellInRange } from "../utils/cellUtils";
 import { getLocationFromClient } from "../utils/getLocationFromClient";
@@ -143,7 +143,6 @@ const tryExpandingTowardsCell = (store: ReactGridStore, cell: Cell, rowIndex: nu
   };
 }
 
-
 const handleSelectionOnStickyPane = (store: ReactGridStore, cell: Cell, rowIndex: number, colIndex: number, x: number, y: number): ReactGridStore => {
   if (!store.reactGridRef) throw new Error('ReactGridRef is not assigned!');
   
@@ -198,41 +197,35 @@ const handleSelectionOnStickyPane = (store: ReactGridStore, cell: Cell, rowIndex
   return store;
 }
 
-export const CellSelectionBehavior: BehaviorConstructor = (setCurrentBehavior) => {
-  const behavior: Behavior = {
-    id: "CellSelection",
+export const CellSelectionBehavior: Behavior = (setCurrentBehavior, config) => ({
+  handlePointerMove(event, store) {
+    // if (!didAttachListeners) {
+    //   window.addEventListener("pointermove", (e) => behavior.handlePointerMove(e, store));
+    //   window.addEventListener("pointerup", (e) => behavior.handlePointerUp(e, store));
+    //   didAttachListeners = true;
+    // }
+    console.log("CSB/handlePointerMove");
 
-    handlePointerMove(event, store) {
-      // if (!didAttachListeners) {
-      //   window.addEventListener("pointermove", (e) => behavior.handlePointerMove(e, store));
-      //   window.addEventListener("pointerup", (e) => behavior.handlePointerUp(e, store));
-      //   didAttachListeners = true;
-      // }
-      console.log("CSB/handlePointerMove");
+    const { rowIndex, colIndex } = getLocationFromClient(store, event.clientX, event.clientY);
+    const cell = store.getCellByIndexes(rowIndex, colIndex);
+    
+    if (!cell) return store;
+    // TODO: Handle sticky panes. [It's partially handled, but it's not working properly so I've disabled it for now]
+    // if (!isCellInRange(store, cell, store.paneRanges.Center)) {
+    //   // Targeted cell is on sticky pane
+    //   return handleSelectionOnStickyPane(store, cell, rowIndex, colIndex, event.clientX, event.clientY);
+    // }
 
-      const { rowIndex, colIndex } = getLocationFromClient(store, event.clientX, event.clientY);
-      const cell = store.getCellByIndexes(rowIndex, colIndex);
-      
-      if (!cell) return store;
-      // TODO: Handle sticky panes. [It's partially handled, but it's not working properly so I've disabled it for now]
-      // if (!isCellInRange(store, cell, store.paneRanges.Center)) {
-      //   // Targeted cell is on sticky pane
-      //   return handleSelectionOnStickyPane(store, cell, rowIndex, colIndex, event.clientX, event.clientY);
-      // }
+    return tryExpandingTowardsCell(store, cell, rowIndex, colIndex);
+  },
 
-      return tryExpandingTowardsCell(store, cell, rowIndex, colIndex);
-    },
+  handlePointerUp(event, store) {
+    // window.removeEventListener("pointermove", (e) => behavior.handlePointerMove(e, store));
+    // window.removeEventListener("pointerup", (e) => behavior.handlePointerUp(e, store));
+    const DefaultBehavior = store.getBehavior("Default");
 
-    handlePointerUp(event, store) {
-      // window.removeEventListener("pointermove", (e) => behavior.handlePointerMove(e, store));
-      // window.removeEventListener("pointerup", (e) => behavior.handlePointerUp(e, store));
-      const DefaultBehavior = store.getBehavior("Default");
+    setCurrentBehavior(DefaultBehavior(setCurrentBehavior));
 
-      setCurrentBehavior(DefaultBehavior(setCurrentBehavior));
-
-      return store;
-    },
-  };
-
-  return behavior;
-};
+    return store;
+  },
+});

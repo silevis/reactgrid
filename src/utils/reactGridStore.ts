@@ -1,7 +1,7 @@
 import { StoreApi, create, createStore, useStore } from "zustand";
 import { CellSelectionBehavior } from "../behaviors/CellSelectionBehavior";
 import { DefaultBehavior } from "../behaviors/DefaultBehavior";
-import { BehaviorConstructor } from "../types/Behavior";
+import { BehaviorInitializer } from "../types/Behavior";
 import { NumericalRange } from "../types/CellMatrix";
 import { FocusedCell, IndexedLocation, PaneName } from "../types/InternalModel";
 import { Cell, CellMap, Column, Row, SpanMember } from "../types/PublicModel";
@@ -45,9 +45,9 @@ export interface ReactGridStore {
   // ) => void;
 
   /* == Behaviors == */
-  behaviors: Record<string, BehaviorConstructor>;
-  readonly setBehaviors: (behaviors: Record<string, BehaviorConstructor>) => void;
-  readonly getBehavior: (behaviorId: string) => BehaviorConstructor;
+  behaviors: Record<string, BehaviorInitializer>;
+  readonly setBehaviors: (behaviors: Record<string, BehaviorInitializer>) => void;
+  readonly getBehavior: (behaviorId: string) => BehaviorInitializer;
 
   // /* == Callbacks == */
   // onCellChange: NonNullable<ReactGridProps["onCellChange"]>;
@@ -145,8 +145,8 @@ export function useReactGridStore<T>(id: string, selector: (store: ReactGridStor
         assignHiddenFocusTargetRef: (hiddenFocusTargetRef) => set(() => ({ hiddenFocusTargetRef })),
 
         behaviors: {
-          "Default": DefaultBehavior,
-          "CellSelection": CellSelectionBehavior,
+          "Default": (setCurrentBehavior) => DefaultBehavior(setCurrentBehavior),
+          "CellSelection": (setCurrentBehavior) => CellSelectionBehavior(setCurrentBehavior),
         },
         setBehaviors: (behaviors) => set(() => ({ ...get().behaviors, ...behaviors })),
         getBehavior: (behaviorId) => {
