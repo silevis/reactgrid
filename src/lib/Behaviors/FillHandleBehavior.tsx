@@ -75,6 +75,7 @@ export class FillHandleBehavior extends Behavior {
         const selectedCell = selectedCells[i % selectedCells.length];
         return {
           ...cell,
+          checked: selectedCell.checked,
           text:
             areParametersNaNs || isKeyPressed
               ? selectedCell.text

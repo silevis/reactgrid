@@ -531,6 +531,8 @@ export interface Cell {
     style?: CellStyle;
     /** Additional CSS classes */
     className?: string;
+    /** Checkbox cell specific properties */
+    checked?: boolean;
 }
 
 /**
