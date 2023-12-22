@@ -16,6 +16,7 @@ import { pasteData } from "../Functions/pasteData";
 import { getActiveSelectedRange } from "../Functions/getActiveSelectedRange";
 import { getSelectedLocations } from "../Functions/getSelectedLocations";
 import { useReactGridState } from "./StateProvider";
+import { parseLocaleNumber } from "../Functions/parseLocaleNumber";
 
 export const ContextMenu: React.FC = () => {
   const state = useReactGridState();
@@ -158,7 +159,7 @@ function handleContextMenuPaste(state: State) {
                   return {
                     type: "text",
                     text,
-                    value: parseFloat(text),
+                    value: parseLocaleNumber(text),
                   };
                 }
                 const { cell } = getCompatibleCellAndTemplate(proState, {
@@ -167,9 +168,9 @@ function handleContextMenuPaste(state: State) {
                 });
                 return {
                   type: "text",
-                  // probably this ternanary and spread operator is no longer needed
+                  // probably this spread operator is no longer needed
                   text: text,
-                  value: parseFloat(text),
+                  value: parseLocaleNumber(text),
                   ...(applyMetaData && {
                     groupId: cell.groupId,
                   }),
