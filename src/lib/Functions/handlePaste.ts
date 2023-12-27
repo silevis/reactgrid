@@ -3,6 +3,7 @@ import { Compatible, Cell } from '../Model/PublicModel';
 import { ClipboardEvent } from '../Model/domEventsTypes';
 import { getActiveSelectedRange } from './getActiveSelectedRange';
 import { pasteData } from './pasteData';
+import { parseLocaleNumber } from './parseLocaleNumber';
 
 export function handlePaste(event: ClipboardEvent, state: State): State {
     const activeSelectedRange = getActiveSelectedRange(state);
@@ -31,7 +32,7 @@ export function handlePaste(event: ClipboardEvent, state: State): State {
             tableRows[ri].children[ci].getAttribute("data-reactgrid");
           const data = rawData && JSON.parse(rawData);
           const text = tableRows[ri].children[ci].innerHTML;
-          row.push(data ? data : { type: "text", text, value: parseFloat(text) });
+          row.push(data ? data : { type: "text", text, value: parseLocaleNumber(text) });
         }
         pastedRows.push(row);
       }
@@ -42,7 +43,7 @@ export function handlePaste(event: ClipboardEvent, state: State): State {
         .map((line: string) =>
           line
             .split("\t")
-            .map((t) => ({ type: "text", text: t, value: parseFloat(t) }))
+            .map((t) => ({ type: "text", text: t, value: parseLocaleNumber(t) }))
         );
     }
     event.preventDefault();
