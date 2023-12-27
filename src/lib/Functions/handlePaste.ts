@@ -6,6 +6,7 @@ import { pasteData } from './pasteData';
 import { parseLocaleNumber } from './parseLocaleNumber';
 
 export function handlePaste(event: ClipboardEvent, state: State): State {
+  console.log('handlePaste')
     const activeSelectedRange = getActiveSelectedRange(state);
     if (!activeSelectedRange) {
       return state;
