@@ -77,7 +77,7 @@ export class FillHandleBehavior extends Behavior {
           ...cell,
           // ! Patch for checkbox cell template
           // TODO: look for better solution
-          ...(cell.type === "checkbox" && { checked: "checked" in selectedCell ? selectedCell.checked : !!selectedCell.value })
+          ...(cell.type === "checkbox" && { checked: "checked" in selectedCell ? selectedCell.checked : !!selectedCell.value }),
           text:
             areParametersNaNs || isKeyPressed
               ? selectedCell.text
