@@ -7,17 +7,15 @@ export function getCellFromCertainPane(
   cellContainers: Element[],
   paneName: string
 ): HTMLElement | undefined {
-  let cell;
+  const cell = cellContainers.find((container) => {
+    const cellIndexes = getRowAndColumns(container);
+    if (!cellIndexes) return;
 
-  cellContainers.forEach((container) => {
-    const rowsAndCols = getRowAndColumns(container);
-    if (!rowsAndCols) return;
-
-    const { rowIndex, colIndex } = rowsAndCols;
+    const { rowIndex, colIndex } = cellIndexes;
 
     const pane = getCellPane(store, store.getCellByIndexes(rowIndex, colIndex)!);
 
-    if (getStickyPaneDirection(pane)?.toLowerCase() === paneName.toLowerCase()) cell = container;
+    return getStickyPaneDirection(pane)?.toLowerCase() === paneName.toLowerCase();
   });
   return cell;
 }
