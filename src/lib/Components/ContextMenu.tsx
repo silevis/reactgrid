@@ -21,25 +21,25 @@ export const ContextMenu: React.FC = () => {
   const targetRef = React.useRef<HTMLDivElement>(null);
   const state = useReactGridState();
   const { contextMenuPosition, selectedIds, selectionMode } = state;
-  const clickX = contextMenuPosition.left;
-  const clickY = contextMenuPosition.top;
-  if (clickY !== -1 && clickX !== -1 && targetRef.current) {
-    const screenW = window.innerWidth;
-    const screenH = window.innerHeight;
-    const menuW = targetRef.current.offsetWidth;
-    const menuH = targetRef.current.offsetHeight;
+  const clickPositionX = contextMenuPosition.left;
+  const clickPositionY = contextMenuPosition.top;
+  if (clickPositionY !== -1 && clickPositionX !== -1 && targetRef.current) {
+    const screenWidth = window.innerWidth;
+    const screenHeight = window.innerHeight;
+    const menuWidth = targetRef.current.offsetWidth;
+    const menuHeight = targetRef.current.offsetHeight;
 
     // Check to see if it's near the bottom
-    if (screenH - clickY < menuH) {
-      contextMenuPosition.top = screenH - menuH - 20;
+    if (screenHeight - clickPositionY < menuHeight) {
+      contextMenuPosition.top = screenHeight - menuHeight - 20;
     } else {
-      contextMenuPosition.top = clickY;
+      contextMenuPosition.top = clickPositionY;
     }
     // Check to see if it's close to the right
-    if (screenW - clickX < menuW) {
-      contextMenuPosition.left = screenW - menuW - 20;
+    if (screenWidth - clickPositionX < menuWidth) {
+      contextMenuPosition.left = screenWidth - menuWidth - 20;
     } else {
-      contextMenuPosition.left = clickX;
+      contextMenuPosition.left = clickPositionX;
     }
   }
 
@@ -64,7 +64,7 @@ export const ContextMenu: React.FC = () => {
       className="rg-context-menu"
       style={{
         // Visually disappear but maintain the layout
-        visibility: clickY === -1 && clickX === -1 ? "hidden" : "visible",
+        visibility: clickPositionY === -1 && clickPositionX === -1 ? "hidden" : "visible",
         top: contextMenuPosition.top + "px",
         left: contextMenuPosition.left + "px",
       }}
