@@ -1,4 +1,4 @@
-import { getCellIndexes } from "./getCellIndexes";
+import { getCellIndexesFromContainerElement } from "./getCellIndexes";
 import { getContainerFromPoint } from "./getLocationFromClient";
 
 
@@ -21,7 +21,7 @@ export const getCellIndexesFromPointerLocation = (
   if (!cellContainer) return noCellIndexes;
 
   // Get information about rows and columns from cellContainer
-  const cellIndexes = getCellIndexes(cellContainer);
+  const cellIndexes = getCellIndexesFromContainerElement(cellContainer);
 
   if (!cellIndexes) return noCellIndexes;
 

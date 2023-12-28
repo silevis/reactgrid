@@ -4,7 +4,7 @@ import { Cell } from "../types/PublicModel";
 import { findMinimalSelectedArea, isCellSticky } from "../utils/cellUtils";
 import { getCellIndexesFromPointerLocation } from "../utils/getCellIndexesFromPointerLocation";
 import { ReactGridStore } from "../utils/reactGridStore";
-import { getCellIndexes } from "../utils/getCellIndexes";
+import { getCellIndexesFromContainerElement } from "../utils/getCellIndexes";
 import { getNonStickyCell } from "../utils/getNonStickyCell";
 import { scrollTowardsSticky } from "../utils/scrollTowardsSticky";
 
@@ -78,7 +78,7 @@ export const CellSelectionBehavior: BehaviorConstructor = (setCurrentBehavior) =
         scrollTowardsSticky(store, cell, { rowIndex, colIndex });
 
         if (cellUnderTheSticky) {
-          const nonStickyRowsAndColumns = getCellIndexes(cellUnderTheSticky);
+          const nonStickyRowsAndColumns = getCellIndexesFromContainerElement(cellUnderTheSticky);
           const { rowIndex: secondCellRowIndex, colIndex: secondCellColIndex } = nonStickyRowsAndColumns || {
             rowIndex: -1,
             colIndex: -1,
@@ -93,12 +93,6 @@ export const CellSelectionBehavior: BehaviorConstructor = (setCurrentBehavior) =
 
     handlePointerUp(_event, store) {
       const DefaultBehavior = store.getBehavior("Default");
-      console.log('up', interval)
-      if (interval) {
-
-        clearInterval(interval);
-        interval = null;
-      }
       setCurrentBehavior(DefaultBehavior(setCurrentBehavior));
 
       return store;
