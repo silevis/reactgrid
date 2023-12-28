@@ -23,23 +23,24 @@ export const ContextMenu: React.FC = () => {
   const { contextMenuPosition, selectedIds, selectionMode } = state;
   const clickX = contextMenuPosition.left;
   const clickY = contextMenuPosition.top;
-  if (clickY === -1 && clickX === -1) return null;
-  const screenW = window.innerWidth;
-  const screenH = window.innerHeight;
-  const menuW = targetRef?.current?.offsetWidth || 194;
-  const menuH = targetRef?.current?.offsetHeight || 150;
+  if (clickY !== -1 && clickX !== -1 && targetRef.current) {
+    const screenW = window.innerWidth;
+    const screenH = window.innerHeight;
+    const menuW = targetRef.current.offsetWidth;
+    const menuH = targetRef.current.offsetHeight;
 
-  // Check to see if it's near the bottom
-  if (screenH - clickY < menuH) {
-    contextMenuPosition.top = screenH - menuH - 10;
-  } else {
-    contextMenuPosition.top = clickY;
-  }
-  // Check to see if it's close to the right
-  if (screenW - clickX < menuW) {
-    contextMenuPosition.left = screenW - menuW - 10;
-  } else {
-    contextMenuPosition.left = clickX;
+    // Check to see if it's near the bottom
+    if (screenH - clickY < menuH) {
+      contextMenuPosition.top = screenH - menuH - 20;
+    } else {
+      contextMenuPosition.top = clickY;
+    }
+    // Check to see if it's close to the right
+    if (screenW - clickX < menuW) {
+      contextMenuPosition.left = screenW - menuW - 20;
+    } else {
+      contextMenuPosition.left = clickX;
+    }
   }
 
   let contextMenuOptions = customContextMenuOptions(state);
@@ -62,6 +63,8 @@ export const ContextMenu: React.FC = () => {
       ref={targetRef}
       className="rg-context-menu"
       style={{
+        // Visually disappear but maintain the layout
+        visibility: clickY === -1 && clickX === -1 ? "hidden" : "visible",
         top: contextMenuPosition.top + "px",
         left: contextMenuPosition.left + "px",
       }}
