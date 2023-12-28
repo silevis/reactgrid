@@ -9,7 +9,7 @@ import { getContainerFromPoint } from "./getLocationFromClient";
  * @returns The row and column index of the cell that contains the pointer
  */
 
-export const getCellFromPointerIndexes = (
+export const getCellIndexesFromPointerLocation = (
   clientX: number,
   clientY: number
 ): {  rowIndex: -1; colIndex: -1 } | { rowIndex: number; colIndex: number } => {

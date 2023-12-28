@@ -2,7 +2,7 @@
 import { Behavior, BehaviorConstructor } from "../types/Behavior";
 import { Cell } from "../types/PublicModel";
 import { findMinimalSelectedArea, isCellSticky } from "../utils/cellUtils";
-import { getCellFromPointerIndexes } from "../utils/getCellFromPointerIndexes";
+import { getCellIndexesFromPointerLocation } from "../utils/getCellIndexesFromPointerLocation";
 import { ReactGridStore } from "../utils/reactGridStore";
 import { getCellIndexes } from "../utils/getCellIndexes";
 import { getNonStickyCell } from "../utils/getNonStickyCell";
@@ -65,7 +65,7 @@ export const CellSelectionBehavior: BehaviorConstructor = (setCurrentBehavior) =
       console.log("CSB/handlePointerMove");
 
       const { clientX, clientY } = event;
-      const { rowIndex, colIndex } = getCellFromPointerIndexes(clientX, clientY);
+      const { rowIndex, colIndex } = getCellIndexesFromPointerLocation(clientX, clientY);
       const cell = store.getCellByIndexes(rowIndex, colIndex);
 
       if (!cell) {
