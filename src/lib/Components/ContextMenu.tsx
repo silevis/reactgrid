@@ -6,17 +6,13 @@ import {
   i18n,
   isIOS,
   isIpadOS,
-  getCompatibleCellAndTemplate,
-  isMacOs,
-  Compatible,
-  Cell,
 } from "../../core";
 import { copySelectedRangeToClipboard } from "../Functions/copySelectedRangeToClipboard";
 import { pasteData } from "../Functions/pasteData";
 import { getActiveSelectedRange } from "../Functions/getActiveSelectedRange";
 import { getSelectedLocations } from "../Functions/getSelectedLocations";
 import { useReactGridState } from "./StateProvider";
-import { parseLocaleNumber } from "../Functions/parseLocaleNumber";
+import getRowsFromClipboard from "../Functions/getRowsFromClipboard";
 
 export const ContextMenu: React.FC = () => {
   const state = useReactGridState();
@@ -121,69 +117,9 @@ function handleContextMenuPaste(state: State) {
       }`
     );
   } else {
-    navigator.clipboard
-      ?.readText()
-      .then((e) =>
-        state.update((state) => {
-          const proState = state as State;
-          const { copyRange } = proState;
-          let applyMetaData = false;
-          const clipboardRows = isMacOs() ? e.split("\n").filter(Boolean) : e.split("\r\n").filter(Boolean);
-          const clipboard = clipboardRows.map((line) => line.split("\t"));
-          if (copyRange && copyRange.rows && copyRange.columns) {
-            const isSizeEqual =
-              copyRange.rows.length === clipboardRows.length &&
-              copyRange.columns.length === clipboard[0].length;
-            if (isSizeEqual) {
-              applyMetaData = copyRange.rows.some((row, rowIdx) => {
-                return copyRange.columns.some((column, colIdx) => {
-                  // need to avoid difference beetwen whitespace and space char
-                  return (
-                    clipboard[rowIdx][colIdx].trim() ===
-                    getCompatibleCellAndTemplate(proState, { row, column })
-                      .cell.text.replaceAll(
-                        String.fromCharCode(160),
-                        String.fromCharCode(32)
-                      )
-                      .trim()
-                  );
-                });
-              });
-            }
-          }
-          return pasteData(
-            proState,
-            clipboardRows.map((line, rowIdx) => {
-              return line.split("\t").map<Compatible<Cell>>((text, colIdx) => {
-                if (!copyRange) {
-                  return {
-                    type: "text",
-                    text,
-                    value: parseLocaleNumber(text),
-                  };
-                }
-                const { cell } = getCompatibleCellAndTemplate(proState, {
-                  row: copyRange.rows[rowIdx],
-                  column: copyRange.columns[colIdx],
-                });
-                return {
-                  type: "text",
-                  // probably this spread operator is no longer needed
-                  text: text,
-                  value: parseLocaleNumber(text),
-                  ...(applyMetaData && {
-                    groupId: cell.groupId,
-                  }),
-                };
-              });
-            })
-          );
-        })
-      )
-      .catch(({ message }) => {
-        console.error(
-          `An error occurred while pasting data by context menu: '${message}'`
-        );
+    // ? This works only in Chrome, and other browsers that fully support Clipboard API
+      getRowsFromClipboard().then((rows) => {
+        state.update((state) => pasteData(state as State, rows));
       });
   }
 }
