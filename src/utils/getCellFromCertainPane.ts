@@ -1,4 +1,4 @@
-import { getRowAndColumns } from "./getRowAndColumns";
+import { getCellIndexes } from "./getCellIndexes";
 import { getCellPane, getStickyPaneDirection } from "./cellUtils";
 import { ReactGridStore } from "./reactGridStore";
 
@@ -6,18 +6,15 @@ export function getCellFromCertainPane(
   store: ReactGridStore,
   cellContainers: Element[],
   paneName: string
-): HTMLElement | undefined {
-  let cell;
+): Element | undefined {
+  return cellContainers.find((container) => {
+    const cellIndexes = getCellIndexes(container);
+    if (!cellIndexes) return;
 
-  cellContainers.forEach((container) => {
-    const rowsAndCols = getRowAndColumns(container);
-    if (!rowsAndCols) return;
-
-    const { rowIndex, colIndex } = rowsAndCols;
+    const { rowIndex, colIndex } = cellIndexes;
 
     const pane = getCellPane(store, store.getCellByIndexes(rowIndex, colIndex)!);
 
-    if (getStickyPaneDirection(pane)?.toLowerCase() === paneName.toLowerCase()) cell = container;
+    return getStickyPaneDirection(pane)?.toLowerCase() === paneName.toLowerCase();
   });
-  return cell;
 }

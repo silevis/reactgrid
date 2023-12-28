@@ -1,3 +1,4 @@
+import { PaneName } from "../types/InternalModel";
 
 /**
  * Calculates the scroll direction. It also can apply a multiplier to the scroll speed in selected direction.
@@ -5,7 +6,7 @@
  * @param multiplier The multiplier to apply to the scroll direction.
  * @returns The scroll direction.
  */
-export const calcScrollBy = (direction: string, multiplier?: number): { x: number; y: number; } => {
+export const calcScrollBy = (direction: PaneName, multiplier?: number): { x: number; y: number } => {
   let x = 0;
   let y = 0;
   switch (direction.toLowerCase()) {

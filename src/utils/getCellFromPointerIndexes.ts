@@ -1,4 +1,4 @@
-import { getRowAndColumns } from "./getRowAndColumns";
+import { getCellIndexes } from "./getCellIndexes";
 import { getContainerFromPoint } from "./getLocationFromClient";
 
 
@@ -9,23 +9,23 @@ import { getContainerFromPoint } from "./getLocationFromClient";
  * @returns The row and column index of the cell that contains the pointer
  */
 
-export const getCellFromPointer = (
+export const getCellFromPointerIndexes = (
   clientX: number,
   clientY: number
 ): {  rowIndex: -1; colIndex: -1 } | { rowIndex: number; colIndex: number } => {
   // Return if no expectations were met
-  const defaultReturn = {  rowIndex: -1, colIndex: -1 };
+  const noCellIndexes = {  rowIndex: -1, colIndex: -1 };
   // Get HTMLElement that contains rendered cell data
   const cellContainer = getContainerFromPoint(clientX, clientY);
 
-  if (!cellContainer) return defaultReturn;
+  if (!cellContainer) return noCellIndexes;
 
   // Get information about rows and columns from cellContainer
-  const rowsAndColumns = getRowAndColumns(cellContainer);
+  const cellIndexes = getCellIndexes(cellContainer);
 
-  if (!rowsAndColumns) return defaultReturn;
+  if (!cellIndexes) return noCellIndexes;
 
-  const { rowIndex, colIndex } = rowsAndColumns;
+  const { rowIndex, colIndex } = cellIndexes;
   
 
   return { rowIndex, colIndex };
