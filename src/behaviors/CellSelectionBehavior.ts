@@ -2,9 +2,9 @@
 import { Behavior, BehaviorConstructor } from "../types/Behavior";
 import { Cell } from "../types/PublicModel";
 import { findMinimalSelectedArea, isCellSticky } from "../utils/cellUtils";
-import { getCellFromPointer } from "../utils/getCellFromPointer";
+import { getCellFromPointerIndexes } from "../utils/getCellFromPointerIndexes";
 import { ReactGridStore } from "../utils/reactGridStore";
-import { getRowAndColumns } from "../utils/getRowAndColumns";
+import { getCellIndexes } from "../utils/getCellIndexes";
 import { getNonStickyCell } from "../utils/getNonStickyCell";
 import { scrollTowardsSticky } from "../utils/scrollTowardsSticky";
 
@@ -65,7 +65,7 @@ export const CellSelectionBehavior: BehaviorConstructor = (setCurrentBehavior) =
       console.log("CSB/handlePointerMove");
 
       const { clientX, clientY } = event;
-      const { rowIndex, colIndex } = getCellFromPointer(clientX, clientY);
+      const { rowIndex, colIndex } = getCellFromPointerIndexes(clientX, clientY);
       const cell = store.getCellByIndexes(rowIndex, colIndex);
 
       if (!cell) {
@@ -78,7 +78,7 @@ export const CellSelectionBehavior: BehaviorConstructor = (setCurrentBehavior) =
         scrollTowardsSticky(store, cell, { rowIndex, colIndex });
 
         if (cellUnderTheSticky) {
-          const nonStickyRowsAndColumns = getRowAndColumns(cellUnderTheSticky);
+          const nonStickyRowsAndColumns = getCellIndexes(cellUnderTheSticky);
           const { rowIndex: secondCellRowIndex, colIndex: secondCellColIndex } = nonStickyRowsAndColumns || {
             rowIndex: -1,
             colIndex: -1,

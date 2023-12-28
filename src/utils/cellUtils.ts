@@ -1,5 +1,5 @@
-import { Columns } from "../blueprint";
 import { NumericalRange } from "../types/CellMatrix";
+import { PaneName } from "../types/InternalModel";
 import { Cell, SpanMember } from "../types/PublicModel";
 import { ReactGridStore } from "./reactGridStore";
 
@@ -121,9 +121,9 @@ export function getCellPane(store: ReactGridStore, cell: Cell): HTMLElement {
  * @param pane - The pane element.
  * @returns The sticky pane direction, or undefined if not found.
  */
-export function getStickyPaneDirection(pane: HTMLElement): string | undefined {
+export function getStickyPaneDirection(pane: HTMLElement): PaneName | undefined {
   const direction = [...pane.classList].find((className) => className.includes("rgPane-"))?.replace("rgPane-", "");
-  return direction;
+  return direction as PaneName;
 }
 
 /**
@@ -133,5 +133,5 @@ export function getStickyPaneDirection(pane: HTMLElement): string | undefined {
  * @returns True if the cell is on sticky pane, false otherwise.
  */
 export function isCellSticky(store: ReactGridStore, cell: Cell): boolean {
-  return getStickyPaneDirection(getCellPane(store, cell))?.toLowerCase() === "center" ? false : true;
+  return !isCellInRange(store, cell, store.paneRanges.Center);
 }
