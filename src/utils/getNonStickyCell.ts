@@ -10,11 +10,11 @@ import { getCellFromCertainPane } from "./getCellFromCertainPane";
  * @returns The HTMLElement representing the non-sticky cell, or undefined if not found.
  */
 
-export function getNonStickyCell(store: ReactGridStore, clientX: number, clientY: number): HTMLElement | undefined {
+export function getNonStickyCell(store: ReactGridStore, clientX: number, clientY: number): Element | undefined {
   const cellContainers = document
     .elementsFromPoint(clientX, clientY)
     .filter((el) => el.classList.contains("rgCellContainer"));
 
-  const nonStickyCell = getCellFromCertainPane(store, cellContainers, "center");
+  const nonStickyCell = getCellFromCertainPane(store, cellContainers, "Center");
   return nonStickyCell;
 }

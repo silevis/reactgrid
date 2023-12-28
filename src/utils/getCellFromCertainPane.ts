@@ -1,20 +1,19 @@
-import { getCellIndexes } from "./getCellIndexes";
-import { getCellPane, getStickyPaneDirection } from "./cellUtils";
+import { PaneName } from "../types/InternalModel";
+import { isCellInRange } from "./cellUtils";
+import { getCellIndexesFromContainerElement } from "./getCellIndexes";
 import { ReactGridStore } from "./reactGridStore";
 
 export function getCellFromCertainPane(
   store: ReactGridStore,
   cellContainers: Element[],
-  paneName: string
+  paneName: PaneName
 ): Element | undefined {
   return cellContainers.find((container) => {
-    const cellIndexes = getCellIndexes(container);
+    const cellIndexes = getCellIndexesFromContainerElement(container);
     if (!cellIndexes) return;
 
     const { rowIndex, colIndex } = cellIndexes;
 
-    const pane = getCellPane(store, store.getCellByIndexes(rowIndex, colIndex)!);
-
-    return getStickyPaneDirection(pane)?.toLowerCase() === paneName.toLowerCase();
+    return isCellInRange(store, store.getCellByIndexes(rowIndex, colIndex)!, store.paneRanges[paneName]);
   });
 }
