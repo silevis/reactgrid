@@ -6,6 +6,10 @@ import {
   i18n,
   isIOS,
   isIpadOS,
+  getCompatibleCellAndTemplate,
+  isMacOs,
+  Compatible,
+  Cell,
 } from "../../core";
 import { copySelectedRangeToClipboard } from "../Functions/copySelectedRangeToClipboard";
 import { pasteData } from "../Functions/pasteData";
@@ -15,15 +19,34 @@ import { useReactGridState } from "./StateProvider";
 import getRowsFromClipboard from "../Functions/getRowsFromClipboard";
 
 export const ContextMenu: React.FC = () => {
+  const contextMenuElRef = React.useRef<HTMLDivElement>(null);
   const state = useReactGridState();
-
-  if (
-    state.contextMenuPosition.top === -1 &&
-    state.contextMenuPosition.left === -1
-  )
-    return null;
-
   const { contextMenuPosition, selectedIds, selectionMode } = state;
+
+  const clickPositionX = contextMenuPosition.left;
+  const clickPositionY = contextMenuPosition.top;
+
+  if (clickPositionY !== -1 && clickPositionX !== -1 && contextMenuElRef.current) {
+    const screenWidth = window.innerWidth;
+    const screenHeight = window.innerHeight;
+    const menuWidth = contextMenuElRef.current.offsetWidth;
+    const menuHeight = contextMenuElRef.current.offsetHeight;
+    const SAFETY_OFFSET = 20;
+
+    // Check to see if it's near the bottom
+    if (screenHeight - clickPositionY < menuHeight) {
+      contextMenuPosition.top = screenHeight - menuHeight - SAFETY_OFFSET;
+    } else {
+      contextMenuPosition.top = clickPositionY;
+    }
+
+    // Check to see if it's close to the right
+    if (screenWidth - clickPositionX < menuWidth) {
+      contextMenuPosition.left = screenWidth - menuWidth - SAFETY_OFFSET;
+    } else {
+      contextMenuPosition.left = clickPositionX;
+    }
+  }
 
   let contextMenuOptions = customContextMenuOptions(state);
 
@@ -42,8 +65,11 @@ export const ContextMenu: React.FC = () => {
 
   return (
     <div
+      ref={contextMenuElRef}
       className="rg-context-menu"
       style={{
+        // Visually disappear but keep the element to retrieve the width and height
+        visibility: clickPositionY === -1 && clickPositionX === -1 ? "hidden" : "visible",
         top: contextMenuPosition.top + "px",
         left: contextMenuPosition.left + "px",
       }}
@@ -104,22 +130,17 @@ function handleContextMenuCopy(state: State, removeValues = false): void {
 function handleContextMenuPaste(state: State) {
   const isAppleMobileDevice = isIOS() || isIpadOS();
   if (isBrowserFirefox() || isAppleMobileDevice) {
-    const {
-      appleMobileDeviceContextMenuPasteAlert,
-      otherBrowsersContextMenuPasteAlert,
-      actionNotSupported,
-    } = i18n(state);
+    const { appleMobileDeviceContextMenuPasteAlert, otherBrowsersContextMenuPasteAlert, actionNotSupported } =
+      i18n(state);
     alert(
       `${actionNotSupported} ${
-        isAppleMobileDevice
-          ? appleMobileDeviceContextMenuPasteAlert
-          : otherBrowsersContextMenuPasteAlert
+        isAppleMobileDevice ? appleMobileDeviceContextMenuPasteAlert : otherBrowsersContextMenuPasteAlert
       }`
     );
   } else {
     // ? This works only in Chrome, and other browsers that fully support Clipboard API
-      getRowsFromClipboard().then((rows) => {
-        state.update((state) => pasteData(state as State, rows));
-      });
+    getRowsFromClipboard().then((rows) => {
+      state.update((state) => pasteData(state as State, rows));
+    });
   }
 }
