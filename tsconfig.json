@@ -18,7 +18,6 @@
     "jsx": "react-jsx",
     "noImplicitAny": true,
     "noEmit": true,
-    "noEmitOnError": false,
     "isolatedModules": true,
     "allowJs": true,
     "skipLibCheck": true,
