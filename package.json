@@ -80,6 +80,7 @@
   },
   "husky": {
     "hooks": {
+      "pre-push": "if git-branch-is develop; then npx run-s eslint run:all:tests; fi"
     }
   },
   "browserslist": [
