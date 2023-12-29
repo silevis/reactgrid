@@ -19,7 +19,7 @@ If you like our work, please give this project a star ⭐
 
 Prerequisites:
 
-- react": `^16.13.1`
+- react: `^16.13.1`
 - react-dom: `^16.13.1`
 
 # Docs
