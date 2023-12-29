@@ -18,15 +18,38 @@ import { getSelectedLocations } from "../Functions/getSelectedLocations";
 import { useReactGridState } from "./StateProvider";
 
 export const ContextMenu: React.FC = () => {
+  const contextMenuElRef = React.useRef<HTMLDivElement>(null);
   const state = useReactGridState();
+  const { contextMenuPosition, selectedIds, selectionMode } = state;
+
+  const clickPositionX = contextMenuPosition.left;
+  const clickPositionY = contextMenuPosition.top;
 
   if (
-    state.contextMenuPosition.top === -1 &&
-    state.contextMenuPosition.left === -1
-  )
-    return null;
+    clickPositionY !== -1 &&
+    clickPositionX !== -1 &&
+    contextMenuElRef.current
+  ) {
+    const screenWidth = window.innerWidth;
+    const screenHeight = window.innerHeight;
+    const menuWidth = contextMenuElRef.current.offsetWidth;
+    const menuHeight = contextMenuElRef.current.offsetHeight;
+    const SAFETY_OFFSET = 20;
 
-  const { contextMenuPosition, selectedIds, selectionMode } = state;
+    // Check to see if it's near the bottom
+    if (screenHeight - clickPositionY < menuHeight) {
+      contextMenuPosition.top = screenHeight - menuHeight - SAFETY_OFFSET;
+    } else {
+      contextMenuPosition.top = clickPositionY;
+    }
+
+    // Check to see if it's close to the right
+    if (screenWidth - clickPositionX < menuWidth) {
+      contextMenuPosition.left = screenWidth - menuWidth - SAFETY_OFFSET;
+    } else {
+      contextMenuPosition.left = clickPositionX;
+    }
+  }
 
   let contextMenuOptions = customContextMenuOptions(state);
 
@@ -45,8 +68,12 @@ export const ContextMenu: React.FC = () => {
 
   return (
     <div
+      ref={contextMenuElRef}
       className="rg-context-menu"
       style={{
+        // Visually disappear but keep the element to retrieve the width and height
+        visibility:
+          clickPositionY === -1 && clickPositionX === -1 ? "hidden" : "visible",
         top: contextMenuPosition.top + "px",
         left: contextMenuPosition.left + "px",
       }}
@@ -127,7 +154,9 @@ function handleContextMenuPaste(state: State) {
           const proState = state as State;
           const { copyRange } = proState;
           let applyMetaData = false;
-          const clipboardRows = isMacOs() ? e.split("\n").filter(Boolean) : e.split("\r\n").filter(Boolean);
+          const clipboardRows = isMacOs()
+            ? e.split("\n").filter(Boolean)
+            : e.split("\r\n").filter(Boolean);
           const clipboard = clipboardRows.map((line) => line.split("\t"));
           if (copyRange && copyRange.rows && copyRange.columns) {
             const isSizeEqual =
