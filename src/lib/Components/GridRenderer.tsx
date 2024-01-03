@@ -3,6 +3,7 @@ import { GridRendererProps } from '../Model/InternalModel';
 import { HiddenElement } from './HiddenElement';
 import { ErrorBoundary } from './ErrorBoundary';
 import { useReactGridState } from './StateProvider';
+import { isBrowserFirefox } from '../Functions/firefox';
 
 export const GridRenderer: React.FC<GridRendererProps> = ({ eventHandlers, children }) => {
     const { cellMatrix, props } = useReactGridState();
@@ -16,6 +17,7 @@ export const GridRenderer: React.FC<GridRendererProps> = ({ eventHandlers, child
                 className="reactgrid"
                 style={{
                     position: 'relative',
+                    paddingRight: isBrowserFirefox() ? "10px" : "",
                     ...sharedStyles,
                 }}
                 ref={eventHandlers.reactgridRefHandler}
