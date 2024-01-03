@@ -12,7 +12,7 @@ export function focusLocation(state: State, location: Location, applyResetSelect
     if (
       state.focusedLocation &&
       state.currentlyEditedCell &&
-      !(keyCode === keyCodes.ENTER)
+      keyCode !== keyCodes.ENTER
     ) {
       state = tryAppendChange(
         state,
