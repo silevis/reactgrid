@@ -16,17 +16,37 @@ import { pasteData } from "../Functions/pasteData";
 import { getActiveSelectedRange } from "../Functions/getActiveSelectedRange";
 import { getSelectedLocations } from "../Functions/getSelectedLocations";
 import { useReactGridState } from "./StateProvider";
+import getRowsFromClipboard from "../Functions/getRowsFromClipboard";
 
 export const ContextMenu: React.FC = () => {
+  const contextMenuElRef = React.useRef<HTMLDivElement>(null);
   const state = useReactGridState();
-
-  if (
-    state.contextMenuPosition.top === -1 &&
-    state.contextMenuPosition.left === -1
-  )
-    return null;
-
   const { contextMenuPosition, selectedIds, selectionMode } = state;
+
+  const clickPositionX = contextMenuPosition.left;
+  const clickPositionY = contextMenuPosition.top;
+
+  if (clickPositionY !== -1 && clickPositionX !== -1 && contextMenuElRef.current) {
+    const screenWidth = window.innerWidth;
+    const screenHeight = window.innerHeight;
+    const menuWidth = contextMenuElRef.current.offsetWidth;
+    const menuHeight = contextMenuElRef.current.offsetHeight;
+    const SAFETY_OFFSET = 20;
+
+    // Check to see if it's near the bottom
+    if (screenHeight - clickPositionY < menuHeight) {
+      contextMenuPosition.top = screenHeight - menuHeight - SAFETY_OFFSET;
+    } else {
+      contextMenuPosition.top = clickPositionY;
+    }
+
+    // Check to see if it's close to the right
+    if (screenWidth - clickPositionX < menuWidth) {
+      contextMenuPosition.left = screenWidth - menuWidth - SAFETY_OFFSET;
+    } else {
+      contextMenuPosition.left = clickPositionX;
+    }
+  }
 
   let contextMenuOptions = customContextMenuOptions(state);
 
@@ -45,8 +65,11 @@ export const ContextMenu: React.FC = () => {
 
   return (
     <div
+      ref={contextMenuElRef}
       className="rg-context-menu"
       style={{
+        // Visually disappear but keep the element to retrieve the width and height
+        visibility: clickPositionY === -1 && clickPositionX === -1 ? "hidden" : "visible",
         top: contextMenuPosition.top + "px",
         left: contextMenuPosition.left + "px",
       }}
@@ -107,82 +130,17 @@ function handleContextMenuCopy(state: State, removeValues = false): void {
 function handleContextMenuPaste(state: State) {
   const isAppleMobileDevice = isIOS() || isIpadOS();
   if (isBrowserFirefox() || isAppleMobileDevice) {
-    const {
-      appleMobileDeviceContextMenuPasteAlert,
-      otherBrowsersContextMenuPasteAlert,
-      actionNotSupported,
-    } = i18n(state);
+    const { appleMobileDeviceContextMenuPasteAlert, otherBrowsersContextMenuPasteAlert, actionNotSupported } =
+      i18n(state);
     alert(
       `${actionNotSupported} ${
-        isAppleMobileDevice
-          ? appleMobileDeviceContextMenuPasteAlert
-          : otherBrowsersContextMenuPasteAlert
+        isAppleMobileDevice ? appleMobileDeviceContextMenuPasteAlert : otherBrowsersContextMenuPasteAlert
       }`
     );
   } else {
-    navigator.clipboard
-      ?.readText()
-      .then((e) =>
-        state.update((state) => {
-          const proState = state as State;
-          const { copyRange } = proState;
-          let applyMetaData = false;
-          const clipboardRows = isMacOs() ? e.split("\n").filter(Boolean) : e.split("\r\n").filter(Boolean);
-          const clipboard = clipboardRows.map((line) => line.split("\t"));
-          if (copyRange && copyRange.rows && copyRange.columns) {
-            const isSizeEqual =
-              copyRange.rows.length === clipboardRows.length &&
-              copyRange.columns.length === clipboard[0].length;
-            if (isSizeEqual) {
-              applyMetaData = copyRange.rows.some((row, rowIdx) => {
-                return copyRange.columns.some((column, colIdx) => {
-                  // need to avoid difference beetwen whitespace and space char
-                  return (
-                    clipboard[rowIdx][colIdx].trim() ===
-                    getCompatibleCellAndTemplate(proState, { row, column })
-                      .cell.text.replaceAll(
-                        String.fromCharCode(160),
-                        String.fromCharCode(32)
-                      )
-                      .trim()
-                  );
-                });
-              });
-            }
-          }
-          return pasteData(
-            proState,
-            clipboardRows.map((line, rowIdx) => {
-              return line.split("\t").map<Compatible<Cell>>((text, colIdx) => {
-                if (!copyRange) {
-                  return {
-                    type: "text",
-                    text,
-                    value: parseFloat(text),
-                  };
-                }
-                const { cell } = getCompatibleCellAndTemplate(proState, {
-                  row: copyRange.rows[rowIdx],
-                  column: copyRange.columns[colIdx],
-                });
-                return {
-                  type: "text",
-                  // probably this ternanary and spread operator is no longer needed
-                  text: text,
-                  value: parseFloat(text),
-                  ...(applyMetaData && {
-                    groupId: cell.groupId,
-                  }),
-                };
-              });
-            })
-          );
-        })
-      )
-      .catch(({ message }) => {
-        console.error(
-          `An error occurred while pasting data by context menu: '${message}'`
-        );
-      });
+    // ? This works only in Chrome, and other browsers that fully support Clipboard API
+    getRowsFromClipboard().then((rows) => {
+      state.update((state) => pasteData(state as State, rows));
+    });
   }
 }
