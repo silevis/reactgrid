@@ -3,6 +3,7 @@ import { Cell, CellTemplate, Compatible, Uncertain, UncertainCompatible } from '
 export type OptionType = {
     label: string;
     value: string;
+    isDisabled?: boolean;
 };
 export interface DropdownCell extends Cell {
     type: 'dropdown';

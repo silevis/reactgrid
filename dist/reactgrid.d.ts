@@ -164,6 +164,7 @@ declare class TimeCellTemplate implements CellTemplate<TimeCell> {
 type OptionType = {
     label: string;
     value: string;
+    isDisabled?: boolean;
 };
 interface DropdownCell extends Cell {
     type: 'dropdown';
