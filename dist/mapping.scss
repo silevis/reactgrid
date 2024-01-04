@@ -1,0 +1,25 @@
+$shadow-on-bottom:              2*$shadow-length 2*$shadow-length $shadow-blur-radius $shadow-spread-radius !default;
+$shadow-on-top:                 2*$shadow-length (-$shadow-length) $shadow-blur-radius $shadow-spread-radius !default;
+$shadow-on-left:                5*(-$shadow-length) 0 $shadow-blur-radius 2*(-$shadow-spread-radius) !default;
+$shadow-on-right:               5*$shadow-length 0 $shadow-blur-radius 2*(-$shadow-spread-radius) !default;
+$shadow-on-top-left-corner:     2*$shadow-length 3*$shadow-length $shadow-blur-radius $shadow-spread-radius !default;
+$shadow-on-top-right-corner:    2*(-$shadow-length) 2*$shadow-length $shadow-blur-radius $shadow-spread-radius !default;
+$shadow-on-bottom-left-corner:  2*$shadow-length 2*(-$shadow-length) $shadow-blur-radius $shadow-spread-radius !default;
+$shadow-on-bottom-right-corner: 2*(-$shadow-length) 2*(-$shadow-length) $shadow-blur-radius $shadow-spread-radius !default;
+
+
+$white-with-heavy-opacity:      rgba($bg-color, $opacity-01);
+$black-with-medium-opacity:     rgba($shadow-color, $opacity-06);
+
+$main-bg-color:                 $bg-color;
+$shadow-bg:                     $shadow-color;
+$cell-shadow-color:             $black-with-medium-opacity;
+$pane-shadow-color:             $black-with-medium-opacity;
+$fill-handle-bg-color:          $white-with-heavy-opacity;
+$fill-handle-border-color:      $bg-color;
+$cell-editor-gb-color:          $cell-editor-bg-color;
+
+$line-size-vertical:            $line-size;
+$line-size-horizontal:          $line-size;
+
+$partial-area-background-color: rgba($partial-area-gb-color, $opacity-35);
