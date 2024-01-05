@@ -197,7 +197,7 @@ const handleSelectionOnStickyPane = (store: ReactGridStore, cell: Cell, rowIndex
   return store;
 }
 
-export const CellSelectionBehavior: Behavior = (setCurrentBehavior, config) => ({
+export const CellSelectionBehavior: Behavior = {
   handlePointerMove(event, store) {
     // if (!didAttachListeners) {
     //   window.addEventListener("pointermove", (e) => behavior.handlePointerMove(e, store));
@@ -219,13 +219,13 @@ export const CellSelectionBehavior: Behavior = (setCurrentBehavior, config) => (
     return tryExpandingTowardsCell(store, cell, rowIndex, colIndex);
   },
 
-  handlePointerUp(event, store) {
+  handlePointerUp(_event, store, setCurrentBehavior) {
     // window.removeEventListener("pointermove", (e) => behavior.handlePointerMove(e, store));
     // window.removeEventListener("pointerup", (e) => behavior.handlePointerUp(e, store));
     const DefaultBehavior = store.getBehavior("Default");
 
-    setCurrentBehavior(DefaultBehavior(setCurrentBehavior));
+    setCurrentBehavior(DefaultBehavior);
 
     return store;
   },
-});
+};
