@@ -2,34 +2,35 @@ import React from "react";
 import { ReactGridStore } from "../utils/reactGridStore";
 
 export type BehaviorId = "Default" | "CellSelection" | string;
+type SetCurrentBehaviorFn = (behavior: Behavior) => void;
 
-export type Behavior<Config = unknown> = (
-  setCurrentBehavior: (behavior: Behavior) => void,
-  config?: Config
-) => {
-  readonly id: BehaviorId;
+type HandlerFn<TEvent extends React.SyntheticEvent> = (event: TEvent, store: ReactGridStore, setCurrentBehavior: SetCurrentBehaviorFn) => ReactGridStore;
 
-  handlePointerDown: (event: React.PointerEvent<HTMLDivElement>, store: ReactGridStore) => ReactGridStore;
-  handlePointerEnter: (event: React.PointerEvent<HTMLDivElement>, store: ReactGridStore) => ReactGridStore;
-  handlePointerMove: (event: React.PointerEvent<HTMLDivElement>, store: ReactGridStore) => ReactGridStore;
-  handlePointerLeave: (event: React.PointerEvent<HTMLDivElement>, store: ReactGridStore) => ReactGridStore;
-  handlePointerUp: (event: React.PointerEvent<HTMLDivElement>, store: ReactGridStore) => ReactGridStore;
+export type PointerEventHandler = HandlerFn<React.PointerEvent<HTMLDivElement>>;
+export type MouseEventHandler = HandlerFn<React.MouseEvent<HTMLDivElement>>;
+export type KeyboardEventHandler = HandlerFn<React.KeyboardEvent<HTMLDivElement>>;
+export type CompositionEventHandler = HandlerFn<React.CompositionEvent<HTMLDivElement>>;
+export type ClipboardEventHandler = HandlerFn<React.ClipboardEvent<HTMLDivElement>>;
 
-  handleDoubleClick: (event: React.MouseEvent<HTMLDivElement>, store: ReactGridStore) => ReactGridStore;
+export type Behavior = {
+  handlePointerDown?: PointerEventHandler;
+  handlePointerEnter?: PointerEventHandler;
+  handlePointerMove?: PointerEventHandler;
+  handlePointerLeave?: PointerEventHandler;
+  handlePointerUp?: PointerEventHandler;
 
-  handleKeyDown: (event: React.KeyboardEvent<HTMLDivElement>, store: ReactGridStore) => ReactGridStore;
-  handleKeyDownCapture: (event: React.KeyboardEvent<HTMLDivElement>, store: ReactGridStore) => ReactGridStore;
-  handleKeyUp: (event: React.KeyboardEvent<HTMLDivElement>, store: ReactGridStore) => ReactGridStore;
+  handleDoubleClick?: MouseEventHandler;
 
-  handleCompositionStart: (event: React.CompositionEvent<HTMLDivElement>, store: ReactGridStore) => ReactGridStore;
-  handleCompositionUpdate: (event: React.CompositionEvent<HTMLDivElement>, store: ReactGridStore) => ReactGridStore;
-  handleCompositionEnd: (event: React.CompositionEvent<HTMLDivElement>, store: ReactGridStore) => ReactGridStore;
+  handleKeyDown?: KeyboardEventHandler;
+  handleKeyUp?: KeyboardEventHandler;
 
-  handleCut: (event: React.ClipboardEvent<HTMLDivElement>, store: ReactGridStore) => ReactGridStore;
-  handleCopy: (event: React.ClipboardEvent<HTMLDivElement>, store: ReactGridStore) => ReactGridStore;
-  handlePaste: (event: React.ClipboardEvent<HTMLDivElement>, store: ReactGridStore) => ReactGridStore;
+  handleCompositionStart?: CompositionEventHandler;
+  handleCompositionUpdate?: CompositionEventHandler;
+  handleCompositionEnd?: CompositionEventHandler;
 
-  handleContextMenu: (event: React.MouseEvent<HTMLDivElement>, store: ReactGridStore) => ReactGridStore;
+  handleCut?: ClipboardEventHandler;
+  handleCopy?: ClipboardEventHandler;
+  handlePaste?: ClipboardEventHandler;
+
+  handleContextMenu?: MouseEventHandler;
 };
-
-export type BehaviorInitializer = (setCurrentBehavior: (behavior: Behavior) => void) => Behavior;
