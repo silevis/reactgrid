@@ -94,3 +94,4 @@ export interface ReactGridProps {
   onFocusLocationChanging?: ({ location }: { location: [number, number] }) => boolean;
   onFocusLocationChanged?: ({ location }: { location: [number, number] }) => void;
 }
+
