@@ -47,6 +47,31 @@ export const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>, store:
           selectedArea: wholeGridArea,
         };
       }
+
+      case "Home": {
+        event.preventDefault();
+
+        return {
+          ...store,
+          focusedLocation: {
+            rowIndex: 0,
+            colIndex: 0,
+          },
+        };
+      }
+
+      case "End": {
+        event.preventDefault();
+
+        return {
+          ...store,
+          focusedLocation: {
+            rowIndex: store.rows.length - 1,
+            colIndex: store.columns.length - 1,
+          },
+        };
+      }
+      
       default:
         return store;
     }
