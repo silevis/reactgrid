@@ -98,14 +98,16 @@ const PanesRenderer: FC<PanesRendererProps> = ({
   });
 
   const gridContainerRef = useRef<HTMLDivElement>(null);
-  const resizeObserver = useRef<ResizeObserver>(new ResizeObserver(() => {
-    setStickyOffsets(() => ({
-      topRows: getRowsOffsets(stickyTopRows),
-      bottomRows: getRowsOffsets(stickyBottomRows, "backward"),
-      leftColumns: getColumnsOffsets(stickyLeftColumns),
-      rightColumns: getColumnsOffsets(stickyRightColumns, "backward"),
-    }));
-  }));
+  const resizeObserver = useRef<ResizeObserver>(
+    new ResizeObserver(() => {
+      setStickyOffsets(() => ({
+        topRows: getStickyRowsOffsets(stickyTopRows),
+        bottomRows: getStickyRowsOffsets(stickyBottomRows, "backward"),
+        leftColumns: getStickyColumnsOffsets(stickyLeftColumns),
+        rightColumns: getStickyColumnsOffsets(stickyRightColumns, "backward"),
+      }));
+    })
+  );
 
   useEffect(() => {
     if (!gridContainerRef.current) return;
@@ -121,7 +123,7 @@ const PanesRenderer: FC<PanesRendererProps> = ({
    * @param {number} stickyRowsAmount defines the amount of rows to get offsets for
    * @param {"forward" | "backward"} direction defines the direction in which the offsets should be fetched
    */
-  const getRowsOffsets = (stickyRowsAmount: number, direction: "forward" | "backward" = "forward") => {
+  const getStickyRowsOffsets = (stickyRowsAmount: number, direction: "forward" | "backward" = "forward") => {
     if (stickyRowsAmount === 0 || !gridContainerRef.current) return [];
     const offsets: number[] = [parseFloat(window.getComputedStyle(gridContainerRef.current).gap ?? "0")];
     let rowIndex = 1;
@@ -143,7 +145,7 @@ const PanesRenderer: FC<PanesRendererProps> = ({
         // ...else, get real (px) cell height (which represents row height in this context)...
         const rowHeight = cellElement.getBoundingClientRect().height;
 
-        // ... and store total offset, i.e. the sum of the previous offset, current width and grid gap
+        // ...and store total offset, i.e. the sum of the previous offset, current width and grid gap
         offsets.push(offsets[rowIndex - 1] + rowHeight + offsets[0]);
 
         // Reset colOffset and increment rowIndex
@@ -168,7 +170,7 @@ const PanesRenderer: FC<PanesRendererProps> = ({
    * @param {"forward" | "backward"} direction defines the direction in which the offsets should be fetched
    * @returns an array of offsets
    */
-  const getColumnsOffsets = (stickyColumnsAmount: number, direction: "forward" | "backward" = "forward") => {
+  const getStickyColumnsOffsets = (stickyColumnsAmount: number, direction: "forward" | "backward" = "forward") => {
     if (stickyColumnsAmount === 0 || !gridContainerRef.current) return [];
     const offsets: number[] = [parseFloat(window.getComputedStyle(gridContainerRef.current).gap ?? "0")];
     let colIndex = 1;
