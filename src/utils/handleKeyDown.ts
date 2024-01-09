@@ -2,9 +2,11 @@ import { NumericalRange } from "../types/CellMatrix";
 import { EMPTY_AREA, areAreasEqual } from "./cellUtils";
 import { moveFocusDown, moveFocusInsideSelectedRange, moveFocusLeft, moveFocusRight, moveFocusUp } from "./focus";
 import { ReactGridStore } from "./reactGridStore";
+import { tryExpandingTowardsDirection } from "./tryExpandingTowardsDirection";
 
 export const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>, store: ReactGridStore): ReactGridStore => {
-  if (event.altKey || store.currentlyEditedCell.rowIndex !== -1 || store.currentlyEditedCell.colIndex !== -1) return store;
+  if (event.altKey || store.currentlyEditedCell.rowIndex !== -1 || store.currentlyEditedCell.colIndex !== -1)
+    return store;
 
   let focusedCell = store.getFocusedCell();
   if (!focusedCell) {
@@ -28,7 +30,7 @@ export const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>, store:
           endRowIdx: store.rows.length,
           startColIdx: 0,
           endColIdx: store.columns.length,
-        }
+        };
 
         if (areAreasEqual(store.selectedArea, wholeGridArea)) {
           return {
@@ -64,7 +66,7 @@ export const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>, store:
       }
     }
   }
-  
+
   switch (event.key) {
     case "Tab": {
       event.preventDefault();
@@ -83,22 +85,26 @@ export const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>, store:
       } else {
         return moveFocusDown(store, focusedCell);
       }
-    }   
+    }
 
     case "ArrowUp":
       event.preventDefault();
+      if (event.shiftKey) return tryExpandingTowardsDirection(store, focusedCell, "Up");
       return moveFocusUp(store, focusedCell);
     case "ArrowDown":
       event.preventDefault();
+      if (event.shiftKey) return tryExpandingTowardsDirection(store, focusedCell, "Down");
       return moveFocusDown(store, focusedCell);
     case "ArrowLeft":
       event.preventDefault();
+      if (event.shiftKey) return tryExpandingTowardsDirection(store, focusedCell, "Left");
       return moveFocusLeft(store, focusedCell);
     case "ArrowRight":
       event.preventDefault();
+      if (event.shiftKey) return tryExpandingTowardsDirection(store, focusedCell, "Right");
       return moveFocusRight(store, focusedCell);
 
-    case "Home": 
+    case "Home":
       event.preventDefault();
       return {
         ...store,
@@ -116,7 +122,7 @@ export const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>, store:
           colIndex: store.columns.length - 1,
         },
       };
-    
+
     case "PageUp":
       event.preventDefault();
       return store;
