@@ -147,6 +147,31 @@ export const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>, store:
           selectedArea: wholeGridArea,
         };
       }
+      
+        
+      
+      case "ArrowUp": {
+        event.preventDefault();
+        if (!focusedCell) return store;
+        return {...store, focusedLocation: {...store.focusedLocation, rowIndex: 0}}
+      }
+      case "ArrowDown": {
+        event.preventDefault();
+        if (!focusedCell) return store;
+        return {...store, focusedLocation: {...store.focusedLocation, rowIndex: store.rows.length - 1}}
+      }
+
+      case "ArrowLeft": {
+        event.preventDefault();
+        if (!focusedCell) return store;
+        return {...store, focusedLocation: {...store.focusedLocation, colIndex: 0}}
+      }
+
+      case "ArrowRight": {
+        event.preventDefault();
+        if (!focusedCell) return store;
+        return {...store, focusedLocation: {...store.focusedLocation, colIndex: store.columns.length - 1}}
+      }
 
       // Select all rows according to columns in currently selected area OR focused cell area.
       // SPACE BAR
