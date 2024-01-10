@@ -17,6 +17,7 @@ export const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>, store:
     const firstCell = store.getCellByIndexes(0, 0);
     if (!firstCell) return store;
 
+    // If there is no focused cell, set it to the first cell in the grid.
     focusedCell = {
       rowIndex: 0,
       colIndex: 0,
@@ -26,6 +27,7 @@ export const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>, store:
   // * SHIFT + CTRL/COMMAND (⌘) + ArrowUp / ArrowDown / ArrowLeft / ArrowRight
   if (event.shiftKey && (event.ctrlKey || event.metaKey)) {
     switch (event.key) {
+      // Select all rows according to columns in currently selected area OR focused cell area.
       case "ArrowUp": {
         event.preventDefault();
         // Get currently selected area
@@ -47,6 +49,8 @@ export const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>, store:
         // Select all cells in obtained area, including spanned cells.
         return { ...store, selectedArea: { ...areaWithSpannedCells } };
       }
+
+      // Select all rows according to columns in currently selected area OR focused cell area.
       case "ArrowDown": {
         event.preventDefault();
         // Get currently selected area
@@ -69,6 +73,7 @@ export const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>, store:
         return { ...store, selectedArea: { ...areaWithSpannedCells } };
       }
 
+      // Select all columns according to rows in currently selected area OR focused cell area.
       case "ArrowLeft": {
         event.preventDefault();
         // Get currently selected area
@@ -91,6 +96,7 @@ export const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>, store:
         return { ...store, selectedArea: { ...areaWithSpannedCells } };
       }
 
+      // Select all columns according to rows in currently selected area OR focused cell area.
       case "ArrowRight": {
         event.preventDefault();
         // Get currently selected area
@@ -120,6 +126,7 @@ export const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>, store:
   // * CTRL/COMMAND (⌘) + A / Space Bar
   if (event.ctrlKey || event.metaKey) {
     switch (event.key) {
+      // Select all cells in the grid.
       case "a": {
         event.preventDefault();
 
@@ -129,7 +136,7 @@ export const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>, store:
           startColIdx: 0,
           endColIdx: store.columns.length,
         };
-
+        // If the whole grid is already selected, deselect it.
         if (areAreasEqual(store.selectedArea, wholeGridArea)) {
           return {
             ...store,
@@ -147,34 +154,33 @@ export const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>, store:
           selectedArea: wholeGridArea,
         };
       }
-      
-        
-      
+
+      // Jump to the cell that is in the first row, but in the same column as the focused cell.
       case "ArrowUp": {
         event.preventDefault();
         if (!focusedCell) return store;
-        return {...store, focusedLocation: {...store.focusedLocation, rowIndex: 0}}
+        return { ...store, focusedLocation: { ...store.focusedLocation, rowIndex: 0 } };
       }
+      // Jump to the cell that is in the last row, but in the same column as the focused cell.
       case "ArrowDown": {
         event.preventDefault();
         if (!focusedCell) return store;
-        return {...store, focusedLocation: {...store.focusedLocation, rowIndex: store.rows.length - 1}}
+        return { ...store, focusedLocation: { ...store.focusedLocation, rowIndex: store.rows.length - 1 } };
       }
-
+      // Jump to the cell that is in the first column, but in the same row as the focused cell.
       case "ArrowLeft": {
         event.preventDefault();
         if (!focusedCell) return store;
-        return {...store, focusedLocation: {...store.focusedLocation, colIndex: 0}}
+        return { ...store, focusedLocation: { ...store.focusedLocation, colIndex: 0 } };
       }
-
+      // Jump to the cell that is in the last column, but in the same row as the focused cell.
       case "ArrowRight": {
         event.preventDefault();
         if (!focusedCell) return store;
-        return {...store, focusedLocation: {...store.focusedLocation, colIndex: store.columns.length - 1}}
+        return { ...store, focusedLocation: { ...store.focusedLocation, colIndex: store.columns.length - 1 } };
       }
 
       // Select all rows according to columns in currently selected area OR focused cell area.
-      // SPACE BAR
       case " ": {
         event.preventDefault();
         // Get currently selected area
@@ -198,6 +204,7 @@ export const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>, store:
         return { ...store, selectedArea: { ...areaWithSpannedCells } };
       }
 
+      // If nothing has changed, return the store as it is.
       default:
         return store;
     }
@@ -206,6 +213,7 @@ export const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>, store:
   // * SHIFT  + ArrowUp / ArrowDown / ArrowLeft / ArrowRight
   if (event.shiftKey) {
     switch (event.key) {
+      // Manage selection by expanding/shrinking it towards the direction of the arrow key.
       case "ArrowUp":
         event.preventDefault();
         return tryExpandingTowardsDirection(store, focusedCell, "Up");
@@ -219,9 +227,9 @@ export const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>, store:
         event.preventDefault();
         return tryExpandingTowardsDirection(store, focusedCell, "Right");
 
+      // Select all columns according to rows in currently selected area OR focused cell area.
       // SPACE BAR
       case " ": {
-        // Select all columns according to rows in currently selected area OR focused cell area.
         event.preventDefault();
         // Get currently selected area
         let area: NumericalRange = { ...store.selectedArea };
@@ -249,37 +257,42 @@ export const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>, store:
   // * Other key-downs (non-combinations)
 
   const isAnyAreaSelected = !areAreasEqual(store.selectedArea, EMPTY_AREA);
-    if (isAnyAreaSelected) {
-      switch (event.key) {
-        case "Tab": {
-          event.preventDefault();
+  if (isAnyAreaSelected) {
+    switch (event.key) {
+      // Changed focused cell in selected area.
+      case "Tab": {
+        event.preventDefault();
 
-          if (event.shiftKey) return moveFocusInsideSelectedRange(store, focusedCell, "left");
-          else return moveFocusInsideSelectedRange(store, focusedCell, "right");
-        }
+        if (event.shiftKey) return moveFocusInsideSelectedRange(store, focusedCell, "left"); // If shift is pressed, move focus to the left.
+        else return moveFocusInsideSelectedRange(store, focusedCell, "right"); // Otherwise, move focus to the right.
       }
+    }
   }
-  
+
   switch (event.key) {
+    // Move focus to next cell.
     case "Tab": {
       event.preventDefault();
 
       if (event.shiftKey) {
-        return moveFocusLeft(store, focusedCell);
+        return moveFocusLeft(store, focusedCell); // If shift is pressed, move focus to the left.
       } else {
-        return moveFocusRight(store, focusedCell);
+        return moveFocusRight(store, focusedCell); // Otherwise, move focus to the right.
       }
     }
+      
+    // ! May create conflict with other Edit-mode.
     case "Enter": {
       event.preventDefault();
 
       if (event.shiftKey) {
-        return moveFocusUp(store, focusedCell);
+        return moveFocusUp(store, focusedCell); // If shift is pressed, move focus up (row up).
       } else {
-        return moveFocusDown(store, focusedCell);
+        return moveFocusDown(store, focusedCell); // Otherwise, move focus down (row down).
       }
     }
 
+    // Move focus to adjacent cell, according to the direction that arrow key points to.
     case "ArrowUp":
       event.preventDefault();
       return moveFocusUp(store, focusedCell);
@@ -293,6 +306,8 @@ export const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>, store:
       event.preventDefault();
       return moveFocusRight(store, focusedCell);
 
+    
+    // Move focus to the first/last cell in the row.
     case "Home":
       event.preventDefault();
       return {
@@ -312,6 +327,7 @@ export const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>, store:
         },
       };
 
+    // TODO: Implement PageUp and PageDown
     case "PageUp":
       event.preventDefault();
       return store;
