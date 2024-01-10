@@ -10,7 +10,7 @@ type Direction = "Up" | "Down" | "Left" | "Right";
 // Does not yet work if the area cant be reduced in the chosen direction
 // and should be expanded instead from the other side.
 
-export const tryExpandingTowardsDirection = (
+export const resizeTowardsDirection = (
   store: ReactGridStore,
   focusedCell: FocusedCell,
   direction: Direction,
@@ -109,7 +109,7 @@ export const tryExpandingTowardsDirection = (
 
   const newSelectedArea = findMinimalSelectedArea(store, selectedArea);
   if (areAreasEqual(newSelectedArea, store.selectedArea)) {
-    return tryExpandingTowardsDirection(store, focusedCell, direction, changeOffset + 1);
+    return resizeTowardsDirection(store, focusedCell, direction, changeOffset + 1);
   }
 
   return {

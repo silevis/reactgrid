@@ -2,7 +2,7 @@ import { NumericalRange } from "../types/CellMatrix";
 import { EMPTY_AREA, areAreasEqual, findMinimalSelectedArea, getCellArea } from "./cellUtils";
 import { moveFocusDown, moveFocusInsideSelectedRange, moveFocusLeft, moveFocusRight, moveFocusUp } from "./focus";
 import { ReactGridStore } from "./reactGridStore";
-import { tryExpandingTowardsDirection } from "./tryExpandingTowardsDirection";
+import { resizeTowardsDirection } from "./resizeTowardsDirection";
 
 // ? Problem: The more complicated is the key-combination (the more keys are included), the higher-in-code it has to be.
 // * By that I mean it has to be executed earlier.
@@ -218,16 +218,16 @@ export const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>, store:
       // Manage selection by expanding/shrinking it towards the direction of the arrow key.
       case "ArrowUp":
         event.preventDefault();
-        return tryExpandingTowardsDirection(store, focusedCell, "Up");
+        return resizeTowardsDirection(store, focusedCell, "Up");
       case "ArrowDown":
         event.preventDefault();
-        return tryExpandingTowardsDirection(store, focusedCell, "Down");
+        return resizeTowardsDirection(store, focusedCell, "Down");
       case "ArrowLeft":
         event.preventDefault();
-        return tryExpandingTowardsDirection(store, focusedCell, "Left");
+        return resizeTowardsDirection(store, focusedCell, "Left");
       case "ArrowRight":
         event.preventDefault();
-        return tryExpandingTowardsDirection(store, focusedCell, "Right");
+        return resizeTowardsDirection(store, focusedCell, "Right");
 
       // Select all columns according to rows in currently selected area OR focused cell area.
       // SPACE BAR
