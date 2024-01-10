@@ -94,7 +94,7 @@ export const TestGrid: React.FC<TestGridProps> = (props) => {
       reorderable: true,
       height: config.cellHeight,
       cells: columns.map<TestGridCells>((_, ci) => {
-        if (ri === 0) return { type: firstRowType, text: `${ri} - ${ci}` };
+        if (ri === 0) return { type: firstRowType, text: `${ri} - ${ci} longlonglonglonglonglonglonglonglonglonglonglonglonglonglong` };
         if (ri === 2 && ci === 8)
           return {
             type: "text",
