@@ -50,8 +50,9 @@ export const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>, store:
         };
       }
 
-      // Select all columns according to currently selected area OR focused cell area.
-      case " ": { // SPACE BAR
+      // Select all rows according to columns in currently selected area OR focused cell area.
+      // SPACE BAR
+      case " ": {
         event.preventDefault();
         // Get currently selected area
         let area: NumericalRange = { ...store.selectedArea };
@@ -66,7 +67,7 @@ export const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>, store:
         // Expand the obtained area by the area of cells that are spanned-cells.
         const areaWithSpannedCells = findMinimalSelectedArea(store, {
           ...area,
-          startRowIdx: Number(store.rows[0].id), 
+          startRowIdx: Number(store.rows[0].id),
           endRowIdx: store.rows.length,
         });
 
@@ -75,6 +76,35 @@ export const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>, store:
       }
       default:
         return store;
+    }
+  }
+
+  if (event.shiftKey) {
+    switch (event.key) {
+      // Select all columns according to rows in currently selected area OR focused cell area.
+      // SPACE BAR
+      case " ": {
+        event.preventDefault();
+        // Get currently selected area
+        let area: NumericalRange = { ...store.selectedArea };
+
+        // If there is no selected area, get focused cell area
+        const isAnyAreaSelected = !areAreasEqual(area, EMPTY_AREA);
+        if (!isAnyAreaSelected) {
+          area = getCellArea(store, focusedCell);
+        }
+
+        // Get the area occupied by cells in the selected rows.
+        // Expand the obtained area by the area of cells that are spanned-cells.
+        const areaWithSpannedCells = findMinimalSelectedArea(store, {
+          ...area,
+          startColIdx: Number(store.columns[0].id),
+          endColIdx: store.columns.length,
+        });
+
+        // Select all cells in obtained area, including spanned cells.
+        return { ...store, selectedArea: { ...areaWithSpannedCells } };
+      }
     }
   }
 
