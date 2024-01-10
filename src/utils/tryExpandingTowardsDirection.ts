@@ -79,6 +79,26 @@ export const tryExpandingTowardsDirection = (
       break;
     }
   }
+  
+  // Don't allow to go beyond the grid
+  const { columns, rows } = store;
+  const { startColIdx, endColIdx, startRowIdx, endRowIdx } = selectedArea;
+
+  const isOutOfBounds = (
+    startColIdx < 0 ||
+    endColIdx < 0 ||
+    startRowIdx < 0 ||
+    endRowIdx < 0 ||
+    endColIdx > columns.length ||
+    startRowIdx > rows.length ||
+    endRowIdx > rows.length ||
+    startColIdx > columns.length
+  );
+
+  if (isOutOfBounds) {
+    return store;
+  }
+  
 
   if (areAreasEqual(selectedArea, focusedCellArea)) {
     return {
