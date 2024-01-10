@@ -156,13 +156,15 @@ export const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>, store:
       }
 
       // Jump to the cell that is in the first row, but in the same column as the focused cell.
-      case "ArrowUp": {
+      case "ArrowUp":
+      case "Home": {
         event.preventDefault();
         if (!focusedCell) return store;
         return { ...store, focusedLocation: { ...store.focusedLocation, rowIndex: 0 } };
       }
       // Jump to the cell that is in the last row, but in the same column as the focused cell.
-      case "ArrowDown": {
+      case "ArrowDown":
+      case "End": {
         event.preventDefault();
         if (!focusedCell) return store;
         return { ...store, focusedLocation: { ...store.focusedLocation, rowIndex: store.rows.length - 1 } };
@@ -263,7 +265,12 @@ export const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>, store:
       case "Tab": {
         event.preventDefault();
 
-        if (event.shiftKey) return moveFocusInsideSelectedRange(store, focusedCell, "left"); // If shift is pressed, move focus to the left.
+        if (event.shiftKey)
+          return moveFocusInsideSelectedRange(
+            store,
+            focusedCell,
+            "left"
+          ); // If shift is pressed, move focus to the left.
         else return moveFocusInsideSelectedRange(store, focusedCell, "right"); // Otherwise, move focus to the right.
       }
     }
@@ -280,7 +287,7 @@ export const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>, store:
         return moveFocusRight(store, focusedCell); // Otherwise, move focus to the right.
       }
     }
-      
+
     // ! May create conflict with other Edit-mode.
     case "Enter": {
       event.preventDefault();
@@ -306,7 +313,6 @@ export const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>, store:
       event.preventDefault();
       return moveFocusRight(store, focusedCell);
 
-    
     // Move focus to the first/last cell in the row.
     case "Home":
       event.preventDefault();
