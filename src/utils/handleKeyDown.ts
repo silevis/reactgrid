@@ -1,5 +1,5 @@
 import { NumericalRange } from "../types/CellMatrix";
-import { EMPTY_AREA, areAreasEqual } from "./cellUtils";
+import { EMPTY_AREA, areAreasEqual, findMinimalSelectedArea, getCellArea } from "./cellUtils";
 import { moveFocusDown, moveFocusInsideSelectedRange, moveFocusLeft, moveFocusRight, moveFocusUp } from "./focus";
 import { ReactGridStore } from "./reactGridStore";
 import { tryExpandingTowardsDirection } from "./tryExpandingTowardsDirection";
@@ -48,6 +48,30 @@ export const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>, store:
           ...store,
           selectedArea: wholeGridArea,
         };
+      }
+
+      // Select all columns according to currently selected area OR focused cell area.
+      case " ": { // SPACE BAR
+        event.preventDefault();
+        // Get currently selected area
+        let area: NumericalRange = { ...store.selectedArea };
+
+        // If there is no selected area, get focused cell area
+        const isAnyAreaSelected = !areAreasEqual(area, EMPTY_AREA);
+        if (!isAnyAreaSelected) {
+          area = getCellArea(store, focusedCell);
+        }
+
+        // Get the area occupied by cells in the selected columns.
+        // Expand the obtained area by the area of cells that are spanned-cells.
+        const areaWithSpannedCells = findMinimalSelectedArea(store, {
+          ...area,
+          startRowIdx: Number(store.rows[0].id), 
+          endRowIdx: store.rows.length,
+        });
+
+        // Select all cells in obtained area, including spanned cells.
+        return { ...store, selectedArea: { ...areaWithSpannedCells } };
       }
       default:
         return store;
