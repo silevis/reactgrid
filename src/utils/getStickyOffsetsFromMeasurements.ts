@@ -27,8 +27,8 @@ export const getStickyRowsOffsetsFromMeasurements = (
     for (let rowIndex = lastRowIndex - 1; rowIndex >= rowMeasurements.length - stickyRowsAmount; rowIndex--) {
       // In measurements we have offsets from the top of the grid, 
       // but we need offsets from the bottom of the grid here
-      // so we need to use the difference between the last and the current row offset
-      const bottomOffset = rowMeasurements[lastRowIndex].offsetTop - rowMeasurements[rowIndex].offsetTop;
+      // so we use the previous offset and add the height of the next (because we are going backwards) row as well as the gap width
+      const bottomOffset = stickyRowOffsets[lastRowIndex - rowIndex - 1] + rowMeasurements[rowIndex + 1].height + gapWidth;
       stickyRowOffsets.push(bottomOffset + gapWidth);
     }
   }
@@ -62,9 +62,9 @@ export const getStickyColumnsOffsetsFromMeasurements = (
     for (let colIndex = lastColumnIndex - 1; colIndex >= colMeasurements.length - stickyColumnsAmount; colIndex--) {
       // In measurements we have offsets from the left of the grid, 
       // but we need offsets from the right of the grid here
-      // so we need to use the difference between the last and the current column offset
-      const rightOffset = colMeasurements[lastColumnIndex].offsetLeft - colMeasurements[colIndex].offsetLeft;
-      stickyColumnOffsets.push(rightOffset + gapWidth);
+      // so we use the previous offset and add the width of the next (because we are going backwards) column as well as the gap width
+      const rightOffset = stickyColumnOffsets[lastColumnIndex - colIndex - 1] + colMeasurements[colIndex + 1].width + gapWidth;
+      stickyColumnOffsets.push(rightOffset);
     }
   }
 
