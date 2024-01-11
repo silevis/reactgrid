@@ -5,6 +5,9 @@ import { useReactGridStore } from "../utils/reactGridStore";
 import { useTheme } from "../utils/useTheme";
 import { Pane } from "./Pane";
 import { useReactGridId } from "./ReactGridIdProvider";
+import { RowMeasurement } from "../types/RowMeasurement";
+import { getStickyColumnsOffsetsFromMeasurements, getStickyRowsOffsetsFromMeasurements } from "../utils/getStickyOffsetsFromMeasurements";
+import { ColumnMeasurement } from "../types/ColumnMeasurement";
 
 interface PanesRendererProps {
   rowAmount: number;
@@ -28,6 +31,8 @@ const PanesRenderer: FC<PanesRendererProps> = ({
   const rows = useReactGridStore(id, (store) => store.rows);
   const columns = useReactGridStore(id, (store) => store.columns);
   const setPaneRanges = useReactGridStore(id, (store) => store.setPaneRanges);
+  const setRowMeasurements = useReactGridStore(id, (store) => store.setRowMeasurements);
+  const setColMeasurements = useReactGridStore(id, (store) => store.setColMeasurements);
 
   const ranges: Record<PaneName, NumericalRange> = {
     TopLeft: {
@@ -98,16 +103,20 @@ const PanesRenderer: FC<PanesRendererProps> = ({
   });
 
   const gridContainerRef = useRef<HTMLDivElement>(null);
-  const resizeObserver = useRef<ResizeObserver>(
-    new ResizeObserver(() => {
-      setStickyOffsets(() => ({
-        topRows: getStickyRowsOffsets(stickyTopRows),
-        bottomRows: getStickyRowsOffsets(stickyBottomRows, "backward"),
-        leftColumns: getStickyColumnsOffsets(stickyLeftColumns),
-        rightColumns: getStickyColumnsOffsets(stickyRightColumns, "backward"),
-      }));
-    })
-  );
+  const resizeObserver = useRef<ResizeObserver>(new ResizeObserver(() => {
+    const rowMeasurements = getRowsMeasurements();
+    const colMeasurements = getColumnsMeasurements();
+
+    setRowMeasurements(rowMeasurements);
+    setColMeasurements(colMeasurements);
+
+    setStickyOffsets(() => ({
+      topRows: getStickyRowsOffsetsFromMeasurements(rowMeasurements, stickyTopRows, "forward"),
+      bottomRows: getStickyRowsOffsetsFromMeasurements(rowMeasurements, stickyBottomRows, "backward"),
+      leftColumns: getStickyColumnsOffsetsFromMeasurements(colMeasurements, stickyLeftColumns, "forward"),
+      rightColumns: getStickyColumnsOffsetsFromMeasurements(colMeasurements, stickyRightColumns, "backward"),
+    }));    
+  }));
 
   useEffect(() => {
     if (!gridContainerRef.current) return;
@@ -119,97 +128,111 @@ const PanesRenderer: FC<PanesRendererProps> = ({
   }, []);
 
   /**
-   * Finds the offsets of the sticky rows. Fetches the cells until it finds a cell that is not spanned.
-   * @param {number} stickyRowsAmount defines the amount of rows to get offsets for
-   * @param {"forward" | "backward"} direction defines the direction in which the offsets should be fetched
+   * Measures the widths and offsets of rows. Fetches the cell until it finds a cell that is not spanned.
+   * 
+   * @returns RowMeasurement[] - an array of row measurements
    */
-  const getStickyRowsOffsets = (stickyRowsAmount: number, direction: "forward" | "backward" = "forward") => {
-    if (stickyRowsAmount === 0 || !gridContainerRef.current) return [];
-    const offsets: number[] = [parseFloat(window.getComputedStyle(gridContainerRef.current).gap ?? "0")];
-    let rowIndex = 1;
-    let colOffset = 0;
+  const getRowsMeasurements = (): RowMeasurement[] => {
+    if (rowAmount === 0 || !gridContainerRef.current) return [];
+    const gapWidth = parseFloat(window.getComputedStyle(gridContainerRef.current).gap ?? "0");
+    const rowsMeasurements: RowMeasurement[] = [];
+
+    let rowIndex = 0;
+    let colIndexOffset = 0;
 
     do {
       const cellElement = gridContainerRef.current.getElementsByClassName(
-        `rgRowIdx-${direction === "forward" ? rowIndex - 1 : rowAmount - rowIndex} rgColIdx-${colOffset}`
+        `rgRowIdx-${rowIndex} rgColIdx-${colIndexOffset}`
       )[0];
 
       if (cellElement) {
         const cellElementStyle = window.getComputedStyle(cellElement);
         // If the cell is spanned skip it and look for another one...
         if (cellElementStyle.gridRowEnd.includes("span")) {
-          colOffset += parseInt(cellElementStyle.gridRowEnd.split(" ").at(-1) ?? "1");
+          colIndexOffset += parseInt(cellElementStyle.gridRowEnd.split(" ").at(-1) ?? "1");
           continue;
         }
 
-        // ...else, get real (px) cell height (which represents row height in this context)...
+        // ...else, get real (px) cell height and top offset (which represents _row_ height and offset in this context)...
         const rowHeight = cellElement.getBoundingClientRect().height;
+        const rowOffset =
+          rowIndex === 0
+            ? gapWidth
+            : rowsMeasurements[rowIndex - 1].offset + rowsMeasurements[rowIndex - 1].height + gapWidth;
 
-        // ...and store total offset, i.e. the sum of the previous offset, current width and grid gap
-        offsets.push(offsets[rowIndex - 1] + rowHeight + offsets[0]);
+        // ...and store those measurements in the array
+        rowsMeasurements.push({ height: rowHeight, offset: rowOffset });
 
-        // Reset colOffset and increment rowIndex
-        colOffset = 0;
+        // Reset col index offset and increment rowIndex
+        colIndexOffset = 0;
         rowIndex++;
 
-        // In the end register the element in the observer (required for the offset to update on cell resize)
+        // In the end register the element in the observer (required for the measurements to update on cell resize)
         resizeObserver.current.observe(cellElement);
         continue;
       }
 
       // No element found, increment colOffset and try again
-      colOffset++;
-    } while (rowIndex < stickyRowsAmount && colOffset < columnAmount);
+      colIndexOffset++;
+    } while (rowIndex < rowAmount && colIndexOffset < columnAmount);
 
-    return offsets;
-  };
+    return rowsMeasurements;
+  }
 
   /**
-   * Finds the offsets of the sticky columns. Fetches the cells until it finds a cell that is not spanned.
-   * @param {number} stickyColumnsAmount defines the amount of columns to get offsets for
-   * @param {"forward" | "backward"} direction defines the direction in which the offsets should be fetched
-   * @returns an array of offsets
+   * Measures the widths and offsets of columns. Fetches the cell until it finds a cell that is not spanned.
+   * 
+   * @returns ColumnMeasurement[] - an array of column measurements
    */
-  const getStickyColumnsOffsets = (stickyColumnsAmount: number, direction: "forward" | "backward" = "forward") => {
-    if (stickyColumnsAmount === 0 || !gridContainerRef.current) return [];
-    const offsets: number[] = [parseFloat(window.getComputedStyle(gridContainerRef.current).gap ?? "0")];
-    let colIndex = 1;
-    let rowOffset = 0;
+  const getColumnsMeasurements = (): ColumnMeasurement[] => {
+    if (columnAmount === 0 || !gridContainerRef.current) return [];
+    const gapWidth = parseFloat(window.getComputedStyle(gridContainerRef.current).gap ?? "0");
+    const colMeasurements: ColumnMeasurement[] = [];
+
+    let colIndex = 0;
+    let rowIndexOffset = 0;
 
     do {
       const cellElement = gridContainerRef.current.getElementsByClassName(
-        `rgColIdx-${direction === "forward" ? colIndex - 1 : columnAmount - colIndex} rgRowIdx-${rowOffset}`
+        `rgColIdx-${colIndex} rgRowIdx-${rowIndexOffset}`
       )[0];
 
       if (cellElement) {
         const cellElementStyle = window.getComputedStyle(cellElement);
         // If the cell is spanned skip it and look for another one...
         if (cellElementStyle.gridColumnEnd.includes("span")) {
-          rowOffset += parseInt(cellElementStyle.gridColumnEnd.split(" ").at(-1) ?? "1");
+          rowIndexOffset += parseInt(cellElementStyle.gridColumnEnd.split(" ").at(-1) ?? "1");
           continue;
         }
 
-        //...else, get real (px) cell height (which represents col width in this context)...
+        console.log(rowIndexOffset, colIndex);
+        
+
+        // ...else, get real (px) cell width and left offset (which represents _col_ width and offset in this context)...
         const colWidth = cellElement.getBoundingClientRect().width;
+        const colOffset =
+          colIndex === 0
+            ? gapWidth
+            : colMeasurements[colIndex - 1].offset + colMeasurements[colIndex - 1].width + gapWidth;
 
-        // ...and store total offset, i.e. the sum of the previous offset, current width and grid gap
-        offsets.push(offsets[colIndex - 1] + colWidth + offsets[0]);
+        // ...and store those measurements in the array
+        colMeasurements.push({ width: colWidth, offset: colOffset });
 
-        // Reset rowOffset and increment colIndex
-        rowOffset = 0;
+        // Reset row index offset and increment colIndex
+        rowIndexOffset = 0;
         colIndex++;
 
-        // In the end register the element in the observer (required for the offset to update on cell resize)
+        // In the end register the element in the observer (required for the measurements to update on cell resize)
         resizeObserver.current.observe(cellElement);
         continue;
       }
 
-      // No element found, increment rowOffset and try again
-      rowOffset++;
-    } while (colIndex < stickyColumnsAmount && rowOffset < rowAmount);
+      // No element found, increment rowIndex and try again
+      rowIndexOffset++;
+    } while (colIndex < columnAmount && rowIndexOffset < rowAmount);
 
-    return offsets;
-  };
+    return colMeasurements;
+  }
 
   return (
     <div
