@@ -8,5 +8,5 @@ export type RowMeasurement = {
    * Row offset from the top of the container.
    * Calculated by summing up heights (and gap widths) of all rows above this one.
    */
-  offset: number;
+  offsetTop: number;
 }

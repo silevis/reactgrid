@@ -115,7 +115,7 @@ const PanesRenderer: FC<PanesRendererProps> = ({
       bottomRows: getStickyRowsOffsetsFromMeasurements(rowMeasurements, stickyBottomRows, "backward"),
       leftColumns: getStickyColumnsOffsetsFromMeasurements(colMeasurements, stickyLeftColumns, "forward"),
       rightColumns: getStickyColumnsOffsetsFromMeasurements(colMeasurements, stickyRightColumns, "backward"),
-    }));    
+    }));
   }));
 
   useEffect(() => {
@@ -158,10 +158,10 @@ const PanesRenderer: FC<PanesRendererProps> = ({
         const rowOffset =
           rowIndex === 0
             ? gapWidth
-            : rowsMeasurements[rowIndex - 1].offset + rowsMeasurements[rowIndex - 1].height + gapWidth;
+            : rowsMeasurements[rowIndex - 1].offsetTop + rowsMeasurements[rowIndex - 1].height + gapWidth;
 
         // ...and store those measurements in the array
-        rowsMeasurements.push({ height: rowHeight, offset: rowOffset });
+        rowsMeasurements.push({ height: rowHeight, offsetTop: rowOffset });
 
         // Reset col index offset and increment rowIndex
         colIndexOffset = 0;
@@ -210,10 +210,10 @@ const PanesRenderer: FC<PanesRendererProps> = ({
         const colOffset =
           colIndex === 0
             ? gapWidth
-            : colMeasurements[colIndex - 1].offset + colMeasurements[colIndex - 1].width + gapWidth;
+            : colMeasurements[colIndex - 1].offsetLeft + colMeasurements[colIndex - 1].width + gapWidth;
 
         // ...and store those measurements in the array
-        colMeasurements.push({ width: colWidth, offset: colOffset });
+        colMeasurements.push({ width: colWidth, offsetLeft: colOffset });
 
         // Reset row index offset and increment colIndex
         rowIndexOffset = 0;

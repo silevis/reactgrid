@@ -14,12 +14,12 @@ export const getStickyRowsOffsetsFromMeasurements = (
   stickyRowsAmount: number,
   direction: "forward" | "backward" = "forward"
 ): number[] => {
-  const gapWidth = rowMeasurements[0].offset;
+  const gapWidth = rowMeasurements[0].offsetTop;
   const stickyRowOffsets = [gapWidth];
 
   if (direction === "forward") {
     for (let rowIndex = 1; rowIndex < stickyRowsAmount; rowIndex++) {
-      stickyRowOffsets.push(rowMeasurements[rowIndex].offset);
+      stickyRowOffsets.push(rowMeasurements[rowIndex].offsetTop);
     }
   } else {
     const lastRowIndex = rowMeasurements.length - 1;
@@ -28,7 +28,7 @@ export const getStickyRowsOffsetsFromMeasurements = (
       // In measurements we have offsets from the top of the grid, 
       // but we need offsets from the bottom of the grid here
       // so we need to use the difference between the last and the current row offset
-      const bottomOffset = rowMeasurements[lastRowIndex].offset - rowMeasurements[rowIndex].offset;
+      const bottomOffset = rowMeasurements[lastRowIndex].offsetTop - rowMeasurements[rowIndex].offsetTop;
       stickyRowOffsets.push(bottomOffset + gapWidth);
     }
   }
@@ -49,12 +49,12 @@ export const getStickyColumnsOffsetsFromMeasurements = (
   stickyColumnsAmount: number,
   direction: "forward" | "backward" = "forward"
 ): number[] => {
-  const gapWidth = colMeasurements[0].offset;
+  const gapWidth = colMeasurements[0].offsetLeft;
   const stickyColumnOffsets = [gapWidth];
 
   if (direction === "forward") {
     for (let colIndex = 1; colIndex < stickyColumnsAmount; colIndex++) {
-      stickyColumnOffsets.push(colMeasurements[colIndex].offset);
+      stickyColumnOffsets.push(colMeasurements[colIndex].offsetLeft);
     }
   } else {
     const lastColumnIndex = colMeasurements.length - 1;
@@ -63,7 +63,7 @@ export const getStickyColumnsOffsetsFromMeasurements = (
       // In measurements we have offsets from the left of the grid, 
       // but we need offsets from the right of the grid here
       // so we need to use the difference between the last and the current column offset
-      const rightOffset = colMeasurements[lastColumnIndex].offset - colMeasurements[colIndex].offset;
+      const rightOffset = colMeasurements[lastColumnIndex].offsetLeft - colMeasurements[colIndex].offsetLeft;
       stickyColumnOffsets.push(rightOffset + gapWidth);
     }
   }

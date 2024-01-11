@@ -8,5 +8,5 @@ export type ColumnMeasurement = {
    * Column offset from the left of the container.
    * Calculated by summing up widths (and gap widths) of all columns left of this one.
    */
-  offset: number;
+  offsetLeft: number;
 }
