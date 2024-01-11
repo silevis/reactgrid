@@ -1,6 +1,12 @@
 import { NumericalRange } from "../types/CellMatrix";
 import { EMPTY_AREA, areAreasEqual, findMinimalSelectedArea, getCellArea } from "./cellUtils";
-import { moveFocusDown, moveFocusInsideSelectedRange, moveFocusLeft, moveFocusRight, moveFocusUp } from "./focus";
+import {
+  moveFocusDown,
+  moveFocusInsideSelectedRange,
+  moveFocusLeft,
+  moveFocusRight,
+  moveFocusUp,
+} from "./focus";
 import { ReactGridStore } from "./reactGridStore";
 import { resizeTowardsDirection } from "./resizeTowardsDirection";
 
@@ -24,6 +30,9 @@ export const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>, store:
       ...firstCell,
     };
   }
+
+  const isAnyAreaSelected = !areAreasEqual(store.selectedArea, EMPTY_AREA);
+
   // * SHIFT + CTRL/COMMAND (⌘) + ArrowUp / ArrowDown / ArrowLeft / ArrowRight
   if (event.shiftKey && (event.ctrlKey || event.metaKey)) {
     switch (event.key) {
@@ -160,26 +169,26 @@ export const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>, store:
       case "Home": {
         event.preventDefault();
         if (!focusedCell) return store;
-        return { ...store, focusedLocation: { ...store.focusedLocation, rowIndex: 0 } };
+        return { ...store, focusedLocation: { ...store.focusedLocation, rowIndex: 0 }, selectedArea: EMPTY_AREA };
       }
       // Jump to the cell that is in the last row, but in the same column as the focused cell.
       case "ArrowDown":
       case "End": {
         event.preventDefault();
         if (!focusedCell) return store;
-        return { ...store, focusedLocation: { ...store.focusedLocation, rowIndex: store.rows.length - 1 } };
+        return { ...store, focusedLocation: { ...store.focusedLocation, rowIndex: store.rows.length - 1 }, selectedArea: EMPTY_AREA };
       }
       // Jump to the cell that is in the first column, but in the same row as the focused cell.
       case "ArrowLeft": {
         event.preventDefault();
         if (!focusedCell) return store;
-        return { ...store, focusedLocation: { ...store.focusedLocation, colIndex: 0 } };
+        return { ...store, focusedLocation: { ...store.focusedLocation, colIndex: 0 }, selectedArea: EMPTY_AREA };
       }
       // Jump to the cell that is in the last column, but in the same row as the focused cell.
       case "ArrowRight": {
         event.preventDefault();
         if (!focusedCell) return store;
-        return { ...store, focusedLocation: { ...store.focusedLocation, colIndex: store.columns.length - 1 } };
+        return { ...store, focusedLocation: { ...store.focusedLocation, colIndex: store.columns.length - 1 }, selectedArea: EMPTY_AREA };
       }
 
       // Select all rows according to columns in currently selected area OR focused cell area.
@@ -258,19 +267,14 @@ export const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>, store:
 
   // * Other key-downs (non-combinations)
 
-  const isAnyAreaSelected = !areAreasEqual(store.selectedArea, EMPTY_AREA);
   if (isAnyAreaSelected) {
     switch (event.key) {
       // Changed focused cell in selected area.
       case "Tab": {
         event.preventDefault();
 
-        if (event.shiftKey)
-          return moveFocusInsideSelectedRange(
-            store,
-            focusedCell,
-            "left"
-          ); // If shift is pressed, move focus to the left.
+        if (event.shiftKey) return moveFocusInsideSelectedRange(store, focusedCell, "left");
+        // If shift is pressed, move focus to the left.
         else return moveFocusInsideSelectedRange(store, focusedCell, "right"); // Otherwise, move focus to the right.
       }
     }
@@ -314,7 +318,7 @@ export const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>, store:
       return moveFocusRight(store, focusedCell);
 
     // Move focus to the first/last cell in the row.
-    case "Home":
+    case "Home": {
       event.preventDefault();
       return {
         ...store,
@@ -322,16 +326,23 @@ export const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>, store:
           rowIndex: focusedCell.rowIndex,
           colIndex: 0,
         },
+        // If any area is selected, remove it.
+        selectedArea: EMPTY_AREA,
       };
-    case "End":
+    }
+    case "End": {
       event.preventDefault();
+
       return {
         ...store,
         focusedLocation: {
           rowIndex: focusedCell.rowIndex,
           colIndex: store.columns.length - 1,
         },
+        // If any area is selected, remove it.
+        selectedArea: EMPTY_AREA,
       };
+    }
 
     // TODO: Implement PageUp and PageDown
     case "PageUp":
