@@ -237,7 +237,7 @@ function handleKeyDownInternal(
       case keyCodes.ENTER: {
         const isMoveRightEnable = state.props?.moveRightOnEnter
           ? { ...moveFocusRight(state, event.keyCode), currentlyEditedCell: undefined }
-          : { ...moveFocusDown(state), currentlyEditedCell: undefined };
+          : { ...moveFocusDown(state, event.keyCode), currentlyEditedCell: undefined };
         state.hiddenFocusElement?.focus();
         return (
           isSingleCellSelected
