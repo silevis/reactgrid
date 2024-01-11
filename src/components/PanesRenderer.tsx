@@ -204,10 +204,7 @@ const PanesRenderer: FC<PanesRendererProps> = ({
           rowIndexOffset += parseInt(cellElementStyle.gridColumnEnd.split(" ").at(-1) ?? "1");
           continue;
         }
-
-        console.log(rowIndexOffset, colIndex);
         
-
         // ...else, get real (px) cell width and left offset (which represents _col_ width and offset in this context)...
         const colWidth = cellElement.getBoundingClientRect().width;
         const colOffset =
