@@ -233,19 +233,13 @@ export class PointerEventsController extends AbstractPointerEventsController {
     };
 
     private handleDoubleClick = (event: MouseEvent): void => {
-      this.updateState((state) => {
-        const currentLocation = getLocationFromClient(
-          state as State,
-          event.clientX,
-          event.clientY
-        );
-        state = { ...state, currentBehavior: new ResizeColumnBehavior() };
-        state = state.currentBehavior.handleDoubleClick(
-          event as PointerEvent,
-          currentLocation,
-          state
-        );
-        return state;
-      });
+      if ((event.target as HTMLDivElement).className === "rg-resize-handle") {
+        this.updateState((state) => {
+          const currentLocation = getLocationFromClient(state as State, event.clientX, event.clientY);
+          state = { ...state, currentBehavior: new ResizeColumnBehavior() };
+          state = state.currentBehavior.handleDoubleClick(event as PointerEvent, currentLocation, state);
+          return state;
+        });
+      }
     };
   }
