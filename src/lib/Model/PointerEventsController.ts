@@ -49,7 +49,7 @@ export class PointerEventsController extends AbstractPointerEventsController {
   
       window.addEventListener("pointermove", this.handlePointerMove);
       window.addEventListener("pointerup", this.handlePointerUp);
-      window.addEventListener("dblclick", this.handleDoubleClicks);
+      window.addEventListener("dblclick", this.handleDoubleClick);
       const currentLocation = getLocationFromClient(
         state as State,
         event.clientX,
@@ -232,48 +232,19 @@ export class PointerEventsController extends AbstractPointerEventsController {
       });
     };
 
-    private handleDoubleClicks = (event: PointerEvent): void => {
+    private handleDoubleClick = (event: MouseEvent): void => {
       this.updateState((state) => {
         const currentLocation = getLocationFromClient(
           state as State,
           event.clientX,
           event.clientY
         );
-        const currentTimestamp = new Date().valueOf();
-        const secondLastTimestamp = this.eventTimestamps[1 - this.currentIndex];
+        state = { ...state, currentBehavior: new ResizeColumnBehavior() };
         state = state.currentBehavior.handleDoubleClick(
-          event,
+          event as PointerEvent,
           currentLocation,
           state
         );
-        if (
-          this.shouldHandleCellSelectionOnMobile(
-            event,
-            currentLocation,
-            currentTimestamp
-          )
-        ) {
-          state = state.currentBehavior.handlePointerDown(
-            event,
-            currentLocation,
-            state
-          );
-        }
-        state = { ...state, currentBehavior: new DefaultBehavior() };
-        if (
-          this.shouldHandleDoubleClick(
-            currentLocation,
-            currentTimestamp,
-            secondLastTimestamp
-          )
-        ) {
-          state = state.currentBehavior.handleDoubleClick(
-            event,
-            currentLocation,
-            state
-          );
-        }
-        state.hiddenFocusElement?.focus();
         return state;
       });
     };
