@@ -46,6 +46,7 @@ export const DefaultBehavior = (config: DefaultBehaviorConfig = CONFIG_DEFAULTS)
     return {
       ...store,
       focusedLocation: { rowIndex: newRowIndex, colIndex: newColIndex },
+      absoluteFocusedLocation: { rowIndex: newRowIndex, colIndex: newColIndex },
       selectedArea: { startRowIdx: -1, endRowIdx: -1, startColIdx: -1, endColIdx: -1 },
       currentlyEditedCell: { rowIndex: -1, colIndex: -1 },
     };

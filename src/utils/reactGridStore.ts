@@ -28,6 +28,7 @@ const DEFAULT_STORE_PROPS: ReactGridStoreProps = {
   },
   styledRanges: [],
   focusedLocation: { rowIndex: 0, colIndex: 0 },
+  absoluteFocusedLocation: { rowIndex: 0, colIndex: 0 },
   selectedArea: { startRowIdx: -1, endRowIdx: -1, startColIdx: -1, endColIdx: -1 },
   currentlyEditedCell: { rowIndex: -1, colIndex: -1 },
   reactGridRef: undefined,

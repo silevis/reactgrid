@@ -17,6 +17,7 @@ export interface ReactGridStoreProps {
   styledRanges: StyledRange[];
 
   focusedLocation: IndexedLocation;
+  absoluteFocusedLocation: IndexedLocation;
   selectedArea: NumericalRange;
   currentlyEditedCell: IndexedLocation;
 
