@@ -9,9 +9,6 @@ import {
   getStickyOffset,
   getVisibleSizeOfReactGrid,
   CellMatrix,
-  Id,
-  Cell,
-  TextCell,
 } from "../../core";
 import { PointerEvent } from "../Model/domEventsTypes";
 import { State } from "../Model/State";
@@ -23,8 +20,24 @@ export class ResizeColumnBehavior extends Behavior {
   // TODO min / max column with on column object
   private resizedColumn!: GridColumn;
   private initialLocation!: PointerLocation;
+  private canvasContext = this.createCanvasContext();
   autoScrollDirection: Direction = "horizontal";
   isInScrollableRange!: boolean;
+
+  constructor() {
+    super();
+    const style = getComputedStyle(document.body);
+    this.canvasContext.font = `${style.fontSize} ${style.fontFamily}`;
+  }
+
+  createCanvasContext(): CanvasRenderingContext2D {
+    const canvas = document.createElement("canvas");
+    const context = canvas.getContext("2d");
+    if (!context) {
+      throw new Error("2D context not supported or canvas already initialized");
+    }
+    return context;
+  }
 
   handlePointerDown(
     event: PointerEvent,
@@ -135,9 +148,7 @@ export class ResizeColumnBehavior extends Behavior {
   handleDoubleClick(event: PointerEvent, location: PointerLocation, state: State): State {
     this.initialLocation = location;
     this.resizedColumn = location.column;
-    // You may need to implement a method to calculate the optimal width of the current column, for example:
-    const newWidth = this.calculateOptimalColumnWidth(this.resizedColumn.columnId, state);
-    // const newWidth = 500;
+    const newWidth = this.calculateOptimalColumnWidth(this.resizedColumn.idx, state);
 
     if (state.props?.onColumnResized) {
       const newColWidth =
@@ -160,20 +171,17 @@ export class ResizeColumnBehavior extends Behavior {
    * @param state
    * @returns
    */
-  calculateOptimalColumnWidth(columnId: Id, state: State): number {
+  calculateOptimalColumnWidth(idx: number, state: State): number {
     let maxWidth = 0;
 
     state.cellMatrix.rows.forEach((row) => {
-      row.cells.forEach((cell: Cell) => {
-        const contentWidth = this.measureTextWidth((cell as TextCell)?.text);
-        if (contentWidth > maxWidth) {
-          maxWidth = contentWidth;
-        }
-      });
+      const cell = row.cells[idx];
+      const contentWidth = this.measureTextWidth(state.cellTemplates[cell.type].getCompatibleCell(cell).text);
+      maxWidth = Math.max(maxWidth, contentWidth);
     });
 
     // Add some extra space in case the text gets truncated
-    return maxWidth + 10;
+    return maxWidth + 20;
   }
 
   /**
@@ -182,22 +190,6 @@ export class ResizeColumnBehavior extends Behavior {
    * @returns
    */
   measureTextWidth(text: string): number {
-    const bodyElement = document.querySelector("body");
-    if (bodyElement) {
-      const style = getComputedStyle(bodyElement);
-      const fontSize = style?.fontSize;
-      const fontFamily = style?.fontFamily;
-      const context = document.createElement("canvas").getContext("2d");
-      if (context) {
-        context.font = `${fontSize} ${fontFamily}`;
-        return context.measureText(text).width;
-      } else {
-        console.error('document.createElement("canvas").getContext("2d") returns a null value');
-        return CellMatrix.DEFAULT_COLUMN_WIDTH;
-      }
-    } else {
-      console.error('document.querySelector("body") returns a null value');
-      return CellMatrix.DEFAULT_COLUMN_WIDTH;
-    }
+    return this.canvasContext.measureText(text).width;
   }
 }
