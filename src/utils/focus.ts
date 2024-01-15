@@ -14,7 +14,7 @@ import { detectCollision, isCollision } from "./collisionUtils";
 import { isElementFullyVisible } from "./isElementFullyVisible";
 import { ReactGridStore } from "./reactGridStore";
 import { scrollCellIntoView } from "./scrollCellIntoView";
-import { getScrollableParent } from "./scrollHelpers";
+import { getScrollOfScrollableElement, getScrollableParent } from "./scrollHelpers";
 import { isInViewport } from "./isInViewport";
 
 const absoluteLocation = {
@@ -22,15 +22,22 @@ const absoluteLocation = {
   colIndex: -1,
 };
 
-const stickyCellPanes = [...document.getElementsByClassName("rgPane")].filter(
-  (pane) => !pane.classList.contains("rgPane-Center")
-);
 
-const rgPaneBackgrounds = stickyCellPanes.map((pane) => {
-  const rgPaneBg = [...pane.getElementsByClassName("rgPaneBackground")];
-  if (rgPaneBg.length > 1) throw new Error("There should be only one rgPaneBackground for each CellPane!");
-  return rgPaneBg[0];
-});
+
+function getPaneBg() {
+  const stickyCellPanes = [...document.getElementsByClassName("rgPane")].filter(
+    (pane) => !pane.classList.contains("rgPane-Center")
+  );
+
+  const rgPaneBackgrounds = stickyCellPanes.map((pane) => {
+    const rgPaneBg = [...pane.getElementsByClassName("rgPaneBackground")];
+    if (rgPaneBg.length > 1) throw new Error("There should be only one rgPaneBackground for each CellPane!");
+    return rgPaneBg[0];
+  });
+
+  return rgPaneBackgrounds
+}
+
 
 export const moveFocusUp = (store: ReactGridStore, currentFocus: FocusedCell): ReactGridStore => {
   if (currentFocus.rowIndex === 0) return store;
@@ -106,9 +113,15 @@ export const moveFocusRight = (store: ReactGridStore, currentFocus: FocusedCell)
 };
 
 function handleJumpScroll(store: ReactGridStore, previousCell: Cell, nextCell: Cell): void {
+  const rgPaneBackgrounds = getPaneBg()
   // Want i want to achieve:
   // * If nextCell is not fully visible, scroll it into view (! not by using function with similar name!)
   // ! Do NOT scroll outer div's (don't use their scrollbars), use scrollableParent instead.
+  // if (isCellSticky(store, previousCell)) {
+  //   if (isCellSticky(store, nextCell)) {
+  //     return;
+  //   }
+  // }
 
   if (!previousCell) return;
   const previousCellContainer = getCellContainer(store, previousCell) as HTMLElement;
@@ -119,25 +132,33 @@ function handleJumpScroll(store: ReactGridStore, previousCell: Cell, nextCell: C
   const scrollingDirection = nextCell.rowId > previousCell.colId ? "Bottom" : "Top";
   const paneLocation = rgPaneBackgrounds.find((pane) => pane.className.includes(scrollingDirection)) as HTMLElement;
 
-  const { overlapY } = detectCollision(nextCellContainer, paneLocation);
+  const { overlapY } = detectCollision(nextCellContainer, paneLocation, true);
 
+  const isCurrentCellFullyVisible = isElementFullyVisible(nextCellContainer, scrollableParent);
   const isPreviousCellFullyVisible = isElementFullyVisible(previousCellContainer, scrollableParent);
-
-  let scrollValue: number;
 
   const prevCellRect = previousCellContainer.getBoundingClientRect();
   const nextCellRect = nextCellContainer.getBoundingClientRect();
 
-  if (!isElementFullyVisible(nextCellContainer, scrollableParent)) {
-    if (!isElementFullyVisible(previousCellContainer, scrollableParent)) {
-      scrollValue = nextCellRect.top - prevCellRect.top + prevCellRect.height
+  let scrollValue: number;
+
+  if (!isCurrentCellFullyVisible) {
+    if (!isPreviousCellFullyVisible) {
+      scrollValue = nextCellRect.top - prevCellRect.top + prevCellRect.height + overlapY;
     } else {
-      
       scrollValue = nextCellRect.top - prevCellRect.top;
+      // + overlapY;
     }
 
+    // if (!isInViewport(previousCellContainer, scrollableParent)) {
+    //   scrollableParent.scrollTo({
+    //     behavior: "smooth",
+    //     top: prevCellRect.top
+    //   })
+    // }
+
     scrollableParent.scrollBy({
-      top: scrollValue + overlapY,
+      top: scrollValue,
     });
   }
 

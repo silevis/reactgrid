@@ -32,7 +32,7 @@ export const BigGrid = () => {
         if (i === 6 && j === 7) return null;
         if (i === 6 && j === 8) return null;
 
-        return [
+        return `[${i.toString()}:${j.toString()}]` + [
           "Lorem ipsum dolor sit amet",
           "Reiciendis illum, nihil, ab officiis explicabo!",
           "Excepturi in adipisci omnis illo eveniet obcaecati!",
