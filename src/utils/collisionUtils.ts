@@ -14,18 +14,26 @@ export function isCollision(firstEl: HTMLElement, secondEl: HTMLElement) {
   }
 }
 
-export function detectCollision(firstEl: HTMLElement, secondEl: HTMLElement) {
+export function detectCollision(firstEl: HTMLElement, secondEl: HTMLElement, negativeValues?: boolean) {
   const firstRect = firstEl.getBoundingClientRect();
   const secondRect = secondEl.getBoundingClientRect();
 
-  const overlapX = Math.max(
-    0,
-    Math.min(firstRect.x + firstRect.width, secondRect.x + secondRect.width) - Math.max(firstRect.x, secondRect.x)
-  );
-  const overlapY = Math.max(
-    0,
-    Math.min(firstRect.y + firstRect.height, secondRect.y + secondRect.height) - Math.max(firstRect.y, secondRect.y)
-  );
+  let overlapX;
+  let overlapY;
+
+  if (negativeValues) {
+    overlapX = Math.min(firstRect.x + firstRect.width, secondRect.x + secondRect.width) - Math.max(firstRect.x, secondRect.x);
+    overlapY = Math.min(firstRect.y + firstRect.height, secondRect.y + secondRect.height) - Math.max(firstRect.y, secondRect.y);
+  } else {
+    overlapX = Math.max(
+      0,
+      Math.min(firstRect.x + firstRect.width, secondRect.x + secondRect.width) - Math.max(firstRect.x, secondRect.x)
+    );
+    overlapY = Math.max(
+      0,
+      Math.min(firstRect.y + firstRect.height, secondRect.y + secondRect.height) - Math.max(firstRect.y, secondRect.y)
+    );
+  }
 
   return {
     overlapX: overlapX,
