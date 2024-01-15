@@ -143,9 +143,15 @@ export function isCellSticky(store: ReactGridStore, cell: Cell): boolean {
   return !isCellInRange(store, cell, store.paneRanges.Center);
 }
 
-export const getContainerElementByIndexes = (rowIndex: number, colIndex: number): HTMLElement | null => {
-  const cellContainer = document.getElementsByClassName(`rgCellContainer rgRowIdx-${rowIndex} rgColIdx-${colIndex}`)[0];
-  if (!cellContainer) return null;
+export function getCellContainer(store: ReactGridStore, cell: Cell) {
+  if (!store.reactGridRef) throw new Error("ReactGridRef is not defined!");
 
-  return cellContainer as HTMLElement;
+  const cellContainers = store.reactGridRef?.getElementsByClassName(`rgRowIdx-${cell.rowId} rgColIdx-${cell.colId}`);
+
+  if (!cellContainers || cellContainers?.length === 0) return;
+  if (cellContainers?.length !== 1) throw new Error("Cell container is not unique!");
+
+  const cellElement = cellContainers[0];
+
+  return cellElement;
 }
