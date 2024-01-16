@@ -39,9 +39,9 @@ export const getCellArea = (store: ReactGridStore, cell: Cell | SpanMember): Num
   if (isCellSpanned(originCell)) {
     return {
       startRowIdx: rowIndex,
-      endRowIdx: rowIndex + originCell.rowSpan,
+      endRowIdx: rowIndex + (originCell?.rowSpan ?? 1),
       startColIdx: colIndex,
-      endColIdx: colIndex + originCell.colSpan,
+      endColIdx: colIndex + (originCell?.colSpan ?? 1),
     };
   }
 
