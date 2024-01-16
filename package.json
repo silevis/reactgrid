@@ -78,11 +78,6 @@
     "cy:columnAndRowSelectionsWithSticky": "npx cypress run --headless --quiet --browser firefox -s 'cypress/integration/tests/columnAndRowSelectionsWithSticky/*'",
     "remove-suffix": "cross-env SUFFIX=rc node ./node_modules/npm-version-suffix/run-remove-suffix.js"
   },
-  "husky": {
-    "hooks": {
-      "pre-push": "if git-branch-is develop; then npx run-s eslint run:all:tests; fi"
-    }
-  },
   "browserslist": [
     ">0.2%",
     "not dead"
