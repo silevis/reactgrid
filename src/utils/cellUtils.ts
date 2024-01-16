@@ -175,31 +175,11 @@ export const getCellPaneName = (store: ReactGridStore, cell: Cell): PaneName => 
 };
 
 /**
- * Retrieves the stickies in the cross pattern around a given cell.
- *
- * @param store - The ReactGridStore instance.
- * @param cell - The cell for which to retrieve the stickies.
- * @returns An object containing the stickies in the top, bottom, left, and right directions, THAT ARE IN THE SAME COLUMN OR ROW AS THE GIVEN CELL.
+ * Returns the indexes of a cell in the ReactGrid store.
+ * @param store - The ReactGrid store.
+ * @param cell - The cell to find the indexes for.
+ * @returns An object containing the row index and column index of the cell.
  */
-// export const getBorderStickyCells = (
-//   store: ReactGridStore,
-//   cell: Cell
-// ): {
-//   top: Cell | null;
-//   bottom: Cell | null;
-//   left: Cell | null;
-//   right: Cell | null;
-// } => {
-//   const stickiesFromSidePanes = {
-//     top: getStickyAdjacentToCenterPane(store, cell, "Top"),
-//     bottom: getStickyAdjacentToCenterPane(store, cell, "Bottom"),
-//     left: getStickyAdjacentToCenterPane(store, cell, "Left"),
-//     right: getStickyAdjacentToCenterPane(store, cell, "Right"),
-//   };
-
-//   return stickiesFromSidePanes;
-// };
-
 export function getCellIndexes(store: ReactGridStore, cell: Cell): { rowIndex: number; colIndex: number } {
   const rowIndex = store.rows.findIndex((row) => row.id === cell.rowId);
   const colIndex = store.columns.findIndex((col) => col.id === cell.colId);
@@ -209,6 +189,13 @@ export function getCellIndexes(store: ReactGridStore, cell: Cell): { rowIndex: n
   };
 }
 
+/**
+ * Retrieves the sticky cell adjacent to the "Center" pane in the specified direction.
+ * @param store The ReactGridStore object.
+ * @param cell The position of the sticky cell in the selected direction is counted from this cell.
+ * @param direction The direction to search for the sticky cell ("Top", "Bottom", "Right", "Left").
+ * @returns The sticky cell adjacent to the center pane, or null if not found.
+ */
 export function getStickyAdjacentToCenterPane(
   store: ReactGridStore,
   cell: Cell,
