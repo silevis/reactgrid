@@ -1,39 +1,16 @@
 import { FocusedCell } from "../types/InternalModel";
-import { Cell } from "../types/PublicModel";
 import {
   EMPTY_AREA,
-  getCellContainer,
   getOriginCell,
-  isCellInRange,
-  isCellSpanned,
-  isCellSticky,
   isSpanMember,
 } from "./cellUtils";
-import { getDistanceBetweenOffsets, getOffset } from "./getDistanceBetweenHTMLElements";
-import { detectCollision, isCollision } from "./collisionUtils";
 import { ReactGridStore } from "./reactGridStore";
-import { scrollCellIntoView } from "./scrollCellIntoView";
-import { getScrollOfScrollableElement, getScrollableParent } from "./scrollHelpers";
-import { isInViewport } from "./isInViewport";
+import { handleJumpScroll } from "./handleJumpScroll";
 
 const absoluteLocation = {
   rowIndex: -1,
   colIndex: -1,
 };
-
-function getPaneBg() {
-  const stickyCellPanes = [...document.getElementsByClassName("rgPane")].filter(
-    (pane) => !pane.classList.contains("rgPane-Center")
-  );
-
-  const rgPaneBackgrounds = stickyCellPanes.map((pane) => {
-    const rgPaneBg = [...pane.getElementsByClassName("rgPaneBackground")];
-    if (rgPaneBg.length > 1) throw new Error("There should be only one rgPaneBackground for each CellPane!");
-    return rgPaneBg[0];
-  });
-
-  return rgPaneBackgrounds;
-}
 
 export const moveFocusUp = (store: ReactGridStore, currentFocus: FocusedCell): ReactGridStore => {
   if (currentFocus.rowIndex === 0) return store;
@@ -89,7 +66,6 @@ export const moveFocusRight = (store: ReactGridStore, currentFocus: FocusedCell)
 
       handleJumpScroll(store, currentFocus, originCell);
 
-
       return {
         ...store,
         focusedLocation: { rowIndex: originRowIndex, colIndex: originColIndex },
@@ -101,58 +77,7 @@ export const moveFocusRight = (store: ReactGridStore, currentFocus: FocusedCell)
   return store;
 };
 
-function handleJumpScroll(store: ReactGridStore, previousCell: Cell, nextCell: Cell): void {
-  const rgPaneBackgrounds = getPaneBg();
-  // * If nextCell is not fully visible, scroll it into view (! not by using function with similar name!)
-  // ! Do NOT scroll outer div's (don't use their scrollbars), use scrollableParent instead.
-  // TODO: Change paneLocation to stickyCell closest (in pixels) to nextCell
 
-  if (!previousCell) return;
-  const nextCellContainer = getCellContainer(store, nextCell) as HTMLElement;
-  if (!nextCellContainer) return;
-  const previousCellContainer = getCellContainer(store, previousCell) as HTMLElement;
-
-  const scrollableParent = (getScrollableParent(nextCellContainer, true) as Element) ?? store.reactGridRef!;
-  let scrollingDirection: "Left" | "Right" | "Top" | "Bottom";
-
-  const nextCellRowIndex = store.rows.findIndex((row) => row.id === nextCell.rowId);
-  const previousCellRowIndex = store.rows.findIndex((row) => row.id === previousCell.rowId);
-
-  if (nextCellRowIndex === previousCellRowIndex) {
-    const nextCellColIndex = store.columns.findIndex((col) => col.id === nextCell.colId);
-    const previousCellColIndex = store.columns.findIndex((col) => col.id === previousCell.colId);
-    scrollingDirection = nextCellColIndex > previousCellColIndex ? "Right" : "Left";
-  } else {
-    scrollingDirection = nextCellRowIndex > previousCellRowIndex ? "Bottom" : "Top";
-  }
-
-  const paneLocation = rgPaneBackgrounds.find((pane) => pane.className.includes(scrollingDirection)) as HTMLElement;
-
-  const isNextCellFullyVisible =
-    isInViewport(nextCellContainer, scrollableParent) && !isCollision(nextCellContainer, paneLocation);
-  const isPreviousCellFullyVisible =
-    isInViewport(previousCellContainer, scrollableParent) && !isCollision(previousCellContainer, paneLocation);
-
-  const previousCellRect = previousCellContainer.getBoundingClientRect();
-  const nextCellRect = nextCellContainer.getBoundingClientRect();
-
-  const directionParameter: "top" | "left" = scrollingDirection === "Top" || scrollingDirection === "Bottom" ? 'top' : 'left'
-
-  let scrollValue: number;
-  if (!isNextCellFullyVisible) {
-    if (!isPreviousCellFullyVisible) {
-      scrollValue =
-        nextCellRect[directionParameter] - previousCellRect[directionParameter] + previousCellRect[directionParameter === 'top' ? 'height' : 'width'];
-    } else {
-      scrollValue = nextCellRect[directionParameter] - previousCellRect[directionParameter];
-    }
-
-    scrollableParent.scrollBy({
-      [directionParameter]: scrollValue,
-      behavior: "smooth",
-    });
-  }
-}
 
 export const moveFocusDown = (store: ReactGridStore, currentFocus: FocusedCell) => {
   if (currentFocus.rowIndex === store.rows.length - 1) return store;
@@ -174,10 +99,6 @@ export const moveFocusDown = (store: ReactGridStore, currentFocus: FocusedCell) 
       absoluteLocation.colIndex = colIndex;
 
       handleJumpScroll(store, currentFocus, originCell);
-      // if (originCellContainer && !isInViewport(originCellContainer as HTMLDivElement, store.reactGridRef!)) {
-      //         //  Doesnt work...
-      //   scrollCellIntoView(store, originCell)
-      // }
 
       return {
         ...store,
@@ -209,7 +130,6 @@ export const moveFocusLeft = (store: ReactGridStore, currentFocus: FocusedCell) 
       absoluteLocation.rowIndex = rowIndex;
       if (originCell.colSpan ?? 1 > 1) absoluteLocation.colIndex = originColIndex;
       else absoluteLocation.colIndex = colIdx;
-
 
       handleJumpScroll(store, currentFocus, originCell);
 
