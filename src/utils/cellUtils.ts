@@ -155,3 +155,93 @@ export function getCellContainer(store: ReactGridStore, cell: Cell) {
 
   return cellElement;
 }
+
+export const getCellPaneName = (store: ReactGridStore, cell: Cell): PaneName => {
+  // PaneNamesAndRanges
+  // [0] - pane name
+  // [1] - pane range values
+  const PaneNamesAndRanges = Object.entries(store.paneRanges);
+
+  const paneCellIsIn = PaneNamesAndRanges.find((paneRange) => {
+    const paneValues = paneRange[1];
+    return isCellInRange(store, cell, paneValues);
+  });
+
+  if (!paneCellIsIn) throw new Error("Cell has no corresponding range!");
+
+  const paneName = paneCellIsIn[0] as PaneName;
+
+  return paneName;
+};
+
+/**
+ * Retrieves the stickies in the cross pattern around a given cell.
+ *
+ * @param store - The ReactGridStore instance.
+ * @param cell - The cell for which to retrieve the stickies.
+ * @returns An object containing the stickies in the top, bottom, left, and right directions, THAT ARE IN THE SAME COLUMN OR ROW AS THE GIVEN CELL.
+ */
+// export const getBorderStickyCells = (
+//   store: ReactGridStore,
+//   cell: Cell
+// ): {
+//   top: Cell | null;
+//   bottom: Cell | null;
+//   left: Cell | null;
+//   right: Cell | null;
+// } => {
+//   const stickiesFromSidePanes = {
+//     top: getStickyAdjacentToCenterPane(store, cell, "Top"),
+//     bottom: getStickyAdjacentToCenterPane(store, cell, "Bottom"),
+//     left: getStickyAdjacentToCenterPane(store, cell, "Left"),
+//     right: getStickyAdjacentToCenterPane(store, cell, "Right"),
+//   };
+
+//   return stickiesFromSidePanes;
+// };
+
+export function getCellIndexes(store: ReactGridStore, cell: Cell): { rowIndex: number; colIndex: number } {
+  const rowIndex = store.rows.findIndex((row) => row.id === cell.rowId);
+  const colIndex = store.columns.findIndex((col) => col.id === cell.colId);
+  return {
+    rowIndex,
+    colIndex,
+  };
+}
+
+export function getStickyAdjacentToCenterPane(
+  store: ReactGridStore,
+  cell: Cell,
+  direction: "Top" | "Bottom" | "Right" | "Left"
+) {
+  let stickyCell: Cell | null = null;
+  const originIndexes = getCellIndexes(store, cell);
+
+  if (originIndexes.colIndex === -1 || originIndexes.rowIndex === -1) return null;
+
+  let stickyPaneName;
+  const cellPaneName = getCellPaneName(store, cell);
+  if (direction === "Top" || direction === "Bottom") {
+    stickyPaneName = (direction + cellPaneName.replace(/(Top|Bottom)/, "")) as PaneName;
+  } else {
+    stickyPaneName = direction;
+  }
+
+  const paneRange = store.paneRanges[stickyPaneName];
+  const startOrEnd = direction === "Bottom" || direction === "Right" ? "start" : "end";
+
+  const isExclusiveRangeIndex = startOrEnd === "end";
+
+  const stickyIndexes = {
+    rowIndex: paneRange?.[`${startOrEnd}RowIdx`] - (isExclusiveRangeIndex ? 1 : 0),
+    colIndex: paneRange?.[`${startOrEnd}ColIdx`] - (isExclusiveRangeIndex ? 1 : 0),
+  };
+
+  if (direction === "Bottom" || direction === "Top") {
+    stickyCell = store.getCellByIndexes(stickyIndexes.rowIndex, originIndexes.colIndex) ?? null;
+  } else {
+    stickyCell = store.getCellByIndexes(originIndexes.rowIndex, stickyIndexes.colIndex) ?? null;
+  }
+
+  return stickyCell;
+}
