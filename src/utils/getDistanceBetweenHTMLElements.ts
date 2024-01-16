@@ -20,16 +20,3 @@ export function getDistanceBetweenOffsets(firstEl: HTMLElement, secondEl: HTMLEl
   return { left: secondOffset.left - firstOffset.left, top: secondOffset.top - firstOffset.top };
 }
 
-// export function getDistanceBetweenHTMLElements(firstEl: HTMLElement, secondEl: HTMLElement) {
-//       const firstRect = firstEl.getBoundingClientRect();
-//   const secondRect = secondEl.getBoundingClientRect();
-  
-//     firstRect.x < secondRect.x + secondRect.width && // firstX < second_
-//     firstRect.x + firstRect.width > secondRect.x && // first_ > secondX
-//     firstRect.y < secondRect.y + secondRect.height && // firstY < second|
-//     firstRect.y + firstRect.height > secondRect.y // first| > secondY
-
-
-
-// }
-
