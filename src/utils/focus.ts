@@ -11,7 +11,6 @@ import {
 } from "./cellUtils";
 import { getDistanceBetweenOffsets, getOffset } from "./getDistanceBetweenHTMLElements";
 import { detectCollision, isCollision } from "./collisionUtils";
-import { isElementFullyVisible } from "./isElementFullyVisible";
 import { ReactGridStore } from "./reactGridStore";
 import { scrollCellIntoView } from "./scrollCellIntoView";
 import { getScrollOfScrollableElement, getScrollableParent } from "./scrollHelpers";
@@ -21,8 +20,6 @@ const absoluteLocation = {
   rowIndex: -1,
   colIndex: -1,
 };
-
-
 
 function getPaneBg() {
   const stickyCellPanes = [...document.getElementsByClassName("rgPane")].filter(
@@ -35,9 +32,8 @@ function getPaneBg() {
     return rgPaneBg[0];
   });
 
-  return rgPaneBackgrounds
+  return rgPaneBackgrounds;
 }
-
 
 export const moveFocusUp = (store: ReactGridStore, currentFocus: FocusedCell): ReactGridStore => {
   if (currentFocus.rowIndex === 0) return store;
@@ -59,17 +55,7 @@ export const moveFocusUp = (store: ReactGridStore, currentFocus: FocusedCell): R
       else absoluteLocation.rowIndex = rowIdx;
       absoluteLocation.colIndex = colIndex;
 
-      const cellContainer = getCellContainer(store, originCell);
-      const scrollableParent = getScrollableParent(cellContainer as HTMLDivElement, true);
-
-      // if (cellContainer && !isElementFullyVisible(cellContainer as HTMLDivElement, store.reactGridRef!)) {
-      //   const rect = cellContainer.getBoundingClientRect();
-
-      //   !isCellSticky(store, currentFocus);
-      //   scrollableParent?.scrollBy({
-      //     top: -rect.height,
-      //   });
-      // }
+      handleJumpScroll(store, currentFocus, originCell);
 
       return {
         ...store,
@@ -113,7 +99,7 @@ export const moveFocusRight = (store: ReactGridStore, currentFocus: FocusedCell)
 };
 
 function handleJumpScroll(store: ReactGridStore, previousCell: Cell, nextCell: Cell): void {
-  const rgPaneBackgrounds = getPaneBg()
+  const rgPaneBackgrounds = getPaneBg();
   // Want i want to achieve:
   // * If nextCell is not fully visible, scroll it into view (! not by using function with similar name!)
   // ! Do NOT scroll outer div's (don't use their scrollbars), use scrollableParent instead.
@@ -129,60 +115,36 @@ function handleJumpScroll(store: ReactGridStore, previousCell: Cell, nextCell: C
   if (!nextCellContainer) return;
 
   const scrollableParent = (getScrollableParent(nextCellContainer, true) as Element) ?? store.reactGridRef!;
-  const scrollingDirection = nextCell.rowId > previousCell.colId ? "Bottom" : "Top";
+  const scrollingDirection =
+    store.rows.findIndex((row) => row.id === nextCell.rowId) >
+    store.rows.findIndex((row) => row.id === previousCell.rowId)
+      ? "Bottom"
+      : "Top";
   const paneLocation = rgPaneBackgrounds.find((pane) => pane.className.includes(scrollingDirection)) as HTMLElement;
 
-  const { overlapY } = detectCollision(nextCellContainer, paneLocation, true);
+  const isNextCellFullyVisible =
+    isInViewport(nextCellContainer, scrollableParent) && !isCollision(nextCellContainer, paneLocation);
 
-  const isCurrentCellFullyVisible = isElementFullyVisible(nextCellContainer, scrollableParent);
-  const isPreviousCellFullyVisible = isElementFullyVisible(previousCellContainer, scrollableParent);
+  const isPreviousCellFullyVisible =
+    isInViewport(previousCellContainer, scrollableParent) && !isCollision(previousCellContainer, paneLocation);
 
   const prevCellRect = previousCellContainer.getBoundingClientRect();
   const nextCellRect = nextCellContainer.getBoundingClientRect();
 
-  let scrollValue: number;
+  console.log(isNextCellFullyVisible, paneLocation, detectCollision(nextCellContainer, paneLocation, true));
 
-  if (!isCurrentCellFullyVisible) {
+  let scrollValue: number;
+  if (!isNextCellFullyVisible) {
     if (!isPreviousCellFullyVisible) {
-      scrollValue = nextCellRect.top - prevCellRect.top + prevCellRect.height + overlapY;
+      scrollValue = nextCellRect.top - prevCellRect.top + prevCellRect.height;
     } else {
       scrollValue = nextCellRect.top - prevCellRect.top;
-      // + overlapY;
     }
-
-    // if (!isInViewport(previousCellContainer, scrollableParent)) {
-    //   scrollableParent.scrollTo({
-    //     behavior: "smooth",
-    //     top: prevCellRect.top
-    //   })
-    // }
 
     scrollableParent.scrollBy({
       top: scrollValue,
     });
   }
-
-  // if (overlapY > 0) {
-  //   scrollValue = isPreviousCellFullyVisible
-  //     ? nextCellRect.top - prevCellRect.top
-  //     : nextCellRect?.height + prevCellRect.height;
-
-  //   scrollableParent?.scrollBy({
-  //     // top: overlapY * 2, // TODO: find out how to make
-  //     // top: nextCellRect.top - prevCellRect.top // working!
-  //     top: scrollValue, // working as intended!
-  //     // : nextCellRect?.height + prevCellRect.height, // working as intended!
-  //     // Calc calc the rec.top of current cell
-  //     // scroll by the differential of these two values
-  //   });
-  // }
-
-  // if (nextCellContainer && !isElementFullyVisible(nextCellContainer, scrollableParent)) {
-  //   console.log("scrollTo");
-  //   console.log(nextCellRect.top - prevCellRect.top);
-
-  //   scrollableParent.scrollTo({ behavior: "auto", top: nextCellRect.top });
-  // }
 }
 
 export const moveFocusDown = (store: ReactGridStore, currentFocus: FocusedCell) => {
