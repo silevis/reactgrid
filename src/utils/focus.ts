@@ -87,6 +87,9 @@ export const moveFocusRight = (store: ReactGridStore, currentFocus: FocusedCell)
       absoluteLocation.rowIndex = rowIndex;
       absoluteLocation.colIndex = colIdx;
 
+      handleJumpScroll(store, currentFocus, originCell);
+
+
       return {
         ...store,
         focusedLocation: { rowIndex: originRowIndex, colIndex: originColIndex },
@@ -100,49 +103,53 @@ export const moveFocusRight = (store: ReactGridStore, currentFocus: FocusedCell)
 
 function handleJumpScroll(store: ReactGridStore, previousCell: Cell, nextCell: Cell): void {
   const rgPaneBackgrounds = getPaneBg();
-  // Want i want to achieve:
   // * If nextCell is not fully visible, scroll it into view (! not by using function with similar name!)
   // ! Do NOT scroll outer div's (don't use their scrollbars), use scrollableParent instead.
-  // if (isCellSticky(store, previousCell)) {
-  //   if (isCellSticky(store, nextCell)) {
-  //     return;
-  //   }
-  // }
+  // TODO: Change paneLocation to stickyCell closest (in pixels) to nextCell
 
   if (!previousCell) return;
-  const previousCellContainer = getCellContainer(store, previousCell) as HTMLElement;
   const nextCellContainer = getCellContainer(store, nextCell) as HTMLElement;
   if (!nextCellContainer) return;
+  const previousCellContainer = getCellContainer(store, previousCell) as HTMLElement;
 
   const scrollableParent = (getScrollableParent(nextCellContainer, true) as Element) ?? store.reactGridRef!;
-  const scrollingDirection =
-    store.rows.findIndex((row) => row.id === nextCell.rowId) >
-    store.rows.findIndex((row) => row.id === previousCell.rowId)
-      ? "Bottom"
-      : "Top";
+  let scrollingDirection: "Left" | "Right" | "Top" | "Bottom";
+
+  const nextCellRowIndex = store.rows.findIndex((row) => row.id === nextCell.rowId);
+  const previousCellRowIndex = store.rows.findIndex((row) => row.id === previousCell.rowId);
+
+  if (nextCellRowIndex === previousCellRowIndex) {
+    const nextCellColIndex = store.columns.findIndex((col) => col.id === nextCell.colId);
+    const previousCellColIndex = store.columns.findIndex((col) => col.id === previousCell.colId);
+    scrollingDirection = nextCellColIndex > previousCellColIndex ? "Right" : "Left";
+  } else {
+    scrollingDirection = nextCellRowIndex > previousCellRowIndex ? "Bottom" : "Top";
+  }
+
   const paneLocation = rgPaneBackgrounds.find((pane) => pane.className.includes(scrollingDirection)) as HTMLElement;
 
   const isNextCellFullyVisible =
     isInViewport(nextCellContainer, scrollableParent) && !isCollision(nextCellContainer, paneLocation);
-
   const isPreviousCellFullyVisible =
     isInViewport(previousCellContainer, scrollableParent) && !isCollision(previousCellContainer, paneLocation);
 
-  const prevCellRect = previousCellContainer.getBoundingClientRect();
+  const previousCellRect = previousCellContainer.getBoundingClientRect();
   const nextCellRect = nextCellContainer.getBoundingClientRect();
 
-  console.log(isNextCellFullyVisible, paneLocation, detectCollision(nextCellContainer, paneLocation, true));
+  const directionParameter: "top" | "left" = scrollingDirection === "Top" || scrollingDirection === "Bottom" ? 'top' : 'left'
 
   let scrollValue: number;
   if (!isNextCellFullyVisible) {
     if (!isPreviousCellFullyVisible) {
-      scrollValue = nextCellRect.top - prevCellRect.top + prevCellRect.height;
+      scrollValue =
+        nextCellRect[directionParameter] - previousCellRect[directionParameter] + previousCellRect[directionParameter === 'top' ? 'height' : 'width'];
     } else {
-      scrollValue = nextCellRect.top - prevCellRect.top;
+      scrollValue = nextCellRect[directionParameter] - previousCellRect[directionParameter];
     }
 
     scrollableParent.scrollBy({
-      top: scrollValue,
+      [directionParameter]: scrollValue,
+      behavior: "smooth",
     });
   }
 }
@@ -202,6 +209,9 @@ export const moveFocusLeft = (store: ReactGridStore, currentFocus: FocusedCell) 
       absoluteLocation.rowIndex = rowIndex;
       if (originCell.colSpan ?? 1 > 1) absoluteLocation.colIndex = originColIndex;
       else absoluteLocation.colIndex = colIdx;
+
+
+      handleJumpScroll(store, currentFocus, originCell);
 
       return {
         ...store,
