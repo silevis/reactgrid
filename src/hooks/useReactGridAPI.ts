@@ -6,11 +6,6 @@ import { useReactGridStore } from "../utils/reactGridStore";
  * @returns An object containing setters and getters for interacting with the ReactGrid.
  */
 export default function useReactGridAPI(id: string) {
-  /**
-   * Hook that provides access to the ReactGrid API.
-   * @param id - The ID of the ReactGrid instance.
-   * @returns An object containing setters and getters for interacting with the ReactGrid.
-   */
   return useReactGridStore(id, (store) => {
     return {
       // Setters
