@@ -1,5 +1,5 @@
 {
-  "name": "@datafe/reactgrid",
+  "name": "datafe-reactgrid",
   "description": "Add spreadsheet-like behavior to your React app.",
   "version": "4.1.4-beta.1",
   "homepage": "https://reactgrid.com",
