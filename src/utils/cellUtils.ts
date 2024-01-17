@@ -148,4 +148,4 @@ export const getContainerElementByIndexes = (rowIndex: number, colIndex: number)
   if (!cellContainer) return null;
 
   return cellContainer as HTMLElement;
-}
+};
