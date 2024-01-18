@@ -320,15 +320,44 @@ export const TestGrid: React.FC<TestGridProps> = (props) => {
   // eslint-disable-next-line
   rows[0].cells.find((cell) => cell.type === "text" && cell.text);
 
+
   const handleChanges = (changes: CellChange<TestGridCells>[]) => {
     setRows((prevRows) => {
+      const currentRows = [...prevRows];
+      const currentColumns = [...columns];
       changes.forEach((change) => {
-        const changeRowIdx = prevRows.findIndex(
-          (el) => el.rowId === change.rowId
-        );
-        const changeColumnIdx = columns.findIndex(
+        let changeColumnIdx = currentColumns.findIndex(
           (el) => el.columnId === change.columnId
         );
+        // Extension column
+        if (changeColumnIdx === -1) {
+          currentColumns.push({
+            columnId: change.columnId,
+          } as Column);
+          setColumns(currentColumns);
+          changeColumnIdx = currentColumns.findIndex(
+            (el) => el.columnId === change.columnId
+          );
+        }
+        let changeRowIdx = currentRows.findIndex(
+          (el) => el.rowId === change.rowId
+        );
+        // Extension line
+        if (changeRowIdx === -1) {
+          const _cells = currentColumns.map((_c) => {
+            return {
+              type: "text",
+              text: "",
+            };
+          });
+          currentRows.push({
+            rowId: change.rowId,
+            cells: _cells as TestGridCells[],
+          });
+          changeRowIdx = currentRows.findIndex(
+            (el) => el.rowId === change.rowId
+          );
+        }
         if (change.type === "flag") {
           // console.log(change.newCell.text);
         }
@@ -338,9 +367,9 @@ export const TestGrid: React.FC<TestGridProps> = (props) => {
         if (change.type === "checkbox") {
           // console.log(change.previousCell.checked);
         }
-        prevRows[changeRowIdx].cells[changeColumnIdx] = change.newCell;
+        currentRows[changeRowIdx].cells[changeColumnIdx] = change.newCell;
       });
-      return [...prevRows];
+      return [...currentRows];
     });
   };
 
@@ -544,6 +573,7 @@ export const TestGrid: React.FC<TestGridProps> = (props) => {
                   onSelectionChanged={handleSelectionChanged}
                   onSelectionChanging={handleSelectionChanging}
                   moveRightOnEnter={config.moveRightOnEnter}
+                  allowExtendPasteRange={config.allowExtendPasteRange}
               />}
               {config.additionalContent &&
                   <div style={{ height: `${config.rgViewportHeight}px`, backgroundColor: '#fafff3' }}>
@@ -635,6 +665,9 @@ export const TestGridOptionsSelect: React.FC = () => {
         </option>
         <option value="/disableVirtualScrolling">
           Disable virtual scrolling
+        </option>
+        <option value="/allowExtendPasteRange">
+          Copy a range of cells and paste it into another range, extending the target range if it is too small.
         </option>
       </select>
     </form>
