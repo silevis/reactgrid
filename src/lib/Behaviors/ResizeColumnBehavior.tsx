@@ -15,12 +15,29 @@ import { State } from "../Model/State";
 import { Behavior } from "../Model/Behavior";
 import { ResizeHint } from "../Components/ResizeHint";
 
+
 export class ResizeColumnBehavior extends Behavior {
   // TODO min / max column with on column object
   private resizedColumn!: GridColumn;
   private initialLocation!: PointerLocation;
+  private canvasContext = this.createCanvasContext();
   autoScrollDirection: Direction = "horizontal";
   isInScrollableRange!: boolean;
+
+  constructor() {
+    super();
+    const style = getComputedStyle(document.body);
+    this.canvasContext.font = `${style.fontSize} ${style.fontFamily}`;
+  }
+
+  createCanvasContext(): CanvasRenderingContext2D {
+    const canvas = document.createElement("canvas");
+    const context = canvas.getContext("2d");
+    if (!context) {
+      throw new Error("2D context not supported or canvas already initialized");
+    }
+    return context;
+  }
 
   handlePointerDown(
     event: PointerEvent,
@@ -126,5 +143,53 @@ export class ResizeColumnBehavior extends Behavior {
       offset = scrollLeft;
     }
     return offset;
+  }
+  
+  handleDoubleClick(event: PointerEvent, location: PointerLocation, state: State): State {
+    this.initialLocation = location;
+    this.resizedColumn = location.column;
+    const newWidth = this.calculateOptimalColumnWidth(this.resizedColumn.idx, state);
+
+    if (state.props?.onColumnResized) {
+      const newColWidth =
+        newWidth >= (state.props?.minColumnWidth ?? CellMatrix.MIN_COLUMN_WIDTH)
+          ? newWidth
+          : state.props?.minColumnWidth ?? CellMatrix.MIN_COLUMN_WIDTH;
+      state.props.onColumnResized(this.resizedColumn.columnId, newColWidth, state.selectedIds);
+    }
+    let focusedLocation = state.focusedLocation;
+    if (focusedLocation !== undefined && this.resizedColumn.columnId === focusedLocation.column.idx) {
+      const column = { ...focusedLocation.column, width: newWidth };
+      focusedLocation = { ...focusedLocation, column };
+    }
+    return { ...state, linePosition: -1, focusedLocation };
+  }
+
+  /**
+   * Iterate through all the cells in the column, finding the widest content, and return the new column width.
+   * @param columnId
+   * @param state
+   * @returns
+   */
+  calculateOptimalColumnWidth(idx: number, state: State): number {
+    let maxWidth = 0;
+
+    state.cellMatrix.rows.forEach((row) => {
+      const cell = row.cells[idx];
+      const contentWidth = this.measureTextWidth(state.cellTemplates[cell.type].getCompatibleCell(cell).text);
+      maxWidth = Math.max(maxWidth, contentWidth);
+    });
+
+    // Add some extra space in case the text gets truncated
+    return maxWidth + 20;
+  }
+
+  /**
+   * Use the Canvas API to calculate the width of a given text and font style
+   * @param text
+   * @returns
+   */
+  measureTextWidth(text: string): number {
+    return this.canvasContext.measureText(text).width;
   }
 }
