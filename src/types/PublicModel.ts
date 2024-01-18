@@ -1,15 +1,17 @@
 import React, { CSSProperties } from "react";
 import { BehaviorConstructor } from "./Behavior";
+import { NumericalRange } from "./CellMatrix";
+import { IndexedLocation } from "./InternalModel";
 
 export type Row<Id = string> = {
   id: Id;
   height: string | number;
-}
+};
 
 export type Column<Id = string> = {
   id: Id;
   width: string | number;
-}
+};
 
 export type Cell<RowIdType extends string = string, ColIdType extends string = string> = {
   /** User defined row ID, must exist in the `rows` array! */
@@ -22,7 +24,7 @@ export type Cell<RowIdType extends string = string, ColIdType extends string = s
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   Template: React.ComponentType<any>;
   /** Props passed to the cell's template. Types and structure is inherited from Template prop, but instead of JSX properties it's an object. */
-  props?: React.ComponentPropsWithRef<Cell['Template']>;
+  props?: React.ComponentPropsWithRef<Cell["Template"]>;
 
   /** Represents how many rows should the cell occupy. */
   rowSpan?: number;
@@ -32,12 +34,12 @@ export type Cell<RowIdType extends string = string, ColIdType extends string = s
   isFocusable?: boolean;
   /** Marks a cell as selectable or not */
   isSelectable?: boolean;
-}
+};
 
 export type SpanMember = {
   originRowId: string;
   originColId: string;
-}
+};
 
 export type CellContextType = {
   /** User defined row ID. */
@@ -54,7 +56,7 @@ export type CellContextType = {
   rowSpan?: number;
   /** Represents how many columns should the cell occupy. */
   colSpan?: number;
-  
+
   /** Internal: provides cell container's style  */
   containerStyle: React.CSSProperties;
 
@@ -65,9 +67,12 @@ export type CellContextType = {
 
   isInEditMode: boolean;
   isFocused: boolean;
-}
+};
 
-export type CellMap<RowIdType extends string = string, ColIdType extends string = string> = Map<`${RowIdType} ${ColIdType}`, Cell<RowIdType, ColIdType> | SpanMember>;
+export type CellMap<RowIdType extends string = string, ColIdType extends string = string> = Map<
+  `${RowIdType} ${ColIdType}`,
+  Cell<RowIdType, ColIdType> | SpanMember
+>;
 
 export interface ReactGridProps {
   id: string;
@@ -86,12 +91,12 @@ export interface ReactGridProps {
 
   // enableVirtualization?: boolean;
 
-  behaviors?: Record<string, BehaviorConstructor>
+  behaviors?: Record<string, BehaviorConstructor>;
 
-  focusLocation?: [number, number]
-  initialFocusLocation?: [number, number]
+  focusLocation?: [number, number];
+  initialFocusLocation?: IndexedLocation;
+  initialSelectedRange?: NumericalRange;
 
   onFocusLocationChanging?: ({ location }: { location: [number, number] }) => boolean;
   onFocusLocationChanged?: ({ location }: { location: [number, number] }) => void;
 }
-

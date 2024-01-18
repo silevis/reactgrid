@@ -5,7 +5,9 @@ import GridWrapper from "./components/GridWrapper";
 import PanesRenderer from "./components/PanesRenderer";
 import { ReactGridIdProvider } from "./components/ReactGridIdProvider";
 import { ReactGridProps } from "./types/PublicModel";
-import { useReactGridStore } from "./utils/reactGridStore";
+import { useReactGridStore as useInitReactGridStore, useReactGridStoreApi } from "./utils/reactGridStore";
+import isDevEnvironment from "./utils/isDevEnvironment";
+import { isSpanMember } from "./utils/cellUtils";
 
 const spin = keyframes`
 100% {
@@ -23,11 +25,22 @@ const ReactGrid: FC<ReactGridProps> = ({
   stickyRightColumns,
   behaviors,
   style,
+  initialSelectedRange,
+  initialFocusLocation,
 }) => {
-  const setRows = useReactGridStore(id, (store) => store.setRows);
-  const setColumns = useReactGridStore(id, (store) => store.setColumns);
-  const setCells = useReactGridStore(id, (store) => store.setCells);
-  const setBehaviors = useReactGridStore(id, (store) => store.setBehaviors);
+  // It's actually a useReactGridStore()
+  useInitReactGridStore(id, (store) => null); // Init store.
+  const store = useReactGridStoreApi(id).getState();
+  const {
+    setRows,
+    setColumns,
+    setCells,
+    setBehaviors,
+    setSelectedArea,
+    setFocusedLocation: setFocusedCell,
+    getCellOrSpanMemberByIndexes,
+    getCellByIndexes,
+  } = store;
 
   const [bypassSizeWarning, setBypassSizeWarning] = useState(false);
   const [isPending, startTransition] = useTransition();
@@ -37,6 +50,39 @@ const ReactGrid: FC<ReactGridProps> = ({
     setColumns(columns);
     setCells(cells);
   }, [cells, columns, rows]);
+
+  useEffect(() => {
+    if (!initialSelectedRange) {
+      return;
+    } else {
+      console.warn(
+        "If you set initial selected range, be careful, as it may cut-trough spanned cells in an unintended way!"
+      );
+      if (initialFocusLocation && isDevEnvironment()) {
+        const cell = getCellByIndexes(initialFocusLocation.rowIndex, initialFocusLocation.rowIndex);
+        if (!cell) {
+          console.error("There is no cell with indexes passed in initialFocusLocation prop.");
+        }
+      }
+      setSelectedArea(initialSelectedRange);
+    }
+  }, [initialFocusLocation, initialSelectedRange]);
+
+  useEffect(() => {
+    if (initialFocusLocation) {
+      const { rowIndex, colIndex } = initialFocusLocation;
+
+      const targetCellOrSpanMember = getCellOrSpanMemberByIndexes(rowIndex, colIndex);
+
+      if (isDevEnvironment()) {
+        if (!targetCellOrSpanMember) {
+          console.error("The provided 'initialFocusLocation' does not exist!");
+        } else if (isSpanMember(targetCellOrSpanMember))
+          console.error("The provided 'initialFocusLocation' is invalid!");
+      }
+      setFocusedCell(rowIndex, colIndex);
+    }
+  }, [initialFocusLocation]);
 
   useEffect(() => {
     if (behaviors) setBehaviors(behaviors);
