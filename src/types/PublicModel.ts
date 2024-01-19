@@ -75,10 +75,16 @@ export type StyledRange = {
   range: NumericalRange,
 }
 
+export type StyledRangesCSS = {
+  [selector: string]: React.CSSProperties;
+}[];
+
 export interface ReactGridProps {
   id: string;
 
   style?: React.CSSProperties;
+  
+  styledRanges?: StyledRange[],
 
   columns: Column[];
   rows: Row[];

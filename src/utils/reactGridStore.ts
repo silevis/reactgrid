@@ -49,6 +49,7 @@ export interface ReactGridStore {
 
   styledRanges: StyledRange[];
   readonly setStyledRanges: (styledRanges: StyledRange[]) => void;
+  readonly getStyledRanges: (range?: NumericalRange) => StyledRange[] | StyledRange | null;
 
   /* == Behaviors == */
   behaviors: Record<string, BehaviorConstructor>;
@@ -163,17 +164,34 @@ export function useReactGridStore<T>(id: string, selector: (store: ReactGridStor
           return behavior;
         },
 
-        styledRanges: [
-          {
-            range: { startRowIdx: 2, endRowIdx: 7, startColIdx: 3, endColIdx: 8 },
-            styles: { color: "red", background: "purple", fontSize: "20px" },
-          },
-          {
-            range: { startRowIdx: 5, endRowIdx: 10, startColIdx: 2, endColIdx: 10 },
-            styles: { color: "green", background: "yellow" },
-          },
-        ],
+        styledRanges: [],
         setStyledRanges: (styledRanges) => set(() => ({ styledRanges })),
+
+        /**
+         * Retrieves styled ranges from the store.
+         *
+         * @function getStyledRanges
+         * @param {NumericalRange} [range] - An optional parameter that specifies a numerical range.
+         * If provided, the function will return the styled range that matches this numerical range.
+         * If not provided, the function will return all styled ranges.
+         *
+         * @returns {StyledRange | StyledRange[] | null} The function returns a single `StyledRange` object if a `range` parameter is provided and a match is found.
+         * If `range` is not provided, it returns an array of `StyledRange` objects (`StyledRange[]`).
+         * If no matches are found in either case, it returns `null`.
+         */
+        getStyledRanges: (range?: NumericalRange): StyledRange | StyledRange[] | null => {
+          if (!range) {
+            const styledRanges: StyledRange[] = get().styledRanges;
+            return styledRanges ? styledRanges : null;
+          } else {
+            const styledRanges = get().styledRanges;
+            const styledRange = styledRanges.find((styledRange) => {
+              JSON.stringify(styledRange.range) === JSON.stringify(range);
+            });
+
+            return styledRange ? styledRange : null;
+          }
+        },
       })),
     };
   });

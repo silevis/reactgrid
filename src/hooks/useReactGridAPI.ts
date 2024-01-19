@@ -1,4 +1,4 @@
-import { useReactGridStore } from "../utils/reactGridStore";
+import { ReactGridStore, useReactGridStore } from "../utils/reactGridStore";
 
 /**
  * Hook that provides access to the ReactGrid API.
@@ -6,7 +6,7 @@ import { useReactGridStore } from "../utils/reactGridStore";
  * @returns An object containing setters and getters for interacting with the ReactGrid.
  */
 export default function useReactGridAPI(id: string) {
-  return useReactGridStore(id, (store) => {
+  return useReactGridStore(id, (store: ReactGridStore) => {
     return {
       // Setters
 
@@ -27,6 +27,25 @@ export default function useReactGridAPI(id: string) {
        * @param cell - The cell to be edited.
        */
       setEditedCell: store.setCurrentlyEditedCell,
+
+      /**
+       * Set the styled ranges in the ReactGrid.
+       * @param ranges - The styled ranges.
+       */
+      setStyledRanges: store.setStyledRanges,
+
+      /**
+       * Retrieves styled ranges from the store.
+       *
+       * @param {NumericalRange} [range] - An optional parameter that specifies a numerical range.
+       * If provided, the function will return the styled range that matches this numerical range.
+       * If not provided, the function will return all styled ranges.
+       *
+       * @returns {StyledRange | StyledRange[] | null} The function returns a single `StyledRange` object if a `range` parameter is provided and a match is found.
+       * If `range` is not provided, it returns an array of `StyledRange` objects (`StyledRange[]`).
+       * If no matches are found in either case, it returns `null`.
+       */
+      getStyledRanges: store.getStyledRanges,
 
       // Getters
 

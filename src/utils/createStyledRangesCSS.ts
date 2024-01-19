@@ -1,8 +1,6 @@
-import { StyledRange } from "../types/PublicModel";
+import { StyledRange, StyledRangesCSS } from "../types/PublicModel";
 
-export function createStylesForRanges(styledRanges: StyledRange[]): {
-  [selector: string]: React.CSSProperties;
-}[] {
+export function createStyledRangesCSS(styledRanges: StyledRange[]): StyledRangesCSS {
   const selectorsWithStyles = styledRanges.map((styledRange) => {
     const classNames: string[] = [];
 

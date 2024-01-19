@@ -2,14 +2,13 @@ import React, { FC, PropsWithChildren, useEffect, useRef, useState } from "react
 import { useReactGridStore, useReactGridStoreApi } from "../utils/reactGridStore";
 import { Behavior, BehaviorConstructor } from "../types/Behavior";
 import { DefaultBehavior } from "../behaviors/DefaultBehavior";
+import { StyledRangesCSS } from "../types/PublicModel";
 
 interface GridWrapperProps {
   reactGridId: string;
   customBehaviors?: Record<string, BehaviorConstructor>;
   style?: React.CSSProperties;
-  styledRangesCSS: {
-    [selector: string]: React.CSSProperties;
-  }[];
+  styledRangesCSS: StyledRangesCSS;
 }
 
 const GridWrapper: FC<PropsWithChildren<GridWrapperProps>> = ({
