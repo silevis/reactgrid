@@ -4,7 +4,7 @@ import { DefaultBehavior } from "../behaviors/DefaultBehavior";
 import { BehaviorConstructor } from "../types/Behavior";
 import { NumericalRange } from "../types/CellMatrix";
 import { FocusedCell, IndexedLocation, PaneName } from "../types/InternalModel";
-import { Cell, CellMap, Column, Row, SpanMember } from "../types/PublicModel";
+import { Cell, CellMap, Column, ReactGridCallbacks, Row, SpanMember } from "../types/PublicModel";
 import { isSpanMember } from "./cellUtils";
 
 export interface ReactGridStore {
@@ -33,28 +33,21 @@ export interface ReactGridStore {
   currentlyEditedCell: IndexedLocation;
   readonly setCurrentlyEditedCell: (rowIndex: number, colIndex: number) => void;
 
+  /* == Refs == */
   reactGridRef?: HTMLDivElement;
   readonly assignReactGridRef: (reactGridRef?: HTMLDivElement) => void;
 
   hiddenFocusTargetRef?: HTMLDivElement;
   readonly assignHiddenFocusTargetRef: (hiddenFocusTargetRef?: HTMLDivElement) => void;
-  // scrollableRef?: HTMLElement | (Window & typeof globalThis);
-  // readonly assignRefs: (
-  //   reactGridRef?: HTMLDivElement,
-  //   scrollableRef?: HTMLElement | (Window & typeof globalThis)
-  // ) => void;
 
   /* == Behaviors == */
   behaviors: Record<string, BehaviorConstructor>;
   readonly setBehaviors: (behaviors: Record<string, BehaviorConstructor>) => void;
   readonly getBehavior: (behaviorId: string) => BehaviorConstructor;
 
-  // /* == Callbacks == */
-  // onCellChange: NonNullable<ReactGridProps["onCellChange"]>;
-  // onFocusLocationChanging: NonNullable<ReactGridProps["onFocusLocationChanging"]>;
-  // onFocusLocationChanged: NonNullable<ReactGridProps["onFocusLocationChanged"]>;
-
-  // readonly initializeCallbacks: (props: Pick<NonNullable<ReactGridProps>, 'onCellChange' | 'onFocusLocationChanged' | 'onFocusLocationChanging'>) => void;
+  /* == Callbacks == */
+  callbacks: ReactGridCallbacks;
+  assignCallbacks: (callbacks: ReactGridCallbacks) => void;
 }
 
 type ReactGridStores = Record<string, StoreApi<ReactGridStore>>;
@@ -148,7 +141,7 @@ export function useReactGridStore<T>(id: string, selector: (store: ReactGridStor
           "Default": DefaultBehavior,
           "CellSelection": CellSelectionBehavior,
         },
-        setBehaviors: (behaviors) => set(() => ({ ...get().behaviors, ...behaviors })),
+        setBehaviors: (behaviors) => set(() => ({ ...get().behaviors, behaviors })),
         getBehavior: (behaviorId) => {
           const behavior = get().behaviors[behaviorId];
 
@@ -156,6 +149,9 @@ export function useReactGridStore<T>(id: string, selector: (store: ReactGridStor
 
           return behavior;
         },
+
+        callbacks: {},
+        assignCallbacks: (callbacks) => set(() => ({ ...get(), callbacks })),
       })),
     };
   });
