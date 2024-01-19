@@ -7,14 +7,26 @@ interface GridWrapperProps {
   reactGridId: string;
   customBehaviors?: Record<string, BehaviorConstructor>;
   style?: React.CSSProperties;
+  styledRangesCSS: {
+    [selector: string]: React.CSSProperties;
+  }[];
 }
 
-const GridWrapper: FC<PropsWithChildren<GridWrapperProps>> = ({ reactGridId, customBehaviors, style, children }) => {
+const GridWrapper: FC<PropsWithChildren<GridWrapperProps>> = ({
+  reactGridId,
+  customBehaviors,
+  style,
+  children,
+  styledRangesCSS,
+}) => {
   const storeApi = useReactGridStoreApi(reactGridId);
   const [currentBehavior, setCurrentBehavior] = useState<Behavior>();
 
   const reactGridElement = useRef<HTMLDivElement>(null);
-  const assignReactGridRef = useReactGridStore(reactGridId, store => store.assignReactGridRef);
+  const assignReactGridRef = useReactGridStore(reactGridId, (store) => store.assignReactGridRef);
+
+  // ? Type-fix for Emotion.js.
+  const styledRangesCSSAcceptableForEmotion = Object.assign({}, ...styledRangesCSS);
 
   useEffect(() => {
     if (!customBehaviors) {
@@ -30,6 +42,7 @@ const GridWrapper: FC<PropsWithChildren<GridWrapperProps>> = ({ reactGridId, cus
 
   return (
     <div
+      css={styledRangesCSSAcceptableForEmotion}
       id={`ReactGrid-${reactGridId}`}
       className="ReactGrid"
       ref={reactGridElement}
@@ -49,12 +62,12 @@ const GridWrapper: FC<PropsWithChildren<GridWrapperProps>> = ({ reactGridId, cus
           (currentBehavior ?? DefaultBehavior(setCurrentBehavior)).handlePointerUp(e, storeApi.getState())
         )
       }
-      onKeyDown={e => 
+      onKeyDown={(e) =>
         storeApi.setState(
           (currentBehavior ?? DefaultBehavior(setCurrentBehavior)).handleKeyDown(e, storeApi.getState())
         )
       }
-      onKeyDownCapture={e => 
+      onKeyDownCapture={(e) =>
         storeApi.setState(
           (currentBehavior ?? DefaultBehavior(setCurrentBehavior)).handleKeyDownCapture(e, storeApi.getState())
         )

@@ -1,5 +1,6 @@
 import React, { CSSProperties } from "react";
 import { BehaviorConstructor } from "./Behavior";
+import { NumericalRange } from "./CellMatrix";
 
 export type Row<Id = string> = {
   id: Id;
@@ -69,6 +70,11 @@ export type CellContextType = {
 
 export type CellMap<RowIdType extends string = string, ColIdType extends string = string> = Map<`${RowIdType} ${ColIdType}`, Cell<RowIdType, ColIdType> | SpanMember>;
 
+export type StyledRange = {
+  styles: React.CSSProperties
+  range: NumericalRange,
+}
+
 export interface ReactGridProps {
   id: string;
 
@@ -94,4 +100,3 @@ export interface ReactGridProps {
   onFocusLocationChanging?: ({ location }: { location: [number, number] }) => boolean;
   onFocusLocationChanged?: ({ location }: { location: [number, number] }) => void;
 }
-
