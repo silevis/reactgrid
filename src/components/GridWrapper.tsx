@@ -2,14 +2,16 @@ import React, { FC, PropsWithChildren, useEffect, useRef, useState } from "react
 import { useReactGridStore, useReactGridStoreApi } from "../utils/reactGridStore";
 import { Behavior, BehaviorConstructor } from "../types/Behavior";
 import { DefaultBehavior } from "../behaviors/DefaultBehavior";
+import { CaptureEventHandlers } from "../types/PublicModel";
 
 interface GridWrapperProps {
   reactGridId: string;
   customBehaviors?: Record<string, BehaviorConstructor>;
+  captureEventHandlers: CaptureEventHandlers;
   style?: React.CSSProperties;
 }
 
-const GridWrapper: FC<PropsWithChildren<GridWrapperProps>> = ({ reactGridId, customBehaviors, style, children }) => {
+const GridWrapper: FC<PropsWithChildren<GridWrapperProps>> = ({ reactGridId, customBehaviors, captureEventHandlers, style, children }) => {
   const storeApi = useReactGridStoreApi(reactGridId);
   const [currentBehavior, setCurrentBehavior] = useState<Behavior>();
 
@@ -61,6 +63,7 @@ const GridWrapper: FC<PropsWithChildren<GridWrapperProps>> = ({ reactGridId, cus
       }
       // onPointerMove={(e) => currentBehavior?.handlePointerMove(e)}
       // onPointerUp={(e) => currentBehavior?.handlePointerUp(e)}
+      {...captureEventHandlers}
     >
       {children}
     </div>

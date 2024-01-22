@@ -6,31 +6,45 @@ import PanesRenderer from "./components/PanesRenderer";
 import { ReactGridIdProvider } from "./components/ReactGridIdProvider";
 import { ReactGridProps } from "./types/PublicModel";
 import { useReactGridStore } from "./utils/reactGridStore";
+import pickCallbacksFromRGProps from "./utils/pickCallbacksFromRGProps";
+import pickCaptureEventHandlersFromRGProps from "./utils/pickCaptureEventHandlersFromRGProps";
 
 const spin = keyframes`
 100% {
   transform: rotate(360deg);
 }`;
 
-const ReactGrid: FC<ReactGridProps> = ({
-  id,
-  rows,
-  columns,
-  cells,
-  stickyTopRows,
-  stickyBottomRows,
-  stickyLeftColumns,
-  stickyRightColumns,
-  behaviors,
-  style,
-}) => {
-  const setRows = useReactGridStore(id, (store) => store.setRows);
-  const setColumns = useReactGridStore(id, (store) => store.setColumns);
-  const setCells = useReactGridStore(id, (store) => store.setCells);
-  const setBehaviors = useReactGridStore(id, (store) => store.setBehaviors);
+const ReactGrid: FC<ReactGridProps> = (props) => {
+  const {
+    id,
+    rows,
+    columns,
+    cells,
+    stickyTopRows,
+    stickyBottomRows,
+    stickyLeftColumns,
+    stickyRightColumns,
+    enableFillHandle,
+    fillHandleDirection,
+    enableRowSelection,
+    enableRowResize,
+    enableRowReorder,
+    enableColumnSelection,
+    enableColumnResize,
+    enableColumnReorder,
+    behaviors,
+    style,
+    focusLocation,
+    initialFocusLocation,
+    ...eventHandlers
+  } = props;
 
   const [bypassSizeWarning, setBypassSizeWarning] = useState(false);
   const [isPending, startTransition] = useTransition();
+
+  const setRows = useReactGridStore(id, (store) => store.setRows);
+  const setColumns = useReactGridStore(id, (store) => store.setColumns);
+  const setCells = useReactGridStore(id, (store) => store.setCells);
 
   useEffect(() => {
     setRows(rows);
@@ -38,9 +52,20 @@ const ReactGrid: FC<ReactGridProps> = ({
     setCells(cells);
   }, [cells, columns, rows]);
 
+  const setBehaviors = useReactGridStore(id, (store) => store.setBehaviors);
+
   useEffect(() => {
     if (behaviors) setBehaviors(behaviors);
   }, [behaviors]);
+
+  const assignCallbacks = useReactGridStore(id, (store) => store.assignCallbacks);
+  const callbacks = pickCallbacksFromRGProps(props);
+
+  useEffect(() => {
+    console.log("assigning callbacks", callbacks);
+    
+    assignCallbacks(callbacks);
+  }, [callbacks]);
 
   if (process.env.NODE_ENV === "development" && !bypassSizeWarning && rows.length * columns.length > 25_000) {
     if (isPending) {
@@ -74,8 +99,8 @@ const ReactGrid: FC<ReactGridProps> = ({
       <>
         <h1>You're about to render a huge grid!</h1>
         <p>
-          The grid you provided exceeds a safety data size limit {"(>25k cells)"}. 
-          You might experience performance problems.
+          The grid you provided exceeds a safety data size limit {"(>25k cells)"}. You might experience performance
+          problems.
         </p>
         <p>Are you sure you want to render it all?</p>
         <button onClick={() => startTransition(() => setBypassSizeWarning(true))}>
@@ -88,7 +113,11 @@ const ReactGrid: FC<ReactGridProps> = ({
   return (
     <ReactGridIdProvider id={id}>
       <ErrorBoundary>
-        <GridWrapper reactGridId={id} style={style}>
+        <GridWrapper
+          reactGridId={id}
+          captureEventHandlers={pickCaptureEventHandlersFromRGProps(props)}
+          style={style}
+        >
           <PanesRenderer
             rowAmount={rows.length}
             columnAmount={columns.length}
@@ -97,7 +126,6 @@ const ReactGrid: FC<ReactGridProps> = ({
             stickyLeftColumns={stickyLeftColumns ?? 0}
             stickyRightColumns={stickyRightColumns ?? 0}
           />
-
           {/* Shadow? */}
           {/* ContextMenu? */}
           {/* CellEditor */}
