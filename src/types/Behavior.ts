@@ -2,9 +2,8 @@ import React from "react";
 import { ReactGridStore } from "../utils/reactGridStore";
 
 export type BehaviorId = "Default" | "CellSelection" | string;
-type SetCurrentBehaviorFn = (behavior: Behavior) => void;
 
-type HandlerFn<TEvent extends React.SyntheticEvent> = (event: TEvent, store: ReactGridStore, setCurrentBehavior: SetCurrentBehaviorFn) => ReactGridStore;
+export type HandlerFn<TEvent extends React.SyntheticEvent> = (event: TEvent, store: ReactGridStore) => ReactGridStore;
 
 export type PointerEventHandler = HandlerFn<React.PointerEvent<HTMLDivElement>>;
 export type MouseEventHandler = HandlerFn<React.MouseEvent<HTMLDivElement>>;

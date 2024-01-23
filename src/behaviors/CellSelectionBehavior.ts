@@ -7,7 +7,6 @@ import { getCellIndexesFromContainerElement } from "../utils/getCellIndexes";
 import { getNonStickyCell } from "../utils/getNonStickyCell";
 import { scrollTowardsSticky } from "../utils/scrollTowardsSticky";
 
-
 /**
  * Tries to expand the selected area towards a target cell.
  * 
@@ -87,13 +86,12 @@ export const CellSelectionBehavior: Behavior = {
     return tryExpandingTowardsCell(store, cell, rowIndex, colIndex);
   },
   
-  handlePointerUp(_event, store, setCurrentBehavior) {
-    // window.removeEventListener("pointermove", (e) => behavior.handlePointerMove(e, store));
-    // window.removeEventListener("pointerup", (e) => behavior.handlePointerUp(e, store));
+  handlePointerUp(_event, store) {
     const DefaultBehavior = store.getBehavior("Default");
 
-    setCurrentBehavior(DefaultBehavior);
-
-    return store;
+    return {
+      ...store,
+      currentBehavior: DefaultBehavior,
+    }
   },
 };

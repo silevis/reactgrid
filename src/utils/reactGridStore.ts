@@ -46,6 +46,7 @@ export interface ReactGridStore {
 
   /* == Behaviors == */
   behaviors: Record<BehaviorId, Behavior>;
+  currentBehavior: Behavior;
   readonly setBehaviors: (behaviors: Record<BehaviorId, Behavior>) => void;
   readonly getBehavior: (behaviorId: BehaviorId) => Behavior;
 
@@ -148,6 +149,7 @@ export function useReactGridStore<T>(id: string, selector: (store: ReactGridStor
           "Default": DefaultBehavior(),
           "CellSelection": CellSelectionBehavior,
         },
+        currentBehavior: get()?.behaviors["Default"] ?? DefaultBehavior(),
         setBehaviors: (behaviors) => set(() => ({ ...get().behaviors, ...behaviors })),
         getBehavior: (behaviorId) => {
           const behavior = get().behaviors[behaviorId];

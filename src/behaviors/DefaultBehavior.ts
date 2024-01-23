@@ -55,14 +55,6 @@ export const DefaultBehavior = (config: DefaultBehaviorConfig = CONFIG_DEFAULTS)
       newColIndex = colIndex;
     }
 
-    // timer = setTimeout(() => {
-    //   if (pointerDownPosition) {
-    //     // TODO: onSelectionCanceled();
-    //     // Not really, it can be reactivated anyway even if this condition is true
-    //     console.log("onSelectionCanceled");
-    //   }
-    // }, 500);
-
     return {
       ...store,
       focusedLocation: { rowIndex: newRowIndex, colIndex: newColIndex },
@@ -70,7 +62,7 @@ export const DefaultBehavior = (config: DefaultBehaviorConfig = CONFIG_DEFAULTS)
       currentlyEditedCell: { rowIndex: -1, colIndex: -1 },
     };
   },
-  handlePointerMove: (event, store, setCurrentBehavior) => {
+  handlePointerMove: (event, store) => {
     console.log("DB/handlePointerMove");
 
     if (pointerDownPosition) {
@@ -80,10 +72,14 @@ export const DefaultBehavior = (config: DefaultBehaviorConfig = CONFIG_DEFAULTS)
 
       if (distanceMoved > 10) {
         timer && clearTimeout(timer);
-        // TODO: onSelectionActivated();
+        pointerDownPosition = null;
+
         const SelectionBehavior = store.getBehavior("CellSelection");
 
-        setCurrentBehavior(SelectionBehavior);
+        return {
+          ...store,
+          currentBehavior: SelectionBehavior
+        }
       }
     }
 
