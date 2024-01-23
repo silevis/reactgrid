@@ -156,22 +156,19 @@ export function getCellContainer(store: ReactGridStore, cell: Cell) {
   return cellElement;
 }
 
-export const getCellPaneName = (store: ReactGridStore, cell: Cell): PaneName => {
-  // PaneNamesAndRanges
-  // [0] - pane name
-  // [1] - pane range values
-  const PaneNamesAndRanges = Object.entries(store.paneRanges);
+export const getCellParentPaneName = (store: ReactGridStore, cell: Cell): PaneName => {
+  const PANE_NAME_IDX = 0;
+  const PANE_RANGE_IDX = 1;
+  const PaneNamesAndRanges = Object.entries(store.paneRanges) as [PaneName, NumericalRange][];
 
-  const paneCellIsIn = PaneNamesAndRanges.find((paneRange) => {
-    const paneValues = paneRange[1];
-    return isCellInRange(store, cell, paneValues);
+  const parentPane = PaneNamesAndRanges.find((paneNameAndRange) => {
+    const paneRange = paneNameAndRange[PANE_RANGE_IDX];
+    return isCellInRange(store, cell, paneRange);
   });
 
-  if (!paneCellIsIn) throw new Error("Cell has no corresponding range!");
+  if (!parentPane) throw new Error(`Could not find cell's [rowId: ${cell.rowId}, colId: ${cell.colId}] parent pane!`);
 
-  const paneName = paneCellIsIn[0] as PaneName;
-
-  return paneName;
+  return parentPane[PANE_NAME_IDX] as PaneName;
 };
 
 /**
@@ -183,6 +180,7 @@ export const getCellPaneName = (store: ReactGridStore, cell: Cell): PaneName => 
 export function getCellIndexes(store: ReactGridStore, cell: Cell): { rowIndex: number; colIndex: number } {
   const rowIndex = store.rows.findIndex((row) => row.id === cell.rowId);
   const colIndex = store.columns.findIndex((col) => col.id === cell.colId);
+
   return {
     rowIndex,
     colIndex,
@@ -196,7 +194,7 @@ export function getCellIndexes(store: ReactGridStore, cell: Cell): { rowIndex: n
  * @param direction The direction to search for the sticky cell ("Top", "Bottom", "Right", "Left").
  * @returns The sticky cell adjacent to the center pane, or null if not found.
  */
-export function getStickyAdjacentToCenterPane(
+export function getStickyCellAdjacentToCenterPane(
   store: ReactGridStore,
   cell: Cell,
   direction: "Top" | "Bottom" | "Right" | "Left"
@@ -207,9 +205,9 @@ export function getStickyAdjacentToCenterPane(
   if (originIndexes.colIndex === -1 || originIndexes.rowIndex === -1) return null;
 
   let stickyPaneName;
-  const cellPaneName = getCellPaneName(store, cell);
+  const cellParentPaneName = getCellParentPaneName(store, cell);
   if (direction === "Top" || direction === "Bottom") {
-    stickyPaneName = (direction + cellPaneName.replace(/(Top|Bottom)/, "")) as PaneName;
+    stickyPaneName = (direction + cellParentPaneName.replace(/(Top|Bottom)/, "")) as PaneName;
   } else {
     stickyPaneName = direction;
   }

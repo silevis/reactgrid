@@ -1,6 +1,6 @@
 import { Direction } from "../types/InternalModel";
 import { Cell } from "../types/PublicModel";
-import { getCellContainer, getStickyAdjacentToCenterPane } from "./cellUtils";
+import { getCellContainer, getStickyCellAdjacentToCenterPane } from "./cellUtils";
 import { isCollision } from "./collisionUtils";
 import { isInViewport } from "./isInViewport";
 import { ReactGridStore } from "./reactGridStore";
@@ -37,7 +37,7 @@ export function handleJumpScroll(store: ReactGridStore, previousCell: Cell, next
   }
 
   // This is cell that is next to center-pane, the first one that is on same row or column that nextCell is
-  const borderStickyCell = getStickyAdjacentToCenterPane(store, nextCell, scrollingDirection);
+  const borderStickyCell = getStickyCellAdjacentToCenterPane(store, nextCell, scrollingDirection);
   if (!borderStickyCell) throw new Error(`borderStickyCell is ${borderStickyCell}!`);
   const borderStickyContainer = getCellContainer(store, borderStickyCell) as HTMLElement;
 
