@@ -33,7 +33,7 @@ export const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>, store:
 
   const isAnyAreaSelected = !areAreasEqual(store.selectedArea, EMPTY_AREA);
 
-  // * SHIFT + CTRL/COMMAND (⌘) + ArrowUp / ArrowDown / ArrowLeft / ArrowRight
+  // * SHIFT + CTRL/COMMAND (⌘) + <Key>
   if (event.shiftKey && (event.ctrlKey || event.metaKey)) {
     switch (event.key) {
       // Select all rows according to columns in currently selected area OR focused cell area.
@@ -132,7 +132,7 @@ export const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>, store:
     }
   }
 
-  // * CTRL/COMMAND (⌘) + A / Space Bar
+  // * CTRL/COMMAND (⌘) + <Key>
   if (event.ctrlKey || event.metaKey) {
     switch (event.key) {
       // Select all cells in the grid.
@@ -221,7 +221,7 @@ export const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>, store:
     }
   }
 
-  // * SHIFT  + ArrowUp / ArrowDown / ArrowLeft / ArrowRight
+  // * SHIFT + <Key>
   if (event.shiftKey) {
     switch (event.key) {
       // Manage selection by expanding/shrinking it towards the direction of the arrow key.
@@ -267,28 +267,29 @@ export const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>, store:
 
   // * Other key-downs (non-combinations)
 
-  if (isAnyAreaSelected) {
-    switch (event.key) {
-      // Changed focused cell in selected area.
-      case "Tab": {
-        event.preventDefault();
-
-        if (event.shiftKey) return moveFocusInsideSelectedRange(store, focusedCell, "left");
-        // If shift is pressed, move focus to the left.
-        else return moveFocusInsideSelectedRange(store, focusedCell, "right"); // Otherwise, move focus to the right.
-      }
-    }
-  }
-
   switch (event.key) {
     // Move focus to next cell.
     case "Tab": {
       event.preventDefault();
 
       if (event.shiftKey) {
-        return moveFocusLeft(store, focusedCell); // If shift is pressed, move focus to the left.
+        // If shift is pressed, move focus to the left...
+        if (isAnyAreaSelected) {
+          // ...inside selected range if any range is selected, or...
+          return moveFocusInsideSelectedRange(store, focusedCell, "left");
+        }
+
+        // ...to the left if no range is selected.
+        return moveFocusLeft(store, focusedCell);
       } else {
-        return moveFocusRight(store, focusedCell); // Otherwise, move focus to the right.
+        // If shift is not pressed, move focus to the right...
+        if (isAnyAreaSelected) {
+          // ...inside selected range if any range is selected, or...
+          return moveFocusInsideSelectedRange(store, focusedCell, "right");
+        }
+
+        // ...to the right if no range is selected.
+        return moveFocusRight(store, focusedCell);
       }
     }
 
