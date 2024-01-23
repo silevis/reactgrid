@@ -4,12 +4,19 @@ import { ReactGridStore } from "./reactGridStore";
 
 type Direction = "Up" | "Down" | "Left" | "Right";
 
-// If nothing changed even after trying to reduce / expand
-// try again but at a greater distance
-// until the area changes.
-// Does not yet work if the area cant be reduced in the chosen direction
-// and should be expanded instead from the other side.
-
+/**
+ * Tries to resize the selected area towards the given direction.
+ * 
+ * If nothing changed even after trying to reduce / expand
+ * try again but at a greater distance
+ * until the area changes or we reach the end of the grid.
+ * 
+ * @param store RGStore
+ * @param focusedCell current focused cell
+ * @param direction direction in which to resize
+ * @param changeOffset by how much to change the selected area
+ * @returns the updated store
+ */
 export const resizeTowardsDirection = (
   store: ReactGridStore,
   focusedCell: FocusedCell,
