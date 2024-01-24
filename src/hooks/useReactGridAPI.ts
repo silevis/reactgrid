@@ -12,13 +12,13 @@ export default function useReactGridAPI(id: string) {
 
       /**
        * Set the selected area in the ReactGrid.
-       * @param area - The selected area.
+       * @param area - The area to be selected.
        */
       setSelectedArea: store.setSelectedArea,
 
       /**
        * Set the focused cell in the ReactGrid.
-       * @param location - The location of the focused cell.
+       * @param location - The location of the cell to be focused.
        */
       setFocusedCell: store.setFocusedLocation,
 
