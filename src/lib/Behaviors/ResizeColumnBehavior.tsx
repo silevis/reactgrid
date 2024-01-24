@@ -9,6 +9,9 @@ import {
   getStickyOffset,
   getVisibleSizeOfReactGrid,
   CellMatrix,
+  DefaultCellTypes,
+  CellTemplates,
+  GridRow,
 } from "../../core";
 import { PointerEvent } from "../Model/domEventsTypes";
 import { State } from "../Model/State";
@@ -144,12 +147,15 @@ export class ResizeColumnBehavior extends Behavior {
     }
     return offset;
   }
-  
+
   handleDoubleClick(event: PointerEvent, location: PointerLocation, state: State): State {
     this.initialLocation = location;
     this.resizedColumn = location.column;
+    // If the cell in the current column contains a custom cell template, the width is not adjusted because the width of the cell cannot be predicted
+    if (this.findCustomCell(this.resizedColumn.idx, state.cellMatrix.rows)) {
+      return { ...state, linePosition: -1 };
+    }
     const newWidth = this.calculateOptimalColumnWidth(this.resizedColumn.idx, state);
-
     if (state.props?.onColumnResized) {
       const newColWidth =
         newWidth >= (state.props?.minColumnWidth ?? CellMatrix.MIN_COLUMN_WIDTH)
@@ -167,8 +173,8 @@ export class ResizeColumnBehavior extends Behavior {
 
   /**
    * Iterate through all the cells in the column, finding the widest content, and return the new column width.
-   * @param columnId
-   * @param state
+   * @param idx The column index
+   * @param state The state
    * @returns
    */
   calculateOptimalColumnWidth(idx: number, state: State): number {
@@ -176,8 +182,12 @@ export class ResizeColumnBehavior extends Behavior {
 
     state.cellMatrix.rows.forEach((row) => {
       const cell = row.cells[idx];
-      const contentWidth = this.measureTextWidth(state.cellTemplates[cell.type].getCompatibleCell(cell).text);
-      maxWidth = Math.max(maxWidth, contentWidth);
+      const content = this.getContentFromCell(cell, state.cellTemplates);
+      const contentWidth = this.measureTextWidth(content);
+      // The chevron cell contains arrows
+      const additionalWidth = cell.type === "chevron" ? 10 : 0;
+
+      maxWidth = Math.max(maxWidth, contentWidth + additionalWidth);
     });
 
     // Add some extra space in case the text gets truncated
@@ -186,10 +196,36 @@ export class ResizeColumnBehavior extends Behavior {
 
   /**
    * Use the Canvas API to calculate the width of a given text and font style
-   * @param text
+   * @param text The text to measure
    * @returns
    */
   measureTextWidth(text: string): number {
     return this.canvasContext.measureText(text).width;
+  }
+
+  getContentFromCell(cell: DefaultCellTypes, cellTemplates: CellTemplates): string {
+    const compatibleCell = cellTemplates[cell.type].getCompatibleCell(cell);
+    return compatibleCell.groupId ? compatibleCell.text + compatibleCell.groupId : compatibleCell.text;
+  }
+
+  isCellType(cell: DefaultCellTypes): boolean {
+    const validTypes = ["checkbox", "date", "email", "chevron", "header", "number", "text", "time", "dropdown"];
+    return validTypes.includes(cell.type);
+  }
+
+  /**
+   * Determines whether the cell in the current column contains a custom cell template, and if so, returns the cell's location
+   * @param idx The column index
+   * @param matrix The cell matrix
+   * @returns
+   */
+  findCustomCell(idx: number, matrix: GridRow[]): { row: number; idx: number } | null {
+    for (let row = 0; row < matrix.length; row++) {
+      const cell = matrix[row].cells[idx];
+      if (!this.isCellType(cell)) {
+        return { row, idx };
+      }
+    }
+    return null; // No custom cell found
   }
 }

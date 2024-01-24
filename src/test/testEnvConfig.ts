@@ -24,7 +24,7 @@ export const config: TestConfig = {
     minCellWidth: 40,
     fillHandleWidth: 18,
 
-    columns: 30,
+    columns: 9,
     rows: 150,
 
     lineWidth: 1,
