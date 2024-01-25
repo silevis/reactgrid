@@ -29,4 +29,16 @@ export type FocusedCell = Cell & {
   colIndex: number;
 };
 
-export type PaneName = "TopLeft" | "TopCenter" | "TopRight" | "Left" | "Center" | "Right" | "BottomLeft" | "BottomCenter" | "BottomRight";
+export type PaneName =
+  | "TopLeft"
+  | "TopCenter"
+  | "TopRight"
+  | "Left"
+  | "Center"
+  | "Right"
+  | "BottomLeft"
+  | "BottomCenter"
+  | "BottomRight";
+
+export type Direction = "Bottom" | "Right" | "Top" | "Left";
+
