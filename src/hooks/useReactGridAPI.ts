@@ -52,7 +52,16 @@ export default function useReactGridAPI(id: string) {
        * Set the edited cell in the ReactGrid.
        * @param cell - The cell to be edited.
        */
-      setEditedCell: store.setCurrentlyEditedCell,
+      setEditedCell: (location: IndexedLocation) => {
+        const { rowIndex, colIndex } = location;
+        if (isDev && (rowIndex > 0 || colIndex > 0)) {
+          console.warn(
+            "Provided indexes won't allow to edit any cell, because there are no cells with negative indexes."
+          );
+        }
+
+        return store.setCurrentlyEditedCell(rowIndex, colIndex);
+      },
 
       // Getters
 
