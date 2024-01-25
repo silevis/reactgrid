@@ -34,13 +34,13 @@ export default function useReactGridAPI(id: string) {
       setFocusedCell: (location: IndexedLocation) => {
         const { rowIndex, colIndex } = location;
         if (isDev) {
-          if (rowIndex > 0 || colIndex > 0) {
+          if (rowIndex === -1 && rowIndex === -1) {
             console.warn(
-              "Provided indexes won't select any cell, because any cell won't have indexes with negative values."
+              "By providing rowIndex and colIndex with both values equal to -1, you basically removed focus. There is no focused cell now."
             );
-          } else if (rowIndex === -1 && rowIndex === -1) {
+          } else if (rowIndex > 0 || rowIndex > 0) {
             console.warn(
-              "By providing rowIndex and colIndex with values equal to -1, you basically removed focus. There is no focused cell now."
+              "Provided indexes won't allow to focus any cell, because there are no cells with negative indexes."
             );
           }
         }
