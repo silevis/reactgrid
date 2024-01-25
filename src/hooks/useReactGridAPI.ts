@@ -1,3 +1,5 @@
+import { Range } from "../types/PublicModel";
+import { getNumericalRange } from "../utils/getNumericalRange";
 import { useReactGridStore } from "../utils/reactGridStore";
 
 /**
@@ -14,7 +16,11 @@ export default function useReactGridAPI(id: string) {
        * Set the selected area in the ReactGrid.
        * @param area - The selected area.
        */
-      setSelectedArea: store.setSelectedArea,
+      setSelectedArea: (range: Range) => {
+        const numericalRange = getNumericalRange(store, range);
+
+        return store.setSelectedArea(numericalRange);
+      },
 
       /**
        * Set the focused cell in the ReactGrid.
