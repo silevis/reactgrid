@@ -17,7 +17,7 @@ type Direction = "Up" | "Down" | "Left" | "Right";
  * @param changeOffset by how much to change the selected area
  * @returns the updated store
  */
-export const resizeTowardsDirection = (
+export const resizeSelectionInDirection = (
   store: ReactGridStore,
   focusedCell: FocusedCell,
   direction: Direction,
@@ -116,7 +116,7 @@ export const resizeTowardsDirection = (
 
   const newSelectedArea = findMinimalSelectedArea(store, selectedArea);
   if (areAreasEqual(newSelectedArea, store.selectedArea)) {
-    return resizeTowardsDirection(store, focusedCell, direction, changeOffset + 1);
+    return resizeSelectionInDirection(store, focusedCell, direction, changeOffset + 1);
   }
 
   return {
