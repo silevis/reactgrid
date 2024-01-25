@@ -34,14 +34,12 @@ export default function useReactGridAPI(id: string) {
       setFocusedCell: (location: IndexedLocation) => {
         const { rowIndex, colIndex } = location;
         if (isDev) {
-          if (rowIndex === -1 && rowIndex === -1) {
+          if (rowIndex === -1 && colIndex === -1) {
             console.warn(
-              "By providing rowIndex and colIndex with both values equal to -1, you basically removed focus. There is no focused cell now."
+              "By providing rowIndex and colIndex with both values equal to -1, you basically removed focus."
             );
-          } else if (rowIndex > 0 || rowIndex > 0) {
-            console.warn(
-              "Provided indexes won't allow to focus any cell, because there are no cells with negative indexes."
-            );
+          } else if (rowIndex < 0 || colIndex < 0 || rowIndex > store.rows.length || colIndex > store.columns.length) {
+            console.warn("Focused cell should be within grid boundaries.");
           }
         }
 
@@ -54,10 +52,11 @@ export default function useReactGridAPI(id: string) {
        */
       setEditedCell: (location: IndexedLocation) => {
         const { rowIndex, colIndex } = location;
-        if (isDev && (rowIndex > 0 || colIndex > 0)) {
-          console.warn(
-            "Provided indexes won't allow to edit any cell, because there are no cells with negative indexes."
-          );
+        if (
+          isDev &&
+          (rowIndex < 0 || colIndex < 0 || rowIndex > store.rows.length || colIndex > store.columns.length)
+        ) {
+          console.warn("Edited cell should be within grid boundaries.");
         }
 
         return store.setCurrentlyEditedCell(rowIndex, colIndex);
