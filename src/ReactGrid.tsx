@@ -74,8 +74,8 @@ const ReactGrid: FC<ReactGridProps> = ({
       <>
         <h1>You're about to render a huge grid!</h1>
         <p>
-          The grid you provided exceeds a safety data size limit {"(>25k cells)"}. You might experience performance
-          problems.
+          The grid you provided exceeds a safety data size limit {"(>25k cells)"}. 
+          You might experience performance problems.
         </p>
         <p>Are you sure you want to render it all?</p>
         <button onClick={() => startTransition(() => setBypassSizeWarning(true))}>

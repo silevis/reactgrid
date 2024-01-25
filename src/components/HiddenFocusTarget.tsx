@@ -1,10 +1,10 @@
-import React from 'react'
-import { useReactGridStore } from '../utils/reactGridStore';
-import { useReactGridId } from './ReactGridIdProvider';
+import React from "react";
+import { useReactGridStore } from "../utils/reactGridStore";
+import { useReactGridId } from "./ReactGridIdProvider";
 
 const HiddenFocusTarget = () => {
   const id = useReactGridId();
-  const assignHiddenFocusTargetRef = useReactGridStore(id, store => store.assignHiddenFocusTargetRef);
+  const assignHiddenFocusTargetRef = useReactGridStore(id, (store) => store.assignHiddenFocusTargetRef);
   const hiddenFocusTargetRef = React.useRef<HTMLInputElement>(null);
 
   React.useEffect(() => {
@@ -25,7 +25,7 @@ const HiddenFocusTarget = () => {
         }
       }}
     />
-  )
-}
+  );
+};
 
 export default HiddenFocusTarget;

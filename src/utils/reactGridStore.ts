@@ -1,11 +1,13 @@
 import { StoreApi, create, createStore, useStore } from "zustand";
 import { CellSelectionBehavior } from "../behaviors/CellSelectionBehavior";
 import { DefaultBehavior } from "../behaviors/DefaultBehavior";
-import { BehaviorConstructor } from "../types/Behavior";
 import { NumericalRange } from "../types/CellMatrix";
 import { FocusedCell, IndexedLocation, PaneName } from "../types/InternalModel";
 import { Cell, CellMap, Column, Row, SpanMember } from "../types/PublicModel";
 import { isSpanMember } from "./cellUtils";
+import { RowMeasurement } from "../types/RowMeasurement";
+import { ColumnMeasurement } from "../types/ColumnMeasurement";
+import { Behavior, BehaviorId } from "../types/Behavior";
 
 export interface ReactGridStore {
   rows: Row[];
@@ -19,6 +21,11 @@ export interface ReactGridStore {
   readonly getCellByIds: (rowId: ReactGridStore['rows'][number]['id'], colId: ReactGridStore['rows'][number]['id']) => Cell | null;
   readonly getCellByIndexes: (rowIndex: number, colIndex: number) => Cell | null;
   readonly getCellOrSpanMemberByIndexes: (rowIndex: number, colIndex: number) => Cell | SpanMember | null;
+
+  rowMeasurements: RowMeasurement[];
+  readonly setRowMeasurements: (rowMeasurements: RowMeasurement[]) => void;
+  colMeasurements: ColumnMeasurement[];
+  readonly setColMeasurements: (colMeasurements: ColumnMeasurement[]) => void;
 
   paneRanges: Record<PaneName, NumericalRange>;
   readonly setPaneRanges: (paneRanges: Record<PaneName, NumericalRange>) => void;
@@ -45,9 +52,10 @@ export interface ReactGridStore {
   // ) => void;
 
   /* == Behaviors == */
-  behaviors: Record<string, BehaviorConstructor>;
-  readonly setBehaviors: (behaviors: Record<string, BehaviorConstructor>) => void;
-  readonly getBehavior: (behaviorId: string) => BehaviorConstructor;
+  behaviors: Record<BehaviorId, Behavior>;
+  currentBehavior: Behavior;
+  readonly setBehaviors: (behaviors: Record<BehaviorId, Behavior>) => void;
+  readonly getBehavior: (behaviorId: BehaviorId) => Behavior;
 
   // /* == Callbacks == */
   // onCellChange: NonNullable<ReactGridProps["onCellChange"]>;
@@ -108,6 +116,11 @@ export function useReactGridStore<T>(id: string, selector: (store: ReactGridStor
           return cell;
         },
 
+        rowMeasurements: [],
+        setRowMeasurements: (rowMeasurements) => set(() => ({ rowMeasurements })),
+        colMeasurements: [],
+        setColMeasurements: (colMeasurements) => set(() => ({ colMeasurements })),
+
         paneRanges: {
           "TopLeft": { startRowIdx: 0, endRowIdx: 0, startColIdx: 0, endColIdx: 0 },
           "TopCenter": { startRowIdx: 0, endRowIdx: 0, startColIdx: 0, endColIdx: 0 },
@@ -145,9 +158,10 @@ export function useReactGridStore<T>(id: string, selector: (store: ReactGridStor
         assignHiddenFocusTargetRef: (hiddenFocusTargetRef) => set(() => ({ hiddenFocusTargetRef })),
 
         behaviors: {
-          "Default": DefaultBehavior,
+          "Default": DefaultBehavior(),
           "CellSelection": CellSelectionBehavior,
         },
+        currentBehavior: get()?.behaviors["Default"] ?? DefaultBehavior(),
         setBehaviors: (behaviors) => set(() => ({ ...get().behaviors, ...behaviors })),
         getBehavior: (behaviorId) => {
           const behavior = get().behaviors[behaviorId];

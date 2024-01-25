@@ -1,5 +1,4 @@
-
-import { Behavior, BehaviorConstructor } from "../types/Behavior";
+import { Behavior } from "../types/Behavior";
 import { Cell } from "../types/PublicModel";
 import { findMinimalSelectedArea, isCellSticky } from "../utils/cellUtils";
 import { getCellIndexesFromPointerLocation } from "../utils/getCellIndexesFromPointerLocation";
@@ -7,7 +6,6 @@ import { ReactGridStore } from "../utils/reactGridStore";
 import { getCellIndexesFromContainerElement } from "../utils/getCellIndexes";
 import { getNonStickyCell } from "../utils/getNonStickyCell";
 import { scrollTowardsSticky } from "../utils/scrollTowardsSticky";
-
 
 /**
  * Tries to expand the selected area towards a target cell.
@@ -57,12 +55,9 @@ const tryExpandingTowardsCell = (
   };
 };
 
-export const CellSelectionBehavior: BehaviorConstructor = (setCurrentBehavior) => {
-  const behavior: Behavior = {
-    id: "CellSelection",
-
-    handlePointerMove(event, store) {
-      console.log("CSB/handlePointerMove");
+export const CellSelectionBehavior: Behavior = {
+  handlePointerMove(event, store) {
+    console.log("CSB/handlePointerMove");
 
       const { clientX, clientY } = event;
       const { rowIndex, colIndex } = getCellIndexesFromPointerLocation(clientX, clientY);
@@ -88,16 +83,15 @@ export const CellSelectionBehavior: BehaviorConstructor = (setCurrentBehavior) =
         }
       }
 
-      return tryExpandingTowardsCell(store, cell, rowIndex, colIndex);
-    },
+    return tryExpandingTowardsCell(store, cell, rowIndex, colIndex);
+  },
+  
+  handlePointerUp(_event, store) {
+    const DefaultBehavior = store.getBehavior("Default");
 
-    handlePointerUp(_event, store) {
-      const DefaultBehavior = store.getBehavior("Default");
-      setCurrentBehavior(DefaultBehavior(setCurrentBehavior));
-
-      return store;
-    },
-  };
-
-  return behavior;
+    return {
+      ...store,
+      currentBehavior: DefaultBehavior,
+    }
+  },
 };
