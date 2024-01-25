@@ -62,6 +62,12 @@ export const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>, store:
         if (event.shiftKey) return moveFocusInsideSelectedRange(store, focusedCell, "left");
         else return moveFocusInsideSelectedRange(store, focusedCell, "right");
       }
+      case "Enter": {
+        event.preventDefault();
+
+        if (event.shiftKey) return moveFocusInsideSelectedRange(store, focusedCell, "up");
+        else return moveFocusInsideSelectedRange(store, focusedCell, "down");
+      }
     }
   }
   

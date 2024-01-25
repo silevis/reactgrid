@@ -1,5 +1,7 @@
 import React from "react";
-import { BehaviorConstructor } from "./Behavior";
+
+import { Behavior, BehaviorId } from "./Behavior";
+
 
 export type Row<Id = string> = {
   id: Id;
@@ -100,7 +102,7 @@ export interface ReactGridProps {
 
   // enableVirtualization?: boolean;
 
-  behaviors?: Record<string, BehaviorConstructor>;
+  behaviors?: Record<BehaviorId, Behavior>
 
   focusLocation?: [number, number];
   initialFocusLocation?: [number, number];
