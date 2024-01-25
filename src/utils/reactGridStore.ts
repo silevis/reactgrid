@@ -1,11 +1,11 @@
 import { StoreApi, create, createStore, useStore } from "zustand";
 import { CellSelectionBehavior } from "../behaviors/CellSelectionBehavior";
 import { DefaultBehavior } from "../behaviors/DefaultBehavior";
-import { BehaviorConstructor } from "../types/Behavior";
 import { NumericalRange } from "../types/CellMatrix";
 import { FocusedCell, IndexedLocation, PaneName } from "../types/InternalModel";
 import { Cell, CellMap, Column, Row, SpanMember } from "../types/PublicModel";
 import { isSpanMember } from "./cellUtils";
+import { Behavior, BehaviorId } from "../types/Behavior";
 
 export interface ReactGridStore {
   rows: Row[];
@@ -45,9 +45,10 @@ export interface ReactGridStore {
   // ) => void;
 
   /* == Behaviors == */
-  behaviors: Record<string, BehaviorConstructor>;
-  readonly setBehaviors: (behaviors: Record<string, BehaviorConstructor>) => void;
-  readonly getBehavior: (behaviorId: string) => BehaviorConstructor;
+  behaviors: Record<BehaviorId, Behavior>;
+  currentBehavior: Behavior;
+  readonly setBehaviors: (behaviors: Record<BehaviorId, Behavior>) => void;
+  readonly getBehavior: (behaviorId: BehaviorId) => Behavior;
 
   // /* == Callbacks == */
   // onCellChange: NonNullable<ReactGridProps["onCellChange"]>;
@@ -145,9 +146,10 @@ export function useReactGridStore<T>(id: string, selector: (store: ReactGridStor
         assignHiddenFocusTargetRef: (hiddenFocusTargetRef) => set(() => ({ hiddenFocusTargetRef })),
 
         behaviors: {
-          "Default": DefaultBehavior,
+          "Default": DefaultBehavior(),
           "CellSelection": CellSelectionBehavior,
         },
+        currentBehavior: get()?.behaviors["Default"] ?? DefaultBehavior(),
         setBehaviors: (behaviors) => set(() => ({ ...get().behaviors, ...behaviors })),
         getBehavior: (behaviorId) => {
           const behavior = get().behaviors[behaviorId];
