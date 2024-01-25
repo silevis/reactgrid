@@ -164,16 +164,38 @@ export const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>, store:
         };
       }
 
-      // Jump to the cell that is in the first row, but in the same column as the focused cell.
-      case "ArrowUp":
       case "Home": {
+        event.preventDefault();
+
+        return {
+          ...store,
+          focusedLocation: {
+            rowIndex: 0,
+            colIndex: 0,
+          },
+        };
+      }
+
+      case "End": {
+        event.preventDefault();
+
+        return {
+          ...store,
+          focusedLocation: {
+            rowIndex: store.rows.length - 1,
+            colIndex: store.columns.length - 1,
+          },
+        };
+      }
+      
+      // Jump to the cell that is in the first row, but in the same column as the focused cell.
+      case "ArrowUp": {
         event.preventDefault();
         if (!focusedCell) return store;
         return { ...store, focusedLocation: { ...store.focusedLocation, rowIndex: 0 }, selectedArea: EMPTY_AREA };
       }
       // Jump to the cell that is in the last row, but in the same column as the focused cell.
-      case "ArrowDown":
-      case "End": {
+      case "ArrowDown": {
         event.preventDefault();
         if (!focusedCell) return store;
         return { ...store, focusedLocation: { ...store.focusedLocation, rowIndex: store.rows.length - 1 }, selectedArea: EMPTY_AREA };
