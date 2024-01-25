@@ -1,5 +1,6 @@
 import { IndexedLocation } from "../types/InternalModel";
 import { Range } from "../types/PublicModel";
+import { EMPTY_AREA, areAreasEqual } from "../utils/cellUtils";
 import { getNumericalRange } from "../utils/getNumericalRange";
 import isDevEnvironment from "../utils/isDevEnvironment";
 import { useReactGridStore } from "../utils/reactGridStore";
@@ -72,21 +73,24 @@ export default function useReactGridAPI(id: string) {
 
       /**
        * Get the cell at the specified indexes in the ReactGrid.
-       * @param indexes - The indexes of the cell.
+       * @param rowIndex - The row index of the cell.
+       * @param colIndex - The column index of the cell.
        * @returns The cell at the specified indexes.
        */
       getCellByIndexes: store.getCellByIndexes,
 
       /**
        * Get the cell with the specified IDs in the ReactGrid.
-       * @param ids - The IDs of the cell.
+       * @param rowId - The row ID of the cell.
+       * @param colId - The column ID of the cell.
        * @returns The cell with the specified IDs.
        */
       getCellByIds: store.getCellByIds,
 
       /**
        * Get the cell or span member at the specified indexes in the ReactGrid.
-       * @param indexes - The indexes of the cell or span member.
+       * @param rowIndex - The row index of the cell.
+       * @param colIndex - The column index of the cell.
        * @returns The cell or span member at the specified indexes.
        */
       getCellOrSpanMemberByIndexes: store.getCellOrSpanMemberByIndexes,
@@ -95,7 +99,13 @@ export default function useReactGridAPI(id: string) {
        * Get the currently edited cell in the ReactGrid.
        * @returns The currently edited cell.
        */
-      getEditedCell: () => store.currentlyEditedCell,
+      getEditedCell: () => {
+        const { currentlyEditedCell } = store;
+
+        if (isDev && (currentlyEditedCell.colIndex < 0 || currentlyEditedCell.rowIndex < 0)) console.warn('There is no edited cell.')
+
+        return currentlyEditedCell
+      },
 
       /**
        * Get the pane ranges in the ReactGrid.
@@ -107,7 +117,13 @@ export default function useReactGridAPI(id: string) {
        * Get the selected area in the ReactGrid.
        * @returns The selected area.
        */
-      getSelectedArea: () => store.selectedArea,
+      getSelectedArea: () => {
+        const { selectedArea } = store;
+
+        if (isDev && areAreasEqual(selectedArea, EMPTY_AREA)) console.warn("No area is selected!");
+
+        return selectedArea;
+      },
     };
   });
 }
