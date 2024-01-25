@@ -7,8 +7,8 @@ export function getOffset(element: Element): { top: number; left: number; } | nu
   const win = element.ownerDocument.defaultView;
   if (!win) return null;
   return {
-    top: rect.top + win?.scrollY,
-    left: rect.left + win?.scrollY,
+    top: rect.top + window.scrollY,
+    left: rect.left + window.scrollY,
   };
 }
 export function getDistanceBetweenOffsets(firstEl: HTMLElement, secondEl: HTMLElement) {
