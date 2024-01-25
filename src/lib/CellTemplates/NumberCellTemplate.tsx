@@ -6,6 +6,7 @@ import { keyCodes } from '../Functions/keyCodes';
 import { Cell, CellTemplate, Compatible, Uncertain, UncertainCompatible } from '../Model/PublicModel';
 import { inNumericKey, isNavigationKey, isNumpadNumericKey, isAllowedOnNumberTypingKey, isCharAllowedOnNumberInput } from './keyCodeCheckings';
 import { getCharFromKey } from './getCharFromKeyCode';
+import { parseLocaleNumber } from '../Functions/parseLocaleNumber';
 
 export interface NumberCell extends Cell {
     type: 'number';
@@ -91,8 +92,8 @@ export class NumberCellTemplate implements CellTemplate<NumberCell> {
                 }
             }}
             defaultValue={Number.isNaN(cell.value) ? this.getTextFromCharCode(cell.text) : format.format(cell.value)}
-            onChange={e => onCellChanged(this.getCompatibleCell({ ...cell, value: parseFloat(e.currentTarget.value.replace(/,/g, '.')) }), false)}
-            onBlur={e => { onCellChanged(this.getCompatibleCell({ ...cell, value: parseFloat(e.currentTarget.value.replace(/,/g, '.')) }), !this.wasEscKeyPressed); this.wasEscKeyPressed = false; }}
+            onChange={e => onCellChanged(this.getCompatibleCell({ ...cell, value: parseLocaleNumber(e.currentTarget.value) }), false)}
+            onBlur={e => { onCellChanged(this.getCompatibleCell({ ...cell, value: parseLocaleNumber(e.currentTarget.value) }), !this.wasEscKeyPressed); this.wasEscKeyPressed = false; }}
             onKeyDown={e => {
                 if (
                   inNumericKey(e.keyCode) ||
