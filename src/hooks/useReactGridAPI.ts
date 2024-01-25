@@ -1,5 +1,7 @@
+import { IndexedLocation } from "../types/InternalModel";
 import { Range } from "../types/PublicModel";
 import { getNumericalRange } from "../utils/getNumericalRange";
+import isDevEnvironment from "../utils/isDevEnvironment";
 import { useReactGridStore } from "../utils/reactGridStore";
 
 /**
@@ -7,6 +9,9 @@ import { useReactGridStore } from "../utils/reactGridStore";
  * @param id - The ID of the ReactGrid instance.
  * @returns An object containing setters and getters for interacting with the ReactGrid.
  */
+
+const isDev = isDevEnvironment();
+
 export default function useReactGridAPI(id: string) {
   return useReactGridStore(id, (store) => {
     return {
@@ -26,7 +31,22 @@ export default function useReactGridAPI(id: string) {
        * Set the focused cell in the ReactGrid.
        * @param location - The location of the focused cell.
        */
-      setFocusedCell: store.setFocusedLocation,
+      setFocusedCell: (location: IndexedLocation) => {
+        const { rowIndex, colIndex } = location;
+        if (isDev) {
+          if (rowIndex > 0 || colIndex > 0) {
+            console.warn(
+              "Provided indexes won't select any cell, because any cell won't have indexes with negative values."
+            );
+          } else if (rowIndex === -1 && rowIndex === -1) {
+            console.warn(
+              "By providing rowIndex and colIndex with values equal to -1, you basically removed focus. There is no focused cell now."
+            );
+          }
+        }
+
+        return store.setFocusedLocation(rowIndex, colIndex);
+      },
 
       /**
        * Set the edited cell in the ReactGrid.
