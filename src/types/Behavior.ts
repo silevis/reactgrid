@@ -6,6 +6,7 @@ export type BehaviorId = "Default" | "CellSelection" | string;
 export type HandlerFn<TEvent extends React.SyntheticEvent> = (event: TEvent, store: ReactGridStore) => ReactGridStore;
 
 export type PointerEventHandler = HandlerFn<React.PointerEvent<HTMLDivElement>>;
+export type TouchEventHandler = HandlerFn<React.TouchEvent<HTMLDivElement>>;
 export type MouseEventHandler = HandlerFn<React.MouseEvent<HTMLDivElement>>;
 export type KeyboardEventHandler = HandlerFn<React.KeyboardEvent<HTMLDivElement>>;
 export type CompositionEventHandler = HandlerFn<React.CompositionEvent<HTMLDivElement>>;
@@ -17,6 +18,11 @@ export type Behavior = {
   handlePointerMove?: PointerEventHandler;
   handlePointerLeave?: PointerEventHandler;
   handlePointerUp?: PointerEventHandler;
+
+  handleTouchStart?: TouchEventHandler;
+  handleTouchMove?: TouchEventHandler;
+  handleTouchEnd?: TouchEventHandler;
+  handleTouchCancel?: TouchEventHandler;
 
   handleDoubleClick?: MouseEventHandler;
 

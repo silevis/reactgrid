@@ -50,6 +50,10 @@ const GridWrapper: FC<PropsWithChildren<GridWrapperProps>> = ({ reactGridId, sty
       onPointerLeave={(e) => withStoreApi(e, currentBehavior?.handlePointerLeave)}
       onPointerUp={(e) => withStoreApi(e, currentBehavior?.handlePointerUp)}
       onDoubleClick={(e) => withStoreApi(e, currentBehavior?.handleDoubleClick)}
+      onTouchStart={(e) => withStoreApi(e, currentBehavior?.handleTouchStart)}
+      onTouchMove={(e) => withStoreApi(e, currentBehavior?.handleTouchMove)}
+      onTouchEnd={(e) => withStoreApi(e, currentBehavior?.handleTouchEnd)}
+      onTouchCancel={(e) => withStoreApi(e, currentBehavior?.handleTouchCancel)}
       onKeyDown={(e) => withStoreApi(e, currentBehavior?.handleKeyDown)}
       onKeyUp={(e) => withStoreApi(e, currentBehavior?.handleKeyUp)}
       onCompositionStart={(e) => withStoreApi(e, currentBehavior?.handleCompositionStart)}
