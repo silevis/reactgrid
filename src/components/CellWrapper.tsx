@@ -1,7 +1,6 @@
 import React, { FC } from "react";
 import { useCellContext } from "./CellContext";
 import HiddenFocusTarget from "./HiddenFocusTarget";
-import { getCellArea, isCellInRange } from "../utils/cellUtils";
 
 type CellWrapperProps = React.ClassAttributes<HTMLDivElement> &
   React.HTMLAttributes<HTMLDivElement> & {
