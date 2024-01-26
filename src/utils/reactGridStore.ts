@@ -3,7 +3,7 @@ import { CellSelectionBehavior } from "../behaviors/CellSelectionBehavior";
 import { DefaultBehavior } from "../behaviors/DefaultBehavior";
 import { NumericalRange } from "../types/CellMatrix";
 import { FocusedCell, IndexedLocation, PaneName } from "../types/InternalModel";
-import { Cell, CellMap, Column, Row, SpanMember } from "../types/PublicModel";
+import { Cell, CellMap, Column, Range, Row, SpanMember, StyledRange } from "../types/PublicModel";
 import { isSpanMember } from "./cellUtils";
 import { RowMeasurement } from "../types/RowMeasurement";
 import { ColumnMeasurement } from "../types/ColumnMeasurement";
@@ -18,7 +18,10 @@ export interface ReactGridStore {
   readonly getColumnAmount: () => number;
   cells: CellMap;
   readonly setCells: (cellMap: CellMap) => void;
-  readonly getCellByIds: (rowId: ReactGridStore['rows'][number]['id'], colId: ReactGridStore['rows'][number]['id']) => Cell | null;
+  readonly getCellByIds: (
+    rowId: ReactGridStore["rows"][number]["id"],
+    colId: ReactGridStore["rows"][number]["id"]
+  ) => Cell | null;
   readonly getCellByIndexes: (rowIndex: number, colIndex: number) => Cell | null;
   readonly getCellOrSpanMemberByIndexes: (rowIndex: number, colIndex: number) => Cell | SpanMember | null;
 
@@ -50,6 +53,10 @@ export interface ReactGridStore {
   //   reactGridRef?: HTMLDivElement,
   //   scrollableRef?: HTMLElement | (Window & typeof globalThis)
   // ) => void;
+
+  styledRanges: StyledRange[];
+  readonly setStyledRanges: (styledRanges: StyledRange[]) => void;
+  readonly getStyledRanges: (range?: Range) => StyledRange[] | [];
 
   /* == Behaviors == */
   behaviors: Record<BehaviorId, Behavior>;
@@ -122,15 +129,15 @@ export function useReactGridStore<T>(id: string, selector: (store: ReactGridStor
         setColMeasurements: (colMeasurements) => set(() => ({ colMeasurements })),
 
         paneRanges: {
-          "TopLeft": { startRowIdx: 0, endRowIdx: 0, startColIdx: 0, endColIdx: 0 },
-          "TopCenter": { startRowIdx: 0, endRowIdx: 0, startColIdx: 0, endColIdx: 0 },
-          "TopRight": { startRowIdx: 0, endRowIdx: 0, startColIdx: 0, endColIdx: 0 },
-          "Left": { startRowIdx: 0, endRowIdx: 0, startColIdx: 0, endColIdx: 0 },
-          "Center": { startRowIdx: 0, endRowIdx: 0, startColIdx: 0, endColIdx: 0 },
-          "Right": { startRowIdx: 0, endRowIdx: 0, startColIdx: 0, endColIdx: 0 },
-          "BottomLeft": { startRowIdx: 0, endRowIdx: 0, startColIdx: 0, endColIdx: 0 },
-          "BottomCenter": { startRowIdx: 0, endRowIdx: 0, startColIdx: 0, endColIdx: 0 },
-          "BottomRight": { startRowIdx: 0, endRowIdx: 0, startColIdx: 0, endColIdx: 0 },
+          TopLeft: { startRowIdx: 0, endRowIdx: 0, startColIdx: 0, endColIdx: 0 },
+          TopCenter: { startRowIdx: 0, endRowIdx: 0, startColIdx: 0, endColIdx: 0 },
+          TopRight: { startRowIdx: 0, endRowIdx: 0, startColIdx: 0, endColIdx: 0 },
+          Left: { startRowIdx: 0, endRowIdx: 0, startColIdx: 0, endColIdx: 0 },
+          Center: { startRowIdx: 0, endRowIdx: 0, startColIdx: 0, endColIdx: 0 },
+          Right: { startRowIdx: 0, endRowIdx: 0, startColIdx: 0, endColIdx: 0 },
+          BottomLeft: { startRowIdx: 0, endRowIdx: 0, startColIdx: 0, endColIdx: 0 },
+          BottomCenter: { startRowIdx: 0, endRowIdx: 0, startColIdx: 0, endColIdx: 0 },
+          BottomRight: { startRowIdx: 0, endRowIdx: 0, startColIdx: 0, endColIdx: 0 },
         },
         setPaneRanges: (paneRanges) => set(() => ({ paneRanges })),
 
@@ -158,8 +165,8 @@ export function useReactGridStore<T>(id: string, selector: (store: ReactGridStor
         assignHiddenFocusTargetRef: (hiddenFocusTargetRef) => set(() => ({ hiddenFocusTargetRef })),
 
         behaviors: {
-          "Default": DefaultBehavior(),
-          "CellSelection": CellSelectionBehavior,
+          Default: DefaultBehavior(),
+          CellSelection: CellSelectionBehavior,
         },
         currentBehavior: get()?.behaviors["Default"] ?? DefaultBehavior(),
         setBehaviors: (behaviors) => set(() => ({ ...get().behaviors, ...behaviors })),
@@ -169,6 +176,22 @@ export function useReactGridStore<T>(id: string, selector: (store: ReactGridStor
           if (!behavior) throw new Error(`Behavior with id "${behaviorId}" doesn't exist!`);
 
           return behavior;
+        },
+
+        styledRanges: [],
+        setStyledRanges: (styledRanges) => set(() => ({ styledRanges })),
+
+        getStyledRanges: (range?: Range): StyledRange[] | [] => {
+          const styledRanges: StyledRange[] = get().styledRanges;
+          if (!range) {
+            return styledRanges ? styledRanges : [];
+          } else {
+            const styledRange = styledRanges.find((styledRange) => {
+              JSON.stringify(styledRange.range) === JSON.stringify(range);
+            });
+
+            return styledRange ? [styledRange] : [];
+          }
         },
       })),
     };
@@ -181,8 +204,8 @@ export function useReactGridStore<T>(id: string, selector: (store: ReactGridStor
 
 export const useReactGridStoreApi = (id: string): StoreApi<ReactGridStore> => {
   const selectedStore = useStore(reactGridStores, (state) => state[id]);
-  
+
   if (!selectedStore) throw new Error(`ReactGridStore with id "${id}" doesn't exist!`);
-  
+
   return selectedStore;
-}
+};

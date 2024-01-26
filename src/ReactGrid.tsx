@@ -23,14 +23,20 @@ const ReactGrid: FC<ReactGridProps> = ({
   stickyRightColumns,
   behaviors,
   style,
+  styledRanges,
 }) => {
   const setRows = useReactGridStore(id, (store) => store.setRows);
   const setColumns = useReactGridStore(id, (store) => store.setColumns);
   const setCells = useReactGridStore(id, (store) => store.setCells);
   const setBehaviors = useReactGridStore(id, (store) => store.setBehaviors);
+  const setStyledRanges = useReactGridStore(id, (store) => store.setStyledRanges);
 
   const [bypassSizeWarning, setBypassSizeWarning] = useState(false);
   const [isPending, startTransition] = useTransition();
+
+  useEffect(() => {
+    if (styledRanges) setStyledRanges(styledRanges);
+  }, [styledRanges]);
 
   useEffect(() => {
     setRows(rows);

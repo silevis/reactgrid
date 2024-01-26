@@ -1,7 +1,9 @@
-import React, { FC, PropsWithChildren, useEffect, useRef } from "react";
+import React, { FC, PropsWithChildren, useEffect, useRef, useState } from "react";
 import { HandlerFn } from "../types/Behavior";
 import { useReactGridStore, useReactGridStoreApi } from "../utils/reactGridStore";
 import { updateStoreWithApiAndEventHandler } from "../utils/updateStoreWithApiAndEventHandler";
+import { StyledRangesCSS } from "../types/PublicModel";
+import { getStyledRangesCSS } from "../utils/getStyledRangesCSS";
 
 interface GridWrapperProps {
   reactGridId: string;
@@ -15,6 +17,10 @@ const GridWrapper: FC<PropsWithChildren<GridWrapperProps>> = ({ reactGridId, sty
   const reactGridElement = useRef<HTMLDivElement>(null);
   const assignReactGridRef = useReactGridStore(reactGridId, (store) => store.assignReactGridRef);
 
+  const getStyledRanges = useReactGridStore(reactGridId, (store) => store.getStyledRanges);
+  const styledRanges = getStyledRanges();
+  const [css, setCSS] = useState<StyledRangesCSS | []>([]);
+
   useEffect(() => {
     if (reactGridElement.current) assignReactGridRef(reactGridElement.current);
   }, [reactGridElement]);
@@ -24,8 +30,16 @@ const GridWrapper: FC<PropsWithChildren<GridWrapperProps>> = ({ reactGridId, sty
     handler?: HandlerFn<TEvent>
   ) => updateStoreWithApiAndEventHandler(storeApi, event, handler);
 
+  useEffect(() => {
+    const styledRangesCSS = getStyledRangesCSS(storeApi.getState(), styledRanges);
+    if (styledRangesCSS) {
+      setCSS(styledRangesCSS);
+    }
+  }, [styledRanges]); // DO NOT USE ANYTHING RELATED TO STORE TO DEPENDENCY ARRAY!
+
   return (
     <div
+      css={css}
       id={`ReactGrid-${reactGridId}`}
       className="ReactGrid"
       ref={reactGridElement}
