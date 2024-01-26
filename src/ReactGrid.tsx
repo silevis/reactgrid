@@ -27,6 +27,7 @@ const ReactGrid: FC<ReactGridProps> = ({
   style,
   initialSelectedRange,
   initialFocusLocation,
+  styledRanges,
 }) => {
   // It's actually a useReactGridStore()
   useInitReactGridStore(id, (store) => null); // Init store.
@@ -40,10 +41,15 @@ const ReactGrid: FC<ReactGridProps> = ({
     setFocusedLocation: setFocusedCell,
     getCellOrSpanMemberByIndexes,
     getCellByIndexes,
+    setStyledRanges,
   } = store;
 
   const [bypassSizeWarning, setBypassSizeWarning] = useState(false);
   const [isPending, startTransition] = useTransition();
+
+  useEffect(() => {
+    if (styledRanges) setStyledRanges(styledRanges);
+  }, [styledRanges]);
 
   useEffect(() => {
     setRows(rows);

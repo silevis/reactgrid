@@ -39,9 +39,9 @@ export const getCellArea = (store: ReactGridStore, cell: Cell | SpanMember): Num
   if (isCellSpanned(originCell)) {
     return {
       startRowIdx: rowIndex,
-      endRowIdx: rowIndex + originCell.rowSpan,
+      endRowIdx: rowIndex + (originCell?.rowSpan ?? 1),
       startColIdx: colIndex,
-      endColIdx: colIndex + originCell.colSpan,
+      endColIdx: colIndex + (originCell?.colSpan ?? 1),
     };
   }
 
@@ -143,9 +143,90 @@ export function isCellSticky(store: ReactGridStore, cell: Cell): boolean {
   return !isCellInRange(store, cell, store.paneRanges.Center);
 }
 
-export const getContainerElementByIndexes = (rowIndex: number, colIndex: number): HTMLElement | null => {
-  const cellContainer = document.getElementsByClassName(`rgCellContainer rgRowIdx-${rowIndex} rgColIdx-${colIndex}`)[0];
-  if (!cellContainer) return null;
+export function getCellContainer(store: ReactGridStore, cell: Cell) {
+  if (!store.reactGridRef) throw new Error("ReactGridRef is not defined!");
 
-  return cellContainer as HTMLElement;
+  const cellContainers = store.reactGridRef?.getElementsByClassName(`rgRowIdx-${cell.rowId} rgColIdx-${cell.colId}`);
+
+  if (!cellContainers || cellContainers?.length === 0) return;
+  if (cellContainers?.length !== 1) throw new Error("Cell container is not unique!");
+
+  const cellElement = cellContainers[0];
+
+  return cellElement;
+}
+
+export const getCellParentPaneName = (store: ReactGridStore, cell: Cell): PaneName => {
+  const PANE_NAME_IDX = 0;
+  const PANE_RANGE_IDX = 1;
+  const PaneNamesAndRanges = Object.entries(store.paneRanges) as [PaneName, NumericalRange][];
+
+  const parentPane = PaneNamesAndRanges.find((paneNameAndRange) => {
+    const paneRange = paneNameAndRange[PANE_RANGE_IDX];
+    return isCellInRange(store, cell, paneRange);
+  });
+
+  if (!parentPane) throw new Error(`Could not find cell's [rowId: ${cell.rowId}, colId: ${cell.colId}] parent pane!`);
+
+  return parentPane[PANE_NAME_IDX] as PaneName;
+};
+
+/**
+ * Returns the indexes of a cell in the ReactGrid store.
+ * @param store - The ReactGrid store.
+ * @param cell - The cell to find the indexes for.
+ * @returns An object containing the row index and column index of the cell.
+ */
+export function getCellIndexes(store: ReactGridStore, cell: Cell): { rowIndex: number; colIndex: number } {
+  const rowIndex = store.rows.findIndex((row) => row.id === cell.rowId);
+  const colIndex = store.columns.findIndex((col) => col.id === cell.colId);
+
+  return {
+    rowIndex,
+    colIndex,
+  };
+}
+
+/**
+ * Retrieves the sticky cell adjacent to the "Center" pane in the specified direction.
+ * @param store The ReactGridStore object.
+ * @param cell The position of the sticky cell in the selected direction is counted from this cell.
+ * @param direction The direction to search for the sticky cell ("Top", "Bottom", "Right", "Left").
+ * @returns The sticky cell adjacent to the center pane, or null if not found.
+ */
+export function getStickyCellAdjacentToCenterPane(
+  store: ReactGridStore,
+  cell: Cell,
+  direction: "Top" | "Bottom" | "Right" | "Left"
+) {
+  let stickyCell: Cell | null = null;
+  const originIndexes = getCellIndexes(store, cell);
+
+  if (originIndexes.colIndex === -1 || originIndexes.rowIndex === -1) return null;
+
+  let stickyPaneName;
+  const cellParentPaneName = getCellParentPaneName(store, cell);
+  if (direction === "Top" || direction === "Bottom") {
+    stickyPaneName = (direction + cellParentPaneName.replace(/(Top|Bottom)/, "")) as PaneName;
+  } else {
+    stickyPaneName = direction;
+  }
+
+  const paneRange = store.paneRanges[stickyPaneName];
+  const startOrEnd = direction === "Bottom" || direction === "Right" ? "start" : "end";
+
+  const isExclusiveRangeIndex = startOrEnd === "end";
+
+  const stickyIndexes = {
+    rowIndex: paneRange?.[`${startOrEnd}RowIdx`] - (isExclusiveRangeIndex ? 1 : 0),
+    colIndex: paneRange?.[`${startOrEnd}ColIdx`] - (isExclusiveRangeIndex ? 1 : 0),
+  };
+
+  if (direction === "Bottom" || direction === "Top") {
+    stickyCell = store.getCellByIndexes(stickyIndexes.rowIndex, originIndexes.colIndex) ?? null;
+  } else {
+    stickyCell = store.getCellByIndexes(originIndexes.rowIndex, stickyIndexes.colIndex) ?? null;
+  }
+
+  return stickyCell;
 }

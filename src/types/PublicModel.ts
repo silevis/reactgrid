@@ -1,11 +1,14 @@
-import React, { CSSProperties } from "react";
-import { BehaviorConstructor } from "./Behavior";
+import React from "react";
+
+import { Behavior, BehaviorId } from "./Behavior";
 import { NumericalRange } from "./CellMatrix";
 import { IndexedLocation } from "./InternalModel";
+import { InternalStyledRange } from "./InternalModel";
 
 export type Row<Id = string> = {
   id: Id;
   height: string | number;
+};
 };
 
 export type Column<Id = string> = {
@@ -35,10 +38,22 @@ export type Cell<RowIdType extends string = string, ColIdType extends string = s
   /** Marks a cell as selectable or not */
   isSelectable?: boolean;
 };
+};
 
 export type SpanMember = {
   originRowId: string;
   originColId: string;
+};
+
+export type Range<RowIdType extends string = string, ColIdType extends string = string> = {
+  start: {
+    rowId: RowIdType;
+    columnId: ColIdType;
+  };
+  end: {
+    rowId: RowIdType;
+    columnId: ColIdType;
+  };
 };
 
 export type CellContextType = {
@@ -57,6 +72,7 @@ export type CellContextType = {
   /** Represents how many columns should the cell occupy. */
   colSpan?: number;
 
+
   /** Internal: provides cell container's style  */
   containerStyle: React.CSSProperties;
 
@@ -68,16 +84,28 @@ export type CellContextType = {
   isInEditMode: boolean;
   isFocused: boolean;
 };
+};
 
 export type CellMap<RowIdType extends string = string, ColIdType extends string = string> = Map<
   `${RowIdType} ${ColIdType}`,
   Cell<RowIdType, ColIdType> | SpanMember
 >;
 
+export type StyledRange = {
+  styles: React.CSSProperties;
+  range: Range;
+};
+
+export type StyledRangesCSS = {
+  [selector: string]: React.CSSProperties;
+}[];
+
 export interface ReactGridProps {
   id: string;
 
   style?: React.CSSProperties;
+
+  styledRanges?: StyledRange[];
 
   columns: Column[];
   rows: Row[];
@@ -91,7 +119,7 @@ export interface ReactGridProps {
 
   // enableVirtualization?: boolean;
 
-  behaviors?: Record<string, BehaviorConstructor>;
+  behaviors?: Record<BehaviorId, Behavior>;
 
   focusLocation?: [number, number];
   initialFocusLocation?: IndexedLocation;
