@@ -5,9 +5,7 @@ import GridWrapper from "./components/GridWrapper";
 import PanesRenderer from "./components/PanesRenderer";
 import { ReactGridIdProvider } from "./components/ReactGridIdProvider";
 import { ReactGridProps } from "./types/PublicModel";
-import { useReactGridStore, useReactGridStoreApi } from "./utils/reactGridStore";
-import { createStyledRangesCSS } from "./utils/createStyledRangesCSS";
-
+import { useReactGridStore } from "./utils/reactGridStore";
 
 const spin = keyframes`
 100% {
@@ -31,14 +29,14 @@ const ReactGrid: FC<ReactGridProps> = ({
   const setColumns = useReactGridStore(id, (store) => store.setColumns);
   const setCells = useReactGridStore(id, (store) => store.setCells);
   const setBehaviors = useReactGridStore(id, (store) => store.setBehaviors);
-  const store = useReactGridStoreApi(id).getState();
-  
+  const setStyledRanges = useReactGridStore(id, (store) => store.setStyledRanges);
 
   const [bypassSizeWarning, setBypassSizeWarning] = useState(false);
   const [isPending, startTransition] = useTransition();
 
-  const styledRangesCSS = createStyledRangesCSS(styledRanges ? styledRanges.concat(store.styledRanges) : store.styledRanges);
-  
+  useEffect(() => {
+    if (styledRanges) setStyledRanges(styledRanges);
+  }, [styledRanges]);
 
   useEffect(() => {
     setRows(rows);
@@ -96,7 +94,7 @@ const ReactGrid: FC<ReactGridProps> = ({
   return (
     <ReactGridIdProvider id={id}>
       <ErrorBoundary>
-        <GridWrapper reactGridId={id} style={style} styledRangesCSS={styledRangesCSS}>
+        <GridWrapper reactGridId={id} style={style}>
           <PanesRenderer
             rowAmount={rows.length}
             columnAmount={columns.length}

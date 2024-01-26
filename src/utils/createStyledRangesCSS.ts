@@ -1,6 +1,7 @@
-import { StyledRange, StyledRangesCSS } from "../types/PublicModel";
+import { InternalStyledRange } from "../types/InternalModel";
+import { StyledRangesCSS } from "../types/PublicModel";
 
-export function createStyledRangesCSS(styledRanges: StyledRange[]): StyledRangesCSS {
+export function createStyledRangesCSS(styledRanges: InternalStyledRange[]): StyledRangesCSS {
   const selectorsWithStyles = styledRanges.map((styledRange) => {
     const classNames: string[] = [];
 

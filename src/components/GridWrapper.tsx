@@ -1,30 +1,25 @@
-import React, { FC, PropsWithChildren, useEffect, useRef } from "react";
+import React, { FC, PropsWithChildren, useEffect, useRef, useState } from "react";
 import { HandlerFn } from "../types/Behavior";
 import { useReactGridStore, useReactGridStoreApi } from "../utils/reactGridStore";
 import { updateStoreWithApiAndEventHandler } from "../utils/updateStoreWithApiAndEventHandler";
 import { StyledRangesCSS } from "../types/PublicModel";
+import { getStyledRangesCSS } from "../utils/getStyledRangesCSS";
 
 interface GridWrapperProps {
   reactGridId: string;
   style?: React.CSSProperties;
-  styledRangesCSS: StyledRangesCSS;
 }
 
-const GridWrapper: FC<PropsWithChildren<GridWrapperProps>> = ({
-  reactGridId,
-  customBehaviors,
-  style,
-  children,
-  styledRangesCSS,
-}) => {
+const GridWrapper: FC<PropsWithChildren<GridWrapperProps>> = ({ reactGridId, style, children }) => {
   const storeApi = useReactGridStoreApi(reactGridId);
   const currentBehavior = useReactGridStore(reactGridId, (store) => store.currentBehavior);
 
   const reactGridElement = useRef<HTMLDivElement>(null);
   const assignReactGridRef = useReactGridStore(reactGridId, (store) => store.assignReactGridRef);
 
-  // ? Type-fix for Emotion.js.
-  const styledRangesCSSAcceptableForEmotion = Object.assign({}, ...styledRangesCSS);
+  const getStyledRanges = useReactGridStore(reactGridId, (store) => store.getStyledRanges);
+  const styledRanges = getStyledRanges();
+  const [css, setCSS] = useState<StyledRangesCSS | []>([]);
 
   useEffect(() => {
     if (reactGridElement.current) assignReactGridRef(reactGridElement.current);
@@ -35,9 +30,16 @@ const GridWrapper: FC<PropsWithChildren<GridWrapperProps>> = ({
     handler?: HandlerFn<TEvent>
   ) => updateStoreWithApiAndEventHandler(storeApi, event, handler);
 
+  useEffect(() => {
+    const styledRangesCSS = getStyledRangesCSS(storeApi.getState(), styledRanges);
+    if (styledRangesCSS) {
+      setCSS(styledRangesCSS);
+    }
+  }, [styledRanges]); // DO NOT USE ANYTHING RELATED TO STORE TO DEPENDENCY ARRAY!
+
   return (
     <div
-      css={styledRangesCSSAcceptableForEmotion}
+      css={css}
       id={`ReactGrid-${reactGridId}`}
       className="ReactGrid"
       ref={reactGridElement}

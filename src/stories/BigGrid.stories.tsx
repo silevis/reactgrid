@@ -91,6 +91,16 @@ export const BigGrid = () => {
           stickyRightColumns={2}
           stickyBottomRows={2}
           {...cellMatrix}
+          styledRanges={[
+            {
+              range: { start: { rowId: "0", columnId: "5" }, end: { rowId: "14", columnId: "12" } },
+              styles: { background: "red", color: "yellow" },
+            },
+            {
+              range: { start: { rowId: "7", columnId: "10" }, end: { rowId: "10", columnId: "14" } },
+              styles: { background: "green", color: "purple" },
+            },
+          ]}
         />
       </div>
     </>

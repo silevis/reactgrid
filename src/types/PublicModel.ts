@@ -1,8 +1,7 @@
 import React from "react";
 
 import { Behavior, BehaviorId } from "./Behavior";
-import { NumericalRange } from "./CellMatrix";
-
+import { InternalStyledRange } from "./InternalModel";
 
 export type Row<Id = string> = {
   id: Id;
@@ -87,9 +86,9 @@ export type CellMap<RowIdType extends string = string, ColIdType extends string 
 >;
 
 export type StyledRange = {
-  styles: React.CSSProperties
-  range: NumericalRange,
-}
+  styles: React.CSSProperties;
+  range: Range;
+};
 
 export type StyledRangesCSS = {
   [selector: string]: React.CSSProperties;
@@ -99,8 +98,8 @@ export interface ReactGridProps {
   id: string;
 
   style?: React.CSSProperties;
-  
-  styledRanges?: StyledRange[],
+
+  styledRanges?: StyledRange[];
 
   columns: Column[];
   rows: Row[];
@@ -114,7 +113,7 @@ export interface ReactGridProps {
 
   // enableVirtualization?: boolean;
 
-  behaviors?: Record<BehaviorId, Behavior>
+  behaviors?: Record<BehaviorId, Behavior>;
 
   focusLocation?: [number, number];
   initialFocusLocation?: [number, number];

@@ -3,7 +3,7 @@ import { CellSelectionBehavior } from "../behaviors/CellSelectionBehavior";
 import { DefaultBehavior } from "../behaviors/DefaultBehavior";
 import { NumericalRange } from "../types/CellMatrix";
 import { FocusedCell, IndexedLocation, PaneName } from "../types/InternalModel";
-import { Cell, CellMap, Column, Row, SpanMember, StyledRange } from "../types/PublicModel";
+import { Cell, CellMap, Column, Range, Row, SpanMember, StyledRange } from "../types/PublicModel";
 import { isSpanMember } from "./cellUtils";
 import { Behavior, BehaviorId } from "../types/Behavior";
 
@@ -49,7 +49,7 @@ export interface ReactGridStore {
 
   styledRanges: StyledRange[];
   readonly setStyledRanges: (styledRanges: StyledRange[]) => void;
-  readonly getStyledRanges: (range?: NumericalRange) => StyledRange[] | StyledRange | null;
+  readonly getStyledRanges: (range?: Range) => StyledRange[] | [];
 
   /* == Behaviors == */
   behaviors: Record<BehaviorId, Behavior>;
@@ -153,8 +153,8 @@ export function useReactGridStore<T>(id: string, selector: (store: ReactGridStor
         assignHiddenFocusTargetRef: (hiddenFocusTargetRef) => set(() => ({ hiddenFocusTargetRef })),
 
         behaviors: {
-          "Default": DefaultBehavior(),
-          "CellSelection": CellSelectionBehavior,
+          Default: DefaultBehavior(),
+          CellSelection: CellSelectionBehavior,
         },
         currentBehavior: get()?.behaviors["Default"] ?? DefaultBehavior(),
         setBehaviors: (behaviors) => set(() => ({ ...get().behaviors, ...behaviors })),
@@ -181,17 +181,16 @@ export function useReactGridStore<T>(id: string, selector: (store: ReactGridStor
          * If `range` is not provided, it returns an array of `StyledRange` objects (`StyledRange[]`).
          * If no matches are found in either case, it returns `null`.
          */
-        getStyledRanges: (range?: NumericalRange): StyledRange | StyledRange[] | null => {
+        getStyledRanges: (range?: Range): StyledRange[] | [] => {
+          const styledRanges: StyledRange[] = get().styledRanges;
           if (!range) {
-            const styledRanges: StyledRange[] = get().styledRanges;
-            return styledRanges ? styledRanges : null;
+            return styledRanges ? styledRanges : [];
           } else {
-            const styledRanges = get().styledRanges;
             const styledRange = styledRanges.find((styledRange) => {
               JSON.stringify(styledRange.range) === JSON.stringify(range);
             });
 
-            return styledRange ? styledRange : null;
+            return styledRange ? [styledRange] : [];
           }
         },
       })),
