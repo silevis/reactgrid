@@ -10,10 +10,18 @@ import {
 import { ReactGridStore } from "./reactGridStore";
 import { resizeSelectionInDirection } from "./resizeSelectionInDirection";
 
+type HandleKeyDownConfig = {
+  moveHorizontallyOnEnter: boolean;
+};
+
+const CONFIG_DEFAULTS: HandleKeyDownConfig = {
+  moveHorizontallyOnEnter: false,
+} as const;
+
 // ? Problem: The more complicated is the key-combination (the more keys are included), the higher-in-code it has to be.
 // * By that I mean it has to be executed earlier.
 
-export const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>, store: ReactGridStore): ReactGridStore => {
+export const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>, store: ReactGridStore, config: HandleKeyDownConfig = CONFIG_DEFAULTS): ReactGridStore => {
   if (event.altKey || store.currentlyEditedCell.rowIndex !== -1 || store.currentlyEditedCell.colIndex !== -1)
     return store;
 
@@ -287,8 +295,13 @@ export const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>, store:
       case "Enter": {
         event.preventDefault();
 
-        if (event.shiftKey) return moveFocusInsideSelectedRange(store, focusedCell, "up");
-        else return moveFocusInsideSelectedRange(store, focusedCell, "down");
+        if (config.moveHorizontallyOnEnter) {
+          if (event.shiftKey) return moveFocusInsideSelectedRange(store, focusedCell, "left");
+          return moveFocusInsideSelectedRange(store, focusedCell, "right");
+        } else {
+          if (event.shiftKey) return moveFocusInsideSelectedRange(store, focusedCell, "up");
+          else return moveFocusInsideSelectedRange(store, focusedCell, "down");
+        }
       }
     }
   }
@@ -325,10 +338,15 @@ export const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>, store:
     case "Enter": {
       event.preventDefault();
 
-      if (event.shiftKey) {
-        return moveFocusUp(store, focusedCell); // If shift is pressed, move focus up (row up).
+      if (config.moveHorizontallyOnEnter) {
+        if (event.shiftKey) return moveFocusInsideSelectedRange(store, focusedCell, "left");
+        return moveFocusInsideSelectedRange(store, focusedCell, "right");
       } else {
-        return moveFocusDown(store, focusedCell); // Otherwise, move focus down (row down).
+        if (event.shiftKey) {
+          return moveFocusUp(store, focusedCell); // If shift is pressed, move focus up (row up).
+        } else {
+          return moveFocusDown(store, focusedCell); // Otherwise, move focus down (row down).
+        }
       }
     }
 
