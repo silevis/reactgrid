@@ -6,10 +6,12 @@ import { ReactGridStore } from "../utils/reactGridStore";
 import { getCellIndexesFromContainerElement } from "../utils/getCellIndexes";
 import { getNonStickyCell } from "../utils/getNonStickyCell";
 import { scrollTowardsSticky } from "../utils/scrollTowardsSticky";
+import { isMobile } from "../utils/isMobile";
+import { disableTouchMove, enableTouchAction } from "../utils/toggleTouchMove";
 
 /**
  * Tries to expand the selected area towards a target cell.
- * 
+ *
  * @param store - The ReactGridStore instance.
  * @param cell - The target cell.
  * @param rowIndex - The row index of the target cell.
@@ -57,41 +59,92 @@ const tryExpandingTowardsCell = (
 
 export const CellSelectionBehavior: Behavior = {
   handlePointerMove(event, store) {
+    if (isMobile()) {
+      return store;
+    }
     console.log("CSB/handlePointerMove");
 
-      const { clientX, clientY } = event;
-      const { rowIndex, colIndex } = getCellIndexesFromPointerLocation(clientX, clientY);
-      const cell = store.getCellByIndexes(rowIndex, colIndex);
+    const { clientX, clientY } = event;
+    const { rowIndex, colIndex } = getCellIndexesFromPointerLocation(clientX, clientY);
+    const cell = store.getCellByIndexes(rowIndex, colIndex);
 
-      if (!cell) {
-        return store;
+    if (!cell) {
+      return store;
+    }
+
+    if (isCellSticky(store, cell)) {
+      const cellUnderTheSticky = getNonStickyCell(store, clientX, clientY);
+
+      scrollTowardsSticky(store, cell, { rowIndex, colIndex });
+
+      if (cellUnderTheSticky) {
+        const nonStickyRowsAndColumns = getCellIndexesFromContainerElement(cellUnderTheSticky);
+        const { rowIndex: secondCellRowIndex, colIndex: secondCellColIndex } = nonStickyRowsAndColumns || {
+          rowIndex: -1,
+          colIndex: -1,
+        };
+
+        return tryExpandingTowardsCell(store, cell, secondCellRowIndex, secondCellColIndex);
       }
-
-      if (isCellSticky(store, cell)) {
-        const cellUnderTheSticky = getNonStickyCell(store, clientX, clientY);
-
-        scrollTowardsSticky(store, cell, { rowIndex, colIndex });
-
-        if (cellUnderTheSticky) {
-          const nonStickyRowsAndColumns = getCellIndexesFromContainerElement(cellUnderTheSticky);
-          const { rowIndex: secondCellRowIndex, colIndex: secondCellColIndex } = nonStickyRowsAndColumns || {
-            rowIndex: -1,
-            colIndex: -1,
-          };
-
-          return tryExpandingTowardsCell(store, cell, secondCellRowIndex, secondCellColIndex);
-        }
-      }
+    }
 
     return tryExpandingTowardsCell(store, cell, rowIndex, colIndex);
   },
-  
+
   handlePointerUp(_event, store) {
+    if (isMobile()) {
+      return store;
+    }
     const DefaultBehavior = store.getBehavior("Default");
 
     return {
       ...store,
       currentBehavior: DefaultBehavior,
+    };
+  },
+
+  handleTouchStart(_event, store) {
+    console.log("CSB/handleTouchStart");
+
+    const movingElement = store.reactGridRef!;
+    enableTouchAction(movingElement);
+
+    const DefaultBehavior = store.getBehavior("Default");
+
+    return {
+      ...store,
+      currentBehavior: DefaultBehavior,
+    };
+  },
+
+  handleTouchMove(event, store) {
+    console.log("CSB/handleTouchMove");
+    const touchedElement = event.touches[0]; //  * This might be not a good idea to do it that way...
+
+    const { clientX, clientY } = touchedElement;
+    const { rowIndex, colIndex } = getCellIndexesFromPointerLocation(clientX, clientY);
+
+    const cell = store.getCellByIndexes(rowIndex, colIndex);
+
+    if (!cell) {
+      return store;
     }
+
+    if (isCellSticky(store, cell)) {
+      const cellUnderTheSticky = getNonStickyCell(store, clientX, clientY);
+
+      if (cellUnderTheSticky) {
+        const nonStickyRowsAndColumns = getCellIndexesFromContainerElement(cellUnderTheSticky);
+        const { rowIndex: secondCellRowIndex, colIndex: secondCellColIndex } = nonStickyRowsAndColumns || {
+          rowIndex: -1,
+          colIndex: -1,
+        };
+        return tryExpandingTowardsCell(store, cell, secondCellRowIndex, secondCellColIndex);
+      }
+
+      return tryExpandingTowardsCell(store, cell, rowIndex, colIndex);
+    }
+
+    return tryExpandingTowardsCell(store, cell, rowIndex, colIndex);
   },
 };
