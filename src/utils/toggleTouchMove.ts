@@ -12,3 +12,11 @@ export function disableTouchMove(element: HTMLElement) {
 export function enableTouchMove(element: HTMLElement) {
   element.removeEventListener("touchmove", preventAll);
 }
+
+export function disableTouchAction(element: HTMLElement) {
+  element.style.touchAction = "none";
+}
+
+export function enableTouchAction(element: HTMLElement) {
+  element.style.touchAction = "initial";
+}
