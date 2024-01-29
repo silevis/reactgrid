@@ -3,7 +3,6 @@ import { IndexedLocation } from "../types/InternalModel";
 import { handleKeyDown } from "../utils/handleKeyDown";
 import { hasTouchSupport, isMobile } from "../utils/isMobile";
 import { ReactGridStore } from "../utils/reactGridStore";
-import { disableTouchMove, enableTouchMove } from "../utils/toggleTouchMove";
 
 type DefaultBehaviorConfig = {
   moveHorizontallyOnEnter: boolean;
@@ -129,9 +128,6 @@ export const DefaultBehavior = (config: DefaultBehaviorConfig = CONFIG_DEFAULTS)
 
     console.log("DB/handleTouchStart");
 
-    const movingElement = store.reactGridRef!;
-    enableTouchMove(movingElement);
-
     const { clientX, clientY } = event.touches[0]; //  * This might be not a good idea to do it that way...
     touchStartPosition = { x: clientX, y: clientY };
 
@@ -144,42 +140,25 @@ export const DefaultBehavior = (config: DefaultBehaviorConfig = CONFIG_DEFAULTS)
       const focusedCellWasTouched = touchRowIndex === focusedCell.rowIndex && touchColIndex === focusedCell.colIndex;
 
       if (focusedCellWasTouched) {
-        disableTouchMove(movingElement);
+        const SelectionBehavior = store.getBehavior("CellSelection");
+
+        return {
+          ...store,
+          currentBehavior: SelectionBehavior,
+        };
       }
     }
 
     return store;
   },
 
-  handleTouchMove: function (event, store) {
+  handleTouchMove: function (_event, store) {
     if (!hasTouchSupport()) {
       return store;
     }
-    
+
     console.log("DB/handleTouchMove");
 
-    const touchTappedElement = event.touches[0]; //  * This might be not a good idea to do it that way...
-
-    if (touchTappedElement && touchStartPosition) {
-      const { clientX, clientY } = touchTappedElement;
-      const focusedCell = store.getFocusedCell();
-      const touchMoveElement = getElementFromPoint(clientX, clientY);
-
-      if (focusedCell && touchMoveElement) {
-        const { rowIndex: touchRowIndex, colIndex: touchColIndex } = getCellContainerLocation(touchMoveElement);
-        const movedToFocusedCell: boolean =
-          touchRowIndex === focusedCell.rowIndex && touchColIndex === focusedCell.colIndex;
-
-        if (!movedToFocusedCell) {
-          const SelectionBehavior = store.getBehavior("CellSelection");
-
-          return {
-            ...store,
-            currentBehavior: SelectionBehavior,
-          };
-        }
-      }
-    }
     return store;
   },
 
@@ -205,7 +184,7 @@ export const DefaultBehavior = (config: DefaultBehaviorConfig = CONFIG_DEFAULTS)
         const prevCell = getCellContainerLocation(prevElement);
         const currCell = getCellContainerLocation(currElement);
 
-        if (isMobile() && prevCell.rowIndex === currCell.rowIndex && prevCell.colIndex === currCell.colIndex) {
+        if (prevCell.rowIndex === currCell.rowIndex && prevCell.colIndex === currCell.colIndex) {
           return {
             ...store,
             focusedLocation: { rowIndex: currCell.rowIndex, colIndex: currCell.colIndex },
@@ -215,8 +194,6 @@ export const DefaultBehavior = (config: DefaultBehaviorConfig = CONFIG_DEFAULTS)
         }
       }
     }
-
-    pointerDownPosition = null;
 
     return store;
   },

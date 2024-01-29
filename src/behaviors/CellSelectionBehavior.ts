@@ -7,7 +7,6 @@ import { getCellIndexesFromContainerElement } from "../utils/getCellIndexes";
 import { getNonStickyCell } from "../utils/getNonStickyCell";
 import { scrollTowardsSticky } from "../utils/scrollTowardsSticky";
 import { isMobile } from "../utils/isMobile";
-import { disableTouchMove, enableTouchAction } from "../utils/toggleTouchMove";
 
 /**
  * Tries to expand the selected area towards a target cell.
@@ -107,7 +106,6 @@ export const CellSelectionBehavior: Behavior = {
     console.log("CSB/handleTouchStart");
 
     const movingElement = store.reactGridRef!;
-    enableTouchAction(movingElement);
 
     const DefaultBehavior = store.getBehavior("Default");
 
@@ -117,14 +115,23 @@ export const CellSelectionBehavior: Behavior = {
     };
   },
 
+  handleTouchEnd(event, store) {
+    console.log("CSB/handleTouchEnd");
+    const movingElement = store.reactGridRef!;
+
+    return store;
+  },
+
   handleTouchMove(event, store) {
     console.log("CSB/handleTouchMove");
+    event.preventDefault(); // disable move/scroll move
     const touchedElement = event.touches[0]; //  * This might be not a good idea to do it that way...
 
     const { clientX, clientY } = touchedElement;
     const { rowIndex, colIndex } = getCellIndexesFromPointerLocation(clientX, clientY);
 
     const cell = store.getCellByIndexes(rowIndex, colIndex);
+
 
     if (!cell) {
       return store;
