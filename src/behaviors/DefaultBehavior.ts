@@ -1,7 +1,9 @@
 import { Behavior } from "../types/Behavior";
 import { IndexedLocation } from "../types/InternalModel";
 import { handleKeyDown } from "../utils/handleKeyDown";
+import { hasTouchSupport, isMobile } from "../utils/isMobile";
 import { ReactGridStore } from "../utils/reactGridStore";
+import { disableTouchMove, enableTouchMove } from "../utils/toggleTouchMove";
 
 type DefaultBehaviorConfig = {
   moveHorizontallyOnEnter: boolean;
@@ -13,6 +15,8 @@ const CONFIG_DEFAULTS: DefaultBehaviorConfig = {
 
 const timer: ReturnType<typeof setTimeout> | null = null;
 let pointerDownPosition: { x: number; y: number } | null = null;
+let touchStartPosition: { x: number; y: number } | null = null;
+let touchEndPosition: { x: number; y: number } | null = null;
 
 const getElementFromPoint = (x: number, y: number): HTMLElement | null => {
   const element = document.elementFromPoint(x, y) as HTMLElement;
@@ -45,6 +49,11 @@ function getCellContainerLocation(element: HTMLElement): IndexedLocation {
 }
 export const DefaultBehavior = (config: DefaultBehaviorConfig = CONFIG_DEFAULTS): Behavior => ({
   handlePointerDown: function (event, store): ReactGridStore {
+    if (isMobile()) {
+      return store;
+    }
+    console.log("DB/handlePointerDown");
+
     pointerDownPosition = { x: event.clientX, y: event.clientY };
     const element = getElementFromPoint(event.clientX, event.clientY);
     let newRowIndex = -1;
@@ -62,7 +71,11 @@ export const DefaultBehavior = (config: DefaultBehaviorConfig = CONFIG_DEFAULTS)
       currentlyEditedCell: { rowIndex: -1, colIndex: -1 },
     };
   },
+
   handlePointerMove: (event, store) => {
+    if (isMobile()) {
+      return store;
+    }
     console.log("DB/handlePointerMove");
 
     if (pointerDownPosition) {
@@ -78,14 +91,19 @@ export const DefaultBehavior = (config: DefaultBehaviorConfig = CONFIG_DEFAULTS)
 
         return {
           ...store,
-          currentBehavior: SelectionBehavior
-        }
+          currentBehavior: SelectionBehavior,
+        };
       }
     }
 
     return store;
   },
+
   handlePointerUp: function (event, store) {
+    if (isMobile()) {
+      return store;
+    }
+
     if (timer) {
       clearTimeout(timer);
     }
@@ -102,5 +120,104 @@ export const DefaultBehavior = (config: DefaultBehaviorConfig = CONFIG_DEFAULTS)
 
   handleKeyDown: function (event, store) {
     return handleKeyDown(event, store);
+  },
+
+  handleTouchStart: function (event, store) {
+    if (!hasTouchSupport()) {
+      return store;
+    }
+
+    console.log("DB/handleTouchStart");
+
+    const movingElement = store.reactGridRef!;
+    enableTouchMove(movingElement);
+
+    const { clientX, clientY } = event.touches[0]; //  * This might be not a good idea to do it that way...
+    touchStartPosition = { x: clientX, y: clientY };
+
+    // Disable moving (horizontal & vertical scrolling) if touchStartPosition is the same as focusedCell position.
+    const focusedCell = store.getFocusedCell();
+    const element = getElementFromPoint(touchStartPosition.x, touchStartPosition.y);
+    if (focusedCell && element) {
+      const { rowIndex: touchRowIndex, colIndex: touchColIndex } = getCellContainerLocation(element);
+
+      const focusedCellWasTouched = touchRowIndex === focusedCell.rowIndex && touchColIndex === focusedCell.colIndex;
+
+      if (focusedCellWasTouched) {
+        disableTouchMove(movingElement);
+      }
+    }
+
+    return store;
+  },
+
+  handleTouchMove: function (event, store) {
+    if (!hasTouchSupport()) {
+      return store;
+    }
+    
+    console.log("DB/handleTouchMove");
+
+    const touchTappedElement = event.touches[0]; //  * This might be not a good idea to do it that way...
+
+    if (touchTappedElement && touchStartPosition) {
+      const { clientX, clientY } = touchTappedElement;
+      const focusedCell = store.getFocusedCell();
+      const touchMoveElement = getElementFromPoint(clientX, clientY);
+
+      if (focusedCell && touchMoveElement) {
+        const { rowIndex: touchRowIndex, colIndex: touchColIndex } = getCellContainerLocation(touchMoveElement);
+        const movedToFocusedCell: boolean =
+          touchRowIndex === focusedCell.rowIndex && touchColIndex === focusedCell.colIndex;
+
+        if (!movedToFocusedCell) {
+          const SelectionBehavior = store.getBehavior("CellSelection");
+
+          return {
+            ...store,
+            currentBehavior: SelectionBehavior,
+          };
+        }
+      }
+    }
+    return store;
+  },
+
+  handleTouchEnd: function (event, store) {
+    if (!hasTouchSupport()) {
+      return store;
+    }
+
+    console.log("DB/handleTouchEnd");
+
+    if (timer) {
+      clearTimeout(timer);
+    }
+
+    const { clientX, clientY } = event.changedTouches[0]; //  * This might be not a good idea to do it that way...
+
+    touchEndPosition = { x: clientX, y: clientY };
+
+    if (touchStartPosition && touchEndPosition) {
+      const prevElement = getElementFromPoint(touchStartPosition.x, touchStartPosition.y);
+      const currElement = getElementFromPoint(touchEndPosition.x, touchEndPosition.y);
+      if (prevElement && currElement) {
+        const prevCell = getCellContainerLocation(prevElement);
+        const currCell = getCellContainerLocation(currElement);
+
+        if (isMobile() && prevCell.rowIndex === currCell.rowIndex && prevCell.colIndex === currCell.colIndex) {
+          return {
+            ...store,
+            focusedLocation: { rowIndex: currCell.rowIndex, colIndex: currCell.colIndex },
+            selectedArea: { startRowIdx: -1, endRowIdx: -1, startColIdx: -1, endColIdx: -1 },
+            currentlyEditedCell: { rowIndex: -1, colIndex: -1 },
+          };
+        }
+      }
+    }
+
+    pointerDownPosition = null;
+
+    return store;
   },
 });

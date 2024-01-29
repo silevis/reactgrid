@@ -3,7 +3,7 @@ function isMobileUserAgent() {
   return regex.test(navigator.userAgent);
 }
 
-function hasTouchSupport() {
+export function hasTouchSupport() {
   return "ontouchstart" in window || navigator.maxTouchPoints > 0;
 }
 
