@@ -105,7 +105,6 @@ export const CellSelectionBehavior: Behavior = {
   handleTouchStart(_event, store) {
     console.log("CSB/handleTouchStart");
 
-    const movingElement = store.reactGridRef!;
 
     const DefaultBehavior = store.getBehavior("Default");
 
@@ -117,7 +116,6 @@ export const CellSelectionBehavior: Behavior = {
 
   handleTouchEnd(event, store) {
     console.log("CSB/handleTouchEnd");
-    const movingElement = store.reactGridRef!;
 
     return store;
   },
@@ -140,6 +138,8 @@ export const CellSelectionBehavior: Behavior = {
     if (isCellSticky(store, cell)) {
       const cellUnderTheSticky = getNonStickyCell(store, clientX, clientY);
 
+      scrollTowardsSticky(store, cell, { rowIndex, colIndex });
+
       if (cellUnderTheSticky) {
         const nonStickyRowsAndColumns = getCellIndexesFromContainerElement(cellUnderTheSticky);
         const { rowIndex: secondCellRowIndex, colIndex: secondCellColIndex } = nonStickyRowsAndColumns || {
@@ -148,8 +148,6 @@ export const CellSelectionBehavior: Behavior = {
         };
         return tryExpandingTowardsCell(store, cell, secondCellRowIndex, secondCellColIndex);
       }
-
-      return tryExpandingTowardsCell(store, cell, rowIndex, colIndex);
     }
 
     return tryExpandingTowardsCell(store, cell, rowIndex, colIndex);
