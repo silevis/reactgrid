@@ -1,5 +1,6 @@
 import { IndexedLocation } from "../types/InternalModel";
 import { Cell } from "../types/PublicModel";
+import { getCellContainerFromPoint } from "./getCellContainerFromPoint";
 import { ReactGridStore } from "./reactGridStore";
 
 interface CellAndLocation extends IndexedLocation {
@@ -11,7 +12,7 @@ export const getLocationFromClient = (store: ReactGridStore, clientX: number, cl
     throw new Error('ReactGridRef is not assigned!');
   }
 
-  const cellContainer = getContainerFromPoint(clientX, clientY);
+  const cellContainer = getCellContainerFromPoint(clientX, clientY);
   if (!cellContainer) return { cell: undefined, rowIndex: -1, colIndex: -1 };
 
   const rowIdxMatch = /rgRowIdx-(\d+)/.exec(cellContainer.classList.value);
@@ -45,14 +46,3 @@ export const getLocationFromClient = (store: ReactGridStore, clientX: number, cl
 
 };
 
-export const getContainerFromPoint = (x: number, y: number): HTMLElement | null => {
-  const element = document.elementFromPoint(x, y) as HTMLElement;
-
-  if (element && element.classList.contains("rgCellContainer")) {
-    return element;
-  } else if (element?.closest(".rgCellContainer")) {
-    return element?.closest(".rgCellContainer");
-  }
-
-  return null;
-};
