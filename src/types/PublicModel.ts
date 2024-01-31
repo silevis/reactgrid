@@ -41,6 +41,11 @@ export type SpanMember = {
   originColId: string;
 };
 
+export type Position = {
+  x: number;
+  y: number;
+};
+
 export type Range<RowIdType extends string = string, ColIdType extends string = string> = {
   start: {
     rowId: RowIdType;
