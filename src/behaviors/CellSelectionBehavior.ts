@@ -1,5 +1,5 @@
 import { Behavior } from "../types/Behavior";
-import { Cell } from "../types/PublicModel";
+import { Cell, Position } from "../types/PublicModel";
 import { findMinimalSelectedArea, getCellContainer, isCellSticky } from "../utils/cellUtils";
 import { getCellIndexesFromPointerLocation } from "../utils/getCellIndexesFromPointerLocation";
 import { ReactGridStore } from "../utils/reactGridStore";
@@ -9,6 +9,7 @@ import { scrollTowardsSticky } from "../utils/scrollTowardsSticky";
 import { isMobile } from "../utils/isMobile";
 import { getScrollableParent, getSizeOfScrollableElement } from "../utils/scrollHelpers";
 import { getTouchPositionInElement } from "../utils/getTouchPositionInElement";
+import { scrollToElementEdge } from "../utils/scrollToElementEdge";
 
 /**
  * Tries to expand the selected area towards a target cell.
@@ -153,32 +154,7 @@ export const CellSelectionBehavior: Behavior = {
     if (cellContainer) {
       const scrollableParent = getScrollableParent(cellContainer as HTMLElement, true);
       if (scrollableParent && "clientWidth" in scrollableParent && "clientHeight" in scrollableParent) {
-        const scrollableParentDimensions = getSizeOfScrollableElement(scrollableParent);
-
-        const touchPositionInContainer = getTouchPositionInElement(event as unknown as TouchEvent, scrollableParent);
-
-        const scrollActivationThreshold = {
-          vertical: {
-            min: scrollableParentDimensions.height * 0.1,
-            max: scrollableParentDimensions.height * 0.9,
-          },
-          horizontal: {
-            min: scrollableParentDimensions.width * 0.1,
-            max: scrollableParentDimensions.width * 0.9,
-          },
-        };
-
-        if (touchPositionInContainer.y < scrollActivationThreshold.vertical.min) {
-          scrollableParent.scrollBy({ top: -scrollableParentDimensions.height * 0.1 });
-        } else if (touchPositionInContainer.y > scrollActivationThreshold.vertical.max) {
-          scrollableParent.scrollBy({ top: scrollableParentDimensions.height * 0.1 });
-        }
-
-        if (touchPositionInContainer.x < scrollActivationThreshold.horizontal.min) {
-          scrollableParent.scrollBy({ left: -scrollableParentDimensions.width * 0.1 });
-        } else if (touchPositionInContainer.x > scrollActivationThreshold.horizontal.max) {
-          scrollableParent.scrollBy({ left: scrollableParentDimensions.width * 0.1 });
-        }
+        scrollToElementEdge({ x: clientX, y: clientY }, scrollableParent);
       }
     }
 
