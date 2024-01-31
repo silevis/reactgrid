@@ -9,7 +9,6 @@ import { scrollTowardsSticky } from "../utils/scrollTowardsSticky";
 import { isMobile } from "../utils/isMobile";
 import { getScrollableParent } from "../utils/scrollHelpers";
 import { scrollToElementEdge } from "../utils/scrollToElementEdge";
-import { scrollToWindowEdge } from "../utils/scrollToWindowEdge";
 
 /**
  * Tries to expand the selected area towards a target cell.
@@ -57,6 +56,11 @@ const tryExpandingTowardsCell = (
       ...newSelectedArea,
     },
   };
+};
+
+const blankIndexes = {
+  rowIndex: -1,
+  colIndex: -1,
 };
 
 export const CellSelectionBehavior: Behavior = {
@@ -128,38 +132,28 @@ export const CellSelectionBehavior: Behavior = {
 
     const touchedElement = event.touches[0]; //  * This might be not a good idea to do it that way...
     const { clientX, clientY } = touchedElement;
-    let { rowIndex, colIndex } = getCellIndexesFromPointerLocation(clientX, clientY);
+    const { rowIndex, colIndex } = getCellIndexesFromPointerLocation(clientX, clientY);
     const cell = store.getCellByIndexes(rowIndex, colIndex);
 
     if (!cell) {
       return store;
     }
 
-    let cellContainer = getCellContainer(store, cell);
-
-    if (isCellSticky(store, cell)) {
-      cellContainer = getNonStickyCellContainer(clientX, clientY);
-
-      if (cellContainer) {
-        const nonStickyRowsAndColumns = getCellIndexesFromContainerElement(cellContainer);
-        const { rowIndex: secondCellRowIndex, colIndex: secondCellColIndex } = nonStickyRowsAndColumns || {
-          rowIndex: -1,
-          colIndex: -1,
-        };
-        rowIndex = secondCellRowIndex;
-        colIndex = secondCellColIndex;
-      }
-    }
-
+    const isStickyCell = isCellSticky(store, cell);
+    const cellContainer = isStickyCell ? getCellContainer(store, cell) : getNonStickyCellContainer(clientX, clientY);
+    
     if (cellContainer) {
       const scrollableParent = getScrollableParent(cellContainer as HTMLElement, true);
+      const scrollableParentIsNotAWindow =
+        scrollableParent && "clientWidth" in scrollableParent && "clientHeight" in scrollableParent;
 
-      if (scrollableParent && "clientWidth" in scrollableParent && "clientHeight" in scrollableParent) {
-        scrollToElementEdge({ x: clientX, y: clientY }, scrollableParent);
-      } else {
-        // TODO: scrollToWindowEdge()
-        // scrollToWindowEdge({ x: clientX, y: clientY });
-        
+      scrollableParentIsNotAWindow ? scrollToElementEdge({ x: clientX, y: clientY }, scrollableParent) : () => {}; // TODO: scrollToWindowEdge({ x: clientX, y: clientY }); - function not implemented yet!
+
+      if (isStickyCell) {
+        const nonStickyRowsAndColumns = getCellIndexesFromContainerElement(cellContainer);
+        const { rowIndex, colIndex } = nonStickyRowsAndColumns || blankIndexes;
+
+        return tryExpandingTowardsCell(store, cell, rowIndex, colIndex);
       }
     }
 
