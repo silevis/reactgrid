@@ -4,6 +4,7 @@ import { hasTouchSupport, isMobile } from "../utils/isMobile";
 import { ReactGridStore } from "../utils/reactGridStore";
 import { getCellContainerLocation } from "../utils/getCellContainerLocation";
 import { getCellContainerFromPoint } from "../utils/getCellContainerFromPoint";
+import { Position } from "../types/PublicModel";
 
 type DefaultBehaviorConfig = {
   moveHorizontallyOnEnter: boolean;
@@ -14,9 +15,9 @@ const CONFIG_DEFAULTS: DefaultBehaviorConfig = {
 } as const;
 
 const timer: ReturnType<typeof setTimeout> | null = null;
-let pointerDownPosition: { x: number; y: number } | null = null;
-let touchStartPosition: { x: number; y: number } | null = null;
-let touchEndPosition: { x: number; y: number } | null = null;
+let pointerDownPosition: Position | null = null;
+let touchStartPosition: Position | null = null;
+let touchEndPosition: Position | null = null;
 
 export const DefaultBehavior = (config: DefaultBehaviorConfig = CONFIG_DEFAULTS): Behavior => ({
   handlePointerDown: function (event, store): ReactGridStore {
