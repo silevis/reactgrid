@@ -1,5 +1,5 @@
 import { Behavior } from "../types/Behavior";
-import { Cell, Position } from "../types/PublicModel";
+import { Cell } from "../types/PublicModel";
 import { findMinimalSelectedArea, getCellContainer, isCellSticky } from "../utils/cellUtils";
 import { getCellIndexesFromPointerLocation } from "../utils/getCellIndexesFromPointerLocation";
 import { ReactGridStore } from "../utils/reactGridStore";
@@ -7,9 +7,9 @@ import { getCellIndexesFromContainerElement } from "../utils/getCellIndexes";
 import { getNonStickyCellContainer } from "../utils/getNonStickyCellContainer";
 import { scrollTowardsSticky } from "../utils/scrollTowardsSticky";
 import { isMobile } from "../utils/isMobile";
-import { getScrollableParent, getSizeOfScrollableElement } from "../utils/scrollHelpers";
-import { getTouchPositionInElement } from "../utils/getTouchPositionInElement";
+import { getScrollableParent } from "../utils/scrollHelpers";
 import { scrollToElementEdge } from "../utils/scrollToElementEdge";
+import { scrollToWindowEdge } from "../utils/scrollToWindowEdge";
 
 /**
  * Tries to expand the selected area towards a target cell.
@@ -153,8 +153,13 @@ export const CellSelectionBehavior: Behavior = {
 
     if (cellContainer) {
       const scrollableParent = getScrollableParent(cellContainer as HTMLElement, true);
+
       if (scrollableParent && "clientWidth" in scrollableParent && "clientHeight" in scrollableParent) {
         scrollToElementEdge({ x: clientX, y: clientY }, scrollableParent);
+      } else {
+        // TODO: scrollToWindowEdge()
+        // scrollToWindowEdge({ x: clientX, y: clientY });
+        
       }
     }
 
