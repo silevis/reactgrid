@@ -25,7 +25,7 @@ export type InternalStyledRange = {
     range: NumericalRange;
   };
 
-export interface IndexedLocation {
+export interface Location {
   rowIndex: number;
   colIndex: number;
 }

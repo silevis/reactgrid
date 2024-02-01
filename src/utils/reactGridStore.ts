@@ -2,7 +2,7 @@ import { StoreApi, create, createStore, useStore } from "zustand";
 import { CellSelectionBehavior } from "../behaviors/CellSelectionBehavior";
 import { DefaultBehavior } from "../behaviors/DefaultBehavior";
 import { NumericalRange } from "../types/CellMatrix";
-import { FocusedCell, IndexedLocation, PaneName } from "../types/InternalModel";
+import { FocusedCell, Location, PaneName } from "../types/InternalModel";
 import { Cell, CellMap, Column, Range, Row, SpanMember, StyledRange } from "../types/PublicModel";
 import { isSpanMember } from "./cellUtils";
 import { RowMeasurement } from "../types/RowMeasurement";
@@ -33,14 +33,14 @@ export interface ReactGridStore {
   paneRanges: Record<PaneName, NumericalRange>;
   readonly setPaneRanges: (paneRanges: Record<PaneName, NumericalRange>) => void;
 
-  focusedLocation: IndexedLocation;
+  focusedLocation: Location;
   readonly setFocusedLocation: (rowIndex: number, colIndex: number) => void;
   readonly getFocusedCell: () => FocusedCell | null;
 
   selectedArea: NumericalRange;
   readonly setSelectedArea: (selectedArea: NumericalRange) => void;
 
-  currentlyEditedCell: IndexedLocation;
+  currentlyEditedCell: Location;
   readonly setCurrentlyEditedCell: (rowIndex: number, colIndex: number) => void;
 
   reactGridRef?: HTMLDivElement;

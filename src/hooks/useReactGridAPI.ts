@@ -1,4 +1,4 @@
-import { IndexedLocation } from "../types/InternalModel";
+import { Location } from "../types/InternalModel";
 import { Range } from "../types/PublicModel";
 import { EMPTY_AREA, areAreasEqual } from "../utils/cellUtils";
 import { getNumericalRange } from "../utils/getNumericalRange";
@@ -32,7 +32,7 @@ export default function useReactGridAPI(id: string) {
        * Set the focused cell in the ReactGrid.
        * @param location - The location of the cell to be focused.
        */
-      setFocusedCell: (location: IndexedLocation) => {
+      setFocusedCell: (location: Location) => {
         const { rowIndex, colIndex } = location;
         if (isDev) {
           if (rowIndex === -1 && colIndex === -1) {
@@ -51,7 +51,7 @@ export default function useReactGridAPI(id: string) {
        * Set the edited cell in the ReactGrid.
        * @param cell - The cell to be edited.
        */
-      setEditedCell: (location: IndexedLocation) => {
+      setEditedCell: (location: Location) => {
         const { rowIndex, colIndex } = location;
         if (
           isDev &&

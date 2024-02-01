@@ -2,7 +2,7 @@ import React from "react";
 
 import { Behavior, BehaviorId } from "./Behavior";
 import { NumericalRange } from "./CellMatrix";
-import { IndexedLocation } from "./InternalModel";
+import { Location } from "./InternalModel";
 import { InternalStyledRange } from "./InternalModel";
 
 export type Row<Id = string> = {
@@ -127,7 +127,7 @@ export interface ReactGridProps {
   behaviors?: Record<BehaviorId, Behavior>;
 
   focusLocation?: [number, number];
-  initialFocusLocation?: IndexedLocation;
+  initialFocusLocation?: Location;
   initialSelectedRange?: NumericalRange;
 
   onFocusLocationChanging?: ({ location }: { location: [number, number] }) => boolean;

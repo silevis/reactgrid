@@ -1,9 +1,9 @@
-import { IndexedLocation } from "../types/InternalModel";
+import { Location } from "../types/InternalModel";
 import { Cell } from "../types/PublicModel";
 import { getCellContainerFromPoint } from "./getCellContainerFromPoint";
 import { ReactGridStore } from "./reactGridStore";
 
-interface CellAndLocation extends IndexedLocation {
+interface CellAndLocation extends Location {
   cell?: Cell;
 }
 
