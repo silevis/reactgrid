@@ -2,7 +2,7 @@ import { FC, useEffect, useRef, useState } from "react";
 import { NumericalRange } from "../types/CellMatrix";
 import { PaneName, StickyOffsets } from "../types/InternalModel";
 import { useReactGridStore } from "../utils/reactGridStore";
-import { useTheme } from "../utils/useTheme";
+import { useTheme } from "../hooks/useTheme";
 import { Pane } from "./Pane";
 import { useReactGridId } from "./ReactGridIdProvider";
 import { RowMeasurement } from "../types/RowMeasurement";
