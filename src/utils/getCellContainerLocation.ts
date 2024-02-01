@@ -1,6 +1,6 @@
-import { Location } from "../types/InternalModel";
+import { IndexedLocation } from "../types/InternalModel";
 
-export function getCellContainerLocation(element: HTMLElement): Location {
+export function getCellContainerLocation(element: HTMLElement): IndexedLocation {
   const rowIdxRegex = /rgRowIdx-(\d+)/;
   const colIdxRegex = /rgColIdx-(\d+)/;
 
