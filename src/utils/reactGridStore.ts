@@ -186,7 +186,6 @@ export function useReactGridStore<T>(id: string, selector: (store: ReactGridStor
   });
 
   const selectedStore = useStore(reactGridStores, (state) => state[id]);
-  window.store = selectedStore;
   return useStore(selectedStore, selector);
 }
 
