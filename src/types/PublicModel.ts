@@ -3,7 +3,6 @@ import React from "react";
 import { Behavior, BehaviorId } from "./Behavior";
 import { NumericalRange } from "./CellMatrix";
 import { Location } from "./InternalModel";
-import { InternalStyledRange } from "./InternalModel";
 
 export type Row<Id = string> = {
   id: Id;
