@@ -91,7 +91,7 @@ export const DefaultBehavior = (config: DefaultBehaviorConfig = CONFIG_DEFAULTS)
   },
 
   handleKeyDown: function (event, store) {
-    return handleKeyDown(event, store);
+    return handleKeyDown(event, store, { moveHorizontallyOnEnter: config.moveHorizontallyOnEnter });
   },
 
   handleTouchStart: function (event, store) {
