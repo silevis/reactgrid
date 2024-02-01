@@ -4,7 +4,7 @@ import { GetCellOffsets, PaneName } from "../types/InternalModel";
 import { RGTheme } from "../types/Theme";
 import { areAreasEqual, isSpanMember } from "../utils/cellUtils";
 import { useReactGridStore } from "../utils/reactGridStore";
-import { useTheme } from "../utils/useTheme";
+import { useTheme } from "../hooks/useTheme";
 import { CellContext } from "./CellContext";
 import { PartialArea } from "./PartialArea";
 import { useReactGridId } from "./ReactGridIdProvider";
