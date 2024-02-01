@@ -48,11 +48,6 @@ export interface ReactGridStore {
 
   hiddenFocusTargetRef?: HTMLDivElement;
   readonly assignHiddenFocusTargetRef: (hiddenFocusTargetRef?: HTMLDivElement) => void;
-  // scrollableRef?: HTMLElement | (Window & typeof globalThis);
-  // readonly assignRefs: (
-  //   reactGridRef?: HTMLDivElement,
-  //   scrollableRef?: HTMLElement | (Window & typeof globalThis)
-  // ) => void;
 
   styledRanges: StyledRange[];
   readonly setStyledRanges: (styledRanges: StyledRange[]) => void;
@@ -63,13 +58,6 @@ export interface ReactGridStore {
   currentBehavior: Behavior;
   readonly setBehaviors: (behaviors: Record<BehaviorId, Behavior>) => void;
   readonly getBehavior: (behaviorId: BehaviorId) => Behavior;
-
-  // /* == Callbacks == */
-  // onCellChange: NonNullable<ReactGridProps["onCellChange"]>;
-  // onFocusLocationChanging: NonNullable<ReactGridProps["onFocusLocationChanging"]>;
-  // onFocusLocationChanged: NonNullable<ReactGridProps["onFocusLocationChanged"]>;
-
-  // readonly initializeCallbacks: (props: Pick<NonNullable<ReactGridProps>, 'onCellChange' | 'onFocusLocationChanged' | 'onFocusLocationChanging'>) => void;
 }
 
 type ReactGridStores = Record<string, StoreApi<ReactGridStore>>;
