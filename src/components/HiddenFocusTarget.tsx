@@ -12,19 +12,21 @@ const HiddenFocusTarget = () => {
   }, [hiddenFocusTargetRef]);
 
   return (
-    <input
-      className="rgHiddenFocusTarget"
-      style={{ position: "absolute", top: 0, left: 0, width: 1, height: 1, opacity: 0 }}
-      ref={hiddenFocusTargetRef}
-      inputMode="none"
-      autoFocus
-      onBlur={(e) => {
-        if (!e.relatedTarget) {
-          // prevents from losing focus on hidden element on mobile devices
-          hiddenFocusTargetRef.current?.focus({ preventScroll: true });
-        }
-      }}
-    />
+    <div style={{ position: "relative" }}>
+      <input
+        className="rgHiddenFocusTarget"
+        style={{ position: "absolute", top: 0, left: 0, width: 1, height: 1, opacity: 0, }}
+        ref={hiddenFocusTargetRef}
+        inputMode="none"
+        autoFocus
+        onBlur={(e) => {
+          if (!e.relatedTarget) {
+            // prevents from losing focus on hidden element on mobile devices
+            hiddenFocusTargetRef.current?.focus({ preventScroll: true });
+          }
+        }}
+      />
+    </div>
   );
 };
 

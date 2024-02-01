@@ -1,5 +1,5 @@
 import { getCellIndexesFromContainerElement } from "./getCellIndexes";
-import { getContainerFromPoint } from "./getLocationFromClient";
+import { getCellContainerFromPoint } from "./getCellContainerFromPoint";
 
 
 /**
@@ -16,7 +16,7 @@ export const getCellIndexesFromPointerLocation = (
   // Return if no expectations were met
   const noCellIndexes = {  rowIndex: -1, colIndex: -1 };
   // Get HTMLElement that contains rendered cell data
-  const cellContainer = getContainerFromPoint(clientX, clientY);
+  const cellContainer = getCellContainerFromPoint(clientX, clientY);
 
   if (!cellContainer) return noCellIndexes;
 
