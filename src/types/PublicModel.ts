@@ -9,7 +9,6 @@ export type Row<Id = string> = {
   id: Id;
   height: string | number;
 };
-};
 
 export type Column<Id = string> = {
   id: Id;
@@ -37,7 +36,6 @@ export type Cell<RowIdType extends string = string, ColIdType extends string = s
   isFocusable?: boolean;
   /** Marks a cell as selectable or not */
   isSelectable?: boolean;
-};
 };
 
 export type SpanMember = {
@@ -88,7 +86,6 @@ export type CellContextType = {
 
   isInEditMode: boolean;
   isFocused: boolean;
-};
 };
 
 export type CellMap<RowIdType extends string = string, ColIdType extends string = string> = Map<
