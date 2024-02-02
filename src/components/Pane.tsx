@@ -210,7 +210,6 @@ export const Pane: React.FC<PaneProps> = ({
     endColIdx: focusedCell.colIndex + (focusedCell.colSpan ?? 1),
   } : { startRowIdx: -1, endRowIdx: -1, startColIdx: -1, endColIdx: -1 };
   const selectedArea = useReactGridStore(id, (store) => store.selectedArea);
-  // const { state, range, borders, cellRenderer } = props;
 
   if (!shouldRender) return null;
 
@@ -250,22 +249,6 @@ export const Pane: React.FC<PaneProps> = ({
           className="rgFocusIndicator"
         />
       )}
-      {/* <SelectedArea parentPaneName={paneName} parentPaneRange={gridContentRange} getCellOffset={getCellOffset} /> */}
-      {/* {renderHighlights(state, calculatedRange)}
-          {state.focusedLocation && !(state.currentlyEditedCell && isMobileDevice()) && calculatedRange.contains(state.focusedLocation) &&
-              <CellFocus location={state.focusedLocation} />}
-          <SelectedRanges
-              state={state}
-              calculatedRange={calculatedRange}
-          />
-          <FillHandleRangeSelection
-              state={state}
-              calculatedRange={calculatedRange}
-          />
-          <FillHandleRenderer
-              state={state}
-              calculatedRange={calculatedRange}
-          /> */}
     </div>
   );
 };

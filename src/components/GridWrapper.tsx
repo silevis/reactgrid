@@ -35,7 +35,7 @@ const GridWrapper: FC<PropsWithChildren<GridWrapperProps>> = ({ reactGridId, sty
     if (styledRangesCSS) {
       setCSS(styledRangesCSS);
     }
-  }, [styledRanges]); // DO NOT USE ANYTHING RELATED TO STORE TO DEPENDENCY ARRAY!
+  }, [styledRanges]); // DO NOT USE ANYTHING RELATED TO STORE IN DEPENDENCY ARRAY!
 
   // Force touch-event listeners to be non-passive
   useEffect(() => {

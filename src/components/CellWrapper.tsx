@@ -12,7 +12,6 @@ const CellWrapper: FC<CellWrapperProps> = ({ children, targetInputRef, ...wrappe
   const { className: customClassName, style: customStyle } = wrapperDivAttributes;
   const ctx = useCellContext();
 
-  // const containerStyle = ctx.getContainerStyle();
   const isFocused = ctx.isFocused;
 
   return (

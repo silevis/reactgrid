@@ -35,13 +35,6 @@ export interface RGTheme {
       blurRadius: string;
       color: string;
     }
-
-    // padding: {
-    //   top: string;
-    //   right: string;
-    //   bottom: string;
-    //   left: string;
-    // };
   },
   cellContainer: {
     padding: {
