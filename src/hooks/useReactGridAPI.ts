@@ -1,7 +1,6 @@
 import { IndexedLocation } from "../types/InternalModel";
 import { Range } from "../types/PublicModel";
-import { areAreasEqual } from "../utils/cellUtils";
-import { EMPTY_AREA } from "../types/InternalModel";
+import { EMPTY_AREA, areAreasEqual } from "../utils/cellUtils";
 import { getNumericalRange } from "../utils/getNumericalRange";
 import isDevEnvironment from "../utils/isDevEnvironment";
 import { ReactGridStore, useReactGridStore } from "../utils/reactGridStore";
@@ -12,7 +11,7 @@ import { ReactGridStore, useReactGridStore } from "../utils/reactGridStore";
  * @returns An object containing setters and getters for interacting with the ReactGrid.
  */
 
-const isDev = isDevEnvironment();
+const devEnvironment = isDevEnvironment();
 
 export default function useReactGridAPI(id: string) {
   return useReactGridStore(id, (store: ReactGridStore) => {
@@ -35,7 +34,7 @@ export default function useReactGridAPI(id: string) {
        */
       setFocusedCell: (location: IndexedLocation) => {
         const { rowIndex, colIndex } = location;
-        if (isDev) {
+        if (devEnvironment) {
           if (rowIndex === -1 && colIndex === -1) {
             console.warn(
               "By providing rowIndex and colIndex with both values equal to -1, you basically removed focus."
@@ -55,7 +54,7 @@ export default function useReactGridAPI(id: string) {
       setEditedCell: (location: IndexedLocation) => {
         const { rowIndex, colIndex } = location;
         if (
-          isDev &&
+          devEnvironment &&
           (rowIndex < 0 || colIndex < 0 || rowIndex > store.rows.length || colIndex > store.columns.length)
         ) {
           console.warn("Edited cell should be within grid boundaries.");
@@ -103,7 +102,7 @@ export default function useReactGridAPI(id: string) {
       getEditedCell: () => {
         const { currentlyEditedCell } = store;
 
-        if (isDev && (currentlyEditedCell.colIndex < 0 || currentlyEditedCell.rowIndex < 0)) console.warn('There is no edited cell.')
+        if (devEnvironment && (currentlyEditedCell.colIndex < 0 || currentlyEditedCell.rowIndex < 0)) console.warn('There is no edited cell.')
 
         return currentlyEditedCell
       },
@@ -121,7 +120,7 @@ export default function useReactGridAPI(id: string) {
       getSelectedArea: () => {
         const { selectedArea } = store;
 
-        if (isDev && areAreasEqual(selectedArea, EMPTY_AREA)) console.warn("No area is selected!");
+        if (devEnvironment && areAreasEqual(selectedArea, EMPTY_AREA)) console.warn("No area is selected!");
 
         return selectedArea;
       },

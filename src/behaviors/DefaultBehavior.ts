@@ -5,6 +5,9 @@ import { ReactGridStore } from "../utils/reactGridStore";
 import { getCellContainerLocation } from "../utils/getCellContainerLocation";
 import { getCellContainerFromPoint } from "../utils/getCellContainerFromPoint";
 import { Position } from "../types/PublicModel";
+import isDevEnvironment from "../utils/isDevEnvironment";
+
+const devEnvironment = isDevEnvironment();
 
 type DefaultBehaviorConfig = {
   moveHorizontallyOnEnter: boolean;
@@ -24,7 +27,7 @@ export const DefaultBehavior = (config: DefaultBehaviorConfig = CONFIG_DEFAULTS)
     if (isMobile()) {
       return store;
     }
-    console.log("DB/handlePointerDown");
+    devEnvironment && console.log("DB/handlePointerDown");
 
     pointerDownPosition = { x: event.clientX, y: event.clientY };
     const element = getCellContainerFromPoint(event.clientX, event.clientY);
@@ -48,7 +51,7 @@ export const DefaultBehavior = (config: DefaultBehaviorConfig = CONFIG_DEFAULTS)
     if (isMobile()) {
       return store;
     }
-    console.log("DB/handlePointerMove");
+    devEnvironment && console.log("DB/handlePointerMove");
 
     if (pointerDownPosition) {
       const distanceMoved = Math.sqrt(
@@ -82,7 +85,7 @@ export const DefaultBehavior = (config: DefaultBehaviorConfig = CONFIG_DEFAULTS)
 
     if (pointerDownPosition && event.clientX === pointerDownPosition.x && event.clientY === pointerDownPosition.y) {
       // TODO: Double tap
-      console.log("Double tap");
+      devEnvironment && console.log("Double tap");
     }
 
     pointerDownPosition = null;
@@ -99,7 +102,7 @@ export const DefaultBehavior = (config: DefaultBehaviorConfig = CONFIG_DEFAULTS)
       return store;
     }
 
-    console.log("DB/handleTouchStart");
+    devEnvironment && console.log("DB/handleTouchStart");
 
     const { clientX, clientY } = event.touches[0]; //  * This might be not a good idea to do it that way...
     touchStartPosition = { x: clientX, y: clientY };
@@ -130,7 +133,7 @@ export const DefaultBehavior = (config: DefaultBehaviorConfig = CONFIG_DEFAULTS)
       return store;
     }
 
-    console.log("DB/handleTouchMove");
+    devEnvironment && console.log("DB/handleTouchMove");
 
     return store;
   },
@@ -140,7 +143,7 @@ export const DefaultBehavior = (config: DefaultBehaviorConfig = CONFIG_DEFAULTS)
       return store;
     }
 
-    console.log("DB/handleTouchEnd");
+    devEnvironment && console.log("DB/handleTouchEnd");
 
     if (timer) {
       clearTimeout(timer);

@@ -9,6 +9,9 @@ import { scrollTowardsSticky } from "../utils/scrollTowardsSticky";
 import { isMobile } from "../utils/isMobile";
 import { getScrollableParent } from "../utils/scrollHelpers";
 import { scrollToElementEdge } from "../utils/scrollToElementEdge";
+import isDevEnvironment from "../utils/isDevEnvironment";
+
+const devEnvironment = isDevEnvironment();
 
 /**
  * Tries to expand the selected area towards a target cell.
@@ -58,13 +61,12 @@ const tryExpandingTowardsCell = (
   };
 };
 
-
 export const CellSelectionBehavior: Behavior = {
   handlePointerMove(event, store) {
     if (isMobile()) {
       return store;
     }
-    console.log("CSB/handlePointerMove");
+    devEnvironment && console.log("CSB/handlePointerMove");
 
     const { clientX, clientY } = event;
     const { rowIndex, colIndex } = getCellIndexesFromPointerLocation(clientX, clientY);
@@ -106,7 +108,7 @@ export const CellSelectionBehavior: Behavior = {
   },
 
   handleTouchStart(_event, store) {
-    console.log("CSB/handleTouchStart");
+    devEnvironment && console.log("CSB/handleTouchStart");
 
     const DefaultBehavior = store.getBehavior("Default");
 
@@ -117,13 +119,13 @@ export const CellSelectionBehavior: Behavior = {
   },
 
   handleTouchEnd(event, store) {
-    console.log("CSB/handleTouchEnd");
+    devEnvironment && console.log("CSB/handleTouchEnd");
 
     return store;
   },
 
   handleTouchMove(event, store) {
-    console.log("CSB/handleTouchMove");
+    devEnvironment && console.log("CSB/handleTouchMove");
     event.preventDefault(); // disable move/scroll move
 
     const touchedElement = event.touches[0]; //  * This might be not a good idea to do it that way...

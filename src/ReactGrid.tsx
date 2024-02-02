@@ -10,6 +10,8 @@ import isDevEnvironment from "./utils/isDevEnvironment";
 import { getCellIndexes, isSpanMember } from "./utils/cellUtils";
 import { getNumericalRange } from "./utils/getNumericalRange";
 
+const devEnvironment = isDevEnvironment();
+
 const spin = keyframes`
 100% {
   transform: rotate(360deg);
@@ -64,13 +66,14 @@ const ReactGrid: FC<ReactGridProps> = ({
     if (!initialSelectedRange || !isGridStoreInitialized) {
       return;
     } else {
-      console.warn(
-        "If you set initial selected range, be careful, as it may cut-trough spanned cells in an unintended way!"
-      );
+      devEnvironment &&
+        console.warn(
+          "If you set initial selected range, be careful, as it may cut-trough spanned cells in an unintended way!"
+        );
       if (initialFocusLocation && isDevEnvironment()) {
         const cell = getCellByIds(initialFocusLocation.rowId, initialFocusLocation.rowId);
         if (!cell) {
-          console.error("There is no cell with indexes passed in initialFocusLocation prop.");
+          devEnvironment && console.error("There is no cell with indexes passed in initialFocusLocation prop.");
         }
       }
 
