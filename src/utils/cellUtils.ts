@@ -12,13 +12,6 @@ type SpannedCell = Cell & {
   colSpan: number;
 };
 
-export const EMPTY_AREA = {
-  startRowIdx: -1,
-  endRowIdx: -1,
-  startColIdx: -1,
-  endColIdx: -1,
-} as const;
-
 export const isCellSpanned = (cell: Cell | SpanMember): cell is SpannedCell => {
   return "rowSpan" in cell || "colSpan" in cell;
 };

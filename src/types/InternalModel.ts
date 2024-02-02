@@ -18,12 +18,12 @@ export type GetCellOffsets = (
   right?: number;
   bottom?: number;
   left?: number;
-  };
+};
 
 export type InternalStyledRange = {
-    styles: React.CSSProperties;
-    range: NumericalRange;
-  };
+  styles: React.CSSProperties;
+  range: NumericalRange;
+};
 
 export interface IndexedLocation {
   rowIndex: number;
@@ -48,3 +48,18 @@ export type PaneName =
 
 export type Direction = "Bottom" | "Right" | "Top" | "Left";
 
+export const EMPTY_AREA = {
+  startRowIdx: -1,
+  endRowIdx: -1,
+  startColIdx: -1,
+  endColIdx: -1,
+} as const;
+
+/**
+ * Indicates location for non-existing cell.
+ * e.g. When user wants to unfocus all cells, change focusedCell both row and column indexes to -1.
+ */
+export const NO_CELL_LOCATION = {
+  rowIndex: -1,
+  colIndex: -1,
+} as const;

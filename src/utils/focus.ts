@@ -1,9 +1,9 @@
 import { FocusedCell } from "../types/InternalModel";
 import {
-  EMPTY_AREA,
   getOriginCell,
   isSpanMember,
 } from "./cellUtils";
+import { EMPTY_AREA } from "../types/InternalModel";
 import { ReactGridStore } from "./reactGridStore";
 import { handleJumpScroll } from "./handleJumpScroll";
 

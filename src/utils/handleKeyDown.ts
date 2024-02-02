@@ -1,5 +1,6 @@
 import { NumericalRange } from "../types/CellMatrix";
-import { EMPTY_AREA, areAreasEqual, findMinimalSelectedArea, getCellArea } from "./cellUtils";
+import { areAreasEqual, findMinimalSelectedArea, getCellArea } from "./cellUtils";
+import { EMPTY_AREA } from "../types/InternalModel";
 import {
   moveFocusDown,
   moveFocusInsideSelectedRange,

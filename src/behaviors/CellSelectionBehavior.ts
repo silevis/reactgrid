@@ -58,10 +58,6 @@ const tryExpandingTowardsCell = (
   };
 };
 
-const blankIndexes = {
-  rowIndex: -1,
-  colIndex: -1,
-};
 
 export const CellSelectionBehavior: Behavior = {
   handlePointerMove(event, store) {
