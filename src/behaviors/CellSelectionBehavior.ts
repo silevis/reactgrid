@@ -141,7 +141,7 @@ export const CellSelectionBehavior: Behavior = {
 
     const isStickyCell = isCellSticky(store, cell);
     const cellContainer = isStickyCell ? getCellContainer(store, cell) : getNonStickyCellContainer(clientX, clientY);
-    
+
     if (cellContainer) {
       const scrollableParent = getScrollableParent(cellContainer as HTMLElement, true);
       const scrollableParentIsNotAWindow =
@@ -152,6 +152,7 @@ export const CellSelectionBehavior: Behavior = {
       if (isStickyCell) {
         const nonStickyRowsAndColumns = getCellIndexesFromContainerElement(cellContainer);
         const { rowIndex, colIndex } = nonStickyRowsAndColumns || blankIndexes;
+        scrollTowardsSticky(store, cell, {rowIndex, colIndex });
 
         return tryExpandingTowardsCell(store, cell, rowIndex, colIndex);
       }
