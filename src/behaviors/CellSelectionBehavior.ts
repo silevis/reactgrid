@@ -148,11 +148,12 @@ export const CellSelectionBehavior: Behavior = {
         scrollableParent && "clientWidth" in scrollableParent && "clientHeight" in scrollableParent;
 
       scrollableParentIsNotAWindow ? scrollToElementEdge({ x: clientX, y: clientY }, scrollableParent) : () => {}; // TODO: scrollToWindowEdge({ x: clientX, y: clientY }); - function not implemented yet!
+      // scrollToWindowEdge - not possible to test in Ladle environment, due to clientX/Y acting like pageX/Y
 
       if (isStickyCell) {
         const nonStickyRowsAndColumns = getCellIndexesFromContainerElement(cellContainer);
         const { rowIndex, colIndex } = nonStickyRowsAndColumns || blankIndexes;
-        scrollTowardsSticky(store, cell, {rowIndex, colIndex });
+        scrollTowardsSticky(store, cell, { rowIndex, colIndex });
 
         return tryExpandingTowardsCell(store, cell, rowIndex, colIndex);
       }
