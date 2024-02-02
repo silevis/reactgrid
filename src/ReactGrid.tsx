@@ -7,7 +7,8 @@ import { ReactGridIdProvider } from "./components/ReactGridIdProvider";
 import { ReactGridProps } from "./types/PublicModel";
 import { useReactGridStore as useInitReactGridStore, useReactGridStoreApi } from "./utils/reactGridStore";
 import isDevEnvironment from "./utils/isDevEnvironment";
-import { getCellIndexes, isSpanMember } from "./utils/cellUtils";
+import { isSpanMember } from "./utils/isSpanMember";
+import { getCellIndexes } from "./utils/getCellIndexes.1";
 import { getNumericalRange } from "./utils/getNumericalRange";
 
 const devEnvironment = isDevEnvironment();

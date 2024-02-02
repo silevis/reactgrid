@@ -62,4 +62,8 @@ export const EMPTY_AREA = {
 export const NO_CELL_LOCATION = {
   rowIndex: -1,
   colIndex: -1,
-} as const;
+} as const;export type SpannedCell = Cell & {
+  rowSpan: number;
+  colSpan: number;
+};
+

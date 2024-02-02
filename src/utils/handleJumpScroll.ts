@@ -1,7 +1,8 @@
 import { Direction } from "../types/InternalModel";
 import { Cell } from "../types/PublicModel";
-import { getCellContainer, getStickyCellAdjacentToCenterPane } from "./cellUtils";
-import { isCollision } from "./collisionUtils";
+import { getCellContainer } from "./getCellContainer";
+import { getStickyCellAdjacentToCenterPane } from "./getStickyCellAdjacentToCenterPane";
+import { isCollision } from "./isCollision";
 import { isInViewport } from "./isInViewport";
 import { ReactGridStore } from "./reactGridStore";
 import { getScrollableParent } from "./scrollHelpers";

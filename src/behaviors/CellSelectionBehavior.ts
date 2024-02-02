@@ -1,6 +1,8 @@
 import { Behavior } from "../types/Behavior";
 import { Cell } from "../types/PublicModel";
-import { findMinimalSelectedArea, getCellContainer, isCellSticky } from "../utils/cellUtils";
+import { findMinimalSelectedArea } from "../utils/findMinimalSelectedArea";
+import { isCellSticky } from "../utils/isCellSticky";
+import { getCellContainer } from "../utils/getCellContainer";
 import { getCellIndexesFromPointerLocation } from "../utils/getCellIndexesFromPointerLocation";
 import { ReactGridStore } from "../utils/reactGridStore";
 import { getCellIndexesFromContainerElement } from "../utils/getCellIndexes";

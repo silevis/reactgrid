@@ -4,7 +4,7 @@ import { DefaultBehavior } from "../behaviors/DefaultBehavior";
 import { NumericalRange } from "../types/CellMatrix";
 import { FocusedCell, IndexedLocation, PaneName } from "../types/InternalModel";
 import { Cell, CellMap, Column, Range, Row, SpanMember, StyledRange } from "../types/PublicModel";
-import { isSpanMember } from "./cellUtils";
+import { isSpanMember } from "./isSpanMember";
 import { RowMeasurement } from "../types/RowMeasurement";
 import { ColumnMeasurement } from "../types/ColumnMeasurement";
 import { Behavior, BehaviorId } from "../types/Behavior";

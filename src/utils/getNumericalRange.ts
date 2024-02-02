@@ -1,6 +1,6 @@
 import { NumericalRange } from "../types/CellMatrix";
 import { Range } from "../types/PublicModel";
-import { areAreasEqual } from "./cellUtils";
+import { areAreasEqual } from "./areAreasEqual";
 import { EMPTY_AREA } from "../types/InternalModel";
 import { ReactGridStore } from "./reactGridStore";
 
