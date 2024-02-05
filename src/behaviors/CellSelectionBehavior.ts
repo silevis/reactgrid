@@ -10,6 +10,7 @@ import { getScrollableParent } from "../utils/scrollHelpers";
 import { scrollToElementEdge } from "../utils/scrollToElementEdge";
 import isDevEnvironment from "../utils/isDevEnvironment";
 import { ReactGridStore } from "../types/ReactGridStore.ts";
+import { NO_CELL_LOCATION } from "../types/InternalModel";
 
 const devEnvironment = isDevEnvironment();
 
@@ -144,7 +145,7 @@ export const CellSelectionBehavior: Behavior = {
 
       if (isStickyCell) {
         const nonStickyRowsAndColumns = getCellIndexesFromContainerElement(cellContainer);
-        const { rowIndex, colIndex } = nonStickyRowsAndColumns || blankIndexes;
+        const { rowIndex, colIndex } = nonStickyRowsAndColumns || NO_CELL_LOCATION;
         scrollTowardsSticky(store, cell, { rowIndex, colIndex });
 
         return tryExpandingTowardsCell(store, cell, rowIndex, colIndex);

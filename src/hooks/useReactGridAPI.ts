@@ -1,6 +1,6 @@
 import { EMPTY_AREA, IndexedLocation } from "../types/InternalModel";
 import { Range } from "../types/PublicModel";
-import { areAreasEqual } from "../utils/cellUtils";
+import { areAreasEqual } from "../utils/areAreasEqual";
 import { getNumericalRange } from "../utils/getNumericalRange";
 import isDevEnvironment from "../utils/isDevEnvironment";
 import { useReactGridStore } from "../utils/reactGridStore";

@@ -2,7 +2,7 @@ import { create, createStore, StoreApi, useStore } from "zustand";
 import { CellSelectionBehavior } from "../behaviors/CellSelectionBehavior";
 import { DefaultBehavior } from "../behaviors/DefaultBehavior";
 import { Range, StyledRange } from "../types/PublicModel";
-import { isSpanMember } from "./cellUtils";
+import { isSpanMember } from "./isSpanMember";
 import { ReactGridStore } from "../types/ReactGridStore.ts";
 
 type ReactGridStores = Record<string, StoreApi<ReactGridStore>>;

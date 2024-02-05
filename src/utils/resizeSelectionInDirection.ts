@@ -1,5 +1,8 @@
 import { FocusedCell } from "../types/InternalModel";
-import { areAreasEqual, findMinimalSelectedArea, getCellArea, isCellInRange } from "./cellUtils";
+import { getCellArea } from "./getCellArea";
+import { areAreasEqual } from "./areAreasEqual";
+import { isCellInRange } from "./isCellInRange";
+import { findMinimalSelectedArea } from "./findMinimalSelectedArea";
 import { EMPTY_AREA } from "../types/InternalModel";
 
 import { ReactGridStore } from "../types/ReactGridStore.ts";
