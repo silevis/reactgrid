@@ -22,6 +22,10 @@ let pointerDownPosition: Position | null = null;
 let touchStartPosition: Position | null = null;
 let touchEndPosition: Position | null = null;
 
+// TODO: change it to PointerEventsController [???]
+// TODO: add pointerDown listener on window obj.
+// TODO: Remove all non-(Pointer/Mouse/Touch)Down handlers to other behaviors (not DefaultBehavior!)
+
 export const DefaultBehavior = (config: DefaultBehaviorConfig = CONFIG_DEFAULTS): Behavior => ({
   handlePointerDown: function (event, store): ReactGridStore {
     if (isMobile()) {
@@ -61,7 +65,7 @@ export const DefaultBehavior = (config: DefaultBehaviorConfig = CONFIG_DEFAULTS)
       if (distanceMoved > 10) {
         timer && clearTimeout(timer);
         pointerDownPosition = null;
-
+        // TODO: Move changing behavior on CellSelection to handle(Pointer/Touch/Mouse?)Down
         const SelectionBehavior = store.getBehavior("CellSelection");
 
         return {

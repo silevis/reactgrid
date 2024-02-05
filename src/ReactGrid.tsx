@@ -44,7 +44,7 @@ const ReactGrid: FC<ReactGridProps> = ({
     getCellByIds,
   } = store;
 
-  const [bypassSizeWarning, setBypassSizeWarning] = useState(false); // TODO: change it to prop: boolean
+  const [bypassSizeWarning, setBypassSizeWarning] = useState(false);
   const [isGridStoreInitialized, setIsGridStoreInitialized] = useState(false);
 
   useEffect(() => {

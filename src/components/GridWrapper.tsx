@@ -67,7 +67,11 @@ const GridWrapper: FC<PropsWithChildren<GridWrapperProps>> = ({ reactGridId, sty
       className="ReactGrid"
       ref={reactGridElement}
       style={style}
-      onPointerDown={(e) => withStoreApi(e, currentBehavior?.handlePointerDown)}
+      onPointerDown={(e) => {
+        
+        withStoreApi(e, currentBehavior?.handlePointerDown);
+      }}
+      // TODO: move other pointer events (non-Down) to separate controller
       onPointerEnter={(e) => withStoreApi(e, currentBehavior?.handlePointerEnter)}
       onPointerMove={(e) => withStoreApi(e, currentBehavior?.handlePointerMove)}
       onPointerLeave={(e) => withStoreApi(e, currentBehavior?.handlePointerLeave)}
