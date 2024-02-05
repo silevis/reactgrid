@@ -12,12 +12,17 @@ export type KeyboardEventHandler = HandlerFn<React.KeyboardEvent<HTMLDivElement>
 export type CompositionEventHandler = HandlerFn<React.CompositionEvent<HTMLDivElement>>;
 export type ClipboardEventHandler = HandlerFn<React.ClipboardEvent<HTMLDivElement>>;
 
+
 export type Behavior = {
+  
+
+  // TODO: change to handleMouse
   handlePointerDown?: PointerEventHandler;
   handlePointerEnter?: PointerEventHandler;
   handlePointerMove?: PointerEventHandler;
   handlePointerLeave?: PointerEventHandler;
   handlePointerUp?: PointerEventHandler;
+
 
   handleTouchStart?: TouchEventHandler;
   handleTouchMove?: TouchEventHandler;
