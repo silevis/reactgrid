@@ -3,7 +3,8 @@ import { Range } from "../types/PublicModel";
 import { areAreasEqual } from "../utils/cellUtils";
 import { getNumericalRange } from "../utils/getNumericalRange";
 import isDevEnvironment from "../utils/isDevEnvironment";
-import { ReactGridStore, useReactGridStore } from "../utils/reactGridStore";
+import { useReactGridStore } from "../utils/reactGridStore";
+import { ReactGridStore } from "../types/ReactGridStore.ts";
 
 /**
  * Hook that provides access to the ReactGrid API.

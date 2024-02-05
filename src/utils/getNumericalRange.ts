@@ -2,7 +2,8 @@ import { NumericalRange } from "../types/CellMatrix";
 import { Range } from "../types/PublicModel";
 import { areAreasEqual } from "./cellUtils";
 import { EMPTY_AREA } from "../types/InternalModel";
-import { ReactGridStore } from "./reactGridStore";
+
+import { ReactGridStore } from "../types/ReactGridStore.ts";
 
 export function getNumericalRange(store: ReactGridStore, range: Range): NumericalRange {
   const { start, end } = range;

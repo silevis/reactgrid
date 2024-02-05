@@ -1,6 +1,7 @@
 import { StoreApi } from "zustand";
 import { HandlerFn } from "../types/Behavior";
-import { ReactGridStore } from "./reactGridStore";
+
+import { ReactGridStore } from "../types/ReactGridStore.ts";
 
 export const updateStoreWithApiAndEventHandler = <TEvent extends React.SyntheticEvent<HTMLDivElement>>(
   storeApi: StoreApi<ReactGridStore>,

@@ -4,8 +4,8 @@ import {
   isSpanMember,
 } from "./cellUtils";
 import { EMPTY_AREA } from "../types/InternalModel";
-import { ReactGridStore } from "./reactGridStore";
 import { handleJumpScroll } from "./handleJumpScroll";
+import { ReactGridStore } from "../types/ReactGridStore.ts";
 
 const absoluteLocation = {
   rowIndex: -1,

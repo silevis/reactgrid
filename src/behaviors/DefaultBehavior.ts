@@ -1,11 +1,11 @@
 import { Behavior } from "../types/Behavior";
 import { handleKeyDown } from "../utils/handleKeyDown";
 import { hasTouchSupport, isMobile } from "../utils/isMobile";
-import { ReactGridStore } from "../utils/reactGridStore";
 import { getCellContainerLocation } from "../utils/getCellContainerLocation";
 import { getCellContainerFromPoint } from "../utils/getCellContainerFromPoint";
 import { Position } from "../types/PublicModel";
 import isDevEnvironment from "../utils/isDevEnvironment";
+import { ReactGridStore } from "../types/ReactGridStore.ts";
 
 const devEnvironment = isDevEnvironment();
 

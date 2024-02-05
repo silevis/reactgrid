@@ -3,8 +3,8 @@ import { Cell } from "../types/PublicModel";
 import { getCellContainer, getStickyCellAdjacentToCenterPane } from "./cellUtils";
 import { isCollision } from "./collisionUtils";
 import { isInViewport } from "./isInViewport";
-import { ReactGridStore } from "./reactGridStore";
 import { getScrollableParent } from "./scrollHelpers";
+import { ReactGridStore } from "../types/ReactGridStore.ts";
 
 /**
  * Handles jump scrolling between cells in a ReactGrid.

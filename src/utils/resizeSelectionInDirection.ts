@@ -1,7 +1,8 @@
 import { FocusedCell } from "../types/InternalModel";
 import { areAreasEqual, findMinimalSelectedArea, getCellArea, isCellInRange } from "./cellUtils";
 import { EMPTY_AREA } from "../types/InternalModel";
-import { ReactGridStore } from "./reactGridStore";
+
+import { ReactGridStore } from "../types/ReactGridStore.ts";
 
 type ResizeDirection = "Up" | "Down" | "Left" | "Right";
 

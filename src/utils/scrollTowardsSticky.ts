@@ -3,10 +3,10 @@ import {
   getCellPane,
   getStickyPaneDirection
 } from "./cellUtils";
-import { ReactGridStore } from "./reactGridStore";
 import { getScrollableParent } from "./scrollHelpers";
 import { getDistanceBetweenTwoPoints } from "./getDistanceBetweenTwoPoints";
 import { calcScrollBy } from "./calcScrollBy";
+import { ReactGridStore } from "../types/ReactGridStore.ts";
 
 
 /**

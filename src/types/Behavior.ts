@@ -1,5 +1,6 @@
 import React from "react";
-import { ReactGridStore } from "../utils/reactGridStore";
+
+import { ReactGridStore } from "./ReactGridStore.ts";
 
 export type BehaviorId = "Default" | "CellSelection" | string;
 

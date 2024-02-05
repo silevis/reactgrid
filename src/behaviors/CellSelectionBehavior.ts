@@ -2,7 +2,6 @@ import { Behavior } from "../types/Behavior";
 import { Cell } from "../types/PublicModel";
 import { findMinimalSelectedArea, getCellContainer, isCellSticky } from "../utils/cellUtils";
 import { getCellIndexesFromPointerLocation } from "../utils/getCellIndexesFromPointerLocation";
-import { ReactGridStore } from "../utils/reactGridStore";
 import { getCellIndexesFromContainerElement } from "../utils/getCellIndexes";
 import { getNonStickyCellContainer } from "../utils/getNonStickyCellContainer";
 import { scrollTowardsSticky } from "../utils/scrollTowardsSticky";
@@ -10,6 +9,7 @@ import { isMobile } from "../utils/isMobile";
 import { getScrollableParent } from "../utils/scrollHelpers";
 import { scrollToElementEdge } from "../utils/scrollToElementEdge";
 import isDevEnvironment from "../utils/isDevEnvironment";
+import { ReactGridStore } from "../types/ReactGridStore.ts";
 
 const devEnvironment = isDevEnvironment();
 

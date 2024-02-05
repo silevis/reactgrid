@@ -8,8 +8,8 @@ import {
   moveFocusRight,
   moveFocusUp,
 } from "./focus";
-import { ReactGridStore } from "./reactGridStore";
 import { resizeSelectionInDirection } from "./resizeSelectionInDirection";
+import { ReactGridStore } from "../types/ReactGridStore.ts";
 
 type HandleKeyDownConfig = {
   moveHorizontallyOnEnter: boolean;

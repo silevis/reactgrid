@@ -1,7 +1,8 @@
 import { NumericalRange } from "../types/CellMatrix";
 import { PaneName } from "../types/InternalModel";
 import { Cell, SpanMember } from "../types/PublicModel";
-import { ReactGridStore } from "./reactGridStore";
+
+import { ReactGridStore } from "../types/ReactGridStore.ts";
 
 export const isSpanMember = (cell: Cell | SpanMember): cell is SpanMember => {
   return "originRowId" in cell && "originColId" in cell;
