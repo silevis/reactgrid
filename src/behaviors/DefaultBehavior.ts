@@ -25,6 +25,7 @@ let touchEndPosition: Position | null = null;
 // TODO: change it to PointerEventsController [???]
 // TODO: add pointerDown listener on window obj.
 // TODO: Remove all non-(Pointer/Mouse/Touch)Down handlers to other behaviors (not DefaultBehavior!)
+// TODO: handle everything on Pointer BUT check pointerType (mouse/touch)!!!
 
 export const DefaultBehavior = (config: DefaultBehaviorConfig = CONFIG_DEFAULTS): Behavior => ({
   handlePointerDown: function (event, store): ReactGridStore {
