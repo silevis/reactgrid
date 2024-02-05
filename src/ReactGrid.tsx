@@ -5,18 +5,13 @@ import GridWrapper from "./components/GridWrapper";
 import PanesRenderer from "./components/PanesRenderer";
 import { ReactGridIdProvider } from "./components/ReactGridIdProvider";
 import { ReactGridProps } from "./types/PublicModel";
-import { useReactGridStore as useInitReactGridStore, useReactGridStoreApi } from "./utils/reactGridStore";
-import isDevEnvironment from "./utils/isDevEnvironment";
-import { isSpanMember } from "./utils/isSpanMember";
 import { getCellIndexes } from "./utils/getCellIndexes.1";
 import { getNumericalRange } from "./utils/getNumericalRange";
+import isDevEnvironment from "./utils/isDevEnvironment";
+import { isSpanMember } from "./utils/isSpanMember";
+import { useReactGridStore as useInitReactGridStore, useReactGridStoreApi } from "./utils/reactGridStore";
 
 const devEnvironment = isDevEnvironment();
-
-const spin = keyframes`
-100% {
-  transform: rotate(360deg);
-}`;
 
 const ReactGrid: FC<ReactGridProps> = ({
   id,
@@ -33,8 +28,9 @@ const ReactGrid: FC<ReactGridProps> = ({
   initialFocusLocation,
   styledRanges,
 }) => {
+  // TODO: Create store initializer instead of "initializing" with useEffect
   // It's actually a useReactGridStore()
-  useInitReactGridStore(id, (store) => null); // Init store.
+  useInitReactGridStore(id, () => null); // Init store.
   const store = useReactGridStoreApi(id).getState();
   const {
     setRows,
@@ -48,8 +44,7 @@ const ReactGrid: FC<ReactGridProps> = ({
     getCellByIds,
   } = store;
 
-  const [bypassSizeWarning, setBypassSizeWarning] = useState(false);
-  const [isPending, startTransition] = useTransition();
+  const [bypassSizeWarning, setBypassSizeWarning] = useState(false); // TODO: change it to prop: boolean
   const [isGridStoreInitialized, setIsGridStoreInitialized] = useState(false);
 
   useEffect(() => {
@@ -112,45 +107,16 @@ const ReactGrid: FC<ReactGridProps> = ({
     if (behaviors) setBehaviors(behaviors);
   }, [behaviors]);
 
-  if (process.env.NODE_ENV === "development" && !bypassSizeWarning && rows.length * columns.length > 25_000) {
-    if (isPending) {
-      return (
-        <div
-          css={{
-            width: "10em",
-            height: "10em",
-            borderTop: "1em solid #d5fff7",
-            borderRight: "1em solid transparent",
-            borderRadius: "50%",
-            margin: "auto",
-            animation: `${spin} 1s linear infinite`,
-          }}
-        >
-          <div
-            style={{
-              width: "1em",
-              height: "1em",
-              backgroundColor: "#d5fff7",
-              borderRadius: "50%",
-              marginLeft: "8.5em",
-              marginTop: "0.5em",
-            }}
-          ></div>
-        </div>
-      );
-    }
-
+  if (devEnvironment && !bypassSizeWarning && rows.length * columns.length > 25_000) {
     return (
       <>
         <h1>You're about to render a huge grid!</h1>
         <p>
-          The grid you provided exceeds a safety data size limit {"(>25k cells)"}. You might experience performance
-          problems.
+          The grid you provided exceeds 25 000 cells. You might experience performance problems. This message is
+          displayed only in development environment.
         </p>
         <p>Are you sure you want to render it all?</p>
-        <button onClick={() => startTransition(() => setBypassSizeWarning(true))}>
-          I understand the risk, proceed anyway.
-        </button>
+        <button onClick={() => setBypassSizeWarning(true)}>I understand, proceed anyway.</button>
       </>
     );
   }
@@ -168,9 +134,7 @@ const ReactGrid: FC<ReactGridProps> = ({
             stickyRightColumns={stickyRightColumns ?? 0}
           />
 
-          {/* Shadow? */}
-          {/* ContextMenu? */}
-          {/* CellEditor */}
+          {/* TODO: Shadow for row&col reorder */}
         </GridWrapper>
       </ErrorBoundary>
     </ReactGridIdProvider>
