@@ -118,12 +118,6 @@ export const CellSelectionBehavior: Behavior = {
     };
   },
 
-  handleTouchEnd(event, store) {
-    devEnvironment && console.log("CSB/handleTouchEnd");
-
-    return store;
-  },
-
   handleTouchMove(event, store) {
     devEnvironment && console.log("CSB/handleTouchMove");
     event.preventDefault(); // disable move/scroll move

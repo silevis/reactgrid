@@ -29,12 +29,13 @@ export interface RGTheme {
       color: string;
     }
 
-    paneShadow: {
-      offsetX: string;
-      offsetY: string;
-      blurRadius: string;
-      color: string;
-    }
+    // TOOD: Implement this in styles, commented out for now
+    // paneShadow: {
+    //   offsetX: string;
+    //   offsetY: string;
+    //   blurRadius: string;
+    //   color: string;
+    // }
   },
   cellContainer: {
     padding: {

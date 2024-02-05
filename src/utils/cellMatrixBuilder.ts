@@ -67,7 +67,7 @@ export const cellMatrixBuilder = <TRowId extends string = string, TColumnId exte
   const cells: CellMap<TRowId, TColumnId> = new Map();
 
   const addRows: AddRowsFn<TRowId> = (...newRows) => {
-    newRows.forEach((row, idx) => {
+    newRows.forEach((row) => {
       if (rows.some(r => r.id === row.id)) throw new Error(`Duplicate IDs!: Row with id "${row.id}" already exists!`);
 
       rows.push({ ...row });
@@ -75,7 +75,7 @@ export const cellMatrixBuilder = <TRowId extends string = string, TColumnId exte
   }
 
   const addColumns: AddColumnsFn<TColumnId> = (...newColumns) => {
-    newColumns.forEach((col, idx) => {
+    newColumns.forEach((col) => {
       if (columns.some(c => c.id === col.id)) throw new Error(`Duplicate IDs!: Column with id "${col.id}" already exists!`);
 
       columns.push({ ...col });

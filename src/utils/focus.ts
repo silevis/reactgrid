@@ -272,11 +272,9 @@ export const moveFocusInsideSelectedRange = (
   }
 };
 
+// TODO: Implement this. The Row/Col Measurements might be helpful here.
 export const moveFocusPageUp = (store: ReactGridStore, currentFocus: FocusedCell) => {
   if (currentFocus.rowIndex === 0) return store;
-
-  const colIndex =
-    "colSpan" in currentFocus && absoluteLocation.colIndex !== -1 ? absoluteLocation.colIndex : currentFocus.colIndex;
 
   return store;
 };

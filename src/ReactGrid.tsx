@@ -33,7 +33,7 @@ const ReactGrid: FC<ReactGridProps> = ({
   styledRanges,
 }) => {
   // It's actually a useReactGridStore()
-  useInitReactGridStore(id, (store) => null); // Init store.
+  useInitReactGridStore(id, () => null); // Init store.
   const store = useReactGridStoreApi(id).getState();
   const {
     setRows,
