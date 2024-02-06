@@ -9,7 +9,5 @@ export function getCellContainer(store: ReactGridStore, cell: Cell) {
   if (!cellContainers || cellContainers?.length === 0) return;
   if (cellContainers?.length !== 1) throw new Error("Cell container is not unique!");
 
-  const cellElement = cellContainers[0];
-
-  return cellElement;
+  return cellContainers[0];
 }
