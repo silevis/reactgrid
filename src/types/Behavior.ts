@@ -4,7 +4,10 @@ import { ReactGridStore } from "./ReactGridStore.ts";
 
 export type BehaviorId = "Default" | "CellSelection" | string;
 
-export type HandlerFn<TEvent extends React.SyntheticEvent | Event> = (event: TEvent, store: ReactGridStore) => ReactGridStore;
+export type HandlerFn<TEvent extends React.SyntheticEvent | Event> = (
+  event: TEvent,
+  store: ReactGridStore
+) => ReactGridStore;
 
 export type PointerEventHandler = HandlerFn<React.PointerEvent<HTMLDivElement> | PointerEvent>;
 export type TouchEventHandler = HandlerFn<React.TouchEvent<HTMLDivElement>>;
@@ -16,7 +19,6 @@ export type ClipboardEventHandler = HandlerFn<React.ClipboardEvent<HTMLDivElemen
 export type Behavior = {
   id: BehaviorId;
 
-  // TODO: change to handleMouse
   handlePointerDown?: PointerEventHandler;
   handlePointerEnter?: PointerEventHandler;
   handlePointerMove?: PointerEventHandler;

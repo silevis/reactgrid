@@ -69,7 +69,6 @@ const GridWrapper: FC<PropsWithChildren<GridWrapperProps>> = ({ reactGridId, sty
       ref={reactGridElement}
       style={style}
       onPointerDown={(e) => handlePointerDown(e, storeApi)}
-      // TODO: move other pointer events (non-Down) to separate controller
       onKeyDown={(e) => withStoreApi(e, currentBehavior?.handleKeyDown)}
       onKeyUp={(e) => withStoreApi(e, currentBehavior?.handleKeyUp)}
       onCompositionStart={(e) => withStoreApi(e, currentBehavior?.handleCompositionStart)}

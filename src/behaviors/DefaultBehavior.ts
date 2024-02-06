@@ -22,8 +22,6 @@ let pointerDownPosition: Position | null = null;
 let touchStartPosition: Position | null = null;
 let touchEndPosition: Position | null = null;
 
-// TODO: change it to PointerEventsController [???]
-// TODO: add pointerDown listener on window obj.
 // TODO: Remove all non-(Pointer/Mouse/Touch)Down handlers to other behaviors (not DefaultBehavior!)
 // TODO: handle everything on Pointer BUT check pointerType (mouse/touch)!!!
 
@@ -87,11 +85,6 @@ export const DefaultBehavior = (config: DefaultBehaviorConfig = CONFIG_DEFAULTS)
 
     if (timer) {
       clearTimeout(timer);
-    }
-
-    if (pointerDownPosition && event.clientX === pointerDownPosition.x && event.clientY === pointerDownPosition.y) {
-      // TODO: Double tap
-      devEnvironment && console.log("Double tap");
     }
 
     pointerDownPosition = null;
