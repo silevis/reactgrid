@@ -211,3 +211,21 @@
         left: 50%;
     }
 }
+
+.cut-ant-line-box {
+    background: linear-gradient(0deg, transparent 6px, $cut-line-color 6px) repeat-y,
+        linear-gradient(0deg, transparent 50%, $cut-line-color 0) repeat-y,
+        linear-gradient(90deg, transparent 50%, $cut-line-color 0) repeat-x,
+        linear-gradient(90deg, transparent 50%, $cut-line-color 0) repeat-x;
+    background-size: 2px 16px, 2px 16px, 16px 2px, 16px 2px;
+    background-position: 0 0, 100% 0, 0 0, 0 100%;
+    animation: cut-ant-line-move 1s infinite linear;
+}
+
+@keyframes cut-ant-line-move {
+    from {}
+
+    to {
+        background-position: 0 -16px, 100% 16px, 16px 0, -16px 100%;
+    }
+}

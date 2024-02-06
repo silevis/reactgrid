@@ -10,6 +10,7 @@ import { isMobileDevice } from '../Functions/isMobileDevice';
 import { FillHandleRangeSelection } from './FillHandleRangeSelection';
 import { FillHandleRenderer } from './FillHandleRenderer';
 import { SelectedRanges } from './SelectedRanges';
+import { CutRanges } from './CutRanges';
 
 export interface PaneProps {
     renderChildren: boolean;
@@ -96,6 +97,7 @@ export const PaneContent: React.FC<PaneContentProps<State>> = (props) => {
                 state={state}
                 calculatedRange={calculatedRange}
             />
+            <CutRanges state={state} calculatedRange={calculatedRange} />
             <FillHandleRangeSelection
                 state={state}
                 calculatedRange={calculatedRange}

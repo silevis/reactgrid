@@ -1,12 +1,14 @@
 body {
     background-color: #000000;
     color: gold;
+
     .test-grid-container {
         $primary-color: gold;
         $bg-color: rgb(0, 0, 0);
         $sticky-bg-color: #000000;
         $shadow-color: #ffffff;
         $resize-line-color: gold;
+        $cut-line-color: #3579f8;
         $resize-handle-gb-color: violet;
         $cell-editor-bg-color: #000000;
         $fillhandle-action-border-color: black;
@@ -20,6 +22,7 @@ body {
 
         @import "./../styles.scss";
     }
+
     .rg-celleditor input {
         color: white;
     }
