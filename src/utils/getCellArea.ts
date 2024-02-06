@@ -1,9 +1,8 @@
 import { NumericalRange } from "../types/CellMatrix";
 import { Cell, SpanMember } from "../types/PublicModel";
-import { ReactGridStore } from "./reactGridStore";
 import { isCellSpanned } from "./isCellSpanned";
 import { getOriginCell } from "./getOriginCell";
-
+import { ReactGridStore } from "../types/ReactGridStore.ts";
 
 export const getCellArea = (store: ReactGridStore, cell: Cell | SpanMember): NumericalRange => {
   const originCell = getOriginCell(store, cell);

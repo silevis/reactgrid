@@ -1,6 +1,5 @@
 import { Cell } from "../types/PublicModel";
-import { ReactGridStore } from "./reactGridStore";
-
+import { ReactGridStore } from "../types/ReactGridStore.ts";
 
 export function getCellContainer(store: ReactGridStore, cell: Cell) {
   if (!store.reactGridRef) throw new Error("ReactGridRef is not defined!");

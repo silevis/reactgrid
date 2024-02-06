@@ -1,7 +1,6 @@
 import { Cell, SpanMember } from "../types/PublicModel";
-import { ReactGridStore } from "./reactGridStore";
+import { ReactGridStore } from "../types/ReactGridStore.ts";
 import { isSpanMember } from "./isSpanMember";
-
 
 export const getOriginCell = (store: ReactGridStore, cell: Cell | SpanMember): Cell => {
   if (isSpanMember(cell)) {

@@ -1,5 +1,5 @@
 import { Cell } from "../types/PublicModel";
-import { ReactGridStore } from "./reactGridStore";
+import { ReactGridStore } from "../types/ReactGridStore.ts";
 
 /**
  * Returns the indexes of a cell in the ReactGrid store.

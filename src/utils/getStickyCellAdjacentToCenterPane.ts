@@ -1,6 +1,6 @@
 import { PaneName } from "../types/InternalModel";
 import { Cell } from "../types/PublicModel";
-import { ReactGridStore } from "./reactGridStore";
+import { ReactGridStore } from "../types/ReactGridStore.ts";
 import { getCellParentPaneName } from "./getCellParentPaneName";
 import { getCellIndexes } from "./getCellIndexes.1";
 

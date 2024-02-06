@@ -1,7 +1,6 @@
 import { NumericalRange } from "../types/CellMatrix";
-import { ReactGridStore } from "./reactGridStore";
+import { ReactGridStore } from "../types/ReactGridStore.ts";
 import { getCellArea } from "./getCellArea";
-
 
 export const findMinimalSelectedArea = (store: ReactGridStore, currentArea: NumericalRange): NumericalRange => {
   let didChange = false;

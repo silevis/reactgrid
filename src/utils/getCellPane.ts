@@ -1,6 +1,5 @@
 import { Cell } from "../types/PublicModel";
-import { ReactGridStore } from "./reactGridStore";
-
+import { ReactGridStore } from "../types/ReactGridStore.ts";
 
 export function getCellPane(store: ReactGridStore, cell: Cell): HTMLElement {
   const { rowId, colId } = cell;
