@@ -1,6 +1,5 @@
 import { Behavior } from "../types/Behavior";
 import { Cell } from "../types/PublicModel";
-import { findMinimalSelectedArea, getCellContainer, isCellSticky } from "../utils/cellUtils";
 import { getCellIndexesFromPointerLocation } from "../utils/getCellIndexesFromPointerLocation";
 import { getCellIndexesFromContainerElement } from "../utils/getCellIndexes";
 import { getNonStickyCellContainer } from "../utils/getNonStickyCellContainer";
@@ -11,6 +10,9 @@ import { scrollToElementEdge } from "../utils/scrollToElementEdge";
 import isDevEnvironment from "../utils/isDevEnvironment";
 import { ReactGridStore } from "../types/ReactGridStore.ts";
 import { NO_CELL_LOCATION } from "../types/InternalModel";
+import { findMinimalSelectedArea } from "../utils/findMinimalSelectedArea.ts";
+import { isCellSticky } from "../utils/isCellSticky.ts";
+import { getCellContainer } from "../utils/getCellContainer.ts";
 
 const devEnvironment = isDevEnvironment();
 
