@@ -5,6 +5,7 @@ import { emptyCell } from './emptyCell';
 import { getCompatibleCellAndTemplate } from './getCompatibleCellAndTemplate';
 import { tryAppendChange } from './tryAppendChange';
 import { Id } from '../Model/PublicModel';
+import { handleCut } from './handleCut';
 
 export function getDataToCopy(
     state: State,
@@ -79,8 +80,10 @@ export function setStyles(div: HTMLDivElement, table: HTMLTableElement): void {
     div.appendChild(table);
 }
 
+
 export function clearCell(state: State, location: Location, removeValues: boolean): void {
-    if (removeValues) {
-        state = tryAppendChange(state, location, emptyCell);
-    }
+  if (removeValues) {
+    state = tryAppendChange(state, location, emptyCell);
+    handleCut();
+  }
 }
