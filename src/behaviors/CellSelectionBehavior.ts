@@ -65,6 +65,8 @@ const tryExpandingTowardsCell = (
 };
 
 export const CellSelectionBehavior: Behavior = {
+  id: "CellSelection",
+
   handlePointerMove(event, store) {
     if (isMobile()) {
       return store;
@@ -119,6 +121,16 @@ export const CellSelectionBehavior: Behavior = {
       ...store,
       currentBehavior: DefaultBehavior,
     };
+  },
+
+  handleTouchEnd(event, store) {
+    devEnvironment && console.log("CSB/handleTouchEnd");
+
+    return store;
+  },
+
+  handlePointerEnter(event, store) {
+    return store;
   },
 
   handleTouchMove(event, store) {
