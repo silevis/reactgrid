@@ -1,9 +1,10 @@
 import React, { FC, PropsWithChildren, useEffect, useRef, useState } from "react";
 import { HandlerFn } from "../types/Behavior";
-import { useReactGridStore, useReactGridStoreApi } from "../utils/reactGridStore";
-import { updateStoreWithApiAndEventHandler } from "../utils/updateStoreWithApiAndEventHandler";
 import { StyledRangesCSS } from "../types/PublicModel";
 import { getStyledRangesCSS } from "../utils/getStyledRangesCSS";
+import { useReactGridStore, useReactGridStoreApi } from "../utils/reactGridStore";
+import { updateStoreWithApiAndEventHandler } from "../utils/updateStoreWithApiAndEventHandler";
+import { handlePointerDown, pointerEventController } from "../controllers/handlePointerDown";
 
 interface GridWrapperProps {
   reactGridId: string;
@@ -67,21 +68,8 @@ const GridWrapper: FC<PropsWithChildren<GridWrapperProps>> = ({ reactGridId, sty
       className="ReactGrid"
       ref={reactGridElement}
       style={style}
-      onPointerDown={(e) => {
-        
-        withStoreApi(e, currentBehavior?.handlePointerDown);
-      }}
+      onPointerDown={(e) => handlePointerDown(e, storeApi)}
       // TODO: move other pointer events (non-Down) to separate controller
-      onPointerEnter={(e) => withStoreApi(e, currentBehavior?.handlePointerEnter)}
-      onPointerMove={(e) => withStoreApi(e, currentBehavior?.handlePointerMove)}
-      onPointerLeave={(e) => withStoreApi(e, currentBehavior?.handlePointerLeave)}
-      onPointerUp={(e) => withStoreApi(e, currentBehavior?.handlePointerUp)}
-      onDoubleClick={(e) => withStoreApi(e, currentBehavior?.handleDoubleClick)}
-      // === Left commented for reference ===
-      // onTouchStart={(e) => withStoreApi(e, currentBehavior?.handleTouchStart)}
-      // onTouchMove={(e) => withStoreApi(e, currentBehavior?.handleTouchMove)}
-      // onTouchEnd={(e) => withStoreApi(e, currentBehavior?.handleTouchEnd)}
-      // onTouchCancel={(e) => withStoreApi(e, currentBehavior?.handleTouchCancel)}
       onKeyDown={(e) => withStoreApi(e, currentBehavior?.handleKeyDown)}
       onKeyUp={(e) => withStoreApi(e, currentBehavior?.handleKeyUp)}
       onCompositionStart={(e) => withStoreApi(e, currentBehavior?.handleCompositionStart)}
