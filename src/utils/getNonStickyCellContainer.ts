@@ -8,14 +8,12 @@ const nonStickyPaneName: PaneName = "Center";
  * @param clientY - The y-coordinate of the mouse pointer.
  * @returns The Element representing the non-sticky cell, or undefined if not found.
  */
-export const getNonStickyCellContainer = (x: number, y: number): Element | undefined => {
-  const elements = document.elementsFromPoint(x, y);
+export const getNonStickyCellContainer = (clientX: number, clientY: number): Element | undefined => {
+  const elements = document.elementsFromPoint(clientX, clientY);
 
   const cellContainers = elements.filter((el) => el.classList.contains("rgCellContainer"));
 
-  const nonStickyCellContainer = cellContainers.find((container) =>
+  return cellContainers.find((container) =>
     container.closest(".rgPane")?.classList.contains(`rgPane-${nonStickyPaneName}`)
   );
-
-  return nonStickyCellContainer;
 };

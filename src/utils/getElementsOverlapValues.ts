@@ -1,4 +1,3 @@
-
 export function getElementsOverlapValues(firstEl: HTMLElement, secondEl: HTMLElement, negativeValues?: boolean) {
   const firstRect = firstEl.getBoundingClientRect();
   const secondRect = secondEl.getBoundingClientRect();
@@ -22,6 +21,6 @@ export function getElementsOverlapValues(firstEl: HTMLElement, secondEl: HTMLEle
 
   return {
     overlapX: overlapX,
-    overlapY: overlapY,
+    overlapY: overlapY
   };
 }

@@ -1,10 +1,10 @@
 import { Cell } from "../types/PublicModel";
 import { getCellPane } from "./getCellPane";
 import { getStickyPaneDirection } from "./getStickyPaneDirection";
-import { ReactGridStore } from "./reactGridStore";
 import { getScrollableParent } from "./scrollHelpers";
 import { getDistanceBetweenTwoPoints } from "./getDistanceBetweenTwoPoints";
 import { calcScrollBy } from "./calcScrollBy";
+import { ReactGridStore } from "../types/ReactGridStore.ts";
 
 
 /**

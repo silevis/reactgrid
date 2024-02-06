@@ -2,7 +2,8 @@ import { NumericalRange } from "../types/CellMatrix";
 import { Range } from "../types/PublicModel";
 import { areAreasEqual } from "./areAreasEqual";
 import { EMPTY_AREA } from "../types/InternalModel";
-import { ReactGridStore } from "./reactGridStore";
+
+import { ReactGridStore } from "../types/ReactGridStore.ts";
 
 export function getNumericalRange(store: ReactGridStore, range: Range): NumericalRange {
   const { start, end } = range;
@@ -22,7 +23,7 @@ export function getNumericalRange(store: ReactGridStore, range: Range): Numerica
     startRowIdx: startRowIndex,
     startColIdx: startColIndex,
     endRowIdx: endRowIndex,
-    endColIdx: endColIndex,
+    endColIdx: endColIndex
   };
 
   if (areAreasEqual(numericalRange, EMPTY_AREA)) console.warn("Each of numerical range properties is -1!");

@@ -2,12 +2,12 @@ import { FocusedCell } from "../types/InternalModel";
 import { isSpanMember } from "./isSpanMember";
 import { getOriginCell } from "./getOriginCell";
 import { EMPTY_AREA } from "../types/InternalModel";
-import { ReactGridStore } from "./reactGridStore";
 import { handleJumpScroll } from "./handleJumpScroll";
+import { ReactGridStore } from "../types/ReactGridStore.ts";
 
 const absoluteLocation = {
   rowIndex: -1,
-  colIndex: -1,
+  colIndex: -1
 };
 
 export const moveFocusUp = (store: ReactGridStore, currentFocus: FocusedCell): ReactGridStore => {
@@ -35,7 +35,7 @@ export const moveFocusUp = (store: ReactGridStore, currentFocus: FocusedCell): R
       return {
         ...store,
         focusedLocation: { rowIndex: originRowIndex, colIndex: originColIndex },
-        selectedArea: EMPTY_AREA,
+        selectedArea: EMPTY_AREA
       };
     }
   }
@@ -67,15 +67,13 @@ export const moveFocusRight = (store: ReactGridStore, currentFocus: FocusedCell)
       return {
         ...store,
         focusedLocation: { rowIndex: originRowIndex, colIndex: originColIndex },
-        selectedArea: EMPTY_AREA,
+        selectedArea: EMPTY_AREA
       };
     }
   }
 
   return store;
 };
-
-
 
 export const moveFocusDown = (store: ReactGridStore, currentFocus: FocusedCell) => {
   if (currentFocus.rowIndex === store.rows.length - 1) return store;
@@ -101,7 +99,7 @@ export const moveFocusDown = (store: ReactGridStore, currentFocus: FocusedCell) 
       return {
         ...store,
         focusedLocation: { rowIndex: originRowIndex, colIndex: originColIndex },
-        selectedArea: EMPTY_AREA,
+        selectedArea: EMPTY_AREA
       };
     }
   }
@@ -134,7 +132,7 @@ export const moveFocusLeft = (store: ReactGridStore, currentFocus: FocusedCell) 
       return {
         ...store,
         focusedLocation: { rowIndex: originRowIndex, colIndex: originColIndex },
-        selectedArea: EMPTY_AREA,
+        selectedArea: EMPTY_AREA
       };
     }
   }
@@ -173,7 +171,7 @@ export const moveFocusInsideSelectedRange = (
         !nextPossibleLocation ||
         isSpanMember(nextPossibleLocation) ||
         nextPossibleLocation?.isFocusable === false
-      );
+        );
 
       return { ...store, focusedLocation: { rowIndex: rowIdx, colIndex: colIdx } };
     }
@@ -203,7 +201,7 @@ export const moveFocusInsideSelectedRange = (
         !nextPossibleLocation ||
         isSpanMember(nextPossibleLocation) ||
         nextPossibleLocation?.isFocusable === false
-      );
+        );
 
       return { ...store, focusedLocation: { rowIndex: rowIdx, colIndex: colIdx } };
     }
@@ -233,7 +231,7 @@ export const moveFocusInsideSelectedRange = (
         !nextPossibleLocation ||
         isSpanMember(nextPossibleLocation) ||
         nextPossibleLocation?.isFocusable === false
-      );
+        );
 
       return { ...store, focusedLocation: { rowIndex: rowIdx, colIndex: colIdx } };
     }
@@ -263,18 +261,16 @@ export const moveFocusInsideSelectedRange = (
         !nextPossibleLocation ||
         isSpanMember(nextPossibleLocation) ||
         nextPossibleLocation?.isFocusable === false
-      );
+        );
 
       return { ...store, focusedLocation: { rowIndex: rowIdx, colIndex: colIdx } };
     }
   }
 };
 
+// TODO: Implement this. The Row/Col Measurements might be helpful here.
 export const moveFocusPageUp = (store: ReactGridStore, currentFocus: FocusedCell) => {
   if (currentFocus.rowIndex === 0) return store;
-
-  const colIndex =
-    "colSpan" in currentFocus && absoluteLocation.colIndex !== -1 ? absoluteLocation.colIndex : currentFocus.colIndex;
 
   return store;
 };

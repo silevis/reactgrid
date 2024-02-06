@@ -1,6 +1,6 @@
 import { PaneName } from "../types/InternalModel";
 import { Cell } from "../types/PublicModel";
-import { ReactGridStore } from "./reactGridStore";
+import { ReactGridStore } from "../types/ReactGridStore.ts";
 import { getCellParentPaneName } from "./getCellParentPaneName";
 import { getCellIndexes } from "./getCellIndexes.1";
 
@@ -11,7 +11,6 @@ import { getCellIndexes } from "./getCellIndexes.1";
  * @param direction The direction to search for the sticky cell ("Top", "Bottom", "Right", "Left").
  * @returns The sticky cell adjacent to the center pane, or null if not found.
  */
-
 export function getStickyCellAdjacentToCenterPane(
   store: ReactGridStore,
   cell: Cell,
@@ -37,7 +36,7 @@ export function getStickyCellAdjacentToCenterPane(
 
   const stickyIndexes = {
     rowIndex: paneRange?.[`${startOrEnd}RowIdx`] - (isExclusiveRangeIndex ? 1 : 0),
-    colIndex: paneRange?.[`${startOrEnd}ColIdx`] - (isExclusiveRangeIndex ? 1 : 0),
+    colIndex: paneRange?.[`${startOrEnd}ColIdx`] - (isExclusiveRangeIndex ? 1 : 0)
   };
 
   if (direction === "Bottom" || direction === "Top") {

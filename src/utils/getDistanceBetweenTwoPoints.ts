@@ -1,4 +1,3 @@
-
 /**
  * This function calculates the Euclidean distance between two points in a 2D space.
  * The distance is calculated using the formula sqrt((aX + aY)^2 + (bX + bY)^2).
@@ -10,6 +9,5 @@
  * @returns The Euclidean distance between the two points.
  */
 export function getDistanceBetweenTwoPoints(aX: number, aY: number, bX: number, bY: number) {
-  const distance = Math.sqrt(Math.pow(aX + aY, 2) + Math.pow(bX + bY, 2));
-  return distance;
+  return Math.sqrt(Math.pow(aX + aY, 2) + Math.pow(bX + bY, 2));
 }

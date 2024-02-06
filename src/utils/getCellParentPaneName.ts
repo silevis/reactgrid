@@ -1,9 +1,8 @@
 import { NumericalRange } from "../types/CellMatrix";
 import { PaneName } from "../types/InternalModel";
 import { Cell } from "../types/PublicModel";
-import { ReactGridStore } from "./reactGridStore";
+import { ReactGridStore } from "../types/ReactGridStore.ts";
 import { isCellInRange } from "./isCellInRange";
-
 
 export const getCellParentPaneName = (store: ReactGridStore, cell: Cell): PaneName => {
   const PANE_NAME_IDX = 0;

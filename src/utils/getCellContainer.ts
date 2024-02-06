@@ -1,6 +1,5 @@
 import { Cell } from "../types/PublicModel";
-import { ReactGridStore } from "./reactGridStore";
-
+import { ReactGridStore } from "../types/ReactGridStore.ts";
 
 export function getCellContainer(store: ReactGridStore, cell: Cell) {
   if (!store.reactGridRef) throw new Error("ReactGridRef is not defined!");
@@ -10,7 +9,5 @@ export function getCellContainer(store: ReactGridStore, cell: Cell) {
   if (!cellContainers || cellContainers?.length === 0) return;
   if (cellContainers?.length !== 1) throw new Error("Cell container is not unique!");
 
-  const cellElement = cellContainers[0];
-
-  return cellElement;
+  return cellContainers[0];
 }

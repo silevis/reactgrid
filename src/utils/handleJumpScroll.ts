@@ -4,8 +4,8 @@ import { getCellContainer } from "./getCellContainer";
 import { getStickyCellAdjacentToCenterPane } from "./getStickyCellAdjacentToCenterPane";
 import { isCollision } from "./isCollision";
 import { isInViewport } from "./isInViewport";
-import { ReactGridStore } from "./reactGridStore";
 import { getScrollableParent } from "./scrollHelpers";
+import { ReactGridStore } from "../types/ReactGridStore.ts";
 
 /**
  * Handles jump scrolling between cells in a ReactGrid.
@@ -47,7 +47,7 @@ export function handleJumpScroll(store: ReactGridStore, previousCell: Cell, next
   const isPreviousCellFullyVisible =
     isInViewport(previousCellContainer, scrollableParent) && !isCollision(previousCellContainer, borderStickyContainer);
 
-  // Get position and size of both previous and next cell containers (div's)
+  // Get position and size of both previous and next cell containers (divs)
   const previousCellRect = previousCellContainer.getBoundingClientRect();
   const nextCellRect = nextCellContainer.getBoundingClientRect();
 
@@ -71,7 +71,7 @@ export function handleJumpScroll(store: ReactGridStore, previousCell: Cell, next
       // e.g.
       // top: -20px
       [directionParameter]: scrollValue,
-      behavior: "instant", // ? Maybe add a way to change behavior with the config?
+      behavior: "instant" // ? Maybe add a way to change behavior with the config?
     });
   }
 }

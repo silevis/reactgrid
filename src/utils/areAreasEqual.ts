@@ -1,6 +1,5 @@
 import { NumericalRange } from "../types/CellMatrix";
 
-
 export const areAreasEqual = (area1: NumericalRange, area2: NumericalRange): boolean => {
   return (
     area1.startRowIdx === area2.startRowIdx &&

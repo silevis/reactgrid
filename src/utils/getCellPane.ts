@@ -1,6 +1,5 @@
 import { Cell } from "../types/PublicModel";
-import { ReactGridStore } from "./reactGridStore";
-
+import { ReactGridStore } from "../types/ReactGridStore.ts";
 
 export function getCellPane(store: ReactGridStore, cell: Cell): HTMLElement {
   const { rowId, colId } = cell;
@@ -10,7 +9,6 @@ export function getCellPane(store: ReactGridStore, cell: Cell): HTMLElement {
   if (!cellContainer) throw new Error("No cellContainer found for this cell!");
   if (cellContainer.length !== 1)
     throw new Error("There should be no two cells occupying the same space (simultaneously occupying X and Y)!");
-  const pane = cellContainer[0].closest(".rgPane") as HTMLDivElement;
 
-  return pane;
+  return cellContainer[0].closest(".rgPane") as HTMLDivElement;
 }
