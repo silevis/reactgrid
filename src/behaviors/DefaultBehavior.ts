@@ -28,6 +28,7 @@ let touchEndPosition: Position | null = null;
 // TODO: handle everything on Pointer BUT check pointerType (mouse/touch)!!!
 
 export const DefaultBehavior = (config: DefaultBehaviorConfig = CONFIG_DEFAULTS): Behavior => ({
+  id: "Default",
   handlePointerDown: function (event, store): ReactGridStore {
     if (isMobile()) {
       return store;

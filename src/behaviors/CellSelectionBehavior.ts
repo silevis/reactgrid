@@ -65,6 +65,8 @@ const tryExpandingTowardsCell = (
 };
 
 export const CellSelectionBehavior: Behavior = {
+  id: "CellSelection",
+
   handlePointerMove(event, store) {
     if (isMobile()) {
       return store;
