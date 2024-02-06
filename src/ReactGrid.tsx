@@ -1,5 +1,4 @@
-import { keyframes } from "@emotion/react";
-import { FC, useEffect, useState, useTransition } from "react";
+import { FC, useEffect, useState } from "react";
 import { ErrorBoundary } from "./components/ErrorBoundary";
 import GridWrapper from "./components/GridWrapper";
 import PanesRenderer from "./components/PanesRenderer";
@@ -9,7 +8,7 @@ import { getCellIndexes } from "./utils/getCellIndexes.1";
 import { getNumericalRange } from "./utils/getNumericalRange";
 import isDevEnvironment from "./utils/isDevEnvironment";
 import { isSpanMember } from "./utils/isSpanMember";
-import { useReactGridStore as useInitReactGridStore, useReactGridStoreApi } from "./utils/reactGridStore";
+import { initReactGridStore, useReactGridStoreApi } from "./utils/reactGridStore";
 
 const devEnvironment = isDevEnvironment();
 
@@ -28,45 +27,32 @@ const ReactGrid: FC<ReactGridProps> = ({
   initialFocusLocation,
   styledRanges,
 }) => {
-  // TODO: Create store initializer instead of "initializing" with useEffect
-  // It's actually a useReactGridStore()
-  useInitReactGridStore(id, () => null); // Init store.
+  initReactGridStore(id,  {
+    rows,
+    columns,
+    cells,
+    behaviors,
+    styledRanges,
+  })
   const store = useReactGridStoreApi(id).getState();
   const {
-    setRows,
-    setColumns,
-    setCells,
-    setBehaviors,
     setSelectedArea,
     setFocusedLocation: setFocusedCell,
     getCellOrSpanMemberByIndexes,
-    setStyledRanges,
     getCellByIds,
   } = store;
 
   const [bypassSizeWarning, setBypassSizeWarning] = useState(false);
-  const [isGridStoreInitialized, setIsGridStoreInitialized] = useState(false);
 
   useEffect(() => {
-    if (styledRanges) setStyledRanges(styledRanges);
-  }, [styledRanges]);
-
-  useEffect(() => {
-    setRows(rows);
-    setColumns(columns);
-    setCells(cells);
-    setIsGridStoreInitialized(true);
-  }, [cells, columns, rows]);
-
-  useEffect(() => {
-    if (!initialSelectedRange || !isGridStoreInitialized) {
+    if (!initialSelectedRange) {
       return;
     } else {
       devEnvironment &&
         console.warn(
           "If you set initial selected range, be careful, as it may cut-trough spanned cells in an unintended way!"
         );
-      if (initialFocusLocation && isDevEnvironment()) {
+      if (initialFocusLocation && devEnvironment) {
         const cell = getCellByIds(initialFocusLocation.rowId, initialFocusLocation.rowId);
         if (!cell) {
           devEnvironment && console.error("There is no cell with indexes passed in initialFocusLocation prop.");
@@ -77,10 +63,10 @@ const ReactGrid: FC<ReactGridProps> = ({
 
       setSelectedArea(numericalInitialSelectedRange);
     }
-  }, [initialFocusLocation, initialSelectedRange, isGridStoreInitialized]);
+  }, [initialFocusLocation, initialSelectedRange]);
 
   useEffect(() => {
-    if (initialFocusLocation && isGridStoreInitialized) {
+    if (initialFocusLocation) {
       const { rowId, columnId } = initialFocusLocation;
       const cell = getCellByIds(rowId, columnId);
 
@@ -92,20 +78,16 @@ const ReactGrid: FC<ReactGridProps> = ({
 
       const targetCellOrSpanMember = getCellOrSpanMemberByIndexes(rowIndex, colIndex);
 
-      if (isDevEnvironment()) {
+      if (devEnvironment) {
         if (!targetCellOrSpanMember) {
           console.error("The provided 'initialFocusLocation' does not exist!");
         } else if (isSpanMember(targetCellOrSpanMember))
-          console.error("The provided 'initialFocusLocation' is invalid!");
+          console.error("The provided 'initialFocusLocation' is invalid as it targets !");
       }
 
       setFocusedCell(rowIndex, colIndex);
     }
-  }, [initialFocusLocation, isGridStoreInitialized]);
-
-  useEffect(() => {
-    if (behaviors) setBehaviors(behaviors);
-  }, [behaviors]);
+  }, [initialFocusLocation]);
 
   if (devEnvironment && !bypassSizeWarning && rows.length * columns.length > 25_000) {
     return (

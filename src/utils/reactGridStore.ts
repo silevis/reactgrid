@@ -3,26 +3,56 @@ import { CellSelectionBehavior } from "../behaviors/CellSelectionBehavior";
 import { DefaultBehavior } from "../behaviors/DefaultBehavior";
 import { Range, StyledRange } from "../types/PublicModel";
 import { isSpanMember } from "./isSpanMember";
-import { ReactGridStore } from "../types/ReactGridStore.ts";
+import { ReactGridStore, ReactGridStoreProps } from "../types/ReactGridStore.ts";
 
 type ReactGridStores = Record<string, StoreApi<ReactGridStore>>;
 
 const reactGridStores = create<ReactGridStores>(() => ({}));
 
-export function useReactGridStore<T>(id: string, selector: (store: ReactGridStore) => T): T {
+const DEFAULT_STORE_PROPS: ReactGridStoreProps = {
+  rows: [],
+  columns: [],
+  cells: new Map(),
+  rowMeasurements: [],
+  colMeasurements: [],
+  paneRanges: {
+    TopLeft: { startRowIdx: 0, endRowIdx: 0, startColIdx: 0, endColIdx: 0 },
+    TopCenter: { startRowIdx: 0, endRowIdx: 0, startColIdx: 0, endColIdx: 0 },
+    TopRight: { startRowIdx: 0, endRowIdx: 0, startColIdx: 0, endColIdx: 0 },
+    Left: { startRowIdx: 0, endRowIdx: 0, startColIdx: 0, endColIdx: 0 },
+    Center: { startRowIdx: 0, endRowIdx: 0, startColIdx: 0, endColIdx: 0 },
+    Right: { startRowIdx: 0, endRowIdx: 0, startColIdx: 0, endColIdx: 0 },
+    BottomLeft: { startRowIdx: 0, endRowIdx: 0, startColIdx: 0, endColIdx: 0 },
+    BottomCenter: { startRowIdx: 0, endRowIdx: 0, startColIdx: 0, endColIdx: 0 },
+    BottomRight: { startRowIdx: 0, endRowIdx: 0, startColIdx: 0, endColIdx: 0 },
+  },
+  styledRanges: [],
+  focusedLocation: { rowIndex: 0, colIndex: 0 },
+  selectedArea: { startRowIdx: -1, endRowIdx: -1, startColIdx: -1, endColIdx: -1 },
+  currentlyEditedCell: { rowIndex: -1, colIndex: -1 },
+  reactGridRef: undefined,
+  hiddenFocusTargetRef: undefined,
+  behaviors: {
+    Default: DefaultBehavior(),
+    CellSelection: CellSelectionBehavior,
+  },
+  currentBehavior: DefaultBehavior(),
+};
+
+export function initReactGridStore(id: string, initialProps?: Partial<ReactGridStoreProps>) {
   reactGridStores.setState((state) => {
     if (state[id]) return state;
 
     return {
       ...state,
-      [id]: createStore<ReactGridStore>((set, get) => ({
-        rows: [],
+      [id]: createStore<ReactGridStore>()((set, get) => ({
+        ...DEFAULT_STORE_PROPS,
+        ...initialProps,
+        behaviors: { ...DEFAULT_STORE_PROPS.behaviors, ...initialProps?.behaviors },
         setRows: (rows) => set(() => ({ rows })),
         getRowAmount: () => get().rows.length,
-        columns: [],
         setColumns: (columns) => set(() => ({ columns })),
         getColumnAmount: () => get().columns.length,
-        cells: new Map(),
         setCells: (cells) => set(() => ({ cells })),
         getCellByIds: (rowId, colId) => {
           const cell = get().cells.get(`${rowId} ${colId}`);
@@ -56,25 +86,11 @@ export function useReactGridStore<T>(id: string, selector: (store: ReactGridStor
           return cell;
         },
 
-        rowMeasurements: [],
         setRowMeasurements: (rowMeasurements) => set(() => ({ rowMeasurements })),
-        colMeasurements: [],
         setColMeasurements: (colMeasurements) => set(() => ({ colMeasurements })),
 
-        paneRanges: {
-          TopLeft: { startRowIdx: 0, endRowIdx: 0, startColIdx: 0, endColIdx: 0 },
-          TopCenter: { startRowIdx: 0, endRowIdx: 0, startColIdx: 0, endColIdx: 0 },
-          TopRight: { startRowIdx: 0, endRowIdx: 0, startColIdx: 0, endColIdx: 0 },
-          Left: { startRowIdx: 0, endRowIdx: 0, startColIdx: 0, endColIdx: 0 },
-          Center: { startRowIdx: 0, endRowIdx: 0, startColIdx: 0, endColIdx: 0 },
-          Right: { startRowIdx: 0, endRowIdx: 0, startColIdx: 0, endColIdx: 0 },
-          BottomLeft: { startRowIdx: 0, endRowIdx: 0, startColIdx: 0, endColIdx: 0 },
-          BottomCenter: { startRowIdx: 0, endRowIdx: 0, startColIdx: 0, endColIdx: 0 },
-          BottomRight: { startRowIdx: 0, endRowIdx: 0, startColIdx: 0, endColIdx: 0 },
-        },
         setPaneRanges: (paneRanges) => set(() => ({ paneRanges })),
 
-        focusedLocation: { rowIndex: 0, colIndex: 0 },
         setFocusedLocation: (rowIndex, colIndex) => set(() => ({ focusedLocation: { rowIndex, colIndex } })),
         getFocusedCell: () => {
           const { focusedLocation } = get();
@@ -85,35 +101,23 @@ export function useReactGridStore<T>(id: string, selector: (store: ReactGridStor
           return { ...cell, ...focusedLocation };
         },
 
-        selectedArea: { startRowIdx: -1, endRowIdx: -1, startColIdx: -1, endColIdx: -1 },
         setSelectedArea: (selectedArea) => set(() => ({ selectedArea })),
 
-        currentlyEditedCell: { rowIndex: -1, colIndex: -1 },
         setCurrentlyEditedCell: (rowIndex, colIndex) => set(() => ({ currentlyEditedCell: { rowIndex, colIndex } })),
 
-        reactGridRef: undefined,
         assignReactGridRef: (reactGridRef) => set(() => ({ reactGridRef })),
-
-        hiddenFocusTargetRef: undefined,
         assignHiddenFocusTargetRef: (hiddenFocusTargetRef) => set(() => ({ hiddenFocusTargetRef })),
 
-        behaviors: {
-          Default: DefaultBehavior(),
-          CellSelection: CellSelectionBehavior,
-        },
-        currentBehavior: get()?.behaviors["Default"] ?? DefaultBehavior(),
         setBehaviors: (behaviors) => set(() => ({ ...get().behaviors, ...behaviors })),
         getBehavior: (behaviorId) => {
-          const behavior = get().behaviors[behaviorId];
+          const behavior = get().behaviors?.[behaviorId];
 
           if (!behavior) throw new Error(`Behavior with id "${behaviorId}" doesn't exist!`);
 
           return behavior;
         },
 
-        styledRanges: [],
         setStyledRanges: (styledRanges) => set(() => ({ styledRanges })),
-
         getStyledRanges: (range?: Range): StyledRange[] | [] => {
           const styledRanges: StyledRange[] = get().styledRanges;
           if (!range) {
@@ -128,6 +132,16 @@ export function useReactGridStore<T>(id: string, selector: (store: ReactGridStor
         },
       })),
     };
+  });
+}
+
+export function useReactGridStore<T>(id: string, selector: (store: ReactGridStore) => T): T {
+  reactGridStores.setState((state) => {
+    if (state[id]) {
+      return state;
+    } else {
+     throw new Error(`ReactGridStore with id "${id}" doesn't exist!`);
+    }
   });
 
   const selectedStore = useStore(reactGridStores, (state) => state[id]);
