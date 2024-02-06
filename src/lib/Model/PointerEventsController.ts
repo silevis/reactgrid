@@ -235,16 +235,12 @@ export class PointerEventsController extends AbstractPointerEventsController {
 
     private handleCut = (event: ClipboardEvent) => {
       this.updateState((state) => {
-        // (event.target as HTMLDivElement).classList.add("box");
-        // 获取被选中文本所在的单元格元素
-        // const selectedElement = window.getSelection()?.anchorNode?.parentNode;
-  
         const elements = document.querySelectorAll(".rg-partial-area-cut-range");
         const selectedElement = elements[0];
-        // 为被剪切的单元格添加蚂蚁线效果
+        // Adds an ant line effect to the clipped cell
         selectedElement?.classList?.add("cut-ant-line-box");
   
-        // 设置一个定时器，一定时间后移除效果
+        // Set a timer to remove the effect after a certain amount of time
         setTimeout(function () {
           selectedElement?.classList?.remove("cut-ant-line-box");
         }, 60000);
