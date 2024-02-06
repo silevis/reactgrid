@@ -9,7 +9,7 @@ export function isTheSameCell(firstCell: Cell | HTMLElement, secondCell: Cell | 
 
   if (isBasedOnContainers) {
     const firstIndexes = getCellIndexesFromContainerElement(firstCell);
-    const secondIndexes = getCellIndexesFromContainerElement(firstCell);
+    const secondIndexes = getCellIndexesFromContainerElement(secondCell);
 
     return (
       firstIndexes &&
