@@ -1,38 +1,56 @@
 import React from "react";
-import { HandlerFn } from "../types/Behavior.ts";
 import { StoreApi } from "zustand";
+import { HandlerFn } from "../types/Behavior.ts";
+import { getCellContainerFromPoint } from "../utils/getCellContainerFromPoint.ts";
+import { isTheSameCell } from "../utils/isTheSameCell.ts";
 import { ReactGridStore } from "../utils/reactGridStore.ts";
 import { updateStoreWithApiAndEventHandler } from "../utils/updateStoreWithApiAndEventHandler.ts";
 
-export const handlePointerDown = (pointerDownEvent: React.PointerEvent<HTMLDivElement>, storeApi: StoreApi<ReactGridStore>) => {
-  const withStoreApi = <TEvent extends React.SyntheticEvent<HTMLDivElement>>(
+export const handlePointerDown = (
+  pointerDownEvent: React.PointerEvent<HTMLDivElement>,
+  storeApi: StoreApi<ReactGridStore>
+) => {
+  function getNewestState() {
+    return storeApi.getState();
+  }
+
+  const updateWithStoreApi = <TEvent extends React.SyntheticEvent<HTMLElement> | PointerEvent>(
     event: TEvent,
     handler?: HandlerFn<TEvent>
   ) => updateStoreWithApiAndEventHandler(storeApi, event, handler);
 
   const store = storeApi.getState();
 
-  const handlePointerMove = (pointerMoveEvent: PointerEvent) => {};
+  let previousCellContainer: HTMLElement | null = null;
+
+  const handlePointerMove = (pointerMoveEvent: PointerEvent) => {
+    updateWithStoreApi(pointerMoveEvent, getNewestState().currentBehavior.handlePointerMove);
+
+    const hoveredCellContainer = getCellContainerFromPoint(pointerMoveEvent.clientX, pointerMoveEvent.clientY);
+
+    if (hoveredCellContainer) {
+      if (previousCellContainer && !isTheSameCell(hoveredCellContainer, previousCellContainer)) {
+        handlePointerEnter(pointerMoveEvent);
+      }
+      previousCellContainer = hoveredCellContainer;
+    }
+  };
+
+  const handlePointerEnter = (pointerEnterEvent: PointerEvent) => {
+    updateWithStoreApi(pointerEnterEvent, getNewestState().currentBehavior.handlePointerEnter);
+  };
 
   const handlePointerUp = (pointerUpEvent: PointerEvent) => {
     // Remove listeners after pointerUp
     window.removeEventListener("pointermove", handlePointerMove);
     window.removeEventListener("pointerup", handlePointerUp);
+
+    updateWithStoreApi(pointerUpEvent, getNewestState().currentBehavior.handlePointerUp);
   };
 
   // Remove listeners after pointerDown
   window.addEventListener("pointermove", handlePointerMove);
   window.addEventListener("pointerup", handlePointerUp);
 
-  // With specified order behavior in mind, handlePointerDown on each behavior.
-  const behaviors = Object.entries(store.behaviors);
-  behaviors.forEach(([_behaviorId, behavior]) => {
-    withStoreApi(pointerDownEvent, behavior.handlePointerDown);
-
-    if (pointerDownEvent.isPropagationStopped()) {
-      return;
-    }
-  });
-
-  return store;
+  updateWithStoreApi(pointerDownEvent, store.currentBehavior.handlePointerDown);
 };

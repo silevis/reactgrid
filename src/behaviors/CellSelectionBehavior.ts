@@ -129,6 +129,10 @@ export const CellSelectionBehavior: Behavior = {
     return store;
   },
 
+  handlePointerEnter(event, store) {
+    return store;
+  },
+
   handleTouchMove(event, store) {
     devEnvironment && console.log("CSB/handleTouchMove");
     event.preventDefault(); // disable move/scroll move
@@ -158,7 +162,7 @@ export const CellSelectionBehavior: Behavior = {
         const { rowIndex, colIndex } = nonStickyRowsAndColumns || NO_CELL_LOCATION;
         scrollTowardsSticky(store, cell, { rowIndex, colIndex });
 
-        return tryExpandingTowardsCell(store, cell, rowIndex, colIndex); 
+        return tryExpandingTowardsCell(store, cell, rowIndex, colIndex);
       }
     }
 
