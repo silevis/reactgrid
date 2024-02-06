@@ -1,9 +1,8 @@
-import { FocusedCell } from "../types/InternalModel";
+import { EMPTY_AREA, FocusedCell } from "../types/InternalModel";
 import { getCellArea } from "./getCellArea";
 import { areAreasEqual } from "./areAreasEqual";
 import { isCellInRange } from "./isCellInRange";
 import { findMinimalSelectedArea } from "./findMinimalSelectedArea";
-import { EMPTY_AREA } from "../types/InternalModel";
 
 import { ReactGridStore } from "../types/ReactGridStore.ts";
 
@@ -113,7 +112,7 @@ export const resizeSelectionInDirection = (
   if (areAreasEqual(selectedArea, focusedCellArea)) {
     return {
       ...store,
-      selectedArea: EMPTY_AREA,
+      selectedArea: EMPTY_AREA
     };
   }
 
@@ -125,7 +124,7 @@ export const resizeSelectionInDirection = (
   return {
     ...store,
     selectedArea: {
-      ...newSelectedArea,
-    },
+      ...newSelectedArea
+    }
   };
 };

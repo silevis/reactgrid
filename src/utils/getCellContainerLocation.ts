@@ -10,12 +10,12 @@ export function getCellContainerLocation(element: HTMLElement): IndexedLocation 
   if (rowIdxMatch && colIdxMatch) {
     return {
       rowIndex: parseInt(rowIdxMatch[1]),
-      colIndex: parseInt(colIdxMatch[1]),
+      colIndex: parseInt(colIdxMatch[1])
     };
   } else {
     return {
       rowIndex: -1,
-      colIndex: -1,
+      colIndex: -1
     };
   }
 }

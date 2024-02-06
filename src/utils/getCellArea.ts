@@ -14,7 +14,7 @@ export const getCellArea = (store: ReactGridStore, cell: Cell | SpanMember): Num
       startRowIdx: rowIndex,
       endRowIdx: rowIndex + (originCell?.rowSpan ?? 1),
       startColIdx: colIndex,
-      endColIdx: colIndex + (originCell?.colSpan ?? 1),
+      endColIdx: colIndex + (originCell?.colSpan ?? 1)
     };
   }
 
@@ -22,6 +22,6 @@ export const getCellArea = (store: ReactGridStore, cell: Cell | SpanMember): Num
     startRowIdx: rowIndex,
     endRowIdx: rowIndex + 1,
     startColIdx: colIndex,
-    endColIdx: colIndex + 1,
+    endColIdx: colIndex + 1
   };
 };

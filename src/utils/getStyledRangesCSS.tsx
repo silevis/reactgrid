@@ -4,7 +4,6 @@ import { InternalStyledRange } from "../types/InternalModel";
 import { createStyledRangesCSS } from "./createStyledRangesCSS";
 import { ReactGridStore } from "../types/ReactGridStore.ts";
 
-
 export function getStyledRangesCSS(store: ReactGridStore, styledRanges: StyledRange[]): StyledRangesCSS {
   const styledNumericalRanges: InternalStyledRange[] = styledRanges.map((styledRange) => {
     const { styles, range } = styledRange;

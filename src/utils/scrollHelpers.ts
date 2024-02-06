@@ -1,21 +1,26 @@
 type ScrollableElement = HTMLElement | ReturnType<typeof getTopScrollableElement> | undefined;
 
 export const getScrollableParent = (element: HTMLElement, includeHidden: boolean): ScrollableElement => {
-    let style = getComputedStyle(element);
-    const excludeStaticParent = style.position === 'absolute';
-    const overflowRegex = includeHidden ? /(auto|scroll|hidden)/ : /(auto|scroll)/;
-    if (style.position === 'fixed') return document.documentElement;
-    for (let parent = element; ((parent as HTMLElement | null) = parent.parentElement);) {
-        style = getComputedStyle(parent);
-        if (excludeStaticParent && style.position === 'static')
-            continue;
-        if (overflowRegex.test(style.overflow + style.overflowY + style.overflowX))
-            return parent;
-    }
-    return getTopScrollableElement();
-}
+  let style = getComputedStyle(element);
+  const excludeStaticParent = style.position === "absolute";
+  const overflowRegex = includeHidden ? /(auto|scroll|hidden)/ : /(auto|scroll)/;
+  if (style.position === "fixed") return document.documentElement;
+  for (let parent = element; ((parent as HTMLElement | null) = parent.parentElement);) {
+    style = getComputedStyle(parent);
+    if (excludeStaticParent && style.position === "static")
+      continue;
+    if (overflowRegex.test(style.overflow + style.overflowY + style.overflowX))
+      return parent;
+  }
+  return getTopScrollableElement();
+};
 
-export const getScrollOfScrollableElement = (element: ScrollableElement): { scrollLeft: number; scrollTop: number, scrollWidth: number, scrollHeight: number } => {
+export const getScrollOfScrollableElement = (element: ScrollableElement): {
+  scrollLeft: number;
+  scrollTop: number,
+  scrollWidth: number,
+  scrollHeight: number
+} => {
   // Check if element is defined
   if (element !== undefined) {
     // Cast element to HTMLElement
@@ -28,7 +33,7 @@ export const getScrollOfScrollableElement = (element: ScrollableElement): { scro
       scrollTop: elementScrollTop,
       clientTop,
       scrollWidth: elementScrollWidth,
-      scrollHeight: elementScrollHeight,
+      scrollHeight: elementScrollHeight
     } = htmlElement;
     const { scrollX, scrollY, innerWidth, innerHeight } = getTopScrollableElement();
 
@@ -45,7 +50,7 @@ export const getScrollOfScrollableElement = (element: ScrollableElement): { scro
     // If element is not defined, return zeros
     return { scrollLeft: 0, scrollTop: 0, scrollWidth: 0, scrollHeight: 0 };
   }
-}
+};
 
 export const getSizeOfScrollableElement = (element: ScrollableElement): { width: number; height: number } => {
   // Check if element is defined
@@ -56,7 +61,7 @@ export const getSizeOfScrollableElement = (element: ScrollableElement): { width:
     // Destructure properties from htmlElement and getTopScrollableElement
     const {
       clientWidth: elementClientWidth,
-      clientHeight: elementClientHeight,
+      clientHeight: elementClientHeight
     } = htmlElement;
     const { innerWidth, innerHeight } = getTopScrollableElement();
 
@@ -69,8 +74,8 @@ export const getSizeOfScrollableElement = (element: ScrollableElement): { width:
     // If element is not defined, return zeros
     return { width: 0, height: 0 };
   }
-}
+};
 
 export const getTopScrollableElement = (): Window & typeof globalThis => {
-    return window;
-}
+  return window;
+};

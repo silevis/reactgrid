@@ -10,7 +10,7 @@ interface CellAndLocation extends IndexedLocation {
 
 export const getLocationFromClient = (store: ReactGridStore, clientX: number, clientY: number): CellAndLocation => {
   if (!store.reactGridRef) {
-    throw new Error('ReactGridRef is not assigned!');
+    throw new Error("ReactGridRef is not assigned!");
   }
 
   const cellContainer = getCellContainerFromPoint(clientX, clientY);
@@ -28,7 +28,7 @@ export const getLocationFromClient = (store: ReactGridStore, clientX: number, cl
       return {
         cell: undefined,
         rowIndex: -1,
-        colIndex: -1,
+        colIndex: -1
       };
     }
 
@@ -41,7 +41,7 @@ export const getLocationFromClient = (store: ReactGridStore, clientX: number, cl
     return {
       cell: undefined,
       rowIndex: -1,
-      colIndex: -1,
+      colIndex: -1
     };
   }
 

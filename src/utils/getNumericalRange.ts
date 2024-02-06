@@ -23,7 +23,7 @@ export function getNumericalRange(store: ReactGridStore, range: Range): Numerica
     startRowIdx: startRowIndex,
     startColIdx: startColIndex,
     endRowIdx: endRowIndex,
-    endColIdx: endColIndex,
+    endColIdx: endColIndex
   };
 
   if (areAreasEqual(numericalRange, EMPTY_AREA)) console.warn("Each of numerical range properties is -1!");

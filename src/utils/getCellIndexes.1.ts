@@ -14,6 +14,6 @@ export function getCellIndexes(store: ReactGridStore, cell: Cell): { rowIndex: n
 
   return {
     rowIndex,
-    colIndex,
+    colIndex
   };
 }

@@ -7,7 +7,7 @@ import { ReactGridStore } from "../types/ReactGridStore.ts";
 
 const absoluteLocation = {
   rowIndex: -1,
-  colIndex: -1,
+  colIndex: -1
 };
 
 export const moveFocusUp = (store: ReactGridStore, currentFocus: FocusedCell): ReactGridStore => {
@@ -35,7 +35,7 @@ export const moveFocusUp = (store: ReactGridStore, currentFocus: FocusedCell): R
       return {
         ...store,
         focusedLocation: { rowIndex: originRowIndex, colIndex: originColIndex },
-        selectedArea: EMPTY_AREA,
+        selectedArea: EMPTY_AREA
       };
     }
   }
@@ -67,15 +67,13 @@ export const moveFocusRight = (store: ReactGridStore, currentFocus: FocusedCell)
       return {
         ...store,
         focusedLocation: { rowIndex: originRowIndex, colIndex: originColIndex },
-        selectedArea: EMPTY_AREA,
+        selectedArea: EMPTY_AREA
       };
     }
   }
 
   return store;
 };
-
-
 
 export const moveFocusDown = (store: ReactGridStore, currentFocus: FocusedCell) => {
   if (currentFocus.rowIndex === store.rows.length - 1) return store;
@@ -101,7 +99,7 @@ export const moveFocusDown = (store: ReactGridStore, currentFocus: FocusedCell) 
       return {
         ...store,
         focusedLocation: { rowIndex: originRowIndex, colIndex: originColIndex },
-        selectedArea: EMPTY_AREA,
+        selectedArea: EMPTY_AREA
       };
     }
   }
@@ -134,7 +132,7 @@ export const moveFocusLeft = (store: ReactGridStore, currentFocus: FocusedCell) 
       return {
         ...store,
         focusedLocation: { rowIndex: originRowIndex, colIndex: originColIndex },
-        selectedArea: EMPTY_AREA,
+        selectedArea: EMPTY_AREA
       };
     }
   }
@@ -173,7 +171,7 @@ export const moveFocusInsideSelectedRange = (
         !nextPossibleLocation ||
         isSpanMember(nextPossibleLocation) ||
         nextPossibleLocation?.isFocusable === false
-      );
+        );
 
       return { ...store, focusedLocation: { rowIndex: rowIdx, colIndex: colIdx } };
     }
@@ -203,7 +201,7 @@ export const moveFocusInsideSelectedRange = (
         !nextPossibleLocation ||
         isSpanMember(nextPossibleLocation) ||
         nextPossibleLocation?.isFocusable === false
-      );
+        );
 
       return { ...store, focusedLocation: { rowIndex: rowIdx, colIndex: colIdx } };
     }
@@ -233,7 +231,7 @@ export const moveFocusInsideSelectedRange = (
         !nextPossibleLocation ||
         isSpanMember(nextPossibleLocation) ||
         nextPossibleLocation?.isFocusable === false
-      );
+        );
 
       return { ...store, focusedLocation: { rowIndex: rowIdx, colIndex: colIdx } };
     }
@@ -263,7 +261,7 @@ export const moveFocusInsideSelectedRange = (
         !nextPossibleLocation ||
         isSpanMember(nextPossibleLocation) ||
         nextPossibleLocation?.isFocusable === false
-      );
+        );
 
       return { ...store, focusedLocation: { rowIndex: rowIdx, colIndex: colIdx } };
     }
