@@ -56,7 +56,7 @@ export class PointerEventsController extends AbstractPointerEventsController {
         event.clientY
       );
 
-      window.addEventListener("cut", this.handleCut);
+      window.addEventListener("cut", this.handleCut as EventListener);
       return this.handlePointerDownInternal(event, currentLocation, state);
     };
   
