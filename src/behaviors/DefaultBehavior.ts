@@ -52,7 +52,7 @@ export const DefaultBehavior = (config: DefaultBehaviorConfig = CONFIG_DEFAULTS)
   },
 
   handlePointerMove: (event, store) => {
-    if (isMobile()) {
+    if (hasTouchSupport()) {
       return store;
     }
     devEnvironment && console.log("DB/handlePointerMove");
@@ -96,7 +96,7 @@ export const DefaultBehavior = (config: DefaultBehaviorConfig = CONFIG_DEFAULTS)
     return handleKeyDown(event, store, { moveHorizontallyOnEnter: config.moveHorizontallyOnEnter });
   },
 
-  handleTouchStart: function (event, store) {
+  handlePointerDownTouch: function (event, store) {
     if (!hasTouchSupport()) {
       return store;
     }
@@ -127,7 +127,7 @@ export const DefaultBehavior = (config: DefaultBehaviorConfig = CONFIG_DEFAULTS)
     return store;
   },
 
-  handleTouchMove: function (_event, store) {
+  handlePointerMoveTouch: function (_event, store) {
     if (!hasTouchSupport()) {
       return store;
     }
@@ -137,7 +137,7 @@ export const DefaultBehavior = (config: DefaultBehaviorConfig = CONFIG_DEFAULTS)
     return store;
   },
 
-  handleTouchEnd: function (event, store) {
+  handlePointerUpTouch: function (event, store) {
     if (!hasTouchSupport()) {
       return store;
     }

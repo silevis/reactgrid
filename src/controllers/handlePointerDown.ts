@@ -14,6 +14,8 @@ export const handlePointerDown = (
     return storeApi.getState();
   }
 
+  const usedTouch = pointerDownEvent.pointerType !== "mouse"; // * keep in mind there is also "pen" pointerType
+
   const updateWithStoreApi = <TEvent extends React.SyntheticEvent<HTMLElement> | PointerEvent>(
     event: TEvent,
     handler?: HandlerFn<TEvent>
@@ -24,7 +26,11 @@ export const handlePointerDown = (
   let previousCellContainer: HTMLElement | null = null;
 
   const handlePointerMove = (pointerMoveEvent: PointerEvent) => {
-    updateWithStoreApi(pointerMoveEvent, getNewestState().currentBehavior.handlePointerMove);
+    const handler = usedTouch
+      ? getNewestState().currentBehavior.handlePointerMoveTouch
+      : getNewestState().currentBehavior.handlePointerMove;
+
+    updateWithStoreApi(pointerMoveEvent, handler);
 
     const hoveredCellContainer = getCellContainerFromPoint(pointerMoveEvent.clientX, pointerMoveEvent.clientY);
 
@@ -37,7 +43,11 @@ export const handlePointerDown = (
   };
 
   const handlePointerEnter = (pointerEnterEvent: PointerEvent) => {
-    updateWithStoreApi(pointerEnterEvent, getNewestState().currentBehavior.handlePointerEnter);
+    const handler = usedTouch
+      ? getNewestState().currentBehavior.handlePointerEnterTouch
+      : getNewestState().currentBehavior.handlePointerEnter;
+
+    updateWithStoreApi(pointerEnterEvent, handler);
   };
 
   const handlePointerUp = (pointerUpEvent: PointerEvent) => {
@@ -45,12 +55,18 @@ export const handlePointerDown = (
     window.removeEventListener("pointermove", handlePointerMove);
     window.removeEventListener("pointerup", handlePointerUp);
 
-    updateWithStoreApi(pointerUpEvent, getNewestState().currentBehavior.handlePointerUp);
+    const handler = usedTouch
+      ? getNewestState().currentBehavior.handlePointerUpTouch
+      : getNewestState().currentBehavior.handlePointerUp;
+
+    updateWithStoreApi(pointerUpEvent, handler);
   };
 
   // Remove listeners after pointerDown
   window.addEventListener("pointermove", handlePointerMove);
   window.addEventListener("pointerup", handlePointerUp);
 
-  updateWithStoreApi(pointerDownEvent, store.currentBehavior.handlePointerDown);
+  const handler = usedTouch ? store.currentBehavior.handlePointerDownTouch : store.currentBehavior.handlePointerDown;
+
+  updateWithStoreApi(pointerDownEvent, handler);
 };

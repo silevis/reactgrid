@@ -112,7 +112,7 @@ export const CellSelectionBehavior: Behavior = {
     };
   },
 
-  handleTouchStart(_event, store) {
+  handlePointerDownTouch(_event, store) {
     devEnvironment && console.log("CSB/handleTouchStart");
 
     const DefaultBehavior = store.getBehavior("Default");
@@ -123,7 +123,7 @@ export const CellSelectionBehavior: Behavior = {
     };
   },
 
-  handleTouchEnd(event, store) {
+  handlePointerUpTouch(event, store) {
     devEnvironment && console.log("CSB/handleTouchEnd");
 
     return store;
@@ -133,7 +133,7 @@ export const CellSelectionBehavior: Behavior = {
     return store;
   },
 
-  handleTouchMove(event, store) {
+  handlePointerMoveTouch(event, store) {
     devEnvironment && console.log("CSB/handleTouchMove");
     event.preventDefault(); // disable move/scroll move
 
