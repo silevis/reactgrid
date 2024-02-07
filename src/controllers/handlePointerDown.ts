@@ -3,8 +3,8 @@ import { StoreApi } from "zustand";
 import { HandlerFn } from "../types/Behavior.ts";
 import { getCellContainerFromPoint } from "../utils/getCellContainerFromPoint.ts";
 import { isTheSameCell } from "../utils/isTheSameCell.ts";
-import { ReactGridStore } from "../utils/reactGridStore.ts";
 import { updateStoreWithApiAndEventHandler } from "../utils/updateStoreWithApiAndEventHandler.ts";
+import { ReactGridStore } from "../types/ReactGridStore.ts";
 
 export const handlePointerDown = (
   pointerDownEvent: React.PointerEvent<HTMLDivElement>,
