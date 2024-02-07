@@ -10,7 +10,6 @@ export type HandlerFn<TEvent extends React.SyntheticEvent | Event> = (
 ) => ReactGridStore;
 
 export type PointerEventHandler = HandlerFn<React.PointerEvent<HTMLDivElement> | PointerEvent>;
-export type TouchEventHandler = HandlerFn<React.TouchEvent<HTMLDivElement>>;
 export type MouseEventHandler = HandlerFn<React.MouseEvent<HTMLDivElement>>;
 export type KeyboardEventHandler = HandlerFn<React.KeyboardEvent<HTMLDivElement>>;
 export type CompositionEventHandler = HandlerFn<React.CompositionEvent<HTMLDivElement>>;
@@ -25,10 +24,10 @@ export type Behavior = {
   handlePointerLeave?: PointerEventHandler;
   handlePointerUp?: PointerEventHandler;
 
-  handleTouchStart?: TouchEventHandler;
-  handleTouchMove?: TouchEventHandler;
-  handleTouchEnd?: TouchEventHandler;
-  handleTouchCancel?: TouchEventHandler;
+  handlePointerDownTouch?: PointerEventHandler;
+  handlePointerMoveTouch?: PointerEventHandler;
+  handlePointerEnterTouch?: PointerEventHandler;
+  handlePointerUpTouch?: PointerEventHandler;
 
   handleDoubleClick?: MouseEventHandler;
 

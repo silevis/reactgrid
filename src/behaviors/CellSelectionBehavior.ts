@@ -1,18 +1,17 @@
 import { Behavior } from "../types/Behavior";
+import { NO_CELL_LOCATION } from "../types/InternalModel";
 import { Cell } from "../types/PublicModel";
-import { getCellIndexesFromPointerLocation } from "../utils/getCellIndexesFromPointerLocation";
+import { ReactGridStore } from "../types/ReactGridStore.ts";
+import { findMinimalSelectedArea } from "../utils/findMinimalSelectedArea.ts";
+import { getCellContainer } from "../utils/getCellContainer.ts";
 import { getCellIndexesFromContainerElement } from "../utils/getCellIndexes";
+import { getCellIndexesFromPointerLocation } from "../utils/getCellIndexesFromPointerLocation";
 import { getNonStickyCellContainer } from "../utils/getNonStickyCellContainer";
-import { scrollTowardsSticky } from "../utils/scrollTowardsSticky";
-import { isMobile } from "../utils/isMobile";
+import { isCellSticky } from "../utils/isCellSticky.ts";
+import isDevEnvironment from "../utils/isDevEnvironment";
 import { getScrollableParent } from "../utils/scrollHelpers";
 import { scrollToElementEdge } from "../utils/scrollToElementEdge";
-import isDevEnvironment from "../utils/isDevEnvironment";
-import { ReactGridStore } from "../types/ReactGridStore.ts";
-import { NO_CELL_LOCATION } from "../types/InternalModel";
-import { findMinimalSelectedArea } from "../utils/findMinimalSelectedArea.ts";
-import { isCellSticky } from "../utils/isCellSticky.ts";
-import { getCellContainer } from "../utils/getCellContainer.ts";
+import { scrollTowardsSticky } from "../utils/scrollTowardsSticky";
 
 const devEnvironment = isDevEnvironment();
 
@@ -68,9 +67,6 @@ export const CellSelectionBehavior: Behavior = {
   id: "CellSelection",
 
   handlePointerMove(event, store) {
-    if (isMobile()) {
-      return store;
-    }
     devEnvironment && console.log("CSB/handlePointerMove");
 
     const { clientX, clientY } = event;
@@ -100,10 +96,7 @@ export const CellSelectionBehavior: Behavior = {
     return tryExpandingTowardsCell(store, cell, rowIndex, colIndex);
   },
 
-  handlePointerUp(_event, store) {
-    if (isMobile()) {
-      return store;
-    }
+  handlePointerUp(event, store) {
     const DefaultBehavior = store.getBehavior("Default");
 
     return {
@@ -112,8 +105,8 @@ export const CellSelectionBehavior: Behavior = {
     };
   },
 
-  handleTouchStart(_event, store) {
-    devEnvironment && console.log("CSB/handleTouchStart");
+  handlePointerDownTouch(event, store) {
+    devEnvironment && console.log("CSB/handlePointerDownTouch");
 
     const DefaultBehavior = store.getBehavior("Default");
 
@@ -123,22 +116,22 @@ export const CellSelectionBehavior: Behavior = {
     };
   },
 
-  handleTouchEnd(event, store) {
-    devEnvironment && console.log("CSB/handleTouchEnd");
+  handlePointerUpTouch(event, store) {
+    devEnvironment && console.log("CSB/handlePointerUpTouch");
 
     return store;
   },
 
   handlePointerEnter(event, store) {
+
     return store;
   },
 
-  handleTouchMove(event, store) {
-    devEnvironment && console.log("CSB/handleTouchMove");
-    event.preventDefault(); // disable move/scroll move
+  handlePointerMoveTouch(event, store) {
+    devEnvironment && console.log("CSB/handlePointerMoveTouch");
 
-    const touchedElement = event.touches[0]; //  * This might be not a good idea to do it that way...
-    const { clientX, clientY } = touchedElement;
+    const { clientX, clientY } = event;
+
     const { rowIndex, colIndex } = getCellIndexesFromPointerLocation(clientX, clientY);
     const cell = store.getCellByIndexes(rowIndex, colIndex);
 
@@ -147,7 +140,9 @@ export const CellSelectionBehavior: Behavior = {
     }
 
     const isStickyCell = isCellSticky(store, cell);
-    const cellContainer = isStickyCell ? getCellContainer(store, cell) : getNonStickyCellContainer(clientX, clientY);
+    const cellContainer = (
+      isStickyCell ? getCellContainer(store, cell) : getNonStickyCellContainer(clientX, clientY)
+    ) as HTMLElement | undefined;
 
     if (cellContainer) {
       const scrollableParent = getScrollableParent(cellContainer as HTMLElement, true);
@@ -155,7 +150,7 @@ export const CellSelectionBehavior: Behavior = {
         scrollableParent && "clientWidth" in scrollableParent && "clientHeight" in scrollableParent;
 
       scrollableParentIsNotAWindow ? scrollToElementEdge({ x: clientX, y: clientY }, scrollableParent) : () => {}; // TODO: scrollToWindowEdge({ x: clientX, y: clientY }); - function not implemented yet!
-      // scrollToWindowEdge - not possible to test in Ladle environment, due to clientX/Y acting like pageX/Y
+      // * scrollToWindowEdge - not possible to test in Ladle environment, due to clientX/Y acting like pageX/Y
 
       if (isStickyCell) {
         const nonStickyRowsAndColumns = getCellIndexesFromContainerElement(cellContainer);
@@ -167,5 +162,10 @@ export const CellSelectionBehavior: Behavior = {
     }
 
     return tryExpandingTowardsCell(store, cell, rowIndex, colIndex);
+  },
+
+  handlePointerEnterTouch(event, store) {
+
+    return store;
   },
 };
