@@ -6,15 +6,12 @@ import { isTheSameCell } from "../utils/isTheSameCell.ts";
 import { updateStoreWithApiAndEventHandler } from "../utils/updateStoreWithApiAndEventHandler.ts";
 import { ReactGridStore } from "../types/ReactGridStore.ts";
 
-export const handlePointerDown = (
-  pointerDownEvent: React.PointerEvent<HTMLDivElement>,
-  storeApi: StoreApi<ReactGridStore>
-) => {
+export const handlePointerDown = (event: React.PointerEvent<HTMLDivElement>, storeApi: StoreApi<ReactGridStore>) => {
   function getNewestState() {
     return storeApi.getState();
   }
 
-  const usedTouch = pointerDownEvent.pointerType !== "mouse"; // * keep in mind there is also "pen" pointerType
+  const usedTouch = event.pointerType !== "mouse"; // * keep in mind there is also "pen" pointerType
 
   const updateWithStoreApi = <TEvent extends React.SyntheticEvent<HTMLElement> | PointerEvent>(
     event: TEvent,
@@ -25,32 +22,32 @@ export const handlePointerDown = (
 
   let previousCellContainer: HTMLElement | null = null;
 
-  const handlePointerMove = (pointerMoveEvent: PointerEvent) => {
+  const handlePointerMove = (event: PointerEvent) => {
     const handler = usedTouch
       ? getNewestState().currentBehavior.handlePointerMoveTouch
       : getNewestState().currentBehavior.handlePointerMove;
 
-    updateWithStoreApi(pointerMoveEvent, handler);
+    updateWithStoreApi(event, handler);
 
-    const hoveredCellContainer = getCellContainerFromPoint(pointerMoveEvent.clientX, pointerMoveEvent.clientY);
+    const hoveredCellContainer = getCellContainerFromPoint(event.clientX, event.clientY);
 
     if (hoveredCellContainer) {
       if (previousCellContainer && !isTheSameCell(hoveredCellContainer, previousCellContainer)) {
-        handlePointerEnter(pointerMoveEvent);
+        handlePointerEnter(event);
       }
       previousCellContainer = hoveredCellContainer;
     }
   };
 
-  const handlePointerEnter = (pointerEnterEvent: PointerEvent) => {
+  const handlePointerEnter = (event: PointerEvent) => {
     const handler = usedTouch
       ? getNewestState().currentBehavior.handlePointerEnterTouch
       : getNewestState().currentBehavior.handlePointerEnter;
 
-    updateWithStoreApi(pointerEnterEvent, handler);
+    updateWithStoreApi(event, handler);
   };
 
-  const handlePointerUp = (pointerUpEvent: PointerEvent) => {
+  const handlePointerUp = (event: PointerEvent) => {
     // Remove listeners after pointerUp
     window.removeEventListener("pointermove", handlePointerMove);
     window.removeEventListener("pointerup", handlePointerUp);
@@ -59,7 +56,7 @@ export const handlePointerDown = (
       ? getNewestState().currentBehavior.handlePointerUpTouch
       : getNewestState().currentBehavior.handlePointerUp;
 
-    updateWithStoreApi(pointerUpEvent, handler);
+    updateWithStoreApi(event, handler);
   };
 
   // Remove listeners after pointerDown
@@ -68,5 +65,5 @@ export const handlePointerDown = (
 
   const handler = usedTouch ? store.currentBehavior.handlePointerDownTouch : store.currentBehavior.handlePointerDown;
 
-  updateWithStoreApi(pointerDownEvent, handler);
+  updateWithStoreApi(event, handler);
 };

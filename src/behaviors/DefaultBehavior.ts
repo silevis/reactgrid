@@ -1,11 +1,10 @@
 import { Behavior } from "../types/Behavior";
-import { handleKeyDown } from "../utils/handleKeyDown";
-import { hasTouchSupport, isMobile } from "../utils/isMobile";
-import { getCellContainerLocation } from "../utils/getCellContainerLocation";
-import { getCellContainerFromPoint } from "../utils/getCellContainerFromPoint";
 import { Position } from "../types/PublicModel";
-import isDevEnvironment from "../utils/isDevEnvironment";
 import { ReactGridStore } from "../types/ReactGridStore.ts";
+import { getCellContainerFromPoint } from "../utils/getCellContainerFromPoint";
+import { getCellContainerLocation } from "../utils/getCellContainerLocation";
+import { handleKeyDown } from "../utils/handleKeyDown";
+import isDevEnvironment from "../utils/isDevEnvironment";
 
 const devEnvironment = isDevEnvironment();
 
@@ -17,8 +16,6 @@ const CONFIG_DEFAULTS: DefaultBehaviorConfig = {
   moveHorizontallyOnEnter: false,
 } as const;
 
-const timer: ReturnType<typeof setTimeout> | null = null;
-let pointerDownPosition: Position | null = null;
 let touchStartPosition: Position | null = null;
 let touchEndPosition: Position | null = null;
 
@@ -28,12 +25,8 @@ let touchEndPosition: Position | null = null;
 export const DefaultBehavior = (config: DefaultBehaviorConfig = CONFIG_DEFAULTS): Behavior => ({
   id: "Default",
   handlePointerDown: function (event, store): ReactGridStore {
-    if (isMobile()) {
-      return store;
-    }
     devEnvironment && console.log("DB/handlePointerDown");
 
-    pointerDownPosition = { x: event.clientX, y: event.clientY };
     const element = getCellContainerFromPoint(event.clientX, event.clientY);
     let newRowIndex = -1;
     let newColIndex = -1;
@@ -43,52 +36,24 @@ export const DefaultBehavior = (config: DefaultBehaviorConfig = CONFIG_DEFAULTS)
       newColIndex = colIndex;
     }
 
+    const SelectionBehavior = store.getBehavior("CellSelection");
+
     return {
       ...store,
       focusedLocation: { rowIndex: newRowIndex, colIndex: newColIndex },
       selectedArea: { startRowIdx: -1, endRowIdx: -1, startColIdx: -1, endColIdx: -1 },
       currentlyEditedCell: { rowIndex: -1, colIndex: -1 },
+      currentBehavior: SelectionBehavior || store.currentBehavior,
     };
   },
 
   handlePointerMove: (event, store) => {
-    if (hasTouchSupport()) {
-      return store;
-    }
     devEnvironment && console.log("DB/handlePointerMove");
-
-    if (pointerDownPosition) {
-      const distanceMoved = Math.sqrt(
-        (event.clientX - pointerDownPosition.x) ** 2 + (event.clientY - pointerDownPosition.y) ** 2
-      );
-
-      if (distanceMoved > 10) {
-        timer && clearTimeout(timer);
-        pointerDownPosition = null;
-        // TODO: Move changing behavior on CellSelection to handle(Pointer/Touch/Mouse?)Down
-        const SelectionBehavior = store.getBehavior("CellSelection");
-
-        return {
-          ...store,
-          currentBehavior: SelectionBehavior,
-        };
-      }
-    }
 
     return store;
   },
 
   handlePointerUp: function (event, store) {
-    if (isMobile()) {
-      return store;
-    }
-
-    if (timer) {
-      clearTimeout(timer);
-    }
-
-    pointerDownPosition = null;
-
     return store;
   },
 
@@ -97,13 +62,10 @@ export const DefaultBehavior = (config: DefaultBehaviorConfig = CONFIG_DEFAULTS)
   },
 
   handlePointerDownTouch: function (event, store) {
-    if (!hasTouchSupport()) {
-      return store;
-    }
+    devEnvironment && console.log("DB/handlePointerDownTouch");
 
-    devEnvironment && console.log("DB/handleTouchStart");
+    const { clientX, clientY } = event;
 
-    const { clientX, clientY } = event.touches[0]; //  * This might be not a good idea to do it that way...
     touchStartPosition = { x: clientX, y: clientY };
 
     // Disable moving (horizontal & vertical scrolling) if touchStartPosition is the same as focusedCell position.
@@ -127,28 +89,16 @@ export const DefaultBehavior = (config: DefaultBehaviorConfig = CONFIG_DEFAULTS)
     return store;
   },
 
-  handlePointerMoveTouch: function (_event, store) {
-    if (!hasTouchSupport()) {
-      return store;
-    }
-
-    devEnvironment && console.log("DB/handleTouchMove");
+  handlePointerMoveTouch: function (event, store) {
+    devEnvironment && console.log("DB/handlePointerMoveTouch");
 
     return store;
   },
 
   handlePointerUpTouch: function (event, store) {
-    if (!hasTouchSupport()) {
-      return store;
-    }
+    devEnvironment && console.log("DB/handlePointerUpTouch");
 
-    devEnvironment && console.log("DB/handleTouchEnd");
-
-    if (timer) {
-      clearTimeout(timer);
-    }
-
-    const { clientX, clientY } = event.changedTouches[0]; //  * This might be not a good idea to do it that way...
+    const { clientX, clientY } = event;
 
     touchEndPosition = { x: clientX, y: clientY };
 

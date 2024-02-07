@@ -38,29 +38,6 @@ const GridWrapper: FC<PropsWithChildren<GridWrapperProps>> = ({ reactGridId, sty
     }
   }, [styledRanges]); // DO NOT USE ANYTHING RELATED TO STORE IN DEPENDENCY ARRAY!
 
-  // Force touch-event listeners to be non-passive
-  useEffect(() => {
-    if (reactGridElement.current) {
-      const element = reactGridElement.current;
-      const touchStartListener = (e) => withStoreApi(e, currentBehavior?.handleTouchStart);
-      const touchMoveListener = (e) => withStoreApi(e, currentBehavior?.handleTouchMove);
-      const touchEndListener = (e) => withStoreApi(e, currentBehavior?.handleTouchEnd);
-      const touchCancelListener = (e) => withStoreApi(e, currentBehavior?.handleTouchCancel);
-
-      element.addEventListener("touchstart", touchStartListener, { passive: false });
-      element.addEventListener("touchmove", touchMoveListener, { passive: false });
-      element.addEventListener("touchend", touchEndListener, { passive: false });
-      element.addEventListener("touchcancel", touchCancelListener, { passive: false });
-
-      return () => {
-        element.removeEventListener("touchstart", touchStartListener);
-        element.removeEventListener("touchmove", touchMoveListener);
-        element.removeEventListener("touchend", touchEndListener);
-        element.removeEventListener("touchcancel", touchCancelListener);
-      };
-    }
-  }, [reactGridElement, currentBehavior]);
-
   return (
     <div
       css={css}
