@@ -40,6 +40,7 @@ export interface ReactGridStore extends ReactGridStoreProps {
     rowId: ReactGridStore["rows"][number]["id"],
     colId: ReactGridStore["rows"][number]["id"]
   ) => Cell | null;
+  // TODO: don't return null:
   readonly getCellByIndexes: (rowIndex: number, colIndex: number) => Cell | null;
   readonly getCellOrSpanMemberByIndexes: (rowIndex: number, colIndex: number) => Cell | SpanMember | null;
 

@@ -44,6 +44,7 @@ const ReactGrid: FC<ReactGridProps> = ({
 
   const [bypassSizeWarning, setBypassSizeWarning] = useState(false);
 
+  // TODO move to initializer
   useEffect(() => {
     if (!initialSelectedRange) {
       return;
@@ -65,6 +66,7 @@ const ReactGrid: FC<ReactGridProps> = ({
     }
   }, [initialFocusLocation, initialSelectedRange]);
 
+  // TODO move to initializer
   useEffect(() => {
     if (initialFocusLocation) {
       const { rowId, columnId } = initialFocusLocation;
