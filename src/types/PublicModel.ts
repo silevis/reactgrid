@@ -9,7 +9,6 @@ export type Row<Id = string> = {
   id: Id;
   height: string | number;
 };
-};
 
 export type Column<Id = string> = {
   id: Id;
@@ -37,7 +36,6 @@ export type Cell<RowIdType extends string = string, ColIdType extends string = s
   isFocusable?: boolean;
   /** Marks a cell as selectable or not */
   isSelectable?: boolean;
-};
 };
 
 export type SpanMember = {
@@ -77,7 +75,6 @@ export type CellContextType = {
   /** Represents how many columns should the cell occupy. */
   colSpan?: number;
 
-
   /** Internal: provides cell container's style  */
   containerStyle: React.CSSProperties;
 
@@ -88,7 +85,6 @@ export type CellContextType = {
 
   isInEditMode: boolean;
   isFocused: boolean;
-};
 };
 
 export type CellMap<RowIdType extends string = string, ColIdType extends string = string> = Map<

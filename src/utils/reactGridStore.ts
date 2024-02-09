@@ -92,31 +92,35 @@ export function useReactGridStore<T>(id: string, selector: (store: ReactGridStor
         cells: new Map(),
         setCells: (cells) => set(() => ({ cells })),
         getCellByIds: (rowId, colId) => {
-          const cell = get().cells.get(`${rowId} ${colId}`);
+          const { cells, getCellByIds } = get();
+
+          const cell = cells.get(`${rowId} ${colId}`);
 
           if (!cell) return null;
 
           if (isSpanMember(cell)) {
-            return get().getCellByIds(cell.originRowId, cell.originColId) || null;
+            return getCellByIds(cell.originRowId, cell.originColId) || null;
           }
 
           return cell;
         },
         getCellByIndexes: (rowIndex, colIndex) => {
-          const row = get().rows[rowIndex];
-          const col = get().columns[colIndex];
+          const { rows, columns, getCellByIds } = get();
+          const row = rows[rowIndex];
+          const col = columns[colIndex];
 
           if (!row || !col) return null;
 
-          return get().getCellByIds(row.id, col.id) || null;
+          return getCellByIds(row.id, col.id) || null;
         },
         getCellOrSpanMemberByIndexes: (rowIndex, colIndex) => {
-          const row = get().rows[rowIndex];
-          const col = get().columns[colIndex];
+          const { rows, columns, cells } = get();
+          const row = rows[rowIndex];
+          const col = columns[colIndex];
 
           if (!row || !col) return null;
 
-          const cell = get().cells.get(`${row.id} ${col.id}`);
+          const cell = cells.get(`${row.id} ${col.id}`);
 
           if (!cell) return null;
 
