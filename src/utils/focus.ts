@@ -4,10 +4,11 @@ import { getOriginCell } from "./getOriginCell";
 import { EMPTY_AREA } from "../types/InternalModel";
 import { handleJumpScroll } from "./handleJumpScroll";
 import { ReactGridStore } from "../types/ReactGridStore.ts";
+import { emitEvent } from "./emitEvent.ts";
 
 const absoluteLocation = {
   rowIndex: -1,
-  colIndex: -1
+  colIndex: -1,
 };
 
 export const moveFocusUp = (store: ReactGridStore, currentFocus: FocusedCell): ReactGridStore => {
@@ -32,10 +33,12 @@ export const moveFocusUp = (store: ReactGridStore, currentFocus: FocusedCell): R
 
       handleJumpScroll(store, currentFocus, originCell);
 
+      emitEvent("focuschange", { currentFocus });
+
       return {
         ...store,
         focusedLocation: { rowIndex: originRowIndex, colIndex: originColIndex },
-        selectedArea: EMPTY_AREA
+        selectedArea: EMPTY_AREA,
       };
     }
   }
@@ -63,11 +66,12 @@ export const moveFocusRight = (store: ReactGridStore, currentFocus: FocusedCell)
       absoluteLocation.colIndex = colIdx;
 
       handleJumpScroll(store, currentFocus, originCell);
+      emitEvent("focuschange", { currentFocus });
 
       return {
         ...store,
         focusedLocation: { rowIndex: originRowIndex, colIndex: originColIndex },
-        selectedArea: EMPTY_AREA
+        selectedArea: EMPTY_AREA,
       };
     }
   }
@@ -95,11 +99,12 @@ export const moveFocusDown = (store: ReactGridStore, currentFocus: FocusedCell) 
       absoluteLocation.colIndex = colIndex;
 
       handleJumpScroll(store, currentFocus, originCell);
+      emitEvent("focuschange", { currentFocus });
 
       return {
         ...store,
         focusedLocation: { rowIndex: originRowIndex, colIndex: originColIndex },
-        selectedArea: EMPTY_AREA
+        selectedArea: EMPTY_AREA,
       };
     }
   }
@@ -128,11 +133,12 @@ export const moveFocusLeft = (store: ReactGridStore, currentFocus: FocusedCell) 
       else absoluteLocation.colIndex = colIdx;
 
       handleJumpScroll(store, currentFocus, originCell);
+      emitEvent("focuschange", { currentFocus });
 
       return {
         ...store,
         focusedLocation: { rowIndex: originRowIndex, colIndex: originColIndex },
-        selectedArea: EMPTY_AREA
+        selectedArea: EMPTY_AREA,
       };
     }
   }
@@ -171,7 +177,7 @@ export const moveFocusInsideSelectedRange = (
         !nextPossibleLocation ||
         isSpanMember(nextPossibleLocation) ||
         nextPossibleLocation?.isFocusable === false
-        );
+      );
 
       return { ...store, focusedLocation: { rowIndex: rowIdx, colIndex: colIdx } };
     }
@@ -201,7 +207,7 @@ export const moveFocusInsideSelectedRange = (
         !nextPossibleLocation ||
         isSpanMember(nextPossibleLocation) ||
         nextPossibleLocation?.isFocusable === false
-        );
+      );
 
       return { ...store, focusedLocation: { rowIndex: rowIdx, colIndex: colIdx } };
     }
@@ -231,7 +237,7 @@ export const moveFocusInsideSelectedRange = (
         !nextPossibleLocation ||
         isSpanMember(nextPossibleLocation) ||
         nextPossibleLocation?.isFocusable === false
-        );
+      );
 
       return { ...store, focusedLocation: { rowIndex: rowIdx, colIndex: colIdx } };
     }
@@ -261,7 +267,9 @@ export const moveFocusInsideSelectedRange = (
         !nextPossibleLocation ||
         isSpanMember(nextPossibleLocation) ||
         nextPossibleLocation?.isFocusable === false
-        );
+      );
+
+      emitEvent("focuschange", { currentFocus });
 
       return { ...store, focusedLocation: { rowIndex: rowIdx, colIndex: colIdx } };
     }

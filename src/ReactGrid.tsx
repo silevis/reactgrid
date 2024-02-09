@@ -4,6 +4,7 @@ import GridWrapper from "./components/GridWrapper";
 import PanesRenderer from "./components/PanesRenderer";
 import { ReactGridIdProvider } from "./components/ReactGridIdProvider";
 import { ReactGridProps } from "./types/PublicModel";
+import { createEventManagers } from "./utils/createEventManagers";
 import { getCellIndexes } from "./utils/getCellIndexes.1";
 import { getNumericalRange } from "./utils/getNumericalRange";
 import isDevEnvironment from "./utils/isDevEnvironment";
@@ -22,28 +23,26 @@ const ReactGrid: FC<ReactGridProps> = ({
   stickyLeftColumns,
   stickyRightColumns,
   behaviors,
+  // Styling
   style,
+  styledRanges,
+  // Initial Settings
   initialSelectedRange,
   initialFocusLocation,
-  styledRanges,
+  // Events
+  onFocusChange,
 }) => {
-  initReactGridStore(id,  {
+  initReactGridStore(id, {
     rows,
     columns,
     cells,
     behaviors,
     styledRanges,
-  })
+  });
   const store = useReactGridStoreApi(id).getState();
-  const {
-    setSelectedArea,
-    setFocusedLocation: setFocusedCell,
-    getCellOrSpanMemberByIndexes,
-    getCellByIds,
-  } = store;
+  const { setSelectedArea, setFocusedLocation: setFocusedCell, getCellOrSpanMemberByIndexes, getCellByIds } = store;
 
   const [bypassSizeWarning, setBypassSizeWarning] = useState(false);
-
   useEffect(() => {
     if (!initialSelectedRange) {
       return;
@@ -88,6 +87,16 @@ const ReactGrid: FC<ReactGridProps> = ({
       setFocusedCell(rowIndex, colIndex);
     }
   }, [initialFocusLocation]);
+
+  useEffect(
+    function () {
+      const { subscribeToEvent, unsubscribeToEvent } = createEventManagers("focuschange", onFocusChange);
+      subscribeToEvent();
+
+      return () => unsubscribeToEvent();
+    },
+    [onFocusChange]
+  );
 
   if (devEnvironment && !bypassSizeWarning && rows.length * columns.length > 25_000) {
     return (

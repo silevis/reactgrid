@@ -127,6 +127,5 @@ export interface ReactGridProps {
   initialFocusLocation?: Location;
   initialSelectedRange?: Range;
 
-  onFocusLocationChanging?: ({ location }: { location: Location }) => boolean;
-  onFocusLocationChanged?: ({ location }: { location: Location }) => void;
+  onFocusChange: (e: Event) => unknown;
 }
