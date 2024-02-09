@@ -7,18 +7,18 @@ export function scrollToElementEdge(relativePosition: Position, scrollableElemen
 
   const touchPositionInContainer = {
     x: relativePosition.x - scrollableElementDimensions.left,
-    y: relativePosition.y - scrollableElementDimensions.top,
+    y: relativePosition.y - scrollableElementDimensions.top
   };
 
   const scrollActivationThreshold = {
     vertical: {
       min: scrollableElementDimensions.height * threshold,
-      max: scrollableElementDimensions.height - scrollableElementDimensions.height * threshold,
+      max: scrollableElementDimensions.height - scrollableElementDimensions.height * threshold
     },
     horizontal: {
       min: scrollableElementDimensions.width * threshold,
-      max: scrollableElementDimensions.width - scrollableElementDimensions.width * threshold,
-    },
+      max: scrollableElementDimensions.width - scrollableElementDimensions.width * threshold
+    }
   };
 
   const topEdgeTouched = touchPositionInContainer.y < scrollActivationThreshold.vertical.min;

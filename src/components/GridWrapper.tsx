@@ -1,9 +1,10 @@
 import React, { FC, PropsWithChildren, useEffect, useRef, useState } from "react";
 import { HandlerFn } from "../types/Behavior";
-import { useReactGridStore, useReactGridStoreApi } from "../utils/reactGridStore";
-import { updateStoreWithApiAndEventHandler } from "../utils/updateStoreWithApiAndEventHandler";
 import { StyledRangesCSS } from "../types/PublicModel";
 import { getStyledRangesCSS } from "../utils/getStyledRangesCSS";
+import { useReactGridStore, useReactGridStoreApi } from "../utils/reactGridStore";
+import { updateStoreWithApiAndEventHandler } from "../utils/updateStoreWithApiAndEventHandler";
+import { handlePointerDown, pointerEventController } from "../controllers/handlePointerDown";
 
 interface GridWrapperProps {
   reactGridId: string;
@@ -35,30 +36,7 @@ const GridWrapper: FC<PropsWithChildren<GridWrapperProps>> = ({ reactGridId, sty
     if (styledRangesCSS) {
       setCSS(styledRangesCSS);
     }
-  }, [styledRanges]); // DO NOT USE ANYTHING RELATED TO STORE TO DEPENDENCY ARRAY!
-
-  // Force touch-event listeners to be non-passive
-  useEffect(() => {
-    if (reactGridElement.current) {
-      const element = reactGridElement.current;
-      const touchStartListener = (e) => withStoreApi(e, currentBehavior?.handleTouchStart);
-      const touchMoveListener = (e) => withStoreApi(e, currentBehavior?.handleTouchMove);
-      const touchEndListener = (e) => withStoreApi(e, currentBehavior?.handleTouchEnd);
-      const touchCancelListener = (e) => withStoreApi(e, currentBehavior?.handleTouchCancel);
-
-      element.addEventListener("touchstart", touchStartListener, { passive: false });
-      element.addEventListener("touchmove", touchMoveListener, { passive: false });
-      element.addEventListener("touchend", touchEndListener, { passive: false });
-      element.addEventListener("touchcancel", touchCancelListener, { passive: false });
-
-      return () => {
-        element.removeEventListener("touchstart", touchStartListener);
-        element.removeEventListener("touchmove", touchMoveListener);
-        element.removeEventListener("touchend", touchEndListener);
-        element.removeEventListener("touchcancel", touchCancelListener);
-      };
-    }
-  }, [reactGridElement, currentBehavior]);
+  }, [styledRanges]); // DO NOT USE ANYTHING RELATED TO STORE IN DEPENDENCY ARRAY!
 
   return (
     <div
@@ -67,17 +45,7 @@ const GridWrapper: FC<PropsWithChildren<GridWrapperProps>> = ({ reactGridId, sty
       className="ReactGrid"
       ref={reactGridElement}
       style={style}
-      onPointerDown={(e) => withStoreApi(e, currentBehavior?.handlePointerDown)}
-      onPointerEnter={(e) => withStoreApi(e, currentBehavior?.handlePointerEnter)}
-      onPointerMove={(e) => withStoreApi(e, currentBehavior?.handlePointerMove)}
-      onPointerLeave={(e) => withStoreApi(e, currentBehavior?.handlePointerLeave)}
-      onPointerUp={(e) => withStoreApi(e, currentBehavior?.handlePointerUp)}
-      onDoubleClick={(e) => withStoreApi(e, currentBehavior?.handleDoubleClick)}
-      // === Left commented for reference ===
-      // onTouchStart={(e) => withStoreApi(e, currentBehavior?.handleTouchStart)}
-      // onTouchMove={(e) => withStoreApi(e, currentBehavior?.handleTouchMove)}
-      // onTouchEnd={(e) => withStoreApi(e, currentBehavior?.handleTouchEnd)}
-      // onTouchCancel={(e) => withStoreApi(e, currentBehavior?.handleTouchCancel)}
+      onPointerDown={(e) => handlePointerDown(e, storeApi)}
       onKeyDown={(e) => withStoreApi(e, currentBehavior?.handleKeyDown)}
       onKeyUp={(e) => withStoreApi(e, currentBehavior?.handleKeyUp)}
       onCompositionStart={(e) => withStoreApi(e, currentBehavior?.handleCompositionStart)}

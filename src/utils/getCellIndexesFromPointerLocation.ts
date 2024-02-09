@@ -8,13 +8,12 @@ import { getCellContainerFromPoint } from "./getCellContainerFromPoint";
  * @param clientY - The y coordinate of the pointer
  * @returns The row and column index of the cell that contains the pointer
  */
-
 export const getCellIndexesFromPointerLocation = (
   clientX: number,
   clientY: number
-): {  rowIndex: -1; colIndex: -1 } | { rowIndex: number; colIndex: number } => {
+): { rowIndex: -1; colIndex: -1 } | { rowIndex: number; colIndex: number } => {
   // Return if no expectations were met
-  const noCellIndexes = {  rowIndex: -1, colIndex: -1 };
+  const noCellIndexes = { rowIndex: -1, colIndex: -1 };
   // Get HTMLElement that contains rendered cell data
   const cellContainer = getCellContainerFromPoint(clientX, clientY);
 
@@ -26,7 +25,6 @@ export const getCellIndexesFromPointerLocation = (
   if (!cellIndexes) return noCellIndexes;
 
   const { rowIndex, colIndex } = cellIndexes;
-  
 
   return { rowIndex, colIndex };
 };

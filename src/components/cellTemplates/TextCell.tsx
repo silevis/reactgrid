@@ -1,4 +1,4 @@
-import { FC, useEffect, useRef } from "react";
+import { FC, useRef } from "react";
 import CellWrapper from "../CellWrapper";
 import { useCellContext } from "../CellContext";
 
@@ -25,7 +25,6 @@ const TextCell: FC<TextCellProps> = ({ text, onTextChanged, reverse }) => {
       }}
       targetInputRef={targetInputRef}
     >
-      {ctx.realRowIndex === 5 && <div className="siemano">hijacker</div>}
       {ctx.isInEditMode ? (
         <input
           type="text"
@@ -46,20 +45,7 @@ const TextCell: FC<TextCellProps> = ({ text, onTextChanged, reverse }) => {
           autoFocus
           ref={targetInputRef}
         />
-      ) : // <input
-      //   type="text"
-      //   style={{
-      //     display: "block",
-      //     textAlign: "center",
-      //     border: "none",
-      //     background: "none",
-      //     // width: "100%",
-      //     // height: "100%",
-      //   }}
-      //   value={reverse ? text.split("").reverse().join("") : text}
-      //   readOnly
-      // />
-      reverse ? (
+      ) : reverse ? (
         text.split("").reverse().join("")
       ) : (
         text

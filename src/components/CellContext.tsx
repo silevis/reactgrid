@@ -1,4 +1,4 @@
-import React, { createContext, useContext } from "react";
+import { createContext, useContext } from "react";
 import { CellContextType } from "../types/PublicModel";
 
 export const CellContext = createContext<CellContextType>({

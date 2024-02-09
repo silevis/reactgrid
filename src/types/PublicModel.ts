@@ -1,14 +1,10 @@
 import React from "react";
 
 import { Behavior, BehaviorId } from "./Behavior";
-import { NumericalRange } from "./CellMatrix";
-import { IndexedLocation } from "./InternalModel";
-import { InternalStyledRange } from "./InternalModel";
 
 export type Row<Id = string> = {
   id: Id;
   height: string | number;
-};
 };
 
 export type Column<Id = string> = {
@@ -37,7 +33,6 @@ export type Cell<RowIdType extends string = string, ColIdType extends string = s
   isFocusable?: boolean;
   /** Marks a cell as selectable or not */
   isSelectable?: boolean;
-};
 };
 
 export type SpanMember = {
@@ -77,7 +72,6 @@ export type CellContextType = {
   /** Represents how many columns should the cell occupy. */
   colSpan?: number;
 
-
   /** Internal: provides cell container's style  */
   containerStyle: React.CSSProperties;
 
@@ -88,7 +82,6 @@ export type CellContextType = {
 
   isInEditMode: boolean;
   isFocused: boolean;
-};
 };
 
 export type CellMap<RowIdType extends string = string, ColIdType extends string = string> = Map<
@@ -104,6 +97,11 @@ export type StyledRange = {
 export type StyledRangesCSS = {
   [selector: string]: React.CSSProperties;
 }[];
+
+export type Location = {
+  rowId: string;
+  columnId: string;
+};
 
 export interface ReactGridProps {
   id: string;
@@ -126,10 +124,9 @@ export interface ReactGridProps {
 
   behaviors?: Record<BehaviorId, Behavior>;
 
-  focusLocation?: [number, number];
-  initialFocusLocation?: IndexedLocation;
-  initialSelectedRange?: NumericalRange;
+  initialFocusLocation?: Location;
+  initialSelectedRange?: Range;
 
-  onFocusLocationChanging?: ({ location }: { location: [number, number] }) => boolean;
-  onFocusLocationChanged?: ({ location }: { location: [number, number] }) => void;
+  onFocusLocationChanging?: ({ location }: { location: Location }) => boolean;
+  onFocusLocationChanged?: ({ location }: { location: Location }) => void;
 }

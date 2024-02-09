@@ -2,7 +2,7 @@ import React, { CSSProperties, FC } from "react";
 import { NumericalRange } from "../types/CellMatrix";
 import { GetCellOffsets, PaneName } from "../types/InternalModel";
 import { Border, Offset } from "../types/Theme";
-import { useTheme } from "../utils/useTheme";
+import { useTheme } from "../hooks/useTheme";
 
 interface PartialAreaProps {
   /** The range of cells to area. */
