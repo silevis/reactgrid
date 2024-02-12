@@ -1,16 +1,20 @@
-import { FocusedCell } from "../types/InternalModel";
-import { EMPTY_AREA, areAreasEqual, findMinimalSelectedArea, getCellArea, isCellInRange } from "./cellUtils";
-import { ReactGridStore } from "./reactGridStore";
+import { EMPTY_AREA, FocusedCell } from "../types/InternalModel";
+import { getCellArea } from "./getCellArea";
+import { areAreasEqual } from "./areAreasEqual";
+import { isCellInRange } from "./isCellInRange";
+import { findMinimalSelectedArea } from "./findMinimalSelectedArea";
 
-type Direction = "Up" | "Down" | "Left" | "Right";
+import { ReactGridStore } from "../types/ReactGridStore.ts";
+
+type ResizeDirection = "Up" | "Down" | "Left" | "Right";
 
 /**
  * Tries to resize the selected area towards the given direction.
- * 
+ *
  * If nothing changed even after trying to reduce / expand
  * try again but at a greater distance
  * until the area changes or we reach the end of the grid.
- * 
+ *
  * @param store RGStore
  * @param focusedCell current focused cell
  * @param direction direction in which to resize
@@ -20,7 +24,7 @@ type Direction = "Up" | "Down" | "Left" | "Right";
 export const resizeSelectionInDirection = (
   store: ReactGridStore,
   focusedCell: FocusedCell,
-  direction: Direction,
+  direction: ResizeDirection,
   changeOffset: number = 1
 ): ReactGridStore => {
   const focusedCellArea = getCellArea(store, focusedCell);
@@ -86,12 +90,12 @@ export const resizeSelectionInDirection = (
       break;
     }
   }
-  
+
   // Don't allow to go beyond the grid
   const { columns, rows } = store;
   const { startColIdx, endColIdx, startRowIdx, endRowIdx } = selectedArea;
 
-  const isOutOfBounds = (
+  const isOutOfBounds =
     startColIdx < 0 ||
     endColIdx < 0 ||
     startRowIdx < 0 ||
@@ -99,18 +103,16 @@ export const resizeSelectionInDirection = (
     endColIdx > columns.length ||
     startRowIdx > rows.length ||
     endRowIdx > rows.length ||
-    startColIdx > columns.length
-  );
+    startColIdx > columns.length;
 
   if (isOutOfBounds) {
     return store;
   }
-  
 
   if (areAreasEqual(selectedArea, focusedCellArea)) {
     return {
       ...store,
-      selectedArea: EMPTY_AREA,
+      selectedArea: EMPTY_AREA
     };
   }
 
@@ -122,7 +124,7 @@ export const resizeSelectionInDirection = (
   return {
     ...store,
     selectedArea: {
-      ...newSelectedArea,
-    },
+      ...newSelectedArea
+    }
   };
 };

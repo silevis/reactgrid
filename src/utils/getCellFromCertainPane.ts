@@ -1,7 +1,8 @@
 import { PaneName } from "../types/InternalModel";
-import { isCellInRange } from "./cellUtils";
+import { isCellInRange } from "./isCellInRange";
 import { getCellIndexesFromContainerElement } from "./getCellIndexes";
-import { ReactGridStore } from "./reactGridStore";
+
+import { ReactGridStore } from "../types/ReactGridStore.ts";
 
 export function getCellFromCertainPane(
   store: ReactGridStore,

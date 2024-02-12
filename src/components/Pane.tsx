@@ -2,9 +2,10 @@ import React, { CSSProperties } from "react";
 import { NumericalRange } from "../types/CellMatrix";
 import { GetCellOffsets, PaneName } from "../types/InternalModel";
 import { RGTheme } from "../types/Theme";
-import { areAreasEqual, isSpanMember } from "../utils/cellUtils";
+import { isSpanMember } from "../utils/isSpanMember";
+import { areAreasEqual } from "../utils/areAreasEqual";
 import { useReactGridStore } from "../utils/reactGridStore";
-import { useTheme } from "../utils/useTheme";
+import { useTheme } from "../hooks/useTheme";
 import { CellContext } from "./CellContext";
 import { PartialArea } from "./PartialArea";
 import { useReactGridId } from "./ReactGridIdProvider";
@@ -210,7 +211,6 @@ export const Pane: React.FC<PaneProps> = ({
     endColIdx: focusedCell.colIndex + (focusedCell.colSpan ?? 1),
   } : { startRowIdx: -1, endRowIdx: -1, startColIdx: -1, endColIdx: -1 };
   const selectedArea = useReactGridStore(id, (store) => store.selectedArea);
-  // const { state, range, borders, cellRenderer } = props;
 
   if (!shouldRender) return null;
 
@@ -250,22 +250,6 @@ export const Pane: React.FC<PaneProps> = ({
           className="rgFocusIndicator"
         />
       )}
-      {/* <SelectedArea parentPaneName={paneName} parentPaneRange={gridContentRange} getCellOffset={getCellOffset} /> */}
-      {/* {renderHighlights(state, calculatedRange)}
-          {state.focusedLocation && !(state.currentlyEditedCell && isMobileDevice()) && calculatedRange.contains(state.focusedLocation) &&
-              <CellFocus location={state.focusedLocation} />}
-          <SelectedRanges
-              state={state}
-              calculatedRange={calculatedRange}
-          />
-          <FillHandleRangeSelection
-              state={state}
-              calculatedRange={calculatedRange}
-          />
-          <FillHandleRenderer
-              state={state}
-              calculatedRange={calculatedRange}
-          /> */}
     </div>
   );
 };

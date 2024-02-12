@@ -12,7 +12,6 @@ const CellWrapper: FC<CellWrapperProps> = ({ children, targetInputRef, ...wrappe
   const { className: customClassName, style: customStyle } = wrapperDivAttributes;
   const ctx = useCellContext();
 
-  // const containerStyle = ctx.getContainerStyle();
   const isFocused = ctx.isFocused;
 
   return (
@@ -25,6 +24,7 @@ const CellWrapper: FC<CellWrapperProps> = ({ children, targetInputRef, ...wrappe
         ...customStyle,
         padding: ".1rem .2rem",
         textAlign: "center",
+        touchAction: isFocused ? "none" : "auto",
         ...ctx.containerStyle,
       }}
     >

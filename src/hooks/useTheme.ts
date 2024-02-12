@@ -1,5 +1,5 @@
 import { useTheme as useEmotionContextTheme } from '@emotion/react';
-import theme, { darkTheme } from '../assets/theme';
+import theme from '../assets/theme';
 import { RGTheme } from '../types/Theme';
 import merge from 'lodash.merge';
 

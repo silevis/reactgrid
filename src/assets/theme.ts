@@ -1,17 +1,6 @@
 import { RGTheme } from "../types/Theme";
 
 const lightTheme: RGTheme = {
-  colors: {
-    primary: "",
-    secondary: "",
-    background: "",
-    shadow: ""
-  },
-  shadows: {
-    sm: "",
-    md: "",
-    lg: ""
-  },
   font: {
     family: "",
     size: "",
@@ -76,65 +65,6 @@ const lightTheme: RGTheme = {
       width: "2px",
     }
   
-  }
-};
-
-export const darkTheme: RGTheme = {
-  colors: {
-    primary: "#89cff0",
-    secondary: "",
-    background: "",
-    shadow: ""
-  },
-  shadows: {
-    sm: "",
-    md: "",
-    lg: ""
-  },
-  font: {
-    family: "",
-    size: "",
-    weight: ""
-  },
-  grid: {
-    gap: "",
-
-    padding: {
-      top: "",
-      right: "",
-      bottom: "",
-      left: ""
-    },
-    margin: {
-      top: "",
-      right: "",
-      bottom: "",
-      left: ""
-    },
-    border: {
-      width: "",
-      style: "",
-      color: ""
-    }
-  },
-  cells: {
-    padding: {
-      top: "",
-      right: "",
-      bottom: "",
-      left: ""
-    },
-    margin: {
-      top: "",
-      right: "",
-      bottom: "",
-      left: ""
-    },
-    border: {
-      width: "",
-      style: "",
-      color: ""
-    }
   }
 };
 

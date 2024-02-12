@@ -4,5 +4,3 @@ export function getPointerPositionInElement(event: PointerEvent, element: Elemen
 
   return { x: clientX - rect.left, y: clientY - rect.top };
 }
-
-
