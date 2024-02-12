@@ -128,4 +128,5 @@ export interface ReactGridProps {
   initialSelectedRange?: Range;
 
   onFocusChange: (e: Event) => unknown;
+  onSelectionChange: (e: Event) => unknown;
 }

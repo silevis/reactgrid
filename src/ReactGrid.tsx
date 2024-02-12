@@ -31,6 +31,7 @@ const ReactGrid: FC<ReactGridProps> = ({
   initialFocusLocation,
   // Events
   onFocusChange,
+  onSelectionChange,
 }) => {
   initReactGridStore(id, {
     rows,
@@ -96,6 +97,15 @@ const ReactGrid: FC<ReactGridProps> = ({
       return () => unsubscribeToEvent();
     },
     [onFocusChange]
+  );
+  useEffect(
+    function () {
+      const { subscribeToEvent, unsubscribeToEvent } = createEventManagers("selectionchange", onSelectionChange);
+      subscribeToEvent();
+
+      return () => unsubscribeToEvent();
+    },
+    [onSelectionChange]
   );
 
   if (devEnvironment && !bypassSizeWarning && rows.length * columns.length > 25_000) {
