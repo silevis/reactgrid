@@ -59,6 +59,54 @@ export const handlePointerDown = (event: React.PointerEvent<HTMLDivElement>, sto
     updateWithStoreApi(event, handler);
   };
 
+  function detectHold(event: React.PointerEvent<HTMLDivElement>, usedTouch: boolean) {
+    return new Promise((resolve) => {
+      let startTime: number = 0;
+      let isCheckingHold: boolean = false;
+      let intervalId: NodeJS.Timeout;
+
+      function handleHold() {
+        console.log("Hold detected");
+        isCheckingHold = false;
+      }
+
+      function checkHoldDuration() {
+        if (!isCheckingHold) return;
+        if (Date.now() - startTime >= 500) {
+          handleHold();
+          clearInterval(intervalId);
+        }
+      }
+
+      function pointerDownHandler(e: React.PointerEvent<HTMLDivElement>) {
+        if ((e.button === 2 || usedTouch) && !isCheckingHold) {
+          // right mouse button or touch
+          startTime = Date.now();
+          isCheckingHold = true;
+          intervalId = setInterval(checkHoldDuration, 50); // check every 50ms
+          window.addEventListener("pointerup", pointerUpHandler);
+        }
+      }
+
+      function pointerUpHandler(e: PointerEvent) {
+        if (e.button === 2 || usedTouch) {
+          isCheckingHold = false;
+          clearInterval(intervalId);
+          window.removeEventListener("pointerup", pointerUpHandler);
+          if (Date.now() - startTime >= 200) {
+            resolve(true); // resolve if the button was held down for 200ms or more
+          }
+        }
+      }
+
+      pointerDownHandler(event);
+    });
+  }
+
+  detectHold(event, usedTouch).then(() => {
+    console.log("Hold action completed");
+  });
+
   // Remove listeners after pointerDown
   window.addEventListener("pointermove", handlePointerMove);
   window.addEventListener("pointerup", handlePointerUp);
