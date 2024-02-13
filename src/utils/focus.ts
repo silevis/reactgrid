@@ -15,7 +15,7 @@ export const moveFocusUp = (store: ReactGridStore, currentFocus: FocusedCell): R
   if (currentFocus.rowIndex === 0) return store;
 
   const colIndex =
-    "colSpan" in currentFocus && absoluteLocation.colIndex !== -1 ? absoluteLocation.colIndex : currentFocus.colIndex;
+    "colSpan" in currentFocus && store.absoluteFocusedLocation.colIndex !== -1 ? store.absoluteFocusedLocation.colIndex : currentFocus.colIndex;
 
   // Look for the next focusable cell in the rows above the current focus
   for (let rowIdx = currentFocus.rowIndex - 1; rowIdx >= 0; rowIdx--) {
@@ -27,9 +27,9 @@ export const moveFocusUp = (store: ReactGridStore, currentFocus: FocusedCell): R
       const originRowIndex = store.rows.findIndex((row) => row.id === originCell.rowId);
       const originColIndex = store.columns.findIndex((col) => col.id === originCell.colId);
 
-      if (originCell.rowSpan ?? 1 > 1) absoluteLocation.rowIndex = originRowIndex;
-      else absoluteLocation.rowIndex = rowIdx;
-      absoluteLocation.colIndex = colIndex;
+      if (originCell.rowSpan ?? 1 > 1) store.absoluteFocusedLocation.rowIndex = originRowIndex;
+      else store.absoluteFocusedLocation.rowIndex = rowIdx;
+      store.absoluteFocusedLocation.colIndex = colIndex;
 
       handleJumpScroll(store, currentFocus, originCell);
 
@@ -38,7 +38,7 @@ export const moveFocusUp = (store: ReactGridStore, currentFocus: FocusedCell): R
       return {
         ...store,
         focusedLocation: { rowIndex: originRowIndex, colIndex: originColIndex },
-        selectedArea: EMPTY_AREA,
+        selectedArea: EMPTY_AREA
       };
     }
   }
@@ -50,7 +50,7 @@ export const moveFocusRight = (store: ReactGridStore, currentFocus: FocusedCell)
   if (currentFocus.colIndex === store.columns.length - 1) return store;
 
   const rowIndex =
-    "rowSpan" in currentFocus && absoluteLocation.rowIndex !== -1 ? absoluteLocation.rowIndex : currentFocus.rowIndex;
+    "rowSpan" in currentFocus && store.absoluteFocusedLocation.rowIndex !== -1 ? store.absoluteFocusedLocation.rowIndex : currentFocus.rowIndex;
 
   // Look for the next focusable cell to the right of the current focus
   for (let colIdx = currentFocus.colIndex + (currentFocus.colSpan ?? 1); colIdx < store.columns.length; colIdx++) {
@@ -62,8 +62,8 @@ export const moveFocusRight = (store: ReactGridStore, currentFocus: FocusedCell)
       const originRowIndex = store.rows.findIndex((row) => row.id === originCell.rowId);
       const originColIndex = store.columns.findIndex((col) => col.id === originCell.colId);
 
-      absoluteLocation.rowIndex = rowIndex;
-      absoluteLocation.colIndex = colIdx;
+      store.absoluteFocusedLocation.rowIndex = rowIndex;
+      store.absoluteFocusedLocation.colIndex = colIdx;
 
       handleJumpScroll(store, currentFocus, originCell);
       emitEvent("focuschange", { currentFocus });
@@ -71,7 +71,7 @@ export const moveFocusRight = (store: ReactGridStore, currentFocus: FocusedCell)
       return {
         ...store,
         focusedLocation: { rowIndex: originRowIndex, colIndex: originColIndex },
-        selectedArea: EMPTY_AREA,
+        selectedArea: EMPTY_AREA
       };
     }
   }
@@ -83,7 +83,7 @@ export const moveFocusDown = (store: ReactGridStore, currentFocus: FocusedCell) 
   if (currentFocus.rowIndex === store.rows.length - 1) return store;
 
   const colIndex =
-    "colSpan" in currentFocus && absoluteLocation.colIndex !== -1 ? absoluteLocation.colIndex : currentFocus.colIndex;
+    "colSpan" in currentFocus && store.absoluteFocusedLocation.colIndex !== -1 ? store.absoluteFocusedLocation.colIndex : currentFocus.colIndex;
 
   // Look for the next focusable cell in the rows below the current focus
   for (let rowIdx = currentFocus.rowIndex + (currentFocus.rowSpan ?? 1); rowIdx < store.rows.length; rowIdx++) {
@@ -95,8 +95,8 @@ export const moveFocusDown = (store: ReactGridStore, currentFocus: FocusedCell) 
       const originRowIndex = store.rows.findIndex((row) => row.id === originCell.rowId);
       const originColIndex = store.columns.findIndex((col) => col.id === originCell.colId);
 
-      absoluteLocation.rowIndex = rowIdx;
-      absoluteLocation.colIndex = colIndex;
+      store.absoluteFocusedLocation.rowIndex = rowIdx;
+      store.absoluteFocusedLocation.colIndex = colIndex;
 
       handleJumpScroll(store, currentFocus, originCell);
       emitEvent("focuschange", { currentFocus });
@@ -104,7 +104,7 @@ export const moveFocusDown = (store: ReactGridStore, currentFocus: FocusedCell) 
       return {
         ...store,
         focusedLocation: { rowIndex: originRowIndex, colIndex: originColIndex },
-        selectedArea: EMPTY_AREA,
+        selectedArea: EMPTY_AREA
       };
     }
   }
@@ -116,7 +116,7 @@ export const moveFocusLeft = (store: ReactGridStore, currentFocus: FocusedCell) 
   if (currentFocus.colIndex === 0) return store;
 
   const rowIndex =
-    "rowSpan" in currentFocus && absoluteLocation.rowIndex !== -1 ? absoluteLocation.rowIndex : currentFocus.rowIndex;
+    "rowSpan" in currentFocus && store.absoluteFocusedLocation.rowIndex !== -1 ? store.absoluteFocusedLocation.rowIndex : currentFocus.rowIndex;
 
   // Look for the next focusable cell to the left of the current focus
   for (let colIdx = currentFocus.colIndex - 1; colIdx >= 0; colIdx--) {
@@ -128,9 +128,9 @@ export const moveFocusLeft = (store: ReactGridStore, currentFocus: FocusedCell) 
       const originRowIndex = store.rows.findIndex((row) => row.id === originCell.rowId);
       const originColIndex = store.columns.findIndex((col) => col.id === originCell.colId);
 
-      absoluteLocation.rowIndex = rowIndex;
-      if (originCell.colSpan ?? 1 > 1) absoluteLocation.colIndex = originColIndex;
-      else absoluteLocation.colIndex = colIdx;
+      store.absoluteFocusedLocation.rowIndex = rowIndex;
+      if (originCell.colSpan ?? 1 > 1) store.absoluteFocusedLocation.colIndex = originColIndex;
+      else store.absoluteFocusedLocation.colIndex = colIdx;
 
       handleJumpScroll(store, currentFocus, originCell);
       emitEvent("focuschange", { currentFocus });
@@ -138,7 +138,7 @@ export const moveFocusLeft = (store: ReactGridStore, currentFocus: FocusedCell) 
       return {
         ...store,
         focusedLocation: { rowIndex: originRowIndex, colIndex: originColIndex },
-        selectedArea: EMPTY_AREA,
+        selectedArea: EMPTY_AREA
       };
     }
   }
@@ -177,7 +177,7 @@ export const moveFocusInsideSelectedRange = (
         !nextPossibleLocation ||
         isSpanMember(nextPossibleLocation) ||
         nextPossibleLocation?.isFocusable === false
-      );
+        );
 
       return { ...store, focusedLocation: { rowIndex: rowIdx, colIndex: colIdx } };
     }
@@ -207,7 +207,7 @@ export const moveFocusInsideSelectedRange = (
         !nextPossibleLocation ||
         isSpanMember(nextPossibleLocation) ||
         nextPossibleLocation?.isFocusable === false
-      );
+        );
 
       return { ...store, focusedLocation: { rowIndex: rowIdx, colIndex: colIdx } };
     }
@@ -237,7 +237,7 @@ export const moveFocusInsideSelectedRange = (
         !nextPossibleLocation ||
         isSpanMember(nextPossibleLocation) ||
         nextPossibleLocation?.isFocusable === false
-      );
+        );
 
       return { ...store, focusedLocation: { rowIndex: rowIdx, colIndex: colIdx } };
     }

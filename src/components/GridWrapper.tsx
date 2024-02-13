@@ -1,10 +1,10 @@
 import React, { FC, PropsWithChildren, useEffect, useRef, useState } from "react";
-import { handlePointerDown } from "../controllers/handlePointerDown";
 import { HandlerFn } from "../types/Behavior";
 import { StyledRangesCSS } from "../types/PublicModel";
 import { getStyledRangesCSS } from "../utils/getStyledRangesCSS";
 import { useReactGridStore, useReactGridStoreApi } from "../utils/reactGridStore";
 import { updateStoreWithApiAndEventHandler } from "../utils/updateStoreWithApiAndEventHandler";
+import { handlePointerDown } from "../controllers/handlePointerDown";
 
 interface GridWrapperProps {
   reactGridId: string;

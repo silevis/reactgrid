@@ -42,6 +42,8 @@ export const updateStoreWithApiAndEventHandler = <TEvent extends React.Synthetic
 
     // Save changes to store
     storeApi.setState(newStore);
+
+    return newStore;
   }
 };
 

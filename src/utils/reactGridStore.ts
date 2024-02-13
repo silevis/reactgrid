@@ -28,6 +28,7 @@ const DEFAULT_STORE_PROPS: ReactGridStoreProps = {
   },
   styledRanges: [],
   focusedLocation: { rowIndex: 0, colIndex: 0 },
+  absoluteFocusedLocation: { rowIndex: 0, colIndex: 0 },
   selectedArea: { startRowIdx: -1, endRowIdx: -1, startColIdx: -1, endColIdx: -1 },
   currentlyEditedCell: { rowIndex: -1, colIndex: -1 },
   reactGridRef: undefined,
@@ -55,31 +56,35 @@ export function initReactGridStore(id: string, initialProps?: Partial<ReactGridS
         getColumnAmount: () => get().columns.length,
         setCells: (cells) => set(() => ({ cells })),
         getCellByIds: (rowId, colId) => {
-          const cell = get().cells.get(`${rowId} ${colId}`);
+          const { cells, getCellByIds } = get();
+
+          const cell = cells.get(`${rowId} ${colId}`);
 
           if (!cell) return null;
 
           if (isSpanMember(cell)) {
-            return get().getCellByIds(cell.originRowId, cell.originColId) || null;
+            return getCellByIds(cell.originRowId, cell.originColId) || null;
           }
 
           return cell;
         },
         getCellByIndexes: (rowIndex, colIndex) => {
-          const row = get().rows[rowIndex];
-          const col = get().columns[colIndex];
+          const { rows, columns, getCellByIds } = get();
+          const row = rows[rowIndex];
+          const col = columns[colIndex];
 
           if (!row || !col) return null;
 
-          return get().getCellByIds(row.id, col.id) || null;
+          return getCellByIds(row.id, col.id) || null;
         },
         getCellOrSpanMemberByIndexes: (rowIndex, colIndex) => {
-          const row = get().rows[rowIndex];
-          const col = get().columns[colIndex];
+          const { rows, columns, cells } = get();
+          const row = rows[rowIndex];
+          const col = columns[colIndex];
 
           if (!row || !col) return null;
 
-          const cell = get().cells.get(`${row.id} ${col.id}`);
+          const cell = cells.get(`${row.id} ${col.id}`);
 
           if (!cell) return null;
 
