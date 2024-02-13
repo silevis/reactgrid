@@ -74,7 +74,13 @@ export const BigGrid = () => {
       });
     });
 
-    setCell("0", "0", TextCell, { text: data[0][0] ?? "", reverse: true, onTextChanged: () => null }, { colSpan: 2, rowSpan: 2 });
+    setCell(
+      "0",
+      "0",
+      TextCell,
+      { text: data[0][0] ?? "", reverse: true, onTextChanged: () => null },
+      { colSpan: 2, rowSpan: 2 }
+    );
     setCell(
       "2",
       "3",
