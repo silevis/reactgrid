@@ -3,6 +3,7 @@ import { StrictMode, useState } from "react";
 import ReactGrid from "../ReactGrid";
 import { ErrorBoundary } from "../components/ErrorBoundary";
 import TextCell from "../components/cellTemplates/TextCell";
+import { ReactGridEvent } from "../types/Events";
 import { cellMatrixBuilder } from "../utils/cellMatrixBuilder";
 
 const ROW_COUNT = 20;
@@ -103,12 +104,17 @@ export const BigGrid = () => {
   cellMatrix.columns[1].width = "7rem";
 
   const fn = (e: Event) => console.log(e);
+  const firstRowFn = (e: ReactGridEvent) =>
+    console.log(`First row clicked, column: ${e.reactgrid.focusedLocation?.after.colIndex}`);
+  const firstColFn = (e: ReactGridEvent) =>
+    console.log(`First column clicked, row: ${e.reactgrid.focusedLocation?.after.rowIndex}`);
 
   return (
     <>
       <div className="rgScrollableContainer" style={{ height: "100%", width: "100%", overflow: "auto" }}>
         <ReactGrid
-          // handleEvent={() => console.log("działa!!!")}
+          onFirstColumnFocus={firstColFn}
+          onFirstRowFocus={firstRowFn}
           onFocusChange={fn}
           onSelectionChange={fn}
           id="big-grid"

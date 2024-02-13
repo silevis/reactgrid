@@ -29,8 +29,11 @@ const ReactGrid: FC<ReactGridProps> = ({
   // Initial Settings
   initialSelectedRange,
   initialFocusLocation,
+  // Event Handlers
   onFocusChange,
-  onSelectionChange
+  onSelectionChange,
+  onFirstRowFocus,
+  onFirstColumnFocus,
 }) => {
   initReactGridStore(id, {
     rows,
@@ -91,24 +94,36 @@ const ReactGrid: FC<ReactGridProps> = ({
     }
   }, [initialFocusLocation]);
 
-    useEffect(
-      function () {
-        const { subscribeToEvent, unsubscribeToEvent } = createEventManagers("focuschange", onFocusChange);
-        subscribeToEvent();
+  useEffect(
+    function () {
+      const { subscribeToEvent, unsubscribeToEvent } = createEventManagers("focuschange", (e) => {
+        onFocusChange(e);
 
-        return () => unsubscribeToEvent();
-      },
-      [onFocusChange]
-    );
-    useEffect(
-      function () {
-        const { subscribeToEvent, unsubscribeToEvent } = createEventManagers("selectionchange", onSelectionChange);
-        subscribeToEvent();
+        if (e.reactgrid.focusedLocation?.after.rowIndex === 0) {
+          onFirstRowFocus(e);
+        }
+        if (e.reactgrid.focusedLocation?.after.colIndex === 0) {
+          onFirstColumnFocus(e);
+        }
+      });
 
-        return () => unsubscribeToEvent();
-      },
-      [onSelectionChange]
-    );
+      subscribeToEvent();
+
+      return () => unsubscribeToEvent();
+    },
+    [onFocusChange, onFirstRowFocus, onFirstColumnFocus]
+  );
+
+  useEffect(
+    function () {
+      const { subscribeToEvent, unsubscribeToEvent } = createEventManagers("selectionchange", onSelectionChange);
+
+      subscribeToEvent();
+
+      return () => unsubscribeToEvent();
+    },
+    [onSelectionChange]
+  );
 
   if (devEnvironment && !bypassSizeWarning && rows.length * columns.length > 25_000) {
     return (
