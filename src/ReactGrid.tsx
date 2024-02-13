@@ -29,9 +29,8 @@ const ReactGrid: FC<ReactGridProps> = ({
   // Initial Settings
   initialSelectedRange,
   initialFocusLocation,
-  // Events
   onFocusChange,
-  onSelectionChange,
+  onSelectionChange
 }) => {
   initReactGridStore(id, {
     rows,
@@ -44,6 +43,8 @@ const ReactGrid: FC<ReactGridProps> = ({
   const { setSelectedArea, setFocusedLocation: setFocusedCell, getCellOrSpanMemberByIndexes, getCellByIds } = store;
 
   const [bypassSizeWarning, setBypassSizeWarning] = useState(false);
+
+  // TODO move to initializer
   useEffect(() => {
     if (!initialSelectedRange) {
       return;
@@ -65,6 +66,7 @@ const ReactGrid: FC<ReactGridProps> = ({
     }
   }, [initialFocusLocation, initialSelectedRange]);
 
+  // TODO move to initializer
   useEffect(() => {
     if (initialFocusLocation) {
       const { rowId, columnId } = initialFocusLocation;
@@ -89,24 +91,24 @@ const ReactGrid: FC<ReactGridProps> = ({
     }
   }, [initialFocusLocation]);
 
-  useEffect(
-    function () {
-      const { subscribeToEvent, unsubscribeToEvent } = createEventManagers("focuschange", onFocusChange);
-      subscribeToEvent();
+    useEffect(
+      function () {
+        const { subscribeToEvent, unsubscribeToEvent } = createEventManagers("focuschange", onFocusChange);
+        subscribeToEvent();
 
-      return () => unsubscribeToEvent();
-    },
-    [onFocusChange]
-  );
-  useEffect(
-    function () {
-      const { subscribeToEvent, unsubscribeToEvent } = createEventManagers("selectionchange", onSelectionChange);
-      subscribeToEvent();
+        return () => unsubscribeToEvent();
+      },
+      [onFocusChange]
+    );
+    useEffect(
+      function () {
+        const { subscribeToEvent, unsubscribeToEvent } = createEventManagers("selectionchange", onSelectionChange);
+        subscribeToEvent();
 
-      return () => unsubscribeToEvent();
-    },
-    [onSelectionChange]
-  );
+        return () => unsubscribeToEvent();
+      },
+      [onSelectionChange]
+    );
 
   if (devEnvironment && !bypassSizeWarning && rows.length * columns.length > 25_000) {
     return (
