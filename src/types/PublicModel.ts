@@ -1,6 +1,7 @@
 import React from "react";
 
 import { Behavior, BehaviorId } from "./Behavior";
+import { ReactGridEvent } from "./Events";
 
 export type Row<Id = string> = {
   id: Id;
@@ -127,6 +128,8 @@ export interface ReactGridProps {
   initialFocusLocation?: Location;
   initialSelectedRange?: Range;
 
-  onFocusChange: (e: Event) => unknown;
-  onSelectionChange: (e: Event) => unknown;
+  onFocusChange: (e: ReactGridEvent) => unknown;
+  onSelectionChange: (e: ReactGridEvent) => unknown;
+  onFirstRowFocus: (e: ReactGridEvent) => unknown;
+  onFirstColumnFocus: (e: ReactGridEvent) => unknown;
 }

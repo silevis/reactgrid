@@ -1,31 +1,17 @@
 import React from "react";
 import { StoreApi } from "zustand";
 import { HandlerFn } from "../types/Behavior";
-import { ReactGridEvents } from "../types/Events.ts";
+import { ReactGridEventNames } from "../types/Events.ts";
 import { ReactGridStore } from "../types/ReactGridStore.ts";
 import { emitEvent } from "./emitEvent.ts";
-
-type ChangesObservedKeys = keyof Pick<
-  ReactGridStore,
-  | "cells"
-  | "rows"
-  | "columns"
-  | "styledRanges"
-  | "currentBehavior"
-  | "focusedLocation"
-  | "selectedArea"
-  | "colMeasurements"
-  | "hiddenFocusTargetRef"
->;
-
-type EventKeyPair = [ReactGridEvents, ChangesObservedKeys];
+import { EventKeyPair, ChangeObservedKeys, RegisteredChanges } from "../types/Events.ts";
 
 const eventsAndKey: EventKeyPair[] = [
   ["focuschange", "focusedLocation"],
   ["selectionchange", "selectedArea"],
 ];
 
-const eventEmittingKeys: ChangesObservedKeys[] = ["focusedLocation", "selectedArea"];
+const eventEmittingKeys: ChangeObservedKeys[] = ["focusedLocation", "selectedArea"];
 
 export const updateStoreWithApiAndEventHandler = <TEvent extends React.SyntheticEvent<HTMLElement> | PointerEvent>(
   storeApi: StoreApi<ReactGridStore>,
@@ -47,7 +33,7 @@ export const updateStoreWithApiAndEventHandler = <TEvent extends React.Synthetic
   }
 };
 
-function getEventNameFromKeyName(keyName: ChangesObservedKeys): ReactGridEvents | null {
+function getEventNameFromKeyName(keyName: ChangeObservedKeys): ReactGridEventNames | null {
   const eventKeyPair = eventsAndKey.find(([_event, key]) => key === keyName);
   if (eventKeyPair) {
     const [event, _key] = eventKeyPair;
@@ -57,10 +43,10 @@ function getEventNameFromKeyName(keyName: ChangesObservedKeys): ReactGridEvents 
   }
 }
 
-function findChangesInStore(oldStore: ReactGridStore, newStore: ReactGridStore, keysToCompare: ChangesObservedKeys[]) {
-  const updatedKeys: { [key in ChangesObservedKeys]?: { before: unknown; after: unknown } } = {};
+function findChangesInStore(oldStore: ReactGridStore, newStore: ReactGridStore, keysToCompare: ChangeObservedKeys[]) {
+  const updatedKeys: RegisteredChanges = {};
 
-  keysToCompare.forEach((key: ChangesObservedKeys) => {
+  keysToCompare.forEach((key: ChangeObservedKeys) => {
     const oldValue = oldStore[key];
     const newValue = newStore[key];
 
@@ -76,9 +62,9 @@ function arePropertiesDifferent(oldObject: unknown, newObject: unknown): boolean
   return JSON.stringify(oldObject) !== JSON.stringify(newObject);
 }
 
-function emitEventWithChanges(updatedProperties): void {
+function emitEventWithChanges(updatedProperties: RegisteredChanges): void {
   Object.entries(updatedProperties).forEach(([keyName, previousAndCurrentState]) => {
-    const eventName = getEventNameFromKeyName(keyName as ChangesObservedKeys);
+    const eventName = getEventNameFromKeyName(keyName as ChangeObservedKeys);
     if (!eventName) {
       return;
     } else {

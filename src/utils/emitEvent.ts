@@ -1,7 +1,7 @@
-import { ReactGridEvents } from "../types/Events";
+import { ReactGridEventNames } from "../types/Events";
 
 export function emitEvent(
-  eventName: ReactGridEvents,
+  eventName: ReactGridEventNames,
   additionalEventProperties: object = {},
   eventInit: EventInit = { bubbles: false, cancelable: false, composed: false }
 ) {
