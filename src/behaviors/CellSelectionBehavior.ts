@@ -30,8 +30,8 @@ const tryExpandingTowardsCell = (
   rowIndex: number,
   colIndex: number
 ): ReactGridStore => {
-  const selectedArea = store.selectedArea;
-  const focusedLocation = store.focusedLocation;
+  const selectedArea = structuredClone(store.selectedArea);
+  const focusedLocation = structuredClone(store.focusedLocation);
 
   if (rowIndex < focusedLocation.rowIndex) {
     // Targeted cell start's at the row before the focused cell
