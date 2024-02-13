@@ -19,6 +19,7 @@ export interface ReactGridStoreProps {
   focusedLocation: IndexedLocation;
   absoluteFocusedLocation: IndexedLocation;
   selectedArea: NumericalRange;
+  // initialSelectedRange: Range;
   currentlyEditedCell: IndexedLocation;
 
   reactGridRef?: HTMLDivElement;

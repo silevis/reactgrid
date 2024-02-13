@@ -4,6 +4,8 @@ import { DefaultBehavior } from "../behaviors/DefaultBehavior";
 import { Range, StyledRange } from "../types/PublicModel";
 import { isSpanMember } from "./isSpanMember";
 import { ReactGridStore, ReactGridStoreProps } from "../types/ReactGridStore.ts";
+import { EMPTY_AREA } from "../types/InternalModel.ts";
+import { getNumericalRange } from "./getNumericalRange.ts";
 
 type ReactGridStores = Record<string, StoreApi<ReactGridStore>>;
 
@@ -24,7 +26,7 @@ const DEFAULT_STORE_PROPS: ReactGridStoreProps = {
     Right: { startRowIdx: 0, endRowIdx: 0, startColIdx: 0, endColIdx: 0 },
     BottomLeft: { startRowIdx: 0, endRowIdx: 0, startColIdx: 0, endColIdx: 0 },
     BottomCenter: { startRowIdx: 0, endRowIdx: 0, startColIdx: 0, endColIdx: 0 },
-    BottomRight: { startRowIdx: 0, endRowIdx: 0, startColIdx: 0, endColIdx: 0 }
+    BottomRight: { startRowIdx: 0, endRowIdx: 0, startColIdx: 0, endColIdx: 0 },
   },
   styledRanges: [],
   focusedLocation: { rowIndex: 0, colIndex: 0 },
@@ -35,12 +37,16 @@ const DEFAULT_STORE_PROPS: ReactGridStoreProps = {
   hiddenFocusTargetRef: undefined,
   behaviors: {
     Default: DefaultBehavior(),
-    CellSelection: CellSelectionBehavior
+    CellSelection: CellSelectionBehavior,
   },
-  currentBehavior: DefaultBehavior()
+  currentBehavior: DefaultBehavior(),
 };
 
-export function initReactGridStore(id: string, initialProps?: Partial<ReactGridStoreProps>) {
+type InitializationVariables = Partial<ReactGridStoreProps> & {
+  initialSelectedRange: Range | undefined;
+};
+
+export function initReactGridStore(id: string, initialProps?: InitializationVariables) {
   reactGridStores.setState((state) => {
     if (state[id]) return state;
 
@@ -134,8 +140,11 @@ export function initReactGridStore(id: string, initialProps?: Partial<ReactGridS
 
             return styledRange ? [styledRange] : [];
           }
-        }
-      }))
+        },
+        selectedArea: initialProps?.initialSelectedRange
+          ? getNumericalRange(get(), initialProps.initialSelectedRange)
+          : DEFAULT_STORE_PROPS.selectedArea,
+      })),
     };
   });
 }

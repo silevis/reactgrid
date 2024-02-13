@@ -27,20 +27,18 @@ const ReactGrid: FC<ReactGridProps> = ({
   initialFocusLocation,
   styledRanges,
 }) => {
-  initReactGridStore(id,  {
+  initReactGridStore(id, {
     rows,
     columns,
     cells,
     behaviors,
     styledRanges,
-  })
+    initialSelectedRange,
+    // selectedArea: {startRowIdx: 2, startColIdx: 3, endColIdx: 5, endRowIdx: 7}
+  });
   const store = useReactGridStoreApi(id).getState();
-  const {
-    setSelectedArea,
-    setFocusedLocation: setFocusedCell,
-    getCellOrSpanMemberByIndexes,
-    getCellByIds,
-  } = store;
+  
+  const { setSelectedArea, setFocusedLocation: setFocusedCell, getCellOrSpanMemberByIndexes, getCellByIds } = store;
 
   const [bypassSizeWarning, setBypassSizeWarning] = useState(false);
 

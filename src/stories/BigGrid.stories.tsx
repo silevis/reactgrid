@@ -32,12 +32,15 @@ export const BigGrid = () => {
         if (i === 6 && j === 7) return null;
         if (i === 6 && j === 8) return null;
 
-        return `[${i.toString()}:${j.toString()}]` + [
-          "Lorem ipsum dolor sit amet",
-          "Reiciendis illum, nihil, ab officiis explicabo!",
-          "Excepturi in adipisci omnis illo eveniet obcaecati!",
-          "Doloremque, sit!",
-        ][Math.floor(Math.random() * 4)];
+        return (
+          `[${i.toString()}:${j.toString()}]` +
+          [
+            "Lorem ipsum dolor sit amet",
+            "Reiciendis illum, nihil, ab officiis explicabo!",
+            "Excepturi in adipisci omnis illo eveniet obcaecati!",
+            "Doloremque, sit!",
+          ][Math.floor(Math.random() * 4)]
+        );
       });
     })
   );
@@ -71,7 +74,13 @@ export const BigGrid = () => {
       });
     });
 
-    setCell("0", "0", TextCell, { text: data[0][0] ?? "", reverse: true, onTextChanged: () => null }, { colSpan: 2, rowSpan: 2 });
+    setCell(
+      "0",
+      "0",
+      TextCell,
+      { text: data[0][0] ?? "", reverse: true, onTextChanged: () => null },
+      { colSpan: 2, rowSpan: 2 }
+    );
     setCell(
       "2",
       "3",
@@ -102,6 +111,16 @@ export const BigGrid = () => {
           stickyLeftColumns={3}
           stickyRightColumns={2}
           stickyBottomRows={2}
+          initialSelectedRange={{
+            start: {
+              rowId: "2",
+              columnId: "3",
+            },
+            end: {
+              rowId: "5",
+              columnId: "6",
+            },
+          }}
           {...cellMatrix}
           styledRanges={[
             {
