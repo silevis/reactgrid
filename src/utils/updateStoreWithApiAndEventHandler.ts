@@ -18,4 +18,4 @@ export const updateStoreWithApiAndEventHandler = <TEvent extends React.Synthetic
   }
 
   return store;
-}
+};
