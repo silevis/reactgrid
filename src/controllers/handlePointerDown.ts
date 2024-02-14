@@ -11,7 +11,10 @@ export const handlePointerDown = (event: React.PointerEvent<HTMLDivElement>, sto
 
   let holdTimeoutId: NodeJS.Timeout;
 
-  if (event.button === 2 || usedTouch) {
+  const isRightClick = event.button === 2;
+
+  if (isRightClick || usedTouch) {
+    // invoke the setTimeout callback if handlePointerUp is not called within 500ms (hold event)
     holdTimeoutId = setTimeout(() => {
       const handler = usedTouch
         ? getNewestState().currentBehavior.handlePointerHoldTouch
