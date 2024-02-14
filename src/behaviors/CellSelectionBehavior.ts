@@ -123,7 +123,16 @@ export const CellSelectionBehavior: Behavior = {
   },
 
   handlePointerEnter(event, store) {
+    return store;
+  },
 
+  handlePointerHold: function (event, store) {
+    devEnvironment && console.log("CSB/handlePointerHold");
+    return store;
+  },
+
+  handlePointerHoldTouch: function (event, store) {
+    devEnvironment && console.log("CSB/handlePointerHoldTouch");
     return store;
   },
 
@@ -165,7 +174,6 @@ export const CellSelectionBehavior: Behavior = {
   },
 
   handlePointerEnterTouch(event, store) {
-
     return store;
   },
 };

@@ -58,6 +58,16 @@ export const DefaultBehavior = (config: DefaultBehaviorConfig = CONFIG_DEFAULTS)
     return store;
   },
 
+  handlePointerHold: function (event, store) {
+    devEnvironment && console.log("DB/handlePointerHold");
+    return store;
+  },
+
+  handlePointerHoldTouch: function (event, store) {
+    devEnvironment && console.log("DB/handlePointerHoldTouch");
+    return store;
+  },
+
   handleKeyDown: function (event, store) {
     return handleKeyDown(event, store, { moveHorizontallyOnEnter: config.moveHorizontallyOnEnter });
   },
