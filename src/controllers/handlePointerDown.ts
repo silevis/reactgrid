@@ -7,11 +7,25 @@ import { updateStoreWithApiAndEventHandler } from "../utils/updateStoreWithApiAn
 import { ReactGridStore } from "../types/ReactGridStore.ts";
 
 export const handlePointerDown = (event: React.PointerEvent<HTMLDivElement>, storeApi: StoreApi<ReactGridStore>) => {
+  const usedTouch = event.pointerType !== "mouse"; // * keep in mind there is also "pen" pointerType
+
+  let holdTimeoutId: NodeJS.Timeout;
+
+  const isRightClick = event.button === 2;
+
+  if (isRightClick || usedTouch) {
+    // invoke the setTimeout callback if handlePointerUp is not called within 500ms (hold event)
+    holdTimeoutId = setTimeout(() => {
+      const handler = usedTouch
+        ? getNewestState().currentBehavior.handlePointerHoldTouch
+        : getNewestState().currentBehavior.handlePointerHold;
+      updateWithStoreApi(event, handler);
+    }, 500);
+  }
+
   function getNewestState() {
     return storeApi.getState();
   }
-
-  const usedTouch = event.pointerType !== "mouse"; // * keep in mind there is also "pen" pointerType
 
   const updateWithStoreApi = <TEvent extends React.SyntheticEvent<HTMLElement> | PointerEvent>(
     event: TEvent,
@@ -51,6 +65,8 @@ export const handlePointerDown = (event: React.PointerEvent<HTMLDivElement>, sto
     // Remove listeners after pointerUp
     window.removeEventListener("pointermove", handlePointerMove);
     window.removeEventListener("pointerup", handlePointerUp);
+
+    if (holdTimeoutId) clearTimeout(holdTimeoutId);
 
     const handler = usedTouch
       ? getNewestState().currentBehavior.handlePointerUpTouch
