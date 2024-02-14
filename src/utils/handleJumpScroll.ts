@@ -9,69 +9,60 @@ import { ReactGridStore } from "../types/ReactGridStore.ts";
 
 /**
  * Handles jump scrolling between cells in a ReactGrid.
- * If the next cell is not fully visible, it scrolls it into view.
+ * If the next cell is not fully visible and it's not a sticky cell, it scrolls it into view.
+ * It tries all four directions ("Right", "Left", "Bottom", "Top") one by one.
+ * For each direction, it checks if there's a sticky cell adjacent to the center pane in that direction.
+ * If there is, it checks if the next cell is fully visible and not colliding with the sticky cell.
+ * If the next cell is not fully visible and it's not the sticky cell, it calculates the scroll value
+ * and scrolls the scrollableParent in the direction to bring the next cell into view.
  *
  * @param store - The ReactGridStore instance.
  * @param previousCell - The previous cell (previously focused cell).
  * @param nextCell - The next cell (the one that we want to scroll to.)
  */
 export function handleJumpScroll(store: ReactGridStore, previousCell: Cell, nextCell: Cell): void {
-  // * If nextCell is not fully visible, scroll it into view (! not by using function with similar name!)
-
   if (!previousCell) return;
   const nextCellContainer = getCellContainer(store, nextCell) as HTMLElement;
-  if (!nextCellContainer) return; // if there is no nextCellContainer, there is no need to handle scroll
+  if (!nextCellContainer) return;
   const previousCellContainer = getCellContainer(store, previousCell) as HTMLElement;
 
-  const scrollableParent = (getScrollableParent(nextCellContainer, true) as Element) ?? store.reactGridRef!; // get container that has scroll
-  let scrollingDirection: Direction;
+  const scrollableParent = (getScrollableParent(nextCellContainer, true) as Element) ?? store.reactGridRef!;
+  const directions: Direction[] = ["Right", "Left", "Bottom", "Top"];
+  const directionParameters: ("top" | "left")[] = ["left", "left", "top", "top"];
 
-  const nextCellRowIndex = store.rows.findIndex((row) => row.id === nextCell.rowId);
-  const previousCellRowIndex = store.rows.findIndex((row) => row.id === previousCell.rowId);
+  directions.forEach((scrollingDirection, i) => {
+    const borderStickyCell = getStickyCellAdjacentToCenterPane(store, nextCell, scrollingDirection);
+    if (!borderStickyCell) return;
+    const borderStickyContainer = getCellContainer(store, borderStickyCell) as HTMLElement;
 
-  if (nextCellRowIndex === previousCellRowIndex) {
-    const nextCellColIndex = store.columns.findIndex((col) => col.id === nextCell.colId);
-    const previousCellColIndex = store.columns.findIndex((col) => col.id === previousCell.colId);
-    scrollingDirection = nextCellColIndex > previousCellColIndex ? "Right" : "Left";
-  } else {
-    scrollingDirection = nextCellRowIndex > previousCellRowIndex ? "Bottom" : "Top";
-  }
+    const isNextCellFullyVisible =
+      isInViewport(nextCellContainer, scrollableParent) && !isCollision(nextCellContainer, borderStickyContainer);
 
-  // This is cell that is next to center-pane, the first one that is on same row or column that nextCell is
-  const borderStickyCell = getStickyCellAdjacentToCenterPane(store, nextCell, scrollingDirection);
-  if (!borderStickyCell) throw new Error(`borderStickyCell is ${borderStickyCell}!`);
-  const borderStickyContainer = getCellContainer(store, borderStickyCell) as HTMLElement;
+    const isPreviousCellFullyVisible =
+      isInViewport(previousCellContainer, scrollableParent) &&
+      !isCollision(previousCellContainer, borderStickyContainer);
 
-  const isNextCellFullyVisible =
-    isInViewport(nextCellContainer, scrollableParent) && !isCollision(nextCellContainer, borderStickyContainer);
-  const isPreviousCellFullyVisible =
-    isInViewport(previousCellContainer, scrollableParent) && !isCollision(previousCellContainer, borderStickyContainer);
+    const previousCellRect = previousCellContainer.getBoundingClientRect();
+    const nextCellRect = nextCellContainer.getBoundingClientRect();
 
-  // Get position and size of both previous and next cell containers (divs)
-  const previousCellRect = previousCellContainer.getBoundingClientRect();
-  const nextCellRect = nextCellContainer.getBoundingClientRect();
+    const directionParameter = directionParameters[i];
 
-  // Indicates which way the scroll should go to.
-  const directionParameter: "top" | "left" =
-    scrollingDirection === "Top" || scrollingDirection === "Bottom" ? "top" : "left";
+    let scrollValue: number;
 
-  let scrollValue: number;
+    if (!isNextCellFullyVisible && nextCellContainer !== borderStickyContainer) {
+      if (!isPreviousCellFullyVisible) {
+        scrollValue =
+          nextCellRect[directionParameter] -
+          previousCellRect[directionParameter] +
+          previousCellRect[directionParameter === "top" ? "height" : "width"];
+      } else {
+        scrollValue = nextCellRect[directionParameter] - previousCellRect[directionParameter];
+      }
 
-  if (!isNextCellFullyVisible) {
-    if (!isPreviousCellFullyVisible) {
-      scrollValue =
-        nextCellRect[directionParameter] -
-        previousCellRect[directionParameter] +
-        previousCellRect[directionParameter === "top" ? "height" : "width"];
-    } else {
-      scrollValue = nextCellRect[directionParameter] - previousCellRect[directionParameter];
+      scrollableParent.scrollBy({
+        [directionParameter]: scrollValue,
+        behavior: "instant",
+      });
     }
-
-    scrollableParent.scrollBy({
-      // e.g.
-      // top: -20px
-      [directionParameter]: scrollValue,
-      behavior: "instant" // ? Maybe add a way to change behavior with the config?
-    });
-  }
+  });
 }
