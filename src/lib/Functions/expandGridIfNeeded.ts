@@ -54,6 +54,7 @@ export const expandGridIfNeeded = (
         idx: currentRowCount + i,
         top: prefix.bottom,
         bottom: prefix.bottom + prefix.height || CellMatrix.DEFAULT_ROW_HEIGHT,
+        cells: prefix.cells.map(() => ({ type: "text", text: "" })),
       });
     }
     updated = true;
