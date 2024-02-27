@@ -6,26 +6,26 @@ import { NumericalRange } from "./CellMatrix.ts";
 import { Behavior, BehaviorId } from "./Behavior.ts";
 
 export interface ReactGridStoreProps {
-  rows: Row[];
-  columns: Column[];
-  cells: CellMap;
+  readonly rows: Row[];
+  readonly columns: Column[];
+  readonly cells: CellMap;
 
-  rowMeasurements: RowMeasurement[];
-  colMeasurements: ColumnMeasurement[];
+  readonly rowMeasurements: RowMeasurement[];
+  readonly colMeasurements: ColumnMeasurement[];
 
-  paneRanges: Record<PaneName, NumericalRange>;
-  styledRanges: StyledRange[];
+  readonly paneRanges: Record<PaneName, NumericalRange>;
+  readonly styledRanges: StyledRange[];
 
-  focusedLocation: IndexedLocation;
-  absoluteFocusedLocation: IndexedLocation;
-  selectedArea: NumericalRange;
-  currentlyEditedCell: IndexedLocation;
+  readonly focusedLocation: IndexedLocation;
+  readonly absoluteFocusedLocation: IndexedLocation;
+  readonly selectedArea: NumericalRange;
+  readonly currentlyEditedCell: IndexedLocation;
 
-  reactGridRef?: HTMLDivElement;
-  hiddenFocusTargetRef?: HTMLDivElement;
+  readonly reactGridRef?: HTMLDivElement;
+  readonly hiddenFocusTargetRef?: HTMLDivElement;
 
-  behaviors: Record<BehaviorId, Behavior>;
-  currentBehavior: Behavior;
+  readonly behaviors: Record<BehaviorId, Behavior>;
+  readonly currentBehavior: Behavior;
 }
 
 export interface ReactGridStore extends ReactGridStoreProps {

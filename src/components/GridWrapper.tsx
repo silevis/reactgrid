@@ -4,7 +4,7 @@ import { StyledRangesCSS } from "../types/PublicModel";
 import { getStyledRangesCSS } from "../utils/getStyledRangesCSS";
 import { useReactGridStore, useReactGridStoreApi } from "../utils/reactGridStore";
 import { updateStoreWithApiAndEventHandler } from "../utils/updateStoreWithApiAndEventHandler";
-import { handlePointerDown, pointerEventController } from "../controllers/handlePointerDown";
+import { handlePointerDown } from "../controllers/handlePointerDown";
 
 interface GridWrapperProps {
   reactGridId: string;

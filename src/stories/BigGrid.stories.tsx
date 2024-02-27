@@ -3,6 +3,7 @@ import { StrictMode, useState } from "react";
 import ReactGrid from "../ReactGrid";
 import { ErrorBoundary } from "../components/ErrorBoundary";
 import TextCell from "../components/cellTemplates/TextCell";
+import { ReactGridEvent } from "../types/Events";
 import { cellMatrixBuilder } from "../utils/cellMatrixBuilder";
 
 const ROW_COUNT = 20;
@@ -32,12 +33,15 @@ export const BigGrid = () => {
         if (i === 6 && j === 7) return null;
         if (i === 6 && j === 8) return null;
 
-        return `[${i.toString()}:${j.toString()}]` + [
-          "Lorem ipsum dolor sit amet",
-          "Reiciendis illum, nihil, ab officiis explicabo!",
-          "Excepturi in adipisci omnis illo eveniet obcaecati!",
-          "Doloremque, sit!",
-        ][Math.floor(Math.random() * 4)];
+        return (
+          `[${i.toString()}:${j.toString()}]` +
+          [
+            "Lorem ipsum dolor sit amet",
+            "Reiciendis illum, nihil, ab officiis explicabo!",
+            "Excepturi in adipisci omnis illo eveniet obcaecati!",
+            "Doloremque, sit!",
+          ][Math.floor(Math.random() * 4)]
+        );
       });
     })
   );
@@ -71,7 +75,13 @@ export const BigGrid = () => {
       });
     });
 
-    setCell("0", "0", TextCell, { text: data[0][0] ?? "", reverse: true, onTextChanged: () => null }, { colSpan: 2, rowSpan: 2 });
+    setCell(
+      "0",
+      "0",
+      TextCell,
+      { text: data[0][0] ?? "", reverse: true, onTextChanged: () => null },
+      { colSpan: 2, rowSpan: 2 }
+    );
     setCell(
       "2",
       "3",
@@ -93,10 +103,20 @@ export const BigGrid = () => {
 
   cellMatrix.columns[1].width = "7rem";
 
+  const fn = (e: Event) => console.log(e);
+  const firstRowFn = (e: ReactGridEvent) =>
+    console.log(`First row clicked, column: ${e.reactgrid.focusedLocation?.after.colIndex}`);
+  const firstColFn = (e: ReactGridEvent) =>
+    console.log(`First column clicked, row: ${e.reactgrid.focusedLocation?.after.rowIndex}`);
+
   return (
     <>
       <div className="rgScrollableContainer" style={{ height: "100%", width: "100%", overflow: "auto" }}>
         <ReactGrid
+          onFirstColumnFocus={firstColFn}
+          onFirstRowFocus={firstRowFn}
+          onFocusChange={fn}
+          onSelectionChange={fn}
           id="big-grid"
           stickyTopRows={2}
           stickyLeftColumns={3}

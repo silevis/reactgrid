@@ -4,6 +4,7 @@ import GridWrapper from "./components/GridWrapper";
 import PanesRenderer from "./components/PanesRenderer";
 import { ReactGridIdProvider } from "./components/ReactGridIdProvider";
 import { ReactGridProps } from "./types/PublicModel";
+import { createEventManagers } from "./utils/createEventManagers";
 import { getCellIndexes } from "./utils/getCellIndexes.1";
 import { getNumericalRange } from "./utils/getNumericalRange";
 import isDevEnvironment from "./utils/isDevEnvironment";
@@ -22,25 +23,27 @@ const ReactGrid: FC<ReactGridProps> = ({
   stickyLeftColumns,
   stickyRightColumns,
   behaviors,
+  // Styling
   style,
+  styledRanges,
+  // Initial Settings
   initialSelectedRange,
   initialFocusLocation,
-  styledRanges,
+  // Event Handlers
+  onFocusChange,
+  onSelectionChange,
+  onFirstRowFocus,
+  onFirstColumnFocus,
 }) => {
-  initReactGridStore(id,  {
+  initReactGridStore(id, {
     rows,
     columns,
     cells,
     behaviors,
     styledRanges,
-  })
+  });
   const store = useReactGridStoreApi(id).getState();
-  const {
-    setSelectedArea,
-    setFocusedLocation: setFocusedCell,
-    getCellOrSpanMemberByIndexes,
-    getCellByIds,
-  } = store;
+  const { setSelectedArea, setFocusedLocation: setFocusedCell, getCellOrSpanMemberByIndexes, getCellByIds } = store;
 
   const [bypassSizeWarning, setBypassSizeWarning] = useState(false);
 
@@ -90,6 +93,37 @@ const ReactGrid: FC<ReactGridProps> = ({
       setFocusedCell(rowIndex, colIndex);
     }
   }, [initialFocusLocation]);
+
+  useEffect(
+    function () {
+      const { subscribeToEvent, unsubscribeToEvent } = createEventManagers("focuschange", (e) => {
+        onFocusChange(e);
+
+        if (e.reactgrid.focusedLocation?.after.rowIndex === 0) {
+          onFirstRowFocus(e);
+        }
+        if (e.reactgrid.focusedLocation?.after.colIndex === 0) {
+          onFirstColumnFocus(e);
+        }
+      });
+
+      subscribeToEvent();
+
+      return () => unsubscribeToEvent();
+    },
+    [onFocusChange, onFirstRowFocus, onFirstColumnFocus]
+  );
+
+  useEffect(
+    function () {
+      const { subscribeToEvent, unsubscribeToEvent } = createEventManagers("selectionchange", onSelectionChange);
+
+      subscribeToEvent();
+
+      return () => unsubscribeToEvent();
+    },
+    [onSelectionChange]
+  );
 
   if (devEnvironment && !bypassSizeWarning && rows.length * columns.length > 25_000) {
     return (
