@@ -190,6 +190,7 @@ export class ResizeColumnBehavior extends Behavior {
       } else {
         // If not, measure it and store it in the cache
         const contentWidth = this.measureTextWidth(content);
+        this.widthCache[content] = contentWidth;
         // The chevron cell contains arrows
         const additionalWidth = cell.type === "chevron" ? 10 : 0;
 
