@@ -24,6 +24,7 @@ export class ResizeColumnBehavior extends Behavior {
   private resizedColumn!: GridColumn;
   private initialLocation!: PointerLocation;
   private canvasContext = this.createCanvasContext();
+  private widthCache: { [key: string]: number } = {};
   autoScrollDirection: Direction = "horizontal";
   isInScrollableRange!: boolean;
 
@@ -183,11 +184,17 @@ export class ResizeColumnBehavior extends Behavior {
     state.cellMatrix.rows.forEach((row) => {
       const cell = row.cells[idx];
       const content = this.getContentFromCell(cell, state.cellTemplates);
-      const contentWidth = this.measureTextWidth(content);
-      // The chevron cell contains arrows
-      const additionalWidth = cell.type === "chevron" ? 10 : 0;
+      // Check if the width of this content is in the cache
+      if (this.widthCache[content] !== undefined) {
+        maxWidth = Math.max(maxWidth, this.widthCache[content]);
+      } else {
+        // If not, measure it and store it in the cache
+        const contentWidth = this.measureTextWidth(content);
+        // The chevron cell contains arrows
+        const additionalWidth = cell.type === "chevron" ? 10 : 0;
 
-      maxWidth = Math.max(maxWidth, contentWidth + additionalWidth);
+        maxWidth = Math.max(maxWidth, contentWidth + additionalWidth);
+      }
     });
 
     // Add some extra space in case the text gets truncated
