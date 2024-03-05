@@ -13,12 +13,16 @@ type HandleKeyDownConfig = {
 };
 
 const CONFIG_DEFAULTS: HandleKeyDownConfig = {
-  moveHorizontallyOnEnter: false
+  moveHorizontallyOnEnter: false,
 } as const;
 
 // ? Problem: The more complicated is the key-combination (the more keys are included), the higher-in-code it has to be.
 // * By that I mean it has to be executed earlier.
-export const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>, store: ReactGridStore, config: HandleKeyDownConfig = CONFIG_DEFAULTS): ReactGridStore => {
+export const handleKeyDown = (
+  event: React.KeyboardEvent<HTMLDivElement>,
+  store: ReactGridStore,
+  config: HandleKeyDownConfig = CONFIG_DEFAULTS
+): ReactGridStore => {
   if (event.altKey || store.currentlyEditedCell.rowIndex !== -1 || store.currentlyEditedCell.colIndex !== -1)
     return store;
 
@@ -32,7 +36,7 @@ export const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>, store:
     focusedCell = {
       rowIndex: 0,
       colIndex: 0,
-      ...firstCell
+      ...firstCell,
     };
   }
 
@@ -50,14 +54,14 @@ export const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>, store:
         // If there is no selected area, get focused cell area
         const isAnyAreaSelected = !areAreasEqual(area, EMPTY_AREA);
         if (!isAnyAreaSelected) {
-          area = getCellArea(store, focusedCell);
+          area = getCellArea(focusedCell);
         }
 
         // Get the area occupied by cells in the selected columns.
         // Expand the obtained area by the area of cells that are spanned-cells, in selected direction (up).
         const areaWithSpannedCells = findMinimalSelectedArea(store, {
           ...area,
-          startRowIdx: Number(store.rows[0].id)
+          startRowIdx: Number(store.rows[0].id),
         });
 
         // Select all cells in obtained area, including spanned cells.
@@ -73,14 +77,14 @@ export const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>, store:
         // If there is no selected area, get focused cell area
         const isAnyAreaSelected = !areAreasEqual(area, EMPTY_AREA);
         if (!isAnyAreaSelected) {
-          area = getCellArea(store, focusedCell);
+          area = getCellArea(focusedCell);
         }
 
         // Get the area occupied by cells in the selected columns.
         // Expand the obtained area by the area of cells that are spanned-cells, in selected direction (down).
         const areaWithSpannedCells = findMinimalSelectedArea(store, {
           ...area,
-          endRowIdx: store.rows.length
+          endRowIdx: store.rows.length,
         });
 
         // Select all cells in obtained area, including spanned cells.
@@ -96,14 +100,14 @@ export const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>, store:
         // If there is no selected area, get focused cell area
         const isAnyAreaSelected = !areAreasEqual(area, EMPTY_AREA);
         if (!isAnyAreaSelected) {
-          area = getCellArea(store, focusedCell);
+          area = getCellArea(focusedCell);
         }
 
         // Get the area occupied by cells in the selected rows.
         // Expand the obtained area by the area of cells that are spanned-cells, in selected direction (to left).
         const areaWithSpannedCells = findMinimalSelectedArea(store, {
           ...area,
-          startColIdx: Number(store.columns[0].id)
+          startColIdx: Number(store.columns[0].id),
         });
 
         // Select all cells in obtained area, including spanned cells.
@@ -119,14 +123,14 @@ export const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>, store:
         // If there is no selected area, get focused cell area
         const isAnyAreaSelected = !areAreasEqual(area, EMPTY_AREA);
         if (!isAnyAreaSelected) {
-          area = getCellArea(store, focusedCell);
+          area = getCellArea(focusedCell);
         }
 
         // Get the area occupied by cells in the selected rows.
         // Expand the obtained area by the area of cells that are spanned-cells, in selected direction (to right).
         const areaWithSpannedCells = findMinimalSelectedArea(store, {
           ...area,
-          endColIdx: store.columns.length
+          endColIdx: store.columns.length,
         });
 
         // Select all cells in obtained area, including spanned cells.
@@ -148,7 +152,7 @@ export const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>, store:
           startRowIdx: 0,
           endRowIdx: store.rows.length,
           startColIdx: 0,
-          endColIdx: store.columns.length
+          endColIdx: store.columns.length,
         };
         // If the whole grid is already selected, deselect it.
         if (areAreasEqual(store.selectedArea, wholeGridArea)) {
@@ -158,14 +162,14 @@ export const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>, store:
               startRowIdx: -1,
               endRowIdx: -1,
               startColIdx: -1,
-              endColIdx: -1
-            }
+              endColIdx: -1,
+            },
           };
         }
 
         return {
           ...store,
-          selectedArea: wholeGridArea
+          selectedArea: wholeGridArea,
         };
       }
 
@@ -176,8 +180,8 @@ export const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>, store:
           ...store,
           focusedLocation: {
             rowIndex: 0,
-            colIndex: 0
-          }
+            colIndex: 0,
+          },
         };
       }
 
@@ -188,8 +192,8 @@ export const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>, store:
           ...store,
           focusedLocation: {
             rowIndex: store.rows.length - 1,
-            colIndex: store.columns.length - 1
-          }
+            colIndex: store.columns.length - 1,
+          },
         };
       }
 
@@ -206,7 +210,7 @@ export const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>, store:
         return {
           ...store,
           focusedLocation: { ...store.focusedLocation, rowIndex: store.rows.length - 1 },
-          selectedArea: EMPTY_AREA
+          selectedArea: EMPTY_AREA,
         };
       }
       // Jump to the cell that is in the first column, but in the same row as the focused cell.
@@ -222,7 +226,7 @@ export const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>, store:
         return {
           ...store,
           focusedLocation: { ...store.focusedLocation, colIndex: store.columns.length - 1 },
-          selectedArea: EMPTY_AREA
+          selectedArea: EMPTY_AREA,
         };
       }
 
@@ -235,7 +239,7 @@ export const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>, store:
         // If there is no selected area, get focused cell area
         const isAnyAreaSelected = !areAreasEqual(area, EMPTY_AREA);
         if (!isAnyAreaSelected) {
-          area = getCellArea(store, focusedCell);
+          area = getCellArea(focusedCell);
         }
 
         // Get the area occupied by cells in the selected columns.
@@ -243,7 +247,7 @@ export const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>, store:
         const areaWithSpannedCells = findMinimalSelectedArea(store, {
           ...area,
           startRowIdx: Number(store.rows[0].id),
-          endRowIdx: store.rows.length
+          endRowIdx: store.rows.length,
         });
 
         // Select all cells in obtained area, including spanned cells.
@@ -283,7 +287,7 @@ export const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>, store:
         // If there is no selected area, get focused cell area
         const isAnyAreaSelected = !areAreasEqual(area, EMPTY_AREA);
         if (!isAnyAreaSelected) {
-          area = getCellArea(store, focusedCell);
+          area = getCellArea(focusedCell);
         }
 
         // Get the area occupied by cells in the selected rows.
@@ -291,9 +295,9 @@ export const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>, store:
         const areaWithSpannedCells = findMinimalSelectedArea(store, {
           ...area,
           startColIdx: Number(store.columns[0].id),
-          endColIdx: store.columns.length
+          endColIdx: store.columns.length,
         });
-
+        console.log("areaWithSpannedCells", areaWithSpannedCells);
         // Select all cells in obtained area, including spanned cells.
         return { ...store, selectedArea: { ...areaWithSpannedCells } };
       }
@@ -307,6 +311,15 @@ export const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>, store:
           if (event.shiftKey) return moveFocusInsideSelectedRange(store, focusedCell, "up");
           else return moveFocusInsideSelectedRange(store, focusedCell, "down");
         }
+      }
+      case "PageUp": {
+        event.preventDefault();
+        // Get currently selected area
+        // let area: NumericalRange = { ...store.selectedArea };
+
+        console.log("PageUp");
+
+        return { ...store };
       }
     }
   }
@@ -376,10 +389,10 @@ export const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>, store:
         ...store,
         focusedLocation: {
           rowIndex: focusedCell.rowIndex,
-          colIndex: 0
+          colIndex: 0,
         },
         // If any area is selected, remove it.
-        selectedArea: EMPTY_AREA
+        selectedArea: EMPTY_AREA,
       };
     }
     case "End": {
@@ -389,10 +402,10 @@ export const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>, store:
         ...store,
         focusedLocation: {
           rowIndex: focusedCell.rowIndex,
-          colIndex: store.columns.length - 1
+          colIndex: store.columns.length - 1,
         },
         // If any area is selected, remove it.
-        selectedArea: EMPTY_AREA
+        selectedArea: EMPTY_AREA,
       };
     }
 

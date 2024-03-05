@@ -27,7 +27,7 @@ export const resizeSelectionInDirection = (
   direction: ResizeDirection,
   changeOffset: number = 1
 ): ReactGridStore => {
-  const focusedCellArea = getCellArea(store, focusedCell);
+  const focusedCellArea = getCellArea(focusedCell);
   const selectedArea = !areAreasEqual(store.selectedArea, EMPTY_AREA)
     ? { ...store.selectedArea }
     : { ...focusedCellArea };
@@ -36,7 +36,7 @@ export const resizeSelectionInDirection = (
     case "Left": {
       if (selectedArea.endColIdx > focusedCellArea.endColIdx) {
         selectedArea.endColIdx -= changeOffset;
-        if (!isCellInRange(store, focusedCell, selectedArea)) {
+        if (!isCellInRange(focusedCell, selectedArea)) {
           selectedArea.endColIdx += changeOffset;
           changeOffset = 1;
           selectedArea.startColIdx -= changeOffset;
@@ -50,7 +50,7 @@ export const resizeSelectionInDirection = (
     case "Right": {
       if (selectedArea.startColIdx < focusedCell.colIndex) {
         selectedArea.startColIdx += changeOffset;
-        if (!isCellInRange(store, focusedCell, selectedArea)) {
+        if (!isCellInRange(focusedCell, selectedArea)) {
           selectedArea.startColIdx -= changeOffset;
           changeOffset = 1;
           selectedArea.endColIdx += changeOffset;
@@ -64,7 +64,7 @@ export const resizeSelectionInDirection = (
     case "Up": {
       if (selectedArea.endRowIdx > focusedCellArea.endRowIdx) {
         selectedArea.endRowIdx -= changeOffset;
-        if (!isCellInRange(store, focusedCell, selectedArea)) {
+        if (!isCellInRange(focusedCell, selectedArea)) {
           selectedArea.endRowIdx += changeOffset;
           changeOffset = 1;
           selectedArea.startRowIdx -= changeOffset;
@@ -78,7 +78,7 @@ export const resizeSelectionInDirection = (
     case "Down": {
       if (selectedArea.startRowIdx < focusedCell.rowIndex) {
         selectedArea.startRowIdx += changeOffset;
-        if (!isCellInRange(store, focusedCell, selectedArea)) {
+        if (!isCellInRange(focusedCell, selectedArea)) {
           selectedArea.startRowIdx -= changeOffset;
           changeOffset = 1;
           selectedArea.endRowIdx += changeOffset;
@@ -112,7 +112,7 @@ export const resizeSelectionInDirection = (
   if (areAreasEqual(selectedArea, focusedCellArea)) {
     return {
       ...store,
-      selectedArea: EMPTY_AREA
+      selectedArea: EMPTY_AREA,
     };
   }
 
@@ -124,7 +124,7 @@ export const resizeSelectionInDirection = (
   return {
     ...store,
     selectedArea: {
-      ...newSelectedArea
-    }
+      ...newSelectedArea,
+    },
   };
 };

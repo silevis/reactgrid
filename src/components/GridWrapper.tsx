@@ -1,10 +1,11 @@
 import React, { FC, PropsWithChildren, useEffect, useRef, useState } from "react";
 import { HandlerFn } from "../types/Behavior";
-import { StyledRangesCSS } from "../types/PublicModel";
 import { getStyledRangesCSS } from "../utils/getStyledRangesCSS";
 import { useReactGridStore, useReactGridStoreApi } from "../utils/reactGridStore";
 import { updateStoreWithApiAndEventHandler } from "../utils/updateStoreWithApiAndEventHandler";
-import { handlePointerDown, pointerEventController } from "../controllers/handlePointerDown";
+import { handlePointerDown } from "../controllers/handlePointerDown";
+import { Interpolation, Theme } from "@emotion/react";
+import { css as emotionCss } from "@emotion/react";
 
 interface GridWrapperProps {
   reactGridId: string;
@@ -20,7 +21,7 @@ const GridWrapper: FC<PropsWithChildren<GridWrapperProps>> = ({ reactGridId, sty
 
   const getStyledRanges = useReactGridStore(reactGridId, (store) => store.getStyledRanges);
   const styledRanges = getStyledRanges();
-  const [css, setCSS] = useState<StyledRangesCSS | []>([]);
+  const [css, setCSS] = useState<Interpolation<Theme>>(emotionCss({}));
 
   useEffect(() => {
     if (reactGridElement.current) assignReactGridRef(reactGridElement.current);

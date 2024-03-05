@@ -1,10 +1,9 @@
 import { NumericalRange } from "../types/CellMatrix";
-import { Cell, SpanMember } from "../types/PublicModel";
-import { ReactGridStore } from "../types/ReactGridStore.ts";
+import { Cell } from "../types/PublicModel";
 import { getCellArea } from "./getCellArea";
 
-export const isCellInRange = (store: ReactGridStore, cell: Cell | SpanMember, range: NumericalRange): boolean => {
-  const cellArea = getCellArea(store, cell);
+export const isCellInRange = (cell: Cell, range: NumericalRange): boolean => {
+  const cellArea = getCellArea(cell);
 
   return (
     cellArea.startRowIdx >= range.startRowIdx &&

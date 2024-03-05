@@ -11,7 +11,7 @@ export const findMinimalSelectedArea = (store: ReactGridStore, currentArea: Nume
       const cell = store.getCellByIndexes(rowIndex, colIndex);
       if (!cell) continue;
 
-      const area = getCellArea(store, cell);
+      const area = getCellArea(cell);
 
       if (area.startRowIdx < minimalArea.startRowIdx) {
         minimalArea.startRowIdx = area.startRowIdx;

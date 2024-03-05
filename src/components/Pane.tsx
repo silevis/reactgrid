@@ -14,27 +14,22 @@ interface PaneGridContentProps {
   range: NumericalRange;
   className?: string;
   style?: React.CSSProperties;
-  getCellOffset?: (
-    rowIdx: number,
-    colIdx: number,
-    rowSpan: number,
-    colSpan: number
-  ) => CSSProperties;
+  getCellOffset?: (rowIdx: number, colIdx: number, rowSpan: number, colSpan: number) => CSSProperties;
 }
 
 const shouldMemoGridContent = (prevProps: PaneGridContentProps, nextProps: PaneGridContentProps) => {
-  const { 
-    startRowIdx: prevStartRowIdx, 
+  const {
+    startRowIdx: prevStartRowIdx,
     endRowIdx: prevEndRowIdx,
     startColIdx: prevStartColIdx,
-    endColIdx: prevEndColIdx
+    endColIdx: prevEndColIdx,
   } = prevProps.range;
 
-  const { 
-    startRowIdx: nextStartRowIdx, 
+  const {
+    startRowIdx: nextStartRowIdx,
     endRowIdx: nextEndRowIdx,
     startColIdx: nextStartColIdx,
-    endColIdx: nextEndColIdx
+    endColIdx: nextEndColIdx,
   } = nextProps.range;
 
   if (
@@ -51,27 +46,18 @@ const shouldMemoGridContent = (prevProps: PaneGridContentProps, nextProps: PaneG
   return true;
 };
 
-export const PaneGridContent: React.FC<PaneGridContentProps> = React.memo(({
-  range,
-  getCellOffset,
-}) => {
+export const PaneGridContent: React.FC<PaneGridContentProps> = React.memo(({ range, getCellOffset }) => {
   const { startRowIdx, endRowIdx, startColIdx, endColIdx } = range;
 
   const id = useReactGridId();
-  const rows = useReactGridStore(id, store => store.rows).slice(
-    startRowIdx,
-    endRowIdx
-  );
-  const columns = useReactGridStore(id, store => store.columns).slice(
-    startColIdx,
-    endColIdx
-  );
-  const cells = useReactGridStore(id, store => store.cells);
+  const rows = useReactGridStore(id, (store) => store.rows).slice(startRowIdx, endRowIdx);
+  const columns = useReactGridStore(id, (store) => store.columns).slice(startColIdx, endColIdx);
+  const cells = useReactGridStore(id, (store) => store.cells);
 
-  const focusedCell = useReactGridStore(id, store => store.focusedLocation);
-  const currentlyEditedCell = useReactGridStore(id, store => store.currentlyEditedCell);
+  const focusedCell = useReactGridStore(id, (store) => store.focusedLocation);
+  const currentlyEditedCell = useReactGridStore(id, (store) => store.currentlyEditedCell);
 
-  const hiddenFocusTargetRef = useReactGridStore(id, store => store.hiddenFocusTargetRef);
+  const hiddenFocusTargetRef = useReactGridStore(id, (store) => store.hiddenFocusTargetRef);
 
   const setFocusedLocation = useReactGridStore(id, (store) => store.setFocusedLocation);
   const setCurrentlyEditedCell = useReactGridStore(id, (store) => store.setCurrentlyEditedCell);
@@ -86,7 +72,8 @@ export const PaneGridContent: React.FC<PaneGridContentProps> = React.memo(({
       const realColumnIndex = startColIdx + colIndex;
 
       const isFocused = focusedCell.rowIndex === realRowIndex && focusedCell.colIndex === realColumnIndex;
-      const isInEditMode = currentlyEditedCell.rowIndex === realRowIndex && currentlyEditedCell.colIndex === realColumnIndex;
+      const isInEditMode =
+        currentlyEditedCell.rowIndex === realRowIndex && currentlyEditedCell.colIndex === realColumnIndex;
 
       const { Template, props } = cell;
 
@@ -107,12 +94,7 @@ export const PaneGridContent: React.FC<PaneGridContentProps> = React.memo(({
               ...(cell.colSpan && {
                 gridColumnEnd: `span ${cell.colSpan}`,
               }),
-              ...getCellOffset?.(
-                rowIndex,
-                colIndex,
-                cell.rowSpan ?? 1,
-                cell.colSpan ?? 1
-              ),
+              ...getCellOffset?.(rowIndex, colIndex, cell.rowSpan ?? 1, cell.colSpan ?? 1),
               gridRowStart: realRowIndex + 1,
               gridColumnStart: realColumnIndex + 1,
             },
@@ -138,7 +120,7 @@ export const PaneGridContent: React.FC<PaneGridContentProps> = React.memo(({
   });
 }, shouldMemoGridContent);
 
-const getPaneBackgroundStyle = (paneName: PaneName, range: NumericalRange, gap: RGTheme['grid']['gap']) => {
+const getPaneBackgroundStyle = (paneName: PaneName, range: NumericalRange, gap: RGTheme["grid"]["gap"]) => {
   let style: CSSProperties = {
     position: "sticky",
     gridRowStart: range.startRowIdx + 1,
@@ -203,13 +185,15 @@ export const Pane: React.FC<PaneProps> = ({
 }) => {
   const theme = useTheme();
   const id = useReactGridId();
-  const focusedCell = useReactGridStore(id, store => store.getFocusedCell());
-  const focusedCellArea = focusedCell ? {
-    startRowIdx: focusedCell.rowIndex,
-    endRowIdx: focusedCell.rowIndex + (focusedCell.rowSpan ?? 1),
-    startColIdx: focusedCell.colIndex,
-    endColIdx: focusedCell.colIndex + (focusedCell.colSpan ?? 1),
-  } : { startRowIdx: -1, endRowIdx: -1, startColIdx: -1, endColIdx: -1 };
+  const focusedCell = useReactGridStore(id, (store) => store.getFocusedCell());
+  const focusedCellArea = focusedCell
+    ? {
+        startRowIdx: focusedCell.rowIndex,
+        endRowIdx: focusedCell.rowIndex + (focusedCell.rowSpan ?? 1),
+        startColIdx: focusedCell.colIndex,
+        endColIdx: focusedCell.colIndex + (focusedCell.colSpan ?? 1),
+      }
+    : { startRowIdx: -1, endRowIdx: -1, startColIdx: -1, endColIdx: -1 };
   const selectedArea = useReactGridStore(id, (store) => store.selectedArea);
 
   if (!shouldRender) return null;

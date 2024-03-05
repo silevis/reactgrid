@@ -15,6 +15,6 @@ export function getCellFromCertainPane(
 
     const { rowIndex, colIndex } = cellIndexes;
 
-    return isCellInRange(store, store.getCellByIndexes(rowIndex, colIndex)!, store.paneRanges[paneName]);
+    return isCellInRange(store.getCellByIndexes(rowIndex, colIndex)!, store.paneRanges[paneName]);
   });
 }

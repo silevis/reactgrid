@@ -9,5 +9,5 @@ import { isCellInRange } from "./isCellInRange";
  * @returns True if the cell is on sticky pane, false otherwise.
  */
 export function isCellSticky(store: ReactGridStore, cell: Cell): boolean {
-  return !isCellInRange(store, cell, store.paneRanges.Center);
+  return !isCellInRange(cell, store.paneRanges.Center);
 }
