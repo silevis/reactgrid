@@ -50,6 +50,7 @@ export interface State<TCellMatrix extends CellMatrix = CellMatrix, TBehavior ex
     readonly enableColumnSelection: boolean;
     readonly enableRowSelection: boolean;
     readonly disableVirtualScrolling: boolean;
+    readonly allowExtendPasteRange: boolean;
     readonly contextMenuPosition: { top: number; left: number };
     readonly lineOrientation: Orientation;
     readonly linePosition: number;
@@ -104,4 +105,5 @@ export const defaultStateFields = {
     rightStickyColumns: undefined,
     bottomStickyRows: undefined,
     disableVirtualScrolling: false,
+    allowExtendPasteRange: false,
 }

@@ -6,7 +6,7 @@ import './test/theming-test.scss';
 import {
     config, enablePinnedToBodyConfig, disabledInitialFocusLocationConfig, enableAdditionalContentConfig,
     enableAdditionalContentWithFlexRowConfig, enableSymetric, enableTopLeftResponsiveSticky, enableTopLeftResponsiveStickyPinnedToBody,
-    enableBottomRightResponsiveSticky, enableBottomRightResponsiveStickyPinnedToBody, enableSpannedCells, disableVirtualScrolling
+    enableBottomRightResponsiveSticky, enableBottomRightResponsiveStickyPinnedToBody, enableSpannedCells, disableVirtualScrolling, allowExtendPasteRangeConfig
 } from './test/testEnvConfig';
 
 let component = <ExtTestGrid
@@ -15,6 +15,13 @@ let component = <ExtTestGrid
 />;
 ExtTestGrid.displayName = 'TestGridPro';
 switch (window.location.pathname) {
+    case '/allowExtendPasteRange':
+        component = <ExtTestGrid
+            component={ReactGrid}
+            config={allowExtendPasteRangeConfig}
+        />;
+        ExtTestGrid.displayName = 'TestGridProWithAllowExtendPasteRange';
+        break;
     case '/enableColumnAndRowSelection':
         component = <ExtTestGrid
             component={ReactGrid}
