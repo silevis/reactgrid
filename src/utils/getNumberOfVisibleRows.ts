@@ -4,12 +4,8 @@ import { getCellContainer } from "./getCellContainer";
 import { isCellInRange } from "./isCellInRange";
 import { isInViewport } from "./isInViewport";
 
-export const getNumberOfVisibleColumnCells = (
-  store: ReactGridStore,
-  scrollableParent: HTMLElement,
-  columnId?: string
-) => {
-  let visibleCells = -1; // negative number because we should exclude the currently focused cell
+export const getNumberOfVisibleRows = (store: ReactGridStore, scrollableParent: HTMLElement, columnId?: string) => {
+  let visibleCells = -1; // exclude the currently focused cell
 
   if (!columnId) return 0;
 

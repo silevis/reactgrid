@@ -7,10 +7,11 @@ import { moveFocusDown, moveFocusInsideSelectedRange, moveFocusLeft, moveFocusRi
 import { resizeSelectionInDirection } from "./resizeSelectionInDirection";
 import { ReactGridStore } from "../types/ReactGridStore.ts";
 import React from "react";
-import { getNumberOfVisibleColumnCells } from "./lastCellInViewPortByCol.ts";
+import { getNumberOfVisibleRows } from "./getNumberOfVisibleRows.ts";
 import { isCellSticky } from "./isCellSticky.ts";
 import { isCellInRange } from "./isCellInRange.ts";
 import { getStickyCellAdjacentToCenterPane } from "./getStickyCellAdjacentToCenterPane.ts";
+import { Cell } from "../types/PublicModel.ts";
 
 type HandleKeyDownConfig = {
   moveHorizontallyOnEnter: boolean;
@@ -291,11 +292,7 @@ export const handleKeyDown = (
 
         const currentCell = store.getFocusedCell();
 
-        const numberOfVisibleColumns: number = getNumberOfVisibleColumnCells(
-          store,
-          scrollableParent,
-          currentCell?.colId
-        );
+        const numberOfVisibleRows: number = getNumberOfVisibleRows(store, scrollableParent, currentCell?.colId);
 
         // If there is no selected area, get focused cell area
         const isAnyAreaSelected = !areAreasEqual(area, EMPTY_AREA);
@@ -303,7 +300,40 @@ export const handleKeyDown = (
           area = getCellArea(store, focusedCell);
         }
 
-        let newRowId = Math.max(0, currentCell ? currentCell?.rowIndex - numberOfVisibleColumns : 0);
+        let newRowId = Math.max(0, currentCell ? currentCell?.rowIndex - numberOfVisibleRows : 0);
+
+        const isStickyCell = isCellSticky(store, focusedCell);
+
+        let targetCell: Cell | null = focusedCell;
+
+        if (isStickyCell) {
+          let hasMoved = false;
+          while (
+            isCellInRange(store, targetCell, store.paneRanges.TopLeft) ||
+            isCellInRange(store, targetCell, store.paneRanges.TopCenter) ||
+            isCellInRange(store, targetCell, store.paneRanges.TopRight)
+          ) {
+            targetCell = store.getCellByIndexes(+targetCell.rowId + (targetCell.rowSpan ?? 1), +targetCell?.colId)!;
+            hasMoved = true;
+          }
+
+          if (hasMoved) {
+            const minimalSelectedArea = findMinimalSelectedArea(store, {
+              ...area,
+              startRowIdx: focusedCell.rowIndex,
+              endRowIdx: targetCell ? +targetCell?.rowId + 1 : 0,
+            });
+
+            return {
+              ...store,
+              selectedArea: { ...minimalSelectedArea },
+              focusedLocation: {
+                rowIndex: minimalSelectedArea.endRowIdx - (targetCell.rowSpan ?? 1),
+                colIndex: minimalSelectedArea.startColIdx,
+              },
+            };
+          }
+        }
 
         do {
           const cell = currentCell && store.getCellByIndexes(newRowId, +currentCell?.colId);
@@ -343,11 +373,7 @@ export const handleKeyDown = (
 
         const currentCell = store.getFocusedCell();
 
-        const numberOfVisibleColumns: number = getNumberOfVisibleColumnCells(
-          store,
-          scrollableParent,
-          currentCell?.colId
-        );
+        const numberOfVisibleRows: number = getNumberOfVisibleRows(store, scrollableParent, currentCell?.colId);
 
         // If there is no selected area, get focused cell area
         const isAnyAreaSelected = !areAreasEqual(area, EMPTY_AREA);
@@ -355,7 +381,36 @@ export const handleKeyDown = (
           area = getCellArea(store, focusedCell);
         }
 
-        let newRowId = Math.max(0, currentCell ? currentCell?.rowIndex + numberOfVisibleColumns : 0);
+        let newRowId = Math.max(0, currentCell ? currentCell?.rowIndex + numberOfVisibleRows : 0);
+
+        const isStickyCell = isCellSticky(store, focusedCell);
+
+        if (isStickyCell) {
+          if (
+            focusedCell &&
+            (isCellInRange(store, focusedCell, store.paneRanges.BottomLeft) ||
+              isCellInRange(store, focusedCell, store.paneRanges.BottomCenter) ||
+              isCellInRange(store, focusedCell, store.paneRanges.BottomRight))
+          ) {
+            const nearestBottomStickyCell = getStickyCellAdjacentToCenterPane(store, focusedCell, "Bottom");
+
+            if (!nearestBottomStickyCell) return store;
+            const minimalSelectedArea = findMinimalSelectedArea(store, {
+              ...area,
+              startRowIdx: +nearestBottomStickyCell?.rowId - 1,
+              endRowIdx: focusedCell.rowIndex + 1,
+            });
+
+            return {
+              ...store,
+              selectedArea: { ...minimalSelectedArea },
+              focusedLocation: {
+                rowIndex: +nearestBottomStickyCell?.rowId - 1,
+                colIndex: +nearestBottomStickyCell?.colId,
+              },
+            };
+          }
+        }
 
         do {
           const cell = currentCell && store.getCellByIndexes(newRowId, +currentCell?.colId);
