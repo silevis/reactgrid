@@ -2,7 +2,7 @@ import { NumericalRange } from "../types/CellMatrix";
 import { getCellArea } from "./getCellArea";
 import { areAreasEqual } from "./areAreasEqual";
 import { findMinimalSelectedArea } from "./findMinimalSelectedArea";
-import { EMPTY_AREA } from "../types/InternalModel";
+import { EMPTY_AREA, FocusedCell } from "../types/InternalModel";
 import { moveFocusDown, moveFocusInsideSelectedRange, moveFocusLeft, moveFocusRight, moveFocusUp } from "./focus";
 import { resizeSelectionInDirection } from "./resizeSelectionInDirection";
 import { ReactGridStore } from "../types/ReactGridStore.ts";
@@ -141,6 +141,86 @@ export const handleKeyDown = (
         // Select all cells in obtained area, including spanned cells.
         return { ...store, selectedArea: { ...areaWithSpannedCells } };
       }
+
+      case "Home": {
+        event.preventDefault();
+
+        // Get currently selected area
+        let area: NumericalRange = { ...store.selectedArea };
+
+        // If there is no selected area, get focused cell area
+        const isAnyAreaSelected = !areAreasEqual(area, EMPTY_AREA);
+
+        if (!isAnyAreaSelected) {
+          area = getCellArea(store, focusedCell);
+        }
+
+        const isStickyCell = isCellSticky(store, focusedCell);
+
+        let targetCell: FocusedCell | Cell = focusedCell;
+        let newRowId = 0;
+
+        if (isStickyCell) {
+          let hasMoved = false;
+          while (
+            isCellInRange(store, targetCell, store.paneRanges.TopLeft) ||
+            isCellInRange(store, targetCell, store.paneRanges.TopCenter) ||
+            isCellInRange(store, targetCell, store.paneRanges.TopRight)
+          ) {
+            targetCell = store.getCellByIndexes(+targetCell.rowId + (targetCell.rowSpan ?? 1), +targetCell?.colId)!;
+            hasMoved = true;
+          }
+
+          if (hasMoved) {
+            const minimalSelectedArea = findMinimalSelectedArea(store, {
+              ...area,
+              startColIdx: 0,
+              startRowIdx: focusedCell.rowIndex,
+              endRowIdx: targetCell ? +targetCell?.rowId + 1 : 0,
+            });
+
+            return {
+              ...store,
+              selectedArea: { ...minimalSelectedArea },
+              focusedLocation: {
+                rowIndex: minimalSelectedArea.endRowIdx - (targetCell.rowSpan ?? 1),
+                colIndex: 0,
+              },
+            };
+          }
+        }
+
+        do {
+          const cell = focusedCell && store.getCellByIndexes(newRowId, +focusedCell?.colIndex);
+          if (
+            cell &&
+            (isCellInRange(store, cell, store.paneRanges.Left) ||
+              isCellInRange(store, cell, store.paneRanges.Center) ||
+              isCellInRange(store, cell, store.paneRanges.Right))
+          ) {
+            break;
+          }
+          newRowId++;
+        } while (newRowId <= store.rows.length);
+
+        const nearestLeftStickyCell = getStickyCellAdjacentToCenterPane(store, focusedCell, "Left");
+
+        const minimalSelectedArea = findMinimalSelectedArea(store, {
+          ...area,
+          startRowIdx: newRowId,
+          startColIdx: nearestLeftStickyCell ? +nearestLeftStickyCell.colId + 1 : 0,
+        });
+
+        return {
+          ...store,
+          selectedArea: { ...minimalSelectedArea },
+          focusedLocation: {
+            rowIndex: minimalSelectedArea.startRowIdx,
+            colIndex: nearestLeftStickyCell ? +nearestLeftStickyCell.colId + 1 : 0,
+          },
+        };
+      }
+
       default:
         return store;
     }
@@ -285,14 +365,10 @@ export const handleKeyDown = (
       case "PageUp": {
         event.preventDefault();
 
-        const scrollableParent = store.reactGridRef!;
-
         // Get currently selected area
         let area: NumericalRange = { ...store.selectedArea };
 
-        const currentCell = store.getFocusedCell();
-
-        const numberOfVisibleRows: number = getNumberOfVisibleRows(store, scrollableParent, currentCell?.colId);
+        const numberOfVisibleRows: number = getNumberOfVisibleRows(store, focusedCell?.colId);
 
         // If there is no selected area, get focused cell area
         const isAnyAreaSelected = !areAreasEqual(area, EMPTY_AREA);
@@ -300,11 +376,11 @@ export const handleKeyDown = (
           area = getCellArea(store, focusedCell);
         }
 
-        let newRowId = Math.max(0, currentCell ? currentCell?.rowIndex - numberOfVisibleRows : 0);
+        let newRowId = Math.max(0, focusedCell ? focusedCell?.rowIndex - numberOfVisibleRows : 0);
 
         const isStickyCell = isCellSticky(store, focusedCell);
 
-        let targetCell: Cell | null = focusedCell;
+        let targetCell: FocusedCell | Cell = focusedCell;
 
         if (isStickyCell) {
           let hasMoved = false;
@@ -336,7 +412,7 @@ export const handleKeyDown = (
         }
 
         do {
-          const cell = currentCell && store.getCellByIndexes(newRowId, +currentCell?.colId);
+          const cell = focusedCell && store.getCellByIndexes(newRowId, +focusedCell?.colId);
           if (
             cell &&
             (isCellInRange(store, cell, store.paneRanges.Left) ||
@@ -366,14 +442,10 @@ export const handleKeyDown = (
       case "PageDown": {
         event.preventDefault();
 
-        const scrollableParent = store.reactGridRef!;
-
         // Get currently selected area
         let area: NumericalRange = { ...store.selectedArea };
 
-        const currentCell = store.getFocusedCell();
-
-        const numberOfVisibleRows: number = getNumberOfVisibleRows(store, scrollableParent, currentCell?.colId);
+        const numberOfVisibleRows: number = getNumberOfVisibleRows(store, focusedCell?.colId);
 
         // If there is no selected area, get focused cell area
         const isAnyAreaSelected = !areAreasEqual(area, EMPTY_AREA);
@@ -381,7 +453,7 @@ export const handleKeyDown = (
           area = getCellArea(store, focusedCell);
         }
 
-        let newRowId = Math.max(0, currentCell ? currentCell?.rowIndex + numberOfVisibleRows : 0);
+        let newRowId = Math.max(0, focusedCell ? focusedCell?.rowIndex + numberOfVisibleRows : 0);
 
         const isStickyCell = isCellSticky(store, focusedCell);
 
@@ -413,7 +485,7 @@ export const handleKeyDown = (
         }
 
         do {
-          const cell = currentCell && store.getCellByIndexes(newRowId, +currentCell?.colId);
+          const cell = focusedCell && store.getCellByIndexes(newRowId, +focusedCell?.colId);
           if (
             cell &&
             (isCellInRange(store, cell, store.paneRanges.Left) ||
