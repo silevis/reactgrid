@@ -47,7 +47,7 @@ const shouldMemoPartialArea = (prevProps: PartialAreaProps, nextProps: PartialAr
   }
 
   return true;
-}
+};
 
 /**
  * Renders a partial area over a grid pane.
@@ -60,88 +60,127 @@ const shouldMemoPartialArea = (prevProps: PartialAreaProps, nextProps: PartialAr
  * @param className - Additional class names to apply to the area.
  * @returns A React component that renders the partial area.
  */
-export const PartialArea: FC<PartialAreaProps> = React.memo(({ areaRange, parentPaneName, parentPaneRange, getCellOffset, border, style, className }) => {
-  const theme = useTheme();
-  const offset: Offset = {};
-  const areaBorder = border ?? theme.area.border;
+export const PartialArea: FC<PartialAreaProps> = React.memo(
+  ({ areaRange, parentPaneName, parentPaneRange, getCellOffset, border, style, className }) => {
+    const theme = useTheme();
+    const offset: Offset = {};
+    const areaBorder = border ?? theme.area.border;
 
-  if (areaRange.startRowIdx < 0 || areaRange.startColIdx < 0 || areaRange.endRowIdx < 0 || areaRange.endColIdx < 0) return null;
+    if (areaRange.startRowIdx < 0 || areaRange.startColIdx < 0 || areaRange.endRowIdx < 0 || areaRange.endColIdx < 0)
+      return null;
 
-  if (areaRange.startRowIdx > areaRange.endRowIdx) throw new Error("Invalid range! Start row index is greater than end row index!");
-  if (areaRange.startColIdx > areaRange.endColIdx) throw new Error("Invalid range! Start column index is greater than end column index!");
+    if (areaRange.startRowIdx > areaRange.endRowIdx)
+      throw new Error("Invalid range! Start row index is greater than end row index!");
+    if (areaRange.startColIdx > areaRange.endColIdx)
+      throw new Error("Invalid range! Start column index is greater than end column index!");
 
-  // Area is outside of parent range
-  if (areaRange.startColIdx >= parentPaneRange.endColIdx) return null;
-  if (areaRange.startRowIdx >= parentPaneRange.endRowIdx) return null;
-  if (areaRange.endColIdx <= parentPaneRange.startColIdx) return null;
-  if (areaRange.endRowIdx <= parentPaneRange.startRowIdx) return null;
+    // Area is outside of parent range
+    if (areaRange.startColIdx >= parentPaneRange.endColIdx) return null;
+    if (areaRange.startRowIdx >= parentPaneRange.endRowIdx) return null;
+    if (areaRange.endColIdx <= parentPaneRange.startColIdx) return null;
+    if (areaRange.endRowIdx <= parentPaneRange.startRowIdx) return null;
 
-  const shouldRenderTopBorder = areaRange.startRowIdx >= parentPaneRange.startRowIdx;
-  const shouldRenderRightBorder = areaRange.endColIdx <= parentPaneRange.endColIdx;
-  const shouldRenderBottomBorder = areaRange.endRowIdx <= parentPaneRange.endRowIdx;
-  const shouldRenderLeftBorder = areaRange.startColIdx >= parentPaneRange.startColIdx;
+    const shouldRenderTopBorder = areaRange.startRowIdx >= parentPaneRange.startRowIdx;
+    const shouldRenderRightBorder = areaRange.endColIdx <= parentPaneRange.endColIdx;
+    const shouldRenderBottomBorder = areaRange.endRowIdx <= parentPaneRange.endRowIdx;
+    const shouldRenderLeftBorder = areaRange.startColIdx >= parentPaneRange.startColIdx;
 
-  let width = "100%";
-  let height = "100%";
+    let width = "100%";
+    let height = "100%";
 
-  // If the area part only renders one border (e.g. top border), we need to subtract the border width from the height/width
-  if (shouldRenderTopBorder || shouldRenderBottomBorder) height = `calc(100% - ${areaBorder.width})`;
-  if (shouldRenderLeftBorder || shouldRenderRightBorder) width = `calc(100% - ${areaBorder.width})`;
+    const baseStyle: CSSProperties = {
+      gridRowStart:
+        areaRange.startRowIdx < parentPaneRange.startRowIdx
+          ? parentPaneRange.startRowIdx + 1
+          : areaRange.startRowIdx + 1,
+      gridRowEnd:
+        areaRange.endRowIdx > parentPaneRange.endRowIdx ? parentPaneRange.endRowIdx + 1 : areaRange.endRowIdx + 1,
 
-  // If the area part renders two borders (e.g. top and bottom border), we need to subtract the border width * 2 from the height/width
-  if (shouldRenderTopBorder && shouldRenderBottomBorder) height = `calc(100% - ${areaBorder.width} * 2)`;
-  if (shouldRenderLeftBorder && shouldRenderRightBorder) width = `calc(100% - ${areaBorder.width} * 2)`;
+      gridColumnStart:
+        areaRange.startColIdx < parentPaneRange.startColIdx
+          ? parentPaneRange.startColIdx + 1
+          : areaRange.startColIdx + 1,
+      gridColumnEnd:
+        areaRange.endColIdx > parentPaneRange.endColIdx ? parentPaneRange.endColIdx + 1 : areaRange.endColIdx + 1,
+    };
 
-  const baseStyle: CSSProperties = {
-    borderTop: shouldRenderTopBorder ? `${areaBorder.width} ${areaBorder.style} ${areaBorder.color}` : "none",
-    borderRight: shouldRenderRightBorder ? `${areaBorder.width} ${areaBorder.style} ${areaBorder.color}` : "none",
-    borderBottom: shouldRenderBottomBorder ? `${areaBorder.width} ${areaBorder.style} ${areaBorder.color}` : "none",
-    borderLeft: shouldRenderLeftBorder ? `${areaBorder.width} ${areaBorder.style} ${areaBorder.color}` : "none",
+    if (parentPaneName === "TopLeft" || parentPaneName === "TopCenter" || parentPaneName === "TopRight") {
+      baseStyle.position = "sticky";
+      offset.top = getCellOffset?.(areaRange.startRowIdx, areaRange.startColIdx, 1, 1).top;
 
-    gridRowStart: areaRange.startRowIdx < parentPaneRange.startRowIdx ? parentPaneRange.startRowIdx + 1 : areaRange.startRowIdx + 1,
-    gridRowEnd: areaRange.endRowIdx > parentPaneRange.endRowIdx ? parentPaneRange.endRowIdx + 1 : areaRange.endRowIdx + 1,
+      // If the area part is on the sticky pane and renders only one border,
+      // we need to adjust the height/width such that the border sticks out a bit (at a length of gap width)
+      if (!shouldRenderBottomBorder) height = `calc(100% - (${areaBorder.width} - ${theme.grid.gap.width}))`;
+    }
+    if (parentPaneName === "TopRight" || parentPaneName === "Right" || parentPaneName === "BottomRight") {
+      baseStyle.position = "sticky";
+      offset.right = getCellOffset?.(
+        areaRange.startRowIdx,
+        areaRange.endColIdx - parentPaneRange.startColIdx - 1,
+        1,
+        1
+      ).right;
 
-    gridColumnStart: areaRange.startColIdx < parentPaneRange.startColIdx ? parentPaneRange.startColIdx + 1 : areaRange.startColIdx + 1,
-    gridColumnEnd: areaRange.endColIdx > parentPaneRange.endColIdx ? parentPaneRange.endColIdx + 1 : areaRange.endColIdx + 1,
-  };
+      if (!shouldRenderLeftBorder) width = `calc(100% - (${areaBorder.width} - ${theme.grid.gap.width}))`;
+    }
+    if (parentPaneName === "BottomLeft" || parentPaneName === "BottomCenter" || parentPaneName === "BottomRight") {
+      baseStyle.position = "sticky";
+      offset.bottom = getCellOffset?.(
+        areaRange.endRowIdx - parentPaneRange.startRowIdx - 1,
+        areaRange.startColIdx,
+        1,
+        1
+      ).bottom;
 
-  if (parentPaneName === "TopLeft" || parentPaneName === "TopCenter" || parentPaneName === "TopRight") {
-    baseStyle.position = "sticky";
-    offset.top = getCellOffset?.(areaRange.startRowIdx, areaRange.startColIdx, 1, 1).top;
+      if (!shouldRenderTopBorder) height = `calc(100% - (${areaBorder.width} - ${theme.grid.gap.width}))`;
+    }
+    if (parentPaneName === "TopLeft" || parentPaneName === "Left" || parentPaneName === "BottomLeft") {
+      baseStyle.position = "sticky";
+      offset.left = getCellOffset?.(areaRange.startRowIdx, areaRange.startColIdx, 1, 1).left;
 
-    // If the area part is on the sticky pane and renders only one border, 
-    // we need to adjust the height/width such that the border sticks out a bit (at a length of gap width)
-    if (!shouldRenderBottomBorder) height = `calc(100% - (${areaBorder.width} - ${theme.grid.gap.width}))`;
-  }
-  if (parentPaneName === "TopRight" || parentPaneName === "Right" || parentPaneName === "BottomRight") {
-    baseStyle.position = "sticky";
-    offset.right = getCellOffset?.(areaRange.startRowIdx, areaRange.endColIdx - parentPaneRange.startColIdx - 1, 1, 1).right;
-    
-    if (!shouldRenderLeftBorder) width = `calc(100% - (${areaBorder.width} - ${theme.grid.gap.width}))`;
-  }
-  if (parentPaneName === "BottomLeft" || parentPaneName === "BottomCenter" || parentPaneName === "BottomRight") {
-    baseStyle.position = "sticky";
-    offset.bottom = getCellOffset?.(areaRange.endRowIdx - parentPaneRange.startRowIdx - 1, areaRange.startColIdx, 1, 1).bottom;
-    
-    if (!shouldRenderTopBorder) height = `calc(100% - (${areaBorder.width} - ${theme.grid.gap.width}))`;
-  }
-  if (parentPaneName === "TopLeft" || parentPaneName === "Left" || parentPaneName === "BottomLeft") {
-    baseStyle.position = "sticky";
-    offset.left = getCellOffset?.(areaRange.startRowIdx, areaRange.startColIdx, 1, 1).left;
-    
-    if (!shouldRenderRightBorder) width = `calc(100% - (${areaBorder.width} - ${theme.grid.gap.width}))`;
-  }
+      if (!shouldRenderRightBorder) width = `calc(100% - (${areaBorder.width} - ${theme.grid.gap.width}))`;
+    }
 
-  return (
-    <div
-      className={`rgPartialArea ${className ?? ""}`}
-      style={{
-        pointerEvents: "none",
-        ...style,
-        width,
-        height,
-        ...offset,
-        ...baseStyle,
-      }} />
-  );
-}, shouldMemoPartialArea);
+    return (
+      <>
+        <div
+          className={`rgPartialArea ${className ?? ""}`}
+          style={{
+            ...style,
+            width,
+            height,
+            boxSizing: "border-box",
+            position: "sticky",
+            pointerEvents: "none",
+            ...offset,
+            ...baseStyle,
+          }}
+        >
+          <div
+            style={{
+              position: "absolute",
+              top: `-${theme.grid.gap.width}`,
+              right: `-${theme.grid.gap.width}`,
+              bottom: `-${theme.grid.gap.width}`,
+              left: `-${theme.grid.gap.width}`,
+
+              ...(shouldRenderTopBorder && {
+                borderTop: `${theme.focusIndicator.border.width} ${areaBorder.style} ${areaBorder.color}`,
+              }),
+              ...(shouldRenderRightBorder && {
+                borderRight: `${theme.focusIndicator.border.width} ${areaBorder.style} ${areaBorder.color}`,
+              }),
+              ...(shouldRenderBottomBorder && {
+                borderBottom: `${theme.focusIndicator.border.width} ${areaBorder.style} ${areaBorder.color}`,
+              }),
+              ...(shouldRenderLeftBorder && {
+                borderLeft: `${theme.focusIndicator.border.width} ${areaBorder.style} ${areaBorder.color}`,
+              }),
+            }}
+          />
+        </div>
+      </>
+    );
+  },
+  shouldMemoPartialArea
+);

@@ -8,7 +8,7 @@ import { getCellIndexes } from "./utils/getCellIndexes.1";
 import { getNumericalRange } from "./utils/getNumericalRange";
 import isDevEnvironment from "./utils/isDevEnvironment";
 import { isSpanMember } from "./utils/isSpanMember";
-import { initReactGridStore, useReactGridStoreApi } from "./utils/reactGridStore";
+import { initReactGridStore, useReactGridStore, useReactGridStoreApi } from "./utils/reactGridStore";
 
 const devEnvironment = isDevEnvironment();
 
@@ -26,22 +26,25 @@ const ReactGrid: FC<ReactGridProps> = ({
   initialSelectedRange,
   initialFocusLocation,
   styledRanges,
+  handleSelectArea,
+  handleFocusCell,
 }) => {
-  initReactGridStore(id,  {
+  initReactGridStore(id, {
     rows,
     columns,
     cells,
     behaviors,
     styledRanges,
-  })
-  const store = useReactGridStoreApi(id).getState();
-  const {
-    setSelectedArea,
-    setFocusedLocation: setFocusedCell,
-    getCellOrSpanMemberByIndexes,
-    getCellByIds,
-  } = store;
+  });
 
+  const setCells = useReactGridStore(id, (store) => store.setCells);
+
+  useEffect(() => {
+    setCells(cells);
+  }, [cells]);
+
+  const store = useReactGridStoreApi(id).getState();
+  const { setSelectedArea, setFocusedLocation: setFocusedCell, getCellOrSpanMemberByIndexes, getCellByIds } = store;
   const [bypassSizeWarning, setBypassSizeWarning] = useState(false);
 
   // TODO move to initializer
@@ -116,6 +119,8 @@ const ReactGrid: FC<ReactGridProps> = ({
             stickyBottomRows={stickyBottomRows ?? 0}
             stickyLeftColumns={stickyLeftColumns ?? 0}
             stickyRightColumns={stickyRightColumns ?? 0}
+            handleSelectArea={handleSelectArea}
+            handleFocusCell={handleFocusCell}
           />
 
           {/* TODO: Shadow for row&col reorder */}

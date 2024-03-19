@@ -10,11 +10,11 @@ interface TextCellProps {
 
 const TextCell: FC<TextCellProps> = ({ text, onTextChanged, reverse }) => {
   const ctx = useCellContext();
-  const targetInputRef = useRef<HTMLInputElement>(null);
+  const targetInputRef = useRef<HTMLTextAreaElement>(null);
 
   return (
     <CellWrapper
-      style={{ padding: ".1rem .2rem", textAlign: "center", outline: "none" }}
+      style={{ padding: ".2rem", textAlign: "center", outline: "none" }}
       onDoubleClick={() => ctx.requestFocus(true)}
       onKeyDown={(e) => {
         if (!ctx.isInEditMode && e.key === "Enter") {
@@ -26,11 +26,25 @@ const TextCell: FC<TextCellProps> = ({ text, onTextChanged, reverse }) => {
       targetInputRef={targetInputRef}
     >
       {ctx.isInEditMode ? (
-        <input
-          type="text"
-          style={{ maxWidth: "100%" }}
+        <textarea
           defaultValue={text}
+          style={{
+            resize: "none",
+            overflowY: "hidden",
+            boxSizing: "border-box",
+            textAlign: "center",
+            width: "100%",
+            height: "100%",
+            background: "transparent",
+            border: "none",
+            padding: 0,
+            outline: "none",
+            color: "inherit",
+            fontSize: "inherit",
+            fontFamily: "inherit",
+          }}
           onBlur={(e) => onTextChanged(e.currentTarget.value)}
+          onPointerDown={(e) => e.stopPropagation()}
           onKeyDown={(e) => {
             if (e.key === "Escape") {
               ctx.disableEditMode();

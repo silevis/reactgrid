@@ -1,12 +1,15 @@
 import { FC, useEffect, useRef, useState } from "react";
 import { NumericalRange } from "../types/CellMatrix";
-import { PaneName, StickyOffsets } from "../types/InternalModel";
+import { IndexedLocation, PaneName, StickyOffsets } from "../types/InternalModel";
 import { useReactGridStore } from "../utils/reactGridStore";
 import { useTheme } from "../hooks/useTheme";
 import { Pane } from "./Pane";
 import { useReactGridId } from "./ReactGridIdProvider";
 import { RowMeasurement } from "../types/RowMeasurement";
-import { getStickyColumnsOffsetsFromMeasurements, getStickyRowsOffsetsFromMeasurements } from "../utils/getStickyOffsetsFromMeasurements";
+import {
+  getStickyColumnsOffsetsFromMeasurements,
+  getStickyRowsOffsetsFromMeasurements,
+} from "../utils/getStickyOffsetsFromMeasurements";
 import { ColumnMeasurement } from "../types/ColumnMeasurement";
 
 interface PanesRendererProps {
@@ -16,6 +19,8 @@ interface PanesRendererProps {
   stickyBottomRows: number;
   stickyLeftColumns: number;
   stickyRightColumns: number;
+  handleSelectArea?: (selectedArea: NumericalRange) => void;
+  handleFocusCell?: (cellLocation: IndexedLocation) => void;
 }
 
 const PanesRenderer: FC<PanesRendererProps> = ({
@@ -25,10 +30,14 @@ const PanesRenderer: FC<PanesRendererProps> = ({
   stickyBottomRows,
   stickyLeftColumns,
   stickyRightColumns,
+  handleSelectArea,
+  handleFocusCell,
 }) => {
   const id = useReactGridId();
   const theme = useTheme();
   const rows = useReactGridStore(id, (store) => store.rows);
+  const selectedArea = useReactGridStore(id, (store) => store.selectedArea);
+  const focusedLocation = useReactGridStore(id, (store) => store.focusedLocation);
   const columns = useReactGridStore(id, (store) => store.columns);
   const setPaneRanges = useReactGridStore(id, (store) => store.setPaneRanges);
   const setRowMeasurements = useReactGridStore(id, (store) => store.setRowMeasurements);
@@ -92,6 +101,14 @@ const PanesRenderer: FC<PanesRendererProps> = ({
   };
 
   useEffect(() => {
+    handleSelectArea?.(selectedArea);
+  }, [selectedArea]);
+
+  useEffect(() => {
+    handleFocusCell?.(focusedLocation);
+  }, [focusedLocation]);
+
+  useEffect(() => {
     setPaneRanges(ranges);
   }, [ranges]);
 
@@ -103,20 +120,22 @@ const PanesRenderer: FC<PanesRendererProps> = ({
   });
 
   const gridContainerRef = useRef<HTMLDivElement>(null);
-  const resizeObserver = useRef<ResizeObserver>(new ResizeObserver(() => {
-    const rowMeasurements = getRowsMeasurements();
-    const colMeasurements = getColumnsMeasurements();
+  const resizeObserver = useRef<ResizeObserver>(
+    new ResizeObserver(() => {
+      const rowMeasurements = getRowsMeasurements();
+      const colMeasurements = getColumnsMeasurements();
 
-    setRowMeasurements(rowMeasurements);
-    setColMeasurements(colMeasurements);
+      setRowMeasurements(rowMeasurements);
+      setColMeasurements(colMeasurements);
 
-    setStickyOffsets(() => ({
-      topRows: getStickyRowsOffsetsFromMeasurements(rowMeasurements, stickyTopRows, "forward"),
-      bottomRows: getStickyRowsOffsetsFromMeasurements(rowMeasurements, stickyBottomRows, "backward"),
-      leftColumns: getStickyColumnsOffsetsFromMeasurements(colMeasurements, stickyLeftColumns, "forward"),
-      rightColumns: getStickyColumnsOffsetsFromMeasurements(colMeasurements, stickyRightColumns, "backward"),
-    }));
-  }));
+      setStickyOffsets(() => ({
+        topRows: getStickyRowsOffsetsFromMeasurements(rowMeasurements, stickyTopRows, "forward"),
+        bottomRows: getStickyRowsOffsetsFromMeasurements(rowMeasurements, stickyBottomRows, "backward"),
+        leftColumns: getStickyColumnsOffsetsFromMeasurements(colMeasurements, stickyLeftColumns, "forward"),
+        rightColumns: getStickyColumnsOffsetsFromMeasurements(colMeasurements, stickyRightColumns, "backward"),
+      }));
+    })
+  );
 
   useEffect(() => {
     if (!gridContainerRef.current) return;
@@ -129,7 +148,7 @@ const PanesRenderer: FC<PanesRendererProps> = ({
 
   /**
    * Measures the widths and offsets of rows. Fetches the cell until it finds a cell that is not spanned.
-   * 
+   *
    * @returns RowMeasurement[] - an array of row measurements
    */
   const getRowsMeasurements = (): RowMeasurement[] => {
@@ -177,11 +196,11 @@ const PanesRenderer: FC<PanesRendererProps> = ({
     } while (rowIndex < rowAmount && colIndexOffset < columnAmount);
 
     return rowsMeasurements;
-  }
+  };
 
   /**
    * Measures the widths and offsets of columns. Fetches the cell until it finds a cell that is not spanned.
-   * 
+   *
    * @returns ColumnMeasurement[] - an array of column measurements
    */
   const getColumnsMeasurements = (): ColumnMeasurement[] => {
@@ -204,7 +223,7 @@ const PanesRenderer: FC<PanesRendererProps> = ({
           rowIndexOffset += parseInt(cellElementStyle.gridColumnEnd.split(" ").at(-1) ?? "1");
           continue;
         }
-        
+
         // ...else, get real (px) cell width and left offset (which represents _col_ width and offset in this context)...
         const colWidth = cellElement.getBoundingClientRect().width;
         const colOffset =
@@ -229,7 +248,7 @@ const PanesRenderer: FC<PanesRendererProps> = ({
     } while (colIndex < columnAmount && rowIndexOffset < rowAmount);
 
     return colMeasurements;
-  }
+  };
 
   return (
     <div

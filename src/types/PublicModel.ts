@@ -1,6 +1,8 @@
 import React from "react";
 
 import { Behavior, BehaviorId } from "./Behavior";
+import { NumericalRange } from "./CellMatrix";
+import { IndexedLocation } from "./InternalModel";
 
 export type Row<Id = string> = {
   id: Id;
@@ -114,6 +116,9 @@ export interface ReactGridProps {
   rows: Row[];
 
   cells: CellMap;
+
+  handleSelectArea?: (selectedArea: NumericalRange) => void;
+  handleFocusCell?: (cellLocation: IndexedLocation) => void;
 
   stickyTopRows?: number;
   stickyRightColumns?: number;

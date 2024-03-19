@@ -22,7 +22,7 @@ const CellWrapper: FC<CellWrapperProps> = ({ children, targetInputRef, ...wrappe
       }`}
       style={{
         ...customStyle,
-        padding: ".1rem .2rem",
+        padding: ".2rem",
         textAlign: "center",
         touchAction: isFocused ? "none" : "auto",
         ...ctx.containerStyle,
