@@ -79,12 +79,12 @@ export class DropdownCellTemplate implements CellTemplate<DropdownCell> {
         return `${cell.className ? cell.className : ''}${isOpen}`;
     }
 
-    handleKeyDown(cell: Compatible<DropdownCell>, keyCode: number, ctrl: boolean, shift: boolean, alt: boolean, key: string): { cell: Compatible<DropdownCell>, enableEditMode: boolean } {
+    handleKeyDown(cell: Compatible<DropdownCell>, keyCode: number, ctrl: boolean, shift: boolean, alt: boolean, key: string, capsLock: boolean): { cell: Compatible<DropdownCell>, enableEditMode: boolean } {
         if ((keyCode === keyCodes.SPACE || keyCode === keyCodes.ENTER) && !shift) {
             return { cell: this.getCompatibleCell({ ...cell, isOpen: !cell.isOpen }), enableEditMode: false };
         }
 
-        const char = getCharFromKey(key, shift);
+        const char = getCharFromKey(key, shift, capsLock);
 
         if (!ctrl && !alt && isAlphaNumericKey(keyCode) && !(shift && keyCode === keyCodes.SPACE))
             return { cell: this.getCompatibleCell({ ...cell, inputValue: char, isOpen: !cell.isOpen }), enableEditMode: false }

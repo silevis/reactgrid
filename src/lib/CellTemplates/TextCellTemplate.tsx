@@ -35,8 +35,8 @@ export class TextCellTemplate implements CellTemplate<TextCell> {
         return this.getCompatibleCell({ ...cell, text: cellToMerge.text, placeholder: cellToMerge.placeholder })
     }
 
-    handleKeyDown(cell: Compatible<TextCell>, keyCode: number, ctrl: boolean, shift: boolean, alt: boolean, key: string): { cell: Compatible<TextCell>, enableEditMode: boolean } {
-        const char = getCharFromKey(key, shift);
+    handleKeyDown(cell: Compatible<TextCell>, keyCode: number, ctrl: boolean, shift: boolean, alt: boolean, key: string, capsLock: boolean): { cell: Compatible<TextCell>, enableEditMode: boolean } {
+        const char = getCharFromKey(key, shift, capsLock);
 
         if (!ctrl && !alt && isAlphaNumericKey(keyCode) && !(shift && keyCode === keyCodes.SPACE))
             return { cell: this.getCompatibleCell({ ...cell, text: char }), enableEditMode: true }
