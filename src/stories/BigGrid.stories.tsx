@@ -4,9 +4,23 @@ import ReactGrid from "../ReactGrid";
 import { ErrorBoundary } from "../components/ErrorBoundary";
 import TextCell from "../components/cellTemplates/TextCell";
 import { cellMatrixBuilder } from "../utils/cellMatrixBuilder";
+import { RGTheme } from "../types/Theme";
 
 const ROW_COUNT = 20;
 const COLUMN_COUNT = 25;
+
+const testStyles: RGTheme = {
+  ranges: [
+    {
+      range: { start: { rowId: "0", columnId: "5" }, end: { rowId: "14", columnId: "12" } },
+      styles: { background: "red", color: "yellow" },
+    },
+    {
+      range: { start: { rowId: "7", columnId: "10" }, end: { rowId: "10", columnId: "14" } },
+      styles: { background: "green", color: "purple" },
+    },
+  ],
+};
 
 export const BigGrid = () => {
   const [data, setData] = useState<(string | null)[][]>(
@@ -111,17 +125,8 @@ export const BigGrid = () => {
           stickyLeftColumns={3}
           stickyRightColumns={2}
           stickyBottomRows={2}
+          styles={testStyles}
           {...cellMatrix}
-          styledRanges={[
-            {
-              range: { start: { rowId: "0", columnId: "5" }, end: { rowId: "14", columnId: "12" } },
-              styles: { background: "red", color: "yellow" },
-            },
-            {
-              range: { start: { rowId: "7", columnId: "10" }, end: { rowId: "10", columnId: "14" } },
-              styles: { background: "green", color: "purple" },
-            },
-          ]}
           handleSelectArea={(selectedArea) => {}}
           handleFocusCell={(cellLocation) => {}}
         />

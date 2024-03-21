@@ -102,9 +102,10 @@ export default function useReactGridAPI(id: string) {
       getEditedCell: () => {
         const { currentlyEditedCell } = store;
 
-        if (devEnvironment && (currentlyEditedCell.colIndex < 0 || currentlyEditedCell.rowIndex < 0)) console.warn('There is no edited cell.')
+        if (devEnvironment && (currentlyEditedCell.colIndex < 0 || currentlyEditedCell.rowIndex < 0))
+          console.warn("There is no edited cell.");
 
-        return currentlyEditedCell
+        return currentlyEditedCell;
       },
 
       /**

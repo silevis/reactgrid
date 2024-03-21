@@ -23,11 +23,6 @@ const lightTheme: RGTheme = {
       bottom: "2px",
       left: "2px",
     },
-    border: {
-      width: "2px",
-      style: "solid",
-      color: "#000",
-    },
   },
   area: {
     border: {

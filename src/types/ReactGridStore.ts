@@ -4,6 +4,7 @@ import { ColumnMeasurement } from "./ColumnMeasurement.ts";
 import { FocusedCell, IndexedLocation, PaneName } from "./InternalModel.ts";
 import { NumericalRange } from "./CellMatrix.ts";
 import { Behavior, BehaviorId } from "./Behavior.ts";
+import { RGTheme } from "./Theme";
 
 export interface ReactGridStoreProps {
   rows: Row[];
@@ -14,7 +15,8 @@ export interface ReactGridStoreProps {
   colMeasurements: ColumnMeasurement[];
 
   paneRanges: Record<PaneName, NumericalRange>;
-  styledRanges: StyledRange[];
+
+  userStyles?: RGTheme;
 
   focusedLocation: IndexedLocation;
   absoluteFocusedLocation: IndexedLocation;
@@ -36,6 +38,9 @@ export interface ReactGridStore extends ReactGridStoreProps {
   readonly getColumnAmount: () => number;
 
   readonly setCells: (cellMap: CellMap) => void;
+
+  readonly setUserStyles: (userStyles: RGTheme) => void;
+
   readonly getCellByIds: (
     rowId: ReactGridStore["rows"][number]["id"],
     colId: ReactGridStore["rows"][number]["id"]
@@ -60,7 +65,6 @@ export interface ReactGridStore extends ReactGridStoreProps {
 
   readonly assignHiddenFocusTargetRef: (hiddenFocusTargetRef?: HTMLDivElement) => void;
 
-  readonly setStyledRanges: (styledRanges: StyledRange[]) => void;
   readonly getStyledRanges: (range?: Range) => StyledRange[] | [];
 
   readonly setBehaviors: (behaviors: Record<BehaviorId, Behavior>) => void;

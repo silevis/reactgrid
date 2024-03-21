@@ -3,6 +3,7 @@ import React from "react";
 import { Behavior, BehaviorId } from "./Behavior";
 import { NumericalRange } from "./CellMatrix";
 import { IndexedLocation } from "./InternalModel";
+import { RGTheme } from "./Theme";
 
 export type Row<Id = string> = {
   id: Id;
@@ -108,7 +109,7 @@ export type Location = {
 export interface ReactGridProps {
   id: string;
 
-  style?: React.CSSProperties;
+  styles?: RGTheme;
 
   styledRanges?: StyledRange[];
 

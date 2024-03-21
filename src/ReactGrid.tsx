@@ -22,10 +22,9 @@ const ReactGrid: FC<ReactGridProps> = ({
   stickyLeftColumns,
   stickyRightColumns,
   behaviors,
-  style,
   initialSelectedRange,
+  styles: userStyles,
   initialFocusLocation,
-  styledRanges,
   handleSelectArea,
   handleFocusCell,
 }) => {
@@ -34,7 +33,7 @@ const ReactGrid: FC<ReactGridProps> = ({
     columns,
     cells,
     behaviors,
-    styledRanges,
+    userStyles,
   });
 
   const setCells = useReactGridStore(id, (store) => store.setCells);
@@ -111,7 +110,7 @@ const ReactGrid: FC<ReactGridProps> = ({
   return (
     <ReactGridIdProvider id={id}>
       <ErrorBoundary>
-        <GridWrapper reactGridId={id} style={style}>
+        <GridWrapper reactGridId={id} style={userStyles?.gridWrapper}>
           <PanesRenderer
             rowAmount={rows.length}
             columnAmount={columns.length}
