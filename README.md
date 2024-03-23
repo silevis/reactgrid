@@ -19,8 +19,12 @@ If you like our work, please give this project a star ⭐
 
 Prerequisites:
 
-- react: `^16.13.1`
-- react-dom: `^16.13.1`
+- react:  `16.13.1` || `17.0.0` `18.2.0`
+- react-dom: `16.13.1` || `17.0.0` || `18.2.0`
+
+
+
+
 
 # Docs
 
