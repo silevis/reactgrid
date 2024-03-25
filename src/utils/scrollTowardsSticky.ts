@@ -6,7 +6,6 @@ import { getDistanceBetweenTwoPoints } from "./getDistanceBetweenTwoPoints";
 import { calcScrollBy } from "./calcScrollBy";
 import { ReactGridStore } from "../types/ReactGridStore.ts";
 
-
 /**
  * Scrolls towards the sticky cell.
  * @param store The react grid store.
@@ -17,7 +16,7 @@ import { ReactGridStore } from "../types/ReactGridStore.ts";
 export function scrollTowardsSticky(
   store: ReactGridStore,
   startingPointCell: Cell,
-  stickyCell: { rowIndex: number; colIndex: number; }
+  stickyCell: { rowIndex: number; colIndex: number }
 ): void {
   const stickyPane = getCellPane(store, startingPointCell)!;
   // Get the direction of sticky cell pane and scroll in that direction.

@@ -77,22 +77,6 @@ export const CellSelectionBehavior: Behavior = {
       return store;
     }
 
-    if (isCellSticky(store, cell)) {
-      const cellUnderTheSticky = getNonStickyCellContainer(clientX, clientY);
-
-      scrollTowardsSticky(store, cell, { rowIndex, colIndex });
-
-      if (cellUnderTheSticky) {
-        const nonStickyRowsAndColumns = getCellIndexesFromContainerElement(cellUnderTheSticky);
-        const { rowIndex: secondCellRowIndex, colIndex: secondCellColIndex } = nonStickyRowsAndColumns || {
-          rowIndex: -1,
-          colIndex: -1,
-        };
-
-        return tryExpandingTowardsCell(store, cell, secondCellRowIndex, secondCellColIndex);
-      }
-    }
-
     return tryExpandingTowardsCell(store, cell, rowIndex, colIndex);
   },
 
