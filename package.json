@@ -1,7 +1,7 @@
 {
   "name": "@muccy/reactgrid",
   "description": "Add spreadsheet-like behavior to your React app.",
-  "version": "4.1.6",
+  "version": "4.1.7",
   "license": "MIT",
   "author": "Silevis Software - Jack McBride",
   "repository": {
