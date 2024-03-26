@@ -109,7 +109,7 @@ export type Location = {
 export interface ReactGridProps {
   id: string;
 
-  styles?: RGTheme;
+  styles?: Partial<RGTheme>;
 
   styledRanges?: StyledRange[];
 

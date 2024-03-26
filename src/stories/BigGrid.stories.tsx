@@ -4,12 +4,11 @@ import ReactGrid from "../ReactGrid";
 import { ErrorBoundary } from "../components/ErrorBoundary";
 import TextCell from "../components/cellTemplates/TextCell";
 import { cellMatrixBuilder } from "../utils/cellMatrixBuilder";
-import { RGTheme } from "../types/Theme";
 
 const ROW_COUNT = 20;
 const COLUMN_COUNT = 25;
 
-const testStyles: RGTheme = {
+const testStyles = {
   ranges: [
     {
       range: { start: { rowId: "0", columnId: "5" }, end: { rowId: "14", columnId: "12" } },

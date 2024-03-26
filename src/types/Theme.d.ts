@@ -13,17 +13,17 @@ export type Border = {
 export type Offset = { top?: number; right?: number; bottom?: number; left?: number };
 
 export interface RGTheme {
-  font?: {
+  font: {
     family: string;
     size: string;
     weight: string;
   };
-  grid?: {
-    templates?: {
+  grid: {
+    templates: {
       columns: ColumnsTemplateFunction;
       rows: RowsTemplateFunction;
     };
-    gap?: {
+    gap: {
       width: string;
       /** Changes grid's background color for the gap to appear colored */
       color: string;
@@ -37,7 +37,7 @@ export interface RGTheme {
     //   color: string;
     // }
   };
-  cellContainer?: {
+  cellContainer: {
     padding: {
       top: string;
       right: string;
@@ -45,19 +45,19 @@ export interface RGTheme {
       left: string;
     };
   };
-  area?: {
+  area: {
     border: Border;
   };
-  focusIndicator?: {
+  focusIndicator: {
     background: string;
     border: Border;
   };
-  selectionIndicator?: {
+  selectionIndicator: {
     background: string;
     border: Border;
   };
-  gridWrapper?: React.CSSProperties;
-  ranges?: StyledRange[];
+  gridWrapper: React.CSSProperties;
+  ranges: StyledRange[];
 }
 
 // Makes all properties in T optional, including nested properties, but excluding functions
