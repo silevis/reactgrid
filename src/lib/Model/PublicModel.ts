@@ -203,6 +203,8 @@ export interface ReactGridProps {
     readonly canReorderRows?: (targetRowId: Id, rowIds: Id[], dropPosition: DropPosition) => boolean;
 }
 
+
+
 /**
  * Describes set of text labels used by ReactGrids internal i18n module.
  * Each text label has its own default value.
@@ -607,3 +609,8 @@ export interface MenuOption {
      */
     handler: (selectedRowIds: Id[], selectedColIds: Id[], selectionMode: SelectionMode, selectedRanges: Array<CellLocation[]>) => void;
 }
+
+export interface ReactGridInstance extends React.Component<ReactGridProps, any, any> {
+    /** This method is used to clear the selected item */
+    clearSelections(): void;
+    }

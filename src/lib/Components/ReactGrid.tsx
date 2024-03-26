@@ -63,6 +63,23 @@ export class ReactGrid extends React.Component<ReactGridProps, State> {
     }
   }
 
+  public clearSelections = (): void => {
+    this.setState((prevState) => {
+      if (
+        prevState.selectedIds.length === 0 &&
+        prevState.selectedIndexes.length === 0 &&
+        prevState.selectedRanges.length === 0
+      ) {
+        return null;
+      }
+      return {
+        selectedIds: [],
+        selectedIndexes: [],
+        selectedRanges: [],
+      };
+    });
+  };
+  
   componentDidUpdate(prevProps: ReactGridProps, prevState: State): void {
     if (!prevState.reactGridElement && this.state.reactGridElement) {
       this.state.scrollableElement?.addEventListener(
