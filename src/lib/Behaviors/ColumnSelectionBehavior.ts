@@ -53,6 +53,33 @@ export class ColumnSelectionBehavior extends Behavior {
     );
   }
 
+  handlePointerUp(
+    event: MouseEvent | PointerEvent,
+    location: Location,
+    state: State
+  ): State {
+    if (
+      state.props?.onSelectionChanging &&
+      !state.props.onSelectionChanging(state.selectedRanges)
+    ) {
+      // Cancel the latest selection
+      const filteredRanges = [...state.selectedRanges].filter(
+        (_, index) => index !== state.activeSelectedRangeIdx
+      );
+
+      return {
+        ...state,
+        selectedRanges: filteredRanges,
+        activeSelectedRangeIdx: filteredRanges.length - 1,
+      };
+    }
+
+    state.props?.onSelectionChanged &&
+    state.props.onSelectionChanged(state.selectedRanges);
+
+    return state;
+  }
+
   handleContextMenu(event: PointerEvent, state: State): State {
     return handleContextMenu(event, state);
   }
