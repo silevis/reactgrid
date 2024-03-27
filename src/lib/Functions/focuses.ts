@@ -137,9 +137,9 @@ export function getFocusLocationToUp(state: State, location: Location | undefine
 }
 
 export function withMoveFocusDown(fc: FocusCellFn) {
-    return (state: State): State => {
+    return (state: State, keyCode?: keyCodes): State => {
         const focusLocation = getFocusLocationToDown(state, state.focusedLocation);
-        return focusLocation ? fc(focusLocation.column.idx, focusLocation.row.idx, state) : state;
+        return focusLocation ? fc(focusLocation.column.idx, focusLocation.row.idx, state, keyCode) : state;
     }
 }
 
