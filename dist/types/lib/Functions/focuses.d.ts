@@ -11,7 +11,7 @@ export declare const moveFocusEnd: (state: State) => State;
 export declare const moveFocusLeft: (state: State) => State;
 export declare const moveFocusRight: (state: State, keyCode?: keyCodes) => State;
 export declare const moveFocusUp: (state: State) => State;
-export declare const moveFocusDown: (state: State) => State;
+export declare const moveFocusDown: (state: State, keyCode?: keyCodes) => State;
 export declare const moveFocusPage: (rowCalculator: RowCalcFn) => (state: State) => State;
 export declare const moveFocusPageUp: (state: State) => State;
 export declare const moveFocusPageDown: (state: State) => State;
@@ -25,7 +25,7 @@ export declare function withMoveFocusRight(fc: FocusCellFn): (state: State, keyC
 export declare function getFocusLocationToRight(state: State, location: Location | undefined): Location | undefined;
 export declare function withMoveFocusUp(fc: FocusCellFn): (state: State) => State;
 export declare function getFocusLocationToUp(state: State, location: Location | undefined): Location | undefined;
-export declare function withMoveFocusDown(fc: FocusCellFn): (state: State) => State;
+export declare function withMoveFocusDown(fc: FocusCellFn): (state: State, keyCode?: keyCodes) => State;
 export declare function getFocusLocationToDown(state: State, location: Location | undefined): Location | undefined;
 export declare function withMoveFocusPage(fc: FocusCellFn): (rowCalculator: RowCalcFn) => (state: State) => State;
 export declare function getVisibleHeight(state: State, stickyHeight: number): number;

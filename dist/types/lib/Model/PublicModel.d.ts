@@ -9,6 +9,10 @@
 import { TextCell, HeaderCell, CheckboxCell, DateCell, EmailCell, ChevronCell, NumberCell, TimeCell, DropdownCell } from './../CellTemplates';
 import { Range } from './Range';
 /**
+ * `Range` is a class. This class represents a rectangular area with a width, height, upper-left position, and lower-right position.
+ */
+export { Range };
+/**
  * `SelectionMode` is a marker for currect selection mode
  *
  * @see https://reactgrid.com/docs/3.1/7-api/1-types/7-selection-mode/
