@@ -25,7 +25,7 @@ export class DateCellTemplate implements CellTemplate<DateCell> {
         return { ...uncertainCell, date, value, text }
     }
 
-    handleKeyDown(cell: Compatible<DateCell>, keyCode: number, ctrl: boolean, shift: boolean, alt: boolean, key: string): { cell: Compatible<DateCell>, enableEditMode: boolean } {
+    handleKeyDown(cell: Compatible<DateCell>, keyCode: number, ctrl: boolean, shift: boolean, alt: boolean, key: string, capsLock: boolean): { cell: Compatible<DateCell>, enableEditMode: boolean } {
         if (!ctrl && isCharAlphaNumeric(getCharFromKey(key)))
             return { cell: this.getCompatibleCell({ ...cell }), enableEditMode: true }
         return { cell, enableEditMode: keyCode === keyCodes.POINTER || keyCode === keyCodes.ENTER }

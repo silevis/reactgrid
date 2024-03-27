@@ -47,11 +47,11 @@ export class ChevronCellTemplate implements CellTemplate<ChevronCell> {
         return this.getCompatibleCell({ ...cell, isExpanded: cellToMerge.isExpanded, text: cellToMerge.text })
     }
 
-    handleKeyDown(cell: Compatible<ChevronCell>, keyCode: number, ctrl: boolean, shift: boolean, alt: boolean, key: string): { cell: Compatible<ChevronCell>, enableEditMode: boolean } {
+    handleKeyDown(cell: Compatible<ChevronCell>, keyCode: number, ctrl: boolean, shift: boolean, alt: boolean, key: string, capsLock: boolean): { cell: Compatible<ChevronCell>, enableEditMode: boolean } {
         let enableEditMode = keyCode === keyCodes.POINTER || keyCode === keyCodes.ENTER;
         const cellCopy = { ...cell };
 
-        const char = getCharFromKey(key, shift);
+        const char = getCharFromKey(key, shift, capsLock);
 
         if (keyCode === keyCodes.SPACE && cellCopy.isExpanded !== undefined && !shift) {
             cellCopy.isExpanded = !cellCopy.isExpanded;

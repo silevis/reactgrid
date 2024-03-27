@@ -208,9 +208,9 @@ export const getCharFromKeyCode = (keyCode: number, isShiftKey = false): string 
     return isShiftKey ? characterMapShift[keyCode] : characterMap[keyCode];
 }
 
-export const getCharFromKey = (key: string, isShiftKey = false): string => {
+export const getCharFromKey = (key: string, isShiftKey = false, isCapsLock = false): string => {
   const language = navigator.language || "en-US";
-  return !isShiftKey
+  return !(isShiftKey || isCapsLock)
     ? key.toLocaleLowerCase(language)
     : key.toLocaleUpperCase(language);
 };
