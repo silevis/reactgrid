@@ -19,8 +19,8 @@ interface PanesRendererProps {
   stickyBottomRows: number;
   stickyLeftColumns: number;
   stickyRightColumns: number;
-  handleSelectArea?: (selectedArea: NumericalRange) => void;
-  handleFocusCell?: (cellLocation: IndexedLocation) => void;
+  onAreaSelected?: (selectedArea: NumericalRange) => void;
+  onCellFocused?: (cellLocation: IndexedLocation) => void;
 }
 
 const PanesRenderer: FC<PanesRendererProps> = ({
@@ -30,8 +30,8 @@ const PanesRenderer: FC<PanesRendererProps> = ({
   stickyBottomRows,
   stickyLeftColumns,
   stickyRightColumns,
-  handleSelectArea,
-  handleFocusCell,
+  onAreaSelected,
+  onCellFocused,
 }) => {
   const id = useReactGridId();
   const theme = useTheme();
@@ -101,11 +101,11 @@ const PanesRenderer: FC<PanesRendererProps> = ({
   };
 
   useEffect(() => {
-    handleSelectArea?.(selectedArea);
+    onAreaSelected?.(selectedArea);
   }, [selectedArea]);
 
   useEffect(() => {
-    handleFocusCell?.(focusedLocation);
+    onCellFocused?.(focusedLocation);
   }, [focusedLocation]);
 
   useEffect(() => {

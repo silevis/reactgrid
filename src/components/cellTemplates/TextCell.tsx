@@ -3,12 +3,12 @@ import CellWrapper from "../CellWrapper";
 import { useCellContext } from "../CellContext";
 
 interface TextCellProps {
-  text: string;
+  value: string;
   onTextChanged: (newText: string) => void;
   reverse?: boolean;
 }
 
-const TextCell: FC<TextCellProps> = ({ text, onTextChanged, reverse }) => {
+const TextCell: FC<TextCellProps> = ({ value, onTextChanged, reverse }) => {
   const ctx = useCellContext();
   const targetInputRef = useRef<HTMLTextAreaElement>(null);
 
@@ -27,7 +27,7 @@ const TextCell: FC<TextCellProps> = ({ text, onTextChanged, reverse }) => {
     >
       {ctx.isInEditMode ? (
         <textarea
-          defaultValue={text}
+          defaultValue={value}
           style={{
             resize: "none",
             overflowY: "hidden",
@@ -43,7 +43,9 @@ const TextCell: FC<TextCellProps> = ({ text, onTextChanged, reverse }) => {
             fontSize: "inherit",
             fontFamily: "inherit",
           }}
-          onBlur={(e) => onTextChanged(e.currentTarget.value)}
+          onBlur={(e) => {
+            onTextChanged(e.currentTarget.value);
+          }}
           onPointerDown={(e) => e.stopPropagation()}
           onKeyDown={(e) => {
             if (e.key === "Escape") {
@@ -60,9 +62,9 @@ const TextCell: FC<TextCellProps> = ({ text, onTextChanged, reverse }) => {
           ref={targetInputRef}
         />
       ) : reverse ? (
-        text.split("").reverse().join("")
+        value.split("").reverse().join("")
       ) : (
-        text
+        value
       )}
     </CellWrapper>
   );

@@ -56,8 +56,7 @@ export interface RGTheme {
     background: string;
     border: Border;
   };
-  gridWrapper: React.CSSProperties;
-  ranges: StyledRange[];
+  gridWrapper?: React.CSSProperties;
 }
 
 // Makes all properties in T optional, including nested properties, but excluding functions

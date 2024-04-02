@@ -15,8 +15,9 @@ export interface ReactGridStoreProps {
   colMeasurements: ColumnMeasurement[];
 
   paneRanges: Record<PaneName, NumericalRange>;
+  styledRanges: StyledRange[];
 
-  userStyles?: RGTheme;
+  userStyles?: Partial<RGTheme>;
 
   focusedLocation: IndexedLocation;
   absoluteFocusedLocation: IndexedLocation;

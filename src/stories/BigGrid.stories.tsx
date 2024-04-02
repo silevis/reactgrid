@@ -4,25 +4,15 @@ import ReactGrid from "../ReactGrid";
 import { ErrorBoundary } from "../components/ErrorBoundary";
 import TextCell from "../components/cellTemplates/TextCell";
 import { cellMatrixBuilder } from "../utils/cellMatrixBuilder";
+import DateCell from "../components/cellTemplates/DateCell";
 
 const ROW_COUNT = 20;
 const COLUMN_COUNT = 25;
 
-const testStyles = {
-  ranges: [
-    {
-      range: { start: { rowId: "0", columnId: "5" }, end: { rowId: "14", columnId: "12" } },
-      styles: { background: "red", color: "yellow" },
-    },
-    {
-      range: { start: { rowId: "7", columnId: "10" }, end: { rowId: "10", columnId: "14" } },
-      styles: { background: "green", color: "purple" },
-    },
-  ],
-};
+const testStyles = {};
 
 export const BigGrid = () => {
-  const [data, setData] = useState<(string | null)[][]>(
+  const [data, setData] = useState(
     Array.from({ length: ROW_COUNT }).map((_, i) => {
       return Array.from({ length: COLUMN_COUNT }).map((_, j) => {
         if (i === 0 && j === 1) return null;
@@ -44,6 +34,8 @@ export const BigGrid = () => {
 
         if (i === 6 && j === 7) return null;
         if (i === 6 && j === 8) return null;
+
+        if (i === 0 && j === 0) return new Date();
 
         return (
           `[${i.toString()}:${j.toString()}]` +
@@ -75,7 +67,7 @@ export const BigGrid = () => {
         if (val === null) return;
 
         setCell(i.toString(), j.toString(), TextCell, {
-          text: val,
+          value: val as string,
           onTextChanged: (newText) => {
             setData((prev) => {
               const next = [...prev];
@@ -90,27 +82,54 @@ export const BigGrid = () => {
     setCell(
       "0",
       "0",
-      TextCell,
-      { text: data[0][0] ?? "", reverse: true, onTextChanged: () => null },
+      DateCell,
+      {
+        value: (data[0][0] as Date) ?? "",
+        onDateChanged: (newText) => {
+          setData((prev) => {
+            const next = [...prev];
+            next[0][0] = newText;
+            return next;
+          });
+        },
+      },
       { colSpan: 2, rowSpan: 2 }
     );
     setCell(
       "2",
       "3",
       TextCell,
-      { text: data[2][3] ?? "", reverse: true, onTextChanged: () => null },
+      { value: (data[2][3] as string) ?? "", reverse: true, onTextChanged: () => null },
       { colSpan: 2, rowSpan: 2 }
     );
     setCell(
       "3",
       "6",
       TextCell,
-      { text: data[3][6] ?? "", reverse: true, onTextChanged: () => null },
+      { value: (data[3][6] as string) ?? "", reverse: true, onTextChanged: () => null },
       { colSpan: 2, rowSpan: 2 }
     );
-    setCell("5", "4", TextCell, { text: data[5][4] ?? "", reverse: true, onTextChanged: () => null }, { rowSpan: 2 });
-    setCell("5", "5", TextCell, { text: data[5][5] ?? "", reverse: true, onTextChanged: () => null }, { colSpan: 3 });
-    setCell("6", "6", TextCell, { text: data[5][4] ?? "", reverse: true, onTextChanged: () => null }, { colSpan: 3 });
+    setCell(
+      "5",
+      "4",
+      TextCell,
+      { value: (data[5][4] as string) ?? "", reverse: true, onTextChanged: () => null },
+      { rowSpan: 2 }
+    );
+    setCell(
+      "5",
+      "5",
+      TextCell,
+      { value: (data[5][5] as string) ?? "", reverse: true, onTextChanged: () => null },
+      { colSpan: 3 }
+    );
+    setCell(
+      "6",
+      "6",
+      TextCell,
+      { value: (data[5][4] as string) ?? "", reverse: true, onTextChanged: () => null },
+      { colSpan: 3 }
+    );
   });
 
   cellMatrix.columns[1].width = "7rem";
@@ -125,9 +144,19 @@ export const BigGrid = () => {
           stickyRightColumns={2}
           stickyBottomRows={2}
           styles={testStyles}
+          styledRanges={[
+            {
+              range: { start: { rowId: "0", columnId: "5" }, end: { rowId: "14", columnId: "12" } },
+              styles: { background: "red", color: "yellow" },
+            },
+            {
+              range: { start: { rowId: "7", columnId: "10" }, end: { rowId: "10", columnId: "14" } },
+              styles: { background: "green", color: "purple" },
+            },
+          ]}
           {...cellMatrix}
-          handleSelectArea={(selectedArea) => {}}
-          handleFocusCell={(cellLocation) => {}}
+          onAreaSelected={(selectedArea) => {}} // TODO: rename handlers (onAreaSelected, onCellFocused)
+          onCellFocused={(cellLocation) => {}}
         />
       </div>
       <div>

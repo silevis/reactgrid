@@ -118,8 +118,8 @@ export interface ReactGridProps {
 
   cells: CellMap;
 
-  handleSelectArea?: (selectedArea: NumericalRange) => void;
-  handleFocusCell?: (cellLocation: IndexedLocation) => void;
+  onAreaSelected?: (selectedArea: NumericalRange) => void;
+  onCellFocused?: (cellLocation: IndexedLocation) => void;
 
   stickyTopRows?: number;
   stickyRightColumns?: number;

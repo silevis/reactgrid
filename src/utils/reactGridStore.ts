@@ -26,6 +26,7 @@ const DEFAULT_STORE_PROPS: ReactGridStoreProps = {
     BottomCenter: { startRowIdx: 0, endRowIdx: 0, startColIdx: 0, endColIdx: 0 },
     BottomRight: { startRowIdx: 0, endRowIdx: 0, startColIdx: 0, endColIdx: 0 },
   },
+  styledRanges: [],
   focusedLocation: { rowIndex: 0, colIndex: 0 },
   absoluteFocusedLocation: { rowIndex: 0, colIndex: 0 },
   selectedArea: { startRowIdx: -1, endRowIdx: -1, startColIdx: -1, endColIdx: -1 },
@@ -123,11 +124,11 @@ export function initReactGridStore(id: string, initialProps?: Partial<ReactGridS
         },
 
         getStyledRanges: (range?: Range): StyledRange[] | [] => {
-          const styledRanges: StyledRange[] | undefined = get().userStyles?.ranges;
+          const styledRanges: StyledRange[] = get().styledRanges;
           if (!range) {
             return styledRanges ? styledRanges : [];
           } else {
-            const styledRange = styledRanges?.find((styledRange) => {
+            const styledRange = styledRanges.find((styledRange) => {
               JSON.stringify(styledRange.range) === JSON.stringify(range);
             });
 
