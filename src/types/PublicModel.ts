@@ -78,12 +78,9 @@ export type CellContextType = {
   /** Internal: provides cell container's style  */
   containerStyle: React.CSSProperties;
 
-  /** Disables edit mode */
-  disableEditMode: () => void;
   /** Requests focus and enables edit mode if true is passed as a parameter. */
   requestFocus: (enableEditMode: boolean) => void;
 
-  isInEditMode: boolean;
   isFocused: boolean;
 };
 

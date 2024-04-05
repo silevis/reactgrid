@@ -30,7 +30,6 @@ const DEFAULT_STORE_PROPS: ReactGridStoreProps = {
   focusedLocation: { rowIndex: 0, colIndex: 0 },
   absoluteFocusedLocation: { rowIndex: 0, colIndex: 0 },
   selectedArea: { startRowIdx: -1, endRowIdx: -1, startColIdx: -1, endColIdx: -1 },
-  currentlyEditedCell: { rowIndex: -1, colIndex: -1 },
   reactGridRef: undefined,
   hiddenFocusTargetRef: undefined,
   behaviors: {
@@ -108,8 +107,6 @@ export function initReactGridStore(id: string, initialProps?: Partial<ReactGridS
         },
 
         setSelectedArea: (selectedArea) => set(() => ({ selectedArea })),
-
-        setCurrentlyEditedCell: (rowIndex, colIndex) => set(() => ({ currentlyEditedCell: { rowIndex, colIndex } })),
 
         assignReactGridRef: (reactGridRef) => set(() => ({ reactGridRef })),
         assignHiddenFocusTargetRef: (hiddenFocusTargetRef) => set(() => ({ hiddenFocusTargetRef })),

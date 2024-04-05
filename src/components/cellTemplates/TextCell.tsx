@@ -1,4 +1,4 @@
-import { FC, useRef } from "react";
+import { FC, useRef, useState } from "react";
 import CellWrapper from "../CellWrapper";
 import { useCellContext } from "../CellContext";
 
@@ -8,16 +8,20 @@ interface TextCellProps {
   reverse?: boolean;
 }
 
-const TextCell: FC<TextCellProps> = ({ value, onTextChanged, reverse }) => {
+const TextCell: FC<TextCellProps> = ({ value: initialValue, onTextChanged, reverse }) => {
   const ctx = useCellContext();
   const targetInputRef = useRef<HTMLTextAreaElement>(null);
+  const [isInEditMode, setIsInEditMode] = useState(false);
 
   return (
     <CellWrapper
       style={{ padding: ".2rem", textAlign: "center", outline: "none" }}
-      onDoubleClick={() => ctx.requestFocus(true)}
+      onDoubleClick={() => {
+        setIsInEditMode(true);
+        ctx.requestFocus(true);
+      }}
       onKeyDown={(e) => {
-        if (!ctx.isInEditMode && e.key === "Enter") {
+        if (isInEditMode && e.key === "Enter") {
           e.preventDefault();
           e.stopPropagation();
           ctx.requestFocus(true);
@@ -25,9 +29,9 @@ const TextCell: FC<TextCellProps> = ({ value, onTextChanged, reverse }) => {
       }}
       targetInputRef={targetInputRef}
     >
-      {ctx.isInEditMode ? (
+      {isInEditMode ? (
         <textarea
-          defaultValue={value}
+          defaultValue={initialValue}
           style={{
             resize: "none",
             overflowY: "hidden",
@@ -45,26 +49,27 @@ const TextCell: FC<TextCellProps> = ({ value, onTextChanged, reverse }) => {
           }}
           onBlur={(e) => {
             onTextChanged(e.currentTarget.value);
+            setIsInEditMode(false);
           }}
           onPointerDown={(e) => e.stopPropagation()}
           onKeyDown={(e) => {
             if (e.key === "Escape") {
-              ctx.disableEditMode();
+              setIsInEditMode(false);
             } else if (e.key === "Enter") {
               e.preventDefault();
               // We don't stop propagation here, because we want to trigger the
               // focus move event
               onTextChanged(e.currentTarget.value);
-              ctx.disableEditMode();
+              setIsInEditMode(false);
             }
           }}
           autoFocus
           ref={targetInputRef}
         />
       ) : reverse ? (
-        value.split("").reverse().join("")
+        initialValue.split("").reverse().join("")
       ) : (
-        value
+        initialValue
       )}
     </CellWrapper>
   );

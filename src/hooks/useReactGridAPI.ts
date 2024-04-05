@@ -46,23 +46,6 @@ export default function useReactGridAPI(id: string) {
         return store.setFocusedLocation(rowIndex, colIndex);
       },
 
-      /**
-       * Set the edited cell in the ReactGrid.
-       * @param location - The id-based location of the cell to be edited.
-       */
-      setEditedCell: ({ rowId, columnId }: Location) => {
-        const cell = store.getCellByIds(rowId, columnId);
-
-        if (devEnvironment && !cell) {
-          console.warn(`Cell with rowId "${rowId}" and colId "${columnId}" does not exist.`);
-        }
-
-        const rowIndex = store.rows.findIndex((row) => row.id === rowId);
-        const colIndex = store.columns.findIndex((col) => col.id === columnId);
-
-        return store.setCurrentlyEditedCell(rowIndex, colIndex);
-      },
-
       // Getters
 
       /**
@@ -94,19 +77,6 @@ export default function useReactGridAPI(id: string) {
        * @returns The cell or span member at the specified indexes.
        */
       getCellOrSpanMemberByIndexes: store.getCellOrSpanMemberByIndexes,
-
-      /**
-       * Get the currently edited cell in the ReactGrid.
-       * @returns The currently edited cell.
-       */
-      getEditedCell: () => {
-        const { currentlyEditedCell } = store;
-
-        if (devEnvironment && (currentlyEditedCell.colIndex < 0 || currentlyEditedCell.rowIndex < 0))
-          console.warn("There is no edited cell.");
-
-        return currentlyEditedCell;
-      },
 
       /**
        * Get the pane ranges in the ReactGrid.

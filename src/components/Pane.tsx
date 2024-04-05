@@ -55,12 +55,8 @@ export const PaneGridContent: React.FC<PaneGridContentProps> = React.memo(({ ran
   const cells = useReactGridStore(id, (store) => store.cells);
 
   const focusedCell = useReactGridStore(id, (store) => store.focusedLocation);
-  const currentlyEditedCell = useReactGridStore(id, (store) => store.currentlyEditedCell);
-
-  const hiddenFocusTargetRef = useReactGridStore(id, (store) => store.hiddenFocusTargetRef);
 
   const setFocusedLocation = useReactGridStore(id, (store) => store.setFocusedLocation);
-  const setCurrentlyEditedCell = useReactGridStore(id, (store) => store.setCurrentlyEditedCell);
 
   return rows.map((row, rowIndex) => {
     return columns.map((col, colIndex) => {
@@ -72,8 +68,6 @@ export const PaneGridContent: React.FC<PaneGridContentProps> = React.memo(({ ran
       const realColumnIndex = startColIdx + colIndex;
 
       const isFocused = focusedCell.rowIndex === realRowIndex && focusedCell.colIndex === realColumnIndex;
-      const isInEditMode =
-        currentlyEditedCell.rowIndex === realRowIndex && currentlyEditedCell.colIndex === realColumnIndex;
 
       const { Template, props } = cell;
 
@@ -98,18 +92,16 @@ export const PaneGridContent: React.FC<PaneGridContentProps> = React.memo(({ ran
               gridRowStart: realRowIndex + 1,
               gridColumnStart: realColumnIndex + 1,
             },
-            disableEditMode: () => {
-              setCurrentlyEditedCell(-1, -1);
-              hiddenFocusTargetRef?.focus({ preventScroll: true });
-            },
             requestFocus: (enableEditMode: boolean) => {
-              if (enableEditMode) {
-                setCurrentlyEditedCell(realRowIndex, realColumnIndex);
-              }
+              // TODO call onFocusLost on currently focused cell.
+              // if (enableEditMode) {
+              //   setCurrentlyEditedCell(realRowIndex, realColumnIndex); // TODO: this func is to remove
+              // }
 
+              // TODO: should set boolean
+              // setFocusedLocation(realRowIndex, realColumnIndex, enableEditMode);
               setFocusedLocation(realRowIndex, realColumnIndex);
             },
-            isInEditMode,
             isFocused,
           }}
         >

@@ -1,12 +1,11 @@
-import { FC, forwardRef, useRef } from "react";
+import { FC, forwardRef, useRef, useState } from "react";
 import CellWrapper from "../CellWrapper";
 import { useCellContext } from "../CellContext";
 import { formatDate } from "../../utils/formatDate";
-import { CellContextType } from "../../types/PublicModel";
 
 interface DefaultCalendarProps {
-  ctx: CellContextType;
   date: string;
+  setIsInEditMode: (value: boolean) => void;
   onDateChanged: (newDate: Date) => void;
 }
 
@@ -21,12 +20,13 @@ interface DateCellProps {
 
 const DateCell: FC<DateCellProps> = ({ value, onDateChanged, formatter, Calendar }) => {
   const ctx = useCellContext();
+  const [isInEditMode, setIsInEditMode] = useState(false);
   const targetInputRef = useRef<HTMLInputElement>(null);
 
   let formattedDate: string | undefined;
 
   if (!formatter) {
-    formattedDate = formatDate(value, "DD.MM.YYYY");
+    formattedDate = formatDate(value, "DD-MM-YYYY");
   } else {
     formattedDate = formatter(value);
   }
@@ -34,10 +34,13 @@ const DateCell: FC<DateCellProps> = ({ value, onDateChanged, formatter, Calendar
   return (
     <CellWrapper
       style={{ padding: ".2rem", textAlign: "center", outline: "none" }}
-      onDoubleClick={() => ctx.requestFocus(true)}
-      onPointerDown={(e) => ctx.isInEditMode && e.stopPropagation()}
+      onDoubleClick={() => {
+        setIsInEditMode(true);
+        ctx.requestFocus(true);
+      }}
+      onPointerDown={(e) => isInEditMode && e.stopPropagation()}
       onKeyDown={(e) => {
-        if (!ctx.isInEditMode && e.key === "Enter") {
+        if (isInEditMode && e.key === "Enter") {
           e.preventDefault();
           e.stopPropagation();
           ctx.requestFocus(true);
@@ -45,17 +48,17 @@ const DateCell: FC<DateCellProps> = ({ value, onDateChanged, formatter, Calendar
       }}
       targetInputRef={targetInputRef}
     >
-      {ctx.isInEditMode ? (
+      {isInEditMode ? (
         Calendar?.Template ? (
           <Calendar.Template
             {...Calendar?.props}
             onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
               if (e.key === "Escape") {
-                ctx.disableEditMode();
+                setIsInEditMode(false);
               } else if (e.key === "Enter") {
                 e.preventDefault();
                 onDateChanged(new Date(e.currentTarget.value));
-                ctx.disableEditMode();
+                setIsInEditMode(false);
               }
             }}
             onBlur={(e: React.PointerEvent<HTMLInputElement>) => {
@@ -65,7 +68,12 @@ const DateCell: FC<DateCellProps> = ({ value, onDateChanged, formatter, Calendar
             onPointerDown={(e: React.PointerEvent<HTMLInputElement>) => e.stopPropagation()}
           />
         ) : (
-          <DefaultCalendar ctx={ctx} ref={targetInputRef} date={formattedDate} onDateChanged={onDateChanged} />
+          <DefaultCalendar
+            setIsInEditMode={setIsInEditMode}
+            ref={targetInputRef}
+            date={formattedDate}
+            onDateChanged={onDateChanged}
+          />
         )
       ) : (
         formattedDate
@@ -75,7 +83,7 @@ const DateCell: FC<DateCellProps> = ({ value, onDateChanged, formatter, Calendar
 };
 
 const DefaultCalendar = forwardRef(
-  ({ ctx, date, onDateChanged }: DefaultCalendarProps, ref: React.ForwardedRef<HTMLInputElement>) => {
+  ({ date, setIsInEditMode, onDateChanged }: DefaultCalendarProps, ref: React.ForwardedRef<HTMLInputElement>) => {
     return (
       <input
         type="date"
@@ -100,11 +108,11 @@ const DefaultCalendar = forwardRef(
         onPointerDown={(e) => e.stopPropagation()}
         onKeyDown={(e) => {
           if (e.key === "Escape") {
-            ctx.disableEditMode();
+            setIsInEditMode(false);
           } else if (e.key === "Enter") {
             e.preventDefault();
             onDateChanged(new Date(e.currentTarget.value));
-            ctx.disableEditMode();
+            setIsInEditMode(false);
           }
         }}
         autoFocus

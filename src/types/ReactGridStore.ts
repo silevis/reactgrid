@@ -22,7 +22,6 @@ export interface ReactGridStoreProps {
   focusedLocation: IndexedLocation;
   absoluteFocusedLocation: IndexedLocation;
   selectedArea: NumericalRange;
-  currentlyEditedCell: IndexedLocation;
 
   reactGridRef?: HTMLDivElement;
   hiddenFocusTargetRef?: HTMLDivElement;
@@ -59,8 +58,6 @@ export interface ReactGridStore extends ReactGridStoreProps {
   readonly getFocusedCell: () => FocusedCell | null;
 
   readonly setSelectedArea: (selectedArea: NumericalRange) => void;
-
-  readonly setCurrentlyEditedCell: (rowIndex: number, colIndex: number) => void;
 
   readonly assignReactGridRef: (reactGridRef?: HTMLDivElement) => void;
 
