@@ -39,6 +39,14 @@ const lightTheme: RGTheme = {
       width: "2px",
     },
   },
+  fillHandle: {
+    background: "transparent",
+    border: {
+      color: "black",
+      style: "dashed",
+      width: "2px",
+    },
+  },
   selectionIndicator: {
     background: "#add8e630",
     border: {

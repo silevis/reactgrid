@@ -28,8 +28,10 @@ export const DefaultBehavior = (config: DefaultBehaviorConfig = CONFIG_DEFAULTS)
     devEnvironment && console.log("DB/handlePointerDown");
 
     const element = getCellContainerFromPoint(event.clientX, event.clientY);
+
     let newRowIndex = -1;
     let newColIndex = -1;
+
     if (element) {
       const { rowIndex, colIndex } = getCellContainerLocation(element);
       newRowIndex = rowIndex;
@@ -42,6 +44,7 @@ export const DefaultBehavior = (config: DefaultBehaviorConfig = CONFIG_DEFAULTS)
       ...store,
       focusedLocation: { rowIndex: newRowIndex, colIndex: newColIndex },
       absoluteFocusedLocation: { rowIndex: newRowIndex, colIndex: newColIndex },
+      fillHandleArea: { startRowIdx: -1, endRowIdx: -1, startColIdx: -1, endColIdx: -1 },
       selectedArea: { startRowIdx: -1, endRowIdx: -1, startColIdx: -1, endColIdx: -1 },
       currentBehavior: SelectionBehavior || store.currentBehavior,
     };

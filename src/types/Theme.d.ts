@@ -52,6 +52,10 @@ export interface RGTheme {
     background: string;
     border: Border;
   };
+  fillHandle: {
+    background: string;
+    border: Border;
+  };
   selectionIndicator: {
     background: string;
     border: Border;

@@ -186,7 +186,12 @@ export const Pane: React.FC<PaneProps> = ({
         endColIdx: focusedCell.colIndex + (focusedCell.colSpan ?? 1),
       }
     : { startRowIdx: -1, endRowIdx: -1, startColIdx: -1, endColIdx: -1 };
+
   const selectedArea = useReactGridStore(id, (store) => store.selectedArea);
+
+  const fillHandleArea = useReactGridStore(id, (store) => store.fillHandleArea);
+
+  const isFillHandleActive = fillHandleArea.endRowIdx !== -1;
 
   if (!shouldRender) return null;
 
@@ -222,6 +227,18 @@ export const Pane: React.FC<PaneProps> = ({
           parentPaneName={paneName}
           getCellOffset={getCellOffset}
           border={theme.focusIndicator.border}
+          style={{ background: theme.focusIndicator.background }}
+          className="rgFocusIndicator"
+        />
+      )}
+      {isFillHandleActive && (
+        <PartialArea
+          areaRange={fillHandleArea}
+          parentPaneRange={gridContentRange}
+          parentPaneName={paneName}
+          getCellOffset={getCellOffset}
+          isFillHandle={true}
+          border={theme.fillHandle.border}
           style={{ background: theme.focusIndicator.background }}
           className="rgFocusIndicator"
         />

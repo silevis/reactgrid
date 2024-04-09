@@ -3,6 +3,12 @@ import { NumericalRange } from "../types/CellMatrix";
 import { GetCellOffsets, PaneName } from "../types/InternalModel";
 import { Border, Offset } from "../types/Theme";
 import { useTheme } from "../hooks/useTheme";
+import { useReactGridId } from "./ReactGridIdProvider";
+import { useReactGridStore, useReactGridStoreApi } from "../utils/reactGridStore";
+import { FillHandleBehavior } from "../behaviors/FillHandleBehavior";
+import { CellSelectionBehavior } from "../behaviors/CellSelectionBehavior";
+import { areAreasEqual } from "../utils/areAreasEqual";
+import { getCellArea } from "../utils/getCellArea";
 
 interface PartialAreaProps {
   /** The range of cells to area. */
@@ -13,6 +19,8 @@ interface PartialAreaProps {
   parentPaneRange: NumericalRange;
   /** A function that returns the offset of a cell relative to the grid. */
   border?: Border;
+  /** Whether the cell is focused. */
+  isFillHandle?: boolean;
   /** A function that returns the offset of a cell relative to the grid. */
   getCellOffset?: GetCellOffsets;
   /** Additional styles to apply to the area. */
@@ -61,10 +69,32 @@ const shouldMemoPartialArea = (prevProps: PartialAreaProps, nextProps: PartialAr
  * @returns A React component that renders the partial area.
  */
 export const PartialArea: FC<PartialAreaProps> = React.memo(
-  ({ areaRange, parentPaneName, parentPaneRange, getCellOffset, border, style, className }) => {
+  ({ areaRange, parentPaneName, parentPaneRange, getCellOffset, isFillHandle, border, style, className }) => {
     const theme = useTheme();
     const offset: Offset = {};
     const areaBorder = border ?? theme.area.border;
+
+    const id = useReactGridId();
+    const store = useReactGridStoreApi(id).getState();
+    const currentBehavior = useReactGridStore(id, (store) => store.currentBehavior);
+    const setCurrentBehavior = useReactGridStore(id, (store) => store.setCurrentBehavior);
+    const setSelectedArea = useReactGridStore(id, (store) => store.setSelectedArea);
+
+    const selectedArea = useReactGridStore(id, (store) => store.selectedArea);
+    const fillHandleArea = useReactGridStore(id, (store) => store.fillHandleArea);
+    const focusedCell = store.getCellByIndexes(store.focusedLocation.rowIndex, store.focusedLocation.colIndex);
+
+    const focusedCellArea = getCellArea(store, focusedCell!);
+
+    const isAreaSelected = selectedArea.startRowIdx !== -1;
+    const isFillAreaExists = fillHandleArea.endRowIdx !== -1;
+
+    // const areAreasEquals = isAreaSelected && areAreasEqual(selectedArea, areaRange);
+
+    const shouldEnableFillHandle =
+      currentBehavior.id !== CellSelectionBehavior.id &&
+      (!isAreaSelected || (isAreaSelected && areAreasEqual(selectedArea, areaRange))) &&
+      ((!isFillHandle && !isFillAreaExists) || (isFillHandle && currentBehavior.id === "Default"));
 
     if (areaRange.startRowIdx < 0 || areaRange.startColIdx < 0 || areaRange.endRowIdx < 0 || areaRange.endColIdx < 0)
       return null;
@@ -80,10 +110,18 @@ export const PartialArea: FC<PartialAreaProps> = React.memo(
     if (areaRange.endColIdx <= parentPaneRange.startColIdx) return null;
     if (areaRange.endRowIdx <= parentPaneRange.startRowIdx) return null;
 
-    const shouldRenderTopBorder = areaRange.startRowIdx >= parentPaneRange.startRowIdx;
-    const shouldRenderRightBorder = areaRange.endColIdx <= parentPaneRange.endColIdx;
-    const shouldRenderBottomBorder = areaRange.endRowIdx <= parentPaneRange.endRowIdx;
-    const shouldRenderLeftBorder = areaRange.startColIdx >= parentPaneRange.startColIdx;
+    const shouldRenderTopBorder =
+      areaRange.startRowIdx >= parentPaneRange.startRowIdx &&
+      (!isFillHandle || (isFillHandle && fillHandleArea.startRowIdx !== focusedCellArea.endRowIdx));
+    const shouldRenderRightBorder =
+      areaRange.endColIdx <= parentPaneRange.endColIdx &&
+      (!isFillHandle || (isFillHandle && fillHandleArea.endColIdx !== focusedCellArea.startColIdx));
+    const shouldRenderBottomBorder =
+      areaRange.endRowIdx <= parentPaneRange.endRowIdx &&
+      (!isFillHandle || (isFillHandle && fillHandleArea.endRowIdx !== focusedCellArea.startRowIdx));
+    const shouldRenderLeftBorder =
+      areaRange.startColIdx >= parentPaneRange.startColIdx &&
+      (!isFillHandle || (isFillHandle && fillHandleArea.startColIdx !== focusedCellArea.endColIdx));
 
     let width = "100%";
     let height = "100%";
@@ -178,6 +216,27 @@ export const PartialArea: FC<PartialAreaProps> = React.memo(
               }),
             }}
           />
+          {currentBehavior.id !== CellSelectionBehavior.id && shouldEnableFillHandle && (
+            <div
+              className="fill-handle"
+              style={{
+                position: "absolute",
+                right: -5,
+                bottom: -5,
+                width: 6.5,
+                height: 6.5,
+                backgroundColor: areaBorder.color,
+                cursor: "crosshair",
+                pointerEvents: "auto",
+                border: "2px solid #fff",
+              }}
+              onPointerDown={(event) => {
+                // event.stopPropagation();
+                setSelectedArea({ startRowIdx: -1, endRowIdx: -1, startColIdx: -1, endColIdx: -1 });
+                setCurrentBehavior(FillHandleBehavior);
+              }}
+            />
+          )}
         </div>
       </>
     );

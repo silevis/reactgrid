@@ -4,6 +4,7 @@ import { DefaultBehavior } from "../behaviors/DefaultBehavior";
 import { Range, StyledRange } from "../types/PublicModel";
 import { isSpanMember } from "./isSpanMember";
 import { ReactGridStore, ReactGridStoreProps } from "../types/ReactGridStore.ts";
+import { FillHandleBehavior } from "../behaviors/FillHandleBehavior.ts";
 
 type ReactGridStores = Record<string, StoreApi<ReactGridStore>>;
 
@@ -30,12 +31,15 @@ const DEFAULT_STORE_PROPS: ReactGridStoreProps = {
   focusedLocation: { rowIndex: 0, colIndex: 0 },
   absoluteFocusedLocation: { rowIndex: 0, colIndex: 0 },
   selectedArea: { startRowIdx: -1, endRowIdx: -1, startColIdx: -1, endColIdx: -1 },
+  fillHandleArea: { startRowIdx: -1, endRowIdx: -1, startColIdx: -1, endColIdx: -1 },
   reactGridRef: undefined,
   hiddenFocusTargetRef: undefined,
   behaviors: {
     Default: DefaultBehavior(),
     CellSelection: CellSelectionBehavior,
+    FillHandle: FillHandleBehavior,
   },
+
   currentBehavior: DefaultBehavior(),
 };
 
@@ -96,7 +100,10 @@ export function initReactGridStore(id: string, initialProps?: Partial<ReactGridS
 
         setPaneRanges: (paneRanges) => set(() => ({ paneRanges })),
 
-        setFocusedLocation: (rowIndex, colIndex) => set(() => ({ focusedLocation: { rowIndex, colIndex } })),
+        setFocusedLocation: (rowIndex, colIndex) =>
+          set(() => {
+            return { focusedLocation: { rowIndex, colIndex } };
+          }),
         getFocusedCell: () => {
           const { focusedLocation } = get();
           const cell = get().getCellByIndexes(focusedLocation.rowIndex, focusedLocation.colIndex);
@@ -107,6 +114,10 @@ export function initReactGridStore(id: string, initialProps?: Partial<ReactGridS
         },
 
         setSelectedArea: (selectedArea) => set(() => ({ selectedArea })),
+
+        setFillHandleArea: (fillHandleArea) => set(() => ({ fillHandleArea })),
+
+        setCurrentBehavior: (currentBehavior) => set(() => ({ currentBehavior })),
 
         assignReactGridRef: (reactGridRef) => set(() => ({ reactGridRef })),
         assignHiddenFocusTargetRef: (hiddenFocusTargetRef) => set(() => ({ hiddenFocusTargetRef })),
