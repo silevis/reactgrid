@@ -46,6 +46,7 @@ export * from './../lib/Functions/emptyCell';
 export * from './../lib/Functions/rangeSlicer';
 export * from './../lib/Functions/handleStateUpdate';
 export * from './../lib/Functions/tryAppendChangeHavingGroupId';
+export * from './../lib/Functions/validateCellContext';
 
 export * from './../lib/Functions/handleCopy';
 export * from './../lib/Functions/handlePaste';

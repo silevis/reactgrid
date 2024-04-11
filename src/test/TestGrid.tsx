@@ -213,12 +213,14 @@ export const TestGrid: React.FC<TestGridProps> = (props) => {
               value: parseFloat(`${ri}.${ci}`),
               nanToZero: false,
               hideZero: true,
+              maxLength:8
             };
           case 4:
             return {
               type: "date",
               format: myDateFormat,
               date: new Date(now.setHours(ri * 24, 0, 0, 0)),
+              maxLength:0
             };
           case 5:
             return {
@@ -262,6 +264,8 @@ export const TestGrid: React.FC<TestGridProps> = (props) => {
               type: "text",
               text: `${ri} - ${ci}`,
               validator: (text: string): boolean => true,
+              maxLength: 10,
+              resraintType: "alphanumeric"
             };
         }
       }),

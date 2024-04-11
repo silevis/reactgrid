@@ -88,6 +88,7 @@
     "not dead"
   ],
   "dependencies": {
+    "debounce": "^2.0.0",
     "sass": "^1.62.1",
     "tslib": "^2.5.2"
   }

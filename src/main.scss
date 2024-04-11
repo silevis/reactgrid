@@ -72,6 +72,8 @@
                 right: 4px;
                 top: 4px;
             }
+
+            
         }
         .rg-cell-focus,
         .rg-cell-highlight {
@@ -123,6 +125,9 @@
                 border-color: $partial-area-border-color;
                 background-color: $partial-area-background-color;
             }
+        }
+        .rg-invalid {
+            background-color: $cell-background-invalid-color;
         }
     }
     .rg-pane-shadow {

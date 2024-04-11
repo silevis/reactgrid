@@ -536,6 +536,14 @@ export interface Cell {
     style?: CellStyle;
     /** Additional CSS classes */
     className?: string;
+    /** valid checked by parent renderer for registraition*/
+    isValid?: boolean;
+    /** Length restraint */
+    maxLength?: number;
+    /** restraint type (alphanumeric) */
+    resraintType?: string;
+    /** Message showing restraint content */
+    restraintMessages?: string[];
 }
 
 /**

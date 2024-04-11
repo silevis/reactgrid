@@ -9,6 +9,9 @@ import { BorderProps, Cell, Compatible } from '../Model/PublicModel';
 import { State } from '../Model/State';
 import { isMobileDevice } from '../Functions/isMobileDevice';
 import { ResizeHandle } from './ResizeHandle';
+import { handleCompositionEnd } from '../Functions/handleCompositionEnd';
+import { validateCellContext } from '../Functions/validateCellContext';
+import debounce from 'debounce';
 
 export interface CellRendererProps {
     state: State;
@@ -60,6 +63,8 @@ export const CellRenderer: React.FC<CellRendererProps> = ({
     update,
     currentlyEditedCell,
 }) => {
+    const [isHovered, setIsHovered] = React.useState(false)
+    const [isValid, setIsValid] = React.useState(true)
     const { cell, cellTemplate } = getCompatibleCellAndTemplate(state, location);
     const isFocused = state.focusedLocation !== undefined && areLocationsEqual(state.focusedLocation, location);
     const customClass = (cellTemplate.getClassName && cellTemplate.getClassName(cell, false)) ?? '';
@@ -99,6 +104,10 @@ export const CellRenderer: React.FC<CellRendererProps> = ({
         height: range.height,
         ...(!(isFocused && currentlyEditedCellRef.current) && bordersProps),
         ...((isFocused || cell.type === 'header' || isFirstRowOrColumnWithSelection) && { touchAction: 'none' }), // prevent scrolling
+        borderColor: !isValid ? "red" : "",
+        borderWidth: !isValid ? "1px" : "",
+        borderTopStyle: !isValid ? "solid": "unset",
+        borderLeftStyle: !isValid ? "solid": "unset"
     } as React.CSSProperties;
 
     const isInEditMode = isFocused && !!currentlyEditedCellRef.current;
@@ -107,7 +116,8 @@ export const CellRenderer: React.FC<CellRendererProps> = ({
     const nonEditableClassName = cell.nonEditable ? ' rg-cell-nonEditable' : '';
     const cellClassNames =
         isInEditMode && isMobile ? ` rg-celleditor rg-${cell.type}-celleditor` : ` rg-${cell.type}-cell`;
-    const classNames = `rg-cell${cellClassNames}${groupIdClassName}${nonEditableClassName} ${customClass}`;
+    const invalidClassName = !isValid ? `rg-invalid` : ``;
+    const classNames = `rg-cell${cellClassNames}${groupIdClassName}${nonEditableClassName} ${customClass} ${invalidClassName}`;
     const cellToRender =
         isFocused && currentlyEditedCellRef.current && isMobile ? currentlyEditedCellRef.current : cell;
 
@@ -123,6 +133,25 @@ export const CellRenderer: React.FC<CellRendererProps> = ({
         },
         [isInEditMode, location, update, currentlyEditedCellRef]
     );
+    
+    React.useEffect(()=>{
+        if (validateCellContext(cell.type, cell.maxLength, cell.resraintType, cell.text)){
+            cell.isValid = true
+            setIsValid(true)
+        } else {
+            cell.isValid = false
+            setIsValid(false)
+        }
+    }, [isValid, cell])
+
+    const handleMouseEnter = debounce(() =>{
+        setIsHovered(true)
+    }, 500)
+
+    const handleMouseLeave = () => {
+        setIsHovered(false)
+        handleMouseEnter.clear()
+    }
 
     return (
         <div
@@ -132,6 +161,8 @@ export const CellRenderer: React.FC<CellRendererProps> = ({
                 'data-cell-colidx': location.column.idx,
                 'data-cell-rowidx': location.row.idx,
             })}
+            onMouseEnter={handleMouseEnter}
+            onMouseLeave={handleMouseLeave}
         >
             {cellTemplate.render(cellToRender, isMobile ? isInEditMode : false, onCellChanged)}
             {location.row.idx === 0 && location.column.resizable && <ResizeHandle />}
