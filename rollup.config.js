@@ -48,7 +48,7 @@ const executeOncePlugins = [
         targets: [
             { src: ['src/*.scss', 'package.json', 'README.md', 'LICENSE', '.npmignore'], dest: 'dist' },
             { src: 'src/test/theming-test.scss', dest: 'dist/test' },
-            
+            { src: 'cypress/integration', dest: 'dist/cypress' },
             { src: 'src/test/flagCell/flag-cell-style.scss', dest: 'dist/test/flagCell' },
         ]
     }),
