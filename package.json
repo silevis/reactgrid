@@ -60,6 +60,7 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
+    "prepare": "npm run build",
     "pre-deploy": "npx rollup -c",
     "deploy": "npm publish dist --access=public",
     "eslint": "npx eslint ./src",
