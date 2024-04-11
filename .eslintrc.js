@@ -23,6 +23,5 @@ module.exports = {
     "react-hooks/rules-of-hooks": "error",
     "react-hooks/exhaustive-deps": "error",
     "@typescript-eslint/no-unused-vars": 0,
-    "@typescript-eslint/explicit-module-boundary-types": "off"
   },
 };
