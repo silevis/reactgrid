@@ -1,7 +1,8 @@
 # ReactGrid - Spreadsheet experience for your React app
 
 <div align="center">
-
+This ReactGrid is forked so it is modified for my own project.
+  
 ReactGrid is an open-source React component for displaying and editing data in a spreadsheet-like way. 🚀
 
 [![MIT license](https://img.shields.io/badge/License-MIT-blue.svg)](https://github.com/silevis/reactgrid/blob/develop/LICENSE)
