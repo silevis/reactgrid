@@ -9,13 +9,16 @@ export function tryAppendChange(state: State, location: Location, cell: Compatib
     if (previousCell === cell || JSON.stringify(previousCell) === JSON.stringify(cell) || cellTemplate.update === undefined)
         return state;
     const newCell = cellTemplate.update(previousCell, cell);
-    if ((newCell !== previousCell || JSON.stringify(newCell) !== JSON.stringify(previousCell)))
+    if (
+        (newCell !== previousCell || JSON.stringify(newCell) !== JSON.stringify(previousCell)) &&
+        (!newCell.nonEditable || newCell.type === "chevron")
+      )
         state.queuedCellChanges.push({
-            previousCell,
-            newCell,
-            type: newCell.type,
-            rowId: location.row.rowId,
-            columnId: location.column.columnId
+          previousCell,
+          newCell,
+          type: newCell.type,
+          rowId: location.row.rowId,
+          columnId: location.column.columnId,
         } as CellChange);
     return { ...state };
 }
