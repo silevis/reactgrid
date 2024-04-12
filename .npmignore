@@ -1,16 +1,12 @@
 .circleci
 .vscode
 node_modules
-cypress
-cypress.json
 public
-src
 tsconfig.*json
 package.*json
 github-azure-*.yml
 snapshots.js
 .gitignore
-test
 rollup.*
 .babelrc
 .eslintrc
