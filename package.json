@@ -60,7 +60,6 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "prepare": "npm run build",
     "pre-deploy": "npx rollup -c",
     "deploy": "npm publish dist --access=public",
     "eslint": "npx eslint ./src",
@@ -77,7 +76,8 @@
     "cy:spannedCells": "npx cypress run --headless --quiet --browser firefox -s 'cypress/integration/tests/spannedCells/*'",
     "cy:columnAndRowSelections": "npx cypress run --headless --quiet --browser firefox -s 'cypress/integration/tests/columnAndRowSelections/*'",
     "cy:columnAndRowSelectionsWithSticky": "npx cypress run --headless --quiet --browser firefox -s 'cypress/integration/tests/columnAndRowSelectionsWithSticky/*'",
-    "remove-suffix": "cross-env SUFFIX=rc node ./node_modules/npm-version-suffix/run-remove-suffix.js"
+    "remove-suffix": "cross-env SUFFIX=rc node ./node_modules/npm-version-suffix/run-remove-suffix.js",
+    "prepare": "npm run build"
   },
   "browserslist": [
     ">0.2%",

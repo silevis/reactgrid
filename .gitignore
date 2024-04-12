@@ -10,6 +10,8 @@
 # testing
 /coverage
 
+# production
+/build
 
 # public
 .cache
