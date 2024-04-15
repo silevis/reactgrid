@@ -6,7 +6,7 @@ type FillDirection = "" | "up" | "down" | "left" | "right";
 
 type Difference = {
   direction: FillDirection;
-  value: number;
+  value: number | null;
 };
 
 export const getFillDirection = (
@@ -22,33 +22,37 @@ export const getFillDirection = (
 
   if (!currectFocusedCell) return undefined;
 
-  const cellArea = getCellArea(store, currectFocusedCell);
+  const selectedArea = store.selectedArea;
 
-  const differences: { direction: FillDirection; value: number }[] = [];
+  const isSelectedArea = store.selectedArea.startRowIdx !== -1;
 
-  differences.push({ direction: "", value: 0 });
+  const cellArea = isSelectedArea ? selectedArea : getCellArea(store, currectFocusedCell);
+
+  const differences: { direction: FillDirection; value: number | null }[] = [];
+
+  differences.push({ direction: "", value: null });
 
   differences.push({
     direction: "up",
-    value: pointerRowIdx < cellArea.startRowIdx ? pointerRowIdx : 0,
+    value: pointerRowIdx < cellArea.startRowIdx ? pointerRowIdx : null,
   });
 
   differences.push({
     direction: "down",
-    value: pointerRowIdx >= cellArea.endRowIdx ? pointerRowIdx : 0,
+    value: pointerRowIdx >= cellArea.endRowIdx ? pointerRowIdx : null,
   });
 
   differences.push({
     direction: "left",
-    value: pointerColIdx < cellArea.startColIdx ? pointerColIdx : 0,
+    value: pointerColIdx < cellArea.startColIdx ? pointerColIdx : null,
   });
 
   differences.push({
     direction: "right",
-    value: pointerColIdx >= cellArea.endColIdx ? pointerColIdx : 0,
+    value: pointerColIdx >= cellArea.endColIdx ? pointerColIdx : null,
   });
 
-  if (differences.every((diff) => diff.value === 0)) return differences[0];
+  if (differences.every((diff) => diff.value === null)) return differences[0];
 
-  return differences.reduce((prev, current) => (prev.value > current.value ? prev : current));
+  return differences.reduce((prev, current) => (current.value !== null ? current : prev));
 };

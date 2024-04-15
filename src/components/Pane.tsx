@@ -226,6 +226,7 @@ export const Pane: React.FC<PaneProps> = ({
           parentPaneRange={gridContentRange}
           parentPaneName={paneName}
           getCellOffset={getCellOffset}
+          isFocusedCell={true}
           border={theme.focusIndicator.border}
           style={{ background: theme.focusIndicator.background }}
           className="rgFocusIndicator"
