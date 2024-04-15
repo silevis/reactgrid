@@ -89,7 +89,6 @@ export const PartialArea: FC<PartialAreaProps> = React.memo(
     const store = useReactGridStoreApi(id).getState();
     const currentBehavior = useReactGridStore(id, (store) => store.currentBehavior);
     const setCurrentBehavior = useReactGridStore(id, (store) => store.setCurrentBehavior);
-    const setSelectedArea = useReactGridStore(id, (store) => store.setSelectedArea);
 
     const selectedArea = useReactGridStore(id, (store) => store.selectedArea);
     const fillHandleArea = useReactGridStore(id, (store) => store.fillHandleArea);
@@ -99,31 +98,6 @@ export const PartialArea: FC<PartialAreaProps> = React.memo(
 
     const isAreaSelected = selectedArea.startRowIdx !== -1;
     const isFillAreaExists = fillHandleArea.endRowIdx !== -1;
-
-    let shouldEnableFillHandle = false;
-
-    if (currentBehavior.id !== CellSelectionBehavior.id) {
-      if (!isFillHandle && !isFillAreaExists) {
-        shouldEnableFillHandle = true;
-      }
-      if (isFocusedCell && isAreaSelected) {
-        shouldEnableFillHandle = false;
-      } else if (isFillHandle && currentBehavior.id === "Default") {
-        if (
-          fillHandleArea.endRowIdx !== focusedCellArea.startRowIdx &&
-          fillHandleArea.endColIdx !== focusedCellArea.startColIdx
-        ) {
-          shouldEnableFillHandle = true;
-        }
-      } else if (!isFillHandle && currentBehavior.id === "Default") {
-        if (
-          fillHandleArea.endRowIdx === focusedCellArea.startRowIdx ||
-          fillHandleArea.endColIdx === focusedCellArea.startColIdx
-        ) {
-          shouldEnableFillHandle = true;
-        }
-      }
-    }
 
     if (areaRange.startRowIdx < 0 || areaRange.startColIdx < 0 || areaRange.endRowIdx < 0 || areaRange.endColIdx < 0)
       return null;
@@ -206,6 +180,31 @@ export const PartialArea: FC<PartialAreaProps> = React.memo(
       offset.left = getCellOffset?.(areaRange.startRowIdx, areaRange.startColIdx, 1, 1).left;
 
       if (!shouldRenderRightBorder) width = `calc(100% - (${areaBorder.width} - ${theme.grid.gap.width}))`;
+    }
+
+    let shouldEnableFillHandle = false;
+
+    if (currentBehavior.id !== CellSelectionBehavior.id) {
+      if (!isFillHandle && !isFillAreaExists && shouldRenderRightBorder && shouldRenderBottomBorder) {
+        shouldEnableFillHandle = true;
+      }
+      if (isFocusedCell && isAreaSelected) {
+        shouldEnableFillHandle = false;
+      } else if (isFillHandle && currentBehavior.id === "Default") {
+        if (
+          fillHandleArea.endRowIdx !== focusedCellArea.startRowIdx &&
+          fillHandleArea.endColIdx !== focusedCellArea.startColIdx
+        ) {
+          shouldEnableFillHandle = true;
+        }
+      } else if (!isFillHandle && currentBehavior.id === "Default") {
+        if (
+          fillHandleArea.endRowIdx === focusedCellArea.startRowIdx ||
+          fillHandleArea.endColIdx === focusedCellArea.startColIdx
+        ) {
+          shouldEnableFillHandle = true;
+        }
+      }
     }
 
     return (
