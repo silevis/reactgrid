@@ -4,7 +4,7 @@
 (動かない場合はnpm install)
 
 ## 現段階の不具合、実装できていない点  
-・numberCellの初期値を空白にすること  
+・numberCellの初期値を空白にすること  完了4/16
 ・dropdownCellの値をキーボード入力できない  
 ・dropdownCellの値を設定するメニューが開けない←handleChangeが複数回点火しopenした直ぐにcloseしている  
 ・Date, TimeCellの未実装  
