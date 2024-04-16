@@ -314,10 +314,11 @@ export type DefaultCellTypes =
 
 /**
  * `CellChange` type is used by `onCellsChanged`. It represents mutually exclusive changes on a single cell.
+ * !!!! DefaultCellTypes should not be extended here, because if handleChanges in Grid.tsx dosen't handle cell content changes in every case, error causes
  * 
  * @see https://reactgrid.com/docs/3.1/7-api/1-types/2-cell-change/
  */
-export type CellChange<TCell extends Cell = DefaultCellTypes & Cell> = TCell extends Cell
+export type CellChange<TCell extends Cell = HeaderCell | TextCell | NumberCell | DropdownCell & Cell> = TCell extends Cell
     ? {
         /** Row's `Id` where the change ocurred */
         readonly rowId: Id;
@@ -541,7 +542,7 @@ export interface Cell {
     /** Length restraint */
     maxLength?: number;
     /** restraint type (alphanumeric) */
-    resraintType?: string;
+    restraintType?: string;
     /** Message showing restraint content */
     restraintMessages?: string[];
 }
@@ -587,7 +588,7 @@ export type UncertainCompatible<TCell extends Cell> = Uncertain<TCell> & {
  */
 export interface Row<TCell extends Cell = DefaultCellTypes> {
     /** Unique `Id` in all rows array */
-    readonly rowId: Id;
+    rowId: Id;
     /** Array of `Cell` objects */
     readonly cells: TCell[];
     /** Height of each grid row (in default set to `25` in px) */

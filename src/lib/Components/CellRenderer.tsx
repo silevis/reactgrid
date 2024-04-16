@@ -135,7 +135,7 @@ export const CellRenderer: React.FC<CellRendererProps> = ({
     );
     
     React.useEffect(()=>{
-        if (validateCellContext(cell.type, cell.maxLength, cell.resraintType, cell.text)){
+        if (validateCellContext(cell.type, cell.maxLength, cell.restraintType, cell.text)){
             cell.isValid = true
             setIsValid(true)
         } else {
