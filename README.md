@@ -6,12 +6,13 @@
 ヘッダーデータを適切に変更することで表の初期化が可能となる
 
 ## 現段階の不具合、実装できていない点  
-・numberCellの初期値を空白にすること  完了4/16
-・dropdownCellの値をキーボード入力できない  
-・dropdownCellの値を設定するメニューが開けない←handleChangeが複数回点火しopenした直ぐにcloseしている  
-・TimeCellの未実装  
-・headerCellクリック時、表全体をクリックされたコラムを軸にソートすること  
-・制限メッセージの未実装
+・numberCellの初期値を空白にすること  完了4/16  
+・(優先度A)dropdownCellの値をキーボード入力できるようにする  
+・(優先度A)dropdownCellの値を設定するメニューが開けるようにする←handleChangeが複数回点火しopenした直ぐにcloseしている  
+・(優先度B)dropdownCellの初期値を空白にすること  
+・(優先度B)TimeCellの実装  
+・(優先度D)headerCellクリック時、表全体をクリックされたコラムを軸にソートすること  
+・(優先度C)制限メッセージの実装
 
 ## コメント  
 4/10 reactGridを用いた基本的な表の実現と行追加・削除追加  
