@@ -25,6 +25,7 @@ const ReactGrid: FC<ReactGridProps> = ({
   initialSelectedRange,
   initialFocusLocation,
   onAreaSelected,
+  onFillHandle,
   onCellFocused,
 }) => {
   initReactGridStore(id, {
@@ -34,6 +35,7 @@ const ReactGrid: FC<ReactGridProps> = ({
     behaviors,
     userStyles,
     styledRanges,
+    onFillHandle,
   });
 
   const store = useReactGridStoreApi(id).getState();

@@ -1,9 +1,11 @@
 import { Behavior } from "../types/Behavior";
 import { ReactGridStore } from "../types/ReactGridStore";
 import { getCellArea } from "../utils/getCellArea";
+import { getCellIndexesFromPointerLocation } from "../utils/getCellIndexesFromPointerLocation";
 import { getFillDirection } from "../utils/getFillDirection";
 import { getFillSideFromFocusedLocation } from "../utils/getFillSideFromFocusedLocation";
 import isDevEnvironment from "../utils/isDevEnvironment";
+import { scrollTowardsSticky } from "../utils/scrollTowardsSticky";
 
 const devEnvironment = isDevEnvironment();
 
@@ -17,6 +19,13 @@ export const FillHandleBehavior: Behavior = {
     devEnvironment && console.log("FHB/handlePointerMove");
     const fillDirection = getFillDirection(store, event);
     const focusedCell = store.getCellByIndexes(store.focusedLocation.rowIndex, store.focusedLocation.colIndex);
+
+    const { clientX, clientY } = event;
+    const { rowIndex, colIndex } = getCellIndexesFromPointerLocation(clientX, clientY);
+
+    const currentDragOverCell = store.getCellByIndexes(rowIndex, colIndex);
+
+    if (currentDragOverCell) scrollTowardsSticky(store, currentDragOverCell, { rowIndex, colIndex });
 
     const selectedArea = store.selectedArea;
 
@@ -88,6 +97,10 @@ export const FillHandleBehavior: Behavior = {
     if (!focusedCell) return store;
 
     const previouslySelectedArea = store.selectedArea;
+
+    if (store.fillHandleArea.startRowIdx !== -1) {
+      store.onFillHandle?.(store.fillHandleArea, focusedCell.props.value ?? "");
+    }
 
     const isPreviouslySelectedArea = previouslySelectedArea.startRowIdx !== -1;
 

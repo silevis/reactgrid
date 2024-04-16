@@ -157,7 +157,18 @@ export const BigGrid = () => {
             ]
           }
           {...cellMatrix}
-          onAreaSelected={(selectedArea) => {}} // TODO: rename handlers (onAreaSelected, onCellFocused)
+          onAreaSelected={(selectedArea) => {}}
+          onFillHandle={(selectedArea, fillValue) => {
+            setData((prev) => {
+              const next = [...prev];
+              for (let i = selectedArea.startRowIdx; i < selectedArea.endRowIdx; i++) {
+                for (let j = selectedArea.startColIdx; j < selectedArea.endColIdx; j++) {
+                  next[i][j] = fillValue;
+                }
+              }
+              return next;
+            });
+          }}
           onCellFocused={(cellLocation) => {}}
         />
       </div>

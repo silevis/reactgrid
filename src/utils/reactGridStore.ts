@@ -41,6 +41,7 @@ const DEFAULT_STORE_PROPS: ReactGridStoreProps = {
   },
 
   currentBehavior: DefaultBehavior(),
+  onFillHandle: undefined,
 };
 
 export function initReactGridStore(id: string, initialProps?: Partial<ReactGridStoreProps>) {
