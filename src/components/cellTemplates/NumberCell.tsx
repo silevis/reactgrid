@@ -1,17 +1,38 @@
-import { FC, useRef, useState } from "react";
-import CellWrapper from "../CellWrapper";
+import React, { FC, useRef, useState } from "react";
 import { useCellContext } from "../CellContext";
+import CellWrapper from "../CellWrapper";
 
-interface TextCellProps {
-  value: string;
-  onTextChanged: (newText: string) => void;
-  reverse?: boolean;
+interface NumberCellProps {
+  value: number;
+  onValueChanged: (newValue: number) => void;
+  validator?: (value: number) => boolean;
+  errorMessage?: string;
+  hideZero?: boolean;
+  format?: Intl.NumberFormat;
 }
 
-const TextCell: FC<TextCellProps> = ({ value: initialValue, onTextChanged, reverse }) => {
+const NumberCell: FC<NumberCellProps> = ({
+  value: initialValue,
+  onValueChanged,
+  validator,
+  errorMessage,
+  hideZero,
+  format,
+}) => {
   const ctx = useCellContext();
   const targetInputRef = useRef<HTMLTextAreaElement>(null);
   const [isInEditMode, setIsInEditMode] = useState(false);
+
+  const isValid = validator ? validator(Number(initialValue)) : true;
+
+  const textToDisplay =
+    hideZero && initialValue === 0
+      ? ""
+      : format
+      ? format.format(initialValue)
+      : !isValid && errorMessage
+      ? errorMessage
+      : initialValue.toString();
 
   return (
     <CellWrapper
@@ -32,7 +53,11 @@ const TextCell: FC<TextCellProps> = ({ value: initialValue, onTextChanged, rever
     >
       {isInEditMode ? (
         <textarea
-          defaultValue={initialValue}
+          defaultValue={initialValue.toString()}
+          onBlur={(e) => {
+            onValueChanged(Number(e.currentTarget.value));
+            setIsInEditMode(false);
+          }}
           style={{
             resize: "none",
             overflowY: "hidden",
@@ -48,32 +73,23 @@ const TextCell: FC<TextCellProps> = ({ value: initialValue, onTextChanged, rever
             fontSize: "inherit",
             fontFamily: "inherit",
           }}
-          onBlur={(e) => {
-            onTextChanged(e.currentTarget.value);
-            setIsInEditMode(false);
-          }}
-          onPointerDown={(e) => e.stopPropagation()}
           onKeyDown={(e) => {
             if (e.key === "Escape") {
               setIsInEditMode(false);
             } else if (e.key === "Enter") {
               e.preventDefault();
-              // We don't stop propagation here, because we want to trigger the
-              // focus move event
-              onTextChanged(e.currentTarget.value);
+              onValueChanged(Number(e.currentTarget.value));
               setIsInEditMode(false);
             }
           }}
           autoFocus
           ref={targetInputRef}
         />
-      ) : reverse ? (
-        initialValue.split?.("").reverse().join("")
       ) : (
-        initialValue
+        textToDisplay
       )}
     </CellWrapper>
   );
 };
 
-export default TextCell;
+export default NumberCell;

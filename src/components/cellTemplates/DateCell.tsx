@@ -40,10 +40,11 @@ const DateCell: FC<DateCellProps> = ({ value, onDateChanged, formatter, Calendar
       }}
       onPointerDown={(e) => isInEditMode && e.stopPropagation()}
       onKeyDown={(e) => {
-        if (isInEditMode && e.key === "Enter") {
+        if (!isInEditMode && e.key === "Enter") {
           e.preventDefault();
           e.stopPropagation();
           ctx.requestFocus(true);
+          setIsInEditMode(true);
         }
       }}
       targetInputRef={targetInputRef}
