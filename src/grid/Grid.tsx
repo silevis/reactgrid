@@ -371,35 +371,6 @@ const headerRow: Row<HeaderCell> = {
   cells: headerDataNames.map((name) => ({ type: "header", text: name, nonEditable: false }))
 };
 
-function getCellConfigForType(type: string, ci: number){
-  const commonConfig = {
-    text: "",
-    maxLength: headerData[ci]["maxLength"]
-  }
-  const configMapping: Record<string, any> = {
-    "alphanumeric": {
-      ...commonConfig,
-      type: "text",
-      restraintType: "alphanumeric"
-    },
-    "text": {
-        ...commonConfig,
-        type: "text"
-    },
-    "number": {
-        ...commonConfig,
-        type: "number",
-        value: 0
-    },
-    "dropdown": {
-        type: "dropdown",
-        values: headerData[ci]["values"]!,
-        isDisabled: false
-    }
-  };
-  return type ? configMapping[type] : {...commonConfig, type: "text"}
-}
-
 
 const getRows = (data:any[]): Row<GridCells>[] => [
   headerRow,
@@ -407,19 +378,43 @@ const getRows = (data:any[]): Row<GridCells>[] => [
     {
       rowId: ri,
       cells: headerDataNames.map((name, ci) => {
-        
         if(ci === 0){
           return {type: "number", value: value}
-        } else if(headerData[ci]["type"] === "alphanumeric"){
-          return {type: "text", text: data[ri][name], restraintType: "alphanumeric", maxLength: headerData[ci]["maxLength"]}
-        } else if(headerData[ci]["type"] === "text"){
-          return {type: "text", text: data[ri][name], maxLength: headerData[ci]["maxLength"]}
-        } else if(headerData[ci]["type"] === "number"){
-          return {type: "number", value: !data[ri][name] ? 0 : Number(data[ri][name]), maxLength: headerData[ci]["maxLength"]}
-        } else if(headerData[ci]["type"] === "dropdown"){
-          return {type: "dropdown", values: headerData[ci]["values"]!, isDisabled: false}
-        } else {
-          return {type: "text", text: data[ri][name], maxLength: headerData[ci]["maxLength"]}
+        } 
+        switch (headerData[ci]["type"]){
+          case "alphanumeric":
+            return {
+              type: "text", 
+              text: data[ri][name], 
+              restraintType: "alphanumeric", 
+              maxLength: headerData[ci]["maxLength"]
+            }
+          case "text":
+            return {
+              type: "text", 
+              text: data[ri][name], 
+              maxLength: headerData[ci]["maxLength"]
+            }
+          case "number":
+            return{
+              type: "number", 
+              value: !data[ri][name] ? null : Number(data[ri][name]), 
+              maxLength: headerData[ci]["maxLength"]
+            }
+          case "dropdown":
+            return{
+              type: "dropdown", 
+              values: headerData[ci]["values"]!, 
+              isDisabled: false,
+              isOpen: false
+            }
+          default:
+            return{
+                type: "text", 
+                text: data[ri][name], 
+                maxLength: headerData[ci]["maxLength"]
+              
+            }
         }
     })
     }
@@ -450,6 +445,7 @@ const getRows = (data:any[]): Row<GridCells>[] => [
           prevLabel[labelIndex][fieldName] = cell.value;
           break;
         case "dropdown":
+          prevLabel[labelIndex][fieldName] = cell.selectedValue;
           break;
         case "header":
           break;
@@ -469,6 +465,7 @@ const getRows = (data:any[]): Row<GridCells>[] => [
   };
 
   const handleChanges = (changes: CellChange<GridCells>[]) => { 
+    console.log("handleChanges")
     setLabel((prevLabel) => applyChangesToLabel(changes, prevLabel)); 
   }; 
   
@@ -632,8 +629,10 @@ const getRows = (data:any[]): Row<GridCells>[] => [
                   enableFillHandle
               />}
           </div>
-          
-
+          <button onClick={handleUndoChanges}>Undo</button>
+          <button onClick={handleRedoChanges}>Redo</button>
+          <button onClick={handleAddRowButton}>Add Row</button>
+          <button onClick={handleDeleteRowButton}>Delete Row</button>
         </>
     )
 }

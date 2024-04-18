@@ -10,6 +10,7 @@ export function tryAppendChange(state: State, location: Location, cell: Compatib
         return state;
     const newCell = cellTemplate.update(previousCell, cell);
     if ((newCell !== previousCell || JSON.stringify(newCell) !== JSON.stringify(previousCell)) && !newCell.nonEditable)
+        //console.log(previousCell)
         state.queuedCellChanges.push({
             previousCell,
             newCell,

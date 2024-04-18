@@ -143,7 +143,7 @@ export const CellRenderer: React.FC<CellRendererProps> = ({
             setIsValid(false)
         }
     }, [isValid, cell])
-
+    
     const handleMouseEnter = debounce(() =>{
         setIsHovered(true)
     }, 500)
@@ -161,8 +161,8 @@ export const CellRenderer: React.FC<CellRendererProps> = ({
                 'data-cell-colidx': location.column.idx,
                 'data-cell-rowidx': location.row.idx,
             })}
-            onMouseEnter={handleMouseEnter}
-            onMouseLeave={handleMouseLeave}
+            //onMouseEnter={handleMouseEnter}
+            //onMouseLeave={handleMouseLeave}
         >
             {cellTemplate.render(cellToRender, isMobile ? isInEditMode : false, onCellChanged)}
             {location.row.idx === 0 && location.column.resizable && <ResizeHandle />}

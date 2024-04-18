@@ -10,7 +10,7 @@ import { parseLocaleNumber } from '../Functions/parseLocaleNumber';
 
 export interface NumberCell extends Cell {
     type: 'number';
-    value: number;
+    value: number | null;
     format?: Intl.NumberFormat;
     validator?: (value: number) => boolean,
     nanToZero?: boolean;
