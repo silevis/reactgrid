@@ -11,25 +11,38 @@ interface TextCellProps {
 const TextCell: FC<TextCellProps> = ({ value: initialValue, onTextChanged, reverse }) => {
   const ctx = useCellContext();
   const targetInputRef = useRef<HTMLTextAreaElement>(null);
-  const [isInEditMode, setIsInEditMode] = useState(false);
+  const [lastTouchEnd, setLastTouchEnd] = useState(0);
+
+  const handleTouchEnd = () => {
+    const now = new Date().getTime();
+    const timesince = now - lastTouchEnd;
+    if (timesince < 300 && timesince > 0) {
+      // double touch detected
+      ctx.setEditMode(true);
+      ctx.requestFocus();
+    }
+    setLastTouchEnd(now);
+  };
 
   return (
     <CellWrapper
+      onTouchEnd={handleTouchEnd}
       style={{ padding: ".2rem", textAlign: "center", outline: "none" }}
       onDoubleClick={() => {
-        setIsInEditMode(true);
-        ctx.requestFocus(true);
+        ctx.setEditMode(true);
+        ctx.requestFocus();
       }}
       onKeyDown={(e) => {
-        if (isInEditMode && e.key === "Enter") {
+        if (!ctx.isInEditMode && e.key === "Enter") {
           e.preventDefault();
           e.stopPropagation();
-          ctx.requestFocus(true);
+          ctx.requestFocus();
+          ctx.setEditMode(true);
         }
       }}
       targetInputRef={targetInputRef}
     >
-      {isInEditMode ? (
+      {ctx.isInEditMode ? (
         <textarea
           defaultValue={initialValue}
           style={{
@@ -49,18 +62,19 @@ const TextCell: FC<TextCellProps> = ({ value: initialValue, onTextChanged, rever
           }}
           onBlur={(e) => {
             onTextChanged(e.currentTarget.value);
-            setIsInEditMode(false);
+            ctx.setEditMode(false);
           }}
           onPointerDown={(e) => e.stopPropagation()}
           onKeyDown={(e) => {
+            e.stopPropagation();
             if (e.key === "Escape") {
-              setIsInEditMode(false);
+              ctx.setEditMode(false);
             } else if (e.key === "Enter") {
               e.preventDefault();
               // We don't stop propagation here, because we want to trigger the
               // focus move event
               onTextChanged(e.currentTarget.value);
-              setIsInEditMode(false);
+              ctx.setEditMode(false);
             }
           }}
           autoFocus

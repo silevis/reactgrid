@@ -6,7 +6,7 @@ import { isSpanMember } from "../utils/isSpanMember";
 import { areAreasEqual } from "../utils/areAreasEqual";
 import { useReactGridStore } from "../utils/reactGridStore";
 import { useTheme } from "../hooks/useTheme";
-import { CellContext } from "./CellContext";
+import { CellContextProvider } from "./CellContext";
 import { PartialArea } from "./PartialArea";
 import { useReactGridId } from "./ReactGridIdProvider";
 
@@ -54,10 +54,6 @@ export const PaneGridContent: React.FC<PaneGridContentProps> = React.memo(({ ran
   const columns = useReactGridStore(id, (store) => store.columns).slice(startColIdx, endColIdx);
   const cells = useReactGridStore(id, (store) => store.cells);
 
-  const focusedCell = useReactGridStore(id, (store) => store.focusedLocation);
-
-  const setFocusedLocation = useReactGridStore(id, (store) => store.setFocusedLocation);
-
   return rows.map((row, rowIndex) => {
     return columns.map((col, colIndex) => {
       const cell = cells.get(`${row.id} ${col.id}`);
@@ -67,46 +63,23 @@ export const PaneGridContent: React.FC<PaneGridContentProps> = React.memo(({ ran
       const realRowIndex = startRowIdx + rowIndex;
       const realColumnIndex = startColIdx + colIndex;
 
-      const isFocused = focusedCell.rowIndex === realRowIndex && focusedCell.colIndex === realColumnIndex;
-
       const { Template, props } = cell;
 
       return (
-        <CellContext.Provider
+        <CellContextProvider
           key={`${realRowIndex}-${realColumnIndex}`}
-          value={{
-            rowId: row.id,
-            colId: col.id,
-            realRowIndex,
-            realColumnIndex,
-            rowSpan: cell.rowSpan,
-            colSpan: cell.colSpan,
-            containerStyle: {
-              ...(cell.rowSpan && {
-                gridRowEnd: `span ${cell.rowSpan}`,
-              }),
-              ...(cell.colSpan && {
-                gridColumnEnd: `span ${cell.colSpan}`,
-              }),
-              ...getCellOffset?.(rowIndex, colIndex, cell.rowSpan ?? 1, cell.colSpan ?? 1),
-              gridRowStart: realRowIndex + 1,
-              gridColumnStart: realColumnIndex + 1,
-            },
-            requestFocus: (enableEditMode: boolean) => {
-              // TODO call onFocusLost on currently focused cell.
-              // if (enableEditMode) {
-              //   setCurrentlyEditedCell(realRowIndex, realColumnIndex); // TODO: this func is to remove
-              // }
-
-              // TODO: should set boolean
-              // setFocusedLocation(realRowIndex, realColumnIndex, enableEditMode);
-              setFocusedLocation(realRowIndex, realColumnIndex);
-            },
-            isFocused,
-          }}
+          row={row}
+          col={col}
+          rowIndex={rowIndex}
+          colIndex={colIndex}
+          rowSpan={cell.rowSpan}
+          colSpan={cell.colSpan}
+          realRowIndex={realRowIndex}
+          realColumnIndex={realColumnIndex}
+          getCellOffset={getCellOffset}
         >
           <Template {...props} />
-        </CellContext.Provider>
+        </CellContextProvider>
       );
     });
   });

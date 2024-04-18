@@ -8,6 +8,7 @@ import { useReactGridStore, useReactGridStoreApi } from "../utils/reactGridStore
 import { FillHandleBehavior } from "../behaviors/FillHandleBehavior";
 import { CellSelectionBehavior } from "../behaviors/CellSelectionBehavior";
 import { getCellArea } from "../utils/getCellArea";
+import { areAreasEqual } from "../utils/areAreasEqual";
 
 interface PartialAreaProps {
   /** The range of cells to area. */
@@ -188,9 +189,12 @@ export const PartialArea: FC<PartialAreaProps> = React.memo(
       if (!isFillHandle && !isFillAreaExists && shouldRenderRightBorder && shouldRenderBottomBorder) {
         shouldEnableFillHandle = true;
       }
-      if (isFocusedCell && isAreaSelected) {
+      if (isFocusedCell && !isAreaSelected) {
+        shouldEnableFillHandle = true;
+      } else if (isFocusedCell && !areAreasEqual(focusedCellArea, selectedArea)) {
         shouldEnableFillHandle = false;
-      } else if (isFillHandle && currentBehavior.id === "Default") {
+      }
+      if (isFillHandle && currentBehavior.id === "Default") {
         if (
           fillHandleArea.endRowIdx !== focusedCellArea.startRowIdx &&
           fillHandleArea.endColIdx !== focusedCellArea.startColIdx

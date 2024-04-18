@@ -20,7 +20,6 @@ interface DateCellProps {
 
 const DateCell: FC<DateCellProps> = ({ value, onDateChanged, formatter, Calendar }) => {
   const ctx = useCellContext();
-  const [isInEditMode, setIsInEditMode] = useState(false);
   const targetInputRef = useRef<HTMLInputElement>(null);
 
   let formattedDate: string | undefined;
@@ -35,30 +34,31 @@ const DateCell: FC<DateCellProps> = ({ value, onDateChanged, formatter, Calendar
     <CellWrapper
       style={{ padding: ".2rem", textAlign: "center", outline: "none" }}
       onDoubleClick={() => {
-        setIsInEditMode(true);
-        ctx.requestFocus(true);
+        ctx.setEditMode(true);
+        ctx.requestFocus();
       }}
-      onPointerDown={(e) => isInEditMode && e.stopPropagation()}
       onKeyDown={(e) => {
-        if (isInEditMode && e.key === "Enter") {
+        if (!ctx.isInEditMode && e.key === "Enter") {
           e.preventDefault();
           e.stopPropagation();
-          ctx.requestFocus(true);
+          ctx.requestFocus();
+          ctx.setEditMode(true);
         }
       }}
       targetInputRef={targetInputRef}
     >
-      {isInEditMode ? (
+      {ctx.isInEditMode ? (
         Calendar?.Template ? (
           <Calendar.Template
             {...Calendar?.props}
             onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
+              e.stopPropagation();
               if (e.key === "Escape") {
-                setIsInEditMode(false);
+                ctx.setEditMode(false);
               } else if (e.key === "Enter") {
                 e.preventDefault();
                 onDateChanged(new Date(e.currentTarget.value));
-                setIsInEditMode(false);
+                ctx.setEditMode(false);
               }
             }}
             onBlur={(e: React.PointerEvent<HTMLInputElement>) => {
@@ -69,7 +69,7 @@ const DateCell: FC<DateCellProps> = ({ value, onDateChanged, formatter, Calendar
           />
         ) : (
           <DefaultCalendar
-            setIsInEditMode={setIsInEditMode}
+            setIsInEditMode={ctx.setEditMode}
             ref={targetInputRef}
             date={formattedDate}
             onDateChanged={onDateChanged}
