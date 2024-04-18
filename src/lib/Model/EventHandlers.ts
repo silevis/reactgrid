@@ -18,7 +18,7 @@ export class EventHandlers {
     pasteHandler = (event: ClipboardEvent): void => this.updateState(state => state.currentBehavior.handlePaste(event, state));
     cutHandler = (event: ClipboardEvent): void => this.updateState(state => state.currentBehavior.handleCut(event, state));
     blurHandler = (event: FocusEvent): void => this.updateState(state => {
-        if ((event.target as HTMLInputElement)?.id.startsWith('react-select-')) { // give back focus on react-select dropdown blur
+        if ((event.target as HTMLInputElement)?.id?.startsWith('react-select-')) { // give back focus on react-select dropdown blur
             state.hiddenFocusElement?.focus({ preventScroll: true });
         }
         return state;
