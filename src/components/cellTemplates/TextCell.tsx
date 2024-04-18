@@ -81,7 +81,7 @@ const TextCell: FC<TextCellProps> = ({ value: initialValue, onTextChanged, rever
           ref={targetInputRef}
         />
       ) : reverse ? (
-        initialValue.split("").reverse().join("")
+        initialValue.split?.("").reverse().join("")
       ) : (
         initialValue
       )}

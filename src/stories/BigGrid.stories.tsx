@@ -5,11 +5,19 @@ import { ErrorBoundary } from "../components/ErrorBoundary";
 import TextCell from "../components/cellTemplates/TextCell";
 import { cellMatrixBuilder } from "../utils/cellMatrixBuilder";
 import DateCell from "../components/cellTemplates/DateCell";
+import NumberCell from "../components/cellTemplates/NumberCell";
 
 const ROW_COUNT = 20;
 const COLUMN_COUNT = 25;
 
 const testStyles = {};
+
+const myNumberFormat = new Intl.NumberFormat("pl", {
+  style: "currency",
+  minimumFractionDigits: 2,
+  maximumFractionDigits: 2,
+  currency: "PLN",
+});
 
 export const BigGrid = () => {
   const [data, setData] = useState(
@@ -36,6 +44,8 @@ export const BigGrid = () => {
         if (i === 6 && j === 8) return null;
 
         if (i === 0 && j === 0) return new Date();
+
+        if (i === 2 && j === 3) return 125 as number;
 
         return (
           `[${i.toString()}:${j.toString()}]` +
@@ -98,8 +108,21 @@ export const BigGrid = () => {
     setCell(
       "2",
       "3",
-      TextCell,
-      { value: (data[2][3] as string) ?? "", reverse: true, onTextChanged: () => null },
+      NumberCell,
+      {
+        value: (data[2][3] as number) ?? "",
+        validator: (value) => !isNaN(value),
+        errorMessage: "ERR",
+        format: myNumberFormat,
+        hideZero: true,
+        onValueChanged: (newText) => {
+          setData((prev) => {
+            const next = [...prev];
+            next[2][3] = newText;
+            return next;
+          });
+        },
+      },
       { colSpan: 2, rowSpan: 2 }
     );
     setCell(
