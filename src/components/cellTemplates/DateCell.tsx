@@ -2,11 +2,14 @@ import { FC, forwardRef, useRef, useState } from "react";
 import CellWrapper from "../CellWrapper";
 import { useCellContext } from "../CellContext";
 import { formatDate } from "../../utils/formatDate";
+import { useReactGridStore } from "../../utils/reactGridStore";
+import { useReactGridId } from "../ReactGridIdProvider";
 
 interface DefaultCalendarProps {
   date: string;
   setIsInEditMode: (value: boolean) => void;
   onDateChanged: (newDate: Date) => void;
+  hiddenFocusTargetRef: HTMLDivElement | undefined;
 }
 
 interface DateCellProps {
@@ -19,8 +22,11 @@ interface DateCellProps {
 }
 
 const DateCell: FC<DateCellProps> = ({ value, onDateChanged, formatter, Calendar }) => {
+  const id = useReactGridId();
   const ctx = useCellContext();
   const targetInputRef = useRef<HTMLInputElement>(null);
+  const [isInEditMode, setIsInEditMode] = useState(false);
+  const hiddenFocusTargetRef = useReactGridStore(id, (store) => store.hiddenFocusTargetRef);
 
   let formattedDate: string | undefined;
 
@@ -34,44 +40,47 @@ const DateCell: FC<DateCellProps> = ({ value, onDateChanged, formatter, Calendar
     <CellWrapper
       style={{ padding: ".2rem", textAlign: "center", outline: "none" }}
       onDoubleClick={() => {
-        ctx.setEditMode(true);
+        setIsInEditMode(true);
         ctx.requestFocus();
       }}
       onKeyDown={(e) => {
-        if (!ctx.isInEditMode && e.key === "Enter") {
+        if (!isInEditMode && e.key === "Enter") {
           e.preventDefault();
           e.stopPropagation();
           ctx.requestFocus();
-          ctx.setEditMode(true);
+          setIsInEditMode(true);
         }
       }}
       targetInputRef={targetInputRef}
     >
-      {ctx.isInEditMode ? (
+      {isInEditMode ? (
         Calendar?.Template ? (
           <Calendar.Template
             {...Calendar?.props}
             onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
               e.stopPropagation();
               if (e.key === "Escape") {
-                ctx.setEditMode(false);
+                setIsInEditMode(false);
               } else if (e.key === "Enter") {
                 e.preventDefault();
+                hiddenFocusTargetRef?.focus({ preventScroll: true });
                 onDateChanged(new Date(e.currentTarget.value));
-                ctx.setEditMode(false);
+                setIsInEditMode(false);
               }
             }}
             onBlur={(e: React.PointerEvent<HTMLInputElement>) => {
               const changedDate = e.currentTarget.value;
               changedDate && onDateChanged(new Date(e.currentTarget.value));
+              setIsInEditMode(false);
             }}
             onPointerDown={(e: React.PointerEvent<HTMLInputElement>) => e.stopPropagation()}
           />
         ) : (
           <DefaultCalendar
-            setIsInEditMode={ctx.setEditMode}
+            setIsInEditMode={setIsInEditMode}
             ref={targetInputRef}
             date={formattedDate}
+            hiddenFocusTargetRef={hiddenFocusTargetRef}
             onDateChanged={onDateChanged}
           />
         )
@@ -83,7 +92,10 @@ const DateCell: FC<DateCellProps> = ({ value, onDateChanged, formatter, Calendar
 };
 
 const DefaultCalendar = forwardRef(
-  ({ date, setIsInEditMode, onDateChanged }: DefaultCalendarProps, ref: React.ForwardedRef<HTMLInputElement>) => {
+  (
+    { date, hiddenFocusTargetRef, setIsInEditMode, onDateChanged }: DefaultCalendarProps,
+    ref: React.ForwardedRef<HTMLInputElement>
+  ) => {
     return (
       <input
         type="date"
@@ -102,15 +114,18 @@ const DefaultCalendar = forwardRef(
           fontFamily: "inherit",
         }}
         onBlur={(e) => {
+          hiddenFocusTargetRef?.focus({ preventScroll: true });
           const changedDate = e.currentTarget.value;
           changedDate && onDateChanged(new Date(e.currentTarget.value));
         }}
         onPointerDown={(e) => e.stopPropagation()}
         onKeyDown={(e) => {
+          e.stopPropagation();
           if (e.key === "Escape") {
             setIsInEditMode(false);
           } else if (e.key === "Enter") {
             e.preventDefault();
+            hiddenFocusTargetRef?.focus({ preventScroll: true });
             onDateChanged(new Date(e.currentTarget.value));
             setIsInEditMode(false);
           }

@@ -1,6 +1,8 @@
 import { FC, useRef, useState } from "react";
 import CellWrapper from "../CellWrapper";
 import { useCellContext } from "../CellContext";
+import { useReactGridStoreApi } from "../../utils/reactGridStore";
+import { useReactGridId } from "../ReactGridIdProvider";
 
 interface TextCellProps {
   value: string;
@@ -9,16 +11,19 @@ interface TextCellProps {
 }
 
 const TextCell: FC<TextCellProps> = ({ value: initialValue, onTextChanged, reverse }) => {
+  const id = useReactGridId();
   const ctx = useCellContext();
   const targetInputRef = useRef<HTMLTextAreaElement>(null);
+  const [isInEditMode, setIsInEditMode] = useState(false);
   const [lastTouchEnd, setLastTouchEnd] = useState(0);
+  const hiddenFocusTargetRef = useReactGridStoreApi(id).getState().hiddenFocusTargetRef;
 
   const handleTouchEnd = () => {
     const now = new Date().getTime();
     const timesince = now - lastTouchEnd;
     if (timesince < 300 && timesince > 0) {
       // double touch detected
-      ctx.setEditMode(true);
+      setIsInEditMode(true);
       ctx.requestFocus();
     }
     setLastTouchEnd(now);
@@ -29,20 +34,20 @@ const TextCell: FC<TextCellProps> = ({ value: initialValue, onTextChanged, rever
       onTouchEnd={handleTouchEnd}
       style={{ padding: ".2rem", textAlign: "center", outline: "none" }}
       onDoubleClick={() => {
-        ctx.setEditMode(true);
+        setIsInEditMode(true);
         ctx.requestFocus();
       }}
       onKeyDown={(e) => {
-        if (!ctx.isInEditMode && e.key === "Enter") {
+        if (!isInEditMode && e.key === "Enter") {
           e.preventDefault();
           e.stopPropagation();
           ctx.requestFocus();
-          ctx.setEditMode(true);
+          setIsInEditMode(true);
         }
       }}
       targetInputRef={targetInputRef}
     >
-      {ctx.isInEditMode ? (
+      {isInEditMode ? (
         <textarea
           defaultValue={initialValue}
           style={{
@@ -61,20 +66,20 @@ const TextCell: FC<TextCellProps> = ({ value: initialValue, onTextChanged, rever
             fontFamily: "inherit",
           }}
           onBlur={(e) => {
+            hiddenFocusTargetRef?.focus({ preventScroll: true });
             onTextChanged(e.currentTarget.value);
-            ctx.setEditMode(false);
+            setIsInEditMode(false);
           }}
           onPointerDown={(e) => e.stopPropagation()}
           onKeyDown={(e) => {
             e.stopPropagation();
             if (e.key === "Escape") {
-              ctx.setEditMode(false);
+              setIsInEditMode(false);
             } else if (e.key === "Enter") {
               e.preventDefault();
-              // We don't stop propagation here, because we want to trigger the
-              // focus move event
+              hiddenFocusTargetRef?.focus({ preventScroll: true });
               onTextChanged(e.currentTarget.value);
-              ctx.setEditMode(false);
+              setIsInEditMode(false);
             }
           }}
           autoFocus

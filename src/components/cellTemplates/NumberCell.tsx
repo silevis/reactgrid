@@ -1,6 +1,8 @@
 import React, { FC, useRef, useState } from "react";
 import { useCellContext } from "../CellContext";
 import CellWrapper from "../CellWrapper";
+import { useReactGridStore } from "../../utils/reactGridStore";
+import { useReactGridId } from "../ReactGridIdProvider";
 
 interface NumberCellProps {
   value: number;
@@ -19,9 +21,11 @@ const NumberCell: FC<NumberCellProps> = ({
   hideZero,
   format,
 }) => {
+  const id = useReactGridId();
   const ctx = useCellContext();
   const targetInputRef = useRef<HTMLTextAreaElement>(null);
   const [isInEditMode, setIsInEditMode] = useState(false);
+  const hiddenFocusTargetRef = useReactGridStore(id, (store) => store.hiddenFocusTargetRef);
 
   const isValid = validator ? validator(Number(initialValue)) : true;
 
@@ -39,13 +43,13 @@ const NumberCell: FC<NumberCellProps> = ({
       style={{ padding: ".2rem", textAlign: "center", outline: "none" }}
       onDoubleClick={() => {
         setIsInEditMode(true);
-        ctx.requestFocus(true);
+        ctx.requestFocus();
       }}
       onKeyDown={(e) => {
         if (!isInEditMode && e.key === "Enter") {
           e.preventDefault();
           e.stopPropagation();
-          ctx.requestFocus(true);
+          ctx.requestFocus();
           setIsInEditMode(true);
         }
       }}
@@ -55,6 +59,7 @@ const NumberCell: FC<NumberCellProps> = ({
         <textarea
           defaultValue={initialValue.toString()}
           onBlur={(e) => {
+            hiddenFocusTargetRef?.focus({ preventScroll: true });
             onValueChanged(Number(e.currentTarget.value));
             setIsInEditMode(false);
           }}
@@ -74,10 +79,12 @@ const NumberCell: FC<NumberCellProps> = ({
             fontFamily: "inherit",
           }}
           onKeyDown={(e) => {
+            e.stopPropagation();
             if (e.key === "Escape") {
               setIsInEditMode(false);
             } else if (e.key === "Enter") {
               e.preventDefault();
+              hiddenFocusTargetRef?.focus({ preventScroll: true });
               onValueChanged(Number(e.currentTarget.value));
               setIsInEditMode(false);
             }
