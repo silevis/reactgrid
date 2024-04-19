@@ -54,6 +54,8 @@ export const PaneGridContent: React.FC<PaneGridContentProps> = React.memo(({ ran
   const columns = useReactGridStore(id, (store) => store.columns).slice(startColIdx, endColIdx);
   const cells = useReactGridStore(id, (store) => store.cells);
 
+  const focusedCell = useReactGridStore(id, (store) => store.focusedLocation);
+
   return rows.map((row, rowIndex) => {
     return columns.map((col, colIndex) => {
       const cell = cells.get(`${row.id} ${col.id}`);
@@ -63,13 +65,15 @@ export const PaneGridContent: React.FC<PaneGridContentProps> = React.memo(({ ran
       const realRowIndex = startRowIdx + rowIndex;
       const realColumnIndex = startColIdx + colIndex;
 
+      const isFocused = focusedCell.rowIndex === realRowIndex && focusedCell.colIndex === realColumnIndex;
+
       const { Template, props } = cell;
 
       return (
         <CellContextProvider
           key={`${realRowIndex}-${realColumnIndex}`}
-          row={row}
-          col={col}
+          rowId={row.id}
+          colId={col.id}
           rowIndex={rowIndex}
           colIndex={colIndex}
           rowSpan={cell.rowSpan}
@@ -77,6 +81,7 @@ export const PaneGridContent: React.FC<PaneGridContentProps> = React.memo(({ ran
           realRowIndex={realRowIndex}
           realColumnIndex={realColumnIndex}
           getCellOffset={getCellOffset}
+          isFocused={isFocused}
         >
           <Template {...props} />
         </CellContextProvider>

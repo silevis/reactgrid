@@ -1,16 +1,17 @@
-import { createContext, useContext, useState } from "react";
-import { CellContextType, Column, Row } from "../types/PublicModel";
-import { useReactGridStore } from "../utils/reactGridStore";
+import { createContext, memo, useContext, useState } from "react";
+import { CellContextType } from "../types/PublicModel";
+import { useReactGridStoreApi } from "../utils/reactGridStore";
 import { useReactGridId } from "./ReactGridIdProvider";
 
 interface CellContextProviderProps {
   children: React.ReactNode;
-  row: Row;
-  col: Column;
+  rowId: string;
+  colId: string;
   rowIndex: number;
   colIndex: number;
   realRowIndex: number;
   realColumnIndex: number;
+  isFocused: boolean;
   rowSpan?: number;
   colSpan?: number;
   getCellOffset?: (rowIdx: number, colIdx: number, rowSpan: number, colSpan: number) => React.CSSProperties;
@@ -43,8 +44,8 @@ export const useCellContext = () => {
 };
 
 export const CellContextProvider = ({
-  row,
-  col,
+  rowId,
+  colId,
   rowIndex,
   colIndex,
   children,
@@ -53,22 +54,19 @@ export const CellContextProvider = ({
   rowSpan,
   colSpan,
   getCellOffset,
+  isFocused,
 }: CellContextProviderProps) => {
   const id = useReactGridId();
   const [isInEditMode, setIsInEditMode] = useState(false);
 
-  const hiddenFocusTargetRef = useReactGridStore(id, (store) => store.hiddenFocusTargetRef);
-  const focusedCell = useReactGridStore(id, (store) => store.focusedLocation);
-
-  const isFocused = focusedCell.rowIndex === realRowIndex && focusedCell.colIndex === realColumnIndex;
-
-  const setFocusedLocation = useReactGridStore(id, (store) => store.setFocusedLocation);
+  const hiddenFocusTargetRef = useReactGridStoreApi(id).getState().hiddenFocusTargetRef;
+  const setFocusedLocation = useReactGridStoreApi(id).getState().setFocusedLocation;
 
   return (
     <CellContext.Provider
       value={{
-        rowId: row.id,
-        colId: col.id,
+        rowId: rowId,
+        colId: colId,
         realRowIndex,
         isInEditMode,
         realColumnIndex,
