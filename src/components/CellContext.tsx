@@ -11,7 +11,6 @@ interface CellContextProviderProps {
   colIndex: number;
   realRowIndex: number;
   realColumnIndex: number;
-  isFocused: boolean;
   rowSpan?: number;
   colSpan?: number;
   getCellOffset?: (rowIdx: number, colIdx: number, rowSpan: number, colSpan: number) => React.CSSProperties;
@@ -29,7 +28,6 @@ export const CellContext = createContext<CellContextType>({
     throw new Error("Function not implemented.");
   },
   isInEditMode: false,
-  isFocused: false,
   containerStyle: {},
 });
 
@@ -54,7 +52,6 @@ export const CellContextProvider = ({
   rowSpan,
   colSpan,
   getCellOffset,
-  isFocused,
 }: CellContextProviderProps) => {
   const id = useReactGridId();
   const [isInEditMode, setIsInEditMode] = useState(false);
@@ -94,7 +91,6 @@ export const CellContextProvider = ({
         requestFocus: () => {
           setFocusedLocation(realRowIndex, realColumnIndex);
         },
-        isFocused,
       }}
     >
       {children}

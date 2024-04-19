@@ -1,6 +1,7 @@
 import React, { FC, useRef, useState } from "react";
 import { useCellContext } from "../CellContext";
 import CellWrapper from "../CellWrapper";
+import { useDoubleTouch } from "../../hooks/useDoubleTouch";
 
 interface NumberCellProps {
   value: number;
@@ -21,7 +22,7 @@ const NumberCell: FC<NumberCellProps> = ({
 }) => {
   const ctx = useCellContext();
   const targetInputRef = useRef<HTMLTextAreaElement>(null);
-  const [isInEditMode, setIsInEditMode] = useState(false);
+  const { handleDoubleTouch } = useDoubleTouch(ctx, ctx.setEditMode);
 
   const isValid = validator ? validator(Number(initialValue)) : true;
 
@@ -36,27 +37,28 @@ const NumberCell: FC<NumberCellProps> = ({
 
   return (
     <CellWrapper
+      onTouchEnd={handleDoubleTouch}
       style={{ padding: ".2rem", textAlign: "center", outline: "none" }}
       onDoubleClick={() => {
-        setIsInEditMode(true);
-        ctx.requestFocus(true);
+        ctx.setEditMode(true);
+        ctx.requestFocus();
       }}
       onKeyDown={(e) => {
-        if (!isInEditMode && e.key === "Enter") {
+        if (!ctx.isInEditMode && e.key === "Enter") {
           e.preventDefault();
           e.stopPropagation();
-          ctx.requestFocus(true);
-          setIsInEditMode(true);
+          ctx.requestFocus();
+          ctx.setEditMode(true);
         }
       }}
       targetInputRef={targetInputRef}
     >
-      {isInEditMode ? (
+      {ctx.isInEditMode ? (
         <textarea
           defaultValue={initialValue.toString()}
           onBlur={(e) => {
             onValueChanged(Number(e.currentTarget.value));
-            setIsInEditMode(false);
+            ctx.setEditMode(false);
           }}
           style={{
             resize: "none",
@@ -74,12 +76,13 @@ const NumberCell: FC<NumberCellProps> = ({
             fontFamily: "inherit",
           }}
           onKeyDown={(e) => {
+            e.stopPropagation();
             if (e.key === "Escape") {
-              setIsInEditMode(false);
+              ctx.setEditMode(false);
             } else if (e.key === "Enter") {
               e.preventDefault();
               onValueChanged(Number(e.currentTarget.value));
-              setIsInEditMode(false);
+              ctx.setEditMode(false);
             }
           }}
           autoFocus

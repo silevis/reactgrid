@@ -1,4 +1,5 @@
 import { Behavior } from "../types/Behavior";
+import { NumericalRange } from "../types/CellMatrix";
 import { ReactGridStore } from "../types/ReactGridStore";
 import { getCellArea } from "../utils/getCellArea";
 import { getCellIndexesFromPointerLocation } from "../utils/getCellIndexesFromPointerLocation";
@@ -99,7 +100,15 @@ export const FillHandleBehavior: Behavior = {
     const previouslySelectedArea = store.selectedArea;
 
     if (store.fillHandleArea.startRowIdx !== -1) {
-      store.onFillHandle?.(store.fillHandleArea, focusedCell.props.value ?? "");
+      let selectedArea: NumericalRange;
+
+      if (store.selectedArea.startRowIdx !== -1) {
+        selectedArea = store.selectedArea;
+      } else {
+        selectedArea = getCellArea(store, focusedCell);
+      }
+
+      store.onFillHandle?.(selectedArea, store.fillHandleArea);
     }
 
     const isPreviouslySelectedArea = previouslySelectedArea.startRowIdx !== -1;

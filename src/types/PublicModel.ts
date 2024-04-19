@@ -86,8 +86,6 @@ export type CellContextType = {
 
   /** Enables or disables edit mode. */
   setEditMode: (enableEditMode: boolean) => void;
-
-  isFocused: boolean;
 };
 
 export type CellMap<RowIdType extends string = string, ColIdType extends string = string> = Map<
@@ -138,5 +136,5 @@ export interface ReactGridProps {
 
   onFocusLocationChanging?: ({ location }: { location: Location }) => boolean;
   onFocusLocationChanged?: ({ location }: { location: Location }) => void;
-  onFillHandle?: (selectedArea: NumericalRange, fillValue: string) => void;
+  onFillHandle?: (selectedArea: NumericalRange, fillRange: NumericalRange) => void;
 }

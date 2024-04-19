@@ -1,6 +1,7 @@
 import { FC, useRef, useState } from "react";
 import CellWrapper from "../CellWrapper";
 import { useCellContext } from "../CellContext";
+import { useDoubleTouch } from "../../hooks/useDoubleTouch";
 
 interface TextCellProps {
   value: string;
@@ -11,22 +12,11 @@ interface TextCellProps {
 const TextCell: FC<TextCellProps> = ({ value: initialValue, onTextChanged, reverse }) => {
   const ctx = useCellContext();
   const targetInputRef = useRef<HTMLTextAreaElement>(null);
-  const [lastTouchEnd, setLastTouchEnd] = useState(0);
-
-  const handleTouchEnd = () => {
-    const now = new Date().getTime();
-    const timesince = now - lastTouchEnd;
-    if (timesince < 300 && timesince > 0) {
-      // double touch detected
-      ctx.setEditMode(true);
-      ctx.requestFocus();
-    }
-    setLastTouchEnd(now);
-  };
+  const { handleDoubleTouch } = useDoubleTouch(ctx, ctx.setEditMode);
 
   return (
     <CellWrapper
-      onTouchEnd={handleTouchEnd}
+      onTouchEnd={handleDoubleTouch}
       style={{ padding: ".2rem", textAlign: "center", outline: "none" }}
       onDoubleClick={() => {
         ctx.setEditMode(true);

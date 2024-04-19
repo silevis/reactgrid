@@ -181,12 +181,17 @@ export const BigGrid = () => {
           }
           {...cellMatrix}
           onAreaSelected={(selectedArea) => {}}
-          onFillHandle={(selectedArea, fillValue) => {
+          onFillHandle={(selectedArea, fillRange) => {
             setData((prev) => {
               const next = [...prev];
-              for (let i = selectedArea.startRowIdx; i < selectedArea.endRowIdx; i++) {
-                for (let j = selectedArea.startColIdx; j < selectedArea.endColIdx; j++) {
-                  next[i][j] = fillValue;
+              for (let i = fillRange.startRowIdx; i < fillRange.endRowIdx; i++) {
+                for (let j = fillRange.startColIdx; j < fillRange.endColIdx; j++) {
+                  const relativeColIdx = j - fillRange.startColIdx;
+                  if (fillRange.endRowIdx > selectedArea.endRowIdx) {
+                    next[i][j] = prev[selectedArea.startRowIdx][selectedArea.startColIdx + relativeColIdx];
+                  } else {
+                    next[i][j] = prev[selectedArea.startRowIdx][selectedArea.startColIdx];
+                  }
                 }
               }
               return next;

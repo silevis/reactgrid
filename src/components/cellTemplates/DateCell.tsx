@@ -107,6 +107,7 @@ const DefaultCalendar = forwardRef(
         }}
         onPointerDown={(e) => e.stopPropagation()}
         onKeyDown={(e) => {
+          e.stopPropagation();
           if (e.key === "Escape") {
             setIsInEditMode(false);
           } else if (e.key === "Enter") {

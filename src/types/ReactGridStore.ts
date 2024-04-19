@@ -30,7 +30,7 @@ export interface ReactGridStoreProps {
   behaviors: Record<BehaviorId, Behavior>;
   currentBehavior: Behavior;
 
-  onFillHandle?: (selectedArea: NumericalRange, fillValue: string) => void;
+  onFillHandle?: (selectedArea: NumericalRange, fillRange: NumericalRange) => void;
 }
 
 export interface ReactGridStore extends ReactGridStoreProps {
