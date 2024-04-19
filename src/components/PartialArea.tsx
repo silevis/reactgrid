@@ -185,7 +185,9 @@ export const PartialArea: FC<PartialAreaProps> = React.memo(
 
     let shouldEnableFillHandle = false;
 
-    if (currentBehavior.id !== CellSelectionBehavior.id) {
+    if (currentBehavior.id === FillHandleBehavior.id) {
+      shouldEnableFillHandle = false;
+    } else {
       if (!isFillHandle && !isFillAreaExists && shouldRenderRightBorder && shouldRenderBottomBorder) {
         shouldEnableFillHandle = true;
       }

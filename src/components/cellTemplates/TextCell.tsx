@@ -3,6 +3,7 @@ import CellWrapper from "../CellWrapper";
 import { useCellContext } from "../CellContext";
 import { useReactGridStoreApi } from "../../utils/reactGridStore";
 import { useReactGridId } from "../ReactGridIdProvider";
+import { useDoubleTouch } from "../../hooks/useDoubleTouch";
 
 interface TextCellProps {
   value: string;
@@ -15,23 +16,12 @@ const TextCell: FC<TextCellProps> = ({ value: initialValue, onTextChanged, rever
   const ctx = useCellContext();
   const targetInputRef = useRef<HTMLTextAreaElement>(null);
   const [isInEditMode, setIsInEditMode] = useState(false);
-  const [lastTouchEnd, setLastTouchEnd] = useState(0);
   const hiddenFocusTargetRef = useReactGridStoreApi(id).getState().hiddenFocusTargetRef;
-
-  const handleTouchEnd = () => {
-    const now = new Date().getTime();
-    const timesince = now - lastTouchEnd;
-    if (timesince < 300 && timesince > 0) {
-      // double touch detected
-      setIsInEditMode(true);
-      ctx.requestFocus();
-    }
-    setLastTouchEnd(now);
-  };
+  const { handleDoubleTouch } = useDoubleTouch(ctx, setIsInEditMode);
 
   return (
     <CellWrapper
-      onTouchEnd={handleTouchEnd}
+      onTouchEnd={handleDoubleTouch}
       style={{ padding: ".2rem", textAlign: "center", outline: "none" }}
       onDoubleClick={() => {
         setIsInEditMode(true);

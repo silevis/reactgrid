@@ -1,8 +1,9 @@
-import React, { FC, useRef, useState } from "react";
+import { FC, useRef, useState } from "react";
 import { useCellContext } from "../CellContext";
 import CellWrapper from "../CellWrapper";
 import { useReactGridStore } from "../../utils/reactGridStore";
 import { useReactGridId } from "../ReactGridIdProvider";
+import { useDoubleTouch } from "../../hooks/useDoubleTouch";
 
 interface NumberCellProps {
   value: number;
@@ -26,6 +27,7 @@ const NumberCell: FC<NumberCellProps> = ({
   const targetInputRef = useRef<HTMLTextAreaElement>(null);
   const [isInEditMode, setIsInEditMode] = useState(false);
   const hiddenFocusTargetRef = useReactGridStore(id, (store) => store.hiddenFocusTargetRef);
+  const { handleDoubleTouch } = useDoubleTouch(ctx, setIsInEditMode);
 
   const isValid = validator ? validator(Number(initialValue)) : true;
 
@@ -40,6 +42,7 @@ const NumberCell: FC<NumberCellProps> = ({
 
   return (
     <CellWrapper
+      onTouchEnd={handleDoubleTouch}
       style={{ padding: ".2rem", textAlign: "center", outline: "none" }}
       onDoubleClick={() => {
         setIsInEditMode(true);

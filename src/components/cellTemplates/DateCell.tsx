@@ -4,6 +4,7 @@ import { useCellContext } from "../CellContext";
 import { formatDate } from "../../utils/formatDate";
 import { useReactGridStore } from "../../utils/reactGridStore";
 import { useReactGridId } from "../ReactGridIdProvider";
+import { useDoubleTouch } from "../../hooks/useDoubleTouch";
 
 interface DefaultCalendarProps {
   date: string;
@@ -27,6 +28,7 @@ const DateCell: FC<DateCellProps> = ({ value, onDateChanged, formatter, Calendar
   const targetInputRef = useRef<HTMLInputElement>(null);
   const [isInEditMode, setIsInEditMode] = useState(false);
   const hiddenFocusTargetRef = useReactGridStore(id, (store) => store.hiddenFocusTargetRef);
+  const { handleDoubleTouch } = useDoubleTouch(ctx, setIsInEditMode);
 
   let formattedDate: string | undefined;
 
@@ -38,6 +40,7 @@ const DateCell: FC<DateCellProps> = ({ value, onDateChanged, formatter, Calendar
 
   return (
     <CellWrapper
+      onTouchEnd={handleDoubleTouch}
       style={{ padding: ".2rem", textAlign: "center", outline: "none" }}
       onDoubleClick={() => {
         setIsInEditMode(true);
@@ -117,6 +120,7 @@ const DefaultCalendar = forwardRef(
           hiddenFocusTargetRef?.focus({ preventScroll: true });
           const changedDate = e.currentTarget.value;
           changedDate && onDateChanged(new Date(e.currentTarget.value));
+          setIsInEditMode(false);
         }}
         onPointerDown={(e) => e.stopPropagation()}
         onKeyDown={(e) => {
