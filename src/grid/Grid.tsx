@@ -9,7 +9,7 @@ import { TestConfig } from './envConfig';
 import '../styles.scss';
 import { config } from "cypress/types/bluebird";
 
-type GridCells = HeaderCell | TextCell | NumberCell | DropdownCell;
+type GridCells = HeaderCell | TextCell | NumberCell | DropdownCell | DateCell;
 
 //type GridRow = Row<GridCells>;
 
@@ -59,291 +59,6 @@ export const Grid: React.FC<GridProps> = (props) => {
     enableFrozenFocus,
   } = props;
   config.columns = headerDataNames.length
-  /*
-  const [render, setRender] = React.useState(true);
-  const [columns, setColumns] = React.useState(() =>
-    new Array(config.columns)
-      .fill({ columnId: 0, resizable: true, reorderable: true, width: -1 })
-      .map<Column>((_, ci) => ({
-        columnId: ci,
-        resizable: true,
-        reorderable: true,
-        width: config.cellWidth,
-      }))
-  );
-  
-  function getCellConfigForType(type: string | undefined, ci: number){
-    const commonConfig = {
-      text: "",
-      maxLength: headerData[ci]["maxLength"]
-    }
-    const configMapping: Record<string, any> = {
-      "alphanumeric": {
-        ...commonConfig,
-        type: "text",
-        restraintType: "alphanumeric"
-      },
-      "text": {
-          ...commonConfig,
-          type: "text"
-      },
-      "number": {
-          ...commonConfig,
-          type: "number",
-          value: 0
-      },
-      "dropdown": {
-          type: "dropdown",
-          values: headerData[ci]["values"]!,
-          isDisabled: false
-      }
-    };
-    return type ? configMapping[type] : {...commonConfig, type: "text"}
-  }
-  
-  const [rows, setRows] = React.useState(() =>
-    new Array(config.rows).fill(0).map<GridRow>((_, ri) => ({
-      rowId: ri,
-      reorderable: true,
-      height: config.cellHeight,
-      cells: columns.map<GridCells>((_, ci) => {
-        if (ri === 0) return { 
-          type: firstRowType, 
-          text: ci===0 ? "" : headerDataNames[ci],
-          nonEditable: true
-        };
-        if (ci === 0) return {
-          type: "number",
-          value: ri,
-          nanToZero: false,
-          hideZero: true,
-          nonEditable: true
-        };
-
-        const type = headerData[ci]["type"];
-        return getCellConfigForType(type, ci);
-      }),
-    }))
-  );
-  
-  const [cellChangesIndex, setCellChangesIndex] = React.useState(() => -1);
-
-  const [cellChanges, setCellChanges] = React.useState<CellChange<TextCell>[][]>(() => []);
-  
-  const handleChanges = (changes: CellChange<GridCells>[]) => {
-    setRows((prevRows) => {
-      changes.forEach((change) => {
-        const changeRowIdx = prevRows.findIndex(
-          (el) => el.rowId === change.rowId
-        );
-        const changeColumnIdx = columns.findIndex(
-          (el) => el.columnId === change.columnId
-        );
-        prevRows[changeRowIdx].cells[changeColumnIdx] = change.newCell;
-      });
-      return [...prevRows];
-    });
-  };
-
-  const addRows = (
-    selectedRowIds: Id[],
-    above: boolean
-  ) =>{ 
-    const addingAmount = selectedRowIds.length;
-    const indexToInsert = above ? Number(selectedRowIds[0]) : Number(selectedRowIds[selectedRowIds.length-1]) + 1;
-    const addingArray = 
-      Array.from({length: addingAmount}, (_, ri) => {
-        const obj: GridRow = {
-          rowId: ri + indexToInsert,
-          reorderable: true,
-          height: config.cellHeight,
-          cells: columns.map<GridCells>((_, ci) => {
-            if (ci === 0) return {
-              type: "number",
-              value: ri + indexToInsert,
-              nanToZero: false,
-              hideZero: true,
-              nonEditable: true
-            };
-            const type = headerData[ci]["type"];
-            return getCellConfigForType(type, ci);
-          }),
-        }
-        return obj;
-      });
-    
-    setRows((prevRows) => {
-      const newArray = [...prevRows];
-      newArray.splice(indexToInsert, 0, ...addingArray);
-      for (let i = indexToInsert+addingAmount; i < newArray.length; i++){
-        if(newArray[i].cells[0].type === "number"){
-          newArray[i].rowId = i
-        }
-      }
-      return [...newArray];
-    })
-  }
-
-   
-
-  const handleColumnResize = (
-    columnId: Id,
-    width: number,
-    selectedColIds: Id[]
-  ) => {
-    setColumns((prevColumns) => {
-      const setColumnWidth = (columnIndex: number) => {
-        const resizedColumn = prevColumns[columnIndex];
-        prevColumns[columnIndex] = { ...resizedColumn, width };
-      };
-
-      if (selectedColIds.includes(columnId)) {
-        const stateColumnIndexes = prevColumns
-          .filter((col) => selectedColIds.includes(col.columnId))
-          .map((col) =>
-            prevColumns.findIndex((el) => el.columnId === col.columnId)
-          );
-        stateColumnIndexes.forEach(setColumnWidth);
-      } else {
-        const columnIndex = prevColumns.findIndex(
-          (col) => col.columnId === columnId
-        );
-        setColumnWidth(columnIndex);
-      }
-      return [...prevColumns];
-    });
-  };
-
-
-  
-
-  const reorderArray = <T extends unknown>(
-    arr: T[],
-    idxs: number[],
-    to: number
-  ) => {
-    const movedElements: T[] = arr.filter((_: T, idx: number) =>
-      idxs.includes(idx)
-    );
-    to =
-      Math.min(...idxs) < to
-        ? (to += 1)
-        : (to -= idxs.filter((idx) => idx < to).length);
-    const leftSide: T[] = arr.filter(
-      (_: T, idx: number) => idx < to && !idxs.includes(idx)
-    );
-    const rightSide: T[] = arr.filter(
-      (_: T, idx: number) => idx >= to && !idxs.includes(idx)
-    );
-    return [...leftSide, ...movedElements, ...rightSide];
-  };
-
-  const handleCanReorderColumns = (
-    targetColumnId: Id,
-    columnIds: Id[],
-    dropPosition: DropPosition
-  ): boolean => {
-    return true;
-  };
-
-  const handleCanReorderRows = (
-    targetColumnId: Id,
-    rowIds: Id[],
-    dropPosition: DropPosition
-  ): boolean => {
-    // const rowIndex = state.rows.findIndex((row: Row) => row.rowId === targetColumnId);
-    // if (rowIndex === 0) return false;
-    return true;
-  };
-
-  const handleColumnsReorder = (
-    targetColumnId: Id,
-    columnIds: Id[],
-    dropPosition: DropPosition
-  ) => {
-    const to = columns.findIndex(
-      (column: Column) => column.columnId === targetColumnId
-    );
-    const columnIdxs = columnIds.map((id: Id, idx: number) =>
-      columns.findIndex((c: Column) => c.columnId === id)
-    );
-    setRows(
-      rows.map((row) => ({
-        ...row,
-        cells: reorderArray(row.cells, columnIdxs, to),
-      }))
-    );
-    setColumns(reorderArray(columns, columnIdxs, to));
-  };
-
-  const handleRowsReorder = (
-    targetRowId: Id,
-    rowIds: Id[],
-    dropPosition: DropPosition
-  ) => {
-    setRows((prevRows) => {
-      const to = rows.findIndex((row) => row.rowId === targetRowId);
-      const columnIdxs = rowIds.map((id) =>
-        rows.findIndex((r) => r.rowId === id)
-      );
-      return reorderArray(prevRows, columnIdxs, to);
-    });
-  };
-  
-
-  const handleContextMenu = (
-    selectedRowIds: Id[],
-    selectedColIds: Id[],
-    selectionMode: SelectionMode,
-    menuOptions: MenuOption[],
-    selectedRanges: Array<CellLocation[]>
-  ): MenuOption[] => {
-    if (selectionMode === "row") {
-      menuOptions = [
-        ...menuOptions,
-        {
-          id: "rowOption",
-          label: "Custom menu row option",
-          handler: (
-            selectedRowIds: Id[],
-            selectedColIds: Id[],
-            selectionMode: SelectionMode
-          ) => {},
-        },
-      ];
-    }
-    if (selectionMode === "column") {
-      menuOptions = [
-        ...menuOptions,
-        {
-          id: "columnOption",
-          label: "Custom menu column option",
-          handler: (
-            selectedRowIds: Id[],
-            selectedColIds: Id[],
-            selectionMode: SelectionMode
-          ) => {},
-        },
-      ];
-    }
-    return [
-      ...menuOptions,
-      {
-        id: "addRowAbove",
-        label: "Add Row Above",
-        handler: (
-          selectedRowIds: Id[],
-          selectedColIds: Id[],
-          selectionMode: SelectionMode
-        ) => {
-          addRows(selectedRowIds, true)
-        },
-      },
-    ];
-  };
-  */
-  
-
   
 const getData = 
   Array.from({length:30}, (_, rowId) => {
@@ -404,16 +119,20 @@ const getRows = (data:any[]): Row<GridCells>[] => [
           case "dropdown":
             return{
               type: "dropdown", 
+              text: data[ri][name], 
               values: headerData[ci]["values"]!, 
               isDisabled: false,
-              isOpen: false
+            }
+          case "date":
+            return{
+              type: "date",
+              date: data[ri][name]
             }
           default:
             return{
-                type: "text", 
-                text: data[ri][name], 
-                maxLength: headerData[ci]["maxLength"]
-              
+              type: "text", 
+              text: data[ri][name], 
+              maxLength: headerData[ci]["maxLength"]
             }
         }
     })
@@ -445,7 +164,10 @@ const getRows = (data:any[]): Row<GridCells>[] => [
           prevLabel[labelIndex][fieldName] = cell.value;
           break;
         case "dropdown":
-          prevLabel[labelIndex][fieldName] = cell.selectedValue;
+          prevLabel[labelIndex][fieldName] = cell.text;
+          break;
+        case "date":
+          prevLabel[labelIndex][fieldName] = cell.date;
           break;
         case "header":
           break;
@@ -465,7 +187,6 @@ const getRows = (data:any[]): Row<GridCells>[] => [
   };
 
   const handleChanges = (changes: CellChange<GridCells>[]) => { 
-    console.log("handleChanges")
     setLabel((prevLabel) => applyChangesToLabel(changes, prevLabel)); 
   }; 
   

@@ -318,7 +318,7 @@ export type DefaultCellTypes =
  * 
  * @see https://reactgrid.com/docs/3.1/7-api/1-types/2-cell-change/
  */
-export type CellChange<TCell extends Cell = HeaderCell | TextCell | NumberCell | DropdownCell & Cell> = TCell extends Cell
+export type CellChange<TCell extends Cell = HeaderCell | TextCell | NumberCell | DropdownCell | DateCell & Cell> = TCell extends Cell
     ? {
         /** Row's `Id` where the change ocurred */
         readonly rowId: Id;

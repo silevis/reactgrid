@@ -168,5 +168,30 @@
                 background-color: $dropdown-focused-item-bg-color;
             }
         }
+        .rg-dropdown-toggle {
+            border: solid $cell-border-color;
+            border-width: 0 3px 3px 0;
+            display: inline-block;
+            padding: 3px;
+            transform: rotate(45deg);
+            -webkit-transform: rotate(45deg);
+            z-index: 5;
+            position: absolute;
+            right: 3px;
+        }
+        .rg-dropdown-toggle:hover{
+            cursor: pointer;
+        }
+        .rg-dropdown-menu {
+            list-style: none;
+            display: block;
+            text-align: left;
+            z-index: 10;
+            padding-left: 0;
+            margin-left: 0;
+        }
+        .rg-dropdown-item {
+            border-bottom: solid 1px black;
+        }
     }
 }

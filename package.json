@@ -84,7 +84,9 @@
     "not dead"
   ],
   "dependencies": {
+    "bootstrap": "^5.3.3",
     "debounce": "^2.0.0",
+    "react-bootstrap": "^2.10.2",
     "sass": "^1.62.1",
     "tslib": "^2.5.2"
   }

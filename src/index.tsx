@@ -7,7 +7,7 @@ import {
     config, 
 } from './grid/envConfig';
 
-const headerDataNames = ["", "商品コード*", "商品名", "メーカー", "入数単位", "入数"]
+const headerDataNames = ["", "商品コード*", "商品名", "メーカー", "入数単位", "入数", "制作日"]
 const headerData = [
     {},
     {
@@ -50,6 +50,11 @@ const headerData = [
       type: "number",
       notNull: false,
       maxLength: 256
+    },
+    {
+        name: headerDataNames[5],
+        type: "date",
+        notNull: false,
     },
   ]
 const component = <ExtGrid
