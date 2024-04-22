@@ -33,6 +33,11 @@ export interface ReactGridStoreProps {
   currentBehavior: Behavior;
 
   onFillHandle?: (selectedArea: NumericalRange, fillRange: NumericalRange) => void;
+  onAreaSelected?: (selectedArea: NumericalRange) => void;
+  onCellFocused?: (cellLocation: IndexedLocation) => void;
+  onCut?: (selectedArea: NumericalRange) => void;
+  onCopy?: (selectedArea: NumericalRange) => void;
+  onPaste?: (selectedArea: NumericalRange, pastedData: string) => void;
 }
 
 export interface ReactGridStore extends ReactGridStoreProps {

@@ -6,6 +6,97 @@ import TextCell from "../components/cellTemplates/TextCell";
 import { cellMatrixBuilder } from "../utils/cellMatrixBuilder";
 import DateCell from "../components/cellTemplates/DateCell";
 import NumberCell from "../components/cellTemplates/NumberCell";
+import { NumericalRange } from "../types/CellMatrix";
+
+const styledRanges = [
+  {
+    range: { start: { rowId: "0", columnId: "5" }, end: { rowId: "14", columnId: "12" } },
+    styles: { background: "red", color: "yellow" },
+  },
+  {
+    range: { start: { rowId: "7", columnId: "10" }, end: { rowId: "10", columnId: "14" } },
+    styles: { background: "green", color: "purple" },
+  },
+];
+
+const onFillHandle = <T,>(
+  selectedArea: NumericalRange,
+  fillRange: NumericalRange,
+  setData: React.Dispatch<React.SetStateAction<T[][]>>
+) => {
+  setData((prev) => {
+    const next = [...prev];
+
+    for (let i = fillRange.startRowIdx; i < fillRange.endRowIdx; i++) {
+      for (let j = fillRange.startColIdx; j < fillRange.endColIdx; j++) {
+        const relativeRowIdx = i - fillRange.startRowIdx;
+        const relativeColIdx = j - fillRange.startColIdx;
+
+        if (selectedArea.startColIdx + relativeColIdx >= selectedArea.endColIdx) {
+          const repeatIdx = relativeColIdx % (selectedArea.endColIdx - selectedArea.startColIdx);
+          next[i][j] = prev[selectedArea.startRowIdx][selectedArea.startColIdx + repeatIdx];
+        } else if (!next[selectedArea.startRowIdx + relativeRowIdx][selectedArea.startColIdx + relativeColIdx]) {
+          next[i][j] = next[selectedArea.startRowIdx][selectedArea.startColIdx];
+        } else {
+          next[i][j] = prev[selectedArea.startRowIdx + relativeRowIdx][selectedArea.startColIdx + relativeColIdx];
+        }
+      }
+    }
+    return next;
+  });
+};
+
+const onPasteHandler = <T,>(
+  selectedArea: NumericalRange,
+  pastedData: string,
+  setData: React.Dispatch<React.SetStateAction<T[][]>>
+) => {
+  // parse the pasted data
+  const parsedData = JSON.parse(pastedData);
+
+  setData((prev) => {
+    const next = [...prev];
+    for (let i = 0; i < parsedData.length; i++) {
+      for (let j = 0; j < parsedData[i].length; j++) {
+        next[selectedArea.startRowIdx + i][selectedArea.startColIdx + j] = parsedData[i][j];
+      }
+    }
+    return next;
+  });
+};
+
+const onCutHandler = <T,>(
+  data: T[][],
+  selectedArea: NumericalRange,
+  setData: React.Dispatch<React.SetStateAction<T[][]>>
+) => {
+  // copy the data from the selected area to the clipboard
+  const selectedData = data
+    .slice(selectedArea.startRowIdx, selectedArea.endRowIdx)
+    .map((row) => row.slice(selectedArea.startColIdx, selectedArea.endColIdx));
+
+  navigator.clipboard.writeText(JSON.stringify(selectedData));
+
+  // remove the data from the selected area
+  setData((prev) => {
+    const next = [...prev];
+    for (let i = selectedArea.startRowIdx; i < selectedArea.endRowIdx; i++) {
+      for (let j = selectedArea.startColIdx; j < selectedArea.endColIdx; j++) {
+        next[i][j] = "" as T;
+      }
+    }
+    return next;
+  });
+};
+
+const onCopyHandler = <T,>(data: T[][], selectedArea: NumericalRange) => {
+  // copy the data from the selected area to the clipboard
+  const selectedData = data
+    .slice(selectedArea.startRowIdx, selectedArea.endRowIdx)
+    .map((row) => row.slice(selectedArea.startColIdx, selectedArea.endColIdx));
+
+  navigator.clipboard.writeText(JSON.stringify(selectedData));
+};
 
 const ROW_COUNT = 20;
 const COLUMN_COUNT = 25;
@@ -20,7 +111,7 @@ const myNumberFormat = new Intl.NumberFormat("pl", {
 });
 
 export const BigGrid = () => {
-  const [data, setData] = useState(
+  const [data, setData] = useState<(string | number | Date | null)[][]>(
     Array.from({ length: ROW_COUNT }).map((_, i) => {
       return Array.from({ length: COLUMN_COUNT }).map((_, j) => {
         if (i === 0 && j === 1) return null;
@@ -45,7 +136,7 @@ export const BigGrid = () => {
 
         if (i === 0 && j === 0) return new Date();
 
-        if (i === 2 && j === 3) return 125 as number;
+        if (i === 2 && j === 3) return 125;
 
         return (
           `[${i.toString()}:${j.toString()}]` +
@@ -167,46 +258,16 @@ export const BigGrid = () => {
           stickyRightColumns={2}
           stickyBottomRows={2}
           styles={testStyles}
-          styledRanges={
-            [
-              // {
-              //   range: { start: { rowId: "0", columnId: "5" }, end: { rowId: "14", columnId: "12" } },
-              //   styles: { background: "red", color: "yellow" },
-              // },
-              // {
-              //   range: { start: { rowId: "7", columnId: "10" }, end: { rowId: "10", columnId: "14" } },
-              //   styles: { background: "green", color: "purple" },
-              // },
-            ]
-          }
+          // styledRanges={styledRanges}
           {...cellMatrix}
-          onAreaSelected={(selectedArea) => {}}
-          onFillHandle={(selectedArea, fillRange) => {
-            setData((prev) => {
-              const next = [...prev];
-
-              for (let i = fillRange.startRowIdx; i < fillRange.endRowIdx; i++) {
-                for (let j = fillRange.startColIdx; j < fillRange.endColIdx; j++) {
-                  const relativeRowIdx = i - fillRange.startRowIdx;
-                  const relativeColIdx = j - fillRange.startColIdx;
-
-                  if (selectedArea.startColIdx + relativeColIdx >= selectedArea.endColIdx) {
-                    const repeatIdx = relativeColIdx % (selectedArea.endColIdx - selectedArea.startColIdx);
-                    next[i][j] = prev[selectedArea.startRowIdx][selectedArea.startColIdx + repeatIdx];
-                  } else if (
-                    !next[selectedArea.startRowIdx + relativeRowIdx][selectedArea.startColIdx + relativeColIdx]
-                  ) {
-                    next[i][j] = next[selectedArea.startRowIdx][selectedArea.startColIdx];
-                  } else {
-                    next[i][j] =
-                      prev[selectedArea.startRowIdx + relativeRowIdx][selectedArea.startColIdx + relativeColIdx];
-                  }
-                }
-              }
-              return next;
-            });
+          onAreaSelected={(selectedArea) => {
+            console.log("area selected: ", selectedArea);
           }}
           enableFillHandle
+          onFillHandle={(selectedArea, fillRange) => onFillHandle(selectedArea, fillRange, setData)}
+          onCut={(selectedArea) => onCutHandler(data, selectedArea, setData)}
+          onPaste={(selectedArea, pastedData) => onPasteHandler(selectedArea, pastedData, setData)}
+          onCopy={(selectedArea) => onCopyHandler(data, selectedArea)}
           onCellFocused={(cellLocation) => {}}
         />
       </div>

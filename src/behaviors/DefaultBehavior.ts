@@ -1,6 +1,8 @@
 import { Behavior } from "../types/Behavior";
+import { NumericalRange } from "../types/CellMatrix.ts";
 import { Position } from "../types/PublicModel";
 import { ReactGridStore } from "../types/ReactGridStore.ts";
+import { getCellArea } from "../utils/getCellArea.ts";
 import { getCellContainerFromPoint } from "../utils/getCellContainerFromPoint";
 import { getCellContainerLocation } from "../utils/getCellContainerLocation";
 import { handleKeyDown } from "../utils/handleKeyDown";
@@ -131,6 +133,65 @@ export const DefaultBehavior = (config: DefaultBehaviorConfig = CONFIG_DEFAULTS)
         }
       }
     }
+
+    return store;
+  },
+
+  handleCopy: function (event, store) {
+    console.log("DB/handleCopy");
+
+    const focusedCell = store.getCellByIndexes(store.focusedLocation.rowIndex, store.focusedLocation.colIndex);
+
+    if (!focusedCell) return store;
+
+    let cellsArea: NumericalRange;
+
+    if (store.selectedArea.startRowIdx !== -1) {
+      cellsArea = store.selectedArea;
+    } else {
+      cellsArea = getCellArea(store, focusedCell);
+    }
+
+    store.onCopy?.(cellsArea);
+    return store;
+  },
+
+  handleCut: function (event, store) {
+    console.log("DB/handleCut");
+
+    const focusedCell = store.getCellByIndexes(store.focusedLocation.rowIndex, store.focusedLocation.colIndex);
+
+    if (!focusedCell) return store;
+
+    let cellsArea: NumericalRange;
+
+    if (store.selectedArea.startRowIdx !== -1) {
+      cellsArea = store.selectedArea;
+    } else {
+      cellsArea = getCellArea(store, focusedCell);
+    }
+
+    store.onCut?.(cellsArea);
+
+    return store;
+  },
+
+  handlePaste: function (event, store) {
+    console.log("DB/handlePaste");
+
+    const focusedCell = store.getCellByIndexes(store.focusedLocation.rowIndex, store.focusedLocation.colIndex);
+
+    if (!focusedCell) return store;
+
+    let cellsArea: NumericalRange;
+
+    if (store.selectedArea.startRowIdx !== -1) {
+      cellsArea = store.selectedArea;
+    } else {
+      cellsArea = getCellArea(store, focusedCell);
+    }
+
+    store.onPaste?.(cellsArea, event.clipboardData.getData("text/plain"));
 
     return store;
   },

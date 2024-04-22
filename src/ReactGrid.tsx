@@ -27,6 +27,9 @@ const ReactGrid: FC<ReactGridProps> = ({
   onAreaSelected,
   onFillHandle,
   onCellFocused,
+  onCut,
+  onPaste,
+  onCopy,
   enableFillHandle,
 }) => {
   initReactGridStore(id, {
@@ -38,6 +41,11 @@ const ReactGrid: FC<ReactGridProps> = ({
     styledRanges,
     enableFillHandle,
     onFillHandle,
+    onAreaSelected,
+    onCellFocused,
+    onCut,
+    onCopy,
+    onPaste,
   });
 
   const store = useReactGridStoreApi(id).getState();
@@ -71,10 +79,7 @@ const ReactGrid: FC<ReactGridProps> = ({
             stickyBottomRows={stickyBottomRows ?? 0}
             stickyLeftColumns={stickyLeftColumns ?? 0}
             stickyRightColumns={stickyRightColumns ?? 0}
-            onAreaSelected={onAreaSelected}
-            onCellFocused={onCellFocused}
           />
-
           {/* TODO: Shadow for row&col reorder */}
         </GridWrapper>
       </ErrorBoundary>

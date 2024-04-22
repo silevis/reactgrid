@@ -83,6 +83,8 @@ export const CellSelectionBehavior: Behavior = {
   handlePointerUp(event, store) {
     const DefaultBehavior = store.getBehavior("Default");
 
+    store.onAreaSelected?.(store.selectedArea);
+
     return {
       ...store,
       currentBehavior: DefaultBehavior,

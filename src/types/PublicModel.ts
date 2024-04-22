@@ -139,4 +139,7 @@ export interface ReactGridProps {
   onFocusLocationChanging?: ({ location }: { location: Location }) => boolean;
   onFocusLocationChanged?: ({ location }: { location: Location }) => void;
   onFillHandle?: (selectedArea: NumericalRange, fillRange: NumericalRange) => void;
+  onCut?: (selectedArea: NumericalRange) => void;
+  onCopy?: (selectedArea: NumericalRange) => void;
+  onPaste?: (selectedArea: NumericalRange, pastedData: string) => void;
 }

@@ -1,6 +1,6 @@
 import { FC, useEffect, useRef, useState } from "react";
 import { NumericalRange } from "../types/CellMatrix";
-import { IndexedLocation, PaneName, StickyOffsets } from "../types/InternalModel";
+import { PaneName, StickyOffsets } from "../types/InternalModel";
 import { useReactGridStore } from "../utils/reactGridStore";
 import { useTheme } from "../hooks/useTheme";
 import { Pane } from "./Pane";
@@ -19,8 +19,6 @@ interface PanesRendererProps {
   stickyBottomRows: number;
   stickyLeftColumns: number;
   stickyRightColumns: number;
-  onAreaSelected?: (selectedArea: NumericalRange) => void;
-  onCellFocused?: (cellLocation: IndexedLocation) => void;
 }
 
 const PanesRenderer: FC<PanesRendererProps> = ({
@@ -30,18 +28,17 @@ const PanesRenderer: FC<PanesRendererProps> = ({
   stickyBottomRows,
   stickyLeftColumns,
   stickyRightColumns,
-  onAreaSelected,
-  onCellFocused,
 }) => {
   const id = useReactGridId();
   const theme = useTheme();
   const rows = useReactGridStore(id, (store) => store.rows);
-  const selectedArea = useReactGridStore(id, (store) => store.selectedArea);
   const focusedLocation = useReactGridStore(id, (store) => store.focusedLocation);
   const columns = useReactGridStore(id, (store) => store.columns);
   const setPaneRanges = useReactGridStore(id, (store) => store.setPaneRanges);
   const setRowMeasurements = useReactGridStore(id, (store) => store.setRowMeasurements);
   const setColMeasurements = useReactGridStore(id, (store) => store.setColMeasurements);
+
+  const onCellFocused = useReactGridStore(id, (store) => store.onCellFocused);
 
   const ranges: Record<PaneName, NumericalRange> = {
     TopLeft: {
@@ -99,10 +96,6 @@ const PanesRenderer: FC<PanesRendererProps> = ({
       endColIdx: columnAmount,
     },
   };
-
-  useEffect(() => {
-    onAreaSelected?.(selectedArea);
-  }, [selectedArea]);
 
   useEffect(() => {
     onCellFocused?.(focusedLocation);

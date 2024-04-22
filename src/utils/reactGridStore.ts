@@ -42,7 +42,13 @@ const DEFAULT_STORE_PROPS: ReactGridStoreProps = {
   },
 
   currentBehavior: DefaultBehavior(),
+
+  // external event handlers
   onFillHandle: undefined,
+  onAreaSelected: undefined,
+  onCellFocused: undefined,
+  onCut: undefined,
+  onPaste: undefined,
 };
 
 export function initReactGridStore(id: string, initialProps?: Partial<ReactGridStoreProps>) {
