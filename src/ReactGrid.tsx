@@ -27,6 +27,7 @@ const ReactGrid: FC<ReactGridProps> = ({
   onAreaSelected,
   onFillHandle,
   onCellFocused,
+  enableFillHandle,
 }) => {
   initReactGridStore(id, {
     rows,
@@ -35,6 +36,7 @@ const ReactGrid: FC<ReactGridProps> = ({
     behaviors,
     userStyles,
     styledRanges,
+    enableFillHandle,
     onFillHandle,
   });
 

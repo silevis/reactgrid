@@ -184,19 +184,29 @@ export const BigGrid = () => {
           onFillHandle={(selectedArea, fillRange) => {
             setData((prev) => {
               const next = [...prev];
+
               for (let i = fillRange.startRowIdx; i < fillRange.endRowIdx; i++) {
                 for (let j = fillRange.startColIdx; j < fillRange.endColIdx; j++) {
+                  const relativeRowIdx = i - fillRange.startRowIdx;
                   const relativeColIdx = j - fillRange.startColIdx;
-                  if (fillRange.endRowIdx > selectedArea.endRowIdx) {
-                    next[i][j] = prev[selectedArea.startRowIdx][selectedArea.startColIdx + relativeColIdx];
+
+                  if (selectedArea.startColIdx + relativeColIdx >= selectedArea.endColIdx) {
+                    const repeatIdx = relativeColIdx % (selectedArea.endColIdx - selectedArea.startColIdx);
+                    next[i][j] = prev[selectedArea.startRowIdx][selectedArea.startColIdx + repeatIdx];
+                  } else if (
+                    !next[selectedArea.startRowIdx + relativeRowIdx][selectedArea.startColIdx + relativeColIdx]
+                  ) {
+                    next[i][j] = next[selectedArea.startRowIdx][selectedArea.startColIdx];
                   } else {
-                    next[i][j] = prev[selectedArea.startRowIdx][selectedArea.startColIdx];
+                    next[i][j] =
+                      prev[selectedArea.startRowIdx + relativeRowIdx][selectedArea.startColIdx + relativeColIdx];
                   }
                 }
               }
               return next;
             });
           }}
+          enableFillHandle
           onCellFocused={(cellLocation) => {}}
         />
       </div>

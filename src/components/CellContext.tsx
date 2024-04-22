@@ -53,11 +53,13 @@ export const CellContextProvider = ({
   colSpan,
   getCellOffset,
 }: CellContextProviderProps) => {
-  const id = useReactGridId();
   const [isInEditMode, setIsInEditMode] = useState(false);
 
-  const hiddenFocusTargetRef = useReactGridStoreApi(id).getState().hiddenFocusTargetRef;
-  const setFocusedLocation = useReactGridStoreApi(id).getState().setFocusedLocation;
+  const id = useReactGridId();
+  const store = useReactGridStoreApi(id).getState();
+
+  const hiddenFocusTargetRef = store.hiddenFocusTargetRef;
+  const setFocusedLocation = store.setFocusedLocation;
 
   return (
     <CellContext.Provider

@@ -93,6 +93,7 @@ export const PartialArea: FC<PartialAreaProps> = React.memo(
 
     const selectedArea = useReactGridStore(id, (store) => store.selectedArea);
     const fillHandleArea = useReactGridStore(id, (store) => store.fillHandleArea);
+    const enableFillHandle = useReactGridStore(id, (store) => store.enableFillHandle);
     const focusedCell = store.getCellByIndexes(store.focusedLocation.rowIndex, store.focusedLocation.colIndex);
 
     const focusedCellArea = getCellArea(store, focusedCell!);
@@ -185,30 +186,32 @@ export const PartialArea: FC<PartialAreaProps> = React.memo(
 
     let shouldEnableFillHandle = false;
 
-    if (currentBehavior.id === FillHandleBehavior.id) {
-      shouldEnableFillHandle = false;
-    } else {
-      if (!isFillHandle && !isFillAreaExists && shouldRenderRightBorder && shouldRenderBottomBorder) {
-        shouldEnableFillHandle = true;
-      }
-      if (isFocusedCell && !isAreaSelected) {
-        shouldEnableFillHandle = true;
-      } else if (isFocusedCell && !areAreasEqual(focusedCellArea, selectedArea)) {
+    if (enableFillHandle) {
+      if (currentBehavior.id === FillHandleBehavior.id) {
         shouldEnableFillHandle = false;
-      }
-      if (isFillHandle && currentBehavior.id === "Default") {
-        if (
-          fillHandleArea.endRowIdx !== focusedCellArea.startRowIdx &&
-          fillHandleArea.endColIdx !== focusedCellArea.startColIdx
-        ) {
+      } else {
+        if (!isFillHandle && !isFillAreaExists && shouldRenderRightBorder && shouldRenderBottomBorder) {
           shouldEnableFillHandle = true;
         }
-      } else if (!isFillHandle && currentBehavior.id === "Default") {
-        if (
-          fillHandleArea.endRowIdx === focusedCellArea.startRowIdx ||
-          fillHandleArea.endColIdx === focusedCellArea.startColIdx
-        ) {
+        if (isFocusedCell && !isAreaSelected) {
           shouldEnableFillHandle = true;
+        } else if (isFocusedCell && !areAreasEqual(focusedCellArea, selectedArea)) {
+          shouldEnableFillHandle = false;
+        }
+        if (isFillHandle && currentBehavior.id === "Default") {
+          if (
+            fillHandleArea.endRowIdx !== focusedCellArea.startRowIdx &&
+            fillHandleArea.endColIdx !== focusedCellArea.startColIdx
+          ) {
+            shouldEnableFillHandle = true;
+          }
+        } else if (!isFillHandle && currentBehavior.id === "Default") {
+          if (
+            fillHandleArea.endRowIdx === focusedCellArea.startRowIdx ||
+            fillHandleArea.endColIdx === focusedCellArea.startColIdx
+          ) {
+            shouldEnableFillHandle = true;
+          }
         }
       }
     }

@@ -24,6 +24,8 @@ export interface ReactGridStoreProps {
   selectedArea: NumericalRange;
   fillHandleArea: NumericalRange;
 
+  enableFillHandle: boolean;
+
   reactGridRef?: HTMLDivElement;
   hiddenFocusTargetRef?: HTMLDivElement;
 
