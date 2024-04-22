@@ -6,6 +6,7 @@ import { getCellProperty } from '../Functions/getCellProperty';
 import { keyCodes } from '../Functions/keyCodes';
 import { Cell, CellTemplate, Compatible, Uncertain, UncertainCompatible } from '../Model/PublicModel';
 import { getCharFromKey } from './getCharFromKeyCode';
+import { CellRenderer } from '../Components/CellRenderer';
 
 export interface TextCell extends Cell {
     type: 'text',

@@ -29,8 +29,7 @@ interface GridProps {
       value: string,
       label: string
     }],
-    errorMessages?: string[]
-    
+    restraintMessages?: string[]
   }];
 }
 
@@ -102,19 +101,22 @@ const getRows = (data:any[]): Row<GridCells>[] => [
               type: "text", 
               text: data[ri][name], 
               restraintType: "alphanumeric", 
-              maxLength: headerData[ci]["maxLength"]
+              maxLength: headerData[ci]["maxLength"],
+              restraintMessages: headerData[ci]["restraintMessages"]
             }
           case "text":
             return {
               type: "text", 
               text: data[ri][name], 
-              maxLength: headerData[ci]["maxLength"]
+              maxLength: headerData[ci]["maxLength"],
+              restraintMessages: headerData[ci]["restraintMessages"]
             }
           case "number":
             return{
               type: "number", 
               value: !data[ri][name] ? null : Number(data[ri][name]), 
-              maxLength: headerData[ci]["maxLength"]
+              maxLength: headerData[ci]["maxLength"],
+              restraintMessages: headerData[ci]["restraintMessages"]
             }
           case "dropdown":
             return{
@@ -122,17 +124,20 @@ const getRows = (data:any[]): Row<GridCells>[] => [
               text: data[ri][name], 
               values: headerData[ci]["values"]!, 
               isDisabled: false,
+              restraintMessages: headerData[ci]["restraintMessages"]
             }
           case "date":
             return{
               type: "date",
-              date: data[ri][name]
+              date: data[ri][name],
+              restraintMessages: headerData[ci]["restraintMessages"]
             }
           default:
             return{
               type: "text", 
               text: data[ri][name], 
-              maxLength: headerData[ci]["maxLength"]
+              maxLength: headerData[ci]["maxLength"],
+              restraintMessages: headerData[ci]["restraintMessages"]
             }
         }
     })
@@ -325,7 +330,7 @@ const getRows = (data:any[]): Row<GridCells>[] => [
                   height: config.fillViewport ? `calc(100vh - 30px)` : config.rgViewportHeight,
                   width: config.fillViewport ? `calc(100vw - 45px)` : config.rgViewportWidth,
                   margin: config.margin,
-                  overflow: 'auto',
+                  overflow: 'hidden',
               }),
               position: 'relative',
               ...(config.flexRow && {

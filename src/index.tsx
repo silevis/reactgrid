@@ -14,14 +14,18 @@ const headerData = [
       name: headerDataNames[0],
       type: "alphanumeric",
       notNull: true,
-      maxLength: 16
+      maxLength: 16,
+      restraintMessages: [
+        "max lenghth is 8",
+        "alphanumeric or specific sign "
+      ]
     },
     {
       name: headerDataNames[1],
       type: "text",
       notNull: false,
       maxLength: 256,
-      errorMessages: [
+      restraintMessages: [
         "max lenghth is 256"
       ]
     },
@@ -40,7 +44,7 @@ const headerData = [
       type: "text",
       notNull: false,
       maxLength: 8,
-      errorMessages: [
+      restraintMessages: [
         "max lenghth is 8",
         "should be unit"
       ]
@@ -49,12 +53,19 @@ const headerData = [
       name: headerDataNames[4],
       type: "number",
       notNull: false,
-      maxLength: 256
+      maxLength: 256,
+      restraintMessages: [
+        "max lenghth is 256",
+        "only number is acceptable"
+      ]
     },
     {
         name: headerDataNames[5],
         type: "date",
         notNull: false,
+        restraintMessages: [
+            "only date is acceptable"
+        ]
     },
   ]
 const component = <ExtGrid

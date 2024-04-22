@@ -73,6 +73,11 @@
                 top: 4px;
             }
 
+            .rg-restraint-container {
+                border: solid black 1px;
+                position: absolute;
+                z-index: 10;
+            }
             
         }
         .rg-cell-focus,

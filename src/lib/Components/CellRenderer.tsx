@@ -154,6 +154,7 @@ export const CellRenderer: React.FC<CellRendererProps> = ({
     }
 
     return (
+        <>
         <div
             className={classNames}
             style={style}
@@ -161,8 +162,8 @@ export const CellRenderer: React.FC<CellRendererProps> = ({
                 'data-cell-colidx': location.column.idx,
                 'data-cell-rowidx': location.row.idx,
             })}
-            //onMouseEnter={handleMouseEnter}
-            //onMouseLeave={handleMouseLeave}
+            onMouseEnter={handleMouseEnter}
+            onMouseLeave={handleMouseLeave}
         >
             {cellTemplate.render(cellToRender, isMobile ? isInEditMode : false, onCellChanged)}
             {location.row.idx === 0 && location.column.resizable && <ResizeHandle />}
@@ -170,5 +171,18 @@ export const CellRenderer: React.FC<CellRendererProps> = ({
                 <span className="rg-groupId">{cell.groupId}</span>
             )}
         </div>
+        {isHovered &&
+        <div
+            className='rg-restraint-container'
+        >
+            {cell.restraintMessages?.map((message: string)=>(
+                <span key={message}>
+    s                {message}
+                </span>
+        ))}
+        </div>
+        }
+        </>
+        
     );
 };
