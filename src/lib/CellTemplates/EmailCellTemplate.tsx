@@ -30,9 +30,10 @@ export class EmailCellTemplate implements CellTemplate<EmailCell> {
     ctrl: boolean,
     shift: boolean,
     alt: boolean,
-    key: string
+    key: string,
+    capsLock: boolean
   ): { cell: Compatible<EmailCell>; enableEditMode: boolean } {
-    const char = getCharFromKey(key, shift);
+    const char = getCharFromKey(key, shift, capsLock);
 
     if (!ctrl && !alt && isAlphaNumericKey(keyCode) && !(shift && keyCode === keyCodes.SPACE))
       return { cell: { ...cell, text: char }, enableEditMode: true };

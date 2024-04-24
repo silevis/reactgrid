@@ -41,9 +41,10 @@ export class TextCellTemplate implements CellTemplate<TextCell> {
     ctrl: boolean,
     shift: boolean,
     alt: boolean,
-    key: string
+    key: string,
+    capsLock: boolean
   ): { cell: Compatible<TextCell>; enableEditMode: boolean } {
-    const char = getCharFromKey(key, shift);
+    const char = getCharFromKey(key, shift, capsLock);
 
     if (!ctrl && !alt && isAlphaNumericKey(keyCode) && !(shift && keyCode === keyCodes.SPACE))
       return { cell: this.getCompatibleCell({ ...cell, text: char }), enableEditMode: true };

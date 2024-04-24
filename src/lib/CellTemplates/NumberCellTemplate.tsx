@@ -49,7 +49,8 @@ export class NumberCellTemplate implements CellTemplate<NumberCell> {
     ctrl: boolean,
     shift: boolean,
     alt: boolean,
-    key: string
+    key: string,
+    capsLock: boolean
   ): { cell: Compatible<NumberCell>; enableEditMode: boolean } {
     if (isNumpadNumericKey(keyCode)) keyCode -= 48;
     const char = getCharFromKey(key);

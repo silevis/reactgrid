@@ -31,7 +31,8 @@ export class DateCellTemplate implements CellTemplate<DateCell> {
     ctrl: boolean,
     shift: boolean,
     alt: boolean,
-    key: string
+    key: string,
+    capsLock: boolean
   ): { cell: Compatible<DateCell>; enableEditMode: boolean } {
     if (!ctrl && isCharAlphaNumeric(getCharFromKey(key)))
       return { cell: this.getCompatibleCell({ ...cell }), enableEditMode: true };
