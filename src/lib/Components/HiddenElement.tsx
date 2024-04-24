@@ -4,9 +4,7 @@ interface HiddenElementProps {
   hiddenElementRefHandler: (hiddenFocusElement: HTMLInputElement) => void;
 }
 
-export const HiddenElement: React.FC<HiddenElementProps> = ({
-  hiddenElementRefHandler,
-}) => {
+export const HiddenElement: React.FC<HiddenElementProps> = ({ hiddenElementRefHandler }) => {
   const { hiddenFocusElement } = useReactGridState();
   return (
     <input

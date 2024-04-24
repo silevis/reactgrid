@@ -13,6 +13,11 @@ import {
 import { Range } from './Range';
 
 /**
+ * `Range` is a class. This class represents a rectangular area with a width, height, upper-left position, and lower-right position.
+ */
+export { Range }
+
+/**
  * `SelectionMode` is a marker for currect selection mode
  * 
  * @see https://reactgrid.com/docs/3.1/7-api/1-types/7-selection-mode/
@@ -202,6 +207,8 @@ export interface ReactGridProps {
      */
     readonly canReorderRows?: (targetRowId: Id, rowIds: Id[], dropPosition: DropPosition) => boolean;
 }
+
+
 
 /**
  * Describes set of text labels used by ReactGrids internal i18n module.
@@ -609,3 +616,8 @@ export interface MenuOption {
      */
     handler: (selectedRowIds: Id[], selectedColIds: Id[], selectionMode: SelectionMode, selectedRanges: Array<CellLocation[]>) => void;
 }
+
+export interface ReactGridInstance extends React.Component<ReactGridProps, any, any> {
+    /** This method is used to clear the selected item */
+    clearSelections(): void;
+    }

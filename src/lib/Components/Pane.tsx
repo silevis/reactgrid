@@ -65,7 +65,7 @@ function renderHighlights(state: State, range: Range) {
         try {
             const location = state.cellMatrix.getLocationById(highlight.rowId, highlight.columnId);
             return location && range.contains(location) &&
-                <CellHighlight key={id} location={location} state={state} borderColor={highlight.borderColor} />;
+                <CellHighlight key={id} location={location} state={state} borderColor={highlight.borderColor} className={highlight.className} />;
         } catch (error) {
             console.error(`Cell location fot found while rendering highlights at: ${(error as Error).message}`);
             return null;
