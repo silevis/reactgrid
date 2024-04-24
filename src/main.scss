@@ -72,14 +72,17 @@
                 right: 4px;
                 top: 4px;
             }
-
-            .rg-restraint-container {
-                border: solid black 1px;
-                position: absolute;
-                z-index: 10;
-            }
-            
         }
+
+        .rg-restraint-container {
+            border: solid black 1px;
+            position: absolute;
+            background-color: aliceblue;
+            max-width: 200px;
+            padding: 4px;
+            z-index: 2000;
+        }
+
         .rg-cell-focus,
         .rg-cell-highlight {
             position: absolute;

@@ -142,31 +142,13 @@
     &.rg-dropdown-cell {
         padding: 0;
         overflow: visible;
-        .rg-dropdown-menu {
-            top: 100%;
-            background-color: $dropdown-menu-bg-color;
-            border-radius: 4px;
-            box-shadow: 0px 0px 7px rgba(0, 0, 0, 0.5);
-            margin-bottom: 8px;
-            margin-top: 2px;
-            position: absolute;
-            width: 100%;
-            z-index: 1;
-            box-sizing: border-box;
+
+        .rg-dropdown-hidden{
+            width: 70%;
+            overflow: hidden;
         }
-        .rg-dropdown-option {
-            padding: 0.3em 0.5em;
-            min-height: 1.5em;
-            display: flex;
-            align-items: center;
-            &.selected::before {
-                content: "✓";
-                padding-right: 0.2em;
-            }
-            &.focused {
-                color: black;
-                background-color: $dropdown-focused-item-bg-color;
-            }
+        .rg-dropdown-editor{
+            width: 70%;
         }
         .rg-dropdown-toggle {
             border: solid $cell-border-color;
@@ -189,6 +171,15 @@
             z-index: 10;
             padding-left: 0;
             margin-left: 0;
+            top: 100%;
+            background-color: $dropdown-menu-bg-color;
+            border-radius: 4px;
+            box-shadow: 0px 0px 7px rgba(0, 0, 0, 0.5);
+            margin-bottom: 8px;
+            margin-top: 2px;
+            position: absolute;
+            width: 100%;
+            box-sizing: border-box;
         }
         .rg-dropdown-item {
             border-bottom: solid 1px black;

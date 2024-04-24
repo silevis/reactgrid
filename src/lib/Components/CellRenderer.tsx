@@ -107,7 +107,7 @@ export const CellRenderer: React.FC<CellRendererProps> = ({
         borderColor: !isValid ? "red" : "",
         borderWidth: !isValid ? "1px" : "",
         borderTopStyle: !isValid ? "solid": "unset",
-        borderLeftStyle: !isValid ? "solid": "unset"
+        borderLeftStyle: !isValid ? "solid": "unset",
     } as React.CSSProperties;
 
     const isInEditMode = isFocused && !!currentlyEditedCellRef.current;
@@ -120,6 +120,9 @@ export const CellRenderer: React.FC<CellRendererProps> = ({
     const classNames = `rg-cell${cellClassNames}${groupIdClassName}${nonEditableClassName} ${customClass} ${invalidClassName}`;
     const cellToRender =
         isFocused && currentlyEditedCellRef.current && isMobile ? currentlyEditedCellRef.current : cell;
+
+    const [isOpen, setIsOpen] = React.useState(false)
+    const messageRef = React.useRef<any>(null)
 
     const onCellChanged = React.useCallback(
         (cell: Compatible<Cell>, commit: boolean) => {
@@ -134,6 +137,33 @@ export const CellRenderer: React.FC<CellRendererProps> = ({
         [isInEditMode, location, update, currentlyEditedCellRef]
     );
     
+    const handleMouseEnter = debounce(() =>{
+        if(isOpen || isInEditMode) return
+        setIsHovered(true)
+        setIsOpen(true)
+    }, 1000)
+
+    const handleMouseLeave = React.useCallback(() => {
+        setIsHovered(false)
+        handleMouseEnter.clear()
+        setIsOpen(false)
+    },[handleMouseEnter])
+
+    React.useEffect(() => {
+        const handleClickOutside = (event: MouseEvent) => {
+            if (messageRef.current && !messageRef.current.contains(event.target as Node)) {
+                setIsOpen(false);
+            }
+        };
+
+        if (isOpen) {
+            document.addEventListener('mousedown', handleClickOutside);
+            return () => {
+                document.removeEventListener('mousedown', handleClickOutside);
+            };
+        }
+    }, [isOpen]);
+
     React.useEffect(()=>{
         if (validateCellContext(cell.type, cell.maxLength, cell.restraintType, cell.text)){
             cell.isValid = true
@@ -143,15 +173,12 @@ export const CellRenderer: React.FC<CellRendererProps> = ({
             setIsValid(false)
         }
     }, [isValid, cell])
-    
-    const handleMouseEnter = debounce(() =>{
-        setIsHovered(true)
-    }, 500)
 
-    const handleMouseLeave = () => {
-        setIsHovered(false)
-        handleMouseEnter.clear()
-    }
+    React.useEffect(()=>{
+        if(isInEditMode){
+            handleMouseLeave()
+        }
+    }, [isInEditMode, handleMouseLeave])
 
     return (
         <>
@@ -170,16 +197,28 @@ export const CellRenderer: React.FC<CellRendererProps> = ({
             {state.enableGroupIdRender && cell?.groupId !== undefined && !(isInEditMode && isMobile) && (
                 <span className="rg-groupId">{cell.groupId}</span>
             )}
+            
         </div>
-        {isHovered &&
+        {isHovered && isOpen && cell.restraintMessages &&
         <div
             className='rg-restraint-container'
+            ref={messageRef}
+            style={{ 
+                     top:`${location.row.top + range.height}px`,
+                     left: location.column.left
+                    }}
         >
-            {cell.restraintMessages?.map((message: string)=>(
-                <span key={message}>
-    s                {message}
+            {cell.restraintMessages.map((message: string, index: number)=>(
+                <React.Fragment key={message}>
+                <span>
+                   - {message}
                 </span>
-        ))}
+                {cell.restraintMessages && index < cell.restraintMessages.length - 1 &&
+                <br />
+                }
+                </React.Fragment>
+                
+            ))}
         </div>
         }
         </>

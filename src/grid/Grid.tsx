@@ -330,7 +330,7 @@ const getRows = (data:any[]): Row<GridCells>[] => [
                   height: config.fillViewport ? `calc(100vh - 30px)` : config.rgViewportHeight,
                   width: config.fillViewport ? `calc(100vw - 45px)` : config.rgViewportWidth,
                   margin: config.margin,
-                  overflow: 'hidden',
+                  overflowY: 'scroll',
               }),
               position: 'relative',
               ...(config.flexRow && {

@@ -10,7 +10,7 @@ export const config: TestConfig = {
     flexRow: false,
 
     rgViewportHeight: 600,
-    rgViewportWidth: 1150,
+    rgViewportWidth: 800,
     margin: '0',
     enableRangeSelection: true,
     enableFillHandle: true,

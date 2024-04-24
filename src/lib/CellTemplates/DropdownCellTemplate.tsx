@@ -82,7 +82,11 @@ export class DropdownCellTemplate implements CellTemplate<DropdownCell> {
             const textToDisplay = !isValid && cell.errorMessage ? cell.errorMessage : cellText;
             return (
                 <>
-                    {cell.renderer ? cell.renderer(textToDisplay) : textToDisplay}
+                    <div
+                    className='rg-dropdown-hidden'
+                    >
+                        {cell.renderer ? cell.renderer(textToDisplay) : textToDisplay}
+                    </div>
                     <DropdownInput
                         onCellChanged={(cell) => onCellChanged(this.getCompatibleCell(cell), true)} 
                         cell={cell} 
@@ -93,8 +97,7 @@ export class DropdownCellTemplate implements CellTemplate<DropdownCell> {
 
         return (
             <input
-                style={{width: '70%'}}
-                //className='rg-dropdown-input'
+                className='rg-dropdown-editor'
                 ref={input => {
                     if (input) {
                         input.focus();
