@@ -15,6 +15,7 @@ function getLocaleSeparators(locale: string) {
 }
 
 export function parseLocaleNumber(stringNumber: string, locale = getNavigatorLanguage()): number {
+  if (!stringNumber.trim()) return NaN;
   const { thousandsSeparator, decimalSeparator } = getLocaleSeparators(locale);
   const normalizedStringNumber = stringNumber.replace(/\u00A0/g, " "); // Replace non-breaking space with normal space
   const numberString = normalizedStringNumber
