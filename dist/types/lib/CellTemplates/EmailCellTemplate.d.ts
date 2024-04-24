@@ -1,7 +1,7 @@
-import * as React from 'react';
-import { Cell, CellTemplate, Compatible, Uncertain, UncertainCompatible } from '../Model/PublicModel';
+import * as React from "react";
+import { Cell, CellTemplate, Compatible, Uncertain, UncertainCompatible } from "../Model/PublicModel";
 export interface EmailCell extends Cell {
-    type: 'email';
+    type: "email";
     text: string;
     validator?: (text: string) => boolean;
     renderer?: (text: string) => React.ReactNode;
@@ -10,7 +10,7 @@ export interface EmailCell extends Cell {
 export declare class EmailCellTemplate implements CellTemplate<EmailCell> {
     private wasEscKeyPressed;
     getCompatibleCell(uncertainCell: Uncertain<EmailCell>): Compatible<EmailCell>;
-    handleKeyDown(cell: Compatible<EmailCell>, keyCode: number, ctrl: boolean, shift: boolean, alt: boolean, key: string): {
+    handleKeyDown(cell: Compatible<EmailCell>, keyCode: number, ctrl: boolean, shift: boolean, alt: boolean, key: string, capsLock: boolean): {
         cell: Compatible<EmailCell>;
         enableEditMode: boolean;
     };

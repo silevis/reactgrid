@@ -1,14 +1,14 @@
-import * as React from 'react';
-import { Cell, CellTemplate, Compatible, Uncertain, UncertainCompatible } from '../Model/PublicModel';
+import * as React from "react";
+import { Cell, CellTemplate, Compatible, Uncertain, UncertainCompatible } from "../Model/PublicModel";
 export interface DateCell extends Cell {
-    type: 'date';
+    type: "date";
     date?: Date;
     format?: Intl.DateTimeFormat;
 }
 export declare class DateCellTemplate implements CellTemplate<DateCell> {
     private wasEscKeyPressed;
     getCompatibleCell(uncertainCell: Uncertain<DateCell>): Compatible<DateCell>;
-    handleKeyDown(cell: Compatible<DateCell>, keyCode: number, ctrl: boolean, shift: boolean, alt: boolean, key: string): {
+    handleKeyDown(cell: Compatible<DateCell>, keyCode: number, ctrl: boolean, shift: boolean, alt: boolean, key: string, capsLock: boolean): {
         cell: Compatible<DateCell>;
         enableEditMode: boolean;
     };

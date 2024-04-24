@@ -1,7 +1,7 @@
-import * as React from 'react';
-import { Cell, CellTemplate, Compatible, Uncertain, UncertainCompatible } from '../Model/PublicModel';
+import * as React from "react";
+import { Cell, CellTemplate, Compatible, Uncertain, UncertainCompatible } from "../Model/PublicModel";
 export interface TextCell extends Cell {
-    type: 'text';
+    type: "text";
     text: string;
     placeholder?: string;
     validator?: (text: string) => boolean;
@@ -12,7 +12,7 @@ export declare class TextCellTemplate implements CellTemplate<TextCell> {
     private wasEscKeyPressed;
     getCompatibleCell(uncertainCell: Uncertain<TextCell>): Compatible<TextCell>;
     update(cell: Compatible<TextCell>, cellToMerge: UncertainCompatible<TextCell>): Compatible<TextCell>;
-    handleKeyDown(cell: Compatible<TextCell>, keyCode: number, ctrl: boolean, shift: boolean, alt: boolean, key: string): {
+    handleKeyDown(cell: Compatible<TextCell>, keyCode: number, ctrl: boolean, shift: boolean, alt: boolean, key: string, capsLock: boolean): {
         cell: Compatible<TextCell>;
         enableEditMode: boolean;
     };

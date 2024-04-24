@@ -18,7 +18,7 @@
     border-color: $cell-editor-border-color;
     border-width: $celleditor-border-width;
     padding: $cell-padding;
-    input {
+    .rg-input {
         @extend .rg-celleditor-input;
     }
 }

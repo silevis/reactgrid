@@ -17,7 +17,7 @@ export declare class DropdownCellTemplate implements CellTemplate<DropdownCell> 
     getCompatibleCell(uncertainCell: Uncertain<DropdownCell>): Compatible<DropdownCell>;
     update(cell: Compatible<DropdownCell>, cellToMerge: UncertainCompatible<DropdownCell>): Compatible<DropdownCell>;
     getClassName(cell: Compatible<DropdownCell>, isInEditMode: boolean): string;
-    handleKeyDown(cell: Compatible<DropdownCell>, keyCode: number, ctrl: boolean, shift: boolean, alt: boolean, key: string): {
+    handleKeyDown(cell: Compatible<DropdownCell>, keyCode: number, ctrl: boolean, shift: boolean, alt: boolean, key: string, capsLock: boolean): {
         cell: Compatible<DropdownCell>;
         enableEditMode: boolean;
     };

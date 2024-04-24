@@ -2,7 +2,7 @@
 import * as React$1 from 'react';
 
 interface CheckboxCell extends Cell {
-    type: 'checkbox';
+    type: "checkbox";
     checked: boolean;
     checkedText?: string;
     uncheckedText?: string;
@@ -20,14 +20,14 @@ declare class CheckboxCellTemplate implements CellTemplate<CheckboxCell> {
 }
 
 interface DateCell extends Cell {
-    type: 'date';
+    type: "date";
     date?: Date;
     format?: Intl.DateTimeFormat;
 }
 declare class DateCellTemplate implements CellTemplate<DateCell> {
     private wasEscKeyPressed;
     getCompatibleCell(uncertainCell: Uncertain<DateCell>): Compatible<DateCell>;
-    handleKeyDown(cell: Compatible<DateCell>, keyCode: number, ctrl: boolean, shift: boolean, alt: boolean, key: string): {
+    handleKeyDown(cell: Compatible<DateCell>, keyCode: number, ctrl: boolean, shift: boolean, alt: boolean, key: string, capsLock: boolean): {
         cell: Compatible<DateCell>;
         enableEditMode: boolean;
     };
@@ -37,7 +37,7 @@ declare class DateCellTemplate implements CellTemplate<DateCell> {
 }
 
 interface EmailCell extends Cell {
-    type: 'email';
+    type: "email";
     text: string;
     validator?: (text: string) => boolean;
     renderer?: (text: string) => React$1.ReactNode;
@@ -46,7 +46,7 @@ interface EmailCell extends Cell {
 declare class EmailCellTemplate implements CellTemplate<EmailCell> {
     private wasEscKeyPressed;
     getCompatibleCell(uncertainCell: Uncertain<EmailCell>): Compatible<EmailCell>;
-    handleKeyDown(cell: Compatible<EmailCell>, keyCode: number, ctrl: boolean, shift: boolean, alt: boolean, key: string): {
+    handleKeyDown(cell: Compatible<EmailCell>, keyCode: number, ctrl: boolean, shift: boolean, alt: boolean, key: string, capsLock: boolean): {
         cell: Compatible<EmailCell>;
         enableEditMode: boolean;
     };
@@ -60,7 +60,7 @@ declare class EmailCellTemplate implements CellTemplate<EmailCell> {
 }
 
 interface ChevronCell extends Cell {
-    type: 'chevron';
+    type: "chevron";
     text: string;
     isExpanded?: boolean;
     hasChildren?: boolean;
@@ -71,7 +71,7 @@ declare class ChevronCellTemplate implements CellTemplate<ChevronCell> {
     private wasEscKeyPressed;
     getCompatibleCell(uncertainCell: Uncertain<ChevronCell>): Compatible<ChevronCell>;
     update(cell: Compatible<ChevronCell>, cellToMerge: UncertainCompatible<ChevronCell>): Compatible<ChevronCell>;
-    handleKeyDown(cell: Compatible<ChevronCell>, keyCode: number, ctrl: boolean, shift: boolean, alt: boolean, key: string): {
+    handleKeyDown(cell: Compatible<ChevronCell>, keyCode: number, ctrl: boolean, shift: boolean, alt: boolean, key: string, capsLock: boolean): {
         cell: Compatible<ChevronCell>;
         enableEditMode: boolean;
     };
@@ -97,7 +97,7 @@ declare class HeaderCellTemplate implements CellTemplate<HeaderCell> {
 }
 
 interface NumberCell extends Cell {
-    type: 'number';
+    type: "number";
     value: number;
     format?: Intl.NumberFormat;
     validator?: (value: number) => boolean;
@@ -108,7 +108,7 @@ interface NumberCell extends Cell {
 declare class NumberCellTemplate implements CellTemplate<NumberCell> {
     private wasEscKeyPressed;
     getCompatibleCell(uncertainCell: Uncertain<NumberCell>): Compatible<NumberCell>;
-    handleKeyDown(cell: Compatible<NumberCell>, keyCode: number, ctrl: boolean, shift: boolean, alt: boolean, key: string): {
+    handleKeyDown(cell: Compatible<NumberCell>, keyCode: number, ctrl: boolean, shift: boolean, alt: boolean, key: string, capsLock: boolean): {
         cell: Compatible<NumberCell>;
         enableEditMode: boolean;
     };
@@ -119,7 +119,7 @@ declare class NumberCellTemplate implements CellTemplate<NumberCell> {
 }
 
 interface TextCell extends Cell {
-    type: 'text';
+    type: "text";
     text: string;
     placeholder?: string;
     validator?: (text: string) => boolean;
@@ -130,7 +130,7 @@ declare class TextCellTemplate implements CellTemplate<TextCell> {
     private wasEscKeyPressed;
     getCompatibleCell(uncertainCell: Uncertain<TextCell>): Compatible<TextCell>;
     update(cell: Compatible<TextCell>, cellToMerge: UncertainCompatible<TextCell>): Compatible<TextCell>;
-    handleKeyDown(cell: Compatible<TextCell>, keyCode: number, ctrl: boolean, shift: boolean, alt: boolean, key: string): {
+    handleKeyDown(cell: Compatible<TextCell>, keyCode: number, ctrl: boolean, shift: boolean, alt: boolean, key: string, capsLock: boolean): {
         cell: Compatible<TextCell>;
         enableEditMode: boolean;
     };
@@ -143,7 +143,7 @@ declare class TextCellTemplate implements CellTemplate<TextCell> {
 }
 
 interface TimeCell extends Cell {
-    type: 'time';
+    type: "time";
     time?: Date;
     format?: Intl.DateTimeFormat;
 }
@@ -178,7 +178,7 @@ declare class DropdownCellTemplate implements CellTemplate<DropdownCell> {
     getCompatibleCell(uncertainCell: Uncertain<DropdownCell>): Compatible<DropdownCell>;
     update(cell: Compatible<DropdownCell>, cellToMerge: UncertainCompatible<DropdownCell>): Compatible<DropdownCell>;
     getClassName(cell: Compatible<DropdownCell>, isInEditMode: boolean): string;
-    handleKeyDown(cell: Compatible<DropdownCell>, keyCode: number, ctrl: boolean, shift: boolean, alt: boolean, key: string): {
+    handleKeyDown(cell: Compatible<DropdownCell>, keyCode: number, ctrl: boolean, shift: boolean, alt: boolean, key: string, capsLock: boolean): {
         cell: Compatible<DropdownCell>;
         enableEditMode: boolean;
     };
@@ -256,7 +256,7 @@ declare const isCharAllowedOnNumberInput: (char: string) => boolean;
 declare const isNavigationKey: (keyCode: number) => boolean;
 
 declare const getCharFromKeyCode: (keyCode: number, isShiftKey?: boolean) => string;
-declare const getCharFromKey: (key: string, isShiftKey?: boolean) => string;
+declare const getCharFromKey: (key: string, isShiftKey?: boolean, isCapsLock?: boolean) => string;
 
 type SliceDirection = 'columns' | 'rows' | 'both';
 declare class Range {
@@ -598,9 +598,10 @@ interface CellTemplate<TCell extends Cell = Cell> {
      * @param {boolean} shift Is `shift` pressed when event is called
      * @param {boolean} alt Is `alt` pressed when event is called
      * @param {string} [key] Represents the value of the key pressed by the user. Optional for backwards compatibility.
+     * @param {boolean} capsLock Is caps lock active when event is called. Optional for backwards compatibility.
      * @returns {{ cell: Compatible<TCell>; enableEditMode: boolean }} Cell data and edit mode either affected by the event or not
     */
-    handleKeyDown?(cell: Compatible<TCell>, keyCode: number, ctrl: boolean, shift: boolean, alt: boolean, key?: string): {
+    handleKeyDown?(cell: Compatible<TCell>, keyCode: number, ctrl: boolean, shift: boolean, alt: boolean, key?: string, capsLock?: boolean): {
         cell: Compatible<TCell>;
         enableEditMode: boolean;
     };
@@ -806,6 +807,10 @@ interface MenuOption {
      * @returns {void}
      */
     handler: (selectedRowIds: Id[], selectedColIds: Id[], selectionMode: SelectionMode, selectedRanges: Array<CellLocation[]>) => void;
+}
+interface ReactGridInstance extends React.Component<ReactGridProps, any, any> {
+    /** This method is used to clear the selected item */
+    clearSelections(): void;
 }
 
 type ClipboardEvent = React$1.ClipboardEvent<HTMLDivElement>;
@@ -1085,10 +1090,11 @@ declare class ReactGrid extends React$1.Component<ReactGridProps, State> {
     private cellMatrixBuilder;
     state: State;
     static getDerivedStateFromProps(props: ReactGridProps, state: State): State | null;
+    clearSelections: () => void;
     componentDidUpdate(prevProps: ReactGridProps, prevState: State): void;
     componentDidMount(): void;
     componentWillUnmount(): void;
     render(): React$1.ReactNode;
 }
 
-export { BorderProps, Cell, CellChange, CellLocation, CellStyle, CellTemplate, CellTemplates, CheckboxCell, CheckboxCellTemplate, ChevronCell, ChevronCellTemplate, Column, Compatible, DateCell, DateCellTemplate, DefaultCellTypes, DropPosition, DropdownCell, DropdownCellTemplate, EmailCell, EmailCellTemplate, HeaderCell, HeaderCellTemplate, Highlight, Id, MenuOption, NumberCell, NumberCellTemplate, OptionType, Range, ReactGrid, ReactGridProps, Row, SelectionMode, Span, TextCell, TextCellTemplate, TextLabels, TimeCell, TimeCellTemplate, Uncertain, UncertainCompatible, getCellProperty, getCharFromKey, getCharFromKeyCode, inNumericKey, isAllowedOnNumberTypingKey, isAlphaNumericKey, isCharAllowedOnNumberInput, isCharAlphaNumeric, isKeyPrintable, isNavigationKey, isNumpadNumericKey, keyCodes };
+export { BorderProps, Cell, CellChange, CellLocation, CellStyle, CellTemplate, CellTemplates, CheckboxCell, CheckboxCellTemplate, ChevronCell, ChevronCellTemplate, Column, Compatible, DateCell, DateCellTemplate, DefaultCellTypes, DropPosition, DropdownCell, DropdownCellTemplate, EmailCell, EmailCellTemplate, HeaderCell, HeaderCellTemplate, Highlight, Id, MenuOption, NumberCell, NumberCellTemplate, OptionType, Range, ReactGrid, ReactGridInstance, ReactGridProps, Row, SelectionMode, Span, TextCell, TextCellTemplate, TextLabels, TimeCell, TimeCellTemplate, Uncertain, UncertainCompatible, getCellProperty, getCharFromKey, getCharFromKeyCode, inNumericKey, isAllowedOnNumberTypingKey, isAlphaNumericKey, isCharAllowedOnNumberInput, isCharAlphaNumeric, isKeyPrintable, isNavigationKey, isNumpadNumericKey, keyCodes };

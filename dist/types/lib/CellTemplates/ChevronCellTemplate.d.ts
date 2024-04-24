@@ -1,7 +1,7 @@
-import * as React from 'react';
-import { Cell, CellStyle, CellTemplate, Compatible, Id, Uncertain, UncertainCompatible } from '../Model/PublicModel';
+import * as React from "react";
+import { Cell, CellStyle, CellTemplate, Compatible, Id, Uncertain, UncertainCompatible } from "../Model/PublicModel";
 export interface ChevronCell extends Cell {
-    type: 'chevron';
+    type: "chevron";
     text: string;
     isExpanded?: boolean;
     hasChildren?: boolean;
@@ -12,7 +12,7 @@ export declare class ChevronCellTemplate implements CellTemplate<ChevronCell> {
     private wasEscKeyPressed;
     getCompatibleCell(uncertainCell: Uncertain<ChevronCell>): Compatible<ChevronCell>;
     update(cell: Compatible<ChevronCell>, cellToMerge: UncertainCompatible<ChevronCell>): Compatible<ChevronCell>;
-    handleKeyDown(cell: Compatible<ChevronCell>, keyCode: number, ctrl: boolean, shift: boolean, alt: boolean, key: string): {
+    handleKeyDown(cell: Compatible<ChevronCell>, keyCode: number, ctrl: boolean, shift: boolean, alt: boolean, key: string, capsLock: boolean): {
         cell: Compatible<ChevronCell>;
         enableEditMode: boolean;
     };

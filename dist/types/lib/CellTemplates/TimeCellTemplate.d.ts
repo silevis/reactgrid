@@ -1,7 +1,7 @@
-import * as React from 'react';
-import { Cell, CellTemplate, Compatible, Uncertain, UncertainCompatible } from '../Model/PublicModel';
+import * as React from "react";
+import { Cell, CellTemplate, Compatible, Uncertain, UncertainCompatible } from "../Model/PublicModel";
 export interface TimeCell extends Cell {
-    type: 'time';
+    type: "time";
     time?: Date;
     format?: Intl.DateTimeFormat;
 }

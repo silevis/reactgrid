@@ -9,6 +9,7 @@ export declare class ReactGrid extends React.Component<ReactGridProps, State> {
     private cellMatrixBuilder;
     state: State;
     static getDerivedStateFromProps(props: ReactGridProps, state: State): State | null;
+    clearSelections: () => void;
     componentDidUpdate(prevProps: ReactGridProps, prevState: State): void;
     componentDidMount(): void;
     componentWillUnmount(): void;

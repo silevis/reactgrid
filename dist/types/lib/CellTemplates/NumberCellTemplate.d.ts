@@ -1,7 +1,7 @@
-import * as React from 'react';
-import { Cell, CellTemplate, Compatible, Uncertain, UncertainCompatible } from '../Model/PublicModel';
+import * as React from "react";
+import { Cell, CellTemplate, Compatible, Uncertain, UncertainCompatible } from "../Model/PublicModel";
 export interface NumberCell extends Cell {
-    type: 'number';
+    type: "number";
     value: number;
     format?: Intl.NumberFormat;
     validator?: (value: number) => boolean;
@@ -12,7 +12,7 @@ export interface NumberCell extends Cell {
 export declare class NumberCellTemplate implements CellTemplate<NumberCell> {
     private wasEscKeyPressed;
     getCompatibleCell(uncertainCell: Uncertain<NumberCell>): Compatible<NumberCell>;
-    handleKeyDown(cell: Compatible<NumberCell>, keyCode: number, ctrl: boolean, shift: boolean, alt: boolean, key: string): {
+    handleKeyDown(cell: Compatible<NumberCell>, keyCode: number, ctrl: boolean, shift: boolean, alt: boolean, key: string, capsLock: boolean): {
         cell: Compatible<NumberCell>;
         enableEditMode: boolean;
     };

@@ -7,5 +7,6 @@ export declare class ColumnSelectionBehavior extends Behavior {
     initialColumn: GridColumn;
     handlePointerDown(event: PointerEvent, location: Location, state: State): State;
     handlePointerEnter(event: PointerEvent, location: Location, state: State): State;
+    handlePointerUp(event: MouseEvent | PointerEvent, location: Location, state: State): State;
     handleContextMenu(event: PointerEvent, state: State): State;
 }
