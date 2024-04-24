@@ -2,7 +2,7 @@
 import React from "react";
 import {
     Column, Row, Id, MenuOption, SelectionMode, DropPosition, CellLocation,
-    DefaultCellTypes, CellChange, ReactGridProps, TextCell, NumberCell, CellStyle, HeaderCell, ChevronCell, Range
+    DefaultCellTypes, CellChange, ReactGridProps, TextCell, NumberCell, CellStyle, HeaderCell, ChevronCell, Range, ReactGridInstance
 } from './../reactgrid';
 import { TestConfig } from './testEnvConfig';
 import '../styles.scss';
@@ -12,6 +12,7 @@ import { FlagCell, FlagCellTemplate } from './flagCell/FlagCellTemplate';
 type TestGridCells = DefaultCellTypes | FlagCell;
 
 type TestGridRow = Row<TestGridCells>;
+
 
 interface TestGridProps {
   enableSticky?: boolean;
@@ -65,6 +66,7 @@ const style: CellStyle = {
 };
 
 export const TestGrid: React.FC<TestGridProps> = (props) => {
+  const reactGridRef = React.useRef<ReactGridInstance>(null);
   const {
     config,
     component,
@@ -487,6 +489,12 @@ export const TestGrid: React.FC<TestGridProps> = (props) => {
     return !ranges.some(range => doesRangeContainLocationByIdx(range, BANNED_LOCATION));
   };
 
+  const handleClearSelections = () => {
+    if (reactGridRef.current) {
+      reactGridRef.current.clearSelections();
+    }
+  };
+
   const Component = component;
   return (
       <>
@@ -510,7 +518,9 @@ export const TestGrid: React.FC<TestGridProps> = (props) => {
                       <Logo width={config.rgViewportWidth} />
                   </div>
               }
+              <button onClick={handleClearSelections}>Clear Selections</button>
               {render && <Component
+                  ref={reactGridRef}
                   rows={rows}
                   columns={columns}
                   initialFocusLocation={config.initialFocusLocation}

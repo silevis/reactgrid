@@ -15,6 +15,7 @@ function getLocaleSeparators(locale: string) {
 }
 
 export function parseLocaleNumber(stringNumber: string, locale = getNavigatorLanguage()): number {
+  if (!stringNumber.trim()) return NaN;
   const { thousandsSeparator, decimalSeparator } = getLocaleSeparators(locale);
   const normalizedStringNumber = stringNumber.replace(/\u00A0/g, " "); // Replace non-breaking space with normal space
   const numberString = normalizedStringNumber
@@ -22,6 +23,8 @@ export function parseLocaleNumber(stringNumber: string, locale = getNavigatorLan
     .replace(new RegExp(`\\${decimalSeparator}`, "g"), "."); // Replace decimal separator
 
   const trimmedNumberString = numberString.replace(/^(?!-)\D+|\D+$/g, ""); // Remove characters before first and after last number, but keep negative sign
-
+  if (trimmedNumberString === null || trimmedNumberString.trim().length === 0) {
+    return NaN;
+  }
   return Number(trimmedNumberString);
 }

@@ -208,6 +208,8 @@ export interface ReactGridProps {
     readonly canReorderRows?: (targetRowId: Id, rowIds: Id[], dropPosition: DropPosition) => boolean;
 }
 
+
+
 /**
  * Describes set of text labels used by ReactGrids internal i18n module.
  * Each text label has its own default value.
@@ -376,6 +378,7 @@ export interface CellTemplate<TCell extends Cell = Cell> {
      * @param {boolean} shift Is `shift` pressed when event is called
      * @param {boolean} alt Is `alt` pressed when event is called
      * @param {string} [key] Represents the value of the key pressed by the user. Optional for backwards compatibility.
+     * @param {boolean} capsLock Is caps lock active when event is called. Optional for backwards compatibility.
      * @returns {{ cell: Compatible<TCell>; enableEditMode: boolean }} Cell data and edit mode either affected by the event or not
     */
     handleKeyDown?(
@@ -384,7 +387,8 @@ export interface CellTemplate<TCell extends Cell = Cell> {
         ctrl: boolean,
         shift: boolean,
         alt: boolean,
-        key?: string
+        key?: string,
+        capsLock?: boolean
     ): { cell: Compatible<TCell>; enableEditMode: boolean };
 
     /** 
@@ -612,3 +616,8 @@ export interface MenuOption {
      */
     handler: (selectedRowIds: Id[], selectedColIds: Id[], selectionMode: SelectionMode, selectedRanges: Array<CellLocation[]>) => void;
 }
+
+export interface ReactGridInstance extends React.Component<ReactGridProps, any, any> {
+    /** This method is used to clear the selected item */
+    clearSelections(): void;
+    }

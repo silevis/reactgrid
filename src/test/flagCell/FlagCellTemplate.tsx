@@ -19,8 +19,8 @@ export class FlagCellTemplate implements CellTemplate<FlagCell> {
         return { ...uncertainCell, text, value };
     }
 
-    handleKeyDown(cell: Compatible<FlagCell>, keyCode: number, ctrl: boolean, shift: boolean, alt: boolean, key: string): { cell: Compatible<FlagCell>, enableEditMode: boolean } {
-        const char = getCharFromKey(key, shift);
+    handleKeyDown(cell: Compatible<FlagCell>, keyCode: number, ctrl: boolean, shift: boolean, alt: boolean, key: string, capsLock: boolean): { cell: Compatible<FlagCell>, enableEditMode: boolean } {
+        const char = getCharFromKey(key, shift, capsLock);
 
         if (!ctrl && !alt && isAlphaNumericKey(keyCode) && !(shift && keyCode === keyCodes.SPACE))
             return { cell: { ...cell, text: char }, enableEditMode: true }
