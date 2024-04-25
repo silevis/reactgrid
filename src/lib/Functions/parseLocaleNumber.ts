@@ -21,10 +21,6 @@ export function parseLocaleNumber(stringNumber: string, locale = getNavigatorLan
   const numberString = normalizedStringNumber
     .replace(new RegExp(`[${thousandsSeparator}\\s]`, "g"), "") // Replace thousands separator and white-space
     .replace(new RegExp(`\\${decimalSeparator}`, "g"), "."); // Replace decimal separator
-
-  const trimmedNumberString = numberString.replace(/^(?!-)\D+|\D+$/g, ""); // Remove characters before first and after last number, but keep negative sign
-  if (trimmedNumberString === null || trimmedNumberString.trim().length === 0) {
-    return NaN;
-  }
-  return Number(trimmedNumberString);
+  
+  return Number(numberString);
 }
