@@ -45,7 +45,10 @@ export function getDataToCopy(
             : text + (prevId === row.rowId ? "\t" : "\n") + validatedText;
         prevId = row.rowId;
         tableCell.setAttribute("data-reactgrid", JSON.stringify(cell));
-        tableCell.style.border = "1px solid #D3D3D3";
+        tableCell.style.color = "initial";
+        tableCell.style.border = "initial";
+        tableCell.style.fontSize = "initial";
+        tableCell.style.backgroundColor = "initial";
         clearCell(state as State, { row, column }, removeValues);
       });
     });
@@ -59,7 +62,7 @@ export function processSingleCell(tableRow: HTMLTableRowElement, state: State, l
     const { cell } = getCompatibleCellAndTemplate(state, location);
     tableCell.textContent = cell.text ? cell.text : ' ';
     tableCell.setAttribute('data-reactgrid', JSON.stringify(cell));
-    tableCell.style.border = '1px solid #D3D3D3';
+    tableCell.style.border = 'initial';
 }
 
 export function createHTMLElements(activeSelectedRange: Range): { div: HTMLDivElement, table: HTMLTableElement, location: Location } {
