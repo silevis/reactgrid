@@ -33,7 +33,6 @@ const DEFAULT_STORE_PROPS: ReactGridStoreProps = {
   selectedArea: { startRowIdx: -1, endRowIdx: -1, startColIdx: -1, endColIdx: -1 },
   fillHandleArea: { startRowIdx: -1, endRowIdx: -1, startColIdx: -1, endColIdx: -1 },
   reactGridRef: undefined,
-  enableFillHandle: false,
   hiddenFocusTargetRef: undefined,
   behaviors: {
     Default: DefaultBehavior(),

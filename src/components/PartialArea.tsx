@@ -93,7 +93,7 @@ export const PartialArea: FC<PartialAreaProps> = React.memo(
 
     const selectedArea = useReactGridStore(id, (store) => store.selectedArea);
     const fillHandleArea = useReactGridStore(id, (store) => store.fillHandleArea);
-    const enableFillHandle = useReactGridStore(id, (store) => store.enableFillHandle);
+    const onFillHandle = useReactGridStore(id, (store) => store.onFillHandle);
     const focusedCell = store.getCellByIndexes(store.focusedLocation.rowIndex, store.focusedLocation.colIndex);
 
     const focusedCellArea = getCellArea(store, focusedCell!);
@@ -117,7 +117,10 @@ export const PartialArea: FC<PartialAreaProps> = React.memo(
 
     const shouldRenderTopBorder =
       areaRange.startRowIdx >= parentPaneRange.startRowIdx &&
-      (!isFillHandle || (isFillHandle && fillHandleArea.startRowIdx !== focusedCellArea.endRowIdx));
+      (!isFillHandle ||
+        (isFillHandle &&
+          fillHandleArea.startRowIdx !== focusedCellArea.endRowIdx &&
+          selectedArea.endRowIdx !== fillHandleArea.startRowIdx));
     const shouldRenderRightBorder =
       areaRange.endColIdx <= parentPaneRange.endColIdx &&
       (!isFillHandle || (isFillHandle && fillHandleArea.endColIdx !== focusedCellArea.startColIdx));
@@ -126,7 +129,10 @@ export const PartialArea: FC<PartialAreaProps> = React.memo(
       (!isFillHandle || (isFillHandle && fillHandleArea.endRowIdx !== focusedCellArea.startRowIdx));
     const shouldRenderLeftBorder =
       areaRange.startColIdx >= parentPaneRange.startColIdx &&
-      (!isFillHandle || (isFillHandle && fillHandleArea.startColIdx !== focusedCellArea.endColIdx));
+      (!isFillHandle ||
+        (isFillHandle &&
+          fillHandleArea.startColIdx !== focusedCellArea.endColIdx &&
+          selectedArea.endColIdx !== fillHandleArea.startColIdx));
 
     let width = "100%";
     let height = "100%";
@@ -186,7 +192,7 @@ export const PartialArea: FC<PartialAreaProps> = React.memo(
 
     let shouldEnableFillHandle = false;
 
-    if (enableFillHandle) {
+    if (onFillHandle) {
       if (currentBehavior.id === FillHandleBehavior.id) {
         shouldEnableFillHandle = false;
       } else {

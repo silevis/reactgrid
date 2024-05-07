@@ -131,8 +131,6 @@ export interface ReactGridProps {
 
   behaviors?: Record<BehaviorId, Behavior>;
 
-  enableFillHandle?: boolean;
-
   initialFocusLocation?: Location;
   initialSelectedRange?: Range;
 

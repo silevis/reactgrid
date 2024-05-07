@@ -1,4 +1,4 @@
-import React, { FC, useRef, useState } from "react";
+import React, { FC, useRef } from "react";
 import { useCellContext } from "../CellContext";
 import CellWrapper from "../CellWrapper";
 import { useDoubleTouch } from "../../hooks/useDoubleTouch";

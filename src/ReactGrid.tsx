@@ -30,7 +30,6 @@ const ReactGrid: FC<ReactGridProps> = ({
   onCut,
   onPaste,
   onCopy,
-  enableFillHandle,
 }) => {
   initReactGridStore(id, {
     rows,
@@ -39,7 +38,6 @@ const ReactGrid: FC<ReactGridProps> = ({
     behaviors,
     userStyles,
     styledRanges,
-    enableFillHandle,
     onFillHandle,
     onAreaSelected,
     onCellFocused,

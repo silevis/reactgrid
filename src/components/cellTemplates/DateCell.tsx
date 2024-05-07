@@ -1,4 +1,4 @@
-import { FC, forwardRef, useRef, useState } from "react";
+import { FC, forwardRef, useEffect, useRef } from "react";
 import CellWrapper from "../CellWrapper";
 import { useCellContext } from "../CellContext";
 import { formatDate } from "../../utils/formatDate";
@@ -6,13 +6,13 @@ import { formatDate } from "../../utils/formatDate";
 interface DefaultCalendarProps {
   date: string;
   setIsInEditMode: (value: boolean) => void;
-  onDateChanged: (newDate: Date) => void;
+  onDateChanged: (data: { date?: Date; text?: string }) => void;
 }
 
 interface DateCellProps {
-  value: Date;
+  value?: Date;
   formatter?: (date: Date) => string;
-  onDateChanged: (newDate: Date) => void;
+  onDateChanged: (data: { date?: Date; text?: string }) => void;
   format?: string;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   Calendar?: { Template: React.ComponentType<any>; props: { [key: string]: any } };
@@ -24,11 +24,17 @@ const DateCell: FC<DateCellProps> = ({ value, onDateChanged, formatter, Calendar
 
   let formattedDate: string | undefined;
 
-  if (!formatter) {
+  if (!value) {
+    formattedDate = "";
+  } else if (!formatter) {
     formattedDate = formatDate(value, "DD-MM-YYYY");
   } else {
     formattedDate = formatter(value);
   }
+
+  useEffect(() => {
+    onDateChanged({ text: formattedDate, date: value });
+  }, [value]);
 
   return (
     <CellWrapper
@@ -57,13 +63,14 @@ const DateCell: FC<DateCellProps> = ({ value, onDateChanged, formatter, Calendar
                 ctx.setEditMode(false);
               } else if (e.key === "Enter") {
                 e.preventDefault();
-                onDateChanged(new Date(e.currentTarget.value));
+                onDateChanged({ date: new Date(e.currentTarget.value) });
                 ctx.setEditMode(false);
               }
             }}
             onBlur={(e: React.PointerEvent<HTMLInputElement>) => {
               const changedDate = e.currentTarget.value;
-              changedDate && onDateChanged(new Date(e.currentTarget.value));
+              changedDate && onDateChanged({ date: new Date(e.currentTarget.value) });
+              ctx.setEditMode(false);
             }}
             onPointerDown={(e: React.PointerEvent<HTMLInputElement>) => e.stopPropagation()}
           />
@@ -103,7 +110,8 @@ const DefaultCalendar = forwardRef(
         }}
         onBlur={(e) => {
           const changedDate = e.currentTarget.value;
-          changedDate && onDateChanged(new Date(e.currentTarget.value));
+          changedDate && onDateChanged({ date: new Date(e.currentTarget.value) });
+          setIsInEditMode(false);
         }}
         onPointerDown={(e) => e.stopPropagation()}
         onKeyDown={(e) => {
@@ -112,7 +120,7 @@ const DefaultCalendar = forwardRef(
             setIsInEditMode(false);
           } else if (e.key === "Enter") {
             e.preventDefault();
-            onDateChanged(new Date(e.currentTarget.value));
+            onDateChanged({ date: new Date(e.currentTarget.value) });
             setIsInEditMode(false);
           }
         }}

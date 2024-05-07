@@ -1,10 +1,10 @@
-import { FC, useRef, useState } from "react";
+import { FC, useRef } from "react";
 import CellWrapper from "../CellWrapper";
 import { useCellContext } from "../CellContext";
 import { useDoubleTouch } from "../../hooks/useDoubleTouch";
 
 interface TextCellProps {
-  value: string;
+  value?: string;
   onTextChanged: (newText: string) => void;
   reverse?: boolean;
 }
@@ -71,7 +71,7 @@ const TextCell: FC<TextCellProps> = ({ value: initialValue, onTextChanged, rever
           ref={targetInputRef}
         />
       ) : reverse ? (
-        initialValue.split?.("").reverse().join("")
+        initialValue?.split?.("").reverse().join("")
       ) : (
         initialValue
       )}
