@@ -215,5 +215,5 @@ const CustomOption: React.FC<OptionProps<OptionType, false>> = ({ innerProps, la
 );
 
 const CustomMenu: React.FC<MenuProps<OptionType, false>> = ({ innerProps, children }) => (
-    <div {...innerProps} className='rg-dropdown-menu'>{children}</div>
+    <div {...innerProps} className='rg-dropdown-menu' onPointerDown={e => e.stopPropagation()}>{children}</div>
 );
