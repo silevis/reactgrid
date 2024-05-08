@@ -39,12 +39,9 @@ export function handlePaste(event: ClipboardEvent, state: State): State {
     } else {
       pastedRows = event.clipboardData
         .getData("text/plain")
+        .replace(/(\r\n)$/, '')
         .split("\n")
-        .map((line: string) =>
-          line
-            .split("\t")
-            .map((t) => ({ type: "text", text: t, value: parseLocaleNumber(t) }))
-        );
+        .map((line: string) => line.split("\t").map((t) => ({ type: "text", text: t, value: parseLocaleNumber(t) })));
     }
     event.preventDefault();
     return { ...pasteData(state, pastedRows) };
