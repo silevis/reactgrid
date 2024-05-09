@@ -149,28 +149,4 @@ export const FillHandleBehavior: Behavior = {
       currentBehavior: store.getBehavior("Default"),
     };
   },
-  handlePointerHold: function (event, store): ReactGridStore {
-    devEnvironment && console.log("FHB/handlePointerHold");
-    return store;
-  },
-  handlePointerHoldTouch: function (event, store): ReactGridStore {
-    devEnvironment && console.log("FHB/handlePointerHoldTouch");
-    return store;
-  },
-  handleKeyDown: function (event, store): ReactGridStore {
-    devEnvironment && console.log("FHB/handleKeyDown");
-    return store;
-  },
-  handlePointerDownTouch: function (event, store): ReactGridStore {
-    devEnvironment && console.log("FHB/handlePointerDownTouch");
-    return store;
-  },
-  handlePointerMoveTouch: function (event, store): ReactGridStore {
-    devEnvironment && console.log("FHB/handlePointerMoveTouch");
-    return store;
-  },
-  handlePointerUpTouch: function (event, store): ReactGridStore {
-    devEnvironment && console.log("FHB/handlePointerUpTouch");
-    return store;
-  },
 };

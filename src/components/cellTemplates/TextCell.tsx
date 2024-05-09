@@ -7,6 +7,7 @@ interface TextCellProps {
   value?: string;
   onTextChanged: (newText: string) => void;
   reverse?: boolean;
+  style?: React.CSSProperties;
 }
 
 const TextCell: FC<TextCellProps> = ({ value: initialValue, onTextChanged, reverse }) => {

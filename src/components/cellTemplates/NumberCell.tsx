@@ -10,6 +10,7 @@ interface NumberCellProps {
   errorMessage?: string;
   hideZero?: boolean;
   format?: Intl.NumberFormat;
+  style?: React.CSSProperties;
 }
 
 const NumberCell: FC<NumberCellProps> = ({

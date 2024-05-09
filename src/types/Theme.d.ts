@@ -12,12 +12,21 @@ export type Border = {
 
 export type Offset = { top?: number; right?: number; bottom?: number; left?: number };
 
+type Font = {
+  family: string;
+  size: string;
+  weight: string;
+};
+
+type Padding = {
+  top: string;
+  right: string;
+  bottom: string;
+  left: string;
+};
+
 export interface RGTheme {
-  font: {
-    family: string;
-    size: string;
-    weight: string;
-  };
+  font: Font;
   grid: {
     templates: {
       columns: ColumnsTemplateFunction;
@@ -28,22 +37,24 @@ export interface RGTheme {
       /** Changes grid's background color for the gap to appear colored */
       color: string;
     };
-
-    // TOOD: Implement this in styles, commented out for now
-    // paneShadow: {
-    //   offsetX: string;
-    //   offsetY: string;
-    //   blurRadius: string;
-    //   color: string;
-    // }
+  };
+  paneContainer: {
+    top: {
+      background: string;
+    };
+    right: {
+      background: string;
+    };
+    bottom: {
+      background: string;
+    };
+    left: {
+      background: string;
+    };
   };
   cellContainer: {
-    padding: {
-      top: string;
-      right: string;
-      bottom: string;
-      left: string;
-    };
+    padding: Padding;
+    background: string;
   };
   area: {
     border: Border;
@@ -65,8 +76,6 @@ export interface RGTheme {
 
 // Makes all properties in T optional, including nested properties, but excluding functions
 type DeepPartial<T> = {
-  // Any is needed to catch all functions
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   [P in keyof T]?: T[P] extends (...args: any[]) => any ? T[P] : DeepPartial<T[P]>;
 };
 

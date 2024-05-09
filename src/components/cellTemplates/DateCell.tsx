@@ -7,6 +7,7 @@ interface DefaultCalendarProps {
   date: string;
   setIsInEditMode: (value: boolean) => void;
   onDateChanged: (data: { date?: Date; text?: string }) => void;
+  style?: React.CSSProperties;
 }
 
 interface DateCellProps {

@@ -16,6 +16,20 @@ const lightTheme: RGTheme = {
       color: "#efefef",
     },
   },
+  paneContainer: {
+    top: {
+      background: "#feffde",
+    },
+    right: {
+      background: "#fcfceb",
+    },
+    bottom: {
+      background: "#feffde",
+    },
+    left: {
+      background: "#fcfceb",
+    },
+  },
   cellContainer: {
     padding: {
       top: "2px",
@@ -23,6 +37,7 @@ const lightTheme: RGTheme = {
       bottom: "2px",
       left: "2px",
     },
+    background: "white",
   },
   area: {
     border: {

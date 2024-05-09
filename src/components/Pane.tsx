@@ -77,6 +77,7 @@ export const PaneGridContent: React.FC<PaneGridContentProps> = React.memo(({ ran
           realRowIndex={realRowIndex}
           realColumnIndex={realColumnIndex}
           getCellOffset={getCellOffset}
+          cellStyles={{ ...props.style }}
         >
           <Template {...props} />
         </CellContextProvider>

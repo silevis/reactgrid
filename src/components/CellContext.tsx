@@ -14,6 +14,7 @@ interface CellContextProviderProps {
   rowSpan?: number;
   colSpan?: number;
   getCellOffset?: (rowIdx: number, colIdx: number, rowSpan: number, colSpan: number) => React.CSSProperties;
+  cellStyles?: React.CSSProperties;
 }
 
 export const CellContext = createContext<CellContextType>({
@@ -52,6 +53,7 @@ export const CellContextProvider = ({
   rowSpan,
   colSpan,
   getCellOffset,
+  cellStyles,
 }: CellContextProviderProps) => {
   const [isInEditMode, setIsInEditMode] = useState(false);
 
@@ -81,6 +83,7 @@ export const CellContextProvider = ({
           ...getCellOffset?.(rowIndex, colIndex, rowSpan ?? 1, colSpan ?? 1),
           gridRowStart: realRowIndex + 1,
           gridColumnStart: realColumnIndex + 1,
+          ...cellStyles,
         },
         setEditMode: (value) => {
           if (value === false) {

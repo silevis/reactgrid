@@ -4,10 +4,10 @@ import ReactGrid from "../ReactGrid";
 import { ErrorBoundary } from "../components/ErrorBoundary";
 import TextCell from "../components/cellTemplates/TextCell";
 import { cellMatrixBuilder } from "../utils/cellMatrixBuilder";
-import DateCell from "../components/cellTemplates/DateCell";
 import NumberCell from "../components/cellTemplates/NumberCell";
 import { NumericalRange } from "../types/CellMatrix";
 import { parseLocaleNumber } from "../utils/parseLocaleNumber";
+import { HeaderCell } from "../components/cellTemplates/HeaderCell";
 
 const styledRanges = [
   {
@@ -157,7 +157,7 @@ export const BigGrid = () => {
         if (i === 6 && j === 7) return null;
         if (i === 6 && j === 8) return null;
 
-        if (i === 0 && j === 0) return { date: new Date() };
+        if (i === 0 && j === 0) return { number: 100 };
 
         if (i === 2 && j === 3) return { number: 125 };
 
@@ -183,47 +183,58 @@ export const BigGrid = () => {
         height: "max-content",
       });
       row.forEach((val, j) => {
-        if (i === 0)
+        if (i === 0) {
           addColumns({
             id: j.toString(),
             // width: `${Math.floor(Math.random() * 3) + 1}fr`,
             width: "min-content",
           });
-        if (val === null) return;
+          setCell(i.toString(), j.toString(), HeaderCell, {
+            text: `title ${j + 1}`,
+            style: {
+              backgroundColor: "#fcff91",
+              paddingTop: 10,
+              paddingBottom: 10,
+            },
+          });
+        } else {
+          if (val === null) return;
 
-        setCell(i.toString(), j.toString(), TextCell, {
-          value: val?.text,
-          onTextChanged: (data) => {
-            setData((prev) => {
-              const next = [...prev];
-              if (next[i][j] !== null) {
-                next[i][j].text = data;
-              }
-              return next;
-            });
-          },
-        });
+          setCell(i.toString(), j.toString(), TextCell, {
+            value: val?.text,
+            onTextChanged: (data) => {
+              setData((prev) => {
+                const next = [...prev];
+                if (next[i][j] !== null) {
+                  next[i][j].text = data;
+                }
+                return next;
+              });
+            },
+          });
+        }
       });
     });
 
-    setCell(
-      "0",
-      "0",
-      DateCell,
-      {
-        value: data[0][0]?.date,
-        onDateChanged: (newDate) => {
-          setData((prev) => {
-            const next = [...prev];
-            if (next[0][0]) {
-              next[0][0] = newDate;
-            }
-            return next;
-          });
-        },
-      },
-      { colSpan: 2, rowSpan: 2 }
-    );
+    // setCell(
+    //   "0",
+    //   "0",
+    //   DateCell,
+    //   {
+    //     value: data[0][0]?.date,
+    //     onDateChanged: (newDate) => {
+    //       setData((prev) => {
+    //         const next = [...prev];
+    //         if (next[0][0]) {
+    //           next[0][0] = newDate;
+    //         }
+    //         return next;
+    //       });
+    //     },
+    //   },
+    //   { colSpan: 2, rowSpan: 2 }
+    // );
+
     setCell(
       "2",
       "3",
@@ -283,7 +294,7 @@ export const BigGrid = () => {
       <div className="rgScrollableContainer" style={{ height: "100%", width: "100%", overflow: "auto" }}>
         <ReactGrid
           id="big-grid"
-          stickyTopRows={2}
+          stickyTopRows={1}
           stickyLeftColumns={3}
           stickyRightColumns={2}
           stickyBottomRows={2}
@@ -299,70 +310,6 @@ export const BigGrid = () => {
           onCopy={(selectedArea) => onCopyHandler(data, selectedArea)}
           onCellFocused={(cellLocation) => {}}
         />
-      </div>
-      <div>
-        Lorem ipsum dolor sit amet consectetur adipisicing elit. Velit, repellendus, eligendi veritatis officiis placeat
-        dolore possimus, quae debitis numquam voluptas repellat labore blanditiis animi ipsam alias totam laborum non
-        omnis. Sapiente dolorem voluptatibus doloribus natus laudantium non exercitationem nostrum quibusdam sequi
-        commodi, deleniti quaerat animi eveniet, alias id quam. Ipsam necessitatibus magnam rem asperiores et ea facilis
-        esse voluptas distinctio autem, fuga earum minima natus, adipisci assumenda cupiditate eveniet soluta quaerat
-        molestias hic iusto! At, ex! Odio ratione labore voluptas autem ut dignissimos at qui tenetur, excepturi esse
-        dolores in praesentium nostrum quo porro iure ab eum voluptatibus. Cupiditate veritatis accusamus itaque
-        pariatur, ut corrupti soluta vel rem quisquam dolore fuga eos porro similique quae quia. Quas velit odit quae
-        debitis, rerum incidunt veritatis. Quam amet distinctio quidem dicta. Temporibus officiis praesentium nobis
-        cumque eum quasi tenetur rerum dolores provident tempora quas dolorem ab quod itaque hic, iste impedit. Quam
-        quaerat odio quidem incidunt veniam corporis tempora reiciendis consequuntur autem. Nemo iusto molestiae,
-        temporibus consequuntur deleniti ipsa architecto saepe dolor at nostrum accusamus sequi natus reprehenderit ex,
-        animi a tempora quaerat non eius, doloribus corrupti eligendi. Commodi, ut alias, soluta omnis nisi laudantium
-        corporis sapiente molestias dolores quibusdam libero vitae.
-      </div>
-      <div>
-        Lorem ipsum dolor sit amet consectetur adipisicing elit. Velit, repellendus, eligendi veritatis officiis placeat
-        dolore possimus, quae debitis numquam voluptas repellat labore blanditiis animi ipsam alias totam laborum non
-        omnis. Sapiente dolorem voluptatibus doloribus natus laudantium non exercitationem nostrum quibusdam sequi
-        commodi, deleniti quaerat animi eveniet, alias id quam. Ipsam necessitatibus magnam rem asperiores et ea facilis
-        esse voluptas distinctio autem, fuga earum minima natus, adipisci assumenda cupiditate eveniet soluta quaerat
-        molestias hic iusto! At, ex! Odio ratione labore voluptas autem ut dignissimos at qui tenetur, excepturi esse
-        dolores in praesentium nostrum quo porro iure ab eum voluptatibus. Cupiditate veritatis accusamus itaque
-        pariatur, ut corrupti soluta vel rem quisquam dolore fuga eos porro similique quae quia. Quas velit odit quae
-        debitis, rerum incidunt veritatis. Quam amet distinctio quidem dicta. Temporibus officiis praesentium nobis
-        cumque eum quasi tenetur rerum dolores provident tempora quas dolorem ab quod itaque hic, iste impedit. Quam
-        quaerat odio quidem incidunt veniam corporis tempora reiciendis consequuntur autem. Nemo iusto molestiae,
-        temporibus consequuntur deleniti ipsa architecto saepe dolor at nostrum accusamus sequi natus reprehenderit ex,
-        animi a tempora quaerat non eius, doloribus corrupti eligendi. Commodi, ut alias, soluta omnis nisi laudantium
-        corporis sapiente molestias dolores quibusdam libero vitae.
-      </div>
-      <div>
-        Lorem ipsum dolor sit amet consectetur adipisicing elit. Velit, repellendus, eligendi veritatis officiis placeat
-        dolore possimus, quae debitis numquam voluptas repellat labore blanditiis animi ipsam alias totam laborum non
-        omnis. Sapiente dolorem voluptatibus doloribus natus laudantium non exercitationem nostrum quibusdam sequi
-        commodi, deleniti quaerat animi eveniet, alias id quam. Ipsam necessitatibus magnam rem asperiores et ea facilis
-        esse voluptas distinctio autem, fuga earum minima natus, adipisci assumenda cupiditate eveniet soluta quaerat
-        molestias hic iusto! At, ex! Odio ratione labore voluptas autem ut dignissimos at qui tenetur, excepturi esse
-        dolores in praesentium nostrum quo porro iure ab eum voluptatibus. Cupiditate veritatis accusamus itaque
-        pariatur, ut corrupti soluta vel rem quisquam dolore fuga eos porro similique quae quia. Quas velit odit quae
-        debitis, rerum incidunt veritatis. Quam amet distinctio quidem dicta. Temporibus officiis praesentium nobis
-        cumque eum quasi tenetur rerum dolores provident tempora quas dolorem ab quod itaque hic, iste impedit. Quam
-        quaerat odio quidem incidunt veniam corporis tempora reiciendis consequuntur autem. Nemo iusto molestiae,
-        temporibus consequuntur deleniti ipsa architecto saepe dolor at nostrum accusamus sequi natus reprehenderit ex,
-        animi a tempora quaerat non eius, doloribus corrupti eligendi. Commodi, ut alias, soluta omnis nisi laudantium
-        corporis sapiente molestias dolores quibusdam libero vitae.
-      </div>
-      <div>
-        Lorem ipsum dolor sit amet consectetur adipisicing elit. Velit, repellendus, eligendi veritatis officiis placeat
-        dolore possimus, quae debitis numquam voluptas repellat labore blanditiis animi ipsam alias totam laborum non
-        omnis. Sapiente dolorem voluptatibus doloribus natus laudantium non exercitationem nostrum quibusdam sequi
-        commodi, deleniti quaerat animi eveniet, alias id quam. Ipsam necessitatibus magnam rem asperiores et ea facilis
-        esse voluptas distinctio autem, fuga earum minima natus, adipisci assumenda cupiditate eveniet soluta quaerat
-        molestias hic iusto! At, ex! Odio ratione labore voluptas autem ut dignissimos at qui tenetur, excepturi esse
-        dolores in praesentium nostrum quo porro iure ab eum voluptatibus. Cupiditate veritatis accusamus itaque
-        pariatur, ut corrupti soluta vel rem quisquam dolore fuga eos porro similique quae quia. Quas velit odit quae
-        debitis, rerum incidunt veritatis. Quam amet distinctio quidem dicta. Temporibus officiis praesentium nobis
-        cumque eum quasi tenetur rerum dolores provident tempora quas dolorem ab quod itaque hic, iste impedit. Quam
-        quaerat odio quidem incidunt veniam corporis tempora reiciendis consequuntur autem. Nemo iusto molestiae,
-        temporibus consequuntur deleniti ipsa architecto saepe dolor at nostrum accusamus sequi natus reprehenderit ex,
-        animi a tempora quaerat non eius, doloribus corrupti eligendi. Commodi, ut alias, soluta omnis nisi laudantium
-        corporis sapiente molestias dolores quibusdam libero vitae.
       </div>
     </>
   );
