@@ -7,7 +7,7 @@ import { isAlphaNumericKey } from './keyCodeCheckings';
 import { Cell, CellTemplate, Compatible, Uncertain, UncertainCompatible } from '../Model/PublicModel';
 import { keyCodes } from '../Functions/keyCodes';
 
-import Select, { OptionProps, MenuProps } from 'react-select';
+import Select, { OptionProps, MenuProps, CSSObjectWithLabel } from 'react-select';
 import { FC } from 'react';
 
 export type OptionType = {
@@ -23,6 +23,16 @@ export interface DropdownCell extends Cell {
     isDisabled?: boolean;
     isOpen?: boolean;
     inputValue?: string;
+    styles?: {
+        container?: CSSObjectWithLabel;
+        control?: CSSObjectWithLabel;
+        indicatorsContainer?: CSSObjectWithLabel;
+        dropdownIndicator?: CSSObjectWithLabel;
+        singleValue?: CSSObjectWithLabel;
+        indicatorSeparator?: CSSObjectWithLabel;
+        input?: CSSObjectWithLabel;
+        valueContainer?: CSSObjectWithLabel;
+    }
 }
 
 export class DropdownCellTemplate implements CellTemplate<DropdownCell> {
@@ -165,6 +175,7 @@ const DropdownInput: FC<DIProps> = ({ onCellChanged, cell }) => {
                     ...provided,
                     width: '100%',
                     height: '100%',
+                    ...cell.styles?.container,
                 }),
                 control: (provided) => ({
                     ...provided,
@@ -173,31 +184,38 @@ const DropdownInput: FC<DIProps> = ({ onCellChanged, cell }) => {
                     minHeight: '25px',
                     background: 'transparent',
                     boxShadow: 'none',
+                    ...cell.styles?.control,
                 }),
                 indicatorsContainer: (provided) => ({
                     ...provided,
                     paddingTop: '0px',
+                    ...cell.styles?.indicatorsContainer
                 }),
                 dropdownIndicator: (provided) => ({
                     ...provided,
                     padding: '0px 4px',
+                    ...cell.styles?.dropdownIndicator
                 }),
                 singleValue: (provided) => ({
                     ...provided,
-                    color: 'inherit'
+                    color: 'inherit',
+                    ...cell.styles?.singleValue
                 }),
                 indicatorSeparator: (provided) => ({
                     ...provided,
                     marginTop: '4px',
                     marginBottom: '4px',
+                    ...cell.styles?.indicatorSeparator
                 }),
                 input: (provided) => ({
                     ...provided,
                     padding: 0,
+                    ...cell.styles?.input
                 }),
                 valueContainer: (provided) => ({
                     ...provided,
                     padding: '0 8px',
+                    ...cell.styles?.valueContainer
                 }),
             }}
         />
@@ -215,5 +233,5 @@ const CustomOption: React.FC<OptionProps<OptionType, false>> = ({ innerProps, la
 );
 
 const CustomMenu: React.FC<MenuProps<OptionType, false>> = ({ innerProps, children }) => (
-    <div {...innerProps} className='rg-dropdown-menu'>{children}</div>
+    <div {...innerProps} className='rg-dropdown-menu' onPointerDown={e => e.stopPropagation()}>{children}</div>
 );
