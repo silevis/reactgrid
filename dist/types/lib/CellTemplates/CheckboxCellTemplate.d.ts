@@ -1,7 +1,7 @@
-import * as React from 'react';
-import { Cell, CellTemplate, Compatible, Uncertain, UncertainCompatible } from '../Model/PublicModel';
+import * as React from "react";
+import { Cell, CellTemplate, Compatible, Uncertain, UncertainCompatible } from "../Model/PublicModel";
 export interface CheckboxCell extends Cell {
-    type: 'checkbox';
+    type: "checkbox";
     checked: boolean;
     checkedText?: string;
     uncheckedText?: string;
