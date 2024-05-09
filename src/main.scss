@@ -1,3 +1,8 @@
+.rg-copy-container[contenteditable] {
+    -webkit-user-select: text;
+    user-select: text;
+}
+
 .reactgrid-content {
     user-select: none;
     -moz-user-select: none;
