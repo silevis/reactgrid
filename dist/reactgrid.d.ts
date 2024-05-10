@@ -1,5 +1,6 @@
 /// <reference types="react" />
 import * as React$1 from 'react';
+import { CSSObjectWithLabel } from 'react-select';
 
 interface CheckboxCell extends Cell {
     type: "checkbox";
@@ -173,6 +174,16 @@ interface DropdownCell extends Cell {
     isDisabled?: boolean;
     isOpen?: boolean;
     inputValue?: string;
+    styles?: {
+        container?: CSSObjectWithLabel;
+        control?: CSSObjectWithLabel;
+        indicatorsContainer?: CSSObjectWithLabel;
+        dropdownIndicator?: CSSObjectWithLabel;
+        singleValue?: CSSObjectWithLabel;
+        indicatorSeparator?: CSSObjectWithLabel;
+        input?: CSSObjectWithLabel;
+        valueContainer?: CSSObjectWithLabel;
+    };
 }
 declare class DropdownCellTemplate implements CellTemplate<DropdownCell> {
     getCompatibleCell(uncertainCell: Uncertain<DropdownCell>): Compatible<DropdownCell>;

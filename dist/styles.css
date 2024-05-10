@@ -2,6 +2,7 @@
 .rg-celleditor-input, .rg-celleditor .rg-input {
   width: 100%;
   height: 100%;
+  border: 0;
   padding: 0;
   margin: 0;
   background: transparent;
@@ -248,7 +249,7 @@
   cursor: crosshair;
   top: 50%;
   left: 50%;
-  transform: translate(calc(-50% - (1px/ 2)), calc(-50% - (1px/ 2)));
+  transform: translate(calc(-50% - 1px / 2), calc(-50% - 1px / 2));
   width: 6.5px;
   height: 6.5px;
   background-color: #3579f8;

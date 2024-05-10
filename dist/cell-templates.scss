@@ -1,6 +1,7 @@
 .rg-celleditor-input {
     width: 100%;
     height: 100%;
+    border: 0;
     padding: $template-padding;
     margin: $template-margin;
     background: $template-bg-color;
@@ -18,6 +19,7 @@
     border-color: $cell-editor-border-color;
     border-width: $celleditor-border-width;
     padding: $cell-padding;
+
     .rg-input {
         @extend .rg-celleditor-input;
     }
@@ -28,18 +30,22 @@
 }
 
 .reactgrid-content .rg-pane .rg-cell {
+
     &.rg-number-cell,
     .rg-time-cell,
     .rg-date-cell {
         justify-content: flex-end;
     }
+
     &.rg-email-cell.rg-invalid {
         color: $template-content-invalid;
     }
+
     &.rg-text-cell.placeholder {
         color: #999;
         font-size: 0.8em;
     }
+
     &.rg-checkbox-cell {
         align-items: center;
         justify-content: center;
@@ -47,6 +53,7 @@
         margin: $template-margin;
         background: $template-bg-color;
         pointer-events: auto;
+
         input {
             width: $template-checkbox-size;
             height: $template-checkbox-size;
@@ -66,16 +73,20 @@
             height: $template-font-size;
             width: $template-font-size;
         }
+
         .no-child {
             width: 0.5em;
         }
+
         &.expanded .chevron {
             transform: rotate(90deg);
         }
+
         &.collapsed .chevron {
             transform: rotate(0deg);
         }
     }
+
     &.rg-checkbox-cell {
         justify-content: center;
 
@@ -109,11 +120,11 @@
             background-color: $checkbox-unchecked;
         }
 
-        label:hover input ~ span {
+        label:hover input~span {
             background-color: $checkbox-hover;
         }
 
-        label input:checked ~ span {
+        label input:checked~span {
             background-color: $checkbox-checked;
         }
 
@@ -123,7 +134,7 @@
             display: none;
         }
 
-        label input:checked ~ span:after {
+        label input:checked~span:after {
             display: block;
         }
 
@@ -139,9 +150,11 @@
             transform: rotate(45deg);
         }
     }
+
     &.rg-dropdown-cell {
         padding: 0;
         overflow: visible;
+
         .rg-dropdown-menu {
             top: 100%;
             background-color: $dropdown-menu-bg-color;
@@ -154,15 +167,18 @@
             z-index: 1;
             box-sizing: border-box;
         }
+
         .rg-dropdown-option {
             padding: 0.3em 0.5em;
             min-height: 1.5em;
             display: flex;
             align-items: center;
+
             &.selected::before {
                 content: "✓";
                 padding-right: 0.2em;
             }
+
             &.focused {
                 color: black;
                 background-color: $dropdown-focused-item-bg-color;
