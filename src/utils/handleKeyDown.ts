@@ -301,34 +301,22 @@ export const handleKeyDown = (
           area = getCellArea(store, focusedCell);
         }
 
-        let newRowIdx = focusedCell ? focusedCell.rowIndex : 0;
+        const nearestTopStickyCell = getStickyCellAdjacentToCenterPane(store, focusedCell, "Top");
+        const nearestTopStickyCellRowIdx = nearestTopStickyCell
+          ? getCellIndexes(store, nearestTopStickyCell).rowIndex +
+            (nearestTopStickyCell && nearestTopStickyCell.rowSpan ? nearestTopStickyCell.rowSpan - 1 : 0)
+          : null;
 
-        for (let i = focusedCell.rowIndex; i >= focusedCell.rowIndex - numberOfVisibleRows; i--) {
-          const cell = store.getCellByIndexes(i, focusedCell.colIndex);
+        let newRowIdx = 0;
 
-          if (cell && isCellInTopPane(store, cell)) {
-            // current cell is one row below the focused cell
-            if (i === focusedCell.rowIndex - 1) {
-              const minimalSelectedArea = findMinimalSelectedArea(store, {
-                ...area,
-                startRowIdx: 0,
-                endRowIdx:
-                  store.selectedArea.endRowIdx !== -1 ? store.selectedArea.endRowIdx : focusedCell.rowIndex + 1,
-              });
-
-              return {
-                ...store,
-                selectedArea: { ...minimalSelectedArea },
-                focusedLocation: {
-                  rowIndex: 0,
-                  colIndex: minimalSelectedArea.startColIdx,
-                },
-              };
-            }
-
-            break;
-          }
-          newRowIdx = i;
+        if (
+          nearestTopStickyCellRowIdx &&
+          nearestTopStickyCellRowIdx >= focusedCell.rowIndex - numberOfVisibleRows &&
+          nearestTopStickyCellRowIdx !== focusedCell.rowIndex - 1
+        ) {
+          newRowIdx = nearestTopStickyCellRowIdx + 1;
+        } else {
+          newRowIdx = Math.max(0, focusedCell.rowIndex - numberOfVisibleRows);
         }
 
         const isStickyCell = isCellSticky(store, focusedCell);
@@ -388,10 +376,6 @@ export const handleKeyDown = (
           }
         }
 
-        if (newRowIdx <= 0) {
-          newRowIdx = 0;
-        }
-
         const minimalSelectedArea = findMinimalSelectedArea(store, {
           ...area,
           startRowIdx: newRowIdx,
@@ -422,40 +406,24 @@ export const handleKeyDown = (
           area = getCellArea(store, focusedCell);
         }
 
-        const lastGridRowIdx = store.rows.length - 1;
+        const nearestBottomStickyCell = getStickyCellAdjacentToCenterPane(store, focusedCell, "Bottom");
+        const nearestBottomStickyCellRowIdx = nearestBottomStickyCell
+          ? getCellIndexes(store, nearestBottomStickyCell).rowIndex
+          : null;
 
-        let newRowIdx = focusedCell.rowIndex;
+        let newRowIdx = 0;
 
-        for (let i = focusedCell.rowIndex; i <= focusedCell.rowIndex + numberOfVisibleRows; i++) {
-          const currentCell = store.getCellByIndexes(i, focusedCell.colIndex);
-
-          if (currentCell && isCellInBottomPane(store, currentCell)) {
-            // current cell is one row below the focused cell
-            if (i === focusedCell.rowIndex + 1) {
-              const minimalSelectedArea = findMinimalSelectedArea(store, {
-                ...area,
-                startRowIdx:
-                  store.selectedArea.startRowIdx !== -1 ? store.selectedArea.startRowIdx : focusedCell.rowIndex,
-                endRowIdx: store.rows.length,
-              });
-
-              const lastRowCellSpan = store.getCellByIds(`${lastGridRowIdx}`, `${focusedCell.colIndex}`)?.rowSpan;
-
-              return {
-                ...store,
-                selectedArea: { ...minimalSelectedArea },
-                focusedLocation: {
-                  // If the cell from the last row is spanned, focus on the first row of that spanned cell
-                  rowIndex: lastGridRowIdx - (lastRowCellSpan ? lastRowCellSpan - 1 : 0),
-                  colIndex: minimalSelectedArea.startColIdx,
-                },
-              };
-            }
-
-            break;
-          }
-          newRowIdx = i;
+        if (
+          nearestBottomStickyCellRowIdx &&
+          nearestBottomStickyCellRowIdx <= focusedCell.rowIndex + numberOfVisibleRows &&
+          nearestBottomStickyCellRowIdx !== focusedCell.rowIndex + 1
+        ) {
+          newRowIdx = nearestBottomStickyCellRowIdx - 1;
+        } else {
+          newRowIdx = Math.max(0, focusedCell.rowIndex + numberOfVisibleRows);
         }
+
+        const lastGridRowIdx = store.rows.length - 1;
 
         const isStickyCell = isCellSticky(store, focusedCell);
 
@@ -488,8 +456,6 @@ export const handleKeyDown = (
               )!;
               targetCellIdx = getCellIndexes(store, targetCell);
             }
-
-            console.log("targetCell", targetCell);
 
             const isTargetCellInFocusSpan =
               targetCellIdx.rowIndex === focusedCell.rowIndex + (focusedCell.rowSpan ? +focusedCell.rowSpan : 0);
