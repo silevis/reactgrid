@@ -14,6 +14,7 @@ import { getStickyCellAdjacentToCenterPane } from "./getStickyCellAdjacentToCent
 import { Cell } from "../types/PublicModel.ts";
 import { isCellInTopPane } from "./isCellInTopPane.ts";
 import { isCellInBottomPane } from "./isCellInBottomPane.ts";
+import { getCellIndexes } from "./getCellIndexes.1.ts";
 
 type HandleKeyDownConfig = {
   moveHorizontallyOnEnter: boolean;
@@ -291,7 +292,7 @@ export const handleKeyDown = (
         // Get currently selected area
         let area: NumericalRange = { ...store.selectedArea };
 
-        const numberOfVisibleRows: number = getNumberOfVisibleRows(store, focusedCell?.colId);
+        const numberOfVisibleRows: number = getNumberOfVisibleRows(store, `${focusedCell.colIndex}`);
 
         // If there is no selected area, get focused cell area
         const isAnyAreaSelected = !areAreasEqual(area, EMPTY_AREA);
@@ -303,15 +304,16 @@ export const handleKeyDown = (
         let newRowIdx = focusedCell ? focusedCell.rowIndex : 0;
 
         for (let i = focusedCell.rowIndex; i >= focusedCell.rowIndex - numberOfVisibleRows; i--) {
-          const cell = store.getCellByIndexes(i, +focusedCell.colId);
+          const cell = store.getCellByIndexes(i, focusedCell.colIndex);
 
           if (cell && isCellInTopPane(store, cell)) {
-            // that cell is one row above the focused cell
+            // current cell is one row below the focused cell
             if (i === focusedCell.rowIndex - 1) {
               const minimalSelectedArea = findMinimalSelectedArea(store, {
                 ...area,
                 startRowIdx: 0,
-                endRowIdx: store.selectedArea.endRowIdx !== -1 ? store.selectedArea.endRowIdx : +focusedCell.rowId + 1,
+                endRowIdx:
+                  store.selectedArea.endRowIdx !== -1 ? store.selectedArea.endRowIdx : focusedCell.rowIndex + 1,
               });
 
               return {
@@ -336,7 +338,7 @@ export const handleKeyDown = (
             const minimalSelectedArea = findMinimalSelectedArea(store, {
               ...area,
               startRowIdx: 0,
-              endRowIdx: focusedCell ? +focusedCell?.rowId + 1 : 0,
+              endRowIdx: focusedCell ? focusedCell?.rowIndex + 1 : 0,
             });
 
             return {
@@ -350,8 +352,10 @@ export const handleKeyDown = (
           }
           if (isCellInBottomPane(store, focusedCell)) {
             const nearestBottomStickyCell = getStickyCellAdjacentToCenterPane(store, focusedCell, "Bottom");
+            if (!nearestBottomStickyCell) return store;
+            const nearestBottomStickyCellIdx = getCellIndexes(store, nearestBottomStickyCell);
 
-            if (focusedCell.rowId === nearestBottomStickyCell?.rowId) {
+            if (focusedCell.rowIndex === nearestBottomStickyCellIdx.rowIndex) {
               const minimalSelectedArea = findMinimalSelectedArea(store, {
                 ...area,
                 startRowIdx: newRowIdx,
@@ -369,15 +373,15 @@ export const handleKeyDown = (
 
             const minimalSelectedArea = findMinimalSelectedArea(store, {
               ...area,
-              startRowIdx: nearestBottomStickyCell ? +nearestBottomStickyCell?.rowId : -1,
-              endRowIdx: +focusedCell.rowId + 1,
+              startRowIdx: nearestBottomStickyCell ? nearestBottomStickyCellIdx.rowIndex : -1,
+              endRowIdx: +focusedCell.rowIndex + 1,
             });
 
             return {
               ...store,
               selectedArea: { ...minimalSelectedArea },
               focusedLocation: {
-                rowIndex: nearestBottomStickyCell ? +nearestBottomStickyCell?.rowId : -1,
+                rowIndex: nearestBottomStickyCell ? nearestBottomStickyCellIdx.rowIndex : -1,
                 colIndex: minimalSelectedArea.startColIdx,
               },
             };
@@ -409,7 +413,7 @@ export const handleKeyDown = (
         // Get currently selected area
         let area: NumericalRange = { ...store.selectedArea };
 
-        const numberOfVisibleRows: number = getNumberOfVisibleRows(store, focusedCell?.colId);
+        const numberOfVisibleRows: number = getNumberOfVisibleRows(store, `${focusedCell.colIndex}`);
 
         // If there is no selected area, get focused cell area
         const isAnyAreaSelected = !areAreasEqual(area, EMPTY_AREA);
@@ -423,7 +427,7 @@ export const handleKeyDown = (
         let newRowIdx = focusedCell.rowIndex;
 
         for (let i = focusedCell.rowIndex; i <= focusedCell.rowIndex + numberOfVisibleRows; i++) {
-          const currentCell = store.getCellByIndexes(i, +focusedCell.colId);
+          const currentCell = store.getCellByIndexes(i, focusedCell.colIndex);
 
           if (currentCell && isCellInBottomPane(store, currentCell)) {
             // current cell is one row below the focused cell
@@ -431,11 +435,11 @@ export const handleKeyDown = (
               const minimalSelectedArea = findMinimalSelectedArea(store, {
                 ...area,
                 startRowIdx:
-                  store.selectedArea.startRowIdx !== -1 ? store.selectedArea.startRowIdx : +focusedCell.rowId,
+                  store.selectedArea.startRowIdx !== -1 ? store.selectedArea.startRowIdx : focusedCell.rowIndex,
                 endRowIdx: store.rows.length,
               });
 
-              const lastRowCellSpan = store.getCellByIds(lastGridRowIdx.toString(), focusedCell.colId)?.rowSpan;
+              const lastRowCellSpan = store.getCellByIds(`${lastGridRowIdx}`, `${focusedCell.colIndex}`)?.rowSpan;
 
               return {
                 ...store,
@@ -457,10 +461,10 @@ export const handleKeyDown = (
 
         if (isStickyCell) {
           if (isCellInBottomPane(store, focusedCell)) {
-            const lastRowCellSpan = store.getCellByIds(lastGridRowIdx.toString(), focusedCell.colId)?.rowSpan;
+            const lastRowCellSpan = store.getCellByIds(`${lastGridRowIdx}`, `${focusedCell.colIndex}`)?.rowSpan;
             const minimalSelectedArea = findMinimalSelectedArea(store, {
               ...area,
-              startRowIdx: focusedCell ? +focusedCell?.rowId : 0,
+              startRowIdx: focusedCell ? focusedCell.rowIndex : 0,
               endRowIdx: store.rows.length,
             });
 
@@ -475,27 +479,34 @@ export const handleKeyDown = (
           }
           if (isCellInTopPane(store, focusedCell)) {
             let targetCell: FocusedCell | Cell = focusedCell;
+            let targetCellIdx = getCellIndexes(store, targetCell);
 
             while (isCellInTopPane(store, targetCell)) {
-              targetCell = store.getCellByIndexes(+targetCell.rowId + (targetCell.rowSpan ?? 1), +targetCell?.colId)!;
+              targetCell = store.getCellByIndexes(
+                targetCellIdx.rowIndex + (targetCell.rowSpan ?? 1),
+                targetCellIdx.colIndex
+              )!;
+              targetCellIdx = getCellIndexes(store, targetCell);
             }
 
-            const isTargetCellInFocusSpan =
-              +targetCell.rowId === focusedCell.rowIndex + (focusedCell.rowSpan ? +focusedCell.rowSpan : 0);
+            console.log("targetCell", targetCell);
 
-            if (+focusedCell.rowId !== +targetCell.rowId - 1 && !isTargetCellInFocusSpan) {
+            const isTargetCellInFocusSpan =
+              targetCellIdx.rowIndex === focusedCell.rowIndex + (focusedCell.rowSpan ? +focusedCell.rowSpan : 0);
+
+            if (focusedCell.rowIndex !== targetCellIdx.rowIndex - 1 && !isTargetCellInFocusSpan) {
               const minimalSelectedArea = findMinimalSelectedArea(store, {
                 ...area,
                 startRowIdx:
-                  store.selectedArea.startRowIdx !== -1 ? store.selectedArea.startRowIdx : +focusedCell.rowId,
-                endRowIdx: +targetCell.rowId,
+                  store.selectedArea.startRowIdx !== -1 ? store.selectedArea.startRowIdx : focusedCell.rowIndex,
+                endRowIdx: targetCellIdx.rowIndex,
               });
 
               return {
                 ...store,
                 selectedArea: { ...minimalSelectedArea },
                 focusedLocation: {
-                  rowIndex: +targetCell.rowId - 1,
+                  rowIndex: targetCellIdx.rowIndex - 1,
                   colIndex: minimalSelectedArea.startColIdx,
                 },
               };
@@ -518,7 +529,7 @@ export const handleKeyDown = (
         }
 
         if (newRowIdx >= lastGridRowIdx) {
-          const lastRowCellSpan = store.getCellByIds(lastGridRowIdx.toString(), focusedCell.colId)?.rowSpan;
+          const lastRowCellSpan = store.getCellByIds(`${lastGridRowIdx}`, `${focusedCell.colIndex}`)?.rowSpan;
           newRowIdx = lastGridRowIdx - (lastRowCellSpan ? lastRowCellSpan - 1 : 0);
         }
 
@@ -556,6 +567,9 @@ export const handleKeyDown = (
           if (focusedCell.colIndex === 0) return store;
 
           const nearestRightStickyCell = getStickyCellAdjacentToCenterPane(store, focusedCell, "Right");
+          const nearestRightStickyCellIdx = nearestRightStickyCell
+            ? getCellIndexes(store, nearestRightStickyCell)
+            : { rowIndex: -1, colIndex: -1 };
 
           if (isCellInRange(store, focusedCell, store.paneRanges.Left)) {
             const minimalSelectedArea = findMinimalSelectedArea(store, {
@@ -573,10 +587,10 @@ export const handleKeyDown = (
             };
           }
           if (isCellInRange(store, focusedCell, store.paneRanges.Right)) {
-            if (nearestRightStickyCell && nearestRightStickyCell.colId !== focusedCell.colId) {
+            if (nearestRightStickyCell && nearestRightStickyCellIdx.colIndex !== focusedCell.colIndex) {
               const minimalSelectedArea = findMinimalSelectedArea(store, {
                 ...area,
-                startColIdx: +nearestRightStickyCell.colId,
+                startColIdx: nearestRightStickyCellIdx.colIndex,
               });
 
               return {
@@ -590,9 +604,13 @@ export const handleKeyDown = (
             }
           }
         }
-        const nearestLeftStickyCell = getStickyCellAdjacentToCenterPane(store, focusedCell, "Left");
 
-        if (nearestLeftStickyCell && +focusedCell.colId === +nearestLeftStickyCell.colId + 1) {
+        const nearestLeftStickyCell = getStickyCellAdjacentToCenterPane(store, focusedCell, "Left");
+        const nearestLeftStickyCellIdx = nearestLeftStickyCell
+          ? getCellIndexes(store, nearestLeftStickyCell)
+          : { rowIndex: -1, colIndex: -1 };
+
+        if (nearestLeftStickyCell && focusedCell.colIndex === nearestLeftStickyCellIdx.colIndex + 1) {
           const minimalSelectedArea = findMinimalSelectedArea(store, {
             ...area,
             startColIdx: 0,
@@ -610,7 +628,7 @@ export const handleKeyDown = (
 
         const minimalSelectedArea = findMinimalSelectedArea(store, {
           ...area,
-          startColIdx: nearestLeftStickyCell ? +nearestLeftStickyCell.colId + 1 : 0,
+          startColIdx: nearestLeftStickyCell ? nearestLeftStickyCellIdx.colIndex + 1 : 0,
         });
 
         return {
@@ -619,11 +637,12 @@ export const handleKeyDown = (
           focusedLocation: {
             rowIndex: focusedCell.rowIndex,
 
-            colIndex: nearestLeftStickyCell ? +nearestLeftStickyCell.colId + 1 : 0,
+            colIndex: nearestLeftStickyCell ? nearestLeftStickyCellIdx.colIndex + 1 : 0,
           },
         };
       }
 
+      // TODO: change to indexes
       case "End": {
         event.preventDefault();
 
@@ -644,25 +663,26 @@ export const handleKeyDown = (
         if (!lastColumnIdx) return store;
 
         const nearestLeftStickyCell = getStickyCellAdjacentToCenterPane(store, focusedCell, "Left");
-
-        const nearestRightStickyCell = getStickyCellAdjacentToCenterPane(store, focusedCell, "Right");
+        const nearestLeftStickyCellIdx = nearestLeftStickyCell
+          ? getCellIndexes(store, nearestLeftStickyCell)
+          : { rowIndex: -1, colIndex: -1 };
 
         if (isStickyCell) {
           if (focusedCell.colIndex === lastColumnIdx) return store;
 
           if (isCellInRange(store, focusedCell, store.paneRanges.Left)) {
-            if (nearestLeftStickyCell && nearestLeftStickyCell.colId !== focusedCell.colId) {
+            if (nearestLeftStickyCell && nearestLeftStickyCellIdx.colIndex !== focusedCell.colIndex) {
               const minimalSelectedArea = findMinimalSelectedArea(store, {
                 ...area,
-                endColIdx: +nearestLeftStickyCell.colId + 1,
+                endColIdx: nearestLeftStickyCellIdx.colIndex + 1,
               });
 
               return {
                 ...store,
                 selectedArea: { ...minimalSelectedArea },
                 focusedLocation: {
-                  rowIndex: +nearestLeftStickyCell.rowId,
-                  colIndex: +nearestLeftStickyCell.colId,
+                  rowIndex: nearestLeftStickyCellIdx.rowIndex,
+                  colIndex: nearestLeftStickyCellIdx.colIndex,
                 },
               };
             }
@@ -684,7 +704,12 @@ export const handleKeyDown = (
           }
         }
 
-        if (nearestRightStickyCell && +nearestRightStickyCell.colId === +focusedCell.colId + 1) {
+        const nearestRightStickyCell = getStickyCellAdjacentToCenterPane(store, focusedCell, "Right");
+        const nearestRightStickyCellIdx = nearestRightStickyCell
+          ? getCellIndexes(store, nearestRightStickyCell)
+          : { rowIndex: -1, colIndex: -1 };
+
+        if (nearestRightStickyCell && +nearestRightStickyCellIdx.colIndex === focusedCell.colIndex + 1) {
           const minimalSelectedArea = findMinimalSelectedArea(store, {
             ...area,
             endColIdx: lastColumnIdx + 1,
@@ -702,7 +727,7 @@ export const handleKeyDown = (
 
         const minimalSelectedArea = findMinimalSelectedArea(store, {
           ...area,
-          endColIdx: nearestRightStickyCell ? +nearestRightStickyCell.colId : lastColumnIdx + 1,
+          endColIdx: nearestRightStickyCell ? nearestRightStickyCellIdx.colIndex : lastColumnIdx + 1,
         });
 
         return {
@@ -710,7 +735,7 @@ export const handleKeyDown = (
           selectedArea: { ...minimalSelectedArea },
           focusedLocation: {
             rowIndex: focusedCell.rowIndex,
-            colIndex: nearestRightStickyCell ? +nearestRightStickyCell.colId - 1 : lastColumnIdx,
+            colIndex: nearestRightStickyCell ? nearestRightStickyCellIdx.colIndex - 1 : lastColumnIdx,
           },
         };
       }
