@@ -302,6 +302,7 @@ export const handleKeyDown = (
         }
 
         const nearestTopStickyCell = getStickyCellAdjacentToCenterPane(store, focusedCell, "Top");
+
         const nearestTopStickyCellRowIdx = nearestTopStickyCell
           ? getCellIndexes(store, nearestTopStickyCell).rowIndex +
             (nearestTopStickyCell && nearestTopStickyCell.rowSpan ? nearestTopStickyCell.rowSpan - 1 : 0)
@@ -310,7 +311,7 @@ export const handleKeyDown = (
         let newRowIdx = 0;
 
         if (
-          nearestTopStickyCellRowIdx &&
+          nearestTopStickyCellRowIdx !== null &&
           nearestTopStickyCellRowIdx >= focusedCell.rowIndex - numberOfVisibleRows &&
           nearestTopStickyCellRowIdx !== focusedCell.rowIndex - 1
         ) {
