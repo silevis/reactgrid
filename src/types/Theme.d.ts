@@ -1,8 +1,9 @@
 import React, { CSSProperties } from "react";
-import { StyledRange } from "./PublicModel";
 
 type ColumnsTemplateFunction = ({ amount, widths }: { amount: number; widths: string[] }) => string;
 type RowsTemplateFunction = ({ amount, heights }: { amount: number; heights: string[] }) => string;
+
+export type Offset = { top?: number; right?: number; bottom?: number; left?: number };
 
 export type Border = {
   width: CSSProperties["borderWidth"];
@@ -10,19 +11,17 @@ export type Border = {
   color: CSSProperties["borderColor"];
 };
 
-export type Offset = { top?: number; right?: number; bottom?: number; left?: number };
-
 type Font = {
-  family: string;
-  size: string;
-  weight: string;
+  family: CSSProperties["fontFamily"];
+  size: CSSProperties["fontSize"];
+  weight: CSSProperties["fontWeight"];
 };
 
 type Padding = {
-  top: string;
-  right: string;
-  bottom: string;
-  left: string;
+  top: CSSProperties["paddingTop"];
+  right: CSSProperties["paddingRight"];
+  bottom: CSSProperties["paddingBottom"];
+  left: CSSProperties["paddingLeft"];
 };
 
 export interface RGTheme {
@@ -66,6 +65,10 @@ export interface RGTheme {
   fillHandle: {
     background: string;
     border: Border;
+  };
+  resizeColumn: {
+    default: React.CSSProperties;
+    hover: React.CSSProperties;
   };
   selectionIndicator: {
     background: string;

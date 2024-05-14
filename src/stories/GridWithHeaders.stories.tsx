@@ -72,7 +72,7 @@ export const GridWithHeaders = () => {
 
   return (
     <div className="rgScrollableContainer" style={{ height: "100%", width: "100%", overflow: "auto" }}>
-      <ReactGrid id="grid-with-headers" stickyTopRows={1} {...cellMatrix} />
+      <ReactGrid id="grid-with-headers" onResizeColumn={(width, columnId) => {}} stickyTopRows={1} {...cellMatrix} />
     </div>
   );
 };

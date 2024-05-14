@@ -1,3 +1,4 @@
+import React from "react";
 import { RGTheme } from "../types/Theme";
 
 const lightTheme: RGTheme = {
@@ -60,6 +61,19 @@ const lightTheme: RGTheme = {
       color: "black",
       style: "dashed",
       width: "2px",
+    },
+  },
+  resizeColumn: {
+    default: {
+      position: "absolute",
+      top: 0,
+      right: 0,
+      background: "transparent",
+      width: "5px",
+      height: "100%",
+    },
+    hover: {
+      backgroundColor: "black",
     },
   },
   selectionIndicator: {

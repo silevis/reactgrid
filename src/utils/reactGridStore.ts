@@ -48,6 +48,7 @@ const DEFAULT_STORE_PROPS: ReactGridStoreProps = {
   onCellFocused: undefined,
   onCut: undefined,
   onPaste: undefined,
+  onResizeColumn: undefined,
 };
 
 export function initReactGridStore(id: string, initialProps?: Partial<ReactGridStoreProps>) {

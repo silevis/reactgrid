@@ -261,7 +261,7 @@ export const PartialArea: FC<PartialAreaProps> = React.memo(
           />
           {currentBehavior.id !== CellSelectionBehavior.id && shouldEnableFillHandle && (
             <div
-              className="fill-handle"
+              className="rg-fill-handle"
               style={{
                 position: "absolute",
                 right: -5,
@@ -274,7 +274,7 @@ export const PartialArea: FC<PartialAreaProps> = React.memo(
                 border: "2px solid #fff",
                 borderRadius: "50%",
               }}
-              onPointerDown={(event) => {
+              onPointerDown={() => {
                 setCurrentBehavior(FillHandleBehavior);
               }}
             />

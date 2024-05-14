@@ -8,6 +8,7 @@ import NumberCell from "../components/cellTemplates/NumberCell";
 import { NumericalRange } from "../types/CellMatrix";
 import { parseLocaleNumber } from "../utils/parseLocaleNumber";
 import { HeaderCell } from "../components/cellTemplates/HeaderCell";
+import DateCell from "../components/cellTemplates/DateCell";
 
 const styledRanges = [
   {
@@ -137,10 +138,6 @@ export const BigGrid = () => {
   const [data, setData] = useState<(CellData | null)[][]>(
     Array.from({ length: ROW_COUNT }).map((_, i) => {
       return Array.from({ length: COLUMN_COUNT }).map((_, j) => {
-        if (i === 0 && j === 1) return null;
-        if (i === 1 && j === 0) return null;
-        if (i === 1 && j === 1) return null;
-
         if (i === 2 && j === 4) return null;
         if (i === 3 && j === 3) return null;
         if (i === 3 && j === 4) return null;
@@ -156,6 +153,8 @@ export const BigGrid = () => {
 
         if (i === 6 && j === 7) return null;
         if (i === 6 && j === 8) return null;
+
+        if (i === 1 && j === 3) return { date: new Date() };
 
         if (i === 0 && j === 0) return { number: 100 };
 
@@ -189,51 +188,55 @@ export const BigGrid = () => {
             // width: `${Math.floor(Math.random() * 3) + 1}fr`,
             width: "min-content",
           });
-          setCell(i.toString(), j.toString(), HeaderCell, {
-            text: `title ${j + 1}`,
-            style: {
-              backgroundColor: "#fcff91",
-              paddingTop: 10,
-              paddingBottom: 10,
-            },
-          });
-        } else {
-          if (val === null) return;
-
-          setCell(i.toString(), j.toString(), TextCell, {
-            value: val?.text,
-            onTextChanged: (data) => {
-              setData((prev) => {
-                const next = [...prev];
-                if (next[i][j] !== null) {
-                  next[i][j].text = data;
-                }
-                return next;
-              });
-            },
-          });
         }
+        if (val === null) return;
+
+        setCell(i.toString(), j.toString(), TextCell, {
+          value: val?.text,
+          onTextChanged: (data) => {
+            setData((prev) => {
+              const next = [...prev];
+              if (next[i][j] !== null) {
+                next[i][j].text = data;
+              }
+              return next;
+            });
+          },
+        });
       });
     });
 
-    // setCell(
-    //   "0",
-    //   "0",
-    //   DateCell,
-    //   {
-    //     value: data[0][0]?.date,
-    //     onDateChanged: (newDate) => {
-    //       setData((prev) => {
-    //         const next = [...prev];
-    //         if (next[0][0]) {
-    //           next[0][0] = newDate;
-    //         }
-    //         return next;
-    //       });
-    //     },
-    //   },
-    //   { colSpan: 2, rowSpan: 2 }
-    // );
+    setCell(
+      "1",
+      "3",
+      DateCell,
+      {
+        value: data[1][3]?.date,
+        onDateChanged: (newDate) => {
+          setData((prev) => {
+            const next = [...prev];
+            next[1][3] = newDate;
+            return next;
+          });
+        },
+      },
+      { colSpan: 2 }
+    );
+
+    setCell("0", "0", NumberCell, {
+      value: data[0][0]?.number ?? 0,
+      validator: (value) => !isNaN(value),
+      errorMessage: "ERR",
+      format: myNumberFormat,
+      hideZero: true,
+      onValueChanged: (newNumber) => {
+        setData((prev) => {
+          const next = [...prev];
+          next[0][0]!.number = newNumber;
+          return next;
+        });
+      },
+    });
 
     setCell(
       "2",
@@ -248,9 +251,7 @@ export const BigGrid = () => {
         onValueChanged: (newNumber) => {
           setData((prev) => {
             const next = [...prev];
-            if (next[2][3]) {
-              next[2][3].number = newNumber;
-            }
+            next[2][3]!.number = newNumber;
             return next;
           });
         },
