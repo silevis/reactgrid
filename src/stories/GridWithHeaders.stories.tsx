@@ -6,13 +6,14 @@ import { HeaderCell } from "../components/cellTemplates/HeaderCell";
 import ReactGrid from "../ReactGrid";
 import { ErrorBoundary } from "../components/ErrorBoundary";
 import { Column, Row } from "../types/PublicModel";
+import { onFillHandle } from "./utils/onFillHandle";
 
 interface CellData {
   text?: string;
 }
 
-const ROW_COUNT = 4;
-const COLUMN_COUNT = 4;
+const ROW_COUNT = 15;
+const COLUMN_COUNT = 10;
 
 export const GridWithHeaders = () => {
   const [columns, setColumns] = useState<Array<Column<string>>>(
@@ -81,6 +82,7 @@ export const GridWithHeaders = () => {
     <div className="rgScrollableContainer" style={{ height: "100%", width: "100%", overflow: "auto" }}>
       <ReactGrid
         id="grid-with-headers"
+        onFillHandle={(selectedArea, fillRange) => onFillHandle(selectedArea, fillRange, setGridData)}
         onResizeColumn={(width, columnId) => {
           setColumns((prevColumns) => {
             return prevColumns.map((column) => {
@@ -91,6 +93,7 @@ export const GridWithHeaders = () => {
             });
           });
         }}
+        minColumnWidth={100}
         stickyTopRows={1}
         {...cellMatrix}
       />

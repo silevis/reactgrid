@@ -13,6 +13,7 @@ const reactGridStores = create<ReactGridStores>(() => ({}));
 const DEFAULT_STORE_PROPS: ReactGridStoreProps = {
   rows: [],
   columns: [],
+  minColumnWidth: 50,
   cells: new Map(),
   rowMeasurements: [],
   colMeasurements: [],

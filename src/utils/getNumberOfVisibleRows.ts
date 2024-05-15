@@ -7,7 +7,7 @@ import { isInViewport } from "./isInViewport";
 export const getNumberOfVisibleRows = (store: ReactGridStore, columnId?: string) => {
   const scrollableParent = store.reactGridRef!;
 
-  let visibleCells = -1; // exclude the currently focused cell
+  let visibleCells = 0;
 
   if (!columnId) return 0;
 

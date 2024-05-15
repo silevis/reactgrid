@@ -5,10 +5,12 @@ import { ErrorBoundary } from "../components/ErrorBoundary";
 import TextCell from "../components/cellTemplates/TextCell";
 import { cellMatrixBuilder } from "../utils/cellMatrixBuilder";
 import NumberCell from "../components/cellTemplates/NumberCell";
-import { NumericalRange } from "../types/CellMatrix";
-import { parseLocaleNumber } from "../utils/parseLocaleNumber";
 import DateCell from "../components/cellTemplates/DateCell";
 import { Column, Row } from "../types/PublicModel";
+import { onFillHandle } from "./utils/onFillHandle";
+import { onCutHandler } from "./utils/onCutHandler";
+import { onPasteHandler } from "./utils/onPasteHandler";
+import { onCopyHandler } from "./utils/onCopyHandler";
 
 const styledRanges = [
   {
@@ -20,101 +22,6 @@ const styledRanges = [
     styles: { background: "green", color: "purple" },
   },
 ];
-
-const onFillHandle = (
-  selectedArea: NumericalRange,
-  fillRange: NumericalRange,
-  setData: React.Dispatch<React.SetStateAction<(CellData | null)[][]>>
-) => {
-  setData((prev) => {
-    const next = [...prev];
-
-    for (let i = fillRange.startRowIdx; i < fillRange.endRowIdx; i++) {
-      for (let j = fillRange.startColIdx; j < fillRange.endColIdx; j++) {
-        if (next[i][j] === null) continue;
-        const relativeRowIdx = i - fillRange.startRowIdx;
-        const relativeColIdx = j - fillRange.startColIdx;
-
-        if (selectedArea.startColIdx + relativeColIdx >= selectedArea.endColIdx) {
-          const repeatIdx = relativeColIdx % (selectedArea.endColIdx - selectedArea.startColIdx);
-          const newValue = prev[selectedArea.startRowIdx][selectedArea.startColIdx + repeatIdx];
-
-          next[i][j] = {
-            text: newValue?.number ? newValue.number.toString() : newValue?.text,
-            number: newValue?.number ?? parseLocaleNumber(newValue?.text),
-          };
-        } else if (!next[selectedArea.startRowIdx + relativeRowIdx][selectedArea.startColIdx + relativeColIdx]) {
-          const newValue = next[selectedArea.startRowIdx][selectedArea.startColIdx];
-
-          next[i][j] = {
-            text: newValue?.number ? newValue.number.toString() : newValue?.text,
-            number: newValue?.number ?? parseLocaleNumber(newValue?.text),
-          };
-        } else {
-          const newValue = prev[selectedArea.startRowIdx + relativeRowIdx][selectedArea.startColIdx + relativeColIdx];
-
-          next[i][j] = {
-            text: newValue?.number ? newValue.number.toString() : newValue?.text,
-            number: newValue?.number ?? parseLocaleNumber(newValue?.text),
-          };
-        }
-      }
-    }
-    return next;
-  });
-};
-
-const onPasteHandler = <T,>(
-  selectedArea: NumericalRange,
-  pastedData: string,
-  setData: React.Dispatch<React.SetStateAction<T[][]>>
-) => {
-  // parse the pasted data
-  const parsedData = JSON.parse(pastedData);
-
-  setData((prev) => {
-    const next = [...prev];
-    for (let i = 0; i < parsedData.length; i++) {
-      for (let j = 0; j < parsedData[i].length; j++) {
-        next[selectedArea.startRowIdx + i][selectedArea.startColIdx + j] = parsedData[i][j];
-      }
-    }
-    return next;
-  });
-};
-
-const onCutHandler = <T,>(
-  data: T[][],
-  selectedArea: NumericalRange,
-  setData: React.Dispatch<React.SetStateAction<T[][]>>
-) => {
-  // copy the data from the selected area to the clipboard
-  const selectedData = data
-    .slice(selectedArea.startRowIdx, selectedArea.endRowIdx)
-    .map((row) => row.slice(selectedArea.startColIdx, selectedArea.endColIdx));
-
-  navigator.clipboard.writeText(JSON.stringify(selectedData));
-
-  // remove the data from the selected area
-  setData((prev) => {
-    const next = [...prev];
-    for (let i = selectedArea.startRowIdx; i < selectedArea.endRowIdx; i++) {
-      for (let j = selectedArea.startColIdx; j < selectedArea.endColIdx; j++) {
-        next[i][j] = "" as T;
-      }
-    }
-    return next;
-  });
-};
-
-const onCopyHandler = <T,>(data: T[][], selectedArea: NumericalRange) => {
-  // copy the data from the selected area to the clipboard
-  const selectedData = data
-    .slice(selectedArea.startRowIdx, selectedArea.endRowIdx)
-    .map((row) => row.slice(selectedArea.startColIdx, selectedArea.endColIdx));
-
-  navigator.clipboard.writeText(JSON.stringify(selectedData));
-};
 
 const ROW_COUNT = 20;
 const COLUMN_COUNT = 25;
@@ -313,9 +220,8 @@ export const BigGrid = () => {
             });
           }}
           {...cellMatrix}
-          onAreaSelected={(selectedArea) => {
-            console.log("area selected: ", selectedArea);
-          }}
+          minColumnWidth={100}
+          onAreaSelected={(selectedArea) => {}}
           onFillHandle={(selectedArea, fillRange) => onFillHandle(selectedArea, fillRange, setData)}
           onCut={(selectedArea) => onCutHandler(data, selectedArea, setData)}
           onPaste={(selectedArea, pastedData) => onPasteHandler(selectedArea, pastedData, setData)}

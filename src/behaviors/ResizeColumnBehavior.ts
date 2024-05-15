@@ -4,6 +4,7 @@ import isDevEnvironment from "../utils/isDevEnvironment.ts";
 
 const devEnvironment = isDevEnvironment();
 
+let headerLeftPosition = 0;
 let initialPointerX = 0;
 let initialHeaderWidth = 0;
 
@@ -16,6 +17,11 @@ export const ResizeColumnBehavior: Behavior = {
     const headerContainer = targetElement.parentNode as HTMLDivElement;
     const headerContainerInitialWidth = headerContainer.offsetWidth;
 
+    const rect = headerContainer.getBoundingClientRect();
+
+    // get the left position relative to the viewport
+    headerLeftPosition = rect.left;
+
     initialHeaderWidth = headerContainerInitialWidth;
     initialPointerX = event.clientX;
 
@@ -25,7 +31,13 @@ export const ResizeColumnBehavior: Behavior = {
   handlePointerMove: (event, store) => {
     devEnvironment && console.log("CRB/handlePointerMove");
 
-    return { ...store, linePosition: event.clientX };
+    return {
+      ...store,
+      linePosition:
+        event.clientX > headerLeftPosition + store.minColumnWidth
+          ? event.clientX
+          : headerLeftPosition + store.minColumnWidth,
+    };
   },
 
   handlePointerUp: function (event, store) {
@@ -35,10 +47,13 @@ export const ResizeColumnBehavior: Behavior = {
     // calculate the new width of the header
     const resultWidth = initialHeaderWidth + deltaX;
 
-    if (resultWidth > 0) {
+    if (event.clientX <= headerLeftPosition + store.minColumnWidth) {
+      store.onResizeColumn?.(store.minColumnWidth, store.resizingColId!);
+    } else {
       store.onResizeColumn?.(resultWidth, store.resizingColId!);
     }
 
+    headerLeftPosition = 0;
     initialPointerX = 0;
     initialHeaderWidth = 0;
 

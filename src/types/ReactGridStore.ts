@@ -9,6 +9,8 @@ import { RGTheme } from "./Theme";
 export interface ReactGridStoreProps {
   rows: Row[];
   columns: Column[];
+  minColumnWidth: number;
+
   cells: CellMap;
 
   rowMeasurements: RowMeasurement[];

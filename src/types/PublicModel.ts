@@ -115,6 +115,7 @@ export interface ReactGridProps {
   styledRanges?: StyledRange[];
 
   columns: Column[];
+  minColumnWidth?: number;
   rows: Row[];
 
   cells: CellMap;
