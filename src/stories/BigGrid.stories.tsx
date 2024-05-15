@@ -7,8 +7,8 @@ import { cellMatrixBuilder } from "../utils/cellMatrixBuilder";
 import NumberCell from "../components/cellTemplates/NumberCell";
 import { NumericalRange } from "../types/CellMatrix";
 import { parseLocaleNumber } from "../utils/parseLocaleNumber";
-import { HeaderCell } from "../components/cellTemplates/HeaderCell";
 import DateCell from "../components/cellTemplates/DateCell";
+import { Column, Row } from "../types/PublicModel";
 
 const styledRanges = [
   {
@@ -135,6 +135,19 @@ interface CellData {
 }
 
 export const BigGrid = () => {
+  const [columns, setColumns] = useState<Array<Column<string>>>(
+    Array.from({ length: COLUMN_COUNT }).map((_, j) => ({
+      id: j.toString(),
+      width: "150px",
+    }))
+  );
+  const [rows, serRows] = useState<Array<Row<string>>>(
+    Array.from({ length: ROW_COUNT }).map((_, j) => ({
+      id: j.toString(),
+      height: "max-content",
+    }))
+  );
+
   const [data, setData] = useState<(CellData | null)[][]>(
     Array.from({ length: ROW_COUNT }).map((_, i) => {
       return Array.from({ length: COLUMN_COUNT }).map((_, j) => {
@@ -174,21 +187,9 @@ export const BigGrid = () => {
     })
   );
 
-  const cellMatrix = cellMatrixBuilder(({ addRows, addColumns, setCell }) => {
+  const cellMatrix = cellMatrixBuilder(rows, columns, ({ setCell }) => {
     data.forEach((row, i) => {
-      addRows({
-        id: i.toString(),
-        // height: `${Math.floor(Math.random() * 5) + 1}fr`,
-        height: "max-content",
-      });
       row.forEach((val, j) => {
-        if (i === 0) {
-          addColumns({
-            id: j.toString(),
-            // width: `${Math.floor(Math.random() * 3) + 1}fr`,
-            width: "min-content",
-          });
-        }
         if (val === null) return;
 
         setCell(i.toString(), j.toString(), TextCell, {
@@ -301,6 +302,16 @@ export const BigGrid = () => {
           stickyBottomRows={2}
           styles={testStyles}
           // styledRanges={styledRanges}
+          onResizeColumn={(width, columnId) => {
+            setColumns((prevColumns) => {
+              return prevColumns.map((column) => {
+                if (column.id === columnId) {
+                  return { ...column, width: `${width}px` };
+                }
+                return column;
+              });
+            });
+          }}
           {...cellMatrix}
           onAreaSelected={(selectedArea) => {
             console.log("area selected: ", selectedArea);

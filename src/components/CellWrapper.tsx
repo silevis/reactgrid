@@ -4,6 +4,7 @@ import HiddenFocusTarget from "./HiddenFocusTarget";
 import { useReactGridStore } from "../utils/reactGridStore";
 import { useReactGridId } from "./ReactGridIdProvider";
 import { useTheme } from "../hooks/useTheme";
+import { ResizeColumnBehavior } from "../behaviors/ResizeColumnBehavior";
 
 type CellWrapperProps = React.ClassAttributes<HTMLDivElement> &
   React.HTMLAttributes<HTMLDivElement> & {
@@ -19,6 +20,8 @@ const CellWrapper: FC<CellWrapperProps> = ({ children, targetInputRef, ...wrappe
   const id = useReactGridId();
   const focusedCell = useReactGridStore(id, (store) => store.focusedLocation);
   const onResizeColumn = useReactGridStore(id, (store) => store.onResizeColumn);
+  const setCurrentBehavior = useReactGridStore(id, (store) => store.setCurrentBehavior);
+  const setResizingColId = useReactGridStore(id, (store) => store.setResizingColId);
   const isFocused = focusedCell.rowIndex === ctx.realRowIndex && focusedCell.colIndex === ctx.realColumnIndex;
 
   return (
@@ -27,7 +30,7 @@ const CellWrapper: FC<CellWrapperProps> = ({ children, targetInputRef, ...wrappe
       className={`rgCellContainer rgRowIdx-${ctx.realRowIndex} rgColIdx-${ctx.realColumnIndex} ${
         customClassName ?? ""
       }`}
-      css={{
+      style={{
         ...customStyle,
         paddingTop: theme.cellContainer.padding.top,
         paddingLeft: theme.cellContainer.padding.left,
@@ -41,9 +44,13 @@ const CellWrapper: FC<CellWrapperProps> = ({ children, targetInputRef, ...wrappe
         ...ctx.containerStyle,
       }}
     >
-      {ctx.realRowIndex === 0 && (
+      {ctx.realRowIndex === 0 && onResizeColumn && (
         <div
           className="rg-resize-column"
+          onPointerDown={() => {
+            setResizingColId(ctx.colId);
+            setCurrentBehavior(ResizeColumnBehavior);
+          }}
           css={{
             cursor: "col-resize",
             ...theme.resizeColumn.default,
@@ -51,7 +58,7 @@ const CellWrapper: FC<CellWrapperProps> = ({ children, targetInputRef, ...wrappe
               ...theme.resizeColumn.hover,
             },
           }}
-        />
+        ></div>
       )}
       {children}
       {isFocused && <HiddenFocusTarget />}

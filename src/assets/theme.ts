@@ -1,4 +1,3 @@
-import React from "react";
 import { RGTheme } from "../types/Theme";
 
 const lightTheme: RGTheme = {
@@ -72,8 +71,12 @@ const lightTheme: RGTheme = {
       width: "5px",
       height: "100%",
     },
+    line: {
+      backgroundColor: "lightblue",
+      width: "3px",
+    },
     hover: {
-      backgroundColor: "black",
+      backgroundColor: "lightblue",
     },
   },
   selectionIndicator: {

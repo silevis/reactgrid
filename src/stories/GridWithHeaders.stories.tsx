@@ -5,16 +5,30 @@ import TextCell from "../components/cellTemplates/TextCell";
 import { HeaderCell } from "../components/cellTemplates/HeaderCell";
 import ReactGrid from "../ReactGrid";
 import { ErrorBoundary } from "../components/ErrorBoundary";
+import { Column, Row } from "../types/PublicModel";
 
 interface CellData {
   text?: string;
 }
 
-const ROW_COUNT = 10;
-const COLUMN_COUNT = 10;
+const ROW_COUNT = 4;
+const COLUMN_COUNT = 4;
 
 export const GridWithHeaders = () => {
-  const [data, setData] = useState<(CellData | null)[][]>(
+  const [columns, setColumns] = useState<Array<Column<string>>>(
+    Array.from({ length: COLUMN_COUNT }).map((_, j) => ({
+      id: j.toString(),
+      width: "150px",
+    }))
+  );
+  const [rows, serRows] = useState<Array<Row<string>>>(
+    Array.from({ length: ROW_COUNT }).map((_, j) => ({
+      id: j.toString(),
+      height: "50px",
+    }))
+  );
+
+  const [gridData, setGridData] = useState<(CellData | null)[][]>(
     Array.from({ length: ROW_COUNT }).map((_, i) => {
       return Array.from({ length: COLUMN_COUNT }).map((_, j) => {
         if (i === 0) {
@@ -27,18 +41,10 @@ export const GridWithHeaders = () => {
     })
   );
 
-  const cellMatrix = cellMatrixBuilder(({ addRows, addColumns, setCell }) => {
-    data.forEach((row, i) => {
-      addRows({
-        id: i.toString(),
-        height: "50px",
-      });
+  const cellMatrix = cellMatrixBuilder(rows, columns, ({ setCell }) => {
+    gridData.forEach((row, i) => {
       row.forEach((val, j) => {
         if (i === 0) {
-          addColumns({
-            id: j.toString(),
-            width: "150px",
-          });
           setCell(i.toString(), j.toString(), HeaderCell, {
             text: val?.text,
             style: {
@@ -49,30 +55,45 @@ export const GridWithHeaders = () => {
               fontWeight: "bold",
             },
           });
-        } else {
-          if (val === null) return;
-
-          setCell(i.toString(), j.toString(), TextCell, {
-            value: val?.text,
-            style: {},
-            onTextChanged: (data) => {
-              setData((prev) => {
-                const next = [...prev];
-                if (next[i][j] !== null) {
-                  next[i][j].text = data;
-                }
-                return next;
-              });
-            },
-          });
+          return;
         }
+
+        if (val === null) return;
+
+        setCell(i.toString(), j.toString(), TextCell, {
+          value: val?.text,
+          style: {},
+          onTextChanged: (data) => {
+            setGridData((prev) => {
+              const next = [...prev];
+              if (next[i][j] !== null) {
+                next[i][j].text = data;
+              }
+              return next;
+            });
+          },
+        });
       });
     });
   });
 
   return (
     <div className="rgScrollableContainer" style={{ height: "100%", width: "100%", overflow: "auto" }}>
-      <ReactGrid id="grid-with-headers" onResizeColumn={(width, columnId) => {}} stickyTopRows={1} {...cellMatrix} />
+      <ReactGrid
+        id="grid-with-headers"
+        onResizeColumn={(width, columnId) => {
+          setColumns((prevColumns) => {
+            return prevColumns.map((column) => {
+              if (column.id === columnId) {
+                return { ...column, width: `${width}px` };
+              }
+              return column;
+            });
+          });
+        }}
+        stickyTopRows={1}
+        {...cellMatrix}
+      />
     </div>
   );
 };

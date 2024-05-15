@@ -34,6 +34,9 @@ const DEFAULT_STORE_PROPS: ReactGridStoreProps = {
   fillHandleArea: { startRowIdx: -1, endRowIdx: -1, startColIdx: -1, endColIdx: -1 },
   reactGridRef: undefined,
   hiddenFocusTargetRef: undefined,
+  resizingColId: undefined,
+  lineOrientation: undefined,
+  linePosition: undefined,
   behaviors: {
     Default: DefaultBehavior(),
     CellSelection: CellSelectionBehavior,
@@ -126,6 +129,11 @@ export function initReactGridStore(id: string, initialProps?: Partial<ReactGridS
         setFillHandleArea: (fillHandleArea) => set(() => ({ fillHandleArea })),
 
         setCurrentBehavior: (currentBehavior) => set(() => ({ currentBehavior })),
+
+        setResizingColId: (resizingColId) => set(() => ({ resizingColId })),
+
+        setLineOrientation: (lineOrientation) => set(() => ({ lineOrientation })),
+        setLinePosition: (linePosition) => set(() => ({ linePosition })),
 
         assignReactGridRef: (reactGridRef) => set(() => ({ reactGridRef })),
         assignHiddenFocusTargetRef: (hiddenFocusTargetRef) => set(() => ({ hiddenFocusTargetRef })),

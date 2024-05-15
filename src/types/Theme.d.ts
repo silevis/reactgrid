@@ -68,6 +68,7 @@ export interface RGTheme {
   };
   resizeColumn: {
     default: React.CSSProperties;
+    line: React.CSSProperties;
     hover: React.CSSProperties;
   };
   selectionIndicator: {

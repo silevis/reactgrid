@@ -13,10 +13,7 @@ export const HeaderCell: FC<HeaderCellProps> = ({ text }) => {
   return (
     <CellWrapper
       style={{ padding: ".2rem", textAlign: "center", outline: "none" }}
-      onDoubleClick={() => {
-        ctx.setEditMode(true);
-        ctx.requestFocus();
-      }}
+      onDoubleClick={() => {}}
       onKeyDown={(e) => {}}
     >
       {text}

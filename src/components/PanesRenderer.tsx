@@ -34,6 +34,7 @@ const PanesRenderer: FC<PanesRendererProps> = ({
   const rows = useReactGridStore(id, (store) => store.rows);
   const focusedLocation = useReactGridStore(id, (store) => store.focusedLocation);
   const columns = useReactGridStore(id, (store) => store.columns);
+
   const setPaneRanges = useReactGridStore(id, (store) => store.setPaneRanges);
   const setRowMeasurements = useReactGridStore(id, (store) => store.setRowMeasurements);
   const setColMeasurements = useReactGridStore(id, (store) => store.setColMeasurements);

@@ -5,8 +5,10 @@ import PanesRenderer from "./components/PanesRenderer";
 import { ReactGridIdProvider } from "./components/ReactGridIdProvider";
 import { ReactGridProps } from "./types/PublicModel";
 import isDevEnvironment from "./utils/isDevEnvironment";
-import { initReactGridStore, useReactGridStoreApi } from "./utils/reactGridStore";
+import { initReactGridStore, useReactGridStore, useReactGridStoreApi } from "./utils/reactGridStore";
 import { useReactGridSync } from "./hooks/useReactGridSync";
+import { Line } from "./components/Line";
+import { ResizeColumnBehavior } from "./behaviors/ResizeColumnBehavior";
 
 const devEnvironment = isDevEnvironment();
 
@@ -50,7 +52,9 @@ const ReactGrid: FC<ReactGridProps> = ({
 
   const store = useReactGridStoreApi(id).getState();
 
-  useReactGridSync(store, { cells, initialSelectedRange, initialFocusLocation });
+  const currentBehavior = useReactGridStore(id, (store) => store.currentBehavior);
+
+  useReactGridSync(store, { cells, columns, initialSelectedRange, initialFocusLocation });
 
   const [bypassSizeWarning, setBypassSizeWarning] = useState(false);
 
@@ -81,6 +85,8 @@ const ReactGrid: FC<ReactGridProps> = ({
             stickyRightColumns={stickyRightColumns ?? 0}
           />
           {/* TODO: Shadow for row&col reorder */}
+
+          {currentBehavior.id === ResizeColumnBehavior.id && <Line />}
         </GridWrapper>
       </ErrorBoundary>
     </ReactGridIdProvider>

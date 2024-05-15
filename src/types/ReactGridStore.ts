@@ -30,6 +30,11 @@ export interface ReactGridStoreProps {
   behaviors: Record<BehaviorId, Behavior>;
   currentBehavior: Behavior;
 
+  resizingColId?: number | string;
+  linePosition?: number;
+
+  lineOrientation?: "horizontal" | "vertical";
+
   onFillHandle?: (selectedArea: NumericalRange, fillRange: NumericalRange) => void;
   onAreaSelected?: (selectedArea: NumericalRange) => void;
   onCellFocused?: (cellLocation: IndexedLocation) => void;
@@ -69,7 +74,11 @@ export interface ReactGridStore extends ReactGridStoreProps {
   readonly setSelectedArea: (selectedArea: NumericalRange) => void;
   readonly setFillHandleArea: (fillHandleArea: NumericalRange) => void;
 
+  readonly setResizingColId: (columnId: number | string) => void;
+
   readonly setCurrentBehavior: (currentBehavior: Behavior) => void;
+  readonly setLineOrientation: (lineOrientation: "horizontal" | "vertical") => void;
+  readonly setLinePosition: (linePosition: number) => void;
 
   readonly assignReactGridRef: (reactGridRef?: HTMLDivElement) => void;
 
