@@ -62,6 +62,10 @@ const lightTheme: RGTheme = {
       width: "2px",
     },
   },
+  line: {
+    backgroundColor: "lightblue",
+    width: "3px",
+  },
   resizeColumn: {
     default: {
       position: "absolute",
@@ -70,10 +74,6 @@ const lightTheme: RGTheme = {
       background: "transparent",
       width: "5px",
       height: "100%",
-    },
-    line: {
-      backgroundColor: "lightblue",
-      width: "3px",
     },
     hover: {
       backgroundColor: "lightblue",

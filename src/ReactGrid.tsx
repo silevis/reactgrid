@@ -77,7 +77,7 @@ const ReactGrid: FC<ReactGridProps> = ({
   return (
     <ReactGridIdProvider id={id}>
       <ErrorBoundary>
-        <GridWrapper reactGridId={id} style={userStyles?.gridWrapper}>
+        <GridWrapper reactGridId={id} style={{ position: "relative", ...userStyles?.gridWrapper }}>
           <PanesRenderer
             rowAmount={rows.length}
             columnAmount={columns.length}

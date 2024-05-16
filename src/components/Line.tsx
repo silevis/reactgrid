@@ -16,12 +16,12 @@ export const Line: FC = () => {
     <div
       className={`rg-line ${isVertical ? "rg-line-vertical" : "rg-line-horizontal"}`}
       style={{
-        position: "fixed",
-        height: isVertical ? reactGridRef?.clientHeight : theme.resizeColumn.default.height,
-        top: isVertical ? reactGridRef?.getBoundingClientRect().top : linePosition,
+        position: "absolute",
+        height: isVertical ? reactGridRef?.clientHeight : theme.line.height,
+        top: isVertical ? 0 : linePosition,
         left: isVertical ? linePosition : reactGridRef?.getBoundingClientRect().left,
-        width: isVertical ? theme.resizeColumn.line.width : reactGridRef?.clientWidth,
-        backgroundColor: theme.resizeColumn.line.backgroundColor,
+        width: isVertical ? theme.line.width : 0,
+        backgroundColor: theme.line.backgroundColor,
         pointerEvents: "none",
       }}
     ></div>

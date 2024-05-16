@@ -45,7 +45,7 @@ export const BigGrid = () => {
   const [columns, setColumns] = useState<Array<Column<string>>>(
     Array.from({ length: COLUMN_COUNT }).map((_, j) => ({
       id: j.toString(),
-      width: "150px",
+      width: 150,
     }))
   );
   const [rows, serRows] = useState<Array<Row<string>>>(
@@ -195,8 +195,6 @@ export const BigGrid = () => {
       { colSpan: 3 }
     );
   });
-
-  cellMatrix.columns[1].width = "7rem";
 
   return (
     <>

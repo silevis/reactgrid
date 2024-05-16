@@ -281,16 +281,6 @@ const PanesRenderer: FC<PanesRendererProps> = ({
           shouldRender={stickyBottomRows > 0}
         />
         <Pane
-          paneName="Right"
-          gridContentRange={ranges.Right}
-          getCellOffset={(_rowIndex, colIndex, _rowSpan, colSpan) => ({
-            position: "sticky",
-            backgroundColor: theme.paneContainer.right.background,
-            right: stickyOffsets.rightColumns.at(-colIndex - colSpan),
-          })}
-          shouldRender={stickyRightColumns > 0}
-        />
-        <Pane
           paneName="TopCenter"
           gridContentRange={ranges.TopCenter}
           getCellOffset={(rowIndex) => ({
@@ -299,6 +289,16 @@ const PanesRenderer: FC<PanesRendererProps> = ({
             top: stickyOffsets.topRows[rowIndex],
           })}
           shouldRender={stickyTopRows > 0}
+        />
+        <Pane
+          paneName="Right"
+          gridContentRange={ranges.Right}
+          getCellOffset={(_rowIndex, colIndex, _rowSpan, colSpan) => ({
+            position: "sticky",
+            backgroundColor: theme.paneContainer.right.background,
+            right: stickyOffsets.rightColumns.at(-colIndex - colSpan),
+          })}
+          shouldRender={stickyRightColumns > 0}
         />
         <Pane
           paneName="Left"

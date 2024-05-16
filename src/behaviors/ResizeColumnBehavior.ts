@@ -17,25 +17,40 @@ export const ResizeColumnBehavior: Behavior = {
     const headerContainer = targetElement.parentNode as HTMLDivElement;
     const headerContainerInitialWidth = headerContainer.offsetWidth;
 
-    const rect = headerContainer.getBoundingClientRect();
-
     // get the left position relative to the viewport
-    headerLeftPosition = rect.left;
+    headerLeftPosition = headerContainer.offsetLeft;
 
     initialHeaderWidth = headerContainerInitialWidth;
     initialPointerX = event.clientX;
 
-    return { ...store, lineOrientation: "vertical", linePosition: event.clientX };
+    return {
+      ...store,
+      lineOrientation: "vertical",
+      linePosition: headerContainer.offsetLeft + headerContainer.offsetWidth,
+    };
   },
 
   handlePointerMove: (event, store) => {
     devEnvironment && console.log("CRB/handlePointerMove");
 
+    const reactGridRef = store.reactGridRef;
+
+    if (!reactGridRef) return store;
+
+    const rect = reactGridRef.getBoundingClientRect();
+
+    // get the left position relative to the viewport
+    const gridContainerLeftPosition = rect.left;
+
+    const linePosition = event.clientX - gridContainerLeftPosition;
+
+    console.log({ linePosition, b: headerLeftPosition + store.minColumnWidth });
+
     return {
       ...store,
       linePosition:
-        event.clientX > headerLeftPosition + store.minColumnWidth
-          ? event.clientX
+        linePosition > headerLeftPosition + store.minColumnWidth
+          ? linePosition
           : headerLeftPosition + store.minColumnWidth,
     };
   },
@@ -47,7 +62,18 @@ export const ResizeColumnBehavior: Behavior = {
     // calculate the new width of the header
     const resultWidth = initialHeaderWidth + deltaX;
 
-    if (event.clientX <= headerLeftPosition + store.minColumnWidth) {
+    const reactGridRef = store.reactGridRef;
+
+    if (!reactGridRef) return store;
+
+    const rect = reactGridRef.getBoundingClientRect();
+
+    // get the left position relative to the viewport
+    const reactGridLeftPosition = rect.left;
+
+    const linePosition = event.clientX - reactGridLeftPosition;
+
+    if (linePosition <= headerLeftPosition + store.minColumnWidth) {
       store.onResizeColumn?.(store.minColumnWidth, store.resizingColId!);
     } else {
       store.onResizeColumn?.(resultWidth, store.resizingColId!);
