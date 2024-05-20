@@ -3,10 +3,10 @@ import { useReactGridStore } from "../utils/reactGridStore";
 import { useReactGridId } from "./ReactGridIdProvider";
 import { useTheme } from "../hooks/useTheme";
 
-export const Line: FC = () => {
+export const Shadow: FC = () => {
   const id = useReactGridId();
   const lineOrientation = useReactGridStore(id, (store) => store.lineOrientation);
-  const linePosition = useReactGridStore(id, (store) => store.linePosition);
+  const shadowPosition = useReactGridStore(id, (store) => store.shadowPosition);
   const reactGridRef = useReactGridStore(id, (store) => store.reactGridRef);
   const theme = useTheme();
 
@@ -14,12 +14,12 @@ export const Line: FC = () => {
 
   return (
     <div
-      className={`rg-line ${isVertical ? "rg-line-vertical" : "rg-line-horizontal"}`}
+      className={`rg-line ${isVertical ? "rg-shadow-vertical" : "rg-shadow-horizontal"}`}
       style={{
         position: "absolute",
         height: isVertical ? reactGridRef?.clientHeight : theme.line.size,
-        top: isVertical ? 0 : linePosition,
-        left: isVertical ? linePosition : reactGridRef?.getBoundingClientRect().left,
+        top: isVertical ? 0 : shadowPosition,
+        left: isVertical ? shadowPosition : reactGridRef?.getBoundingClientRect().left,
         width: isVertical ? theme.line.size : 0,
         backgroundColor: theme.line.backgroundColor,
         pointerEvents: "none",

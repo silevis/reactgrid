@@ -64,7 +64,7 @@ const lightTheme: RGTheme = {
   },
   line: {
     backgroundColor: "lightblue",
-    width: "3px",
+    size: "3px",
   },
   resizeColumn: {
     default: {

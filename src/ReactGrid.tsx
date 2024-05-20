@@ -9,6 +9,8 @@ import { initReactGridStore, useReactGridStore, useReactGridStoreApi } from "./u
 import { useReactGridSync } from "./hooks/useReactGridSync";
 import { Line } from "./components/Line";
 import { ResizeColumnBehavior } from "./behaviors/ResizeColumnBehavior";
+import { ColumnReorderBehavior } from "./behaviors/ColumnReorderBehavior";
+import { Shadow } from "./components/Shadow";
 
 const devEnvironment = isDevEnvironment();
 
@@ -26,6 +28,7 @@ const ReactGrid: FC<ReactGridProps> = ({
   styledRanges,
   initialSelectedRange,
   initialFocusLocation,
+  enableColumnSelection,
   minColumnWidth,
   onAreaSelected,
   onFillHandle,
@@ -34,6 +37,7 @@ const ReactGrid: FC<ReactGridProps> = ({
   onPaste,
   onCopy,
   onResizeColumn,
+  onColumnReorder,
 }) => {
   initReactGridStore(id, {
     rows,
@@ -43,12 +47,14 @@ const ReactGrid: FC<ReactGridProps> = ({
     userStyles,
     styledRanges,
     minColumnWidth,
+    enableColumnSelection,
     onFillHandle,
     onAreaSelected,
     onCellFocused,
     onCut,
     onCopy,
     onResizeColumn,
+    onColumnReorder,
     onPaste,
   });
 
@@ -86,9 +92,8 @@ const ReactGrid: FC<ReactGridProps> = ({
             stickyLeftColumns={stickyLeftColumns ?? 0}
             stickyRightColumns={stickyRightColumns ?? 0}
           />
-          {/* TODO: Shadow for row&col reorder */}
-
           {currentBehavior.id === ResizeColumnBehavior.id && <Line />}
+          {currentBehavior.id === ColumnReorderBehavior.id && <Shadow />}
         </GridWrapper>
       </ErrorBoundary>
     </ReactGridIdProvider>

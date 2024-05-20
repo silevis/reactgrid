@@ -40,14 +40,27 @@ export const DefaultBehavior = (config: DefaultBehaviorConfig = CONFIG_DEFAULTS)
       newColIndex = colIndex;
     }
 
+    const isEntireColumnSelected = newRowIndex === 0 && store.enableColumnSelection;
+
+    const newCell = store.getCellByIndexes(newRowIndex, newColIndex);
+
+    const cellArea = getCellArea(store, newCell!);
+
     const SelectionBehavior = store.getBehavior("CellSelection");
 
     return {
       ...store,
-      focusedLocation: { rowIndex: newRowIndex, colIndex: newColIndex },
+      ...(!isEntireColumnSelected && { focusedLocation: { rowIndex: newRowIndex, colIndex: newColIndex } }),
       absoluteFocusedLocation: { rowIndex: newRowIndex, colIndex: newColIndex },
       fillHandleArea: { startRowIdx: -1, endRowIdx: -1, startColIdx: -1, endColIdx: -1 },
-      selectedArea: { startRowIdx: -1, endRowIdx: -1, startColIdx: -1, endColIdx: -1 },
+      selectedArea: isEntireColumnSelected
+        ? {
+            startRowIdx: 0,
+            endRowIdx: store.rows.length,
+            startColIdx: cellArea.startColIdx,
+            endColIdx: cellArea.endColIdx,
+          }
+        : { startRowIdx: -1, endRowIdx: -1, startColIdx: -1, endColIdx: -1 },
       currentBehavior: SelectionBehavior || store.currentBehavior,
     };
   },
@@ -86,22 +99,50 @@ export const DefaultBehavior = (config: DefaultBehaviorConfig = CONFIG_DEFAULTS)
     // Disable moving (horizontal & vertical scrolling) if touchStartPosition is the same as focusedCell position.
     const focusedCell = store.getFocusedCell();
     const element = getCellContainerFromPoint(touchStartPosition.x, touchStartPosition.y);
+
+    let newRowIndex = -1;
+    let newColIndex = -1;
+
+    if (element) {
+      const { rowIndex, colIndex } = getCellContainerLocation(element);
+      newRowIndex = rowIndex;
+      newColIndex = colIndex;
+    }
+
+    const isEntireColumnSelected = newRowIndex === 0 && store.enableColumnSelection;
+
+    const newCell = store.getCellByIndexes(newRowIndex, newColIndex);
+
+    const cellArea = getCellArea(store, newCell!);
+
+    const SelectionBehavior = store.getBehavior("CellSelection");
+
     if (focusedCell && element) {
       const { rowIndex: touchRowIndex, colIndex: touchColIndex } = getCellContainerLocation(element);
 
       const focusedCellWasTouched = touchRowIndex === focusedCell.rowIndex && touchColIndex === focusedCell.colIndex;
 
       if (focusedCellWasTouched) {
-        const SelectionBehavior = store.getBehavior("CellSelection");
-
         return {
           ...store,
-          currentBehavior: SelectionBehavior,
+          currentBehavior: SelectionBehavior || store.currentBehavior,
         };
       }
     }
 
-    return store;
+    return {
+      ...store,
+      absoluteFocusedLocation: { rowIndex: newRowIndex, colIndex: newColIndex },
+      selectedArea: isEntireColumnSelected
+        ? {
+            startRowIdx: 0,
+            endRowIdx: store.rows.length,
+            startColIdx: cellArea.startColIdx,
+            endColIdx: cellArea.endColIdx,
+          }
+        : { startRowIdx: -1, endRowIdx: -1, startColIdx: -1, endColIdx: -1 },
+      ...(isEntireColumnSelected && { currentBehavior: SelectionBehavior || store.currentBehavior }),
+    };
   },
 
   handlePointerMoveTouch: function (event, store) {
@@ -124,11 +165,14 @@ export const DefaultBehavior = (config: DefaultBehaviorConfig = CONFIG_DEFAULTS)
         const prevCell = getCellContainerLocation(prevElement);
         const currCell = getCellContainerLocation(currElement);
 
+        const isEntireColumnSelected = currCell.rowIndex === 0 && store.enableColumnSelection;
+
         if (prevCell.rowIndex === currCell.rowIndex && prevCell.colIndex === currCell.colIndex) {
           return {
             ...store,
-            focusedLocation: { rowIndex: currCell.rowIndex, colIndex: currCell.colIndex },
-            selectedArea: { startRowIdx: -1, endRowIdx: -1, startColIdx: -1, endColIdx: -1 },
+            ...(!isEntireColumnSelected && {
+              focusedLocation: { rowIndex: currCell.rowIndex, colIndex: currCell.colIndex },
+            }),
           };
         }
       }

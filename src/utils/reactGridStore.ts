@@ -38,6 +38,8 @@ const DEFAULT_STORE_PROPS: ReactGridStoreProps = {
   resizingColId: undefined,
   lineOrientation: undefined,
   linePosition: undefined,
+  shadowPosition: undefined,
+  shadowSize: undefined,
   behaviors: {
     Default: DefaultBehavior(),
     CellSelection: CellSelectionBehavior,

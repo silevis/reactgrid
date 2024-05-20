@@ -219,6 +219,7 @@ export const BigGrid = () => {
           }}
           {...cellMatrix}
           minColumnWidth={100}
+          enableColumnSelection
           onAreaSelected={(selectedArea) => {}}
           onFillHandle={(selectedArea, fillRange) => onFillHandle(selectedArea, fillRange, setData)}
           onCut={(selectedArea) => onCutHandler(data, selectedArea, setData)}

@@ -66,7 +66,7 @@ export interface RGTheme {
     background: string;
     border: Border;
   };
-  line: React.CSSProperties;
+  line: { backgroundColor: React.CSSProperties["backgroundColor"]; size: number | string };
   resizeColumn: {
     default: React.CSSProperties;
     hover: React.CSSProperties;

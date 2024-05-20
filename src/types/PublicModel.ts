@@ -130,6 +130,8 @@ export interface ReactGridProps {
 
   // enableVirtualization?: boolean;
 
+  enableColumnSelection?: boolean;
+
   behaviors?: Record<BehaviorId, Behavior>;
 
   initialFocusLocation?: Location;
@@ -141,5 +143,6 @@ export interface ReactGridProps {
   onCut?: (selectedArea: NumericalRange) => void;
   onCopy?: (selectedArea: NumericalRange) => void;
   onPaste?: (selectedArea: NumericalRange, pastedData: string) => void;
+  onColumnReorder?: (sourceIndex: number, destinationIndex: number, columnId: number | string) => void;
   onResizeColumn?: (width: number, columnId: number | string) => void;
 }

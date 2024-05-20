@@ -12,8 +12,8 @@ interface CellData {
   text?: string;
 }
 
-const ROW_COUNT = 15;
-const COLUMN_COUNT = 10;
+const ROW_COUNT = 8;
+const COLUMN_COUNT = 6;
 
 export const GridWithHeaders = () => {
   const [columns, setColumns] = useState<Array<Column<string>>>(
@@ -83,6 +83,8 @@ export const GridWithHeaders = () => {
       <ReactGrid
         id="grid-with-headers"
         onFillHandle={(selectedArea, fillRange) => onFillHandle(selectedArea, fillRange, setGridData)}
+        onColumnReorder={(sourceIndex, destinationIndex, columnId) => {}}
+        enableColumnSelection
         onResizeColumn={(width, columnId) => {
           setColumns((prevColumns) => {
             return prevColumns.map((column) => {
