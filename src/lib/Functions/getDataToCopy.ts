@@ -75,6 +75,7 @@ export function createHTMLElements(activeSelectedRange: Range): { div: HTMLDivEl
 }
 
 export function setStyles(div: HTMLDivElement, table: HTMLTableElement): void {
+    div.classList.add('rg-copy-container');
     div.setAttribute('contenteditable', 'true');
     div.style.position = 'fixed';
     div.style.top = '50%';
