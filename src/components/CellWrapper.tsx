@@ -5,7 +5,7 @@ import { useReactGridStore } from "../utils/reactGridStore";
 import { useReactGridId } from "./ReactGridIdProvider";
 import { useTheme } from "../hooks/useTheme";
 import { ResizeColumnBehavior } from "../behaviors/ResizeColumnBehavior";
-import { CellSelectionBehavior } from "../behaviors/CellSelectionBehavior";
+import { DefaultBehavior } from "../behaviors/DefaultBehavior";
 
 type CellWrapperProps = React.ClassAttributes<HTMLDivElement> &
   React.HTMLAttributes<HTMLDivElement> & {
@@ -19,11 +19,15 @@ const CellWrapper: FC<CellWrapperProps> = ({ children, targetInputRef, ...wrappe
   const theme = useTheme();
 
   const id = useReactGridId();
+
+  // TODO: fix performance issue
   const focusedCell = useReactGridStore(id, (store) => store.focusedLocation);
-  const onResizeColumn = useReactGridStore(id, (store) => store.onResizeColumn);
   const currentBehavior = useReactGridStore(id, (store) => store.currentBehavior);
+
+  const onResizeColumn = useReactGridStore(id, (store) => store.onResizeColumn);
   const setCurrentBehavior = useReactGridStore(id, (store) => store.setCurrentBehavior);
   const setResizingColId = useReactGridStore(id, (store) => store.setResizingColId);
+
   const isFocused = focusedCell.rowIndex === ctx.realRowIndex && focusedCell.colIndex === ctx.realColumnIndex;
 
   return (
@@ -46,25 +50,22 @@ const CellWrapper: FC<CellWrapperProps> = ({ children, targetInputRef, ...wrappe
         ...ctx.containerStyle,
       }}
     >
-      {currentBehavior.id !== CellSelectionBehavior.id &&
-        currentBehavior.id !== ResizeColumnBehavior.id &&
-        ctx.realRowIndex === 0 &&
-        onResizeColumn && (
-          <div
-            className="rg-resize-column"
-            onPointerDown={() => {
-              setResizingColId(ctx.colId);
-              setCurrentBehavior(ResizeColumnBehavior);
-            }}
-            css={{
-              cursor: "col-resize",
-              ...theme.resizeColumn.default,
-              "&:hover": {
-                ...theme.resizeColumn.hover,
-              },
-            }}
-          />
-        )}
+      {currentBehavior.id === DefaultBehavior().id && ctx.realRowIndex === 0 && onResizeColumn && (
+        <div
+          className="rg-resize-column"
+          onPointerDown={() => {
+            setResizingColId(ctx.colId);
+            setCurrentBehavior(ResizeColumnBehavior);
+          }}
+          css={{
+            cursor: "col-resize",
+            ...theme.resizeColumn.default,
+            "&:hover": {
+              ...theme.resizeColumn.hover,
+            },
+          }}
+        />
+      )}
       {children}
       {isFocused && <HiddenFocusTarget />}
     </div>

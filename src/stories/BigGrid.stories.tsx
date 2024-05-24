@@ -11,6 +11,14 @@ import { onFillHandle } from "./utils/onFillHandle";
 import { onCutHandler } from "./utils/onCutHandler";
 import { onPasteHandler } from "./utils/onPasteHandler";
 import { onCopyHandler } from "./utils/onCopyHandler";
+import { onColumnReorder } from "./utils/onColumnReorder";
+import { onResizeColumn } from "./utils/onResizeColumn";
+
+interface CellData {
+  text?: string;
+  number?: number;
+  date?: Date;
+}
 
 const styledRanges = [
   {
@@ -34,12 +42,6 @@ const myNumberFormat = new Intl.NumberFormat("pl", {
   maximumFractionDigits: 2,
   currency: "PLN",
 });
-
-interface CellData {
-  text?: string;
-  number?: number;
-  date?: Date;
-}
 
 export const BigGrid = () => {
   const [columns, setColumns] = useState<Array<Column<string>>>(
@@ -95,17 +97,18 @@ export const BigGrid = () => {
   );
 
   const cellMatrix = cellMatrixBuilder(rows, columns, ({ setCell }) => {
-    data.forEach((row, i) => {
-      row.forEach((val, j) => {
+    data.forEach((row, rowIndex) => {
+      row.forEach((val, columnIndex) => {
+        const columnId = columns[columnIndex].id;
         if (val === null) return;
 
-        setCell(i.toString(), j.toString(), TextCell, {
+        setCell(rowIndex.toString(), columnId, TextCell, {
           value: val?.text,
           onTextChanged: (data) => {
             setData((prev) => {
               const next = [...prev];
-              if (next[i][j] !== null) {
-                next[i][j].text = data;
+              if (next[rowIndex][columnIndex] !== null) {
+                next[rowIndex][columnIndex].text = data;
               }
               return next;
             });
@@ -207,17 +210,11 @@ export const BigGrid = () => {
           stickyBottomRows={2}
           styles={testStyles}
           // styledRanges={styledRanges}
-          onResizeColumn={(width, columnId) => {
-            setColumns((prevColumns) => {
-              return prevColumns.map((column) => {
-                if (column.id === columnId) {
-                  return { ...column, width: `${width}px` };
-                }
-                return column;
-              });
-            });
-          }}
+          onResizeColumn={(width, columnId) => onResizeColumn(width, columnId, cellMatrix, setColumns)}
           {...cellMatrix}
+          onColumnReorder={(selectedColIndexes, destinationColIdx) =>
+            onColumnReorder(selectedColIndexes, destinationColIdx, setColumns, setData)
+          }
           minColumnWidth={100}
           enableColumnSelection
           onAreaSelected={(selectedArea) => {}}

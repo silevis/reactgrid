@@ -44,8 +44,6 @@ export const ResizeColumnBehavior: Behavior = {
 
     const linePosition = event.clientX - gridContainerLeftPosition;
 
-    console.log({ linePosition, b: headerLeftPosition + store.minColumnWidth });
-
     return {
       ...store,
       linePosition:
@@ -83,7 +81,7 @@ export const ResizeColumnBehavior: Behavior = {
     initialPointerX = 0;
     initialHeaderWidth = 0;
 
-    return { ...store, currentBehavior: store.getBehavior("Default"), lineOrientation: undefined };
+    return { ...store, linePosition: undefined, currentBehavior: store.getBehavior("Default") };
   },
 
   handlePointerHold: function (event, store) {

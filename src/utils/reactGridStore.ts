@@ -5,6 +5,7 @@ import { Range, StyledRange } from "../types/PublicModel";
 import { isSpanMember } from "./isSpanMember";
 import { ReactGridStore, ReactGridStoreProps } from "../types/ReactGridStore.ts";
 import { FillHandleBehavior } from "../behaviors/FillHandleBehavior.ts";
+import { ColumnReorderBehavior } from "../behaviors/ColumnReorderBehavior.ts";
 
 type ReactGridStores = Record<string, StoreApi<ReactGridStore>>;
 
@@ -36,7 +37,7 @@ const DEFAULT_STORE_PROPS: ReactGridStoreProps = {
   reactGridRef: undefined,
   hiddenFocusTargetRef: undefined,
   resizingColId: undefined,
-  lineOrientation: undefined,
+  lineOrientation: "vertical",
   linePosition: undefined,
   shadowPosition: undefined,
   shadowSize: undefined,
@@ -44,6 +45,7 @@ const DEFAULT_STORE_PROPS: ReactGridStoreProps = {
     Default: DefaultBehavior(),
     CellSelection: CellSelectionBehavior,
     FillHandle: FillHandleBehavior,
+    ColumnReorder: ColumnReorderBehavior,
   },
 
   currentBehavior: DefaultBehavior(),

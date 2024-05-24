@@ -143,6 +143,6 @@ export interface ReactGridProps {
   onCut?: (selectedArea: NumericalRange) => void;
   onCopy?: (selectedArea: NumericalRange) => void;
   onPaste?: (selectedArea: NumericalRange, pastedData: string) => void;
-  onColumnReorder?: (sourceIndex: number, destinationIndex: number, columnId: number | string) => void;
+  onColumnReorder?: (selectedColIndexes: number[], destinationColIdx: number) => void;
   onResizeColumn?: (width: number, columnId: number | string) => void;
 }

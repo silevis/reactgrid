@@ -24,7 +24,7 @@ const devEnvironment = isDevEnvironment();
  * @param cell - The target cell.
  * @param rowIndex - The row index of the target cell.
  * @param colIndex - The column index of the target cell.
- * @param isEntireColumnSelected - Whether the entire column is selected.
+ * @param shouldSelectEntireColumn - Whether the entire column should be selected or not
  * @returns The updated ReactGridStore instance.
  */
 const tryExpandingTowardsCell = (
@@ -32,19 +32,19 @@ const tryExpandingTowardsCell = (
   cell: Cell,
   rowIndex: number,
   colIndex: number,
-  isEntireColumnSelected: boolean = false
+  shouldSelectEntireColumn: boolean = false
 ): ReactGridStore => {
   const selectedArea = structuredClone(store.selectedArea);
   const focusedLocation = structuredClone(store.focusedLocation);
 
-  if (isEntireColumnSelected) {
+  if (shouldSelectEntireColumn) {
     selectedArea.startRowIdx = 0;
     selectedArea.endRowIdx = store.rows.length;
 
     if (colIndex < store.absoluteFocusedLocation.colIndex) {
       // Moving to the left
       selectedArea.startColIdx = colIndex;
-      selectedArea.endColIdx = store.absoluteFocusedLocation.colIndex + (cell?.colSpan || 1);
+      selectedArea.endColIdx = store.absoluteFocusedLocation.colIndex + 1;
     } else {
       // Moving to the right
       selectedArea.startColIdx = store.absoluteFocusedLocation.colIndex;
@@ -103,9 +103,9 @@ export const CellSelectionBehavior: Behavior = {
       newRowIndex = rowIndex;
     }
 
-    const isEntireColumnSelected = newRowIndex === 0 && store.enableColumnSelection;
+    const shouldSelectEntireColumn = newRowIndex === 0 && store.enableColumnSelection;
 
-    return tryExpandingTowardsCell(store, cell, rowIndex, colIndex, isEntireColumnSelected);
+    return tryExpandingTowardsCell(store, cell, rowIndex, colIndex, shouldSelectEntireColumn);
   },
 
   handlePointerUp(event, store) {
@@ -176,14 +176,15 @@ export const CellSelectionBehavior: Behavior = {
       newRowIndex = rowIndex;
     }
 
-    const isEntireColumnSelected = newRowIndex === 0 && store.enableColumnSelection;
+    const shouldSelectEntireColumn = newRowIndex === 0 && store.enableColumnSelection;
 
     if (cellContainer) {
       const scrollableParent = getScrollableParent(cellContainer as HTMLElement, true);
       const scrollableParentIsNotAWindow =
         scrollableParent && "clientWidth" in scrollableParent && "clientHeight" in scrollableParent;
 
-      scrollableParentIsNotAWindow ? scrollToElementEdge({ x: clientX, y: clientY }, scrollableParent) : () => {}; // TODO: scrollToWindowEdge({ x: clientX, y: clientY }); - function not implemented yet!
+      scrollableParentIsNotAWindow ? scrollToElementEdge({ x: clientX, y: clientY }, scrollableParent) : () => {};
+      // TODO: scrollToWindowEdge({ x: clientX, y: clientY }); - function not implemented yet!
       // * scrollToWindowEdge - not possible to test in Ladle environment, due to clientX/Y acting like pageX/Y
 
       if (isStickyCell) {
@@ -191,11 +192,11 @@ export const CellSelectionBehavior: Behavior = {
         const { rowIndex, colIndex } = nonStickyRowsAndColumns || NO_CELL_LOCATION;
         scrollTowardsSticky(store, cell, { rowIndex, colIndex });
 
-        return tryExpandingTowardsCell(store, cell, rowIndex, colIndex, isEntireColumnSelected);
+        return tryExpandingTowardsCell(store, cell, rowIndex, colIndex, shouldSelectEntireColumn);
       }
     }
 
-    return tryExpandingTowardsCell(store, cell, rowIndex, colIndex, isEntireColumnSelected);
+    return tryExpandingTowardsCell(store, cell, rowIndex, colIndex, shouldSelectEntireColumn);
   },
 
   handlePointerEnterTouch(event, store) {

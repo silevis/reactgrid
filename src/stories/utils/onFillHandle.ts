@@ -1,11 +1,15 @@
 import { NumericalRange } from "../../types/CellMatrix";
 import { parseLocaleNumber } from "../../utils/parseLocaleNumber";
 
-export const onFillHandle = (
-  selectedArea: NumericalRange,
-  fillRange: NumericalRange,
-  setData: React.Dispatch<React.SetStateAction<any[][]>>
-) => {
+type CellData = {
+  text?: string;
+  number?: number;
+  date?: Date;
+};
+
+type SetData<T extends CellData> = React.Dispatch<React.SetStateAction<(T | null)[][]>>;
+
+export const onFillHandle = (selectedArea: NumericalRange, fillRange: NumericalRange, setData: SetData<CellData>) => {
   setData((prev) => {
     const next = [...prev];
 

@@ -6,7 +6,9 @@ import { getCellArea } from "../utils/getCellArea.ts";
 import { getCellContainerFromPoint } from "../utils/getCellContainerFromPoint";
 import { getCellContainerLocation } from "../utils/getCellContainerLocation";
 import { handleKeyDown } from "../utils/handleKeyDown";
+import { isCellInRange } from "../utils/isCellInRange.ts";
 import isDevEnvironment from "../utils/isDevEnvironment";
+import { ColumnReorderBehavior } from "./ColumnReorderBehavior.ts";
 
 const devEnvironment = isDevEnvironment();
 
@@ -40,28 +42,36 @@ export const DefaultBehavior = (config: DefaultBehaviorConfig = CONFIG_DEFAULTS)
       newColIndex = colIndex;
     }
 
-    const isEntireColumnSelected = newRowIndex === 0 && store.enableColumnSelection;
+    const shouldSelectEntireColumn = newRowIndex === 0 && store.enableColumnSelection;
 
     const newCell = store.getCellByIndexes(newRowIndex, newColIndex);
 
-    const cellArea = getCellArea(store, newCell!);
+    if (!newCell) return store;
 
-    const SelectionBehavior = store.getBehavior("CellSelection");
+    const cellArea = getCellArea(store, newCell);
+
+    let newBehavior: Behavior = store.getBehavior("CellSelection") || store.currentBehavior;
+
+    if (shouldSelectEntireColumn && isCellInRange(store, newCell, store.selectedArea)) {
+      newBehavior = ColumnReorderBehavior;
+    }
 
     return {
       ...store,
-      ...(!isEntireColumnSelected && { focusedLocation: { rowIndex: newRowIndex, colIndex: newColIndex } }),
+      ...(!shouldSelectEntireColumn && { focusedLocation: { rowIndex: newRowIndex, colIndex: newColIndex } }),
       absoluteFocusedLocation: { rowIndex: newRowIndex, colIndex: newColIndex },
       fillHandleArea: { startRowIdx: -1, endRowIdx: -1, startColIdx: -1, endColIdx: -1 },
-      selectedArea: isEntireColumnSelected
-        ? {
-            startRowIdx: 0,
-            endRowIdx: store.rows.length,
-            startColIdx: cellArea.startColIdx,
-            endColIdx: cellArea.endColIdx,
-          }
-        : { startRowIdx: -1, endRowIdx: -1, startColIdx: -1, endColIdx: -1 },
-      currentBehavior: SelectionBehavior || store.currentBehavior,
+      ...(newBehavior.id !== ColumnReorderBehavior.id && {
+        selectedArea: shouldSelectEntireColumn
+          ? {
+              startRowIdx: 0,
+              endRowIdx: store.rows.length,
+              startColIdx: cellArea.startColIdx,
+              endColIdx: cellArea.endColIdx,
+            }
+          : { startRowIdx: -1, endRowIdx: -1, startColIdx: -1, endColIdx: -1 },
+      }),
+      currentBehavior: newBehavior,
     };
   },
 
@@ -109,7 +119,7 @@ export const DefaultBehavior = (config: DefaultBehaviorConfig = CONFIG_DEFAULTS)
       newColIndex = colIndex;
     }
 
-    const isEntireColumnSelected = newRowIndex === 0 && store.enableColumnSelection;
+    const shouldSelectEntireColumn = newRowIndex === 0 && store.enableColumnSelection;
 
     const newCell = store.getCellByIndexes(newRowIndex, newColIndex);
 
@@ -133,7 +143,7 @@ export const DefaultBehavior = (config: DefaultBehaviorConfig = CONFIG_DEFAULTS)
     return {
       ...store,
       absoluteFocusedLocation: { rowIndex: newRowIndex, colIndex: newColIndex },
-      selectedArea: isEntireColumnSelected
+      selectedArea: shouldSelectEntireColumn
         ? {
             startRowIdx: 0,
             endRowIdx: store.rows.length,
@@ -141,7 +151,7 @@ export const DefaultBehavior = (config: DefaultBehaviorConfig = CONFIG_DEFAULTS)
             endColIdx: cellArea.endColIdx,
           }
         : { startRowIdx: -1, endRowIdx: -1, startColIdx: -1, endColIdx: -1 },
-      ...(isEntireColumnSelected && { currentBehavior: SelectionBehavior || store.currentBehavior }),
+      ...(shouldSelectEntireColumn && { currentBehavior: SelectionBehavior || store.currentBehavior }),
     };
   },
 
@@ -165,12 +175,12 @@ export const DefaultBehavior = (config: DefaultBehaviorConfig = CONFIG_DEFAULTS)
         const prevCell = getCellContainerLocation(prevElement);
         const currCell = getCellContainerLocation(currElement);
 
-        const isEntireColumnSelected = currCell.rowIndex === 0 && store.enableColumnSelection;
+        const shouldSelectEntireColumn = currCell.rowIndex === 0 && store.enableColumnSelection;
 
         if (prevCell.rowIndex === currCell.rowIndex && prevCell.colIndex === currCell.colIndex) {
           return {
             ...store,
-            ...(!isEntireColumnSelected && {
+            ...(!shouldSelectEntireColumn && {
               focusedLocation: { rowIndex: currCell.rowIndex, colIndex: currCell.colIndex },
             }),
           };

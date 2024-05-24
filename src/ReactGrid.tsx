@@ -8,7 +8,6 @@ import isDevEnvironment from "./utils/isDevEnvironment";
 import { initReactGridStore, useReactGridStore, useReactGridStoreApi } from "./utils/reactGridStore";
 import { useReactGridSync } from "./hooks/useReactGridSync";
 import { Line } from "./components/Line";
-import { ResizeColumnBehavior } from "./behaviors/ResizeColumnBehavior";
 import { ColumnReorderBehavior } from "./behaviors/ColumnReorderBehavior";
 import { Shadow } from "./components/Shadow";
 
@@ -61,6 +60,7 @@ const ReactGrid: FC<ReactGridProps> = ({
   const store = useReactGridStoreApi(id).getState();
 
   const currentBehavior = useReactGridStore(id, (store) => store.currentBehavior);
+  const linePosition = useReactGridStore(id, (store) => store.linePosition);
 
   useReactGridSync(store, { cells, columns, initialSelectedRange, initialFocusLocation });
 
@@ -92,7 +92,7 @@ const ReactGrid: FC<ReactGridProps> = ({
             stickyLeftColumns={stickyLeftColumns ?? 0}
             stickyRightColumns={stickyRightColumns ?? 0}
           />
-          {currentBehavior.id === ResizeColumnBehavior.id && <Line />}
+          {linePosition && <Line />}
           {currentBehavior.id === ColumnReorderBehavior.id && <Shadow />}
         </GridWrapper>
       </ErrorBoundary>

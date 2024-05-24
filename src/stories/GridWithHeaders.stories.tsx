@@ -7,13 +7,15 @@ import ReactGrid from "../ReactGrid";
 import { ErrorBoundary } from "../components/ErrorBoundary";
 import { Column, Row } from "../types/PublicModel";
 import { onFillHandle } from "./utils/onFillHandle";
+import { onColumnReorder } from "./utils/onColumnReorder";
+import { onResizeColumn } from "./utils/onResizeColumn";
 
 interface CellData {
   text?: string;
 }
 
 const ROW_COUNT = 8;
-const COLUMN_COUNT = 6;
+const COLUMN_COUNT = 9;
 
 export const GridWithHeaders = () => {
   const [columns, setColumns] = useState<Array<Column<string>>>(
@@ -32,6 +34,7 @@ export const GridWithHeaders = () => {
   const [gridData, setGridData] = useState<(CellData | null)[][]>(
     Array.from({ length: ROW_COUNT }).map((_, i) => {
       return Array.from({ length: COLUMN_COUNT }).map((_, j) => {
+        // if (i === 0 && j === 3) return null;
         if (i === 0) {
           return { text: `title ${j + 1}` };
         }
@@ -43,10 +46,12 @@ export const GridWithHeaders = () => {
   );
 
   const cellMatrix = cellMatrixBuilder(rows, columns, ({ setCell }) => {
-    gridData.forEach((row, i) => {
-      row.forEach((val, j) => {
-        if (i === 0) {
-          setCell(i.toString(), j.toString(), HeaderCell, {
+    gridData.forEach((row, rowIndex) => {
+      row.forEach((val, columnIndex) => {
+        const columnId = columns[columnIndex].id;
+
+        if (rowIndex === 0) {
+          setCell(rowIndex.toString(), columnId, HeaderCell, {
             text: val?.text,
             style: {
               backgroundColor: "#fcff91",
@@ -61,14 +66,14 @@ export const GridWithHeaders = () => {
 
         if (val === null) return;
 
-        setCell(i.toString(), j.toString(), TextCell, {
+        setCell(rowIndex.toString(), columnId, TextCell, {
           value: val?.text,
           style: {},
           onTextChanged: (data) => {
             setGridData((prev) => {
               const next = [...prev];
-              if (next[i][j] !== null) {
-                next[i][j].text = data;
+              if (next[rowIndex][columnIndex] !== null) {
+                next[rowIndex][columnIndex].text = data;
               }
               return next;
             });
@@ -76,25 +81,20 @@ export const GridWithHeaders = () => {
         });
       });
     });
+
+    // setCell("0", "2", TextCell, { value: "text" ?? "", reverse: true, onTextChanged: () => null }, { colSpan: 2 });
   });
 
   return (
-    <div className="rgScrollableContainer" style={{ height: "100%", width: "100%", overflow: "auto" }}>
+    <div className="rgScrollableContainer" style={{ height: "100%", overflow: "auto" }}>
       <ReactGrid
         id="grid-with-headers"
         onFillHandle={(selectedArea, fillRange) => onFillHandle(selectedArea, fillRange, setGridData)}
-        onColumnReorder={(sourceIndex, destinationIndex, columnId) => {}}
+        onColumnReorder={(selectedColIndexes, destinationColIdx) =>
+          onColumnReorder(selectedColIndexes, destinationColIdx, setColumns, setGridData)
+        }
         enableColumnSelection
-        onResizeColumn={(width, columnId) => {
-          setColumns((prevColumns) => {
-            return prevColumns.map((column) => {
-              if (column.id === columnId) {
-                return { ...column, width: `${width}px` };
-              }
-              return column;
-            });
-          });
-        }}
+        onResizeColumn={(width, columnId) => onResizeColumn(width, columnId, cellMatrix, setColumns)}
         minColumnWidth={100}
         stickyTopRows={1}
         {...cellMatrix}
