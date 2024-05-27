@@ -33,33 +33,28 @@ export const DefaultBehavior = (config: DefaultBehaviorConfig = CONFIG_DEFAULTS)
 
     const element = getCellContainerFromPoint(event.clientX, event.clientY);
 
-    let newRowIndex = -1;
-    let newColIndex = -1;
+    if (!element) return store;
 
-    if (element) {
-      const { rowIndex, colIndex } = getCellContainerLocation(element);
-      newRowIndex = rowIndex;
-      newColIndex = colIndex;
-    }
+    const { rowIndex, colIndex } = getCellContainerLocation(element);
 
-    const shouldSelectEntireColumn = newRowIndex === 0 && store.enableColumnSelection;
+    const shouldSelectEntireColumn = rowIndex === 0 && store.enableColumnSelection;
 
-    const newCell = store.getCellByIndexes(newRowIndex, newColIndex);
+    const clickedCell = store.getCellByIndexes(rowIndex, colIndex);
 
-    if (!newCell) return store;
+    if (!clickedCell) return store;
 
-    const cellArea = getCellArea(store, newCell);
+    const cellArea = getCellArea(store, clickedCell);
 
     let newBehavior: Behavior = store.getBehavior("CellSelection") || store.currentBehavior;
 
-    if (shouldSelectEntireColumn && isCellInRange(store, newCell, store.selectedArea)) {
+    if (shouldSelectEntireColumn && isCellInRange(store, clickedCell, store.selectedArea)) {
       newBehavior = ColumnReorderBehavior;
     }
 
     return {
       ...store,
-      ...(!shouldSelectEntireColumn && { focusedLocation: { rowIndex: newRowIndex, colIndex: newColIndex } }),
-      absoluteFocusedLocation: { rowIndex: newRowIndex, colIndex: newColIndex },
+      ...(!shouldSelectEntireColumn && { focusedLocation: { rowIndex: rowIndex, colIndex: colIndex } }),
+      absoluteFocusedLocation: { rowIndex: rowIndex, colIndex: colIndex },
       fillHandleArea: { startRowIdx: -1, endRowIdx: -1, startColIdx: -1, endColIdx: -1 },
       ...(newBehavior.id !== ColumnReorderBehavior.id && {
         selectedArea: shouldSelectEntireColumn

@@ -26,14 +26,32 @@ export const onColumnReorder = <T>(
   });
 
   setData((prevGridData) => {
-    const newGridData = prevGridData.map((row) => {
+    const newGridData = prevGridData.map((row, idx) => {
       const newRow = [...row];
-      selectedColIndexes.forEach((selectedColIndex) => {
-        const movedItem = newRow.splice(selectedColIndex, 1)[0];
-        newRow.splice(destinationColIdx, 0, movedItem);
-      });
+
+      if (!selectedColIndexes.includes(destinationColIdx)) {
+        const reorderDirection = selectedColIndexes.find((idx) => idx > destinationColIdx) ? "left" : "right";
+
+        const movedItems = selectedColIndexes.map((selectedColIndex) => newRow[selectedColIndex]);
+
+        const sortedSelectedColIndexes = [...selectedColIndexes].sort((a, b) => b - a);
+
+        sortedSelectedColIndexes.forEach((selectedColIndex) => {
+          newRow.splice(selectedColIndex, 1);
+        });
+
+        // Adjust destination index if it's greater than the selected column indexes
+        const adjustedDestinationColIdx =
+          reorderDirection === "right" ? destinationColIdx - sortedSelectedColIndexes.length + 1 : destinationColIdx;
+
+        movedItems.forEach((item, index) => {
+          newRow.splice(adjustedDestinationColIdx + index, 0, item);
+        });
+      }
+
       return newRow;
     });
+
     return newGridData;
   });
 };

@@ -15,7 +15,7 @@ interface CellData {
 }
 
 const ROW_COUNT = 8;
-const COLUMN_COUNT = 9;
+const COLUMN_COUNT = 6;
 
 export const GridWithHeaders = () => {
   const [columns, setColumns] = useState<Array<Column<string>>>(
@@ -34,7 +34,7 @@ export const GridWithHeaders = () => {
   const [gridData, setGridData] = useState<(CellData | null)[][]>(
     Array.from({ length: ROW_COUNT }).map((_, i) => {
       return Array.from({ length: COLUMN_COUNT }).map((_, j) => {
-        // if (i === 0 && j === 3) return null;
+        if (i === 2 && j === 2) return null;
         if (i === 0) {
           return { text: `title ${j + 1}` };
         }
@@ -49,6 +49,8 @@ export const GridWithHeaders = () => {
     gridData.forEach((row, rowIndex) => {
       row.forEach((val, columnIndex) => {
         const columnId = columns[columnIndex].id;
+
+        if (rowIndex === 2 && columns[columnIndex].id === "1") return;
 
         if (rowIndex === 0) {
           setCell(rowIndex.toString(), columnId, HeaderCell, {
@@ -82,7 +84,7 @@ export const GridWithHeaders = () => {
       });
     });
 
-    // setCell("0", "2", TextCell, { value: "text" ?? "", reverse: true, onTextChanged: () => null }, { colSpan: 2 });
+    setCell("2", "1", TextCell, { value: "text" ?? "", reverse: true, onTextChanged: () => null }, { colSpan: 2 });
   });
 
   return (

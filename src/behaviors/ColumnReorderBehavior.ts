@@ -34,21 +34,25 @@ export const ColumnReorderBehavior: Behavior = {
 
     if (!firstSelectedHeaderCell) return store;
 
-    const cellContainer = getCellContainer(store, firstSelectedHeaderCell);
+    const cellContainer = getCellContainer(store, firstSelectedHeaderCell) as HTMLElement | null;
 
-    const cellContainerOffsetLeft = (cellContainer as HTMLElement).offsetLeft;
+    if (!cellContainer) return store;
+
+    const cellContainerOffsetLeft = cellContainer.offsetLeft || 0;
 
     let shadowPosition = cellContainerOffsetLeft + (event.clientX - initialMouseXPos);
 
-    let linePosition = undefined;
-
-    const element = getCellContainerFromPoint(event.clientX, event.clientY);
+    // Use client rect instead of event.clientY to determine shadow position,
+    // This allows for accurate positioning even when the cursor is not hovering directly over the cell container.
+    const element = getCellContainerFromPoint(event.clientX, cellContainer.getBoundingClientRect().top);
 
     if (!element) return store;
 
-    if (event.clientX > (cellContainer as HTMLElement).getBoundingClientRect().left + selectedAreaWidth) {
+    let linePosition = undefined;
+
+    if (event.clientX > cellContainer.getBoundingClientRect().left + selectedAreaWidth) {
       linePosition = element!.offsetLeft + element.offsetWidth;
-    } else if (event.clientX < (cellContainer as HTMLElement).getBoundingClientRect().left - 1) {
+    } else if (event.clientX < cellContainer.getBoundingClientRect().left - 1) {
       linePosition = element.offsetLeft;
     }
 
@@ -73,19 +77,73 @@ export const ColumnReorderBehavior: Behavior = {
   handlePointerUp: function (event, store) {
     devEnvironment && console.log("CRB/handlePointerUp");
 
+    // Prevent triggering the resize behavior when a column is selected twice without moving the pointer
+    if (!initialMouseXPos) return { ...store, currentBehavior: store.getBehavior("Default") };
+
     initialMouseXPos = 0;
 
-    const selectedArea = store.selectedArea;
-    const cols = store.columns;
-
-    // const selectedColIds = cols.slice(selectedArea.startColIdx, selectedArea.endColIdx).map((col) => col.id);
-
     const selectedColIndexes = Array.from(
-      { length: selectedArea.endColIdx - selectedArea.startColIdx },
-      (_, i) => i + selectedArea.startColIdx
+      { length: store.selectedArea.endColIdx - store.selectedArea.startColIdx },
+      (_, i) => i + store.selectedArea.startColIdx
     );
 
-    const element = getCellContainerFromPoint(event.clientX, event.clientY);
+    const { lastColumnWidth, lastColumnClientOffsetLeft } = getLastColumnMetrics(store);
+
+    // CASE 1
+    // If the shadow is beyond the last column, move the selected columns to the last column
+    if (event.clientX > lastColumnClientOffsetLeft + lastColumnWidth) {
+      store.onColumnReorder?.(selectedColIndexes, store.columns.length - 1);
+
+      return {
+        ...store,
+        currentBehavior: store.getBehavior("Default"),
+        selectedArea: {
+          startRowIdx: 0,
+          endRowIdx: store.rows.length,
+          startColIdx: store.columns.length - 1 - (selectedColIndexes.length - 1),
+          endColIdx: store.columns.length,
+        },
+        shadowPosition: undefined,
+        linePosition: undefined,
+        shadowSize: undefined,
+      };
+    }
+
+    const gridWrapper = store.reactGridRef;
+
+    if (!gridWrapper) return store;
+
+    // CASE 2
+    // If the shadow is beyond the first column, move the selected columns to the first column
+    if (event.clientX < gridWrapper.getBoundingClientRect().left) {
+      store.onColumnReorder?.(selectedColIndexes, 0);
+
+      return {
+        ...store,
+        currentBehavior: store.getBehavior("Default"),
+        selectedArea: {
+          startRowIdx: 0,
+          endRowIdx: store.rows.length,
+          startColIdx: 0,
+          endColIdx: 0 + selectedColIndexes.length,
+        },
+        shadowPosition: undefined,
+        linePosition: undefined,
+        shadowSize: undefined,
+      };
+    }
+
+    const firstSelectedHeaderCell = store.getCellByIndexes(0, store.selectedArea.startColIdx);
+
+    if (!firstSelectedHeaderCell) return store;
+
+    const cellContainer = getCellContainer(store, firstSelectedHeaderCell);
+
+    if (!cellContainer) return store;
+
+    // CASE 3
+    // If the shadow is within the first and last column, move the selected columns to the destination column
+    const element = getCellContainerFromPoint(event.clientX, cellContainer?.getBoundingClientRect().top);
 
     if (!element) return store;
 
@@ -97,30 +155,9 @@ export const ColumnReorderBehavior: Behavior = {
 
     store.onColumnReorder?.(selectedColIndexes, destinationIdx.colIndex);
 
-    // --------------------------------------------------------------------------------------------
+    console.log(selectedColIndexes.length);
 
-    const { lastColumnWidth, lastColumnClientOffsetLeft } = getLastColumnMetrics(store);
-
-    if (event.clientX > lastColumnClientOffsetLeft + lastColumnWidth) {
-      console.log("beyond last column");
-
-      // TODO
-      // return {
-      //   ...store,
-      //   currentBehavior: store.getBehavior("Default"),
-      //   selectedArea: {
-      //     startRowIdx: 0,
-      //     endRowIdx: store.rows.length,
-      //     startColIdx: destinationIdx.colIndex,
-      //     endColIdx: destinationIdx.colIndex + store.selectedArea.endColIdx - store.selectedArea.startColIdx,
-      //   },
-      //   shadowPosition: undefined,
-      //   linePosition: undefined,
-      //   shadowSize: undefined,
-      // };
-    }
-
-    // --------------------------------------------------------------------------------------------
+    const isLeftDirection = !!selectedColIndexes.find((idx) => idx > destinationIdx.colIndex);
 
     return {
       ...store,
@@ -128,8 +165,10 @@ export const ColumnReorderBehavior: Behavior = {
       selectedArea: {
         startRowIdx: 0,
         endRowIdx: store.rows.length,
-        startColIdx: destinationIdx.colIndex,
-        endColIdx: destinationIdx.colIndex + store.selectedArea.endColIdx - store.selectedArea.startColIdx,
+        startColIdx: isLeftDirection
+          ? destinationIdx.colIndex
+          : destinationIdx.colIndex - (selectedColIndexes.length - 1),
+        endColIdx: isLeftDirection ? destinationIdx.colIndex + selectedColIndexes.length : destinationIdx.colIndex + 1,
       },
       shadowPosition: undefined,
       linePosition: undefined,

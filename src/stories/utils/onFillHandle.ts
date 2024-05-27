@@ -12,36 +12,32 @@ type SetData<T extends CellData> = React.Dispatch<React.SetStateAction<(T | null
 export const onFillHandle = (selectedArea: NumericalRange, fillRange: NumericalRange, setData: SetData<CellData>) => {
   setData((prev) => {
     const next = [...prev];
+    // Check if the fill handle is being dragged upwards
+    const isFillingUpwards = fillRange.startRowIdx < selectedArea.startRowIdx;
+    // Calculate the number of rows and columns in the selected area
+    const relativeRowSize = selectedArea.endRowIdx - selectedArea.startRowIdx;
+    const relativeColSize = selectedArea.endColIdx - selectedArea.startColIdx;
 
+    // Iterate over the rows and columns in the fill range
     for (let i = fillRange.startRowIdx; i < fillRange.endRowIdx; i++) {
       for (let j = fillRange.startColIdx; j < fillRange.endColIdx; j++) {
+        // Skip null cells.
         if (next[i][j] === null) continue;
-        const relativeRowIdx = i - fillRange.startRowIdx;
-        const relativeColIdx = j - fillRange.startColIdx;
 
-        if (selectedArea.startColIdx + relativeColIdx >= selectedArea.endColIdx) {
-          const repeatIdx = relativeColIdx % (selectedArea.endColIdx - selectedArea.startColIdx);
-          const newValue = prev[selectedArea.startRowIdx][selectedArea.startColIdx + repeatIdx];
+        // Calculate the relative row and column indices within the selected area
+        const relativeRowIdx = isFillingUpwards
+          ? (selectedArea.endRowIdx - i - 1) % relativeRowSize
+          : (i - fillRange.startRowIdx) % relativeRowSize;
+        const relativeColIdx = (j - fillRange.startColIdx) % relativeColSize;
 
-          next[i][j] = {
-            text: newValue?.number ? newValue.number.toString() : newValue?.text,
-            number: newValue?.number ?? parseLocaleNumber(newValue?.text),
-          };
-        } else if (!next[selectedArea.startRowIdx + relativeRowIdx][selectedArea.startColIdx + relativeColIdx]) {
-          const newValue = next[selectedArea.startRowIdx][selectedArea.startColIdx];
+        // Get the value from the cell in the selected area that corresponds to the relative row and column indices
+        const newValue = prev[selectedArea.startRowIdx + relativeRowIdx][selectedArea.startColIdx + relativeColIdx];
 
-          next[i][j] = {
-            text: newValue?.number ? newValue.number.toString() : newValue?.text,
-            number: newValue?.number ?? parseLocaleNumber(newValue?.text),
-          };
-        } else {
-          const newValue = prev[selectedArea.startRowIdx + relativeRowIdx][selectedArea.startColIdx + relativeColIdx];
-
-          next[i][j] = {
-            text: newValue?.number ? newValue.number.toString() : newValue?.text,
-            number: newValue?.number ?? parseLocaleNumber(newValue?.text),
-          };
-        }
+        // Set the value of the cell in the fill range to the value from the selected area
+        next[i][j] = {
+          text: newValue?.number ? newValue.number.toString() : newValue?.text,
+          number: newValue?.number ?? parseLocaleNumber(newValue?.text),
+        };
       }
     }
     return next;

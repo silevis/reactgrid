@@ -60,6 +60,7 @@ export const BigGrid = () => {
   const [data, setData] = useState<(CellData | null)[][]>(
     Array.from({ length: ROW_COUNT }).map((_, i) => {
       return Array.from({ length: COLUMN_COUNT }).map((_, j) => {
+        if (i === 1 && j === 4) return null;
         if (i === 2 && j === 4) return null;
         if (i === 3 && j === 3) return null;
         if (i === 3 && j === 4) return null;
@@ -99,7 +100,7 @@ export const BigGrid = () => {
   const cellMatrix = cellMatrixBuilder(rows, columns, ({ setCell }) => {
     data.forEach((row, rowIndex) => {
       row.forEach((val, columnIndex) => {
-        const columnId = columns[columnIndex].id;
+        const columnId = columns[columnIndex].id; // necessary for column reordering
         if (val === null) return;
 
         setCell(rowIndex.toString(), columnId, TextCell, {
