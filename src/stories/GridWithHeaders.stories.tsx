@@ -9,9 +9,11 @@ import { Column, Row } from "../types/PublicModel";
 import { onFillHandle } from "./utils/onFillHandle";
 import { onColumnReorder } from "./utils/onColumnReorder";
 import { onResizeColumn } from "./utils/onResizeColumn";
+import DateCell from "../components/cellTemplates/DateCell";
 
 interface CellData {
   text?: string;
+  date?: Date;
 }
 
 const ROW_COUNT = 8;
@@ -34,10 +36,14 @@ export const GridWithHeaders = () => {
   const [gridData, setGridData] = useState<(CellData | null)[][]>(
     Array.from({ length: ROW_COUNT }).map((_, i) => {
       return Array.from({ length: COLUMN_COUNT }).map((_, j) => {
-        if (i === 2 && j === 2) return null;
+        // if (i === 1 && j === 2) return null;
+        // if (i === 2 && j === 2) return null;
         if (i === 0) {
           return { text: `title ${j + 1}` };
         }
+        // if (i === 1 && j === 1) {
+        //   return { date: new Date() };
+        // }
         return {
           text: `[${i.toString()}:${j.toString()}]`,
         };
@@ -49,8 +55,6 @@ export const GridWithHeaders = () => {
     gridData.forEach((row, rowIndex) => {
       row.forEach((val, columnIndex) => {
         const columnId = columns[columnIndex].id;
-
-        if (rowIndex === 2 && columns[columnIndex].id === "1") return;
 
         if (rowIndex === 0) {
           setCell(rowIndex.toString(), columnId, HeaderCell, {
@@ -84,8 +88,27 @@ export const GridWithHeaders = () => {
       });
     });
 
-    setCell("2", "1", TextCell, { value: "text" ?? "", reverse: true, onTextChanged: () => null }, { colSpan: 2 });
+    // setCell("2", "1", TextCell, { value: "text" ?? "", reverse: true, onTextChanged: () => null }, { colSpan: 2 });
+
+    // setCell(
+    //   "1",
+    //   "1",
+    //   DateCell,
+    //   {
+    //     value: gridData[1][1]?.date,
+    //     onDateChanged: (newDate) => {
+    //       setGridData((prev) => {
+    //         const next = [...prev];
+    //         next[1][1] = newDate;
+    //         return next;
+    //       });
+    //     },
+    //   },
+    //   { colSpan: 2 }
+    // );
   });
+
+  console.log("cells: ", cellMatrix.cells);
 
   return (
     <div className="rgScrollableContainer" style={{ height: "100%", overflow: "auto" }}>

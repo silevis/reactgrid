@@ -2,6 +2,7 @@ import { Behavior } from "../types/Behavior";
 import { NumericalRange } from "../types/CellMatrix.ts";
 import { Position } from "../types/PublicModel";
 import { ReactGridStore } from "../types/ReactGridStore.ts";
+import { findMinimalSelectedArea } from "../utils/findMinimalSelectedArea.ts";
 import { getCellArea } from "../utils/getCellArea.ts";
 import { getCellContainerFromPoint } from "../utils/getCellContainerFromPoint";
 import { getCellContainerLocation } from "../utils/getCellContainerLocation";
@@ -58,12 +59,12 @@ export const DefaultBehavior = (config: DefaultBehaviorConfig = CONFIG_DEFAULTS)
       fillHandleArea: { startRowIdx: -1, endRowIdx: -1, startColIdx: -1, endColIdx: -1 },
       ...(newBehavior.id !== ColumnReorderBehavior.id && {
         selectedArea: shouldSelectEntireColumn
-          ? {
+          ? findMinimalSelectedArea(store, {
               startRowIdx: 0,
               endRowIdx: store.rows.length,
               startColIdx: cellArea.startColIdx,
               endColIdx: cellArea.endColIdx,
-            }
+            })
           : { startRowIdx: -1, endRowIdx: -1, startColIdx: -1, endColIdx: -1 },
       }),
       currentBehavior: newBehavior,

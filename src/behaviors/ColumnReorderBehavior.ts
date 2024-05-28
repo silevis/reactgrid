@@ -1,6 +1,7 @@
 import { Behavior } from "../types/Behavior.ts";
 import { ReactGridStore } from "../types/ReactGridStore.ts";
 import { calcSelectedAreaWidth } from "../utils/calcSelectedAreaWidth.ts";
+import { findMinimalSelectedArea } from "../utils/findMinimalSelectedArea.ts";
 import { getCellContainer } from "../utils/getCellContainer.ts";
 import { getCellContainerFromPoint } from "../utils/getCellContainerFromPoint.ts";
 import { getCellIndexesFromContainerElement } from "../utils/getCellIndexes.ts";
@@ -10,6 +11,7 @@ import isDevEnvironment from "../utils/isDevEnvironment.ts";
 const devEnvironment = isDevEnvironment();
 
 let initialMouseXPos = 0;
+let destinationColIdx = 0;
 
 export const ColumnReorderBehavior: Behavior = {
   id: "ColumnReorder",
@@ -30,11 +32,11 @@ export const ColumnReorderBehavior: Behavior = {
 
     const { lastColumnRelativeffsetLeft, lastColumnWidth } = getLastColumnMetrics(store);
 
-    const firstSelectedHeaderCell = store.getCellByIndexes(0, store.selectedArea.startColIdx);
+    const firstCellInSelectedArea = store.getCellByIndexes(0, store.selectedArea.startColIdx);
 
-    if (!firstSelectedHeaderCell) return store;
+    if (!firstCellInSelectedArea) return store;
 
-    const cellContainer = getCellContainer(store, firstSelectedHeaderCell) as HTMLElement | null;
+    const cellContainer = getCellContainer(store, firstCellInSelectedArea) as HTMLElement | null;
 
     if (!cellContainer) return store;
 
@@ -48,12 +50,39 @@ export const ColumnReorderBehavior: Behavior = {
 
     if (!element) return store;
 
+    const cell = getCellIndexesFromContainerElement(element);
+
+    if (!cell) return store;
+
+    // In case a column can have spanned cells, it's necessary to find the minimal selected area
+    const minimalSelection = findMinimalSelectedArea(store, {
+      startRowIdx: 0,
+      endRowIdx: store.rows.length,
+      startColIdx: cell.colIndex,
+      endColIdx: cell.colIndex + 1,
+    });
+
+    const leftCell = store.getCellByIndexes(minimalSelection.startRowIdx, minimalSelection.startColIdx);
+    const rightCell = store.getCellByIndexes(minimalSelection.startRowIdx, minimalSelection.endColIdx - 1);
+
+    if (!leftCell || !rightCell) return store;
+
+    const leftCellContainer = getCellContainer(store, leftCell) as HTMLElement | null;
+    const rightCellContainer = getCellContainer(store, rightCell) as HTMLElement | null;
+
+    if (!leftCellContainer || !rightCellContainer) return store;
+
     let linePosition = undefined;
 
+    // Determine the destination column index based on the cursor position
+    // Case 1 - Cursor is moving to the right of the selected columns
     if (event.clientX > cellContainer.getBoundingClientRect().left + selectedAreaWidth) {
-      linePosition = element!.offsetLeft + element.offsetWidth;
+      destinationColIdx = minimalSelection.endColIdx - 1;
+      linePosition = rightCellContainer.offsetLeft + rightCellContainer.offsetWidth;
     } else if (event.clientX < cellContainer.getBoundingClientRect().left - 1) {
-      linePosition = element.offsetLeft;
+      // Case 2 - Cursor is moving to the left of the selected columns
+      destinationColIdx = minimalSelection.startColIdx;
+      linePosition = leftCellContainer.offsetLeft;
     }
 
     // Ensure the shadow doesn't go beyond the first column
@@ -79,6 +108,18 @@ export const ColumnReorderBehavior: Behavior = {
 
     // Prevent triggering the resize behavior when a column is selected twice without moving the pointer
     if (!initialMouseXPos) return { ...store, currentBehavior: store.getBehavior("Default") };
+
+    if (!store.linePosition) {
+      initialMouseXPos = 0;
+
+      if (!initialMouseXPos)
+        return {
+          ...store,
+          currentBehavior: store.getBehavior("Default"),
+          shadowPosition: undefined,
+          shadowSize: undefined,
+        };
+    }
 
     initialMouseXPos = 0;
 
@@ -143,21 +184,9 @@ export const ColumnReorderBehavior: Behavior = {
 
     // CASE 3
     // If the shadow is within the first and last column, move the selected columns to the destination column
-    const element = getCellContainerFromPoint(event.clientX, cellContainer?.getBoundingClientRect().top);
+    store.onColumnReorder?.(selectedColIndexes, destinationColIdx);
 
-    if (!element) return store;
-
-    const destinationIdx = getCellIndexesFromContainerElement(element);
-
-    if (!destinationIdx) return store;
-
-    if (!element || !destinationIdx) return store;
-
-    store.onColumnReorder?.(selectedColIndexes, destinationIdx.colIndex);
-
-    console.log(selectedColIndexes.length);
-
-    const isLeftDirection = !!selectedColIndexes.find((idx) => idx > destinationIdx.colIndex);
+    const isLeftDirection = !!selectedColIndexes.find((idx) => idx > destinationColIdx);
 
     return {
       ...store,
@@ -165,10 +194,8 @@ export const ColumnReorderBehavior: Behavior = {
       selectedArea: {
         startRowIdx: 0,
         endRowIdx: store.rows.length,
-        startColIdx: isLeftDirection
-          ? destinationIdx.colIndex
-          : destinationIdx.colIndex - (selectedColIndexes.length - 1),
-        endColIdx: isLeftDirection ? destinationIdx.colIndex + selectedColIndexes.length : destinationIdx.colIndex + 1,
+        startColIdx: isLeftDirection ? destinationColIdx : destinationColIdx - (selectedColIndexes.length - 1),
+        endColIdx: isLeftDirection ? destinationColIdx + selectedColIndexes.length : destinationColIdx + 1,
       },
       shadowPosition: undefined,
       linePosition: undefined,

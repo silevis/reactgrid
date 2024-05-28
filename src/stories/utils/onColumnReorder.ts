@@ -16,11 +16,20 @@ export const onColumnReorder = <T>(
   setData: SetData<CellData>
 ) => {
   setColumns((prevColumns) => {
-    const nonSelectedColIndexes = prevColumns.map((_, idx) => idx).filter((idx) => !selectedColIndexes.includes(idx));
+    // Create arrays of selected and unselected columns
+    const selectedColumns = prevColumns.filter((_, index) => selectedColIndexes.includes(index));
+    const unselectedColumns = prevColumns.filter((_, index) => !selectedColIndexes.includes(index));
 
-    nonSelectedColIndexes.splice(destinationColIdx, 0, ...selectedColIndexes);
+    // Calculate the adjusted destination index
+    const adjustedDestinationColIdx =
+      selectedColIndexes[0] > destinationColIdx ? destinationColIdx : destinationColIdx - selectedColumns.length + 1;
 
-    const newColumns = nonSelectedColIndexes.map((idx) => prevColumns[idx]);
+    // Create the new array of columns
+    const newColumns = [
+      ...unselectedColumns.slice(0, adjustedDestinationColIdx),
+      ...selectedColumns,
+      ...unselectedColumns.slice(adjustedDestinationColIdx),
+    ];
 
     return newColumns;
   });
