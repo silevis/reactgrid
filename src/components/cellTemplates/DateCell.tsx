@@ -34,7 +34,7 @@ const DateCell: FC<DateCellProps> = ({ value, onDateChanged, formatter, Calendar
   }
 
   useEffect(() => {
-    onDateChanged({ text: formattedDate, date: value });
+    onDateChanged({ date: value, text: formattedDate });
   }, [value]);
 
   return (

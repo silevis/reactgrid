@@ -128,6 +128,22 @@ export const ColumnReorderBehavior: Behavior = {
       (_, i) => i + store.selectedArea.startColIdx
     );
 
+    const isLeftDirection = !!selectedColIndexes.find((idx) => idx > destinationColIdx);
+
+    const isFocusedCellInSelectedArea = selectedColIndexes.includes(store.focusedLocation.colIndex);
+
+    let newFocusedLocation;
+
+    if (isFocusedCellInSelectedArea) {
+      const offset = store.focusedLocation.colIndex - store.selectedArea.startColIdx;
+      newFocusedLocation = {
+        rowIndex: store.focusedLocation.rowIndex,
+        colIndex: isLeftDirection
+          ? destinationColIdx + offset
+          : destinationColIdx - (selectedColIndexes.length - 1) + offset,
+      };
+    }
+
     const { lastColumnWidth, lastColumnClientOffsetLeft } = getLastColumnMetrics(store);
 
     // CASE 1
@@ -138,6 +154,7 @@ export const ColumnReorderBehavior: Behavior = {
       return {
         ...store,
         currentBehavior: store.getBehavior("Default"),
+        ...(newFocusedLocation && { focusedLocation: newFocusedLocation }),
         selectedArea: {
           startRowIdx: 0,
           endRowIdx: store.rows.length,
@@ -162,6 +179,7 @@ export const ColumnReorderBehavior: Behavior = {
       return {
         ...store,
         currentBehavior: store.getBehavior("Default"),
+        ...(newFocusedLocation && { focusedLocation: newFocusedLocation }),
         selectedArea: {
           startRowIdx: 0,
           endRowIdx: store.rows.length,
@@ -186,11 +204,10 @@ export const ColumnReorderBehavior: Behavior = {
     // If the shadow is within the first and last column, move the selected columns to the destination column
     store.onColumnReorder?.(selectedColIndexes, destinationColIdx);
 
-    const isLeftDirection = !!selectedColIndexes.find((idx) => idx > destinationColIdx);
-
     return {
       ...store,
       currentBehavior: store.getBehavior("Default"),
+      ...(newFocusedLocation && { focusedLocation: newFocusedLocation }),
       selectedArea: {
         startRowIdx: 0,
         endRowIdx: store.rows.length,

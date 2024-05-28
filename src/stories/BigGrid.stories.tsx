@@ -50,7 +50,7 @@ export const BigGrid = () => {
       width: 150,
     }))
   );
-  const [rows, serRows] = useState<Array<Row<string>>>(
+  const [rows] = useState<Array<Row<string>>>(
     Array.from({ length: ROW_COUNT }).map((_, j) => ({
       id: j.toString(),
       height: "max-content",
@@ -118,16 +118,22 @@ export const BigGrid = () => {
       });
     });
 
+    const realColIdx0 = columns.findIndex((col) => col.id === "0");
+    const realColIdx3 = columns.findIndex((col) => col.id === "3");
+    const realColIdx4 = columns.findIndex((col) => col.id === "4");
+    const realColIdx5 = columns.findIndex((col) => col.id === "5");
+    const realColIdx6 = columns.findIndex((col) => col.id === "6");
+
     setCell(
       "1",
       "3",
       DateCell,
       {
-        value: data[1][3]?.date,
+        value: data[1][realColIdx3]?.date,
         onDateChanged: (newDate) => {
           setData((prev) => {
             const next = [...prev];
-            next[1][3] = newDate;
+            next[1][realColIdx3] = newDate;
             return next;
           });
         },
@@ -136,7 +142,7 @@ export const BigGrid = () => {
     );
 
     setCell("0", "0", NumberCell, {
-      value: data[0][0]?.number ?? 0,
+      value: data[0][realColIdx0]?.number ?? 0,
       validator: (value) => !isNaN(value),
       errorMessage: "ERR",
       format: myNumberFormat,
@@ -144,7 +150,7 @@ export const BigGrid = () => {
       onValueChanged: (newNumber) => {
         setData((prev) => {
           const next = [...prev];
-          next[0][0]!.number = newNumber;
+          next[0][realColIdx0]!.number = newNumber;
           return next;
         });
       },
@@ -155,7 +161,7 @@ export const BigGrid = () => {
       "3",
       NumberCell,
       {
-        value: data[2][3]?.number ?? 0,
+        value: data[2][realColIdx3]?.number ?? 0,
         validator: (value) => !isNaN(value),
         errorMessage: "ERR",
         format: myNumberFormat,
@@ -174,28 +180,28 @@ export const BigGrid = () => {
       "3",
       "6",
       TextCell,
-      { value: data[3][6]?.text ?? "", reverse: true, onTextChanged: () => null },
+      { value: data[3][realColIdx6]?.text ?? "", reverse: true, onTextChanged: () => null },
       { colSpan: 2, rowSpan: 2 }
     );
     setCell(
       "5",
       "4",
       TextCell,
-      { value: data[5][4]?.text ?? "", reverse: true, onTextChanged: () => null },
+      { value: data[5][realColIdx4]?.text ?? "", reverse: true, onTextChanged: () => null },
       { rowSpan: 2 }
     );
     setCell(
       "5",
       "5",
       TextCell,
-      { value: data[5][5]?.text ?? "", reverse: true, onTextChanged: () => null },
+      { value: data[5][realColIdx5]?.text ?? "", reverse: true, onTextChanged: () => null },
       { colSpan: 3 }
     );
     setCell(
       "6",
       "6",
       TextCell,
-      { value: data[5][4]?.text ?? "", reverse: true, onTextChanged: () => null },
+      { value: data[6][realColIdx6]?.text ?? "", reverse: true, onTextChanged: () => null },
       { colSpan: 3 }
     );
   });

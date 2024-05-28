@@ -26,7 +26,7 @@ export const GridWithHeaders = () => {
       width: "150px",
     }))
   );
-  const [rows, serRows] = useState<Array<Row<string>>>(
+  const [rows] = useState<Array<Row<string>>>(
     Array.from({ length: ROW_COUNT }).map((_, j) => ({
       id: j.toString(),
       height: "50px",
@@ -36,14 +36,15 @@ export const GridWithHeaders = () => {
   const [gridData, setGridData] = useState<(CellData | null)[][]>(
     Array.from({ length: ROW_COUNT }).map((_, i) => {
       return Array.from({ length: COLUMN_COUNT }).map((_, j) => {
-        // if (i === 1 && j === 2) return null;
-        // if (i === 2 && j === 2) return null;
+        if (i === 3 && j === 3) return null;
+        if (i === 2 && j === 2) return null;
         if (i === 0) {
           return { text: `title ${j + 1}` };
         }
-        // if (i === 1 && j === 1) {
-        //   return { date: new Date() };
-        // }
+
+        if (i === 2 && j === 1) {
+          return { date: new Date() };
+        }
         return {
           text: `[${i.toString()}:${j.toString()}]`,
         };
@@ -88,27 +89,27 @@ export const GridWithHeaders = () => {
       });
     });
 
-    // setCell("2", "1", TextCell, { value: "text" ?? "", reverse: true, onTextChanged: () => null }, { colSpan: 2 });
+    const realColIdx = columns.findIndex((col) => col.id === "1");
 
-    // setCell(
-    //   "1",
-    //   "1",
-    //   DateCell,
-    //   {
-    //     value: gridData[1][1]?.date,
-    //     onDateChanged: (newDate) => {
-    //       setGridData((prev) => {
-    //         const next = [...prev];
-    //         next[1][1] = newDate;
-    //         return next;
-    //       });
-    //     },
-    //   },
-    //   { colSpan: 2 }
-    // );
+    setCell("3", "2", TextCell, { value: "text" ?? "", reverse: true, onTextChanged: () => null }, { colSpan: 2 });
+
+    setCell(
+      "2",
+      "1",
+      DateCell,
+      {
+        value: gridData[2][realColIdx]?.date,
+        onDateChanged: (newDate) => {
+          setGridData((prev) => {
+            const next = [...prev];
+            next[2][realColIdx] = newDate;
+            return next;
+          });
+        },
+      },
+      { colSpan: 2 }
+    );
   });
-
-  console.log("cells: ", cellMatrix.cells);
 
   return (
     <div className="rgScrollableContainer" style={{ height: "100%", overflow: "auto" }}>
