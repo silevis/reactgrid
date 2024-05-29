@@ -1,6 +1,6 @@
 import { NumericalRange } from "../../types/CellMatrix";
 
-export const onPasteHandler = <T>(
+export const handlePaste = <T>(
   selectedArea: NumericalRange,
   pastedData: string,
   setData: React.Dispatch<React.SetStateAction<T[][]>>

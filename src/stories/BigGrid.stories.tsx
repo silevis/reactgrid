@@ -7,12 +7,12 @@ import { cellMatrixBuilder } from "../utils/cellMatrixBuilder";
 import NumberCell from "../components/cellTemplates/NumberCell";
 import DateCell from "../components/cellTemplates/DateCell";
 import { Column, Row } from "../types/PublicModel";
-import { onFillHandle } from "./utils/onFillHandle";
-import { onCutHandler } from "./utils/onCutHandler";
-import { onPasteHandler } from "./utils/onPasteHandler";
-import { onCopyHandler } from "./utils/onCopyHandler";
-import { onColumnReorder } from "./utils/onColumnReorder";
-import { onResizeColumn } from "./utils/onResizeColumn";
+import { handleFill } from "./utils/handleFill";
+import { handleCut } from "./utils/handleCut";
+import { handlePaste } from "./utils/handlePaste";
+import { handleCopy } from "./utils/handleCopy";
+import { handleColumnReorder } from "./utils/handleColumnReorder";
+import { handleResizeColumn } from "./utils/handleResizeColumn";
 
 interface CellData {
   text?: string;
@@ -217,18 +217,18 @@ export const BigGrid = () => {
           stickyBottomRows={2}
           styles={testStyles}
           // styledRanges={styledRanges}
-          onResizeColumn={(width, columnId) => onResizeColumn(width, columnId, cellMatrix, setColumns)}
+          onResizeColumn={(width, columnId) => handleResizeColumn(width, columnId, cellMatrix, setColumns)}
           {...cellMatrix}
           onColumnReorder={(selectedColIndexes, destinationColIdx) =>
-            onColumnReorder(selectedColIndexes, destinationColIdx, setColumns, setData)
+            handleColumnReorder(selectedColIndexes, destinationColIdx, setColumns, setData)
           }
           minColumnWidth={100}
           enableColumnSelection
           onAreaSelected={(selectedArea) => {}}
-          onFillHandle={(selectedArea, fillRange) => onFillHandle(selectedArea, fillRange, setData)}
-          onCut={(selectedArea) => onCutHandler(data, selectedArea, setData)}
-          onPaste={(selectedArea, pastedData) => onPasteHandler(selectedArea, pastedData, setData)}
-          onCopy={(selectedArea) => onCopyHandler(data, selectedArea)}
+          onFillHandle={(selectedArea, fillRange) => handleFill(selectedArea, fillRange, setData)}
+          onCut={(selectedArea) => handleCut(data, selectedArea, setData)}
+          onPaste={(selectedArea, pastedData) => handlePaste(selectedArea, pastedData, setData)}
+          onCopy={(selectedArea) => handleCopy(data, selectedArea)}
           onCellFocused={(cellLocation) => {}}
         />
       </div>

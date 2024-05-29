@@ -2,7 +2,7 @@ import { Dispatch, SetStateAction } from "react";
 import { CellMatrix } from "../../types/CellMatrix";
 import { Column } from "../../types/PublicModel";
 
-export const onResizeColumn = (
+export const handleResizeColumn = (
   width: number,
   columnId: string | number,
   cellMatrix: CellMatrix<string, string>,

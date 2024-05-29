@@ -1,6 +1,6 @@
 import { NumericalRange } from "../../types/CellMatrix";
 
-export const onCopyHandler = <T>(data: T[][], selectedArea: NumericalRange) => {
+export const handleCopy = <T>(data: T[][], selectedArea: NumericalRange) => {
   // copy the data from the selected area to the clipboard
   const selectedData = data
     .slice(selectedArea.startRowIdx, selectedArea.endRowIdx)

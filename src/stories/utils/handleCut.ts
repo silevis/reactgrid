@@ -1,6 +1,6 @@
 import { NumericalRange } from "../../types/CellMatrix";
 
-export const onCutHandler = <T>(
+export const handleCut = <T>(
   data: T[][],
   selectedArea: NumericalRange,
   setData: React.Dispatch<React.SetStateAction<T[][]>>

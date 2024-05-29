@@ -9,7 +9,7 @@ type CellData = {
 
 type SetData<T extends CellData> = React.Dispatch<React.SetStateAction<(T | null)[][]>>;
 
-export const onFillHandle = (selectedArea: NumericalRange, fillRange: NumericalRange, setData: SetData<CellData>) => {
+export const handleFill = (selectedArea: NumericalRange, fillRange: NumericalRange, setData: SetData<CellData>) => {
   setData((prev) => {
     const next = [...prev];
     // Check if the fill handle is being dragged upwards

@@ -6,9 +6,9 @@ import { HeaderCell } from "../components/cellTemplates/HeaderCell";
 import ReactGrid from "../ReactGrid";
 import { ErrorBoundary } from "../components/ErrorBoundary";
 import { Column, Row } from "../types/PublicModel";
-import { onFillHandle } from "./utils/onFillHandle";
-import { onColumnReorder } from "./utils/onColumnReorder";
-import { onResizeColumn } from "./utils/onResizeColumn";
+import { handleFill } from "./utils/handleFill";
+import { handleColumnReorder } from "./utils/handleColumnReorder";
+import { handleResizeColumn } from "./utils/handleResizeColumn";
 import DateCell from "../components/cellTemplates/DateCell";
 
 interface CellData {
@@ -115,12 +115,12 @@ export const GridWithHeaders = () => {
     <div className="rgScrollableContainer" style={{ height: "100%", overflow: "auto" }}>
       <ReactGrid
         id="grid-with-headers"
-        onFillHandle={(selectedArea, fillRange) => onFillHandle(selectedArea, fillRange, setGridData)}
+        onFillHandle={(selectedArea, fillRange) => handleFill(selectedArea, fillRange, setGridData)}
         onColumnReorder={(selectedColIndexes, destinationColIdx) =>
-          onColumnReorder(selectedColIndexes, destinationColIdx, setColumns, setGridData)
+          handleColumnReorder(selectedColIndexes, destinationColIdx, setColumns, setGridData)
         }
         enableColumnSelection
-        onResizeColumn={(width, columnId) => onResizeColumn(width, columnId, cellMatrix, setColumns)}
+        onResizeColumn={(width, columnId) => handleResizeColumn(width, columnId, cellMatrix, setColumns)}
         minColumnWidth={100}
         stickyTopRows={1}
         {...cellMatrix}

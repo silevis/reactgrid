@@ -9,7 +9,7 @@ type CellData = {
 
 type SetData<T extends CellData> = React.Dispatch<React.SetStateAction<(T | null)[][]>>;
 
-export const onColumnReorder = <T>(
+export const handleColumnReorder = <T>(
   selectedColIndexes: number[],
   destinationColIdx: number,
   setColumns: Dispatch<SetStateAction<Column<string>[]>>,
