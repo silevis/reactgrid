@@ -5,12 +5,16 @@ import { findMinimalSelectedArea } from "../utils/findMinimalSelectedArea.ts";
 import { getCellContainer } from "../utils/getCellContainer.ts";
 import { getCellContainerFromPoint } from "../utils/getCellContainerFromPoint.ts";
 import { getCellIndexesFromContainerElement } from "../utils/getCellIndexes.ts";
+import { getCellIndexesFromPointerLocation } from "../utils/getCellIndexesFromPointerLocation.ts";
 import { getLastColumnMetrics } from "../utils/getLastColumnMetrics.ts";
+import { isColumnOverlappingPane } from "../utils/isColumnOverlappingPane.ts";
 import isDevEnvironment from "../utils/isDevEnvironment.ts";
+import { scrollTowardsSticky } from "../utils/scrollTowardsSticky.ts";
 
 const devEnvironment = isDevEnvironment();
 
 let initialMouseXPos = 0;
+let mouseToCellLeftBorderDistX = 0;
 let destinationColIdx = 0;
 
 export const ColumnReorderBehavior: Behavior = {
@@ -28,6 +32,12 @@ export const ColumnReorderBehavior: Behavior = {
       initialMouseXPos = event.clientX;
     }
 
+    const { rowIndex, colIndex } = getCellIndexesFromPointerLocation(event.clientX, event.clientY);
+
+    const currentDragOverCell = store.getCellByIndexes(rowIndex, colIndex);
+
+    if (currentDragOverCell) scrollTowardsSticky(store, currentDragOverCell, { rowIndex, colIndex });
+
     const selectedAreaWidth = calcSelectedAreaWidth(store);
 
     const { lastColumnRelativeffsetLeft, lastColumnWidth } = getLastColumnMetrics(store);
@@ -42,7 +52,15 @@ export const ColumnReorderBehavior: Behavior = {
 
     const cellContainerOffsetLeft = cellContainer.offsetLeft || 0;
 
-    let shadowPosition = cellContainerOffsetLeft + (event.clientX - initialMouseXPos);
+    const gridWrapperRectLeft = store.reactGridRef?.getBoundingClientRect()?.left;
+
+    if (!gridWrapperRectLeft) return store;
+
+    if (!mouseToCellLeftBorderDistX) {
+      mouseToCellLeftBorderDistX = event.clientX - gridWrapperRectLeft - cellContainerOffsetLeft;
+    }
+
+    let shadowPosition = event.clientX - gridWrapperRectLeft - mouseToCellLeftBorderDistX;
 
     // Use client rect instead of event.clientY to determine shadow position,
     // This allows for accurate positioning even when the cursor is not hovering directly over the cell container.
@@ -74,15 +92,25 @@ export const ColumnReorderBehavior: Behavior = {
 
     let linePosition = undefined;
 
-    // Determine the destination column index based on the cursor position
+    // Determine the destination column index based on the cursor position and line position
     // Case 1 - Cursor is moving to the right of the selected columns
     if (event.clientX > cellContainer.getBoundingClientRect().left + selectedAreaWidth) {
       destinationColIdx = minimalSelection.endColIdx - 1;
-      linePosition = rightCellContainer.offsetLeft + rightCellContainer.offsetWidth;
+
+      if (isColumnOverlappingPane(store, destinationColIdx, "right")) {
+        linePosition = undefined;
+      } else {
+        linePosition = rightCellContainer.offsetLeft + rightCellContainer.offsetWidth;
+      }
     } else if (event.clientX < cellContainer.getBoundingClientRect().left - 1) {
       // Case 2 - Cursor is moving to the left of the selected columns
       destinationColIdx = minimalSelection.startColIdx;
-      linePosition = leftCellContainer.offsetLeft;
+
+      if (isColumnOverlappingPane(store, destinationColIdx, "right")) {
+        linePosition = undefined;
+      } else {
+        linePosition = leftCellContainer.offsetLeft;
+      }
     }
 
     // Ensure the shadow doesn't go beyond the first column

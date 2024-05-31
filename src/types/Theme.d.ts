@@ -32,38 +32,38 @@ export interface RGTheme {
       rows: RowsTemplateFunction;
     };
     gap: {
-      width: string;
+      width: React.CSSProperties["width"];
       /** Changes grid's background color for the gap to appear colored */
-      color: string;
+      color: React.CSSProperties["color"];
     };
   };
   paneContainer: {
     top: {
-      background: string;
+      background: React.CSSProperties["backgroundColor"];
     };
     right: {
-      background: string;
+      background: React.CSSProperties["backgroundColor"];
     };
     bottom: {
-      background: string;
+      background: React.CSSProperties["backgroundColor"];
     };
     left: {
-      background: string;
+      background: React.CSSProperties["backgroundColor"];
     };
   };
   cellContainer: {
     padding: Padding;
-    background: string;
+    background: React.CSSProperties["backgroundColor"];
   };
   area: {
     border: Border;
   };
   focusIndicator: {
-    background: string;
+    background: React.CSSProperties["backgroundColor"];
     border: Border;
   };
   fillHandle: {
-    background: string;
+    background: React.CSSProperties["backgroundColor"];
     border: Border;
   };
   line: { backgroundColor: React.CSSProperties["backgroundColor"]; size: number | string };
@@ -72,7 +72,7 @@ export interface RGTheme {
     hover: React.CSSProperties;
   };
   selectionIndicator: {
-    background: string;
+    background: React.CSSProperties["backgroundColor"];
     border: Border;
   };
   gridWrapper?: React.CSSProperties;
@@ -80,6 +80,7 @@ export interface RGTheme {
 
 // Makes all properties in T optional, including nested properties, but excluding functions
 type DeepPartial<T> = {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   [P in keyof T]?: T[P] extends (...args: any[]) => any ? T[P] : DeepPartial<T[P]>;
 };
 

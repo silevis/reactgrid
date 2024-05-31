@@ -37,16 +37,11 @@ const CellWrapper: FC<CellWrapperProps> = ({ children, targetInputRef, ...wrappe
         customClassName ?? ""
       }`}
       style={{
-        ...customStyle,
-        paddingTop: theme.cellContainer.padding.top,
-        paddingLeft: theme.cellContainer.padding.left,
-        paddingBottom: theme.cellContainer.padding.bottom,
-        paddingRight: theme.cellContainer.padding.right,
-        backgroundColor: theme.cellContainer.background,
         padding: ".2rem",
         textAlign: "center",
         position: "relative",
         touchAction: "none",
+        ...customStyle,
         ...ctx.containerStyle,
       }}
     >

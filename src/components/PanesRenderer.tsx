@@ -249,6 +249,14 @@ const PanesRenderer: FC<PanesRendererProps> = ({
       css={{
         display: "grid",
         userSelect: "none",
+
+        ".rgCellContainer": {
+          paddingTop: theme.cellContainer.padding.top,
+          paddingLeft: theme.cellContainer.padding.left,
+          paddingBottom: theme.cellContainer.padding.bottom,
+          paddingRight: theme.cellContainer.padding.right,
+          backgroundColor: "white",
+        },
       }}
     >
       <div
