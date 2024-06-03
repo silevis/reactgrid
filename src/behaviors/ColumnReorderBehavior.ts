@@ -148,7 +148,7 @@ const handlePointerMove = (store: ReactGridStore, event: React.PointerEvent<HTML
     // Case 2 - Cursor is moving to the left of the selected columns
     destinationColIdx = minimalSelection.startColIdx;
 
-    if (isColumnOverlappingPane(store, destinationColIdx, "right")) {
+    if (isColumnOverlappingPane(store, destinationColIdx, "left")) {
       linePosition = undefined;
     } else {
       linePosition = leftCellContainer.offsetLeft;

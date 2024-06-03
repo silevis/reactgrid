@@ -1,6 +1,7 @@
 import { ReactGridStore } from "../types/ReactGridStore";
 import { getCellContainer } from "./getCellContainer";
 import { getElementsOverlapValues } from "./getElementsOverlapValues";
+import { isTheSameCell } from "./isTheSameCell";
 
 export const isColumnOverlappingPane = (store: ReactGridStore, columnIdx: number, panePosition: "left" | "right") => {
   const headerCell = store.getCellByIndexes(0, columnIdx);
@@ -15,6 +16,10 @@ export const isColumnOverlappingPane = (store: ReactGridStore, columnIdx: number
   const headerContainer = getCellContainer(store, headerCell) as HTMLElement | null;
 
   if (!paneContainer || !headerContainer) return false;
+
+  if (isTheSameCell(paneContainer, headerContainer)) {
+    return false;
+  }
 
   const isOverlapping = getElementsOverlapValues(paneContainer, headerContainer);
 
