@@ -4,6 +4,12 @@ import { getOriginCell } from "./getOriginCell";
 import { EMPTY_AREA } from "../types/InternalModel";
 import { handleJumpScroll } from "./handleJumpScroll";
 import { ReactGridStore } from "../types/ReactGridStore.ts";
+import { emitEvent } from "./emitEvent.ts";
+
+const absoluteLocation = {
+  rowIndex: -1,
+  colIndex: -1,
+};
 
 export const moveFocusUp = (store: ReactGridStore, currentFocus: FocusedCell): ReactGridStore => {
   if (currentFocus.rowIndex === 0) return store;
@@ -26,6 +32,8 @@ export const moveFocusUp = (store: ReactGridStore, currentFocus: FocusedCell): R
       store.absoluteFocusedLocation.colIndex = colIndex;
 
       handleJumpScroll(store, currentFocus, originCell);
+
+      emitEvent("focuschange", { currentFocus });
 
       return {
         ...store,
@@ -58,6 +66,7 @@ export const moveFocusRight = (store: ReactGridStore, currentFocus: FocusedCell)
       store.absoluteFocusedLocation.colIndex = colIdx;
 
       handleJumpScroll(store, currentFocus, originCell);
+      emitEvent("focuschange", { currentFocus });
 
       return {
         ...store,
@@ -90,6 +99,7 @@ export const moveFocusDown = (store: ReactGridStore, currentFocus: FocusedCell) 
       store.absoluteFocusedLocation.colIndex = colIndex;
 
       handleJumpScroll(store, currentFocus, originCell);
+      emitEvent("focuschange", { currentFocus });
 
       return {
         ...store,
@@ -123,6 +133,7 @@ export const moveFocusLeft = (store: ReactGridStore, currentFocus: FocusedCell) 
       else store.absoluteFocusedLocation.colIndex = colIdx;
 
       handleJumpScroll(store, currentFocus, originCell);
+      emitEvent("focuschange", { currentFocus });
 
       return {
         ...store,
@@ -256,7 +267,9 @@ export const moveFocusInsideSelectedRange = (
         !nextPossibleLocation ||
         isSpanMember(nextPossibleLocation) ||
         nextPossibleLocation?.isFocusable === false
-        );
+      );
+
+      emitEvent("focuschange", { currentFocus });
 
       return { ...store, focusedLocation: { rowIndex: rowIdx, colIndex: colIdx } };
     }
