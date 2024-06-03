@@ -21,10 +21,20 @@ const COLUMN_COUNT = 6;
 
 export const GridWithHeaders = () => {
   const [columns, setColumns] = useState<Array<Column<string>>>(
-    Array.from({ length: COLUMN_COUNT }).map((_, j) => ({
-      id: j.toString(),
-      width: "150px",
-    }))
+    Array.from({ length: COLUMN_COUNT }).map((_, j) => {
+      if (j === 2)
+        return {
+          id: j.toString(),
+          width: "200px",
+          resizable: true,
+          reorderable: true,
+        };
+
+      return {
+        id: j.toString(),
+        width: "150px",
+      };
+    })
   );
   const [rows] = useState<Array<Row<string>>>(
     Array.from({ length: ROW_COUNT }).map((_, j) => ({

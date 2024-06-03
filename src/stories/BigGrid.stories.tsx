@@ -48,6 +48,8 @@ export const BigGrid = () => {
     Array.from({ length: COLUMN_COUNT }).map((_, j) => ({
       id: j.toString(),
       width: 150,
+      reorderable: true,
+      resizable: true,
     }))
   );
   const [rows] = useState<Array<Row<string>>>(

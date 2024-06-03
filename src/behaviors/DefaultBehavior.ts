@@ -48,7 +48,11 @@ export const DefaultBehavior = (config: DefaultBehaviorConfig = CONFIG_DEFAULTS)
 
     let newBehavior: Behavior = store.getBehavior("CellSelection") || store.currentBehavior;
 
-    if (shouldSelectEntireColumn && isCellInRange(store, clickedCell, store.selectedArea)) {
+    if (
+      shouldSelectEntireColumn &&
+      isCellInRange(store, clickedCell, store.selectedArea) &&
+      store.columns[colIndex].reorderable
+    ) {
       newBehavior = ColumnReorderBehavior;
     }
 

@@ -1,7 +1,7 @@
 import React, { FC } from "react";
 import { useCellContext } from "./CellContext";
 import HiddenFocusTarget from "./HiddenFocusTarget";
-import { useReactGridStore } from "../utils/reactGridStore";
+import { useReactGridStore, useReactGridStoreApi } from "../utils/reactGridStore";
 import { useReactGridId } from "./ReactGridIdProvider";
 import { useTheme } from "../hooks/useTheme";
 import { ResizeColumnBehavior } from "../behaviors/ResizeColumnBehavior";
@@ -20,6 +20,8 @@ const CellWrapper: FC<CellWrapperProps> = ({ children, targetInputRef, ...wrappe
 
   const id = useReactGridId();
 
+  const store = useReactGridStoreApi(id).getState();
+
   // TODO: fix performance issue
   const focusedCell = useReactGridStore(id, (store) => store.focusedLocation);
   const currentBehavior = useReactGridStore(id, (store) => store.currentBehavior);
@@ -29,6 +31,14 @@ const CellWrapper: FC<CellWrapperProps> = ({ children, targetInputRef, ...wrappe
   const setResizingColId = useReactGridStore(id, (store) => store.setResizingColId);
 
   const isFocused = focusedCell.rowIndex === ctx.realRowIndex && focusedCell.colIndex === ctx.realColumnIndex;
+
+  let shouldEnableColumnResize;
+
+  if (ctx.realRowIndex === 0) {
+    const cellColumn = store.columns.find((col) => col.id === ctx.colId);
+
+    shouldEnableColumnResize = currentBehavior.id === DefaultBehavior().id && onResizeColumn && cellColumn?.resizable;
+  }
 
   return (
     <div
@@ -45,7 +55,7 @@ const CellWrapper: FC<CellWrapperProps> = ({ children, targetInputRef, ...wrappe
         ...ctx.containerStyle,
       }}
     >
-      {currentBehavior.id === DefaultBehavior().id && ctx.realRowIndex === 0 && onResizeColumn && (
+      {shouldEnableColumnResize && (
         <div
           className="rg-resize-column"
           onPointerDown={() => {

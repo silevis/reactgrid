@@ -14,7 +14,7 @@ import { scrollTowardsSticky } from "../utils/scrollTowardsSticky.ts";
 const devEnvironment = isDevEnvironment();
 
 let initialMouseXPos = 0;
-let mouseToCellLeftBorderDistX = 0;
+let mouseToCellLeftBorderDistanceX = 0;
 let destinationColIdx = 0;
 
 export const ColumnReorderBehavior: Behavior = {
@@ -56,11 +56,12 @@ export const ColumnReorderBehavior: Behavior = {
 
     if (!gridWrapperRectLeft) return store;
 
-    if (!mouseToCellLeftBorderDistX) {
-      mouseToCellLeftBorderDistX = event.clientX - gridWrapperRectLeft - cellContainerOffsetLeft;
+    // set the initial distance between the mouse and the left border of the cell
+    if (!mouseToCellLeftBorderDistanceX) {
+      mouseToCellLeftBorderDistanceX = event.clientX - gridWrapperRectLeft - cellContainerOffsetLeft;
     }
 
-    let shadowPosition = event.clientX - gridWrapperRectLeft - mouseToCellLeftBorderDistX;
+    let shadowPosition = event.clientX - gridWrapperRectLeft - mouseToCellLeftBorderDistanceX;
 
     // Use client rect instead of event.clientY to determine shadow position,
     // This allows for accurate positioning even when the cursor is not hovering directly over the cell container.
@@ -133,6 +134,8 @@ export const ColumnReorderBehavior: Behavior = {
 
   handlePointerUp: function (event, store) {
     devEnvironment && console.log("CRB/handlePointerUp");
+
+    mouseToCellLeftBorderDistanceX = 0;
 
     // Prevent triggering the resize behavior when a column is selected twice without moving the pointer
     if (!initialMouseXPos) return { ...store, currentBehavior: store.getBehavior("Default") };

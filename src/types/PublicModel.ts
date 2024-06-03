@@ -13,6 +13,8 @@ export type Row<Id = string> = {
 export type Column<Id = string> = {
   id: Id;
   width: string | number;
+  resizable?: boolean;
+  reorderable?: boolean;
 };
 
 export type Cell<RowIdType extends string = string, ColIdType extends string = string> = {

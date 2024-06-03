@@ -71,10 +71,12 @@ export const ResizeColumnBehavior: Behavior = {
 
     const linePosition = event.clientX - reactGridLeftPosition;
 
-    if (linePosition <= headerLeftPosition + store.minColumnWidth) {
-      store.onResizeColumn?.(store.minColumnWidth, store.resizingColId!);
-    } else {
-      store.onResizeColumn?.(resultWidth, store.resizingColId!);
+    if (store.resizingColId) {
+      if (linePosition <= headerLeftPosition + store.minColumnWidth) {
+        store.onResizeColumn?.(store.minColumnWidth, store.resizingColId);
+      } else {
+        store.onResizeColumn?.(resultWidth, store.resizingColId);
+      }
     }
 
     headerLeftPosition = 0;
