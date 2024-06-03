@@ -23,19 +23,10 @@ export const ResizeColumnBehavior: Behavior = {
     initialHeaderWidth = headerContainerInitialWidth;
     initialPointerX = event.clientX;
 
-    const reactGridRef = store.reactGridRef;
-
-    if (!reactGridRef) return store;
-
-    const rect = reactGridRef.getBoundingClientRect();
-
-    // get the left position relative to the viewport
-    const gridContainerLeftPosition = rect.left;
-
     return {
       ...store,
       lineOrientation: "vertical",
-      linePosition: event.clientX - gridContainerLeftPosition,
+      linePosition: headerContainer.offsetLeft + headerContainer.offsetWidth,
     };
   },
 
