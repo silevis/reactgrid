@@ -110,20 +110,17 @@ export const DefaultBehavior = (config: DefaultBehaviorConfig = CONFIG_DEFAULTS)
     const focusedCell = store.getFocusedCell();
     const element = getCellContainerFromPoint(touchStartPosition.x, touchStartPosition.y);
 
-    let newRowIndex = -1;
-    let newColIndex = -1;
+    if (!element) return store;
 
-    if (element) {
-      const { rowIndex, colIndex } = getCellContainerLocation(element);
-      newRowIndex = rowIndex;
-      newColIndex = colIndex;
-    }
+    const { rowIndex, colIndex } = getCellContainerLocation(element);
 
-    const shouldSelectEntireColumn = newRowIndex === 0 && store.enableColumnSelection;
+    const shouldSelectEntireColumn = rowIndex === 0 && store.enableColumnSelection;
 
-    const newCell = store.getCellByIndexes(newRowIndex, newColIndex);
+    const touchedCell = store.getCellByIndexes(rowIndex, colIndex);
 
-    const cellArea = getCellArea(store, newCell!);
+    if (!touchedCell) return store;
+
+    const cellArea = getCellArea(store, touchedCell);
 
     const SelectionBehavior = store.getBehavior("CellSelection");
 
@@ -140,18 +137,28 @@ export const DefaultBehavior = (config: DefaultBehaviorConfig = CONFIG_DEFAULTS)
       }
     }
 
+    let newBehavior: Behavior = SelectionBehavior || store.currentBehavior;
+
+    if (
+      shouldSelectEntireColumn &&
+      isCellInRange(store, touchedCell, store.selectedArea) &&
+      store.columns[colIndex].reorderable
+    ) {
+      newBehavior = ColumnReorderBehavior;
+    }
+
     return {
       ...store,
-      absoluteFocusedLocation: { rowIndex: newRowIndex, colIndex: newColIndex },
+      absoluteFocusedLocation: { rowIndex: rowIndex, colIndex: colIndex },
       selectedArea: shouldSelectEntireColumn
-        ? {
+        ? findMinimalSelectedArea(store, {
             startRowIdx: 0,
             endRowIdx: store.rows.length,
             startColIdx: cellArea.startColIdx,
             endColIdx: cellArea.endColIdx,
-          }
+          })
         : { startRowIdx: -1, endRowIdx: -1, startColIdx: -1, endColIdx: -1 },
-      ...(shouldSelectEntireColumn && { currentBehavior: SelectionBehavior || store.currentBehavior }),
+      currentBehavior: newBehavior,
     };
   },
 
