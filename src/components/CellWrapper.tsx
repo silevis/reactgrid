@@ -5,7 +5,6 @@ import { useReactGridStore, useReactGridStoreApi } from "../utils/reactGridStore
 import { useReactGridId } from "./ReactGridIdProvider";
 import { useTheme } from "../hooks/useTheme";
 import { ResizeColumnBehavior } from "../behaviors/ResizeColumnBehavior";
-import { DefaultBehavior } from "../behaviors/DefaultBehavior";
 
 type CellWrapperProps = React.ClassAttributes<HTMLDivElement> &
   React.HTMLAttributes<HTMLDivElement> & {
@@ -24,7 +23,6 @@ const CellWrapper: FC<CellWrapperProps> = ({ children, targetInputRef, ...wrappe
 
   // TODO: fix performance issue
   const focusedCell = useReactGridStore(id, (store) => store.focusedLocation);
-  const currentBehavior = useReactGridStore(id, (store) => store.currentBehavior);
 
   const onResizeColumn = useReactGridStore(id, (store) => store.onResizeColumn);
   const setCurrentBehavior = useReactGridStore(id, (store) => store.setCurrentBehavior);
@@ -37,7 +35,7 @@ const CellWrapper: FC<CellWrapperProps> = ({ children, targetInputRef, ...wrappe
   if (ctx.realRowIndex === 0) {
     const cellColumn = store.columns.find((col) => col.id === ctx.colId);
 
-    shouldEnableColumnResize = currentBehavior.id === DefaultBehavior().id && onResizeColumn && cellColumn?.resizable;
+    shouldEnableColumnResize = onResizeColumn && cellColumn?.resizable;
   }
 
   return (
