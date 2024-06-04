@@ -33,6 +33,8 @@ export const GridWithHeaders = () => {
       return {
         id: j.toString(),
         width: "150px",
+        resizable: true,
+        reorderable: true,
       };
     })
   );

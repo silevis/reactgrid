@@ -135,5 +135,5 @@ const handlePointerUp = (
   initialPointerX = 0;
   initialHeaderWidth = 0;
 
-  return { ...store, linePosition: undefined, currentBehavior: store.getBehavior("Default") };
+  return { ...store, linePosition: undefined, currentBehavior: store.getBehavior("Default"), resizingColId: undefined };
 };
