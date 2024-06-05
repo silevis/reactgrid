@@ -45,8 +45,7 @@ export const CellEditorRenderer: React.FC = () => {
     if (!currentlyEditedCell || !location || renders.current === 0) { // prevents to unexpectly opening cell editor on cypress
         return null;
     }
-    console.log('Disable fixed edit cells', props?.disableFixedEditCells);
-    console.log('Currentlyt edited cell', currentlyEditedCell, location);
+    
     const style = props?.disableFixedEditCells ? {
         height: location.row.height + 1,
         left: location.column.left,
