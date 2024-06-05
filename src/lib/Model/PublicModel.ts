@@ -61,6 +61,8 @@ export interface ReactGridProps {
     readonly enableRowSelection?: boolean;
     /** Set `true` to enable column selection feature (by default `false`) */
     readonly enableColumnSelection?: boolean;
+    /** Set `true` to enable fixed edit cells during scrolling (by default `false`) */
+    readonly disableFixedEditCells?: boolean;
     /** Object that contains labels of texts used by ReactGrid */
     readonly labels?: TextLabels;
     /** Set `true` to enable full width header (by default `false`, feature is experimental) */

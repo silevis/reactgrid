@@ -28,7 +28,7 @@ export interface PositionState<TState extends State = State> {
 
 export const CellEditorRenderer: React.FC = () => {
     const state = useReactGridState();
-    const { currentlyEditedCell, focusedLocation: location } = state;
+    const { currentlyEditedCell, focusedLocation: location, props } = state;
 
     const renders = React.useRef(0);
 
@@ -43,16 +43,24 @@ export const CellEditorRenderer: React.FC = () => {
         return null;
     }
 
+    const style = props?.disableFixedEditCells ? {
+        height: location.row.height + 1,
+        left: location.column.left,
+        position: 'absolute',
+        top: location.row.height * location.row.idx,
+        width: location.column.width + 1,
+    } : {
+        top: position.top && position.top - 1,
+        left: position.left && position.left - 1,
+        height: location.row.height + 1,
+        width: location.column.width + 1,
+        position: 'fixed'
+    };
+
     const cellTemplate = state.cellTemplates[currentlyEditedCell.type];
     return <CellEditor
         cellType={currentlyEditedCell.type}
-        style={{
-            top: position.top && position.top - 1,
-            left: position.left && position.left - 1,
-            height: location.row.height + 1,
-            width: location.column.width + 1,
-            position: 'fixed'
-        }}
+        style={style as React.CSSProperties}
     >
         {cellTemplate.render(currentlyEditedCell, true, (cell: Compatible<Cell>, commit: boolean) => {
             state.currentlyEditedCell = commit ? undefined : cell;
