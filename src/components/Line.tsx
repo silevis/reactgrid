@@ -19,8 +19,8 @@ export const Line: FC = () => {
         position: "absolute",
         height: isVertical ? reactGridRef?.clientHeight : theme.line.size,
         top: isVertical ? 0 : linePosition,
-        left: isVertical ? linePosition : reactGridRef?.getBoundingClientRect().left,
-        width: isVertical ? theme.line.size : 0,
+        left: isVertical ? linePosition : 0,
+        width: isVertical ? theme.line.size : reactGridRef?.offsetWidth,
         backgroundColor: theme.line.backgroundColor,
         pointerEvents: "none",
       }}

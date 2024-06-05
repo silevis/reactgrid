@@ -1,18 +1,17 @@
-import { ReactGridStore } from "../types/ReactGridStore.ts";
+import { ReactGridStore } from "../types/ReactGridStore";
+import { getCellContainer } from "./getCellContainer";
 
 export const calcSelectedAreaWidth = (store: ReactGridStore): number => {
-  const { selectedArea, columns } = store;
+  const { selectedArea, getCellByIndexes } = store;
   let width = 0;
 
   for (let colIndex = selectedArea.startColIdx; colIndex < selectedArea.endColIdx; colIndex++) {
-    const column = columns[colIndex];
-    if (column && typeof column.width === "string") {
-      const parsedWidth = parseInt(column.width.replace("px", ""), 10);
-      if (!isNaN(parsedWidth)) {
-        width += parsedWidth;
+    const cell = getCellByIndexes(0, colIndex); // get the first cell of the column
+    if (cell) {
+      const cellContainer = getCellContainer(store, cell) as HTMLElement | null;
+      if (cellContainer) {
+        width += cellContainer.offsetWidth;
       }
-    } else if (column && typeof column.width === "number") {
-      width += column.width;
     }
   }
 

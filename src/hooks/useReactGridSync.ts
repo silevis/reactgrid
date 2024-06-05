@@ -3,13 +3,14 @@ import { getCellIndexes } from "../utils/getCellIndexes.1";
 import { getNumericalRange } from "../utils/getNumericalRange";
 import { isSpanMember } from "../utils/isSpanMember";
 import isDevEnvironment from "../utils/isDevEnvironment";
-import { CellMap, Column, Location, Range } from "../types/PublicModel";
+import { CellMap, Column, Location, Range, Row } from "../types/PublicModel";
 import { ReactGridStore } from "../types/ReactGridStore";
 
 const devEnvironment = isDevEnvironment();
 
 interface ReactGridSyncProps {
   cells: CellMap<string, string>;
+  rows: Row[];
   columns: Column[];
   initialFocusLocation?: Location;
   initialSelectedRange?: Range;
@@ -17,7 +18,7 @@ interface ReactGridSyncProps {
 
 export const useReactGridSync = (
   store: ReactGridStore,
-  { cells, columns, initialSelectedRange, initialFocusLocation }: ReactGridSyncProps
+  { cells, rows, columns, initialSelectedRange, initialFocusLocation }: ReactGridSyncProps
 ) => {
   const {
     setSelectedArea,
@@ -26,12 +27,18 @@ export const useReactGridSync = (
     getCellByIds,
     setCells,
     setColumns,
+    setRows,
   } = store;
 
   // sync cell data that comes from cell matrix builder with store
   useEffect(() => {
     setCells(cells);
   }, [cells]);
+
+  // sync cell data that comes from cell matrix builder with store
+  useEffect(() => {
+    setRows(rows);
+  }, [rows]);
 
   // sync column data that comes from cell matrix builder with store
   useEffect(() => {

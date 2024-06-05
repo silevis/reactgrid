@@ -13,6 +13,7 @@ import { handlePaste } from "./utils/handlePaste";
 import { handleCopy } from "./utils/handleCopy";
 import { handleColumnReorder } from "./utils/handleColumnReorder";
 import { handleResizeColumn } from "./utils/handleResizeColumn";
+import { handleRowReorder } from "./utils/handleRowReorder";
 
 interface CellData {
   text?: string;
@@ -52,14 +53,15 @@ export const BigGrid = () => {
       resizable: true,
     }))
   );
-  const [rows] = useState<Array<Row<string>>>(
+  const [rows, setRows] = useState<Array<Row<string>>>(
     Array.from({ length: ROW_COUNT }).map((_, j) => ({
       id: j.toString(),
       height: "max-content",
+      reorderable: true,
     }))
   );
 
-  const [data, setData] = useState<(CellData | null)[][]>(
+  const [gridData, setGridData] = useState<(CellData | null)[][]>(
     Array.from({ length: ROW_COUNT }).map((_, i) => {
       return Array.from({ length: COLUMN_COUNT }).map((_, j) => {
         if (i === 1 && j === 4) return null;
@@ -100,15 +102,16 @@ export const BigGrid = () => {
   );
 
   const cellMatrix = cellMatrixBuilder(rows, columns, ({ setCell }) => {
-    data.forEach((row, rowIndex) => {
+    gridData.forEach((row, rowIndex) => {
       row.forEach((val, columnIndex) => {
         const columnId = columns[columnIndex].id; // necessary for column reordering
+        const rowId = rows[rowIndex].id; // necessary for row reordering
         if (val === null) return;
 
-        setCell(rowIndex.toString(), columnId, TextCell, {
+        setCell(rowId, columnId, TextCell, {
           value: val?.text,
           onTextChanged: (data) => {
-            setData((prev) => {
+            setGridData((prev) => {
               const next = [...prev];
               if (next[rowIndex][columnIndex] !== null) {
                 next[rowIndex][columnIndex].text = data;
@@ -126,16 +129,38 @@ export const BigGrid = () => {
     const realColIdx5 = columns.findIndex((col) => col.id === "5");
     const realColIdx6 = columns.findIndex((col) => col.id === "6");
 
+    const realRowIdx0 = rows.findIndex((row) => row.id === "0");
+    const realRowIdx1 = rows.findIndex((row) => row.id === "1");
+    const realRowIdx2 = rows.findIndex((row) => row.id === "2");
+    const realRowIdx3 = rows.findIndex((row) => row.id === "3");
+    const realRowIdx5 = rows.findIndex((row) => row.id === "5");
+    const realRowIdx6 = rows.findIndex((row) => row.id === "6");
+
+    setCell("0", "0", NumberCell, {
+      value: gridData[realRowIdx0][realColIdx0]?.number ?? 0,
+      validator: (value) => !isNaN(value),
+      errorMessage: "ERR",
+      format: myNumberFormat,
+      hideZero: true,
+      onValueChanged: (newNumber) => {
+        setGridData((prev) => {
+          const next = [...prev];
+          next[realRowIdx0][realColIdx0] = { number: newNumber };
+          return next;
+        });
+      },
+    });
+
     setCell(
       "1",
       "3",
       DateCell,
       {
-        value: data[1][realColIdx3]?.date,
+        value: gridData[realRowIdx1][realColIdx3]?.date,
         onDateChanged: (newDate) => {
-          setData((prev) => {
+          setGridData((prev) => {
             const next = [...prev];
-            next[1][realColIdx3] = newDate;
+            next[realRowIdx1][realColIdx3] = newDate;
             return next;
           });
         },
@@ -143,35 +168,20 @@ export const BigGrid = () => {
       { colSpan: 2 }
     );
 
-    setCell("0", "0", NumberCell, {
-      value: data[0][realColIdx0]?.number ?? 0,
-      validator: (value) => !isNaN(value),
-      errorMessage: "ERR",
-      format: myNumberFormat,
-      hideZero: true,
-      onValueChanged: (newNumber) => {
-        setData((prev) => {
-          const next = [...prev];
-          next[0][realColIdx0]!.number = newNumber;
-          return next;
-        });
-      },
-    });
-
     setCell(
       "2",
       "3",
       NumberCell,
       {
-        value: data[2][realColIdx3]?.number ?? 0,
+        value: gridData[realRowIdx2][realColIdx3]?.number ?? 0,
         validator: (value) => !isNaN(value),
         errorMessage: "ERR",
         format: myNumberFormat,
         hideZero: true,
         onValueChanged: (newNumber) => {
-          setData((prev) => {
+          setGridData((prev) => {
             const next = [...prev];
-            next[2][3]!.number = newNumber;
+            next[realRowIdx2][realColIdx3] = { number: newNumber };
             return next;
           });
         },
@@ -182,28 +192,28 @@ export const BigGrid = () => {
       "3",
       "6",
       TextCell,
-      { value: data[3][realColIdx6]?.text ?? "", reverse: true, onTextChanged: () => null },
+      { value: gridData[realRowIdx3][realColIdx6]?.text ?? "", reverse: true, onTextChanged: () => null },
       { colSpan: 2, rowSpan: 2 }
     );
     setCell(
       "5",
       "4",
       TextCell,
-      { value: data[5][realColIdx4]?.text ?? "", reverse: true, onTextChanged: () => null },
+      { value: gridData[realRowIdx5][realColIdx4]?.text ?? "", reverse: true, onTextChanged: () => null },
       { rowSpan: 2 }
     );
     setCell(
       "5",
       "5",
       TextCell,
-      { value: data[5][realColIdx5]?.text ?? "", reverse: true, onTextChanged: () => null },
+      { value: gridData[realRowIdx5][realColIdx5]?.text ?? "", reverse: true, onTextChanged: () => null },
       { colSpan: 3 }
     );
     setCell(
       "6",
       "6",
       TextCell,
-      { value: data[6][realColIdx6]?.text ?? "", reverse: true, onTextChanged: () => null },
+      { value: gridData[realRowIdx6][realColIdx6]?.text ?? "", reverse: true, onTextChanged: () => null },
       { colSpan: 3 }
     );
   });
@@ -221,16 +231,20 @@ export const BigGrid = () => {
           // styledRanges={styledRanges}
           onResizeColumn={(width, columnId) => handleResizeColumn(width, columnId, cellMatrix, setColumns)}
           {...cellMatrix}
+          onRowReorder={(selectedRowIndexes, destinationRowIdx) =>
+            handleRowReorder(selectedRowIndexes, destinationRowIdx, setRows, setGridData)
+          }
           onColumnReorder={(selectedColIndexes, destinationColIdx) =>
-            handleColumnReorder(selectedColIndexes, destinationColIdx, setColumns, setData)
+            handleColumnReorder(selectedColIndexes, destinationColIdx, setColumns, setGridData)
           }
           minColumnWidth={100}
           enableColumnSelection
+          enableRowSelection
           onAreaSelected={(selectedArea) => {}}
-          onFillHandle={(selectedArea, fillRange) => handleFill(selectedArea, fillRange, setData)}
-          onCut={(selectedArea) => handleCut(data, selectedArea, setData)}
-          onPaste={(selectedArea, pastedData) => handlePaste(selectedArea, pastedData, setData)}
-          onCopy={(selectedArea) => handleCopy(data, selectedArea)}
+          onFillHandle={(selectedArea, fillRange) => handleFill(selectedArea, fillRange, setGridData)}
+          onCut={(selectedArea) => handleCut(gridData, selectedArea, setGridData)}
+          onPaste={(selectedArea, pastedData) => handlePaste(selectedArea, pastedData, setGridData)}
+          onCopy={(selectedArea) => handleCopy(gridData, selectedArea)}
           onCellFocused={(cellLocation) => {}}
         />
       </div>

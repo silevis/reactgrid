@@ -36,6 +36,8 @@ export interface ReactGridStoreProps {
 
   enableColumnSelection?: boolean;
 
+  enableRowSelection?: boolean;
+
   linePosition?: number;
   lineOrientation: "vertical" | "horizontal";
 
@@ -50,6 +52,7 @@ export interface ReactGridStoreProps {
   onPaste?: (selectedArea: NumericalRange, pastedData: string) => void;
   onResizeColumn?: (width: number, columnId: number | string) => void;
   onColumnReorder?: (selectedColIndexes: number[], destinationColIdx: number) => void;
+  onRowReorder?: (selectedRowIndexes: number[], destinationRowIdx: number) => void;
 }
 
 export interface ReactGridStore extends ReactGridStoreProps {

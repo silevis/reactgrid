@@ -8,6 +8,7 @@ import { RGTheme } from "./Theme";
 export type Row<Id = string> = {
   id: Id;
   height: string | number;
+  reorderable?: boolean;
 };
 
 export type Column<Id = string> = {
@@ -134,6 +135,8 @@ export interface ReactGridProps {
 
   enableColumnSelection?: boolean;
 
+  enableRowSelection?: boolean;
+
   behaviors?: Record<BehaviorId, Behavior>;
 
   initialFocusLocation?: Location;
@@ -146,5 +149,6 @@ export interface ReactGridProps {
   onCopy?: (selectedArea: NumericalRange) => void;
   onPaste?: (selectedArea: NumericalRange, pastedData: string) => void;
   onColumnReorder?: (selectedColIndexes: number[], destinationColIdx: number) => void;
+  onRowReorder?: (selectedRowIndexes: number[], destinationRowIdx: number) => void;
   onResizeColumn?: (width: number, columnId: number | string) => void;
 }

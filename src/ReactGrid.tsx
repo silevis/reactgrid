@@ -10,6 +10,7 @@ import { useReactGridSync } from "./hooks/useReactGridSync";
 import { Line } from "./components/Line";
 import { ColumnReorderBehavior } from "./behaviors/ColumnReorderBehavior";
 import { Shadow } from "./components/Shadow";
+import { RowReorderBehavior } from "./behaviors/RowReorderBehavior";
 
 const devEnvironment = isDevEnvironment();
 
@@ -28,6 +29,7 @@ const ReactGrid: FC<ReactGridProps> = ({
   initialSelectedRange,
   initialFocusLocation,
   enableColumnSelection,
+  enableRowSelection,
   minColumnWidth,
   onAreaSelected,
   onFillHandle,
@@ -37,6 +39,7 @@ const ReactGrid: FC<ReactGridProps> = ({
   onCopy,
   onResizeColumn,
   onColumnReorder,
+  onRowReorder,
 }) => {
   initReactGridStore(id, {
     rows,
@@ -47,6 +50,7 @@ const ReactGrid: FC<ReactGridProps> = ({
     styledRanges,
     minColumnWidth,
     enableColumnSelection,
+    enableRowSelection,
     onFillHandle,
     onAreaSelected,
     onCellFocused,
@@ -54,6 +58,7 @@ const ReactGrid: FC<ReactGridProps> = ({
     onCopy,
     onResizeColumn,
     onColumnReorder,
+    onRowReorder,
     onPaste,
   });
 
@@ -62,7 +67,7 @@ const ReactGrid: FC<ReactGridProps> = ({
   const currentBehavior = useReactGridStore(id, (store) => store.currentBehavior);
   const linePosition = useReactGridStore(id, (store) => store.linePosition);
 
-  useReactGridSync(store, { cells, columns, initialSelectedRange, initialFocusLocation });
+  useReactGridSync(store, { cells, rows, columns, initialSelectedRange, initialFocusLocation });
 
   const [bypassSizeWarning, setBypassSizeWarning] = useState(false);
 
@@ -93,7 +98,9 @@ const ReactGrid: FC<ReactGridProps> = ({
             stickyRightColumns={stickyRightColumns ?? 0}
           />
           {linePosition && <Line />}
-          {currentBehavior.id === ColumnReorderBehavior.id && <Shadow />}
+          {(currentBehavior.id === ColumnReorderBehavior.id || currentBehavior.id === RowReorderBehavior.id) && (
+            <Shadow />
+          )}
         </GridWrapper>
       </ErrorBoundary>
     </ReactGridIdProvider>

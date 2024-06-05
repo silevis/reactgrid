@@ -10,6 +10,7 @@ import { handleKeyDown } from "../utils/handleKeyDown";
 import { isCellInRange } from "../utils/isCellInRange.ts";
 import isDevEnvironment from "../utils/isDevEnvironment";
 import { ColumnReorderBehavior } from "./ColumnReorderBehavior.ts";
+import { RowReorderBehavior } from "./RowReorderBehavior.ts";
 
 const devEnvironment = isDevEnvironment();
 
@@ -40,6 +41,8 @@ export const DefaultBehavior = (config: DefaultBehaviorConfig = CONFIG_DEFAULTS)
 
     const shouldSelectEntireColumn = rowIndex === 0 && store.enableColumnSelection;
 
+    const shouldSelectEntireRow = colIndex === 0 && store.enableRowSelection;
+
     const clickedCell = store.getCellByIndexes(rowIndex, colIndex);
 
     if (!clickedCell) return store;
@@ -51,9 +54,38 @@ export const DefaultBehavior = (config: DefaultBehaviorConfig = CONFIG_DEFAULTS)
     if (
       shouldSelectEntireColumn &&
       isCellInRange(store, clickedCell, store.selectedArea) &&
+      store.onColumnReorder &&
       store.columns[colIndex].reorderable
     ) {
       newBehavior = ColumnReorderBehavior;
+    }
+
+    if (
+      rowIndex !== 0 &&
+      shouldSelectEntireRow &&
+      isCellInRange(store, clickedCell, store.selectedArea) &&
+      store.onRowReorder &&
+      store.rows[rowIndex].reorderable
+    ) {
+      newBehavior = RowReorderBehavior;
+    }
+
+    let selectedArea = { startRowIdx: -1, endRowIdx: -1, startColIdx: -1, endColIdx: -1 };
+
+    if (shouldSelectEntireColumn) {
+      selectedArea = findMinimalSelectedArea(store, {
+        startRowIdx: 0,
+        endRowIdx: store.rows.length,
+        startColIdx: cellArea.startColIdx,
+        endColIdx: cellArea.endColIdx,
+      });
+    } else if (shouldSelectEntireRow) {
+      selectedArea = findMinimalSelectedArea(store, {
+        startRowIdx: cellArea.startRowIdx,
+        endRowIdx: cellArea.endRowIdx,
+        startColIdx: 0,
+        endColIdx: store.columns.length,
+      });
     }
 
     return {
@@ -61,16 +93,9 @@ export const DefaultBehavior = (config: DefaultBehaviorConfig = CONFIG_DEFAULTS)
       ...(!shouldSelectEntireColumn && { focusedLocation: { rowIndex: rowIndex, colIndex: colIndex } }),
       absoluteFocusedLocation: { rowIndex: rowIndex, colIndex: colIndex },
       fillHandleArea: { startRowIdx: -1, endRowIdx: -1, startColIdx: -1, endColIdx: -1 },
-      ...(newBehavior.id !== ColumnReorderBehavior.id && {
-        selectedArea: shouldSelectEntireColumn
-          ? findMinimalSelectedArea(store, {
-              startRowIdx: 0,
-              endRowIdx: store.rows.length,
-              startColIdx: cellArea.startColIdx,
-              endColIdx: cellArea.endColIdx,
-            })
-          : { startRowIdx: -1, endRowIdx: -1, startColIdx: -1, endColIdx: -1 },
-      }),
+      ...(newBehavior.id !== ColumnReorderBehavior.id &&
+        newBehavior.id !== RowReorderBehavior.id && { selectedArea: selectedArea }),
+      ...(newBehavior.id === RowReorderBehavior.id && { lineOrientation: "horizontal" }),
       currentBehavior: newBehavior,
     };
   },
@@ -99,6 +124,7 @@ export const DefaultBehavior = (config: DefaultBehaviorConfig = CONFIG_DEFAULTS)
     return handleKeyDown(event, store, { moveHorizontallyOnEnter: config.moveHorizontallyOnEnter });
   },
 
+  // TODO: Adjust touch event for row reordering
   handlePointerDownTouch: function (event, store) {
     devEnvironment && console.log("DB/handlePointerDownTouch");
 
@@ -115,6 +141,8 @@ export const DefaultBehavior = (config: DefaultBehaviorConfig = CONFIG_DEFAULTS)
     const { rowIndex, colIndex } = getCellContainerLocation(element);
 
     const shouldSelectEntireColumn = rowIndex === 0 && store.enableColumnSelection;
+
+    const shouldSelectEntireRow = colIndex === 0 && store.enableRowSelection;
 
     const touchedCell = store.getCellByIndexes(rowIndex, colIndex);
 
@@ -147,17 +175,40 @@ export const DefaultBehavior = (config: DefaultBehaviorConfig = CONFIG_DEFAULTS)
       newBehavior = ColumnReorderBehavior;
     }
 
+    if (
+      rowIndex !== 0 &&
+      shouldSelectEntireRow &&
+      isCellInRange(store, touchedCell, store.selectedArea) &&
+      store.onRowReorder &&
+      store.rows[rowIndex].reorderable
+    ) {
+      newBehavior = RowReorderBehavior;
+    }
+
+    let selectedArea = { startRowIdx: -1, endRowIdx: -1, startColIdx: -1, endColIdx: -1 };
+
+    if (shouldSelectEntireColumn) {
+      selectedArea = findMinimalSelectedArea(store, {
+        startRowIdx: 0,
+        endRowIdx: store.rows.length,
+        startColIdx: cellArea.startColIdx,
+        endColIdx: cellArea.endColIdx,
+      });
+    } else if (shouldSelectEntireRow) {
+      selectedArea = findMinimalSelectedArea(store, {
+        startRowIdx: cellArea.startRowIdx,
+        endRowIdx: cellArea.endRowIdx,
+        startColIdx: 0,
+        endColIdx: store.columns.length,
+      });
+    }
+
     return {
       ...store,
       absoluteFocusedLocation: { rowIndex: rowIndex, colIndex: colIndex },
-      selectedArea: shouldSelectEntireColumn
-        ? findMinimalSelectedArea(store, {
-            startRowIdx: 0,
-            endRowIdx: store.rows.length,
-            startColIdx: cellArea.startColIdx,
-            endColIdx: cellArea.endColIdx,
-          })
-        : { startRowIdx: -1, endRowIdx: -1, startColIdx: -1, endColIdx: -1 },
+      ...(newBehavior.id !== ColumnReorderBehavior.id &&
+        newBehavior.id !== RowReorderBehavior.id && { selectedArea: selectedArea }),
+      ...(newBehavior.id === RowReorderBehavior.id && { lineOrientation: "horizontal" }),
       currentBehavior: newBehavior,
     };
   },
