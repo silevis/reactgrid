@@ -39,13 +39,10 @@ export const CellEditorRenderer: React.FC = () => {
         dispatch();
     }, []);
 
-    // eslint-disable-next-line no-debugger
-    debugger;
-
     if (!currentlyEditedCell || !location || renders.current === 0) { // prevents to unexpectly opening cell editor on cypress
         return null;
     }
-    
+
     const style = props?.disableFixedEditCells ? {
         height: location.row.height + 1,
         left: location.column.left,
