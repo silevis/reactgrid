@@ -22,7 +22,7 @@ export const useReactGridSync = (
 ) => {
   const {
     setSelectedArea,
-    setFocusedLocation: setFocusedCell,
+    setFocusedLocation,
     getCellOrSpanMemberByIndexes,
     getCellByIds,
     setCells,
@@ -94,7 +94,7 @@ export const useReactGridSync = (
           console.error("The provided 'initialFocusLocation' is invalid as it targets !");
       }
 
-      setFocusedCell(rowIndex, colIndex);
+      setFocusedLocation(rowIndex, colIndex);
     }
   }, [initialFocusLocation]);
 };

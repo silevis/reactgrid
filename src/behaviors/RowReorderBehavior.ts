@@ -166,6 +166,15 @@ const handlePointerMove = (
     shadowPosition = lastRowRelativeOffsetTop + lastRowHeight - selectedAreaHeight;
   }
 
+  if (!store.rows[rowIndex].reorderable) {
+    return {
+      ...store,
+      shadowSize: selectedAreaHeight,
+      shadowPosition: shadowPosition,
+      linePosition: undefined,
+    };
+  }
+
   return {
     ...store,
     shadowSize: selectedAreaHeight,

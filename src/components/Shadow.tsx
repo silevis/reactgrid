@@ -21,10 +21,10 @@ export const Shadow: FC = () => {
         height: isVertical ? reactGridRef?.clientHeight : shadowSize,
         top: isVertical ? 0 : shadowPosition,
         left: isVertical ? shadowPosition : 0,
-        width: isVertical ? shadowSize : reactGridRef?.clientWidth,
+        width: isVertical ? shadowSize : reactGridRef?.scrollWidth,
         backgroundColor: theme.shadow.backgroundColor,
         pointerEvents: "none",
       }}
-    ></div>
+    />
   );
 };

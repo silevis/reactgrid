@@ -85,6 +85,10 @@ export interface ReactGridStore extends ReactGridStoreProps {
   readonly setSelectedArea: (selectedArea: NumericalRange) => void;
   readonly setFillHandleArea: (fillHandleArea: NumericalRange) => void;
 
+  readonly setSelectedColumns: (startColIdx: number, endColIdx: number) => void;
+
+  readonly setSelectedRows: (startColIdx: number, endColIdx: number) => void;
+
   readonly setResizingColId: (columnId: number | string) => void;
 
   readonly setCurrentBehavior: (currentBehavior: Behavior) => void;

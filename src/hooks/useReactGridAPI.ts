@@ -3,8 +3,8 @@ import { Location, Range } from "../types/PublicModel";
 import { areAreasEqual } from "../utils/areAreasEqual";
 import { getNumericalRange } from "../utils/getNumericalRange";
 import isDevEnvironment from "../utils/isDevEnvironment";
-import { useReactGridStore } from "../utils/reactGridStore";
 import { ReactGridStore } from "../types/ReactGridStore.ts";
+import { useReactGridApi } from "../utils/reactGridStore.ts";
 
 /**
  * Hook that provides access to the ReactGrid API.
@@ -15,7 +15,7 @@ import { ReactGridStore } from "../types/ReactGridStore.ts";
 const devEnvironment = isDevEnvironment();
 
 export default function useReactGridAPI(id: string) {
-  return useReactGridStore(id, (store: ReactGridStore) => {
+  return useReactGridApi(id, (store: ReactGridStore) => {
     return {
       // Setters
 
@@ -44,6 +44,30 @@ export default function useReactGridAPI(id: string) {
         const colIndex = store.columns.findIndex((col) => col.id === columnId);
 
         return store.setFocusedLocation(rowIndex, colIndex);
+      },
+
+      setSelectedColumns: (startColIdx: number, endColIdx: number) => {
+        if (devEnvironment && endColIdx < startColIdx) {
+          console.warn("The end column index must be greater than the start column index.");
+        }
+
+        if (startColIdx < 0 || endColIdx >= store.columns.length) {
+          console.warn("Column index out of bounds");
+        }
+
+        return store.setSelectedColumns(startColIdx, endColIdx);
+      },
+
+      setSelectedRows: (startRowIdx: number, endRowIdx: number) => {
+        if (devEnvironment && endRowIdx < startRowIdx) {
+          console.warn("The end row index must be greater than the start row index.");
+        }
+
+        if (startRowIdx < 0 || endRowIdx >= store.rows.length) {
+          console.warn("Row index out of bounds");
+        }
+
+        return store.setSelectedRows(startRowIdx, endRowIdx);
       },
 
       // Getters

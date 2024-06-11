@@ -20,7 +20,7 @@ export const Line: FC = () => {
         height: isVertical ? reactGridRef?.clientHeight : theme.line.size,
         top: isVertical ? 0 : linePosition,
         left: isVertical ? linePosition : 0,
-        width: isVertical ? theme.line.size : reactGridRef?.offsetWidth,
+        width: isVertical ? theme.line.size : reactGridRef?.scrollWidth,
         backgroundColor: theme.line.backgroundColor,
         pointerEvents: "none",
       }}

@@ -40,11 +40,11 @@ export const GridWithHeaders = () => {
     })
   );
   const [rows, setRows] = useState<Array<Row<string>>>(
-    Array.from({ length: ROW_COUNT }).map((_, j) => ({
-      id: j.toString(),
-      height: "50px",
-      reorderable: true,
-    }))
+    Array.from({ length: ROW_COUNT }).map((_, j) => {
+      if (j === 0) return { id: j.toString(), height: "50px", reorderable: false };
+
+      return { id: j.toString(), height: "50px", reorderable: true };
+    })
   );
 
   const [gridData, setGridData] = useState<(CellData | null)[][]>(

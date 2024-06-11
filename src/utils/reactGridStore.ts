@@ -131,6 +131,18 @@ export function initReactGridStore(id: string, initialProps?: Partial<ReactGridS
 
         setSelectedArea: (selectedArea) => set(() => ({ selectedArea })),
 
+        setSelectedColumns: (startColIdx: number, endColIdx: number) => {
+          const { setSelectedArea } = get();
+
+          setSelectedArea({ startRowIdx: 0, endRowIdx: get().getRowAmount(), startColIdx, endColIdx });
+        },
+
+        setSelectedRows: (startRowIdx: number, endRowIdx: number) => {
+          const { setSelectedArea } = get();
+
+          setSelectedArea({ startRowIdx, endRowIdx, startColIdx: 0, endColIdx: get().getColumnAmount() });
+        },
+
         setFillHandleArea: (fillHandleArea) => set(() => ({ fillHandleArea })),
 
         setCurrentBehavior: (currentBehavior) => set(() => ({ currentBehavior })),
@@ -188,4 +200,14 @@ export const useReactGridStoreApi = (id: string): StoreApi<ReactGridStore> => {
   if (!selectedStore) throw new Error(`ReactGridStore with id "${id}" doesn't exist!`);
 
   return selectedStore;
+};
+
+export const useReactGridApi = <T>(id: string, selector: (store: ReactGridStore) => T): T | undefined => {
+  const selectedStore = useStore(reactGridStores, (state) => state[id]);
+
+  const selectedStoreState = selectedStore?.getState();
+
+  if (selectedStoreState) {
+    return selector(selectedStoreState);
+  }
 };
