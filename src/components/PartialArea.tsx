@@ -3,6 +3,12 @@ import { NumericalRange } from "../types/CellMatrix";
 import { GetCellOffsets, PaneName } from "../types/InternalModel";
 import { Border, Offset } from "../types/Theme";
 import { useTheme } from "../hooks/useTheme";
+import { useReactGridId } from "./ReactGridIdProvider";
+import { useReactGridStore, useReactGridStoreApi } from "../utils/reactGridStore";
+import { FillHandleBehavior } from "../behaviors/FillHandleBehavior";
+import { CellSelectionBehavior } from "../behaviors/CellSelectionBehavior";
+import { getCellArea } from "../utils/getCellArea";
+import { areAreasEqual } from "../utils/areAreasEqual";
 
 interface PartialAreaProps {
   /** The range of cells to area. */
@@ -13,6 +19,10 @@ interface PartialAreaProps {
   parentPaneRange: NumericalRange;
   /** A function that returns the offset of a cell relative to the grid. */
   border?: Border;
+  /** Specifies whether PartialArea is a focused cell. */
+  isFocusedCell?: boolean;
+  /** Specifies whether the area is a fill handle. */
+  isFillHandle?: boolean;
   /** A function that returns the offset of a cell relative to the grid. */
   getCellOffset?: GetCellOffsets;
   /** Additional styles to apply to the area. */
@@ -47,7 +57,7 @@ const shouldMemoPartialArea = (prevProps: PartialAreaProps, nextProps: PartialAr
   }
 
   return true;
-}
+};
 
 /**
  * Renders a partial area over a grid pane.
@@ -60,88 +70,219 @@ const shouldMemoPartialArea = (prevProps: PartialAreaProps, nextProps: PartialAr
  * @param className - Additional class names to apply to the area.
  * @returns A React component that renders the partial area.
  */
-export const PartialArea: FC<PartialAreaProps> = React.memo(({ areaRange, parentPaneName, parentPaneRange, getCellOffset, border, style, className }) => {
-  const theme = useTheme();
-  const offset: Offset = {};
-  const areaBorder = border ?? theme.area.border;
+export const PartialArea: FC<PartialAreaProps> = React.memo(
+  ({
+    areaRange,
+    parentPaneName,
+    parentPaneRange,
+    getCellOffset,
+    isFocusedCell = false,
+    isFillHandle = false,
+    border,
+    style,
+    className,
+  }) => {
+    const theme = useTheme();
+    const offset: Offset = {};
+    const areaBorder = border ?? theme.area.border;
 
-  if (areaRange.startRowIdx < 0 || areaRange.startColIdx < 0 || areaRange.endRowIdx < 0 || areaRange.endColIdx < 0) return null;
+    const id = useReactGridId();
+    const store = useReactGridStoreApi(id).getState();
+    const currentBehavior = useReactGridStore(id, (store) => store.currentBehavior);
+    const setCurrentBehavior = useReactGridStore(id, (store) => store.setCurrentBehavior);
 
-  if (areaRange.startRowIdx > areaRange.endRowIdx) throw new Error("Invalid range! Start row index is greater than end row index!");
-  if (areaRange.startColIdx > areaRange.endColIdx) throw new Error("Invalid range! Start column index is greater than end column index!");
+    const selectedArea = useReactGridStore(id, (store) => store.selectedArea);
+    const fillHandleArea = useReactGridStore(id, (store) => store.fillHandleArea);
+    const onFillHandle = useReactGridStore(id, (store) => store.onFillHandle);
+    const focusedCell = store.getCellByIndexes(store.focusedLocation.rowIndex, store.focusedLocation.colIndex);
 
-  // Area is outside of parent range
-  if (areaRange.startColIdx >= parentPaneRange.endColIdx) return null;
-  if (areaRange.startRowIdx >= parentPaneRange.endRowIdx) return null;
-  if (areaRange.endColIdx <= parentPaneRange.startColIdx) return null;
-  if (areaRange.endRowIdx <= parentPaneRange.startRowIdx) return null;
+    const focusedCellArea = getCellArea(store, focusedCell!);
 
-  const shouldRenderTopBorder = areaRange.startRowIdx >= parentPaneRange.startRowIdx;
-  const shouldRenderRightBorder = areaRange.endColIdx <= parentPaneRange.endColIdx;
-  const shouldRenderBottomBorder = areaRange.endRowIdx <= parentPaneRange.endRowIdx;
-  const shouldRenderLeftBorder = areaRange.startColIdx >= parentPaneRange.startColIdx;
+    const isAreaSelected = selectedArea.startRowIdx !== -1;
+    const isFillAreaExists = fillHandleArea.endRowIdx !== -1;
 
-  let width = "100%";
-  let height = "100%";
+    if (areaRange.startRowIdx < 0 || areaRange.startColIdx < 0 || areaRange.endRowIdx < 0 || areaRange.endColIdx < 0)
+      return null;
 
-  // If the area part only renders one border (e.g. top border), we need to subtract the border width from the height/width
-  if (shouldRenderTopBorder || shouldRenderBottomBorder) height = `calc(100% - ${areaBorder.width})`;
-  if (shouldRenderLeftBorder || shouldRenderRightBorder) width = `calc(100% - ${areaBorder.width})`;
+    if (areaRange.startRowIdx > areaRange.endRowIdx)
+      throw new Error("Invalid range! Start row index is greater than end row index!");
+    if (areaRange.startColIdx > areaRange.endColIdx)
+      throw new Error("Invalid range! Start column index is greater than end column index!");
 
-  // If the area part renders two borders (e.g. top and bottom border), we need to subtract the border width * 2 from the height/width
-  if (shouldRenderTopBorder && shouldRenderBottomBorder) height = `calc(100% - ${areaBorder.width} * 2)`;
-  if (shouldRenderLeftBorder && shouldRenderRightBorder) width = `calc(100% - ${areaBorder.width} * 2)`;
+    // Area is outside of parent range
+    if (areaRange.startColIdx >= parentPaneRange.endColIdx) return null;
+    if (areaRange.startRowIdx >= parentPaneRange.endRowIdx) return null;
+    if (areaRange.endColIdx <= parentPaneRange.startColIdx) return null;
+    if (areaRange.endRowIdx <= parentPaneRange.startRowIdx) return null;
 
-  const baseStyle: CSSProperties = {
-    borderTop: shouldRenderTopBorder ? `${areaBorder.width} ${areaBorder.style} ${areaBorder.color}` : "none",
-    borderRight: shouldRenderRightBorder ? `${areaBorder.width} ${areaBorder.style} ${areaBorder.color}` : "none",
-    borderBottom: shouldRenderBottomBorder ? `${areaBorder.width} ${areaBorder.style} ${areaBorder.color}` : "none",
-    borderLeft: shouldRenderLeftBorder ? `${areaBorder.width} ${areaBorder.style} ${areaBorder.color}` : "none",
+    const shouldRenderTopBorder =
+      areaRange.startRowIdx >= parentPaneRange.startRowIdx &&
+      (!isFillHandle ||
+        (isFillHandle &&
+          fillHandleArea.startRowIdx !== focusedCellArea.endRowIdx &&
+          selectedArea.endRowIdx !== fillHandleArea.startRowIdx));
+    const shouldRenderRightBorder =
+      areaRange.endColIdx <= parentPaneRange.endColIdx &&
+      (!isFillHandle || (isFillHandle && fillHandleArea.endColIdx !== focusedCellArea.startColIdx));
+    const shouldRenderBottomBorder =
+      areaRange.endRowIdx <= parentPaneRange.endRowIdx &&
+      (!isFillHandle || (isFillHandle && fillHandleArea.endRowIdx !== focusedCellArea.startRowIdx));
+    const shouldRenderLeftBorder =
+      areaRange.startColIdx >= parentPaneRange.startColIdx &&
+      (!isFillHandle ||
+        (isFillHandle &&
+          fillHandleArea.startColIdx !== focusedCellArea.endColIdx &&
+          selectedArea.endColIdx !== fillHandleArea.startColIdx));
 
-    gridRowStart: areaRange.startRowIdx < parentPaneRange.startRowIdx ? parentPaneRange.startRowIdx + 1 : areaRange.startRowIdx + 1,
-    gridRowEnd: areaRange.endRowIdx > parentPaneRange.endRowIdx ? parentPaneRange.endRowIdx + 1 : areaRange.endRowIdx + 1,
+    let width = "100%";
+    let height = "100%";
 
-    gridColumnStart: areaRange.startColIdx < parentPaneRange.startColIdx ? parentPaneRange.startColIdx + 1 : areaRange.startColIdx + 1,
-    gridColumnEnd: areaRange.endColIdx > parentPaneRange.endColIdx ? parentPaneRange.endColIdx + 1 : areaRange.endColIdx + 1,
-  };
+    const baseStyle: CSSProperties = {
+      gridRowStart:
+        areaRange.startRowIdx < parentPaneRange.startRowIdx
+          ? parentPaneRange.startRowIdx + 1
+          : areaRange.startRowIdx + 1,
+      gridRowEnd:
+        areaRange.endRowIdx > parentPaneRange.endRowIdx ? parentPaneRange.endRowIdx + 1 : areaRange.endRowIdx + 1,
 
-  if (parentPaneName === "TopLeft" || parentPaneName === "TopCenter" || parentPaneName === "TopRight") {
-    baseStyle.position = "sticky";
-    offset.top = getCellOffset?.(areaRange.startRowIdx, areaRange.startColIdx, 1, 1).top;
+      gridColumnStart:
+        areaRange.startColIdx < parentPaneRange.startColIdx
+          ? parentPaneRange.startColIdx + 1
+          : areaRange.startColIdx + 1,
+      gridColumnEnd:
+        areaRange.endColIdx > parentPaneRange.endColIdx ? parentPaneRange.endColIdx + 1 : areaRange.endColIdx + 1,
+    };
 
-    // If the area part is on the sticky pane and renders only one border, 
-    // we need to adjust the height/width such that the border sticks out a bit (at a length of gap width)
-    if (!shouldRenderBottomBorder) height = `calc(100% - (${areaBorder.width} - ${theme.grid.gap.width}))`;
-  }
-  if (parentPaneName === "TopRight" || parentPaneName === "Right" || parentPaneName === "BottomRight") {
-    baseStyle.position = "sticky";
-    offset.right = getCellOffset?.(areaRange.startRowIdx, areaRange.endColIdx - parentPaneRange.startColIdx - 1, 1, 1).right;
-    
-    if (!shouldRenderLeftBorder) width = `calc(100% - (${areaBorder.width} - ${theme.grid.gap.width}))`;
-  }
-  if (parentPaneName === "BottomLeft" || parentPaneName === "BottomCenter" || parentPaneName === "BottomRight") {
-    baseStyle.position = "sticky";
-    offset.bottom = getCellOffset?.(areaRange.endRowIdx - parentPaneRange.startRowIdx - 1, areaRange.startColIdx, 1, 1).bottom;
-    
-    if (!shouldRenderTopBorder) height = `calc(100% - (${areaBorder.width} - ${theme.grid.gap.width}))`;
-  }
-  if (parentPaneName === "TopLeft" || parentPaneName === "Left" || parentPaneName === "BottomLeft") {
-    baseStyle.position = "sticky";
-    offset.left = getCellOffset?.(areaRange.startRowIdx, areaRange.startColIdx, 1, 1).left;
-    
-    if (!shouldRenderRightBorder) width = `calc(100% - (${areaBorder.width} - ${theme.grid.gap.width}))`;
-  }
+    if (parentPaneName === "TopLeft" || parentPaneName === "TopCenter" || parentPaneName === "TopRight") {
+      baseStyle.position = "sticky";
+      offset.top = getCellOffset?.(areaRange.startRowIdx, areaRange.startColIdx, 1, 1).top;
 
-  return (
-    <div
-      className={`rgPartialArea ${className ?? ""}`}
-      style={{
-        pointerEvents: "none",
-        ...style,
-        width,
-        height,
-        ...offset,
-        ...baseStyle,
-      }} />
-  );
-}, shouldMemoPartialArea);
+      // If the area part is on the sticky pane and renders only one border,
+      // we need to adjust the height/width such that the border sticks out a bit (at a length of gap width)
+      if (!shouldRenderBottomBorder) height = `calc(100% - (${areaBorder.width} - ${theme.grid.gap.width}))`;
+    }
+    if (parentPaneName === "TopRight" || parentPaneName === "Right" || parentPaneName === "BottomRight") {
+      baseStyle.position = "sticky";
+      offset.right = getCellOffset?.(
+        areaRange.startRowIdx,
+        areaRange.endColIdx - parentPaneRange.startColIdx - 1,
+        1,
+        1
+      ).right;
+
+      if (!shouldRenderLeftBorder) width = `calc(100% - (${areaBorder.width} - ${theme.grid.gap.width}))`;
+    }
+    if (parentPaneName === "BottomLeft" || parentPaneName === "BottomCenter" || parentPaneName === "BottomRight") {
+      baseStyle.position = "sticky";
+      offset.bottom = getCellOffset?.(
+        areaRange.endRowIdx - parentPaneRange.startRowIdx - 1,
+        areaRange.startColIdx,
+        1,
+        1
+      ).bottom;
+
+      if (!shouldRenderTopBorder) height = `calc(100% - (${areaBorder.width} - ${theme.grid.gap.width}))`;
+    }
+    if (parentPaneName === "TopLeft" || parentPaneName === "Left" || parentPaneName === "BottomLeft") {
+      baseStyle.position = "sticky";
+      offset.left = getCellOffset?.(areaRange.startRowIdx, areaRange.startColIdx, 1, 1).left;
+
+      if (!shouldRenderRightBorder) width = `calc(100% - (${areaBorder.width} - ${theme.grid.gap.width}))`;
+    }
+
+    let shouldEnableFillHandle = false;
+
+    if (onFillHandle) {
+      if (currentBehavior.id === FillHandleBehavior.id) {
+        shouldEnableFillHandle = false;
+      } else {
+        if (!isFillHandle && !isFillAreaExists && shouldRenderRightBorder && shouldRenderBottomBorder) {
+          shouldEnableFillHandle = true;
+        }
+        if (isFocusedCell && !isAreaSelected) {
+          shouldEnableFillHandle = true;
+        } else if (isFocusedCell && !areAreasEqual(focusedCellArea, selectedArea)) {
+          shouldEnableFillHandle = false;
+        }
+        if (isFillHandle && currentBehavior.id === "Default") {
+          if (
+            fillHandleArea.endRowIdx !== focusedCellArea.startRowIdx &&
+            fillHandleArea.endColIdx !== focusedCellArea.startColIdx
+          ) {
+            shouldEnableFillHandle = true;
+          }
+        } else if (!isFillHandle && currentBehavior.id === "Default") {
+          if (
+            fillHandleArea.endRowIdx === focusedCellArea.startRowIdx ||
+            fillHandleArea.endColIdx === focusedCellArea.startColIdx
+          ) {
+            shouldEnableFillHandle = true;
+          }
+        }
+      }
+    }
+
+    return (
+      <>
+        <div
+          className={`rgPartialArea ${className ?? ""}`}
+          style={{
+            ...style,
+            width,
+            height,
+            boxSizing: "border-box",
+            position: "sticky",
+            pointerEvents: "none",
+            ...offset,
+            ...baseStyle,
+          }}
+        >
+          <div
+            style={{
+              position: "absolute",
+              top: `-${theme.grid.gap.width}`,
+              right: `-${theme.grid.gap.width}`,
+              bottom: `-${theme.grid.gap.width}`,
+              left: `-${theme.grid.gap.width}`,
+
+              ...(shouldRenderTopBorder && {
+                borderTop: `${theme.focusIndicator.border.width} ${areaBorder.style} ${areaBorder.color}`,
+              }),
+              ...(shouldRenderRightBorder && {
+                borderRight: `${theme.focusIndicator.border.width} ${areaBorder.style} ${areaBorder.color}`,
+              }),
+              ...(shouldRenderBottomBorder && {
+                borderBottom: `${theme.focusIndicator.border.width} ${areaBorder.style} ${areaBorder.color}`,
+              }),
+              ...(shouldRenderLeftBorder && {
+                borderLeft: `${theme.focusIndicator.border.width} ${areaBorder.style} ${areaBorder.color}`,
+              }),
+            }}
+          />
+          {currentBehavior.id !== CellSelectionBehavior.id && shouldEnableFillHandle && (
+            <div
+              className="rg-fill-handle"
+              style={{
+                position: "absolute",
+                right: -5,
+                bottom: -5,
+                width: 6.5,
+                height: 6.5,
+                backgroundColor: isFillHandle ? areaBorder.color : theme.focusIndicator.border.color,
+                cursor: "crosshair",
+                pointerEvents: "auto",
+                touchAction: "none",
+                border: "2px solid #fff",
+                borderRadius: "50%",
+              }}
+              onPointerDown={() => {
+                setCurrentBehavior(FillHandleBehavior);
+              }}
+            />
+          )}
+        </div>
+      </>
+    );
+  },
+  shouldMemoPartialArea
+);

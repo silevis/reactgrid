@@ -4,28 +4,52 @@ import { ColumnMeasurement } from "./ColumnMeasurement.ts";
 import { FocusedCell, IndexedLocation, PaneName } from "./InternalModel.ts";
 import { NumericalRange } from "./CellMatrix.ts";
 import { Behavior, BehaviorId } from "./Behavior.ts";
+import { RGTheme } from "./Theme";
 
 export interface ReactGridStoreProps {
-  readonly rows: Row[];
-  readonly columns: Column[];
-  readonly cells: CellMap;
+  rows: Row[];
+  columns: Column[];
+  minColumnWidth: number;
 
-  readonly rowMeasurements: RowMeasurement[];
-  readonly colMeasurements: ColumnMeasurement[];
+  cells: CellMap;
 
-  readonly paneRanges: Record<PaneName, NumericalRange>;
-  readonly styledRanges: StyledRange[];
+  rowMeasurements: RowMeasurement[];
+  colMeasurements: ColumnMeasurement[];
 
-  readonly focusedLocation: IndexedLocation;
-  readonly absoluteFocusedLocation: IndexedLocation;
-  readonly selectedArea: NumericalRange;
-  readonly currentlyEditedCell: IndexedLocation;
+  paneRanges: Record<PaneName, NumericalRange>;
+  styledRanges: StyledRange[];
 
-  readonly reactGridRef?: HTMLDivElement;
-  readonly hiddenFocusTargetRef?: HTMLDivElement;
+  userStyles?: Partial<RGTheme>;
 
-  readonly behaviors: Record<BehaviorId, Behavior>;
-  readonly currentBehavior: Behavior;
+  focusedLocation: IndexedLocation;
+  absoluteFocusedLocation: IndexedLocation;
+  selectedArea: NumericalRange;
+  fillHandleArea: NumericalRange;
+
+  reactGridRef?: HTMLDivElement;
+  hiddenFocusTargetRef?: HTMLDivElement;
+
+  behaviors: Record<BehaviorId, Behavior>;
+  currentBehavior: Behavior;
+
+  resizingColId?: number | string;
+
+  enableColumnSelection?: boolean;
+
+  linePosition?: number;
+  lineOrientation: "vertical" | "horizontal";
+
+  shadowPosition?: number;
+  shadowSize?: number;
+
+  onFillHandle?: (selectedArea: NumericalRange, fillRange: NumericalRange) => void;
+  onAreaSelected?: (selectedArea: NumericalRange) => void;
+  onCellFocused?: (cellLocation: IndexedLocation) => void;
+  onCut?: (selectedArea: NumericalRange) => void;
+  onCopy?: (selectedArea: NumericalRange) => void;
+  onPaste?: (selectedArea: NumericalRange, pastedData: string) => void;
+  onResizeColumn?: (width: number, columnId: number | string) => void;
+  onColumnReorder?: (selectedColIndexes: number[], destinationColIdx: number) => void;
 }
 
 export interface ReactGridStore extends ReactGridStoreProps {
@@ -36,6 +60,9 @@ export interface ReactGridStore extends ReactGridStoreProps {
   readonly getColumnAmount: () => number;
 
   readonly setCells: (cellMap: CellMap) => void;
+
+  readonly setUserStyles: (userStyles: RGTheme) => void;
+
   readonly getCellByIds: (
     rowId: ReactGridStore["rows"][number]["id"],
     colId: ReactGridStore["rows"][number]["id"]
@@ -53,14 +80,18 @@ export interface ReactGridStore extends ReactGridStoreProps {
   readonly getFocusedCell: () => FocusedCell | null;
 
   readonly setSelectedArea: (selectedArea: NumericalRange) => void;
+  readonly setFillHandleArea: (fillHandleArea: NumericalRange) => void;
 
-  readonly setCurrentlyEditedCell: (rowIndex: number, colIndex: number) => void;
+  readonly setResizingColId: (columnId: number | string) => void;
+
+  readonly setCurrentBehavior: (currentBehavior: Behavior) => void;
+  readonly setLineOrientation: (lineOrientation: "horizontal" | "vertical") => void;
+  readonly setLinePosition: (linePosition: number) => void;
 
   readonly assignReactGridRef: (reactGridRef?: HTMLDivElement) => void;
 
   readonly assignHiddenFocusTargetRef: (hiddenFocusTargetRef?: HTMLDivElement) => void;
 
-  readonly setStyledRanges: (styledRanges: StyledRange[]) => void;
   readonly getStyledRanges: (range?: Range) => StyledRange[] | [];
 
   readonly setBehaviors: (behaviors: Record<BehaviorId, Behavior>) => void;

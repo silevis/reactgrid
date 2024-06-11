@@ -4,6 +4,8 @@ import { DefaultBehavior } from "../behaviors/DefaultBehavior";
 import { Range, StyledRange } from "../types/PublicModel";
 import { isSpanMember } from "./isSpanMember";
 import { ReactGridStore, ReactGridStoreProps } from "../types/ReactGridStore.ts";
+import { FillHandleBehavior } from "../behaviors/FillHandleBehavior.ts";
+import { ColumnReorderBehavior } from "../behaviors/ColumnReorderBehavior.ts";
 
 type ReactGridStores = Record<string, StoreApi<ReactGridStore>>;
 
@@ -12,6 +14,7 @@ const reactGridStores = create<ReactGridStores>(() => ({}));
 const DEFAULT_STORE_PROPS: ReactGridStoreProps = {
   rows: [],
   columns: [],
+  minColumnWidth: 50,
   cells: new Map(),
   rowMeasurements: [],
   colMeasurements: [],
@@ -24,20 +27,36 @@ const DEFAULT_STORE_PROPS: ReactGridStoreProps = {
     Right: { startRowIdx: 0, endRowIdx: 0, startColIdx: 0, endColIdx: 0 },
     BottomLeft: { startRowIdx: 0, endRowIdx: 0, startColIdx: 0, endColIdx: 0 },
     BottomCenter: { startRowIdx: 0, endRowIdx: 0, startColIdx: 0, endColIdx: 0 },
-    BottomRight: { startRowIdx: 0, endRowIdx: 0, startColIdx: 0, endColIdx: 0 }
+    BottomRight: { startRowIdx: 0, endRowIdx: 0, startColIdx: 0, endColIdx: 0 },
   },
   styledRanges: [],
   focusedLocation: { rowIndex: 0, colIndex: 0 },
   absoluteFocusedLocation: { rowIndex: 0, colIndex: 0 },
   selectedArea: { startRowIdx: -1, endRowIdx: -1, startColIdx: -1, endColIdx: -1 },
-  currentlyEditedCell: { rowIndex: -1, colIndex: -1 },
+  fillHandleArea: { startRowIdx: -1, endRowIdx: -1, startColIdx: -1, endColIdx: -1 },
   reactGridRef: undefined,
   hiddenFocusTargetRef: undefined,
+  resizingColId: undefined,
+  lineOrientation: "vertical",
+  linePosition: undefined,
+  shadowPosition: undefined,
+  shadowSize: undefined,
   behaviors: {
     Default: DefaultBehavior(),
-    CellSelection: CellSelectionBehavior
+    CellSelection: CellSelectionBehavior,
+    FillHandle: FillHandleBehavior,
+    ColumnReorder: ColumnReorderBehavior,
   },
-  currentBehavior: DefaultBehavior()
+
+  currentBehavior: DefaultBehavior(),
+
+  // external event handlers
+  onFillHandle: undefined,
+  onAreaSelected: undefined,
+  onCellFocused: undefined,
+  onCut: undefined,
+  onPaste: undefined,
+  onResizeColumn: undefined,
 };
 
 export function initReactGridStore(id: string, initialProps?: Partial<ReactGridStoreProps>) {
@@ -55,6 +74,7 @@ export function initReactGridStore(id: string, initialProps?: Partial<ReactGridS
         setColumns: (columns) => set(() => ({ columns })),
         getColumnAmount: () => get().columns.length,
         setCells: (cells) => set(() => ({ cells })),
+        setUserStyles: (userStyles) => set(() => ({ userStyles })),
         getCellByIds: (rowId, colId) => {
           const { cells, getCellByIds } = get();
 
@@ -96,7 +116,10 @@ export function initReactGridStore(id: string, initialProps?: Partial<ReactGridS
 
         setPaneRanges: (paneRanges) => set(() => ({ paneRanges })),
 
-        setFocusedLocation: (rowIndex, colIndex) => set(() => ({ focusedLocation: { rowIndex, colIndex } })),
+        setFocusedLocation: (rowIndex, colIndex) =>
+          set(() => {
+            return { focusedLocation: { rowIndex, colIndex } };
+          }),
         getFocusedCell: () => {
           const { focusedLocation } = get();
           const cell = get().getCellByIndexes(focusedLocation.rowIndex, focusedLocation.colIndex);
@@ -108,7 +131,14 @@ export function initReactGridStore(id: string, initialProps?: Partial<ReactGridS
 
         setSelectedArea: (selectedArea) => set(() => ({ selectedArea })),
 
-        setCurrentlyEditedCell: (rowIndex, colIndex) => set(() => ({ currentlyEditedCell: { rowIndex, colIndex } })),
+        setFillHandleArea: (fillHandleArea) => set(() => ({ fillHandleArea })),
+
+        setCurrentBehavior: (currentBehavior) => set(() => ({ currentBehavior })),
+
+        setResizingColId: (resizingColId) => set(() => ({ resizingColId })),
+
+        setLineOrientation: (lineOrientation) => set(() => ({ lineOrientation })),
+        setLinePosition: (linePosition) => set(() => ({ linePosition })),
 
         assignReactGridRef: (reactGridRef) => set(() => ({ reactGridRef })),
         assignHiddenFocusTargetRef: (hiddenFocusTargetRef) => set(() => ({ hiddenFocusTargetRef })),
@@ -122,7 +152,6 @@ export function initReactGridStore(id: string, initialProps?: Partial<ReactGridS
           return behavior;
         },
 
-        setStyledRanges: (styledRanges) => set(() => ({ styledRanges })),
         getStyledRanges: (range?: Range): StyledRange[] | [] => {
           const styledRanges: StyledRange[] = get().styledRanges;
           if (!range) {
@@ -134,8 +163,8 @@ export function initReactGridStore(id: string, initialProps?: Partial<ReactGridS
 
             return styledRange ? [styledRange] : [];
           }
-        }
-      }))
+        },
+      })),
     };
   });
 }

@@ -1,6 +1,11 @@
 import React, { FC } from "react";
 import { useCellContext } from "./CellContext";
 import HiddenFocusTarget from "./HiddenFocusTarget";
+import { useReactGridStore, useReactGridStoreApi } from "../utils/reactGridStore";
+import { useReactGridId } from "./ReactGridIdProvider";
+import { useTheme } from "../hooks/useTheme";
+import { ResizeColumnBehavior } from "../behaviors/ResizeColumnBehavior";
+import { DefaultBehavior } from "../behaviors/DefaultBehavior";
 
 type CellWrapperProps = React.ClassAttributes<HTMLDivElement> &
   React.HTMLAttributes<HTMLDivElement> & {
@@ -11,8 +16,29 @@ type CellWrapperProps = React.ClassAttributes<HTMLDivElement> &
 const CellWrapper: FC<CellWrapperProps> = ({ children, targetInputRef, ...wrapperDivAttributes }) => {
   const { className: customClassName, style: customStyle } = wrapperDivAttributes;
   const ctx = useCellContext();
+  const theme = useTheme();
 
-  const isFocused = ctx.isFocused;
+  const id = useReactGridId();
+
+  const store = useReactGridStoreApi(id).getState();
+
+  // TODO: fix performance issue
+  const focusedCell = useReactGridStore(id, (store) => store.focusedLocation);
+  const currentBehavior = useReactGridStore(id, (store) => store.currentBehavior);
+
+  const onResizeColumn = useReactGridStore(id, (store) => store.onResizeColumn);
+  const setCurrentBehavior = useReactGridStore(id, (store) => store.setCurrentBehavior);
+  const setResizingColId = useReactGridStore(id, (store) => store.setResizingColId);
+
+  const isFocused = focusedCell.rowIndex === ctx.realRowIndex && focusedCell.colIndex === ctx.realColumnIndex;
+
+  let shouldEnableColumnResize;
+
+  if (ctx.realRowIndex === 0) {
+    const cellColumn = store.columns.find((col) => col.id === ctx.colId);
+
+    shouldEnableColumnResize = currentBehavior.id === DefaultBehavior().id && onResizeColumn && cellColumn?.resizable;
+  }
 
   return (
     <div
@@ -21,13 +47,30 @@ const CellWrapper: FC<CellWrapperProps> = ({ children, targetInputRef, ...wrappe
         customClassName ?? ""
       }`}
       style={{
-        ...customStyle,
-        padding: ".1rem .2rem",
+        padding: ".2rem",
         textAlign: "center",
-        touchAction: isFocused ? "none" : "auto",
+        position: "relative",
+        touchAction: "none",
+        ...customStyle,
         ...ctx.containerStyle,
       }}
     >
+      {shouldEnableColumnResize && (
+        <div
+          className="rg-resize-column"
+          onPointerDown={() => {
+            setResizingColId(ctx.colId);
+            setCurrentBehavior(ResizeColumnBehavior);
+          }}
+          css={{
+            cursor: "col-resize",
+            ...theme.resizeColumn.default,
+            "&:hover": {
+              ...theme.resizeColumn.hover,
+            },
+          }}
+        />
+      )}
       {children}
       {isFocused && <HiddenFocusTarget />}
     </div>

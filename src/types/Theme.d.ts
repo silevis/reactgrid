@@ -1,72 +1,90 @@
-import { CSSProperties } from "react";
+import React, { CSSProperties } from "react";
 
-type ColumnsTemplateFunction = ({ amount, widths }: { amount: number, widths: string[] }) => string;
-type RowsTemplateFunction = ({ amount, heights }: { amount: number, heights: string[] }) => string;
+type ColumnsTemplateFunction = ({ amount, widths }: { amount: number; widths: string[] }) => string;
+type RowsTemplateFunction = ({ amount, heights }: { amount: number; heights: string[] }) => string;
+
+export type Offset = { top?: number; right?: number; bottom?: number; left?: number };
 
 export type Border = {
-  width: CSSProperties['borderWidth'];
-  style: CSSProperties['borderStyle'];
-  color: CSSProperties['borderColor'];
-}
+  width: CSSProperties["borderWidth"];
+  style: CSSProperties["borderStyle"];
+  color: CSSProperties["borderColor"];
+};
 
-export type Offset = { top?: number; right?: number; bottom?: number; left?: number; };
+type Font = {
+  family: CSSProperties["fontFamily"];
+  size: CSSProperties["fontSize"];
+  weight: CSSProperties["fontWeight"];
+};
+
+type Padding = {
+  top: CSSProperties["paddingTop"];
+  right: CSSProperties["paddingRight"];
+  bottom: CSSProperties["paddingBottom"];
+  left: CSSProperties["paddingLeft"];
+};
 
 export interface RGTheme {
-  font: {
-    family: string;
-    size: string;
-    weight: string;
-  },
+  font: Font;
   grid: {
     templates: {
       columns: ColumnsTemplateFunction;
       rows: RowsTemplateFunction;
     };
-
     gap: {
-      width: string;
+      width: React.CSSProperties["width"];
       /** Changes grid's background color for the gap to appear colored */
-      color: string;
-    }
-
-    // TOOD: Implement this in styles, commented out for now
-    // paneShadow: {
-    //   offsetX: string;
-    //   offsetY: string;
-    //   blurRadius: string;
-    //   color: string;
-    // }
-  },
-  cellContainer: {
-    padding: {
-      top: string;
-      right: string;
-      bottom: string;
-      left: string;
+      color: React.CSSProperties["color"];
     };
-    border: Border;
-  },
+  };
+  paneContainer: {
+    top: {
+      background: React.CSSProperties["backgroundColor"];
+    };
+    right: {
+      background: React.CSSProperties["backgroundColor"];
+    };
+    bottom: {
+      background: React.CSSProperties["backgroundColor"];
+    };
+    left: {
+      background: React.CSSProperties["backgroundColor"];
+    };
+  };
+  cellContainer: {
+    padding: Padding;
+    background: React.CSSProperties["backgroundColor"];
+  };
   area: {
     border: Border;
-  }
+  };
   focusIndicator: {
-    background: string;
+    background: React.CSSProperties["backgroundColor"];
     border: Border;
-  }
+  };
+  fillHandle: {
+    background: React.CSSProperties["backgroundColor"];
+    border: Border;
+  };
+  line: { backgroundColor: React.CSSProperties["backgroundColor"]; size: number | string };
+  resizeColumn: {
+    default: React.CSSProperties;
+    hover: React.CSSProperties;
+  };
   selectionIndicator: {
-    background: string;
+    background: React.CSSProperties["backgroundColor"];
     border: Border;
-  }
+  };
+  gridWrapper?: React.CSSProperties;
 }
 
 // Makes all properties in T optional, including nested properties, but excluding functions
 type DeepPartial<T> = {
-  // Any is needed to catch all functions
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   [P in keyof T]?: T[P] extends (...args: any[]) => any ? T[P] : DeepPartial<T[P]>;
 };
 
 // This tells Emotion's ThemeProvider that the theme object is of type RGTheme
-declare module '@emotion/react' {
+declare module "@emotion/react" {
   export interface Theme extends DeepPartial<RGTheme> {}
 }

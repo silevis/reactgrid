@@ -4,6 +4,8 @@ import { Cell } from "../types/PublicModel";
 import { ReactGridStore } from "../types/ReactGridStore.ts";
 import { findMinimalSelectedArea } from "../utils/findMinimalSelectedArea.ts";
 import { getCellContainer } from "../utils/getCellContainer.ts";
+import { getCellContainerFromPoint } from "../utils/getCellContainerFromPoint.ts";
+import { getCellContainerLocation } from "../utils/getCellContainerLocation.ts";
 import { getCellIndexesFromContainerElement } from "../utils/getCellIndexes";
 import { getCellIndexesFromPointerLocation } from "../utils/getCellIndexesFromPointerLocation";
 import { getNonStickyCellContainer } from "../utils/getNonStickyCellContainer";
@@ -22,44 +24,59 @@ const devEnvironment = isDevEnvironment();
  * @param cell - The target cell.
  * @param rowIndex - The row index of the target cell.
  * @param colIndex - The column index of the target cell.
+ * @param shouldSelectEntireColumn - Whether the entire column should be selected or not
  * @returns The updated ReactGridStore instance.
  */
 const tryExpandingTowardsCell = (
   store: ReactGridStore,
   cell: Cell,
   rowIndex: number,
-  colIndex: number
+  colIndex: number,
+  shouldSelectEntireColumn: boolean = false
 ): ReactGridStore => {
   const selectedArea = structuredClone(store.selectedArea);
   const focusedLocation = structuredClone(store.focusedLocation);
 
-  if (rowIndex < focusedLocation.rowIndex) {
-    // Targeted cell start's at the row before the focused cell
-    selectedArea.endRowIdx = focusedLocation.rowIndex + 1;
-    selectedArea.startRowIdx = rowIndex;
-  } else {
-    // Targeted cell start's at the row after the focused cell
-    selectedArea.endRowIdx = rowIndex + (cell?.rowSpan || 1);
-    selectedArea.startRowIdx = focusedLocation.rowIndex;
-  }
+  if (shouldSelectEntireColumn) {
+    selectedArea.startRowIdx = 0;
+    selectedArea.endRowIdx = store.rows.length;
 
-  if (colIndex < focusedLocation.colIndex) {
-    // Targeted cell start's at the column before the focused cell
-    selectedArea.endColIdx = focusedLocation.colIndex + 1;
-    selectedArea.startColIdx = colIndex;
+    if (colIndex < store.absoluteFocusedLocation.colIndex) {
+      // Moving to the left
+      selectedArea.startColIdx = colIndex;
+      selectedArea.endColIdx = store.absoluteFocusedLocation.colIndex + 1;
+    } else {
+      // Moving to the right
+      selectedArea.startColIdx = store.absoluteFocusedLocation.colIndex;
+      selectedArea.endColIdx = colIndex + (cell?.colSpan || 1);
+    }
   } else {
-    // Targeted cell start's at the column after the focused cell
-    selectedArea.endColIdx = colIndex + (cell?.colSpan || 1);
-    selectedArea.startColIdx = focusedLocation.colIndex;
+    if (rowIndex < focusedLocation.rowIndex) {
+      // Targeted cell start's at the row before the focused cell
+      selectedArea.endRowIdx = focusedLocation.rowIndex + 1;
+      selectedArea.startRowIdx = rowIndex;
+    } else {
+      // Targeted cell start's at the row after the focused cell
+      selectedArea.endRowIdx = rowIndex + (cell?.rowSpan || 1);
+      selectedArea.startRowIdx = focusedLocation.rowIndex;
+    }
+
+    if (colIndex < focusedLocation.colIndex) {
+      // Targeted cell start's at the column before the focused cell
+      selectedArea.endColIdx = focusedLocation.colIndex + 1;
+      selectedArea.startColIdx = colIndex;
+    } else {
+      // Targeted cell start's at the column after the focused cell
+      selectedArea.endColIdx = colIndex + (cell?.colSpan || 1);
+      selectedArea.startColIdx = focusedLocation.colIndex;
+    }
   }
 
   const newSelectedArea = findMinimalSelectedArea(store, selectedArea);
 
   return {
     ...store,
-    selectedArea: {
-      ...newSelectedArea,
-    },
+    selectedArea: newSelectedArea,
   };
 };
 
@@ -77,27 +94,24 @@ export const CellSelectionBehavior: Behavior = {
       return store;
     }
 
-    if (isCellSticky(store, cell)) {
-      const cellUnderTheSticky = getNonStickyCellContainer(clientX, clientY);
+    const element = getCellContainerFromPoint(event.clientX, event.clientY);
 
-      scrollTowardsSticky(store, cell, { rowIndex, colIndex });
+    let newRowIndex = -1;
 
-      if (cellUnderTheSticky) {
-        const nonStickyRowsAndColumns = getCellIndexesFromContainerElement(cellUnderTheSticky);
-        const { rowIndex: secondCellRowIndex, colIndex: secondCellColIndex } = nonStickyRowsAndColumns || {
-          rowIndex: -1,
-          colIndex: -1,
-        };
-
-        return tryExpandingTowardsCell(store, cell, secondCellRowIndex, secondCellColIndex);
-      }
+    if (element) {
+      const { rowIndex } = getCellContainerLocation(element);
+      newRowIndex = rowIndex;
     }
 
-    return tryExpandingTowardsCell(store, cell, rowIndex, colIndex);
+    const shouldSelectEntireColumn = newRowIndex === 0 && store.enableColumnSelection;
+
+    return tryExpandingTowardsCell(store, cell, rowIndex, colIndex, shouldSelectEntireColumn);
   },
 
   handlePointerUp(event, store) {
     const DefaultBehavior = store.getBehavior("Default");
+
+    store.onAreaSelected?.(store.selectedArea);
 
     return {
       ...store,
@@ -153,12 +167,24 @@ export const CellSelectionBehavior: Behavior = {
       isStickyCell ? getCellContainer(store, cell) : getNonStickyCellContainer(clientX, clientY)
     ) as HTMLElement | undefined;
 
+    const element = getCellContainerFromPoint(event.clientX, event.clientY);
+
+    let newRowIndex = -1;
+
+    if (element) {
+      const { rowIndex } = getCellContainerLocation(element);
+      newRowIndex = rowIndex;
+    }
+
+    const shouldSelectEntireColumn = newRowIndex === 0 && store.enableColumnSelection;
+
     if (cellContainer) {
       const scrollableParent = getScrollableParent(cellContainer as HTMLElement, true);
       const scrollableParentIsNotAWindow =
         scrollableParent && "clientWidth" in scrollableParent && "clientHeight" in scrollableParent;
 
-      scrollableParentIsNotAWindow ? scrollToElementEdge({ x: clientX, y: clientY }, scrollableParent) : () => {}; // TODO: scrollToWindowEdge({ x: clientX, y: clientY }); - function not implemented yet!
+      scrollableParentIsNotAWindow ? scrollToElementEdge({ x: clientX, y: clientY }, scrollableParent) : () => {};
+      // TODO: scrollToWindowEdge({ x: clientX, y: clientY }); - function not implemented yet!
       // * scrollToWindowEdge - not possible to test in Ladle environment, due to clientX/Y acting like pageX/Y
 
       if (isStickyCell) {
@@ -166,11 +192,11 @@ export const CellSelectionBehavior: Behavior = {
         const { rowIndex, colIndex } = nonStickyRowsAndColumns || NO_CELL_LOCATION;
         scrollTowardsSticky(store, cell, { rowIndex, colIndex });
 
-        return tryExpandingTowardsCell(store, cell, rowIndex, colIndex);
+        return tryExpandingTowardsCell(store, cell, rowIndex, colIndex, shouldSelectEntireColumn);
       }
     }
 
-    return tryExpandingTowardsCell(store, cell, rowIndex, colIndex);
+    return tryExpandingTowardsCell(store, cell, rowIndex, colIndex, shouldSelectEntireColumn);
   },
 
   handlePointerEnterTouch(event, store) {

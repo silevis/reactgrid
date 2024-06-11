@@ -1,15 +1,15 @@
-import { FC, useEffect, useState } from "react";
+import { FC, useState } from "react";
 import { ErrorBoundary } from "./components/ErrorBoundary";
 import GridWrapper from "./components/GridWrapper";
 import PanesRenderer from "./components/PanesRenderer";
 import { ReactGridIdProvider } from "./components/ReactGridIdProvider";
 import { ReactGridProps } from "./types/PublicModel";
-import { createEventManagers } from "./utils/createEventManagers";
-import { getCellIndexes } from "./utils/getCellIndexes.1";
-import { getNumericalRange } from "./utils/getNumericalRange";
 import isDevEnvironment from "./utils/isDevEnvironment";
-import { isSpanMember } from "./utils/isSpanMember";
-import { initReactGridStore, useReactGridStoreApi } from "./utils/reactGridStore";
+import { initReactGridStore, useReactGridStore, useReactGridStoreApi } from "./utils/reactGridStore";
+import { useReactGridSync } from "./hooks/useReactGridSync";
+import { Line } from "./components/Line";
+import { ColumnReorderBehavior } from "./behaviors/ColumnReorderBehavior";
+import { Shadow } from "./components/Shadow";
 
 const devEnvironment = isDevEnvironment();
 
@@ -23,107 +23,48 @@ const ReactGrid: FC<ReactGridProps> = ({
   stickyLeftColumns,
   stickyRightColumns,
   behaviors,
-  // Styling
-  style,
+  styles: userStyles,
   styledRanges,
-  // Initial Settings
   initialSelectedRange,
   initialFocusLocation,
-  // Event Handlers
-  onFocusChange,
-  onSelectionChange,
-  onFirstRowFocus,
-  onFirstColumnFocus,
+  enableColumnSelection,
+  minColumnWidth,
+  onAreaSelected,
+  onFillHandle,
+  onCellFocused,
+  onCut,
+  onPaste,
+  onCopy,
+  onResizeColumn,
+  onColumnReorder,
 }) => {
   initReactGridStore(id, {
     rows,
     columns,
     cells,
     behaviors,
+    userStyles,
     styledRanges,
+    minColumnWidth,
+    enableColumnSelection,
+    onFillHandle,
+    onAreaSelected,
+    onCellFocused,
+    onCut,
+    onCopy,
+    onResizeColumn,
+    onColumnReorder,
+    onPaste,
   });
+
   const store = useReactGridStoreApi(id).getState();
-  const { setSelectedArea, setFocusedLocation: setFocusedCell, getCellOrSpanMemberByIndexes, getCellByIds } = store;
+
+  const currentBehavior = useReactGridStore(id, (store) => store.currentBehavior);
+  const linePosition = useReactGridStore(id, (store) => store.linePosition);
+
+  useReactGridSync(store, { cells, columns, initialSelectedRange, initialFocusLocation });
 
   const [bypassSizeWarning, setBypassSizeWarning] = useState(false);
-
-  // TODO move to initializer
-  useEffect(() => {
-    if (!initialSelectedRange) {
-      return;
-    } else {
-      devEnvironment &&
-        console.warn(
-          "If you set initial selected range, be careful, as it may cut-trough spanned cells in an unintended way!"
-        );
-      if (initialFocusLocation && devEnvironment) {
-        const cell = getCellByIds(initialFocusLocation.rowId, initialFocusLocation.rowId);
-        if (!cell) {
-          devEnvironment && console.error("There is no cell with indexes passed in initialFocusLocation prop.");
-        }
-      }
-
-      const numericalInitialSelectedRange = getNumericalRange(store, initialSelectedRange);
-
-      setSelectedArea(numericalInitialSelectedRange);
-    }
-  }, [initialFocusLocation, initialSelectedRange]);
-
-  // TODO move to initializer
-  useEffect(() => {
-    if (initialFocusLocation) {
-      const { rowId, columnId } = initialFocusLocation;
-      const cell = getCellByIds(rowId, columnId);
-
-      if (!cell) {
-        return;
-      }
-
-      const { colIndex, rowIndex } = getCellIndexes(store, cell);
-
-      const targetCellOrSpanMember = getCellOrSpanMemberByIndexes(rowIndex, colIndex);
-
-      if (devEnvironment) {
-        if (!targetCellOrSpanMember) {
-          console.error("The provided 'initialFocusLocation' does not exist!");
-        } else if (isSpanMember(targetCellOrSpanMember))
-          console.error("The provided 'initialFocusLocation' is invalid as it targets !");
-      }
-
-      setFocusedCell(rowIndex, colIndex);
-    }
-  }, [initialFocusLocation]);
-
-  useEffect(
-    function () {
-      const { subscribeToEvent, unsubscribeToEvent } = createEventManagers("focuschange", (e) => {
-        onFocusChange(e);
-
-        if (e.reactgrid.focusedLocation?.after.rowIndex === 0) {
-          onFirstRowFocus(e);
-        }
-        if (e.reactgrid.focusedLocation?.after.colIndex === 0) {
-          onFirstColumnFocus(e);
-        }
-      });
-
-      subscribeToEvent();
-
-      return () => unsubscribeToEvent();
-    },
-    [onFocusChange, onFirstRowFocus, onFirstColumnFocus]
-  );
-
-  useEffect(
-    function () {
-      const { subscribeToEvent, unsubscribeToEvent } = createEventManagers("selectionchange", onSelectionChange);
-
-      subscribeToEvent();
-
-      return () => unsubscribeToEvent();
-    },
-    [onSelectionChange]
-  );
 
   if (devEnvironment && !bypassSizeWarning && rows.length * columns.length > 25_000) {
     return (
@@ -142,7 +83,7 @@ const ReactGrid: FC<ReactGridProps> = ({
   return (
     <ReactGridIdProvider id={id}>
       <ErrorBoundary>
-        <GridWrapper reactGridId={id} style={style}>
+        <GridWrapper reactGridId={id} style={{ position: "relative", ...userStyles?.gridWrapper }}>
           <PanesRenderer
             rowAmount={rows.length}
             columnAmount={columns.length}
@@ -151,8 +92,8 @@ const ReactGrid: FC<ReactGridProps> = ({
             stickyLeftColumns={stickyLeftColumns ?? 0}
             stickyRightColumns={stickyRightColumns ?? 0}
           />
-
-          {/* TODO: Shadow for row&col reorder */}
+          {linePosition && <Line />}
+          {currentBehavior.id === ColumnReorderBehavior.id && <Shadow />}
         </GridWrapper>
       </ErrorBoundary>
     </ReactGridIdProvider>

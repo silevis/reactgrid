@@ -1,9 +1,9 @@
 import { CellMatrix } from "../types/CellMatrix";
 import { Cell, CellMap, Column, Row, SpanMember } from "../types/PublicModel";
 
-type AddRowsFn<TRowId extends string> = (...newRows: Array<Row<TRowId>>) => void;
+// type AddRowsFn<TRowId extends string> = (...newRows: Array<Row<TRowId>>) => void;
 
-type AddColumnsFn<TColumnId extends string> = (...newColumns: Column<TColumnId>[]) => void;
+// type AddColumnsFn<TColumnId extends string> = (...newColumns: Column<TColumnId>[]) => void;
 
 // Type `any` is required to use React.ComponentType here
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -18,8 +18,8 @@ type SetCellFn<TRowId extends string, TColumnId extends string> = <TComponent ex
 // type InsertColumnsFn<TColumnId extends string> = (newColumns: Array<Column<TColumnId>>, id: TColumnId, position: 'before' | 'after') => void;
 
 interface CellMatrixBuilderTools<TRowId extends string, TColumnId extends string> {
-  addRows: AddRowsFn<TRowId>;
-  addColumns: AddColumnsFn<TColumnId>;
+  // addRows: AddRowsFn<TRowId>;
+  // addColumns: AddColumnsFn<TColumnId>;
   setCell: SetCellFn<TRowId, TColumnId>;
 }
 
@@ -60,37 +60,22 @@ interface CellMatrixBuilderTools<TRowId extends string, TColumnId extends string
  * @returns rows, columns and cellMap
  */
 export const cellMatrixBuilder = <TRowId extends string = string, TColumnId extends string = string>(
+  rows: Row<TRowId>[],
+  columns: Column<TColumnId>[],
+
   builder: ({ ...tools }: CellMatrixBuilderTools<TRowId, TColumnId>) => void
 ): CellMatrix<TRowId, TColumnId> => {
-  const rows: Row<TRowId>[] = [];
-  const columns: Column<TColumnId>[] = [];
   const cells: CellMap<TRowId, TColumnId> = new Map();
 
-  const addRows: AddRowsFn<TRowId> = (...newRows) => {
-    newRows.forEach((row) => {
-      if (rows.some(r => r.id === row.id)) throw new Error(`Duplicate IDs!: Row with id "${row.id}" already exists!`);
-
-      rows.push({ ...row });
-    });
-  };
-
-  const addColumns: AddColumnsFn<TColumnId> = (...newColumns) => {
-    newColumns.forEach((col) => {
-      if (columns.some(c => c.id === col.id)) throw new Error(`Duplicate IDs!: Column with id "${col.id}" already exists!`);
-
-      columns.push({ ...col });
-    });
-  };
-
   const setCell: SetCellFn<TRowId, TColumnId> = (rowId, colId, Template, props, { ...args } = {}) => {
-    const baseRowIdIndex = rows.findIndex(row => row.id === rowId);
-    const baseColIdIndex = columns.findIndex(col => col.id === colId);
+    const baseRowIdIndex = rows.findIndex((row) => row.id === rowId);
+    const baseColIdIndex = columns.findIndex((col) => col.id === colId);
 
     if (baseRowIdIndex === -1) throw new Error(`Row with id "${rowId}" isn't defined in rows array`);
     if (baseColIdIndex === -1) throw new Error(`Column with id "${colId}" isn't defined in columns array`);
 
     if (process.env.NODE_ENV === "development" && cells.has(`${rowId} ${colId}`)) {
-      console.warn(`Cell with coordinates [${rowId}, ${colId}] already exists and will be overwritten!`);
+      // console.warn(`Cell with coordinates [${rowId}, ${colId}] already exists and will be overwritten!`);
     }
 
     const cell = { rowId, colId, Template, props, ...args };
@@ -108,7 +93,7 @@ export const cellMatrixBuilder = <TRowId extends string = string, TColumnId exte
 
         const spanMember: SpanMember = {
           originRowId: rowId,
-          originColId: colId
+          originColId: colId,
         };
 
         cells.set(`${rows[rowIdIndex].id} ${columns[colIdIndex].id}`, spanMember);
@@ -118,11 +103,11 @@ export const cellMatrixBuilder = <TRowId extends string = string, TColumnId exte
     cells.set(`${rowId} ${colId}`, cell);
   };
 
-  builder({ addRows, addColumns, setCell });
+  builder({ setCell });
 
   return {
     rows,
     columns,
-    cells
+    cells,
   };
 };

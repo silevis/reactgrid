@@ -1,7 +1,9 @@
 import React from "react";
 
 import { Behavior, BehaviorId } from "./Behavior";
-import { ReactGridEvent } from "./Events";
+import { NumericalRange } from "./CellMatrix";
+import { IndexedLocation } from "./InternalModel";
+import { RGTheme } from "./Theme";
 
 export type Row<Id = string> = {
   id: Id;
@@ -11,6 +13,8 @@ export type Row<Id = string> = {
 export type Column<Id = string> = {
   id: Id;
   width: string | number;
+  resizable?: boolean;
+  reorderable?: boolean;
 };
 
 export type Cell<RowIdType extends string = string, ColIdType extends string = string> = {
@@ -73,16 +77,17 @@ export type CellContextType = {
   /** Represents how many columns should the cell occupy. */
   colSpan?: number;
 
+  /** Indicates whether the cell is currently in edit mode or not */
+  isInEditMode: boolean;
+
   /** Internal: provides cell container's style  */
   containerStyle: React.CSSProperties;
 
-  /** Disables edit mode */
-  disableEditMode: () => void;
   /** Requests focus and enables edit mode if true is passed as a parameter. */
-  requestFocus: (enableEditMode: boolean) => void;
+  requestFocus: () => void;
 
-  isInEditMode: boolean;
-  isFocused: boolean;
+  /** Enables or disables edit mode. */
+  setEditMode: (enableEditMode: boolean) => void;
 };
 
 export type CellMap<RowIdType extends string = string, ColIdType extends string = string> = Map<
@@ -107,14 +112,18 @@ export type Location = {
 export interface ReactGridProps {
   id: string;
 
-  style?: React.CSSProperties;
+  styles?: Partial<RGTheme>;
 
   styledRanges?: StyledRange[];
 
   columns: Column[];
+  minColumnWidth?: number;
   rows: Row[];
 
   cells: CellMap;
+
+  onAreaSelected?: (selectedArea: NumericalRange) => void;
+  onCellFocused?: (cellLocation: IndexedLocation) => void;
 
   stickyTopRows?: number;
   stickyRightColumns?: number;
@@ -123,13 +132,19 @@ export interface ReactGridProps {
 
   // enableVirtualization?: boolean;
 
+  enableColumnSelection?: boolean;
+
   behaviors?: Record<BehaviorId, Behavior>;
 
   initialFocusLocation?: Location;
   initialSelectedRange?: Range;
 
-  onFocusChange: (e: ReactGridEvent) => unknown;
-  onSelectionChange: (e: ReactGridEvent) => unknown;
-  onFirstRowFocus: (e: ReactGridEvent) => unknown;
-  onFirstColumnFocus: (e: ReactGridEvent) => unknown;
+  onFocusLocationChanging?: ({ location }: { location: Location }) => boolean;
+  onFocusLocationChanged?: ({ location }: { location: Location }) => void;
+  onFillHandle?: (selectedArea: NumericalRange, fillRange: NumericalRange) => void;
+  onCut?: (selectedArea: NumericalRange) => void;
+  onCopy?: (selectedArea: NumericalRange) => void;
+  onPaste?: (selectedArea: NumericalRange, pastedData: string) => void;
+  onColumnReorder?: (selectedColIndexes: number[], destinationColIdx: number) => void;
+  onResizeColumn?: (width: number, columnId: number | string) => void;
 }
