@@ -8,7 +8,7 @@ import { getCellContainerFromPoint } from "../utils/getCellContainerFromPoint";
 import { getCellContainerLocation } from "../utils/getCellContainerLocation";
 import { handleKeyDown } from "../utils/handleKeyDown";
 import { isCellInRange } from "../utils/isCellInRange.ts";
-import { isCellOverlappingPane } from "../utils/isCellOverlappingPane.ts";
+import { getCellPaneOverlap } from "../utils/getCellPaneOverlap.ts";
 import isDevEnvironment from "../utils/isDevEnvironment";
 import { getScrollableParent } from "../utils/scrollHelpers.ts";
 import { ColumnReorderBehavior } from "./ColumnReorderBehavior.ts";
@@ -92,10 +92,10 @@ export const DefaultBehavior = (config: DefaultBehaviorConfig = CONFIG_DEFAULTS)
 
     const scrollableParent = (getScrollableParent(element, true) as Element) ?? store.reactGridRef!;
 
-    const leftPaneOverlapValue = isCellOverlappingPane(store, { rowIndex, colIndex }, "Left");
-    const rightPaneOverlapValue = isCellOverlappingPane(store, { rowIndex, colIndex }, "Right");
-    const topPaneOverlapValue = isCellOverlappingPane(store, { rowIndex, colIndex }, "Top");
-    const bottomOverlapValue = isCellOverlappingPane(store, { rowIndex, colIndex }, "Bottom");
+    const leftPaneOverlapValue = getCellPaneOverlap(store, { rowIndex, colIndex }, "Left");
+    const rightPaneOverlapValue = getCellPaneOverlap(store, { rowIndex, colIndex }, "Right");
+    const topPaneOverlapValue = getCellPaneOverlap(store, { rowIndex, colIndex }, "Top");
+    const bottomOverlapValue = getCellPaneOverlap(store, { rowIndex, colIndex }, "Bottom");
 
     if (leftPaneOverlapValue) {
       scrollableParent?.scrollBy({

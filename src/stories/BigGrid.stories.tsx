@@ -65,6 +65,7 @@ export const BigGrid = () => {
     Array.from({ length: ROW_COUNT }).map((_, i) => {
       return Array.from({ length: COLUMN_COUNT }).map((_, j) => {
         if (i === 1 && j === 4) return null;
+        if (i === 1 && j === 24) return null;
         if (i === 2 && j === 4) return null;
         if (i === 3 && j === 3) return null;
         if (i === 3 && j === 4) return null;
@@ -82,6 +83,7 @@ export const BigGrid = () => {
         if (i === 6 && j === 8) return null;
 
         if (i === 1 && j === 3) return { date: new Date() };
+        if (i === 1 && j === 23) return { date: new Date() };
 
         if (i === 0 && j === 0) return { number: 100 };
 
@@ -128,6 +130,7 @@ export const BigGrid = () => {
     const realColIdx4 = columns.findIndex((col) => col.id === "4");
     const realColIdx5 = columns.findIndex((col) => col.id === "5");
     const realColIdx6 = columns.findIndex((col) => col.id === "6");
+    const realColIdx23 = columns.findIndex((col) => col.id === "23");
 
     const realRowIdx0 = rows.findIndex((row) => row.id === "0");
     const realRowIdx1 = rows.findIndex((row) => row.id === "1");
@@ -161,6 +164,23 @@ export const BigGrid = () => {
           setGridData((prev) => {
             const next = [...prev];
             next[realRowIdx1][realColIdx3] = newDate;
+            return next;
+          });
+        },
+      },
+      { colSpan: 2 }
+    );
+
+    setCell(
+      "1",
+      "23",
+      DateCell,
+      {
+        value: gridData[realRowIdx1][realColIdx23]?.date,
+        onDateChanged: (newDate) => {
+          setGridData((prev) => {
+            const next = [...prev];
+            next[realRowIdx1][realColIdx23] = newDate;
             return next;
           });
         },

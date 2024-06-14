@@ -2,24 +2,27 @@ import { FocusedCell } from "../types/InternalModel";
 import { isSpanMember } from "./isSpanMember";
 import { getOriginCell } from "./getOriginCell";
 import { EMPTY_AREA } from "../types/InternalModel";
-import { handleJumpScroll } from "./handleJumpScroll";
 import { ReactGridStore } from "../types/ReactGridStore.ts";
 import { emitEvent } from "./emitEvent.ts";
-
-const absoluteLocation = {
-  rowIndex: -1,
-  colIndex: -1,
-};
+import { getCellPaneOverlap } from "./getCellPaneOverlap.ts";
+import { getScrollableParent } from "./scrollHelpers.ts";
+import { getCellContainer } from "./getCellContainer.ts";
 
 export const moveFocusUp = (store: ReactGridStore, currentFocus: FocusedCell): ReactGridStore => {
   if (currentFocus.rowIndex === 0) return store;
 
+  const cellContainer = getCellContainer(store, currentFocus) as HTMLElement;
+
+  const scrollableParent = (getScrollableParent(cellContainer, true) as Element) ?? store.reactGridRef!;
+
   const colIndex =
-    "colSpan" in currentFocus && store.absoluteFocusedLocation.colIndex !== -1 ? store.absoluteFocusedLocation.colIndex : currentFocus.colIndex;
+    "colSpan" in currentFocus && store.absoluteFocusedLocation.colIndex !== -1
+      ? store.absoluteFocusedLocation.colIndex
+      : currentFocus.colIndex;
 
   // Look for the next focusable cell in the rows above the current focus
-  for (let rowIdx = currentFocus.rowIndex - 1; rowIdx >= 0; rowIdx--) {
-    const nextPossibleLocation = store.getCellByIndexes(rowIdx, colIndex);
+  for (let rowIndex = currentFocus.rowIndex - 1; rowIndex >= 0; rowIndex--) {
+    const nextPossibleLocation = store.getCellByIndexes(rowIndex, colIndex);
 
     // Check if the cell is focusable (by default it is)
     if (nextPossibleLocation && nextPossibleLocation?.isFocusable !== false) {
@@ -28,17 +31,23 @@ export const moveFocusUp = (store: ReactGridStore, currentFocus: FocusedCell): R
       const originColIndex = store.columns.findIndex((col) => col.id === originCell.colId);
 
       if (originCell.rowSpan ?? 1 > 1) store.absoluteFocusedLocation.rowIndex = originRowIndex;
-      else store.absoluteFocusedLocation.rowIndex = rowIdx;
+      else store.absoluteFocusedLocation.rowIndex = rowIndex;
       store.absoluteFocusedLocation.colIndex = colIndex;
 
-      handleJumpScroll(store, currentFocus, originCell);
-
       emitEvent("focuschange", { currentFocus });
+
+      const topPaneOverlapValue = getCellPaneOverlap(store, { rowIndex, colIndex }, "Top");
+
+      if (topPaneOverlapValue) {
+        scrollableParent?.scrollBy({
+          top: -topPaneOverlapValue,
+        });
+      }
 
       return {
         ...store,
         focusedLocation: { rowIndex: originRowIndex, colIndex: originColIndex },
-        selectedArea: EMPTY_AREA
+        selectedArea: EMPTY_AREA,
       };
     }
   }
@@ -49,12 +58,22 @@ export const moveFocusUp = (store: ReactGridStore, currentFocus: FocusedCell): R
 export const moveFocusRight = (store: ReactGridStore, currentFocus: FocusedCell): ReactGridStore => {
   if (currentFocus.colIndex === store.columns.length - 1) return store;
 
+  const cellContainer = getCellContainer(store, currentFocus) as HTMLElement;
+
+  const scrollableParent = (getScrollableParent(cellContainer, true) as Element) ?? store.reactGridRef!;
+
   const rowIndex =
-    "rowSpan" in currentFocus && store.absoluteFocusedLocation.rowIndex !== -1 ? store.absoluteFocusedLocation.rowIndex : currentFocus.rowIndex;
+    "rowSpan" in currentFocus && store.absoluteFocusedLocation.rowIndex !== -1
+      ? store.absoluteFocusedLocation.rowIndex
+      : currentFocus.rowIndex;
 
   // Look for the next focusable cell to the right of the current focus
-  for (let colIdx = currentFocus.colIndex + (currentFocus.colSpan ?? 1); colIdx < store.columns.length; colIdx++) {
-    const nextPossibleLocation = store.getCellByIndexes(rowIndex, colIdx);
+  for (
+    let colIndex = currentFocus.colIndex + (currentFocus.colSpan ?? 1);
+    colIndex < store.columns.length;
+    colIndex++
+  ) {
+    const nextPossibleLocation = store.getCellByIndexes(rowIndex, colIndex);
 
     // Check if the cell is focusable (by default it is)
     if (nextPossibleLocation && nextPossibleLocation?.isFocusable !== false) {
@@ -63,15 +82,22 @@ export const moveFocusRight = (store: ReactGridStore, currentFocus: FocusedCell)
       const originColIndex = store.columns.findIndex((col) => col.id === originCell.colId);
 
       store.absoluteFocusedLocation.rowIndex = rowIndex;
-      store.absoluteFocusedLocation.colIndex = colIdx;
+      store.absoluteFocusedLocation.colIndex = colIndex;
 
-      handleJumpScroll(store, currentFocus, originCell);
       emitEvent("focuschange", { currentFocus });
+
+      const rightPaneOverlapValue = getCellPaneOverlap(store, { rowIndex, colIndex }, "Right");
+
+      if (rightPaneOverlapValue) {
+        scrollableParent?.scrollBy({
+          left: rightPaneOverlapValue,
+        });
+      }
 
       return {
         ...store,
         focusedLocation: { rowIndex: originRowIndex, colIndex: originColIndex },
-        selectedArea: EMPTY_AREA
+        selectedArea: EMPTY_AREA,
       };
     }
   }
@@ -82,12 +108,18 @@ export const moveFocusRight = (store: ReactGridStore, currentFocus: FocusedCell)
 export const moveFocusDown = (store: ReactGridStore, currentFocus: FocusedCell) => {
   if (currentFocus.rowIndex === store.rows.length - 1) return store;
 
+  const cellContainer = getCellContainer(store, currentFocus) as HTMLElement;
+
+  const scrollableParent = (getScrollableParent(cellContainer, true) as Element) ?? store.reactGridRef!;
+
   const colIndex =
-    "colSpan" in currentFocus && store.absoluteFocusedLocation.colIndex !== -1 ? store.absoluteFocusedLocation.colIndex : currentFocus.colIndex;
+    "colSpan" in currentFocus && store.absoluteFocusedLocation.colIndex !== -1
+      ? store.absoluteFocusedLocation.colIndex
+      : currentFocus.colIndex;
 
   // Look for the next focusable cell in the rows below the current focus
-  for (let rowIdx = currentFocus.rowIndex + (currentFocus.rowSpan ?? 1); rowIdx < store.rows.length; rowIdx++) {
-    const nextPossibleLocation = store.getCellByIndexes(rowIdx, colIndex);
+  for (let rowIndex = currentFocus.rowIndex + (currentFocus.rowSpan ?? 1); rowIndex < store.rows.length; rowIndex++) {
+    const nextPossibleLocation = store.getCellByIndexes(rowIndex, colIndex);
 
     // Check if the cell is focusable (by default it is)
     if (nextPossibleLocation && nextPossibleLocation?.isFocusable !== false) {
@@ -95,16 +127,23 @@ export const moveFocusDown = (store: ReactGridStore, currentFocus: FocusedCell) 
       const originRowIndex = store.rows.findIndex((row) => row.id === originCell.rowId);
       const originColIndex = store.columns.findIndex((col) => col.id === originCell.colId);
 
-      store.absoluteFocusedLocation.rowIndex = rowIdx;
+      store.absoluteFocusedLocation.rowIndex = rowIndex;
       store.absoluteFocusedLocation.colIndex = colIndex;
 
-      handleJumpScroll(store, currentFocus, originCell);
       emitEvent("focuschange", { currentFocus });
+
+      const bottomOverlapValue = getCellPaneOverlap(store, { rowIndex, colIndex }, "Bottom");
+
+      if (bottomOverlapValue) {
+        scrollableParent?.scrollBy({
+          top: bottomOverlapValue,
+        });
+      }
 
       return {
         ...store,
         focusedLocation: { rowIndex: originRowIndex, colIndex: originColIndex },
-        selectedArea: EMPTY_AREA
+        selectedArea: EMPTY_AREA,
       };
     }
   }
@@ -115,12 +154,18 @@ export const moveFocusDown = (store: ReactGridStore, currentFocus: FocusedCell) 
 export const moveFocusLeft = (store: ReactGridStore, currentFocus: FocusedCell) => {
   if (currentFocus.colIndex === 0) return store;
 
+  const cellContainer = getCellContainer(store, currentFocus) as HTMLElement;
+
+  const scrollableParent = (getScrollableParent(cellContainer, true) as Element) ?? store.reactGridRef!;
+
   const rowIndex =
-    "rowSpan" in currentFocus && store.absoluteFocusedLocation.rowIndex !== -1 ? store.absoluteFocusedLocation.rowIndex : currentFocus.rowIndex;
+    "rowSpan" in currentFocus && store.absoluteFocusedLocation.rowIndex !== -1
+      ? store.absoluteFocusedLocation.rowIndex
+      : currentFocus.rowIndex;
 
   // Look for the next focusable cell to the left of the current focus
-  for (let colIdx = currentFocus.colIndex - 1; colIdx >= 0; colIdx--) {
-    const nextPossibleLocation = store.getCellByIndexes(rowIndex, colIdx);
+  for (let colIndex = currentFocus.colIndex - 1; colIndex >= 0; colIndex--) {
+    const nextPossibleLocation = store.getCellByIndexes(rowIndex, colIndex);
 
     // Check if the cell is focusable (by default it is)
     if (nextPossibleLocation && nextPossibleLocation?.isFocusable !== false) {
@@ -130,15 +175,22 @@ export const moveFocusLeft = (store: ReactGridStore, currentFocus: FocusedCell) 
 
       store.absoluteFocusedLocation.rowIndex = rowIndex;
       if (originCell.colSpan ?? 1 > 1) store.absoluteFocusedLocation.colIndex = originColIndex;
-      else store.absoluteFocusedLocation.colIndex = colIdx;
+      else store.absoluteFocusedLocation.colIndex = colIndex;
 
-      handleJumpScroll(store, currentFocus, originCell);
       emitEvent("focuschange", { currentFocus });
+
+      const leftPaneOverlapValue = getCellPaneOverlap(store, { rowIndex, colIndex }, "Left");
+
+      if (leftPaneOverlapValue) {
+        scrollableParent?.scrollBy({
+          left: -leftPaneOverlapValue,
+        });
+      }
 
       return {
         ...store,
         focusedLocation: { rowIndex: originRowIndex, colIndex: originColIndex },
-        selectedArea: EMPTY_AREA
+        selectedArea: EMPTY_AREA,
       };
     }
   }
@@ -177,7 +229,7 @@ export const moveFocusInsideSelectedRange = (
         !nextPossibleLocation ||
         isSpanMember(nextPossibleLocation) ||
         nextPossibleLocation?.isFocusable === false
-        );
+      );
 
       return { ...store, focusedLocation: { rowIndex: rowIdx, colIndex: colIdx } };
     }
@@ -207,7 +259,7 @@ export const moveFocusInsideSelectedRange = (
         !nextPossibleLocation ||
         isSpanMember(nextPossibleLocation) ||
         nextPossibleLocation?.isFocusable === false
-        );
+      );
 
       return { ...store, focusedLocation: { rowIndex: rowIdx, colIndex: colIdx } };
     }
@@ -237,7 +289,7 @@ export const moveFocusInsideSelectedRange = (
         !nextPossibleLocation ||
         isSpanMember(nextPossibleLocation) ||
         nextPossibleLocation?.isFocusable === false
-        );
+      );
 
       return { ...store, focusedLocation: { rowIndex: rowIdx, colIndex: colIdx } };
     }

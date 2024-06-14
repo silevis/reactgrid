@@ -4,7 +4,8 @@ import { getCellContainer } from "./getCellContainer";
 import { isCellInPane } from "./isCellInPane";
 import { isTheSameCell } from "./isTheSameCell";
 
-export const isCellOverlappingPane = (
+// TODO: rename
+export const getCellPaneOverlap = (
   store: ReactGridStore,
   destinationCellIdx: IndexedLocation,
   panePosition: "Top" | "Bottom" | "Right" | "Left"
@@ -41,13 +42,15 @@ export const isCellOverlappingPane = (
   }
 
   if (panePosition === "Right") {
-    const horizontalOffsetDifference = Math.abs(paneCellContainer.offsetLeft - cellContainer.offsetLeft);
+    const horizontalOffsetDifference = Math.abs(
+      paneCellContainer.offsetLeft - (cellContainer.offsetLeft + cellContainer.offsetWidth)
+    );
 
     if (cellContainer.offsetLeft + cellContainer.offsetWidth <= paneCellContainer.offsetLeft) {
       return 0;
     }
 
-    return cellContainer.offsetWidth - horizontalOffsetDifference;
+    return horizontalOffsetDifference;
   }
   if (panePosition === "Left") {
     const horizontalOffsetDifference = Math.abs(

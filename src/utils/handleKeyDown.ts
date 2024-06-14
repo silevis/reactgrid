@@ -625,6 +625,8 @@ export const handleKeyDown = (
 
         if (!lastColumnIdx) return store;
 
+        const lastColumnCellSpan = store.getCellByIndexes(focusedCell.rowIndex, lastColumnIdx)?.colSpan;
+
         const nearestLeftStickyCell = getStickyCellAdjacentToCenterPane(store, focusedCell, "Left");
         const nearestLeftStickyCellIdx = nearestLeftStickyCell
           ? getCellIndexes(store, nearestLeftStickyCell)
@@ -661,7 +663,7 @@ export const handleKeyDown = (
               selectedArea: { ...minimalSelectedArea },
               focusedLocation: {
                 rowIndex: minimalSelectedArea.startRowIdx,
-                colIndex: lastColumnIdx,
+                colIndex: lastColumnCellSpan ? lastColumnIdx - lastColumnCellSpan + 1 : lastColumnIdx,
               },
             };
           }
@@ -683,7 +685,7 @@ export const handleKeyDown = (
             selectedArea: { ...minimalSelectedArea },
             focusedLocation: {
               rowIndex: minimalSelectedArea.startRowIdx,
-              colIndex: lastColumnIdx,
+              colIndex: lastColumnCellSpan ? lastColumnIdx - lastColumnCellSpan + 1 : lastColumnIdx,
             },
           };
         }
@@ -698,7 +700,11 @@ export const handleKeyDown = (
           selectedArea: { ...minimalSelectedArea },
           focusedLocation: {
             rowIndex: focusedCell.rowIndex,
-            colIndex: nearestRightStickyCell ? nearestRightStickyCellIdx.colIndex - 1 : lastColumnIdx,
+            colIndex: nearestRightStickyCell
+              ? nearestRightStickyCellIdx.colIndex - 1
+              : lastColumnCellSpan
+              ? lastColumnIdx - lastColumnCellSpan + 1
+              : lastColumnIdx,
           },
         };
       }

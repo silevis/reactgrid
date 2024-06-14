@@ -7,7 +7,7 @@ import { getCellContainerFromPoint } from "../utils/getCellContainerFromPoint.ts
 import { getCellIndexesFromContainerElement } from "../utils/getCellIndexes.ts";
 import { getCellIndexesFromPointerLocation } from "../utils/getCellIndexesFromPointerLocation.ts";
 import { getLastColumnMetrics } from "../utils/getLastColumnMetrics.ts";
-import { isCellOverlappingPane } from "../utils/isCellOverlappingPane.ts";
+import { getCellPaneOverlap } from "../utils/getCellPaneOverlap.ts";
 import isDevEnvironment from "../utils/isDevEnvironment.ts";
 import { scrollTowardsSticky } from "../utils/scrollTowardsSticky.ts";
 
@@ -139,7 +139,7 @@ const handlePointerMove = (store: ReactGridStore, event: React.PointerEvent<HTML
   if (event.clientX > cellContainer.getBoundingClientRect().left + selectedAreaWidth) {
     destinationColIdx = minimalSelection.endColIdx - 1;
 
-    if (isCellOverlappingPane(store, { rowIndex: 0, colIndex: destinationColIdx }, "Right")) {
+    if (getCellPaneOverlap(store, { rowIndex: 0, colIndex: destinationColIdx }, "Right")) {
       linePosition = undefined;
     } else {
       linePosition = rightCellContainer.offsetLeft + rightCellContainer.offsetWidth;
@@ -148,7 +148,7 @@ const handlePointerMove = (store: ReactGridStore, event: React.PointerEvent<HTML
     // Case 2 - Cursor is moving to the left of the selected columns
     destinationColIdx = minimalSelection.startColIdx;
 
-    if (isCellOverlappingPane(store, { rowIndex: 0, colIndex: destinationColIdx }, "Left")) {
+    if (getCellPaneOverlap(store, { rowIndex: 0, colIndex: destinationColIdx }, "Left")) {
       linePosition = undefined;
     } else {
       linePosition = leftCellContainer.offsetLeft;
