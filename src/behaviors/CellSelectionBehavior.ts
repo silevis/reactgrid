@@ -119,8 +119,8 @@ export const CellSelectionBehavior: Behavior = {
       newColIndex = colIndex;
     }
 
-    const shouldSelectEntireColumn = newRowIndex === 0 && store.enableColumnSelection;
-    const shouldEnableRowSelection = newColIndex === 0 && store.enableRowSelection;
+    const shouldSelectEntireColumn = newRowIndex === 0 && store.enableColumnSelectionOnFirstRow;
+    const shouldEnableRowSelection = newColIndex === 0 && store.enableRowSelectionOnFirstColumn;
 
     return tryExpandingTowardsCell(store, cell, rowIndex, colIndex, shouldSelectEntireColumn, shouldEnableRowSelection);
   },
@@ -195,8 +195,8 @@ export const CellSelectionBehavior: Behavior = {
       newColIndex = colIndex;
     }
 
-    const shouldSelectEntireColumn = newRowIndex === 0 && store.enableColumnSelection;
-    const shouldEnableRowSelection = newColIndex === 0 && store.enableRowSelection;
+    const shouldSelectEntireColumn = newRowIndex === 0 && store.enableColumnSelectionOnFirstRow;
+    const shouldEnableRowSelection = newColIndex === 0 && store.enableRowSelectionOnFirstColumn;
 
     if (cellContainer) {
       const scrollableParent = getScrollableParent(cellContainer as HTMLElement, true);

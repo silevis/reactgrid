@@ -46,28 +46,28 @@ export default function useReactGridAPI(id: string) {
         return store.setFocusedLocation(rowIndex, colIndex);
       },
 
-      setSelectedColumns: (startColIdx: number, endColIdx: number) => {
-        if (devEnvironment && endColIdx < startColIdx) {
-          console.warn("The end column index must be greater than the start column index.");
-        }
+      /**
+       * Set the selected columns in the ReactGrid.
+       * @param startColId
+       * @param endColId
+       */
+      setSelectedColumns: (startColId: string, endColId: string) => {
+        const startColIndex = store.columns.findIndex((col) => col.id === startColId);
+        const endColIndex = store.columns.findIndex((col) => col.id === endColId);
 
-        if (startColIdx < 0 || endColIdx >= store.columns.length) {
-          console.warn("Column index out of bounds");
-        }
-
-        return store.setSelectedColumns(startColIdx, endColIdx);
+        return store.setSelectedColumns(startColIndex, endColIndex);
       },
 
-      setSelectedRows: (startRowIdx: number, endRowIdx: number) => {
-        if (devEnvironment && endRowIdx < startRowIdx) {
-          console.warn("The end row index must be greater than the start row index.");
-        }
+      /**
+       * Set selected rows in the ReactGrid.
+       * @param startRowId
+       * @param endRowId
+       */
+      setSelectedRows: (startRowId: string, endRowId: string) => {
+        const startRowIndex = store.rows.findIndex((row) => row.id === startRowId);
+        const endRowIndex = store.columns.findIndex((row) => row.id === endRowId);
 
-        if (startRowIdx < 0 || endRowIdx >= store.rows.length) {
-          console.warn("Row index out of bounds");
-        }
-
-        return store.setSelectedRows(startRowIdx, endRowIdx);
+        return store.setSelectedRows(startRowIndex, endRowIndex);
       },
 
       // Getters

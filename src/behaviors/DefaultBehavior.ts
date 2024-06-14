@@ -8,7 +8,9 @@ import { getCellContainerFromPoint } from "../utils/getCellContainerFromPoint";
 import { getCellContainerLocation } from "../utils/getCellContainerLocation";
 import { handleKeyDown } from "../utils/handleKeyDown";
 import { isCellInRange } from "../utils/isCellInRange.ts";
+import { isCellOverlappingPane } from "../utils/isCellOverlappingPane.ts";
 import isDevEnvironment from "../utils/isDevEnvironment";
+import { getScrollableParent } from "../utils/scrollHelpers.ts";
 import { ColumnReorderBehavior } from "./ColumnReorderBehavior.ts";
 import { RowReorderBehavior } from "./RowReorderBehavior.ts";
 
@@ -39,9 +41,9 @@ export const DefaultBehavior = (config: DefaultBehaviorConfig = CONFIG_DEFAULTS)
 
     const { rowIndex, colIndex } = getCellContainerLocation(element);
 
-    const shouldSelectEntireColumn = rowIndex === 0 && store.enableColumnSelection;
+    const shouldSelectEntireColumn = rowIndex === 0 && store.enableColumnSelectionOnFirstRow;
 
-    const shouldSelectEntireRow = colIndex === 0 && store.enableRowSelection;
+    const shouldSelectEntireRow = colIndex === 0 && store.enableRowSelectionOnFirstColumn;
 
     const clickedCell = store.getCellByIndexes(rowIndex, colIndex);
 
@@ -85,6 +87,37 @@ export const DefaultBehavior = (config: DefaultBehaviorConfig = CONFIG_DEFAULTS)
         endRowIdx: cellArea.endRowIdx,
         startColIdx: 0,
         endColIdx: store.columns.length,
+      });
+    }
+
+    const scrollableParent = (getScrollableParent(element, true) as Element) ?? store.reactGridRef!;
+
+    const leftPaneOverlapValue = isCellOverlappingPane(store, { rowIndex, colIndex }, "left");
+    const rightPaneOverlapValue = isCellOverlappingPane(store, { rowIndex, colIndex }, "right");
+    const topPaneOverlapValue = isCellOverlappingPane(store, { rowIndex, colIndex }, "top");
+    const bottomOverlapValue = isCellOverlappingPane(store, { rowIndex, colIndex }, "bottom");
+
+    if (leftPaneOverlapValue) {
+      scrollableParent?.scrollBy({
+        left: -leftPaneOverlapValue,
+      });
+    }
+
+    if (rightPaneOverlapValue) {
+      scrollableParent?.scrollBy({
+        left: rightPaneOverlapValue,
+      });
+    }
+
+    if (topPaneOverlapValue) {
+      scrollableParent?.scrollBy({
+        top: -topPaneOverlapValue,
+      });
+    }
+
+    if (bottomOverlapValue) {
+      scrollableParent?.scrollBy({
+        top: bottomOverlapValue,
       });
     }
 
@@ -140,9 +173,9 @@ export const DefaultBehavior = (config: DefaultBehaviorConfig = CONFIG_DEFAULTS)
 
     const { rowIndex, colIndex } = getCellContainerLocation(element);
 
-    const shouldSelectEntireColumn = rowIndex === 0 && store.enableColumnSelection;
+    const shouldSelectEntireColumn = rowIndex === 0 && store.enableColumnSelectionOnFirstRow;
 
-    const shouldSelectEntireRow = colIndex === 0 && store.enableRowSelection;
+    const shouldSelectEntireRow = colIndex === 0 && store.enableRowSelectionOnFirstColumn;
 
     const touchedCell = store.getCellByIndexes(rowIndex, colIndex);
 
@@ -233,7 +266,7 @@ export const DefaultBehavior = (config: DefaultBehaviorConfig = CONFIG_DEFAULTS)
         const prevCell = getCellContainerLocation(prevElement);
         const currCell = getCellContainerLocation(currElement);
 
-        const shouldSelectEntireColumn = currCell.rowIndex === 0 && store.enableColumnSelection;
+        const shouldSelectEntireColumn = currCell.rowIndex === 0 && store.enableColumnSelectionOnFirstRow;
 
         if (prevCell.rowIndex === currCell.rowIndex && prevCell.colIndex === currCell.colIndex) {
           return {

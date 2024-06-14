@@ -133,9 +133,9 @@ export interface ReactGridProps {
 
   // enableVirtualization?: boolean;
 
-  enableColumnSelection?: boolean;
+  enableColumnSelectionOnFirstRow?: boolean;
 
-  enableRowSelection?: boolean;
+  enableRowSelectionOnFirstColumn?: boolean;
 
   behaviors?: Record<BehaviorId, Behavior>;
 

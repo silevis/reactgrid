@@ -34,9 +34,9 @@ export interface ReactGridStoreProps {
 
   resizingColId?: number | string;
 
-  enableColumnSelection?: boolean;
+  enableColumnSelectionOnFirstRow?: boolean;
 
-  enableRowSelection?: boolean;
+  enableRowSelectionOnFirstColumn?: boolean;
 
   linePosition?: number;
   lineOrientation: "vertical" | "horizontal";

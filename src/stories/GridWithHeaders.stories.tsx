@@ -66,8 +66,6 @@ export const GridWithHeaders = () => {
     })
   );
 
-  console.log({ rows, columns, gridData });
-
   const cellMatrix = cellMatrixBuilder(rows, columns, ({ setCell }) => {
     gridData.forEach((row, rowIndex) => {
       row.forEach((val, columnIndex) => {
@@ -129,8 +127,6 @@ export const GridWithHeaders = () => {
     );
   });
 
-  console.log("cellMatrix cells", cellMatrix.cells);
-
   return (
     <div className="rgScrollableContainer" style={{ height: "100%", overflow: "auto" }}>
       <ReactGrid
@@ -142,8 +138,8 @@ export const GridWithHeaders = () => {
         onRowReorder={(selectedRowIndexes, destinationRowIdx) =>
           handleRowReorder(selectedRowIndexes, destinationRowIdx, setRows, setGridData)
         }
-        enableColumnSelection
-        enableRowSelection
+        enableColumnSelectionOnFirstRow // TODO: enableColumnSelectionOnFirstRow
+        enableRowSelectionOnFirstColumn
         onResizeColumn={(width, columnId) => handleResizeColumn(width, columnId, cellMatrix, setColumns)}
         minColumnWidth={100}
         stickyTopRows={1}

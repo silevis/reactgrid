@@ -7,8 +7,8 @@ import { getCellContainerFromPoint } from "../utils/getCellContainerFromPoint.ts
 import { getCellIndexesFromContainerElement } from "../utils/getCellIndexes.ts";
 import { getCellIndexesFromPointerLocation } from "../utils/getCellIndexesFromPointerLocation.ts";
 import { getLastRowMetrics } from "../utils/getLastRowMetrics.ts";
+import { isCellOverlappingPane } from "../utils/isCellOverlappingPane.ts";
 import isDevEnvironment from "../utils/isDevEnvironment.ts";
-import { isRowOverlappingPane } from "../utils/isRowOverlappingPane.ts";
 import { scrollTowardsSticky } from "../utils/scrollTowardsSticky.ts";
 
 const devEnvironment = isDevEnvironment();
@@ -140,7 +140,7 @@ const handlePointerMove = (
   if (event.clientY > cellContainer.getBoundingClientRect().top + selectedAreaHeight) {
     destinationRowIdx = minimalSelection.endRowIdx - 1;
 
-    if (isRowOverlappingPane(store, destinationRowIdx, "bottom")) {
+    if (isCellOverlappingPane(store, { rowIndex: destinationRowIdx, colIndex: 0 }, "bottom")) {
       linePosition = undefined;
     } else {
       linePosition = bottomCellContainer.offsetTop + bottomCellContainer.offsetHeight;
@@ -149,7 +149,7 @@ const handlePointerMove = (
     // Case 2 - Cursor is moving above the selected rows
     destinationRowIdx = minimalSelection.startRowIdx;
 
-    if (isRowOverlappingPane(store, destinationRowIdx, "top")) {
+    if (isCellOverlappingPane(store, { rowIndex: destinationRowIdx, colIndex: 0 }, "top")) {
       linePosition = undefined;
     } else {
       linePosition = topCellContainer.offsetTop;
