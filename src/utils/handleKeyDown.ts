@@ -12,9 +12,8 @@ import { isCellSticky } from "./isCellSticky.ts";
 import { isCellInRange } from "./isCellInRange.ts";
 import { getStickyCellAdjacentToCenterPane } from "./getStickyCellAdjacentToCenterPane.ts";
 import { Cell } from "../types/PublicModel.ts";
-import { isCellInTopPane } from "./isCellInTopPane.ts";
-import { isCellInBottomPane } from "./isCellInBottomPane.ts";
 import { getCellIndexes } from "./getCellIndexes.1.ts";
+import { isCellInPane } from "./isCellInPane.ts";
 
 type HandleKeyDownConfig = {
   moveHorizontallyOnEnter: boolean;
@@ -320,7 +319,7 @@ export const handleKeyDown = (
         const isStickyCell = isCellSticky(store, focusedCell);
 
         if (isStickyCell) {
-          if (isCellInTopPane(store, focusedCell)) {
+          if (isCellInPane(store, focusedCell, "Top")) {
             const minimalSelectedArea = findMinimalSelectedArea(store, {
               ...area,
               startRowIdx: 0,
@@ -336,7 +335,7 @@ export const handleKeyDown = (
               },
             };
           }
-          if (isCellInBottomPane(store, focusedCell)) {
+          if (isCellInPane(store, focusedCell, "Bottom")) {
             const nearestBottomStickyCell = getStickyCellAdjacentToCenterPane(store, focusedCell, "Bottom");
             if (!nearestBottomStickyCell) return store;
             const nearestBottomStickyCellIdx = getCellIndexes(store, nearestBottomStickyCell);
@@ -426,7 +425,7 @@ export const handleKeyDown = (
         const isStickyCell = isCellSticky(store, focusedCell);
 
         if (isStickyCell) {
-          if (isCellInBottomPane(store, focusedCell)) {
+          if (isCellInPane(store, focusedCell, "Bottom")) {
             const lastRowCellSpan = store.getCellByIds(`${lastGridRowIdx}`, `${focusedCell.colIndex}`)?.rowSpan;
             const minimalSelectedArea = findMinimalSelectedArea(store, {
               ...area,
@@ -443,11 +442,11 @@ export const handleKeyDown = (
               },
             };
           }
-          if (isCellInTopPane(store, focusedCell)) {
+          if (isCellInPane(store, focusedCell, "Top")) {
             let targetCell: FocusedCell | Cell = focusedCell;
             let targetCellIdx = getCellIndexes(store, targetCell);
 
-            while (isCellInTopPane(store, targetCell)) {
+            while (isCellInPane(store, targetCell, "Top")) {
               targetCell = store.getCellByIndexes(
                 targetCellIdx.rowIndex + (targetCell.rowSpan ?? 1),
                 targetCellIdx.colIndex

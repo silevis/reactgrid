@@ -1,34 +1,35 @@
 import { IndexedLocation } from "../types/InternalModel";
 import { ReactGridStore } from "../types/ReactGridStore";
 import { getCellContainer } from "./getCellContainer";
+import { isCellInPane } from "./isCellInPane";
 import { isTheSameCell } from "./isTheSameCell";
 
 export const isCellOverlappingPane = (
   store: ReactGridStore,
   destinationCellIdx: IndexedLocation,
-  panePosition: "left" | "right" | "top" | "bottom"
+  panePosition: "Top" | "Bottom" | "Right" | "Left"
 ) => {
   const cell = store.getCellByIndexes(destinationCellIdx.rowIndex, destinationCellIdx.colIndex);
   let paneCell;
 
   switch (panePosition) {
-    case "left":
+    case "Left":
       paneCell = store.getCellByIndexes(destinationCellIdx.rowIndex, store.paneRanges.Left.endColIdx - 1);
       break;
-    case "right":
+    case "Right":
       paneCell = store.getCellByIndexes(destinationCellIdx.rowIndex, store.paneRanges.Right.startColIdx);
       break;
-    case "top":
+    case "Top":
       paneCell = store.getCellByIndexes(store.paneRanges.TopLeft.endRowIdx - 1, destinationCellIdx.colIndex);
       break;
-    case "bottom":
+    case "Bottom":
       paneCell = store.getCellByIndexes(store.paneRanges.BottomLeft.startRowIdx, destinationCellIdx.colIndex);
       break;
     default:
       paneCell = null;
   }
 
-  if (!paneCell || !cell) return 0;
+  if (!paneCell || !cell || isCellInPane(store, cell, panePosition)) return 0;
 
   const paneCellContainer = getCellContainer(store, paneCell) as HTMLElement | null;
   const cellContainer = getCellContainer(store, cell) as HTMLElement | null;
@@ -39,7 +40,7 @@ export const isCellOverlappingPane = (
     return 0;
   }
 
-  if (panePosition === "right") {
+  if (panePosition === "Right") {
     const horizontalOffsetDifference = Math.abs(paneCellContainer.offsetLeft - cellContainer.offsetLeft);
 
     if (cellContainer.offsetLeft + cellContainer.offsetWidth <= paneCellContainer.offsetLeft) {
@@ -48,7 +49,7 @@ export const isCellOverlappingPane = (
 
     return cellContainer.offsetWidth - horizontalOffsetDifference;
   }
-  if (panePosition === "left") {
+  if (panePosition === "Left") {
     const horizontalOffsetDifference = Math.abs(
       paneCellContainer.offsetLeft + paneCellContainer.offsetWidth - cellContainer.offsetLeft
     );
@@ -59,7 +60,7 @@ export const isCellOverlappingPane = (
 
     return horizontalOffsetDifference;
   }
-  if (panePosition === "bottom") {
+  if (panePosition === "Bottom") {
     const verticalOffsetDifference = Math.abs(
       cellContainer.offsetTop + cellContainer.offsetHeight - paneCellContainer.offsetTop
     );
@@ -69,7 +70,7 @@ export const isCellOverlappingPane = (
     }
     return verticalOffsetDifference;
   }
-  if (panePosition === "top") {
+  if (panePosition === "Top") {
     const verticalOffsetDifference = Math.abs(
       paneCellContainer.offsetTop + paneCellContainer.offsetHeight - cellContainer.offsetTop
     );

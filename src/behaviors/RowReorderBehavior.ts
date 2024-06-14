@@ -140,7 +140,7 @@ const handlePointerMove = (
   if (event.clientY > cellContainer.getBoundingClientRect().top + selectedAreaHeight) {
     destinationRowIdx = minimalSelection.endRowIdx - 1;
 
-    if (isCellOverlappingPane(store, { rowIndex: destinationRowIdx, colIndex: 0 }, "bottom")) {
+    if (isCellOverlappingPane(store, { rowIndex: destinationRowIdx, colIndex: 0 }, "Bottom")) {
       linePosition = undefined;
     } else {
       linePosition = bottomCellContainer.offsetTop + bottomCellContainer.offsetHeight;
@@ -149,7 +149,7 @@ const handlePointerMove = (
     // Case 2 - Cursor is moving above the selected rows
     destinationRowIdx = minimalSelection.startRowIdx;
 
-    if (isCellOverlappingPane(store, { rowIndex: destinationRowIdx, colIndex: 0 }, "top")) {
+    if (isCellOverlappingPane(store, { rowIndex: destinationRowIdx, colIndex: 0 }, "Top")) {
       linePosition = undefined;
     } else {
       linePosition = topCellContainer.offsetTop;

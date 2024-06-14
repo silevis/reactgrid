@@ -92,10 +92,10 @@ export const DefaultBehavior = (config: DefaultBehaviorConfig = CONFIG_DEFAULTS)
 
     const scrollableParent = (getScrollableParent(element, true) as Element) ?? store.reactGridRef!;
 
-    const leftPaneOverlapValue = isCellOverlappingPane(store, { rowIndex, colIndex }, "left");
-    const rightPaneOverlapValue = isCellOverlappingPane(store, { rowIndex, colIndex }, "right");
-    const topPaneOverlapValue = isCellOverlappingPane(store, { rowIndex, colIndex }, "top");
-    const bottomOverlapValue = isCellOverlappingPane(store, { rowIndex, colIndex }, "bottom");
+    const leftPaneOverlapValue = isCellOverlappingPane(store, { rowIndex, colIndex }, "Left");
+    const rightPaneOverlapValue = isCellOverlappingPane(store, { rowIndex, colIndex }, "Right");
+    const topPaneOverlapValue = isCellOverlappingPane(store, { rowIndex, colIndex }, "Top");
+    const bottomOverlapValue = isCellOverlappingPane(store, { rowIndex, colIndex }, "Bottom");
 
     if (leftPaneOverlapValue) {
       scrollableParent?.scrollBy({
