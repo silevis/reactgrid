@@ -1,7 +1,7 @@
 import React, { FC, PropsWithChildren, useEffect, useRef, useState } from "react";
 import { HandlerFn } from "../types/Behavior";
 import { getStyledRangesCSS } from "../utils/getStyledRangesCSS";
-import { useReactGridStore, useReactGridStoreApi } from "../utils/reactGridStore";
+import { reactGridStores, useReactGridStore } from "../utils/reactGridStore";
 import { updateStoreWithApiAndEventHandler } from "../utils/updateStoreWithApiAndEventHandler";
 import { handlePointerDown } from "../controllers/handlePointerDown";
 import { Interpolation, Theme } from "@emotion/react";
@@ -13,7 +13,7 @@ interface GridWrapperProps {
 }
 
 const GridWrapper: FC<PropsWithChildren<GridWrapperProps>> = ({ reactGridId, style, children }) => {
-  const storeApi = useReactGridStoreApi(reactGridId);
+  const store = reactGridStores()[reactGridId];
   const currentBehavior = useReactGridStore(reactGridId, (store) => store.currentBehavior);
 
   const reactGridElement = useRef<HTMLDivElement>(null);
@@ -30,10 +30,10 @@ const GridWrapper: FC<PropsWithChildren<GridWrapperProps>> = ({ reactGridId, sty
   const withStoreApi = <TEvent extends React.SyntheticEvent<HTMLDivElement>>(
     event: TEvent,
     handler?: HandlerFn<TEvent>
-  ) => updateStoreWithApiAndEventHandler(storeApi, event, handler);
+  ) => updateStoreWithApiAndEventHandler(store, event, handler);
 
   useEffect(() => {
-    const styledRangesCSS = getStyledRangesCSS(storeApi.getState(), styledRanges);
+    const styledRangesCSS = getStyledRangesCSS(store.getState(), styledRanges);
     if (styledRangesCSS) {
       setCSS(styledRangesCSS);
     }
@@ -46,7 +46,7 @@ const GridWrapper: FC<PropsWithChildren<GridWrapperProps>> = ({ reactGridId, sty
       className="ReactGrid"
       ref={reactGridElement}
       style={style}
-      onPointerDown={(e) => handlePointerDown(e, storeApi)}
+      onPointerDown={(e) => handlePointerDown(e, store)}
       onKeyDown={(e) => withStoreApi(e, currentBehavior?.handleKeyDown)}
       onKeyUp={(e) => withStoreApi(e, currentBehavior?.handleKeyUp)}
       onCompositionStart={(e) => withStoreApi(e, currentBehavior?.handleCompositionStart)}

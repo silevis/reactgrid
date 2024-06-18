@@ -84,6 +84,8 @@ export type CellContextType = {
   /** Internal: provides cell container's style  */
   containerStyle: React.CSSProperties;
 
+  isFocused: boolean;
+
   /** Requests focus and enables edit mode if true is passed as a parameter. */
   requestFocus: () => void;
 

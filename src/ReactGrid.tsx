@@ -5,7 +5,7 @@ import PanesRenderer from "./components/PanesRenderer";
 import { ReactGridIdProvider } from "./components/ReactGridIdProvider";
 import { ReactGridProps } from "./types/PublicModel";
 import isDevEnvironment from "./utils/isDevEnvironment";
-import { initReactGridStore, useReactGridStore, useReactGridStoreApi } from "./utils/reactGridStore";
+import { initReactGridStore, reactGridStores, useReactGridStore } from "./utils/reactGridStore";
 import { useReactGridSync } from "./hooks/useReactGridSync";
 import { Line } from "./components/Line";
 import { ColumnReorderBehavior } from "./behaviors/ColumnReorderBehavior";
@@ -62,7 +62,7 @@ const ReactGrid: FC<ReactGridProps> = ({
     onPaste,
   });
 
-  const store = useReactGridStoreApi(id).getState();
+  const store = reactGridStores()[id].getState();
 
   const currentBehavior = useReactGridStore(id, (store) => store.currentBehavior);
   const linePosition = useReactGridStore(id, (store) => store.linePosition);

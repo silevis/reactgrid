@@ -9,7 +9,7 @@ import { ColumnReorderBehavior } from "../behaviors/ColumnReorderBehavior.ts";
 
 type ReactGridStores = Record<string, StoreApi<ReactGridStore>>;
 
-const reactGridStores = create<ReactGridStores>(() => ({}));
+export const reactGridStores = create<ReactGridStores>(() => ({}));
 
 const DEFAULT_STORE_PROPS: ReactGridStoreProps = {
   rows: [],
@@ -182,25 +182,14 @@ export function initReactGridStore(id: string, initialProps?: Partial<ReactGridS
 }
 
 export function useReactGridStore<T>(id: string, selector: (store: ReactGridStore) => T): T {
-  reactGridStores.setState((state) => {
-    if (state[id]) {
-      return state;
-    } else {
-      throw new Error(`ReactGridStore with id "${id}" doesn't exist!`);
-    }
-  });
+  const store = reactGridStores()[id];
 
-  const selectedStore = useStore(reactGridStores, (state) => state[id]);
-  return useStore(selectedStore, selector);
+  if (store.getState() === undefined) {
+    throw new Error(`ReactGridStore with id "${id}" doesn't exist!`);
+  }
+
+  return useStore(store, selector);
 }
-
-export const useReactGridStoreApi = (id: string): StoreApi<ReactGridStore> => {
-  const selectedStore = useStore(reactGridStores, (state) => state[id]);
-
-  if (!selectedStore) throw new Error(`ReactGridStore with id "${id}" doesn't exist!`);
-
-  return selectedStore;
-};
 
 export const useReactGridApi = <T>(id: string, selector: (store: ReactGridStore) => T): T | undefined => {
   const selectedStore = useStore(reactGridStores, (state) => state[id]);
