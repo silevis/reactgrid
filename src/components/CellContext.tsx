@@ -66,7 +66,7 @@ export const CellContextProvider = memo(
 
     const id = useReactGridId();
 
-    // non-reactive store in order to avoid re-renders
+    // non-reactive way to access store in order to avoid unnecessary re-renders
     const store = reactGridStores()[id].getState();
 
     const hiddenFocusTargetRef = store.hiddenFocusTargetRef;

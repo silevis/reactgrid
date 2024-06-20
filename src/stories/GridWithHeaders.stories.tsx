@@ -138,7 +138,7 @@ export const GridWithHeaders = () => {
         onRowReorder={(selectedRowIndexes, destinationRowIdx) =>
           handleRowReorder(selectedRowIndexes, destinationRowIdx, setRows, setGridData)
         }
-        enableColumnSelectionOnFirstRow // TODO: enableColumnSelectionOnFirstRow
+        enableColumnSelectionOnFirstRow
         enableRowSelectionOnFirstColumn
         onResizeColumn={(width, columnId) => handleResizeColumn(width, columnId, cellMatrix, setColumns)}
         minColumnWidth={100}

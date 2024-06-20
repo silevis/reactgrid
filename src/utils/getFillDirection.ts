@@ -20,7 +20,7 @@ export const getFillDirection = (
 
   const currectFocusedCell = store.getCellByIndexes(store.focusedLocation.rowIndex, store.focusedLocation.colIndex);
 
-  if (!currectFocusedCell) return undefined;
+  if (!currectFocusedCell || pointerColIdx === -1) return undefined;
 
   const selectedArea = store.selectedArea;
 
