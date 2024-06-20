@@ -5,7 +5,10 @@ export const handleCopy = <T>(data: T[][], selectedArea: NumericalRange) => {
   const selectedData = data
     .slice(selectedArea.startRowIdx, selectedArea.endRowIdx)
     .map((row) => row.slice(selectedArea.startColIdx, selectedArea.endColIdx))
-    .filter((row) => row[0] !== null);
+    .map((row) => row.filter((cell) => cell !== null))
+    .filter((row) => row.length > 0);
+
+  console.log(selectedData);
 
   navigator.clipboard.writeText(JSON.stringify(selectedData));
 };
