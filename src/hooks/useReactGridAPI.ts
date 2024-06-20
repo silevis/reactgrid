@@ -4,7 +4,7 @@ import { areAreasEqual } from "../utils/areAreasEqual";
 import { getNumericalRange } from "../utils/getNumericalRange";
 import isDevEnvironment from "../utils/isDevEnvironment";
 import { ReactGridStore } from "../types/ReactGridStore.ts";
-import { useReactGridApi } from "../utils/reactGridStore.ts";
+import { useReactGridStoreApi } from "../utils/reactGridStore.ts";
 
 /**
  * Hook that provides access to the ReactGrid API.
@@ -15,7 +15,7 @@ import { useReactGridApi } from "../utils/reactGridStore.ts";
 const devEnvironment = isDevEnvironment();
 
 export default function useReactGridAPI(id: string) {
-  return useReactGridApi(id, (store: ReactGridStore) => {
+  return useReactGridStoreApi(id, (store: ReactGridStore) => {
     return {
       // Setters
 

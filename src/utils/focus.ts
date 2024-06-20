@@ -4,9 +4,9 @@ import { getOriginCell } from "./getOriginCell";
 import { EMPTY_AREA } from "../types/InternalModel";
 import { ReactGridStore } from "../types/ReactGridStore.ts";
 import { emitEvent } from "./emitEvent.ts";
-import { getCellPaneOverlap } from "./getCellPaneOverlap.ts";
 import { getScrollableParent } from "./scrollHelpers.ts";
 import { getCellContainer } from "./getCellContainer.ts";
+import { handlePaneOverlap } from "./handlePaneOverlap.ts";
 
 export const moveFocusUp = (store: ReactGridStore, currentFocus: FocusedCell): ReactGridStore => {
   if (currentFocus.rowIndex === 0) return store;
@@ -36,13 +36,7 @@ export const moveFocusUp = (store: ReactGridStore, currentFocus: FocusedCell): R
 
       emitEvent("focuschange", { currentFocus });
 
-      const topPaneOverlapValue = getCellPaneOverlap(store, { rowIndex, colIndex }, "Top");
-
-      if (topPaneOverlapValue) {
-        scrollableParent?.scrollBy({
-          top: -topPaneOverlapValue,
-        });
-      }
+      handlePaneOverlap(store, rowIndex, colIndex, scrollableParent);
 
       return {
         ...store,
@@ -86,13 +80,7 @@ export const moveFocusRight = (store: ReactGridStore, currentFocus: FocusedCell)
 
       emitEvent("focuschange", { currentFocus });
 
-      const rightPaneOverlapValue = getCellPaneOverlap(store, { rowIndex, colIndex }, "Right");
-
-      if (rightPaneOverlapValue) {
-        scrollableParent?.scrollBy({
-          left: rightPaneOverlapValue,
-        });
-      }
+      handlePaneOverlap(store, rowIndex, colIndex, scrollableParent);
 
       return {
         ...store,
@@ -132,13 +120,7 @@ export const moveFocusDown = (store: ReactGridStore, currentFocus: FocusedCell) 
 
       emitEvent("focuschange", { currentFocus });
 
-      const bottomOverlapValue = getCellPaneOverlap(store, { rowIndex, colIndex }, "Bottom");
-
-      if (bottomOverlapValue) {
-        scrollableParent?.scrollBy({
-          top: bottomOverlapValue,
-        });
-      }
+      handlePaneOverlap(store, rowIndex, colIndex, scrollableParent);
 
       return {
         ...store,
@@ -179,13 +161,7 @@ export const moveFocusLeft = (store: ReactGridStore, currentFocus: FocusedCell) 
 
       emitEvent("focuschange", { currentFocus });
 
-      const leftPaneOverlapValue = getCellPaneOverlap(store, { rowIndex, colIndex }, "Left");
-
-      if (leftPaneOverlapValue) {
-        scrollableParent?.scrollBy({
-          left: -leftPaneOverlapValue,
-        });
-      }
+      handlePaneOverlap(store, rowIndex, colIndex, scrollableParent);
 
       return {
         ...store,

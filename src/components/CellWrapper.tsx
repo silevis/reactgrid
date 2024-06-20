@@ -21,6 +21,7 @@ const CellWrapper: FC<CellWrapperProps> = ({ children, targetInputRef, ...wrappe
 
   const resizingColId = useReactGridStore(id, (store) => store.resizingColId);
   const columns = useReactGridStore(id, (store) => store.columns);
+  const shadowSize = useReactGridStore(id, (store) => store.shadowSize);
 
   const onResizeColumn = useReactGridStore(id, (store) => store.onResizeColumn);
   const setCurrentBehavior = useReactGridStore(id, (store) => store.setCurrentBehavior);
@@ -31,9 +32,7 @@ const CellWrapper: FC<CellWrapperProps> = ({ children, targetInputRef, ...wrappe
   if (ctx.realRowIndex === 0) {
     const cellColumn = columns.find((col) => col.id === ctx.colId);
 
-    (shouldEnableColumnResize = resizingColId === undefined || resizingColId === ctx.colId) &&
-      onResizeColumn &&
-      cellColumn?.resizable;
+    shouldEnableColumnResize = resizingColId === undefined && onResizeColumn && cellColumn?.resizable && !shadowSize;
   }
 
   return (

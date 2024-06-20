@@ -191,7 +191,7 @@ export function useReactGridStore<T>(id: string, selector: (store: ReactGridStor
   return useStore(store, selector);
 }
 
-export const useReactGridApi = <T>(id: string, selector: (store: ReactGridStore) => T): T | undefined => {
+export const useReactGridStoreApi = <T>(id: string, selector: (store: ReactGridStore) => T): T | undefined => {
   const selectedStore = useStore(reactGridStores, (state) => state[id]);
 
   const selectedStoreState = selectedStore?.getState();
