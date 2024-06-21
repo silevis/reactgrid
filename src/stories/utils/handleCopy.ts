@@ -8,7 +8,5 @@ export const handleCopy = <T>(data: T[][], selectedArea: NumericalRange) => {
     .map((row) => row.filter((cell) => cell !== null))
     .filter((row) => row.length > 0);
 
-  console.log(selectedData);
-
   navigator.clipboard.writeText(JSON.stringify(selectedData));
 };
