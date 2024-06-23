@@ -29,6 +29,7 @@ export const GridWithHeaders = () => {
           width: "200px",
           resizable: true,
           reorderable: true,
+          minWidth: 150,
         };
 
       return {
@@ -36,6 +37,7 @@ export const GridWithHeaders = () => {
         width: "150px",
         resizable: true,
         reorderable: true,
+        minWidth: 50,
       };
     })
   );
@@ -50,15 +52,13 @@ export const GridWithHeaders = () => {
   const [gridData, setGridData] = useState<(CellData | null)[][]>(
     Array.from({ length: ROW_COUNT }).map((_, i) => {
       return Array.from({ length: COLUMN_COUNT }).map((_, j) => {
-        if (i === 3 && j === 3) return null;
+        if (i === 0 && j === 3) return null;
         if (i === 2 && j === 2) return null;
-        if (i === 0) {
-          return { text: `title ${j + 1}` };
-        }
+        if (i === 3 && j === 3) return null;
+        if (i === 2 && j === 1) return { date: new Date() };
 
-        if (i === 2 && j === 1) {
-          return { date: new Date() };
-        }
+        if (i === 0) return { text: `title ${j + 1}` };
+
         return {
           text: `[${i.toString()}:${j.toString()}]`,
         };
@@ -71,6 +71,8 @@ export const GridWithHeaders = () => {
       row.forEach((val, columnIndex) => {
         const columnId = columns[columnIndex].id;
         const rowId = rows[rowIndex].id;
+
+        if (val === null) return;
 
         if (rowIndex === 0) {
           setCell(rowId, columnId, HeaderCell, {
@@ -85,8 +87,6 @@ export const GridWithHeaders = () => {
           });
           return;
         }
-
-        if (val === null) return;
 
         setCell(rowId, columnId, TextCell, {
           value: val?.text,
@@ -107,7 +107,9 @@ export const GridWithHeaders = () => {
     const realRowIdx = rows.findIndex((row) => row.id === "2");
     const realColIdx = columns.findIndex((col) => col.id === "1");
 
-    setCell("3", "2", TextCell, { value: "text" ?? "", reverse: true, onTextChanged: () => null }, { colSpan: 2 });
+    setCell("3", "2", TextCell, { value: "text" ?? "", onTextChanged: () => null }, { colSpan: 2 });
+
+    setCell("0", "2", TextCell, { value: "text" ?? "", onTextChanged: () => null }, { colSpan: 2 });
 
     setCell(
       "2",
@@ -141,7 +143,6 @@ export const GridWithHeaders = () => {
         enableColumnSelectionOnFirstRow
         enableRowSelectionOnFirstColumn
         onResizeColumn={(width, columnId) => handleResizeColumn(width, columnId, cellMatrix, setColumns)}
-        minColumnWidth={100}
         stickyTopRows={1}
         {...cellMatrix}
       />

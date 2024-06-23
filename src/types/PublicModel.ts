@@ -14,6 +14,7 @@ export type Row<Id = string> = {
 export type Column<Id = string> = {
   id: Id;
   width: string | number;
+  minWidth?: string | number;
   resizable?: boolean;
   reorderable?: boolean;
 };
@@ -120,7 +121,6 @@ export interface ReactGridProps {
   styledRanges?: StyledRange[];
 
   columns: Column[];
-  minColumnWidth?: number;
   rows: Row[];
 
   cells: CellMap;

@@ -42,15 +42,7 @@ export const useReactGridSync = (
 
   // sync column data that comes from cell matrix builder with store
   useEffect(() => {
-    const columnsWithMinWidthApplied = columns.map((column) => {
-      const columnWidth = typeof column.width === "string" ? parseInt(column.width) : column.width;
-      if (columnWidth < store.minColumnWidth) {
-        return { ...column, width: store.minColumnWidth };
-      }
-      return column;
-    });
-
-    setColumns(columnsWithMinWidthApplied);
+    setColumns(columns);
   }, [columns]);
 
   useEffect(() => {

@@ -126,9 +126,10 @@ export const DefaultBehavior = (config: DefaultBehaviorConfig = CONFIG_DEFAULTS)
       ...(!shouldSelectEntireColumn && { focusedLocation: { rowIndex: rowIndex, colIndex: colIndex } }),
       absoluteFocusedLocation: { rowIndex: rowIndex, colIndex: colIndex },
       fillHandleArea: { startRowIdx: -1, endRowIdx: -1, startColIdx: -1, endColIdx: -1 },
-      ...(newBehavior.id !== ColumnReorderBehavior.id &&
-        newBehavior.id !== RowReorderBehavior.id && { selectedArea: selectedArea }),
-      ...(newBehavior.id === RowReorderBehavior.id && { lineOrientation: "horizontal" }),
+      selectedArea: selectedArea,
+      ...(newBehavior.id === RowReorderBehavior.id
+        ? { lineOrientation: "horizontal" }
+        : { lineOrientation: "vertical" }),
       currentBehavior: newBehavior,
     };
   },

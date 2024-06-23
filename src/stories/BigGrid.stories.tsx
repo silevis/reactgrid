@@ -257,7 +257,6 @@ export const BigGrid = () => {
           onColumnReorder={(selectedColIndexes, destinationColIdx) =>
             handleColumnReorder(selectedColIndexes, destinationColIdx, setColumns, setGridData)
           }
-          minColumnWidth={100}
           enableColumnSelectionOnFirstRow
           enableRowSelectionOnFirstColumn
           onAreaSelected={(selectedArea) => {}}

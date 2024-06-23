@@ -9,7 +9,6 @@ import { RGTheme } from "./Theme";
 export interface ReactGridStoreProps {
   rows: Row[];
   columns: Column[];
-  minColumnWidth: number;
 
   cells: CellMap;
 
@@ -32,7 +31,7 @@ export interface ReactGridStoreProps {
   behaviors: Record<BehaviorId, Behavior>;
   currentBehavior: Behavior;
 
-  resizingColId?: number | string;
+  resizingColId?: string;
 
   enableColumnSelectionOnFirstRow?: boolean;
 
@@ -50,7 +49,7 @@ export interface ReactGridStoreProps {
   onCut?: (selectedArea: NumericalRange) => void;
   onCopy?: (selectedArea: NumericalRange) => void;
   onPaste?: (selectedArea: NumericalRange, pastedData: string) => void;
-  onResizeColumn?: (width: number, columnId: number | string) => void;
+  onResizeColumn?: (width: number, columnId: string) => void;
   onColumnReorder?: (selectedColIndexes: number[], destinationColIdx: number) => void;
   onRowReorder?: (selectedRowIndexes: number[], destinationRowIdx: number) => void;
 }
@@ -60,6 +59,7 @@ export interface ReactGridStore extends ReactGridStoreProps {
   readonly getRowAmount: () => number;
 
   readonly setColumns: (columns: Column[]) => void;
+  readonly getColumnById: (columnId: string) => Column | null;
   readonly getColumnAmount: () => number;
 
   readonly setCells: (cellMap: CellMap) => void;
@@ -89,7 +89,7 @@ export interface ReactGridStore extends ReactGridStoreProps {
 
   readonly setSelectedRows: (startColIdx: number, endColIdx: number) => void;
 
-  readonly setResizingColId: (columnId: number | string) => void;
+  readonly setResizingColId: (columnId: string) => void;
 
   readonly setCurrentBehavior: (currentBehavior: Behavior) => void;
   readonly setLineOrientation: (lineOrientation: "horizontal" | "vertical") => void;

@@ -217,7 +217,7 @@ const handlePointerUp = (store: ReactGridStore, event: React.PointerEvent<HTMLDi
   const { lastColumnWidth, lastColumnClientOffsetLeft } = getLastColumnMetrics(store);
 
   // CASE 1
-  // If the shadow is beyond the last column, move the selected columns to the last column
+  // If the mouse pointer is beyond the last column, move the selected columns to the last column
   if (event.clientX > lastColumnClientOffsetLeft + lastColumnWidth) {
     store.onColumnReorder?.(selectedColIndexes, store.columns.length - 1);
 
@@ -242,7 +242,7 @@ const handlePointerUp = (store: ReactGridStore, event: React.PointerEvent<HTMLDi
   if (!gridWrapper) return store;
 
   // CASE 2
-  // If the shadow is beyond the first column, move the selected columns to the first column
+  // If the mouse pointer is beyond the first column, move the selected columns to the first column
   if (event.clientX < gridWrapper.getBoundingClientRect().left) {
     store.onColumnReorder?.(selectedColIndexes, 0);
 
@@ -271,7 +271,7 @@ const handlePointerUp = (store: ReactGridStore, event: React.PointerEvent<HTMLDi
   if (!cellContainer) return store;
 
   // CASE 3
-  // If the shadow is within the first and last column, move the selected columns to the destination column
+  // If the mouse pointer is within the first and last column, move the selected columns to the destination column
   store.onColumnReorder?.(selectedColIndexes, destinationColIdx);
 
   return {

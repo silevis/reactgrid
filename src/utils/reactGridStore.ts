@@ -14,7 +14,6 @@ export const reactGridStores = create<ReactGridStores>(() => ({}));
 const DEFAULT_STORE_PROPS: ReactGridStoreProps = {
   rows: [],
   columns: [],
-  minColumnWidth: 50,
   cells: new Map(),
   rowMeasurements: [],
   colMeasurements: [],
@@ -72,6 +71,13 @@ export function initReactGridStore(id: string, initialProps?: Partial<ReactGridS
         setRows: (rows) => set(() => ({ rows })),
         getRowAmount: () => get().rows.length,
         setColumns: (columns) => set(() => ({ columns })),
+        getColumnById: (columnId) => {
+          const column = get().columns.find((col) => col.id === columnId);
+
+          if (!column) throw new Error(`Column with id "${columnId}" doesn't exist!`);
+
+          return column;
+        },
         getColumnAmount: () => get().columns.length,
         setCells: (cells) => set(() => ({ cells })),
         setUserStyles: (userStyles) => set(() => ({ userStyles })),
