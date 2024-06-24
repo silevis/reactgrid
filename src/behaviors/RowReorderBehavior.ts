@@ -220,7 +220,7 @@ const handlePointerUp = (
   }
   const { lastRowRelativeOffsetTop, lastRowHeight } = getLastRowMetrics(store);
   // CASE 1
-  // If the shadow is beyond the last row, move the selected rows to the last row
+  // If the mouse pointer is beyond the last row, move the selected rows to the last row
   if (event.clientY > lastRowRelativeOffsetTop + lastRowHeight) {
     store.onRowReorder?.(selectedRowIndexes, store.rows.length - 1);
     return {
@@ -242,7 +242,7 @@ const handlePointerUp = (
   const gridWrapper = store.reactGridRef;
   if (!gridWrapper) return store;
   // CASE 2
-  // If the shadow is beyond the first row, move the selected rows to the first row
+  // If the mouse pointer is beyond the first row, move the selected rows to the first row
   if (event.clientY < gridWrapper.getBoundingClientRect().top) {
     store.onRowReorder?.(selectedRowIndexes, 0);
     return {
@@ -266,7 +266,7 @@ const handlePointerUp = (
   const cellContainer = getCellContainer(store, firstSelectedCell);
   if (!cellContainer) return store;
   // CASE 3
-  // If the shadow is within the first and last row, move the selected rows to the destination row
+  // If the mouse pointer is within the first and last row, move the selected rows to the destination row
   store.onRowReorder?.(selectedRowIndexes, destinationRowIdx);
   return {
     ...store,
