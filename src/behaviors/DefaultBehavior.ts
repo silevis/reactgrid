@@ -72,17 +72,17 @@ export const DefaultBehavior = (config: DefaultBehaviorConfig = CONFIG_DEFAULTS)
       newBehavior = RowReorderBehavior;
     }
 
-    let selectedArea = { startRowIdx: -1, endRowIdx: -1, startColIdx: -1, endColIdx: -1 };
+    let newSelectedArea = { startRowIdx: -1, endRowIdx: -1, startColIdx: -1, endColIdx: -1 };
 
     if (shouldSelectEntireColumn) {
-      selectedArea = findMinimalSelectedArea(store, {
+      newSelectedArea = findMinimalSelectedArea(store, {
         startRowIdx: 0,
         endRowIdx: store.rows.length,
         startColIdx: cellArea.startColIdx,
         endColIdx: cellArea.endColIdx,
       });
     } else if (shouldSelectEntireRow) {
-      selectedArea = findMinimalSelectedArea(store, {
+      newSelectedArea = findMinimalSelectedArea(store, {
         startRowIdx: cellArea.startRowIdx,
         endRowIdx: cellArea.endRowIdx,
         startColIdx: 0,
@@ -126,7 +126,11 @@ export const DefaultBehavior = (config: DefaultBehaviorConfig = CONFIG_DEFAULTS)
       ...(!shouldSelectEntireColumn && { focusedLocation: { rowIndex: rowIndex, colIndex: colIndex } }),
       absoluteFocusedLocation: { rowIndex: rowIndex, colIndex: colIndex },
       fillHandleArea: { startRowIdx: -1, endRowIdx: -1, startColIdx: -1, endColIdx: -1 },
-      selectedArea: selectedArea,
+      ...(((newBehavior.id !== ColumnReorderBehavior.id && newBehavior.id !== RowReorderBehavior.id) ||
+        (store.selectedArea.startRowIdx === 0 &&
+          store.selectedArea.startColIdx === 0 &&
+          store.selectedArea.endRowIdx === store.rows.length &&
+          newSelectedArea.startColIdx === 0)) && { selectedArea: newSelectedArea }),
       ...(newBehavior.id === RowReorderBehavior.id
         ? { lineOrientation: "horizontal" }
         : { lineOrientation: "vertical" }),
