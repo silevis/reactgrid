@@ -10,6 +10,6 @@ export const getLastColumnMetrics = (store: ReactGridStore) => {
   return {
     lastColumnRelativeffsetLeft: lastColumnCellContainerOffsetLeft,
     lastColumnClientOffsetLeft: (lastColumnCellContainer as HTMLElement).getBoundingClientRect().left,
-    lastColumnWidth: lastColumnCellContainerWidth,
+    lastColumnCellWidth: lastColumnCellContainerWidth,
   };
 };

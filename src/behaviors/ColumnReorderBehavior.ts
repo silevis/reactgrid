@@ -81,7 +81,7 @@ const handlePointerMove = (store: ReactGridStore, event: React.PointerEvent<HTML
 
   const selectedAreaWidth = calcSelectedAreaWidth(store);
 
-  const { lastColumnRelativeffsetLeft, lastColumnWidth } = getLastColumnMetrics(store);
+  const { lastColumnRelativeffsetLeft, lastColumnCellWidth } = getLastColumnMetrics(store);
 
   const firstCellInSelectedArea = store.getCellByIndexes(0, store.selectedArea.startColIdx);
 
@@ -161,8 +161,8 @@ const handlePointerMove = (store: ReactGridStore, event: React.PointerEvent<HTML
   }
 
   // Ensure the shadow doesn't go beyond the last column
-  if (shadowPosition + selectedAreaWidth >= lastColumnRelativeffsetLeft + lastColumnWidth) {
-    shadowPosition = lastColumnRelativeffsetLeft + lastColumnWidth - selectedAreaWidth;
+  if (shadowPosition + selectedAreaWidth >= lastColumnRelativeffsetLeft + lastColumnCellWidth) {
+    shadowPosition = lastColumnRelativeffsetLeft + lastColumnCellWidth - selectedAreaWidth;
   }
 
   return {
@@ -214,11 +214,11 @@ const handlePointerUp = (store: ReactGridStore, event: React.PointerEvent<HTMLDi
     };
   }
 
-  const { lastColumnWidth, lastColumnClientOffsetLeft } = getLastColumnMetrics(store);
+  const { lastColumnCellWidth, lastColumnClientOffsetLeft } = getLastColumnMetrics(store);
 
   // CASE 1
   // If the mouse pointer is beyond the last column, move the selected columns to the last column
-  if (event.clientX > lastColumnClientOffsetLeft + lastColumnWidth) {
+  if (event.clientX > lastColumnClientOffsetLeft + lastColumnCellWidth) {
     store.onColumnReorder?.(selectedColIndexes, store.columns.length - 1);
 
     return {
