@@ -77,7 +77,7 @@ const handlePointerMove = (store: ReactGridStore, event: React.PointerEvent<HTML
 
   const currentDragOverCell = store.getCellByIndexes(rowIndex, colIndex);
 
-  if (currentDragOverCell) scrollTowardsSticky(store, currentDragOverCell, { rowIndex, colIndex });
+  if (currentDragOverCell) scrollTowardsSticky(store, currentDragOverCell, { rowIndex, colIndex }, true);
 
   const selectedAreaWidth = calcSelectedAreaWidth(store);
 

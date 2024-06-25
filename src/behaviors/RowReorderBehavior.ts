@@ -9,6 +9,7 @@ import { getCellIndexesFromPointerLocation } from "../utils/getCellIndexesFromPo
 import { getLastRowMetrics } from "../utils/getLastRowMetrics.ts";
 import { getCellPaneOverlap } from "../utils/getCellPaneOverlap.ts";
 import isDevEnvironment from "../utils/isDevEnvironment.ts";
+import { scrollTowardsSticky } from "../utils/scrollTowardsSticky.ts";
 
 const devEnvironment = isDevEnvironment();
 
@@ -86,7 +87,11 @@ const handlePointerMove = (
   const firstColumnClientOffsetLeft = firstColumnCellContainer.getBoundingClientRect().left;
 
   // ensure appropriate rowIndex even if the cursor pointer is outside the grid
-  const { rowIndex } = getCellIndexesFromPointerLocation(firstColumnClientOffsetLeft, event.clientY);
+  const { rowIndex, colIndex } = getCellIndexesFromPointerLocation(firstColumnClientOffsetLeft, event.clientY);
+
+  const currentDragOverCell = store.getCellByIndexes(rowIndex, colIndex);
+
+  if (currentDragOverCell) scrollTowardsSticky(store, currentDragOverCell, { rowIndex, colIndex }, false, true);
 
   const selectedAreaHeight = calcSelectedAreaHeight(store);
 
