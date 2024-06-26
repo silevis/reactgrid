@@ -9,12 +9,11 @@ import { ColumnReorderBehavior } from "../behaviors/ColumnReorderBehavior.ts";
 
 type ReactGridStores = Record<string, StoreApi<ReactGridStore>>;
 
-const reactGridStores = create<ReactGridStores>(() => ({}));
+export const reactGridStores = create<ReactGridStores>(() => ({}));
 
 const DEFAULT_STORE_PROPS: ReactGridStoreProps = {
   rows: [],
   columns: [],
-  minColumnWidth: 50,
   cells: new Map(),
   rowMeasurements: [],
   colMeasurements: [],
@@ -72,6 +71,13 @@ export function initReactGridStore(id: string, initialProps?: Partial<ReactGridS
         setRows: (rows) => set(() => ({ rows })),
         getRowAmount: () => get().rows.length,
         setColumns: (columns) => set(() => ({ columns })),
+        getColumnById: (columnId) => {
+          const column = get().columns.find((col) => col.id === columnId);
+
+          if (!column) throw new Error(`Column with id "${columnId}" doesn't exist!`);
+
+          return column;
+        },
         getColumnAmount: () => get().columns.length,
         setCells: (cells) => set(() => ({ cells })),
         setUserStyles: (userStyles) => set(() => ({ userStyles })),
@@ -131,6 +137,18 @@ export function initReactGridStore(id: string, initialProps?: Partial<ReactGridS
 
         setSelectedArea: (selectedArea) => set(() => ({ selectedArea })),
 
+        setSelectedColumns: (startColIdx: number, endColIdx: number) => {
+          const { setSelectedArea } = get();
+
+          setSelectedArea({ startRowIdx: 0, endRowIdx: get().getRowAmount(), startColIdx, endColIdx });
+        },
+
+        setSelectedRows: (startRowIdx: number, endRowIdx: number) => {
+          const { setSelectedArea } = get();
+
+          setSelectedArea({ startRowIdx, endRowIdx, startColIdx: 0, endColIdx: get().getColumnAmount() });
+        },
+
         setFillHandleArea: (fillHandleArea) => set(() => ({ fillHandleArea })),
 
         setCurrentBehavior: (currentBehavior) => set(() => ({ currentBehavior })),
@@ -170,22 +188,21 @@ export function initReactGridStore(id: string, initialProps?: Partial<ReactGridS
 }
 
 export function useReactGridStore<T>(id: string, selector: (store: ReactGridStore) => T): T {
-  reactGridStores.setState((state) => {
-    if (state[id]) {
-      return state;
-    } else {
-      throw new Error(`ReactGridStore with id "${id}" doesn't exist!`);
-    }
-  });
+  const store = reactGridStores()[id];
 
-  const selectedStore = useStore(reactGridStores, (state) => state[id]);
-  return useStore(selectedStore, selector);
+  if (store.getState() === undefined) {
+    throw new Error(`ReactGridStore with id "${id}" doesn't exist!`);
+  }
+
+  return useStore(store, selector);
 }
 
-export const useReactGridStoreApi = (id: string): StoreApi<ReactGridStore> => {
+export const useReactGridStoreApi = <T>(id: string, selector: (store: ReactGridStore) => T): T | undefined => {
   const selectedStore = useStore(reactGridStores, (state) => state[id]);
 
-  if (!selectedStore) throw new Error(`ReactGridStore with id "${id}" doesn't exist!`);
+  const selectedStoreState = selectedStore?.getState();
 
-  return selectedStore;
+  if (selectedStoreState) {
+    return selector(selectedStoreState);
+  }
 };

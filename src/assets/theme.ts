@@ -66,6 +66,9 @@ const lightTheme: RGTheme = {
     backgroundColor: "lightblue",
     size: "3px",
   },
+  shadow: {
+    backgroundColor: "#E5E5E5AF",
+  },
   resizeColumn: {
     default: {
       position: "absolute",

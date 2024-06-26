@@ -12,7 +12,11 @@ export const handlePaste = <T>(
     const next = [...prev];
     for (let i = 0; i < parsedData.length; i++) {
       for (let j = 0; j < parsedData[i].length; j++) {
-        next[selectedArea.startRowIdx + i][selectedArea.startColIdx + j] = parsedData[i][j];
+        const rowIdx = selectedArea.startRowIdx + i;
+        const colIdx = selectedArea.startColIdx + j;
+        if (next[rowIdx] && next[rowIdx][colIdx] !== undefined) {
+          next[rowIdx][colIdx] = parsedData[i][j];
+        }
       }
     }
     return next;

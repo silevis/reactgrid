@@ -7,7 +7,7 @@ import { getCellContainerFromPoint } from "../utils/getCellContainerFromPoint.ts
 import { getCellIndexesFromContainerElement } from "../utils/getCellIndexes.ts";
 import { getCellIndexesFromPointerLocation } from "../utils/getCellIndexesFromPointerLocation.ts";
 import { getLastColumnMetrics } from "../utils/getLastColumnMetrics.ts";
-import { isColumnOverlappingPane } from "../utils/isColumnOverlappingPane.ts";
+import { getCellPaneOverlap } from "../utils/getCellPaneOverlap.ts";
 import isDevEnvironment from "../utils/isDevEnvironment.ts";
 import { scrollTowardsSticky } from "../utils/scrollTowardsSticky.ts";
 
@@ -77,11 +77,11 @@ const handlePointerMove = (store: ReactGridStore, event: React.PointerEvent<HTML
 
   const currentDragOverCell = store.getCellByIndexes(rowIndex, colIndex);
 
-  if (currentDragOverCell) scrollTowardsSticky(store, currentDragOverCell, { rowIndex, colIndex });
+  if (currentDragOverCell) scrollTowardsSticky(store, currentDragOverCell, { rowIndex, colIndex }, true);
 
   const selectedAreaWidth = calcSelectedAreaWidth(store);
 
-  const { lastColumnRelativeffsetLeft, lastColumnWidth } = getLastColumnMetrics(store);
+  const { lastColumnRelativeffsetLeft, lastColumnCellWidth } = getLastColumnMetrics(store);
 
   const firstCellInSelectedArea = store.getCellByIndexes(0, store.selectedArea.startColIdx);
 
@@ -139,7 +139,7 @@ const handlePointerMove = (store: ReactGridStore, event: React.PointerEvent<HTML
   if (event.clientX > cellContainer.getBoundingClientRect().left + selectedAreaWidth) {
     destinationColIdx = minimalSelection.endColIdx - 1;
 
-    if (isColumnOverlappingPane(store, destinationColIdx, "right")) {
+    if (getCellPaneOverlap(store, { rowIndex: 0, colIndex: destinationColIdx }, "Right")) {
       linePosition = undefined;
     } else {
       linePosition = rightCellContainer.offsetLeft + rightCellContainer.offsetWidth;
@@ -148,7 +148,7 @@ const handlePointerMove = (store: ReactGridStore, event: React.PointerEvent<HTML
     // Case 2 - Cursor is moving to the left of the selected columns
     destinationColIdx = minimalSelection.startColIdx;
 
-    if (isColumnOverlappingPane(store, destinationColIdx, "left")) {
+    if (getCellPaneOverlap(store, { rowIndex: 0, colIndex: destinationColIdx }, "Left")) {
       linePosition = undefined;
     } else {
       linePosition = leftCellContainer.offsetLeft;
@@ -161,8 +161,8 @@ const handlePointerMove = (store: ReactGridStore, event: React.PointerEvent<HTML
   }
 
   // Ensure the shadow doesn't go beyond the last column
-  if (shadowPosition + selectedAreaWidth >= lastColumnRelativeffsetLeft + lastColumnWidth) {
-    shadowPosition = lastColumnRelativeffsetLeft + lastColumnWidth - selectedAreaWidth;
+  if (shadowPosition + selectedAreaWidth >= lastColumnRelativeffsetLeft + lastColumnCellWidth) {
+    shadowPosition = lastColumnRelativeffsetLeft + lastColumnCellWidth - selectedAreaWidth;
   }
 
   return {
@@ -214,11 +214,11 @@ const handlePointerUp = (store: ReactGridStore, event: React.PointerEvent<HTMLDi
     };
   }
 
-  const { lastColumnWidth, lastColumnClientOffsetLeft } = getLastColumnMetrics(store);
+  const { lastColumnCellWidth, lastColumnClientOffsetLeft } = getLastColumnMetrics(store);
 
   // CASE 1
-  // If the shadow is beyond the last column, move the selected columns to the last column
-  if (event.clientX > lastColumnClientOffsetLeft + lastColumnWidth) {
+  // If the mouse pointer is beyond the last column, move the selected columns to the last column
+  if (event.clientX > lastColumnClientOffsetLeft + lastColumnCellWidth) {
     store.onColumnReorder?.(selectedColIndexes, store.columns.length - 1);
 
     return {
@@ -242,7 +242,7 @@ const handlePointerUp = (store: ReactGridStore, event: React.PointerEvent<HTMLDi
   if (!gridWrapper) return store;
 
   // CASE 2
-  // If the shadow is beyond the first column, move the selected columns to the first column
+  // If the mouse pointer is beyond the first column, move the selected columns to the first column
   if (event.clientX < gridWrapper.getBoundingClientRect().left) {
     store.onColumnReorder?.(selectedColIndexes, 0);
 
@@ -271,7 +271,7 @@ const handlePointerUp = (store: ReactGridStore, event: React.PointerEvent<HTMLDi
   if (!cellContainer) return store;
 
   // CASE 3
-  // If the shadow is within the first and last column, move the selected columns to the destination column
+  // If the mouse pointer is within the first and last column, move the selected columns to the destination column
   store.onColumnReorder?.(selectedColIndexes, destinationColIdx);
 
   return {

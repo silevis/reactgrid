@@ -1,5 +1,6 @@
 import { Behavior } from "../types/Behavior.ts";
 import { ReactGridStore } from "../types/ReactGridStore.ts";
+import { getNumberFromPixelString } from "../utils/getNumberFromPixelValueString.ts";
 import isDevEnvironment from "../utils/isDevEnvironment.ts";
 
 const devEnvironment = isDevEnvironment();
@@ -86,6 +87,10 @@ const handlePointerMove = (
 
   if (!reactGridRef) return store;
 
+  const resizingColumn = store.getColumnById(store.resizingColId ?? "");
+
+  const minColumnWidth = getNumberFromPixelString(resizingColumn?.minWidth ?? 0);
+
   const rect = reactGridRef.getBoundingClientRect();
 
   // get the left position relative to the viewport
@@ -96,9 +101,7 @@ const handlePointerMove = (
   return {
     ...store,
     linePosition:
-      linePosition > headerLeftPosition + store.minColumnWidth
-        ? linePosition
-        : headerLeftPosition + store.minColumnWidth,
+      linePosition > headerLeftPosition + minColumnWidth ? linePosition : headerLeftPosition + minColumnWidth,
   };
 };
 
@@ -116,6 +119,10 @@ const handlePointerUp = (
 
   if (!reactGridRef) return store;
 
+  const resizingColumn = store.getColumnById(store.resizingColId ?? "");
+
+  const minColumnWidth = getNumberFromPixelString(resizingColumn?.minWidth ?? 0);
+
   const rect = reactGridRef.getBoundingClientRect();
 
   // get the left position relative to the viewport
@@ -124,8 +131,8 @@ const handlePointerUp = (
   const linePosition = event.clientX - reactGridLeftPosition;
 
   if (store.resizingColId) {
-    if (linePosition <= headerLeftPosition + store.minColumnWidth) {
-      store.onResizeColumn?.(store.minColumnWidth, store.resizingColId);
+    if (linePosition <= headerLeftPosition + minColumnWidth) {
+      store.onResizeColumn?.(minColumnWidth, store.resizingColId);
     } else {
       store.onResizeColumn?.(resultWidth, store.resizingColId);
     }

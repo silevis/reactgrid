@@ -10,14 +10,15 @@ import { handleFill } from "./utils/handleFill";
 import { handleColumnReorder } from "./utils/handleColumnReorder";
 import { handleResizeColumn } from "./utils/handleResizeColumn";
 import DateCell from "../components/cellTemplates/DateCell";
+import { handleRowReorder } from "./utils/handleRowReorder";
 
 interface CellData {
   text?: string;
   date?: Date;
 }
 
-const ROW_COUNT = 8;
-const COLUMN_COUNT = 6;
+const ROW_COUNT = 4;
+const COLUMN_COUNT = 4;
 
 export const GridWithHeaders = () => {
   const [columns, setColumns] = useState<Array<Column<string>>>(
@@ -28,6 +29,7 @@ export const GridWithHeaders = () => {
           width: "200px",
           resizable: true,
           reorderable: true,
+          minWidth: 150,
         };
 
       return {
@@ -35,28 +37,28 @@ export const GridWithHeaders = () => {
         width: "150px",
         resizable: true,
         reorderable: true,
+        minWidth: 50,
       };
     })
   );
-  const [rows] = useState<Array<Row<string>>>(
-    Array.from({ length: ROW_COUNT }).map((_, j) => ({
-      id: j.toString(),
-      height: "50px",
-    }))
+  const [rows, setRows] = useState<Array<Row<string>>>(
+    Array.from({ length: ROW_COUNT }).map((_, j) => {
+      if (j === 0) return { id: j.toString(), height: "50px", reorderable: false };
+
+      return { id: j.toString(), height: "50px", reorderable: true };
+    })
   );
 
   const [gridData, setGridData] = useState<(CellData | null)[][]>(
     Array.from({ length: ROW_COUNT }).map((_, i) => {
       return Array.from({ length: COLUMN_COUNT }).map((_, j) => {
-        if (i === 3 && j === 3) return null;
+        if (i === 0 && j === 3) return null;
         if (i === 2 && j === 2) return null;
-        if (i === 0) {
-          return { text: `title ${j + 1}` };
-        }
+        if (i === 3 && j === 3) return null;
+        if (i === 2 && j === 1) return { date: new Date() };
 
-        if (i === 2 && j === 1) {
-          return { date: new Date() };
-        }
+        if (i === 0) return { text: `title ${j + 1}` };
+
         return {
           text: `[${i.toString()}:${j.toString()}]`,
         };
@@ -68,9 +70,12 @@ export const GridWithHeaders = () => {
     gridData.forEach((row, rowIndex) => {
       row.forEach((val, columnIndex) => {
         const columnId = columns[columnIndex].id;
+        const rowId = rows[rowIndex].id;
+
+        if (val === null) return;
 
         if (rowIndex === 0) {
-          setCell(rowIndex.toString(), columnId, HeaderCell, {
+          setCell(rowId, columnId, HeaderCell, {
             text: val?.text,
             style: {
               backgroundColor: "#fcff91",
@@ -83,9 +88,7 @@ export const GridWithHeaders = () => {
           return;
         }
 
-        if (val === null) return;
-
-        setCell(rowIndex.toString(), columnId, TextCell, {
+        setCell(rowId, columnId, TextCell, {
           value: val?.text,
           style: {},
           onTextChanged: (data) => {
@@ -101,20 +104,23 @@ export const GridWithHeaders = () => {
       });
     });
 
+    const realRowIdx = rows.findIndex((row) => row.id === "2");
     const realColIdx = columns.findIndex((col) => col.id === "1");
 
-    setCell("3", "2", TextCell, { value: "text" ?? "", reverse: true, onTextChanged: () => null }, { colSpan: 2 });
+    setCell("3", "2", TextCell, { value: "text" ?? "", onTextChanged: () => null }, { colSpan: 2 });
+
+    setCell("0", "2", TextCell, { value: "text" ?? "", onTextChanged: () => null }, { colSpan: 2 });
 
     setCell(
       "2",
       "1",
       DateCell,
       {
-        value: gridData[2][realColIdx]?.date,
+        value: gridData[realRowIdx][realColIdx]?.date,
         onDateChanged: (newDate) => {
           setGridData((prev) => {
             const next = [...prev];
-            next[2][realColIdx] = newDate;
+            next[realRowIdx][realColIdx] = newDate;
             return next;
           });
         },
@@ -131,9 +137,12 @@ export const GridWithHeaders = () => {
         onColumnReorder={(selectedColIndexes, destinationColIdx) =>
           handleColumnReorder(selectedColIndexes, destinationColIdx, setColumns, setGridData)
         }
-        enableColumnSelection
+        onRowReorder={(selectedRowIndexes, destinationRowIdx) =>
+          handleRowReorder(selectedRowIndexes, destinationRowIdx, setRows, setGridData)
+        }
+        enableColumnSelectionOnFirstRow
+        enableRowSelectionOnFirstColumn
         onResizeColumn={(width, columnId) => handleResizeColumn(width, columnId, cellMatrix, setColumns)}
-        minColumnWidth={100}
         stickyTopRows={1}
         {...cellMatrix}
       />

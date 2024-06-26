@@ -1,19 +1,22 @@
-import { createContext, memo, useContext, useState } from "react";
-import { CellContextType } from "../types/PublicModel";
-import { useReactGridStoreApi } from "../utils/reactGridStore";
+import { createContext, memo, useContext, useMemo, useState } from "react";
+import { Cell, CellContextType } from "../types/PublicModel";
+import { reactGridStores } from "../utils/reactGridStore";
 import { useReactGridId } from "./ReactGridIdProvider";
+import { StickyOffsets } from "../types/InternalModel";
 
 interface CellContextProviderProps {
-  children: React.ReactNode;
   rowId: string;
   colId: string;
   rowIndex: number;
   colIndex: number;
   realRowIndex: number;
   realColumnIndex: number;
+  cell: Cell<string, string>;
+  isFocused: boolean;
   rowSpan?: number;
   colSpan?: number;
-  getCellOffset?: (rowIdx: number, colIdx: number, rowSpan: number, colSpan: number) => React.CSSProperties;
+  getCellOffset: (rowIdx: number, colIdx: number, rowSpan: number, colSpan: number) => React.CSSProperties;
+  stickyOffsets?: StickyOffsets;
   cellStyles?: React.CSSProperties;
 }
 
@@ -22,6 +25,7 @@ export const CellContext = createContext<CellContextType>({
   colId: "",
   realRowIndex: -1,
   realColumnIndex: -1,
+  isFocused: false,
   requestFocus: function (): void {
     throw new Error("Function not implemented.");
   },
@@ -42,63 +46,72 @@ export const useCellContext = () => {
   return ctx;
 };
 
-export const CellContextProvider = ({
-  rowId,
-  colId,
-  rowIndex,
-  colIndex,
-  children,
-  realRowIndex,
-  realColumnIndex,
-  rowSpan,
-  colSpan,
-  getCellOffset,
-  cellStyles,
-}: CellContextProviderProps) => {
-  const [isInEditMode, setIsInEditMode] = useState(false);
+export const CellContextProvider = memo(
+  ({
+    rowId,
+    colId,
+    rowIndex,
+    colIndex,
+    realRowIndex,
+    realColumnIndex,
+    rowSpan,
+    colSpan,
+    getCellOffset = () => ({}),
+    cell,
+    isFocused,
+  }: CellContextProviderProps) => {
+    const [isInEditMode, setIsInEditMode] = useState(false);
 
-  const id = useReactGridId();
-  const store = useReactGridStoreApi(id).getState();
+    const { Template, props } = cell;
 
-  const hiddenFocusTargetRef = store.hiddenFocusTargetRef;
-  const setFocusedLocation = store.setFocusedLocation;
+    const id = useReactGridId();
 
-  return (
-    <CellContext.Provider
-      value={{
-        rowId: rowId,
-        colId: colId,
-        realRowIndex,
-        isInEditMode,
-        realColumnIndex,
-        rowSpan: rowSpan,
-        colSpan: colSpan,
-        containerStyle: {
-          ...(rowSpan && {
-            gridRowEnd: `span ${rowSpan}`,
-          }),
-          ...(colSpan && {
-            gridColumnEnd: `span ${colSpan}`,
-          }),
-          ...getCellOffset?.(rowIndex, colIndex, rowSpan ?? 1, colSpan ?? 1),
-          gridRowStart: realRowIndex + 1,
-          gridColumnStart: realColumnIndex + 1,
-          ...cellStyles,
-        },
-        setEditMode: (value) => {
-          if (value === false) {
-            hiddenFocusTargetRef?.focus({ preventScroll: true });
-            setIsInEditMode(false);
-          } else {
-            setIsInEditMode(true);
-          }
-        },
-        requestFocus: () => {
-          setFocusedLocation(realRowIndex, realColumnIndex);
-        },
-      }}
-    >
-      {children}
-    </CellContext.Provider>
-  );
-};
+    // non-reactive way to access store in order to avoid unnecessary re-renders
+    const store = reactGridStores()[id].getState();
+
+    const hiddenFocusTargetRef = store.hiddenFocusTargetRef;
+    const setFocusedLocation = store.setFocusedLocation;
+
+    const children = useMemo(() => <Template {...props} />, [Template, props]);
+
+    return (
+      <CellContext.Provider
+        value={{
+          rowId: rowId,
+          colId: colId,
+          realRowIndex,
+          isInEditMode,
+          realColumnIndex,
+          rowSpan: rowSpan,
+          colSpan: colSpan,
+          isFocused,
+          containerStyle: {
+            ...(rowSpan && {
+              gridRowEnd: `span ${rowSpan}`,
+            }),
+            ...(colSpan && {
+              gridColumnEnd: `span ${colSpan}`,
+            }),
+            ...getCellOffset?.(rowIndex, colIndex, rowSpan ?? 1, colSpan ?? 1),
+            gridRowStart: realRowIndex + 1,
+            gridColumnStart: realColumnIndex + 1,
+            ...props.style,
+          },
+          setEditMode: (value) => {
+            if (value === false) {
+              hiddenFocusTargetRef?.focus({ preventScroll: true });
+              setIsInEditMode(false);
+            } else {
+              setIsInEditMode(true);
+            }
+          },
+          requestFocus: () => {
+            setFocusedLocation(realRowIndex, realColumnIndex);
+          },
+        }}
+      >
+        {children}
+      </CellContext.Provider>
+    );
+  }
+);

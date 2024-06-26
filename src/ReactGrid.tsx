@@ -5,11 +5,12 @@ import PanesRenderer from "./components/PanesRenderer";
 import { ReactGridIdProvider } from "./components/ReactGridIdProvider";
 import { ReactGridProps } from "./types/PublicModel";
 import isDevEnvironment from "./utils/isDevEnvironment";
-import { initReactGridStore, useReactGridStore, useReactGridStoreApi } from "./utils/reactGridStore";
+import { initReactGridStore, reactGridStores, useReactGridStore } from "./utils/reactGridStore";
 import { useReactGridSync } from "./hooks/useReactGridSync";
 import { Line } from "./components/Line";
 import { ColumnReorderBehavior } from "./behaviors/ColumnReorderBehavior";
 import { Shadow } from "./components/Shadow";
+import { RowReorderBehavior } from "./behaviors/RowReorderBehavior";
 
 const devEnvironment = isDevEnvironment();
 
@@ -27,8 +28,8 @@ const ReactGrid: FC<ReactGridProps> = ({
   styledRanges,
   initialSelectedRange,
   initialFocusLocation,
-  enableColumnSelection,
-  minColumnWidth,
+  enableColumnSelectionOnFirstRow,
+  enableRowSelectionOnFirstColumn,
   onAreaSelected,
   onFillHandle,
   onCellFocused,
@@ -37,6 +38,7 @@ const ReactGrid: FC<ReactGridProps> = ({
   onCopy,
   onResizeColumn,
   onColumnReorder,
+  onRowReorder,
 }) => {
   initReactGridStore(id, {
     rows,
@@ -45,8 +47,8 @@ const ReactGrid: FC<ReactGridProps> = ({
     behaviors,
     userStyles,
     styledRanges,
-    minColumnWidth,
-    enableColumnSelection,
+    enableColumnSelectionOnFirstRow,
+    enableRowSelectionOnFirstColumn,
     onFillHandle,
     onAreaSelected,
     onCellFocused,
@@ -54,15 +56,16 @@ const ReactGrid: FC<ReactGridProps> = ({
     onCopy,
     onResizeColumn,
     onColumnReorder,
+    onRowReorder,
     onPaste,
   });
 
-  const store = useReactGridStoreApi(id).getState();
+  const store = reactGridStores()[id].getState();
 
   const currentBehavior = useReactGridStore(id, (store) => store.currentBehavior);
   const linePosition = useReactGridStore(id, (store) => store.linePosition);
 
-  useReactGridSync(store, { cells, columns, initialSelectedRange, initialFocusLocation });
+  useReactGridSync(store, { cells, rows, columns, initialSelectedRange, initialFocusLocation });
 
   const [bypassSizeWarning, setBypassSizeWarning] = useState(false);
 
@@ -93,7 +96,9 @@ const ReactGrid: FC<ReactGridProps> = ({
             stickyRightColumns={stickyRightColumns ?? 0}
           />
           {linePosition && <Line />}
-          {currentBehavior.id === ColumnReorderBehavior.id && <Shadow />}
+          {(currentBehavior.id === ColumnReorderBehavior.id || currentBehavior.id === RowReorderBehavior.id) && (
+            <Shadow />
+          )}
         </GridWrapper>
       </ErrorBoundary>
     </ReactGridIdProvider>

@@ -1,11 +1,10 @@
 import React, { FC } from "react";
 import { useCellContext } from "./CellContext";
 import HiddenFocusTarget from "./HiddenFocusTarget";
-import { useReactGridStore, useReactGridStoreApi } from "../utils/reactGridStore";
+import { useReactGridStore } from "../utils/reactGridStore";
 import { useReactGridId } from "./ReactGridIdProvider";
 import { useTheme } from "../hooks/useTheme";
 import { ResizeColumnBehavior } from "../behaviors/ResizeColumnBehavior";
-import { DefaultBehavior } from "../behaviors/DefaultBehavior";
 
 type CellWrapperProps = React.ClassAttributes<HTMLDivElement> &
   React.HTMLAttributes<HTMLDivElement> & {
@@ -20,24 +19,20 @@ const CellWrapper: FC<CellWrapperProps> = ({ children, targetInputRef, ...wrappe
 
   const id = useReactGridId();
 
-  const store = useReactGridStoreApi(id).getState();
-
-  // TODO: fix performance issue
-  const focusedCell = useReactGridStore(id, (store) => store.focusedLocation);
-  const currentBehavior = useReactGridStore(id, (store) => store.currentBehavior);
+  const resizingColId = useReactGridStore(id, (store) => store.resizingColId);
+  const columns = useReactGridStore(id, (store) => store.columns);
+  const shadowSize = useReactGridStore(id, (store) => store.shadowSize);
 
   const onResizeColumn = useReactGridStore(id, (store) => store.onResizeColumn);
   const setCurrentBehavior = useReactGridStore(id, (store) => store.setCurrentBehavior);
   const setResizingColId = useReactGridStore(id, (store) => store.setResizingColId);
 
-  const isFocused = focusedCell.rowIndex === ctx.realRowIndex && focusedCell.colIndex === ctx.realColumnIndex;
-
   let shouldEnableColumnResize;
 
   if (ctx.realRowIndex === 0) {
-    const cellColumn = store.columns.find((col) => col.id === ctx.colId);
+    const cellColumn = columns.find((col) => col.id === ctx.colId);
 
-    shouldEnableColumnResize = currentBehavior.id === DefaultBehavior().id && onResizeColumn && cellColumn?.resizable;
+    shouldEnableColumnResize = resizingColId === undefined && onResizeColumn && cellColumn?.resizable && !shadowSize;
   }
 
   return (
@@ -72,7 +67,7 @@ const CellWrapper: FC<CellWrapperProps> = ({ children, targetInputRef, ...wrappe
         />
       )}
       {children}
-      {isFocused && <HiddenFocusTarget />}
+      {ctx.isFocused && <HiddenFocusTarget />}
     </div>
   );
 };

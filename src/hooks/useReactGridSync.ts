@@ -3,13 +3,14 @@ import { getCellIndexes } from "../utils/getCellIndexes.1";
 import { getNumericalRange } from "../utils/getNumericalRange";
 import { isSpanMember } from "../utils/isSpanMember";
 import isDevEnvironment from "../utils/isDevEnvironment";
-import { CellMap, Column, Location, Range } from "../types/PublicModel";
+import { CellMap, Column, Location, Range, Row } from "../types/PublicModel";
 import { ReactGridStore } from "../types/ReactGridStore";
 
 const devEnvironment = isDevEnvironment();
 
 interface ReactGridSyncProps {
   cells: CellMap<string, string>;
+  rows: Row[];
   columns: Column[];
   initialFocusLocation?: Location;
   initialSelectedRange?: Range;
@@ -17,15 +18,16 @@ interface ReactGridSyncProps {
 
 export const useReactGridSync = (
   store: ReactGridStore,
-  { cells, columns, initialSelectedRange, initialFocusLocation }: ReactGridSyncProps
+  { cells, rows, columns, initialSelectedRange, initialFocusLocation }: ReactGridSyncProps
 ) => {
   const {
     setSelectedArea,
-    setFocusedLocation: setFocusedCell,
+    setFocusedLocation,
     getCellOrSpanMemberByIndexes,
     getCellByIds,
     setCells,
     setColumns,
+    setRows,
   } = store;
 
   // sync cell data that comes from cell matrix builder with store
@@ -33,17 +35,14 @@ export const useReactGridSync = (
     setCells(cells);
   }, [cells]);
 
+  // sync cell data that comes from cell matrix builder with store
+  useEffect(() => {
+    setRows(rows);
+  }, [rows]);
+
   // sync column data that comes from cell matrix builder with store
   useEffect(() => {
-    const columnsWithMinWidthApplied = columns.map((column) => {
-      const columnWidth = typeof column.width === "string" ? parseInt(column.width) : column.width;
-      if (columnWidth < store.minColumnWidth) {
-        return { ...column, width: store.minColumnWidth };
-      }
-      return column;
-    });
-
-    setColumns(columnsWithMinWidthApplied);
+    setColumns(columns);
   }, [columns]);
 
   useEffect(() => {
@@ -87,7 +86,7 @@ export const useReactGridSync = (
           console.error("The provided 'initialFocusLocation' is invalid as it targets !");
       }
 
-      setFocusedCell(rowIndex, colIndex);
+      setFocusedLocation(rowIndex, colIndex);
     }
   }, [initialFocusLocation]);
 };

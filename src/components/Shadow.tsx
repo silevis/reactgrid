@@ -18,13 +18,13 @@ export const Shadow: FC = () => {
       className={`rg-line ${isVertical ? "rg-shadow-vertical" : "rg-shadow-horizontal"}`}
       style={{
         position: "absolute",
-        height: isVertical ? reactGridRef?.clientHeight : theme.line.size,
+        height: isVertical ? reactGridRef?.clientHeight : shadowSize,
         top: isVertical ? 0 : shadowPosition,
-        left: isVertical ? shadowPosition : reactGridRef?.getBoundingClientRect().left,
-        width: isVertical ? shadowSize : 0,
-        backgroundColor: "rgba(229, 229, 229, 0.69)" || theme.line.backgroundColor,
+        left: isVertical ? shadowPosition : 0,
+        width: isVertical ? shadowSize : reactGridRef?.scrollWidth,
+        backgroundColor: theme.shadow.backgroundColor,
         pointerEvents: "none",
       }}
-    ></div>
+    />
   );
 };

@@ -1,6 +1,6 @@
-import React, { CSSProperties } from "react";
+import React, { CSSProperties, useCallback } from "react";
 import { NumericalRange } from "../types/CellMatrix";
-import { GetCellOffsets, PaneName } from "../types/InternalModel";
+import { GetCellOffsets, PaneName, StickyOffsets } from "../types/InternalModel";
 import { RGTheme } from "../types/Theme";
 import { isSpanMember } from "../utils/isSpanMember";
 import { areAreasEqual } from "../utils/areAreasEqual";
@@ -14,6 +14,7 @@ interface PaneGridContentProps {
   range: NumericalRange;
   className?: string;
   style?: React.CSSProperties;
+  stickyOffsets?: StickyOffsets;
   getCellOffset?: (rowIdx: number, colIdx: number, rowSpan: number, colSpan: number) => CSSProperties;
 }
 
@@ -38,7 +39,9 @@ const shouldMemoGridContent = (prevProps: PaneGridContentProps, nextProps: PaneG
     prevStartColIdx !== nextStartColIdx ||
     prevEndColIdx !== nextEndColIdx ||
     prevProps.style !== nextProps.style ||
-    prevProps.getCellOffset !== nextProps.getCellOffset
+    prevProps.getCellOffset !== nextProps.getCellOffset ||
+    prevProps.stickyOffsets !== nextProps.stickyOffsets ||
+    prevProps.style !== nextProps.style
   ) {
     return false;
   }
@@ -46,45 +49,50 @@ const shouldMemoGridContent = (prevProps: PaneGridContentProps, nextProps: PaneG
   return true;
 };
 
-export const PaneGridContent: React.FC<PaneGridContentProps> = React.memo(({ range, getCellOffset }) => {
-  const { startRowIdx, endRowIdx, startColIdx, endColIdx } = range;
+export const PaneGridContent: React.FC<PaneGridContentProps> = React.memo(
+  ({ range, getCellOffset = () => ({}), stickyOffsets }) => {
+    const { startRowIdx, endRowIdx, startColIdx, endColIdx } = range;
 
-  const id = useReactGridId();
-  const rows = useReactGridStore(id, (store) => store.rows).slice(startRowIdx, endRowIdx);
-  const columns = useReactGridStore(id, (store) => store.columns).slice(startColIdx, endColIdx);
-  const cells = useReactGridStore(id, (store) => store.cells);
+    const id = useReactGridId();
+    const rows = useReactGridStore(id, (store) => store.rows).slice(startRowIdx, endRowIdx);
+    const columns = useReactGridStore(id, (store) => store.columns).slice(startColIdx, endColIdx);
+    const cells = useReactGridStore(id, (store) => store.cells);
+    const focusedCell = useReactGridStore(id, (store) => store.focusedLocation);
 
-  return rows.map((row, rowIndex) => {
-    return columns.map((col, colIndex) => {
-      const cell = cells.get(`${row.id} ${col.id}`);
+    const getCellOffset_ = useCallback(getCellOffset, [stickyOffsets]);
 
-      if (!cell || isSpanMember(cell)) return null;
+    return rows.map((row, rowIndex) => {
+      return columns.map((col, colIndex) => {
+        const cell = cells.get(`${row.id} ${col.id}`);
 
-      const realRowIndex = startRowIdx + rowIndex;
-      const realColumnIndex = startColIdx + colIndex;
+        if (!cell || isSpanMember(cell)) return null;
 
-      const { Template, props } = cell;
+        const realRowIndex = startRowIdx + rowIndex;
+        const realColumnIndex = startColIdx + colIndex;
 
-      return (
-        <CellContextProvider
-          key={`${realRowIndex}-${realColumnIndex}`}
-          rowId={row.id}
-          colId={col.id}
-          rowIndex={rowIndex}
-          colIndex={colIndex}
-          rowSpan={cell.rowSpan}
-          colSpan={cell.colSpan}
-          realRowIndex={realRowIndex}
-          realColumnIndex={realColumnIndex}
-          getCellOffset={getCellOffset}
-          cellStyles={{ ...props.style }}
-        >
-          <Template {...props} />
-        </CellContextProvider>
-      );
+        const isFocused = focusedCell.rowIndex === realRowIndex && focusedCell.colIndex === realColumnIndex;
+
+        return (
+          <CellContextProvider
+            key={`${realRowIndex}-${realColumnIndex}`}
+            rowId={row.id}
+            colId={col.id}
+            rowIndex={rowIndex}
+            colIndex={colIndex}
+            rowSpan={cell.rowSpan}
+            colSpan={cell.colSpan}
+            realRowIndex={realRowIndex}
+            realColumnIndex={realColumnIndex}
+            getCellOffset={getCellOffset_}
+            cell={cell}
+            isFocused={isFocused}
+          />
+        );
+      });
     });
-  });
-}, shouldMemoGridContent);
+  },
+  shouldMemoGridContent
+);
 
 const getPaneBackgroundStyle = (paneName: PaneName, range: NumericalRange, gap: RGTheme["grid"]["gap"]) => {
   let style: CSSProperties = {
@@ -138,6 +146,7 @@ interface PaneProps {
 
   gridContentRange: NumericalRange;
   getCellOffset?: GetCellOffsets;
+  stickyOffsets?: StickyOffsets;
 
   shouldRender?: boolean;
 }
@@ -147,6 +156,7 @@ export const Pane: React.FC<PaneProps> = ({
   style,
   gridContentRange,
   getCellOffset,
+  stickyOffsets,
   shouldRender = true,
 }) => {
   const theme = useTheme();
@@ -177,7 +187,7 @@ export const Pane: React.FC<PaneProps> = ({
           style={getPaneBackgroundStyle(paneName, gridContentRange, theme.grid.gap)}
         />
       )}
-      <PaneGridContent range={gridContentRange} getCellOffset={getCellOffset} />
+      <PaneGridContent range={gridContentRange} getCellOffset={getCellOffset} stickyOffsets={stickyOffsets} />
       {selectedArea && !areAreasEqual(focusedCellArea, selectedArea) && (
         <PartialArea
           areaRange={{

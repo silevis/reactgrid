@@ -4,7 +4,7 @@ import { GetCellOffsets, PaneName } from "../types/InternalModel";
 import { Border, Offset } from "../types/Theme";
 import { useTheme } from "../hooks/useTheme";
 import { useReactGridId } from "./ReactGridIdProvider";
-import { useReactGridStore, useReactGridStoreApi } from "../utils/reactGridStore";
+import { reactGridStores, useReactGridStore } from "../utils/reactGridStore";
 import { FillHandleBehavior } from "../behaviors/FillHandleBehavior";
 import { CellSelectionBehavior } from "../behaviors/CellSelectionBehavior";
 import { getCellArea } from "../utils/getCellArea";
@@ -87,7 +87,7 @@ export const PartialArea: FC<PartialAreaProps> = React.memo(
     const areaBorder = border ?? theme.area.border;
 
     const id = useReactGridId();
-    const store = useReactGridStoreApi(id).getState();
+    const store = reactGridStores()[id].getState();
     const currentBehavior = useReactGridStore(id, (store) => store.currentBehavior);
     const setCurrentBehavior = useReactGridStore(id, (store) => store.setCurrentBehavior);
 

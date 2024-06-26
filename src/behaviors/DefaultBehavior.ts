@@ -8,8 +8,11 @@ import { getCellContainerFromPoint } from "../utils/getCellContainerFromPoint";
 import { getCellContainerLocation } from "../utils/getCellContainerLocation";
 import { handleKeyDown } from "../utils/handleKeyDown";
 import { isCellInRange } from "../utils/isCellInRange.ts";
+import { getCellPaneOverlap } from "../utils/getCellPaneOverlap.ts";
 import isDevEnvironment from "../utils/isDevEnvironment";
+import { getScrollableParent } from "../utils/scrollHelpers.ts";
 import { ColumnReorderBehavior } from "./ColumnReorderBehavior.ts";
+import { RowReorderBehavior } from "./RowReorderBehavior.ts";
 
 const devEnvironment = isDevEnvironment();
 
@@ -38,7 +41,9 @@ export const DefaultBehavior = (config: DefaultBehaviorConfig = CONFIG_DEFAULTS)
 
     const { rowIndex, colIndex } = getCellContainerLocation(element);
 
-    const shouldSelectEntireColumn = rowIndex === 0 && store.enableColumnSelection;
+    const shouldSelectEntireColumn = rowIndex === 0 && store.enableColumnSelectionOnFirstRow;
+
+    const shouldSelectEntireRow = colIndex === 0 && store.enableRowSelectionOnFirstColumn;
 
     const clickedCell = store.getCellByIndexes(rowIndex, colIndex);
 
@@ -51,9 +56,69 @@ export const DefaultBehavior = (config: DefaultBehaviorConfig = CONFIG_DEFAULTS)
     if (
       shouldSelectEntireColumn &&
       isCellInRange(store, clickedCell, store.selectedArea) &&
+      store.onColumnReorder &&
       store.columns[colIndex].reorderable
     ) {
       newBehavior = ColumnReorderBehavior;
+    }
+
+    if (
+      rowIndex !== 0 &&
+      shouldSelectEntireRow &&
+      isCellInRange(store, clickedCell, store.selectedArea) &&
+      store.onRowReorder &&
+      store.rows[rowIndex].reorderable
+    ) {
+      newBehavior = RowReorderBehavior;
+    }
+
+    let newSelectedArea = { startRowIdx: -1, endRowIdx: -1, startColIdx: -1, endColIdx: -1 };
+
+    if (shouldSelectEntireColumn) {
+      newSelectedArea = findMinimalSelectedArea(store, {
+        startRowIdx: 0,
+        endRowIdx: store.rows.length,
+        startColIdx: cellArea.startColIdx,
+        endColIdx: cellArea.endColIdx,
+      });
+    } else if (shouldSelectEntireRow) {
+      newSelectedArea = findMinimalSelectedArea(store, {
+        startRowIdx: cellArea.startRowIdx,
+        endRowIdx: cellArea.endRowIdx,
+        startColIdx: 0,
+        endColIdx: store.columns.length,
+      });
+    }
+
+    const scrollableParent = (getScrollableParent(element, true) as Element) ?? store.reactGridRef!;
+
+    const leftPaneOverlapValue = getCellPaneOverlap(store, { rowIndex, colIndex }, "Left");
+    const rightPaneOverlapValue = getCellPaneOverlap(store, { rowIndex, colIndex }, "Right");
+    const topPaneOverlapValue = getCellPaneOverlap(store, { rowIndex, colIndex }, "Top");
+    const bottomOverlapValue = getCellPaneOverlap(store, { rowIndex, colIndex }, "Bottom");
+
+    if (leftPaneOverlapValue) {
+      scrollableParent?.scrollBy({
+        left: -leftPaneOverlapValue,
+      });
+    }
+
+    if (rightPaneOverlapValue) {
+      scrollableParent?.scrollBy({
+        left: rightPaneOverlapValue,
+      });
+    }
+
+    if (topPaneOverlapValue) {
+      scrollableParent?.scrollBy({
+        top: -topPaneOverlapValue,
+      });
+    }
+
+    if (bottomOverlapValue) {
+      scrollableParent?.scrollBy({
+        top: bottomOverlapValue,
+      });
     }
 
     return {
@@ -61,16 +126,14 @@ export const DefaultBehavior = (config: DefaultBehaviorConfig = CONFIG_DEFAULTS)
       ...(!shouldSelectEntireColumn && { focusedLocation: { rowIndex: rowIndex, colIndex: colIndex } }),
       absoluteFocusedLocation: { rowIndex: rowIndex, colIndex: colIndex },
       fillHandleArea: { startRowIdx: -1, endRowIdx: -1, startColIdx: -1, endColIdx: -1 },
-      ...(newBehavior.id !== ColumnReorderBehavior.id && {
-        selectedArea: shouldSelectEntireColumn
-          ? findMinimalSelectedArea(store, {
-              startRowIdx: 0,
-              endRowIdx: store.rows.length,
-              startColIdx: cellArea.startColIdx,
-              endColIdx: cellArea.endColIdx,
-            })
-          : { startRowIdx: -1, endRowIdx: -1, startColIdx: -1, endColIdx: -1 },
-      }),
+      ...(((newBehavior.id !== ColumnReorderBehavior.id && newBehavior.id !== RowReorderBehavior.id) ||
+        (store.selectedArea.startRowIdx === 0 &&
+          store.selectedArea.startColIdx === 0 &&
+          store.selectedArea.endRowIdx === store.rows.length &&
+          newSelectedArea.startColIdx === 0)) && { selectedArea: newSelectedArea }),
+      ...(newBehavior.id === RowReorderBehavior.id
+        ? { lineOrientation: "horizontal" }
+        : { lineOrientation: "vertical" }),
       currentBehavior: newBehavior,
     };
   },
@@ -99,6 +162,7 @@ export const DefaultBehavior = (config: DefaultBehaviorConfig = CONFIG_DEFAULTS)
     return handleKeyDown(event, store, { moveHorizontallyOnEnter: config.moveHorizontallyOnEnter });
   },
 
+  // TODO: Adjust touch event for row reordering
   handlePointerDownTouch: function (event, store) {
     devEnvironment && console.log("DB/handlePointerDownTouch");
 
@@ -114,7 +178,9 @@ export const DefaultBehavior = (config: DefaultBehaviorConfig = CONFIG_DEFAULTS)
 
     const { rowIndex, colIndex } = getCellContainerLocation(element);
 
-    const shouldSelectEntireColumn = rowIndex === 0 && store.enableColumnSelection;
+    const shouldSelectEntireColumn = rowIndex === 0 && store.enableColumnSelectionOnFirstRow;
+
+    const shouldSelectEntireRow = colIndex === 0 && store.enableRowSelectionOnFirstColumn;
 
     const touchedCell = store.getCellByIndexes(rowIndex, colIndex);
 
@@ -147,17 +213,40 @@ export const DefaultBehavior = (config: DefaultBehaviorConfig = CONFIG_DEFAULTS)
       newBehavior = ColumnReorderBehavior;
     }
 
+    if (
+      rowIndex !== 0 &&
+      shouldSelectEntireRow &&
+      isCellInRange(store, touchedCell, store.selectedArea) &&
+      store.onRowReorder &&
+      store.rows[rowIndex].reorderable
+    ) {
+      newBehavior = RowReorderBehavior;
+    }
+
+    let selectedArea = { startRowIdx: -1, endRowIdx: -1, startColIdx: -1, endColIdx: -1 };
+
+    if (shouldSelectEntireColumn) {
+      selectedArea = findMinimalSelectedArea(store, {
+        startRowIdx: 0,
+        endRowIdx: store.rows.length,
+        startColIdx: cellArea.startColIdx,
+        endColIdx: cellArea.endColIdx,
+      });
+    } else if (shouldSelectEntireRow) {
+      selectedArea = findMinimalSelectedArea(store, {
+        startRowIdx: cellArea.startRowIdx,
+        endRowIdx: cellArea.endRowIdx,
+        startColIdx: 0,
+        endColIdx: store.columns.length,
+      });
+    }
+
     return {
       ...store,
       absoluteFocusedLocation: { rowIndex: rowIndex, colIndex: colIndex },
-      selectedArea: shouldSelectEntireColumn
-        ? findMinimalSelectedArea(store, {
-            startRowIdx: 0,
-            endRowIdx: store.rows.length,
-            startColIdx: cellArea.startColIdx,
-            endColIdx: cellArea.endColIdx,
-          })
-        : { startRowIdx: -1, endRowIdx: -1, startColIdx: -1, endColIdx: -1 },
+      ...(newBehavior.id !== ColumnReorderBehavior.id &&
+        newBehavior.id !== RowReorderBehavior.id && { selectedArea: selectedArea }),
+      ...(newBehavior.id === RowReorderBehavior.id && { lineOrientation: "horizontal" }),
       currentBehavior: newBehavior,
     };
   },
@@ -182,7 +271,7 @@ export const DefaultBehavior = (config: DefaultBehaviorConfig = CONFIG_DEFAULTS)
         const prevCell = getCellContainerLocation(prevElement);
         const currCell = getCellContainerLocation(currElement);
 
-        const shouldSelectEntireColumn = currCell.rowIndex === 0 && store.enableColumnSelection;
+        const shouldSelectEntireColumn = currCell.rowIndex === 0 && store.enableColumnSelectionOnFirstRow;
 
         if (prevCell.rowIndex === currCell.rowIndex && prevCell.colIndex === currCell.colIndex) {
           return {

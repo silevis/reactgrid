@@ -3,8 +3,8 @@ import { Location, Range } from "../types/PublicModel";
 import { areAreasEqual } from "../utils/areAreasEqual";
 import { getNumericalRange } from "../utils/getNumericalRange";
 import isDevEnvironment from "../utils/isDevEnvironment";
-import { useReactGridStore } from "../utils/reactGridStore";
 import { ReactGridStore } from "../types/ReactGridStore.ts";
+import { useReactGridStoreApi } from "../utils/reactGridStore.ts";
 
 /**
  * Hook that provides access to the ReactGrid API.
@@ -15,7 +15,7 @@ import { ReactGridStore } from "../types/ReactGridStore.ts";
 const devEnvironment = isDevEnvironment();
 
 export default function useReactGridAPI(id: string) {
-  return useReactGridStore(id, (store: ReactGridStore) => {
+  return useReactGridStoreApi(id, (store: ReactGridStore) => {
     return {
       // Setters
 
@@ -44,6 +44,30 @@ export default function useReactGridAPI(id: string) {
         const colIndex = store.columns.findIndex((col) => col.id === columnId);
 
         return store.setFocusedLocation(rowIndex, colIndex);
+      },
+
+      /**
+       * Set the selected columns in the ReactGrid.
+       * @param startColId
+       * @param endColId
+       */
+      setSelectedColumns: (startColId: string, endColId: string) => {
+        const startColIndex = store.columns.findIndex((col) => col.id === startColId);
+        const endColIndex = store.columns.findIndex((col) => col.id === endColId);
+
+        return store.setSelectedColumns(startColIndex, endColIndex);
+      },
+
+      /**
+       * Set selected rows in the ReactGrid.
+       * @param startRowId
+       * @param endRowId
+       */
+      setSelectedRows: (startRowId: string, endRowId: string) => {
+        const startRowIndex = store.rows.findIndex((row) => row.id === startRowId);
+        const endRowIndex = store.columns.findIndex((row) => row.id === endRowId);
+
+        return store.setSelectedRows(startRowIndex, endRowIndex);
       },
 
       // Getters

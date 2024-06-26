@@ -8,11 +8,13 @@ import { RGTheme } from "./Theme";
 export type Row<Id = string> = {
   id: Id;
   height: string | number;
+  reorderable?: boolean;
 };
 
 export type Column<Id = string> = {
   id: Id;
   width: string | number;
+  minWidth?: string | number;
   resizable?: boolean;
   reorderable?: boolean;
 };
@@ -83,6 +85,8 @@ export type CellContextType = {
   /** Internal: provides cell container's style  */
   containerStyle: React.CSSProperties;
 
+  isFocused: boolean;
+
   /** Requests focus and enables edit mode if true is passed as a parameter. */
   requestFocus: () => void;
 
@@ -117,7 +121,6 @@ export interface ReactGridProps {
   styledRanges?: StyledRange[];
 
   columns: Column[];
-  minColumnWidth?: number;
   rows: Row[];
 
   cells: CellMap;
@@ -132,7 +135,9 @@ export interface ReactGridProps {
 
   // enableVirtualization?: boolean;
 
-  enableColumnSelection?: boolean;
+  enableColumnSelectionOnFirstRow?: boolean;
+
+  enableRowSelectionOnFirstColumn?: boolean;
 
   behaviors?: Record<BehaviorId, Behavior>;
 
@@ -146,5 +151,6 @@ export interface ReactGridProps {
   onCopy?: (selectedArea: NumericalRange) => void;
   onPaste?: (selectedArea: NumericalRange, pastedData: string) => void;
   onColumnReorder?: (selectedColIndexes: number[], destinationColIdx: number) => void;
+  onRowReorder?: (selectedRowIndexes: number[], destinationRowIdx: number) => void;
   onResizeColumn?: (width: number, columnId: number | string) => void;
 }

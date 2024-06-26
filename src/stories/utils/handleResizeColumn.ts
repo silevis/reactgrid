@@ -1,6 +1,7 @@
 import { Dispatch, SetStateAction } from "react";
 import { CellMatrix } from "../../types/CellMatrix";
 import { Column } from "../../types/PublicModel";
+import { getNumberFromPixelString } from "../../utils/getNumberFromPixelValueString";
 
 export const handleResizeColumn = (
   width: number,
@@ -17,13 +18,8 @@ export const handleResizeColumn = (
           let newWidth = width;
           if (cell.colSpan) {
             for (let i = columnIdx + 1; i < columnIdx + cell.colSpan; i++) {
-              if (typeof prevColumns[i].width === "string") {
-                const widthString = prevColumns[i].width as string;
-                newWidth -= parseInt(widthString, 10);
-              } else if (typeof prevColumns[i].width === "number") {
-                const widthNumber = prevColumns[i].width as number;
-                newWidth -= widthNumber;
-              }
+              const widthValue = getNumberFromPixelString(prevColumns[i].width);
+              newWidth -= widthValue;
             }
           }
           return { ...column, width: `${newWidth}px` };
