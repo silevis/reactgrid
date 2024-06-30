@@ -19,8 +19,7 @@ const GridWrapper: FC<PropsWithChildren<GridWrapperProps>> = ({ reactGridId, sty
   const reactGridElement = useRef<HTMLDivElement>(null);
   const assignReactGridRef = useReactGridStore(reactGridId, (store) => store.assignReactGridRef);
 
-  const getStyledRanges = useReactGridStore(reactGridId, (store) => store.getStyledRanges);
-  const styledRanges = getStyledRanges();
+  const styledRanges = useReactGridStore(reactGridId, (store) => store.styledRanges);
   const [css, setCSS] = useState<Interpolation<Theme>>(emotionCss({}));
 
   useEffect(() => {

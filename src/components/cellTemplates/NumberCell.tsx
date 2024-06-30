@@ -2,6 +2,7 @@ import React, { FC, useRef } from "react";
 import { useCellContext } from "../CellContext";
 import CellWrapper from "../CellWrapper";
 import { useDoubleTouch } from "../../hooks/useDoubleTouch";
+import { inNumericKey } from "../../utils/keyCodeCheckings";
 
 interface NumberCellProps {
   value: number;
@@ -27,14 +28,15 @@ const NumberCell: FC<NumberCellProps> = ({
 
   const isValid = validator ? validator(Number(initialValue)) : true;
 
-  const textToDisplay =
-    hideZero && initialValue === 0
-      ? ""
-      : format
-      ? format.format(initialValue)
-      : !isValid && errorMessage
-      ? errorMessage
-      : initialValue.toString();
+  let textToDisplay = initialValue.toString();
+
+  if (hideZero && initialValue === 0) {
+    textToDisplay = "";
+  } else if (format) {
+    textToDisplay = format.format(initialValue);
+  } else if (!isValid && errorMessage) {
+    textToDisplay = errorMessage;
+  }
 
   return (
     <CellWrapper
@@ -45,11 +47,13 @@ const NumberCell: FC<NumberCellProps> = ({
         ctx.requestFocus();
       }}
       onKeyDown={(e) => {
+        if (!ctx.isInEditMode && (inNumericKey(e.keyCode) || e.key === "Enter")) {
+          ctx.setEditMode(true);
+        }
         if (!ctx.isInEditMode && e.key === "Enter") {
           e.preventDefault();
           e.stopPropagation();
           ctx.requestFocus();
-          ctx.setEditMode(true);
         }
       }}
       targetInputRef={targetInputRef}

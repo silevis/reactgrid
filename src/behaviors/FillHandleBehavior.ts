@@ -2,11 +2,9 @@ import { Behavior } from "../types/Behavior";
 import { NumericalRange } from "../types/CellMatrix";
 import { ReactGridStore } from "../types/ReactGridStore";
 import { getCellArea } from "../utils/getCellArea";
-import { getCellIndexesFromPointerLocation } from "../utils/getCellIndexesFromPointerLocation";
 import { getFillDirection } from "../utils/getFillDirection";
 import { getFillSideFromFocusedLocation } from "../utils/getFillSideFromFocusedLocation";
 import isDevEnvironment from "../utils/isDevEnvironment";
-import { scrollTowardsSticky } from "../utils/scrollTowardsSticky";
 
 const devEnvironment = isDevEnvironment();
 
@@ -50,13 +48,6 @@ const handlePointerMove = (store: ReactGridStore, event: React.PointerEvent<HTML
   const fillDirection = getFillDirection(store, event);
   const focusedCell = store.getCellByIndexes(store.focusedLocation.rowIndex, store.focusedLocation.colIndex);
 
-  const { clientX, clientY } = event;
-  const { rowIndex, colIndex } = getCellIndexesFromPointerLocation(clientX, clientY);
-
-  const currentDragOverCell = store.getCellByIndexes(rowIndex, colIndex);
-
-  if (currentDragOverCell) scrollTowardsSticky(store, currentDragOverCell, { rowIndex, colIndex });
-
   const selectedArea = store.selectedArea;
 
   const isSelectedArea = store.selectedArea.startRowIdx !== -1;
@@ -66,7 +57,15 @@ const handlePointerMove = (store: ReactGridStore, event: React.PointerEvent<HTML
   const focusedCellArea = getCellArea(store, focusedCell);
 
   if (!fillDirection || fillDirection.value === null) {
-    return store;
+    return {
+      ...store,
+      fillHandleArea: {
+        startRowIdx: -1,
+        endRowIdx: -1,
+        startColIdx: -1,
+        endColIdx: -1,
+      },
+    };
   }
 
   switch (fillDirection?.direction) {

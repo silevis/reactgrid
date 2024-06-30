@@ -247,7 +247,7 @@ const PanesRenderer: FC<PanesRendererProps> = ({
   return (
     <div
       css={{
-        display: "grid",
+        display: "inline-grid",
         userSelect: "none",
 
         ".rgCellContainer": {

@@ -17,7 +17,7 @@ export const handleCut = <T>(
     const next = [...prev];
     for (let i = selectedArea.startRowIdx; i < selectedArea.endRowIdx; i++) {
       for (let j = selectedArea.startColIdx; j < selectedArea.endColIdx; j++) {
-        next[i][j] = "" as T;
+        next[i][j] = { text: "" } as T;
       }
     }
     return next;

@@ -103,4 +103,6 @@ export interface ReactGridStore extends ReactGridStoreProps {
 
   readonly setBehaviors: (behaviors: Record<BehaviorId, Behavior>) => void;
   readonly getBehavior: (behaviorId: BehaviorId) => Behavior;
+
+  readonly setExternalData: (rgData: Partial<ReactGridStoreProps>) => void;
 }

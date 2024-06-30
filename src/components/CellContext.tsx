@@ -105,8 +105,8 @@ export const CellContextProvider = memo(
               setIsInEditMode(true);
             }
           },
-          requestFocus: () => {
-            setFocusedLocation(realRowIndex, realColumnIndex);
+          requestFocus: (cellIdx) => {
+            setFocusedLocation(cellIdx?.rowIndex ?? realRowIndex, cellIdx?.colIndex ?? realColumnIndex);
           },
         }}
       >

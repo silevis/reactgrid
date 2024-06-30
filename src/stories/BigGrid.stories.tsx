@@ -238,6 +238,9 @@ export const BigGrid = () => {
     );
   });
 
+  const [toggleRanges, setToggleRanges] = useState(false);
+  const [toggleFill, setToggleFill] = useState(true);
+
   return (
     <>
       <div className="rgScrollableContainer" style={{ height: "100%", width: "100%", overflow: "auto" }}>
@@ -248,7 +251,7 @@ export const BigGrid = () => {
           stickyRightColumns={2}
           stickyBottomRows={2}
           styles={testStyles}
-          // styledRanges={styledRanges}
+          styledRanges={toggleRanges ? styledRanges : []}
           onResizeColumn={(width, columnId) => handleResizeColumn(width, columnId, cellMatrix, setColumns)}
           {...cellMatrix}
           onRowReorder={(selectedRowIndexes, destinationRowIdx) =>
@@ -260,12 +263,16 @@ export const BigGrid = () => {
           enableColumnSelectionOnFirstRow
           enableRowSelectionOnFirstColumn
           onAreaSelected={(selectedArea) => {}}
-          onFillHandle={(selectedArea, fillRange) => handleFill(selectedArea, fillRange, setGridData)}
+          onFillHandle={
+            toggleFill ? (selectedArea, fillRange) => handleFill(selectedArea, fillRange, setGridData) : undefined
+          }
           onCut={(selectedArea) => handleCut(gridData, selectedArea, setGridData)}
           onPaste={(selectedArea, pastedData) => handlePaste(selectedArea, pastedData, setGridData)}
           onCopy={(selectedArea) => handleCopy(gridData, selectedArea)}
           onCellFocused={(cellLocation) => {}}
         />
+        <button onClick={() => setToggleRanges((prev) => !prev)}>toggle ranges</button>
+        <button onClick={() => setToggleFill((prev) => !prev)}>toggle fill</button>
       </div>
     </>
   );

@@ -12,11 +12,10 @@ type ReactGridStores = Record<string, StoreApi<ReactGridStore>>;
 export const reactGridStores = create<ReactGridStores>(() => ({}));
 
 const DEFAULT_STORE_PROPS: ReactGridStoreProps = {
+  // fields passed by the user
   rows: [],
   columns: [],
   cells: new Map(),
-  rowMeasurements: [],
-  colMeasurements: [],
   paneRanges: {
     TopLeft: { startRowIdx: 0, endRowIdx: 0, startColIdx: 0, endColIdx: 0 },
     TopCenter: { startRowIdx: 0, endRowIdx: 0, startColIdx: 0, endColIdx: 0 },
@@ -28,7 +27,23 @@ const DEFAULT_STORE_PROPS: ReactGridStoreProps = {
     BottomCenter: { startRowIdx: 0, endRowIdx: 0, startColIdx: 0, endColIdx: 0 },
     BottomRight: { startRowIdx: 0, endRowIdx: 0, startColIdx: 0, endColIdx: 0 },
   },
+  behaviors: {
+    Default: DefaultBehavior(),
+    CellSelection: CellSelectionBehavior,
+    FillHandle: FillHandleBehavior,
+    ColumnReorder: ColumnReorderBehavior,
+  },
   styledRanges: [],
+  onFillHandle: undefined,
+  onAreaSelected: undefined,
+  onCellFocused: undefined,
+  onCut: undefined,
+  onPaste: undefined,
+  onResizeColumn: undefined,
+
+  // internal state
+  rowMeasurements: [],
+  colMeasurements: [],
   focusedLocation: { rowIndex: 0, colIndex: 0 },
   absoluteFocusedLocation: { rowIndex: 0, colIndex: 0 },
   selectedArea: { startRowIdx: -1, endRowIdx: -1, startColIdx: -1, endColIdx: -1 },
@@ -40,22 +55,7 @@ const DEFAULT_STORE_PROPS: ReactGridStoreProps = {
   linePosition: undefined,
   shadowPosition: undefined,
   shadowSize: undefined,
-  behaviors: {
-    Default: DefaultBehavior(),
-    CellSelection: CellSelectionBehavior,
-    FillHandle: FillHandleBehavior,
-    ColumnReorder: ColumnReorderBehavior,
-  },
-
   currentBehavior: DefaultBehavior(),
-
-  // external event handlers
-  onFillHandle: undefined,
-  onAreaSelected: undefined,
-  onCellFocused: undefined,
-  onCut: undefined,
-  onPaste: undefined,
-  onResizeColumn: undefined,
 };
 
 export function initReactGridStore(id: string, initialProps?: Partial<ReactGridStoreProps>) {
@@ -77,6 +77,9 @@ export function initReactGridStore(id: string, initialProps?: Partial<ReactGridS
           if (!column) throw new Error(`Column with id "${columnId}" doesn't exist!`);
 
           return column;
+        },
+        setExternalData: (externalData) => {
+          return set(() => ({ ...externalData }));
         },
         getColumnAmount: () => get().columns.length,
         setCells: (cells) => set(() => ({ cells })),

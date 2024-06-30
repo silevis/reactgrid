@@ -16,48 +16,14 @@ const devEnvironment = isDevEnvironment();
 
 const ReactGrid: FC<ReactGridProps> = ({
   id,
-  rows,
-  columns,
-  cells,
   stickyTopRows,
   stickyBottomRows,
   stickyLeftColumns,
   stickyRightColumns,
-  behaviors,
-  styles: userStyles,
-  styledRanges,
-  initialSelectedRange,
-  initialFocusLocation,
-  enableColumnSelectionOnFirstRow,
-  enableRowSelectionOnFirstColumn,
-  onAreaSelected,
-  onFillHandle,
-  onCellFocused,
-  onCut,
-  onPaste,
-  onCopy,
-  onResizeColumn,
-  onColumnReorder,
-  onRowReorder,
+  ...rgProps
 }) => {
   initReactGridStore(id, {
-    rows,
-    columns,
-    cells,
-    behaviors,
-    userStyles,
-    styledRanges,
-    enableColumnSelectionOnFirstRow,
-    enableRowSelectionOnFirstColumn,
-    onFillHandle,
-    onAreaSelected,
-    onCellFocused,
-    onCut,
-    onCopy,
-    onResizeColumn,
-    onColumnReorder,
-    onRowReorder,
-    onPaste,
+    ...rgProps,
   });
 
   const store = reactGridStores()[id].getState();
@@ -65,11 +31,11 @@ const ReactGrid: FC<ReactGridProps> = ({
   const currentBehavior = useReactGridStore(id, (store) => store.currentBehavior);
   const linePosition = useReactGridStore(id, (store) => store.linePosition);
 
-  useReactGridSync(store, { cells, rows, columns, initialSelectedRange, initialFocusLocation });
+  useReactGridSync(store, rgProps);
 
   const [bypassSizeWarning, setBypassSizeWarning] = useState(false);
 
-  if (devEnvironment && !bypassSizeWarning && rows.length * columns.length > 25_000) {
+  if (devEnvironment && !bypassSizeWarning && rgProps.rows.length * rgProps.columns.length > 25_000) {
     return (
       <>
         <h1>You're about to render a huge grid!</h1>
@@ -86,10 +52,10 @@ const ReactGrid: FC<ReactGridProps> = ({
   return (
     <ReactGridIdProvider id={id}>
       <ErrorBoundary>
-        <GridWrapper reactGridId={id} style={{ position: "relative", ...userStyles?.gridWrapper }}>
+        <GridWrapper reactGridId={id} style={{ position: "relative", ...rgProps.styles?.gridWrapper }}>
           <PanesRenderer
-            rowAmount={rows.length}
-            columnAmount={columns.length}
+            rowAmount={rgProps.rows.length}
+            columnAmount={rgProps.columns.length}
             stickyTopRows={stickyTopRows ?? 0}
             stickyBottomRows={stickyBottomRows ?? 0}
             stickyLeftColumns={stickyLeftColumns ?? 0}

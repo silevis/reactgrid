@@ -1,6 +1,7 @@
 import { ReactGridStore } from "../types/ReactGridStore";
 import { getCellArea } from "./getCellArea";
-import { getCellIndexesFromPointerLocation } from "./getCellIndexesFromPointerLocation";
+import { getColumnIdxByPointerLocation } from "./getColumnIdxByPointerLocation";
+import { getRowIdxByPointerLocation } from "./getRowIdxByPointerLocation";
 
 type FillDirection = "" | "up" | "down" | "left" | "right";
 
@@ -13,10 +14,8 @@ export const getFillDirection = (
   store: ReactGridStore,
   pointerLocation: React.PointerEvent<HTMLDivElement> | PointerEvent
 ): Difference | undefined => {
-  const { rowIndex: pointerRowIdx, colIndex: pointerColIdx } = getCellIndexesFromPointerLocation(
-    pointerLocation.clientX,
-    pointerLocation.clientY
-  );
+  const pointerRowIdx = getRowIdxByPointerLocation(store, pointerLocation.clientX, pointerLocation.clientY);
+  const pointerColIdx = getColumnIdxByPointerLocation(store, pointerLocation.clientX, pointerLocation.clientY);
 
   const currectFocusedCell = store.getCellByIndexes(store.focusedLocation.rowIndex, store.focusedLocation.colIndex);
 

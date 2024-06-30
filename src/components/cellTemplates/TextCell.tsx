@@ -2,6 +2,7 @@ import { FC, useRef } from "react";
 import CellWrapper from "../CellWrapper";
 import { useCellContext } from "../CellContext";
 import { useDoubleTouch } from "../../hooks/useDoubleTouch";
+import { isAlphaNumericWithoutModifiers } from "../../utils/keyCodeCheckings";
 
 interface TextCellProps {
   value?: string;
@@ -22,16 +23,18 @@ const TextCell: FC<TextCellProps> = ({ value: initialValue, onTextChanged, rever
       onDoubleClick={() => {
         ctx.setEditMode(true);
         ctx.requestFocus();
+        // targetInputRef.current?.setSelectionRange(initialValue?.length, initialValue?.length); // TODO
       }}
       onKeyDown={(e) => {
+        if (isAlphaNumericWithoutModifiers(e) || e.key === "Enter") {
+          ctx.setEditMode(true);
+        }
         if (!ctx.isInEditMode && e.key === "Enter") {
           e.preventDefault();
           e.stopPropagation();
           ctx.requestFocus();
-          ctx.setEditMode(true);
         }
       }}
-      targetInputRef={targetInputRef}
     >
       {ctx.isInEditMode ? (
         <textarea
@@ -66,6 +69,7 @@ const TextCell: FC<TextCellProps> = ({ value: initialValue, onTextChanged, rever
               // focus move event
               onTextChanged(e.currentTarget.value);
               ctx.setEditMode(false);
+              ctx.requestFocus({ rowIndex: ctx.realRowIndex + 1, colIndex: ctx.realColumnIndex });
             }
           }}
           autoFocus

@@ -88,7 +88,7 @@ export type CellContextType = {
   isFocused: boolean;
 
   /** Requests focus and enables edit mode if true is passed as a parameter. */
-  requestFocus: () => void;
+  requestFocus: (cellIdx?: { rowIndex: number; colIndex: number }) => void;
 
   /** Enables or disables edit mode. */
   setEditMode: (enableEditMode: boolean) => void;
