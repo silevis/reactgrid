@@ -1,4 +1,4 @@
-import { FC, useRef } from "react";
+import { FC, useEffect, useRef } from "react";
 import CellWrapper from "../CellWrapper";
 import { useCellContext } from "../CellContext";
 import { useDoubleTouch } from "../../hooks/useDoubleTouch";
@@ -16,6 +16,10 @@ const TextCell: FC<TextCellProps> = ({ value: initialValue, onTextChanged, rever
   const targetInputRef = useRef<HTMLTextAreaElement>(null);
   const { handleDoubleTouch } = useDoubleTouch(ctx, ctx.setEditMode);
 
+  useEffect(() => {
+    if (initialValue) targetInputRef.current?.setSelectionRange(initialValue.length, initialValue.length);
+  }, [ctx.isInEditMode, initialValue]);
+
   return (
     <CellWrapper
       onTouchEnd={handleDoubleTouch}
@@ -23,7 +27,6 @@ const TextCell: FC<TextCellProps> = ({ value: initialValue, onTextChanged, rever
       onDoubleClick={() => {
         ctx.setEditMode(true);
         ctx.requestFocus();
-        // targetInputRef.current?.setSelectionRange(initialValue?.length, initialValue?.length); // TODO
       }}
       onKeyDown={(e) => {
         if (isAlphaNumericWithoutModifiers(e) || e.key === "Enter") {
@@ -69,7 +72,7 @@ const TextCell: FC<TextCellProps> = ({ value: initialValue, onTextChanged, rever
               // focus move event
               onTextChanged(e.currentTarget.value);
               ctx.setEditMode(false);
-              ctx.requestFocus({ rowIndex: ctx.realRowIndex + 1, colIndex: ctx.realColumnIndex });
+              ctx.requestFocus("Bottom");
             }
           }}
           autoFocus

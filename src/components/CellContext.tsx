@@ -2,7 +2,7 @@ import { createContext, memo, useContext, useMemo, useState } from "react";
 import { Cell, CellContextType } from "../types/PublicModel";
 import { reactGridStores } from "../utils/reactGridStore";
 import { useReactGridId } from "./ReactGridIdProvider";
-import { StickyOffsets } from "../types/InternalModel";
+import { Direction, StickyOffsets } from "../types/InternalModel";
 
 interface CellContextProviderProps {
   rowId: string;
@@ -105,8 +105,13 @@ export const CellContextProvider = memo(
               setIsInEditMode(true);
             }
           },
-          requestFocus: (cellIdx) => {
-            setFocusedLocation(cellIdx?.rowIndex ?? realRowIndex, cellIdx?.colIndex ?? realColumnIndex);
+          requestFocus: (direction?: Direction) => {
+            if (direction) {
+              store.setFocusedCellByDirection(direction);
+              return;
+            }
+
+            setFocusedLocation(realRowIndex, realColumnIndex);
           },
         }}
       >

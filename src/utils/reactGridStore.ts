@@ -6,6 +6,8 @@ import { isSpanMember } from "./isSpanMember";
 import { ReactGridStore, ReactGridStoreProps } from "../types/ReactGridStore.ts";
 import { FillHandleBehavior } from "../behaviors/FillHandleBehavior.ts";
 import { ColumnReorderBehavior } from "../behaviors/ColumnReorderBehavior.ts";
+import { Direction, EMPTY_AREA } from "../types/InternalModel.ts";
+import { moveFocusDown, moveFocusLeft, moveFocusRight, moveFocusUp } from "./focus.ts";
 
 type ReactGridStores = Record<string, StoreApi<ReactGridStore>>;
 
@@ -163,6 +165,29 @@ export function initReactGridStore(id: string, initialProps?: Partial<ReactGridS
 
         assignReactGridRef: (reactGridRef) => set(() => ({ reactGridRef })),
         assignHiddenFocusTargetRef: (hiddenFocusTargetRef) => set(() => ({ hiddenFocusTargetRef })),
+
+        setFocusedCellByDirection: (direction: Direction) => {
+          const state_ = get();
+
+          const focusedCell = get().getFocusedCell();
+
+          if (!focusedCell) return;
+
+          switch (direction) {
+            case "Top":
+              set(() => ({ ...moveFocusUp(state_, focusedCell), selectedArea: EMPTY_AREA }));
+              break;
+            case "Bottom":
+              set(() => ({ ...moveFocusDown(state_, focusedCell), selectedArea: EMPTY_AREA }));
+              break;
+            case "Left":
+              set(() => ({ ...moveFocusLeft(state_, focusedCell), selectedArea: EMPTY_AREA }));
+              break;
+            case "Right":
+              set(() => ({ ...moveFocusRight(state_, focusedCell), selectedArea: EMPTY_AREA }));
+              break;
+          }
+        },
 
         setBehaviors: (behaviors) => set(() => ({ ...get().behaviors, ...behaviors })),
         getBehavior: (behaviorId) => {

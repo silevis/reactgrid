@@ -241,7 +241,6 @@ const handlePointerUp = (
   // CASE 1
   // If the mouse pointer is beyond the last row, move the selected rows to the last row
   if (event.clientY > lastRowClientOffsetTop + lastRowHeight) {
-    console.log("destinationRowIdx 1", destinationRowIdx);
     store.onRowReorder?.(selectedRowIndexes, store.rows.length - 1);
     return {
       ...store,

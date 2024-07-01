@@ -2,7 +2,7 @@ import React from "react";
 
 import { Behavior, BehaviorId } from "./Behavior";
 import { NumericalRange } from "./CellMatrix";
-import { IndexedLocation } from "./InternalModel";
+import { Direction, IndexedLocation } from "./InternalModel";
 import { RGTheme } from "./Theme";
 
 export type Row<Id = string> = {
@@ -88,7 +88,7 @@ export type CellContextType = {
   isFocused: boolean;
 
   /** Requests focus and enables edit mode if true is passed as a parameter. */
-  requestFocus: (cellIdx?: { rowIndex: number; colIndex: number }) => void;
+  requestFocus: (cellIdx?: Direction) => void;
 
   /** Enables or disables edit mode. */
   setEditMode: (enableEditMode: boolean) => void;
