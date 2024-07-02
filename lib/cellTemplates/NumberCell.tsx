@@ -14,7 +14,7 @@ interface NumberCellProps {
   style?: React.CSSProperties;
 }
 
-const NumberCell: FC<NumberCellProps> = ({
+export const NumberCell: FC<NumberCellProps> = ({
   value: initialValue,
   onValueChanged,
   validator,
@@ -99,5 +99,3 @@ const NumberCell: FC<NumberCellProps> = ({
     </CellWrapper>
   );
 };
-
-export default NumberCell;

@@ -11,7 +11,7 @@ interface TextCellProps {
   style?: React.CSSProperties;
 }
 
-const TextCell: FC<TextCellProps> = ({ value: initialValue, onTextChanged, reverse }) => {
+export const TextCell: FC<TextCellProps> = ({ value: initialValue, onTextChanged, reverse }) => {
   const ctx = useCellContext();
   const targetInputRef = useRef<HTMLTextAreaElement>(null);
   const { handleDoubleTouch } = useDoubleTouch(ctx, ctx.setEditMode);
@@ -86,5 +86,3 @@ const TextCell: FC<TextCellProps> = ({ value: initialValue, onTextChanged, rever
     </CellWrapper>
   );
 };
-
-export default TextCell;

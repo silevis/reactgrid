@@ -19,7 +19,7 @@ interface DateCellProps {
   Calendar?: { Template: React.ComponentType<any>; props: { [key: string]: any } };
 }
 
-const DateCell: FC<DateCellProps> = ({ value, onDateChanged, formatter, Calendar }) => {
+export const DateCell: FC<DateCellProps> = ({ value, onDateChanged, formatter, Calendar }) => {
   const ctx = useCellContext();
   const targetInputRef = useRef<HTMLInputElement>(null);
 
@@ -131,5 +131,3 @@ const DefaultCalendar = forwardRef(
     );
   }
 );
-
-export default DateCell;

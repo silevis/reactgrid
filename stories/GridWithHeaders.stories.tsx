@@ -1,15 +1,15 @@
 import { StoryDefault } from "@ladle/react";
 import { StrictMode, useState } from "react";
 import { cellMatrixBuilder } from "../lib/utils/cellMatrixBuilder";
-import TextCell from "../lib/cellTemplates/TextCell";
+import { TextCell } from "../lib/cellTemplates/TextCell";
 import { HeaderCell } from "../lib/cellTemplates/HeaderCell";
-import ReactGrid from "../lib/components/ReactGrid";
+import { ReactGrid } from "../lib/components/ReactGrid";
 import { ErrorBoundary } from "../lib/components/ErrorBoundary";
 import { Column, Row } from "../lib/types/PublicModel";
 import { handleFill } from "./utils/handleFill";
 import { handleColumnReorder } from "./utils/handleColumnReorder";
 import { handleResizeColumn } from "./utils/handleResizeColumn";
-import DateCell from "../lib/cellTemplates/DateCell";
+import { DateCell } from "../lib/cellTemplates/DateCell";
 import { handleRowReorder } from "./utils/handleRowReorder";
 
 interface CellData {
@@ -75,16 +75,22 @@ export const GridWithHeaders = () => {
         if (val === null) return;
 
         if (rowIndex === 0) {
-          setCell(rowId, columnId, HeaderCell, {
-            text: val?.text,
-            style: {
-              backgroundColor: "#fcff91",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              fontWeight: "bold",
+          setCell(
+            rowId,
+            columnId,
+            HeaderCell,
+            {
+              text: val?.text,
+              style: {
+                backgroundColor: "#fcff91",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                fontWeight: "bold",
+              },
             },
-          });
+            { isFocusable: false }
+          );
           return;
         }
 
@@ -130,7 +136,7 @@ export const GridWithHeaders = () => {
   });
 
   return (
-    <div className="rgScrollableContainer" style={{ height: "100%", overflow: "auto" }}>
+    <div style={{ height: "100%", overflow: "auto" }}>
       <ReactGrid
         id="grid-with-headers"
         onFillHandle={(selectedArea, fillRange) => handleFill(selectedArea, fillRange, setGridData)}

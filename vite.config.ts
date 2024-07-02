@@ -13,7 +13,7 @@ export default defineConfig({
   ],
   build: {
     lib: {
-      entry: resolve(__dirname, "lib/index.ts"),
+      entry: resolve(__dirname, "lib/main.ts"),
       formats: ["es"],
       fileName: "main",
     },
@@ -21,5 +21,6 @@ export default defineConfig({
     rollupOptions: {
       external: ["react", "react/jsx-runtime"],
     },
+    emptyOutDir: true,
   },
 });

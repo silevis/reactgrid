@@ -25,5 +25,8 @@ export type ChangeObservedKeys = keyof Pick<
 >;
 export type EventKeyPair = [ReactGridEventNames, ChangeObservedKeys];
 export type RegisteredChanges = {
-  [key in ChangeObservedKeys]?: { before: ReactGridStore[key]; after: ReactGridStore[key] };
+  [key in ChangeObservedKeys]?: {
+    before: ReactGridStore[ChangeObservedKeys];
+    after: ReactGridStore[ChangeObservedKeys];
+  };
 };

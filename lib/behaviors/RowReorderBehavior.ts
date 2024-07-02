@@ -109,7 +109,7 @@ const handlePointerMove = (
 
   const gridWrapperRectTop = store.reactGridRef?.getBoundingClientRect()?.top;
 
-  if (!gridWrapperRectTop) return store;
+  if (gridWrapperRectTop === undefined) return store;
 
   // set the initial distance between the mouse and the top border of the cell
   if (!mouseToCellTopBorderDistanceY) {

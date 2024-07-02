@@ -14,7 +14,7 @@ import { useReactGridStoreApi } from "../utils/reactGridStore.ts";
 
 const devEnvironment = isDevEnvironment();
 
-export default function useReactGridAPI(id: string) {
+export function useReactGridAPI(id: string) {
   return useReactGridStoreApi(id, (store: ReactGridStore) => {
     return {
       // Setters

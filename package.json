@@ -1,7 +1,6 @@
 {
-  "name": "reactgrid5",
-  "private": true,
-  "version": "0.0.0",
+  "name": "@silevis/reactgrid",
+  "version": "5.0.0-alpha.1",
   "type": "module",
   "main": "dist/main.js",
   "types": "dist/main.d.ts",

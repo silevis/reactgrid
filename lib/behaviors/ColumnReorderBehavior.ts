@@ -95,7 +95,7 @@ const handlePointerMove = (store: ReactGridStore, event: React.PointerEvent<HTML
 
   const gridWrapperRectLeft = store.reactGridRef?.getBoundingClientRect()?.left;
 
-  if (!gridWrapperRectLeft) return store;
+  if (gridWrapperRectLeft === undefined) return store;
 
   // set the initial distance between the mouse and the left border of the cell
   if (!mouseToCellLeftBorderDistanceX) {

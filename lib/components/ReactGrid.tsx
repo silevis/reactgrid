@@ -14,7 +14,7 @@ import { RowReorderBehavior } from "../behaviors/RowReorderBehavior";
 
 const devEnvironment = isDevEnvironment();
 
-const ReactGrid: FC<ReactGridProps> = ({
+export const ReactGrid: FC<ReactGridProps> = ({
   id,
   stickyTopRows,
   stickyBottomRows,
@@ -71,4 +71,4 @@ const ReactGrid: FC<ReactGridProps> = ({
   );
 };
 
-export default ReactGrid;
+// export default ReactGrid;
