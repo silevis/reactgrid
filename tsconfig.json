@@ -23,6 +23,10 @@
     /* Type checking */
     "jsxImportSource": "@emotion/react",
   },
-  "include": ["src"],
+  "include": [
+    "lib",
+    "lib/**/*.ts",
+    "stories/**/*.tsx"
+  ],
   "references": [{ "path": "./tsconfig.node.json" }]
 }
