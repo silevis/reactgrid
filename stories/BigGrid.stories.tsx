@@ -1,3 +1,4 @@
+import React from "react";
 import { StoryDefault } from "@ladle/react";
 import { StrictMode, useState } from "react";
 import { ReactGrid } from "../lib/components/ReactGrid";

@@ -1,10 +1,11 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { getCellIndexes } from "../utils/getCellIndexes.1";
 import { getNumericalRange } from "../utils/getNumericalRange";
 import { isSpanMember } from "../utils/isSpanMember";
 import isDevEnvironment from "../utils/isDevEnvironment";
 import { ReactGridProps } from "../types/PublicModel";
 import { ReactGridStore } from "../types/ReactGridStore";
+import isEqual from "lodash.isequal";
 
 const devEnvironment = isDevEnvironment();
 
@@ -14,9 +15,19 @@ export const useReactGridSync = (
 ) => {
   const { setSelectedArea, setFocusedLocation, getCellOrSpanMemberByIndexes, getCellByIds, setExternalData } = store;
 
-  useEffect(() => {
+  function useDeepCompareGridProps(callback: () => void, dependencies: Partial<ReactGridProps>[]) {
+    const currentDependenciesRef = useRef<Partial<ReactGridProps>[]>();
+
+    if (!isEqual(currentDependenciesRef.current, dependencies)) {
+      currentDependenciesRef.current = dependencies;
+    }
+
+    useEffect(callback, [currentDependenciesRef.current]);
+  }
+
+  useDeepCompareGridProps(() => {
     setExternalData(rgProps);
-  });
+  }, [rgProps]);
 
   useEffect(() => {
     if (!initialSelectedRange) {
@@ -37,7 +48,7 @@ export const useReactGridSync = (
 
       setSelectedArea(numericalInitialSelectedRange);
     }
-  }, [initialFocusLocation, initialSelectedRange]);
+  }, []);
 
   useEffect(() => {
     if (initialFocusLocation) {
@@ -61,5 +72,5 @@ export const useReactGridSync = (
 
       setFocusedLocation(rowIndex, colIndex);
     }
-  }, [initialFocusLocation]);
+  }, []);
 };

@@ -2,7 +2,7 @@ import React from "react";
 
 import { Behavior, BehaviorId } from "./Behavior";
 import { NumericalRange } from "./CellMatrix";
-import { Direction, IndexedLocation } from "./InternalModel";
+import { Direction, IndexedLocation, NestedStylesPartial } from "./InternalModel";
 import { RGTheme } from "./Theme";
 
 export type Row<Id = string> = {
@@ -116,7 +116,7 @@ export type Location = {
 export interface ReactGridProps {
   id: string;
 
-  styles?: Partial<RGTheme>;
+  styles?: NestedStylesPartial<RGTheme>;
 
   styledRanges?: StyledRange[];
 

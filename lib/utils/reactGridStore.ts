@@ -85,7 +85,7 @@ export function initReactGridStore(id: string, initialProps?: Partial<ReactGridS
         },
         getColumnAmount: () => get().columns.length,
         setCells: (cells) => set(() => ({ cells })),
-        setUserStyles: (userStyles) => set(() => ({ userStyles })),
+        setStyles: (styles) => set(() => ({ styles })),
         getCellByIds: (rowId, colId) => {
           const { cells, getCellByIds } = get();
 

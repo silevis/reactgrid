@@ -11,6 +11,7 @@ import { handleColumnReorder } from "./utils/handleColumnReorder";
 import { handleResizeColumn } from "./utils/handleResizeColumn";
 import { DateCell } from "../lib/cellTemplates/DateCell";
 import { handleRowReorder } from "./utils/handleRowReorder";
+import React from "react";
 
 interface CellData {
   text?: string;
@@ -20,7 +21,7 @@ interface CellData {
 const ROW_COUNT = 4;
 const COLUMN_COUNT = 4;
 
-export const GridWithHeaders = () => {
+export const SpannedHeaders = () => {
   const [columns, setColumns] = useState<Array<Column<string>>>(
     Array.from({ length: COLUMN_COUNT }).map((_, j) => {
       if (j === 2)
@@ -150,6 +151,7 @@ export const GridWithHeaders = () => {
         enableRowSelectionOnFirstColumn
         onResizeColumn={(width, columnId) => handleResizeColumn(width, columnId, cellMatrix, setColumns)}
         stickyTopRows={1}
+        initialFocusLocation={{ rowId: "1", columnId: "0" }}
         {...cellMatrix}
       />
     </div>

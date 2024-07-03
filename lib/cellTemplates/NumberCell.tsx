@@ -1,4 +1,4 @@
-import React, { FC, useRef } from "react";
+import React, { FC, useEffect, useRef } from "react";
 import { useCellContext } from "../components/CellContext";
 import CellWrapper from "../components/CellWrapper";
 import { useDoubleTouch } from "../hooks/useDoubleTouch";
@@ -37,6 +37,10 @@ export const NumberCell: FC<NumberCellProps> = ({
   } else if (!isValid && errorMessage) {
     textToDisplay = errorMessage;
   }
+
+  useEffect(() => {
+    if (initialValue) targetInputRef.current?.setSelectionRange(textToDisplay.length, textToDisplay.length);
+  }, [ctx.isInEditMode, textToDisplay]);
 
   return (
     <CellWrapper

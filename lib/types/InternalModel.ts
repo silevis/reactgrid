@@ -69,3 +69,6 @@ export type SpannedCell = Cell & {
   colSpan: number;
 };
 
+export type NestedStylesPartial<T> = {
+  [P in keyof T]?: T[P] extends object ? NestedStylesPartial<T[P]> : T[P];
+};

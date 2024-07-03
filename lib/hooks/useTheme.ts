@@ -7,7 +7,7 @@ import { useReactGridId } from "../components/ReactGridIdProvider";
 
 export const useTheme = (): RGTheme => {
   const id = useReactGridId();
-  const userStyles = useReactGridStore(id, (store) => store.userStyles);
+  const userStyles = useReactGridStore(id, (store) => store.styles);
 
   return merge(theme, useEmotionContextTheme(), userStyles);
 };
