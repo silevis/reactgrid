@@ -79,9 +79,6 @@ export type CellContextType = {
   /** Represents how many columns should the cell occupy. */
   colSpan?: number;
 
-  /** Indicates whether the cell is currently in edit mode or not */
-  isInEditMode: boolean;
-
   /** Internal: provides cell container's style  */
   containerStyle: React.CSSProperties;
 
@@ -89,9 +86,6 @@ export type CellContextType = {
 
   /** Requests focus and enables edit mode if true is passed as a parameter. */
   requestFocus: (cellIdx?: Direction) => void;
-
-  /** Enables or disables edit mode. */
-  setEditMode: (enableEditMode: boolean) => void;
 };
 
 export type CellMap<RowIdType extends string = string, ColIdType extends string = string> = Map<

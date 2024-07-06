@@ -44,7 +44,7 @@ export const FillHandleExample = () => {
                 fontWeight: "bold",
               },
             },
-            { isFocusable: false }
+            { isFocusable: false, isSelectable: false }
           );
           return;
         }

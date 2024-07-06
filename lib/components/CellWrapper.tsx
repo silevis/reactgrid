@@ -6,11 +6,10 @@ import { useReactGridId } from "./ReactGridIdProvider";
 import { useTheme } from "../hooks/useTheme";
 import { ResizeColumnBehavior } from "../behaviors/ResizeColumnBehavior";
 
-type CellWrapperProps = React.ClassAttributes<HTMLDivElement> &
-  React.HTMLAttributes<HTMLDivElement> & {
-    targetInputRef?: React.RefObject<HTMLInputElement | HTMLElement>;
-    children: React.ReactNode;
-  };
+type CellWrapperProps = React.HTMLAttributes<HTMLDivElement> & {
+  targetInputRef?: React.RefObject<HTMLInputElement | HTMLElement>;
+  children: React.ReactNode;
+};
 
 const CellWrapper: FC<CellWrapperProps> = ({ children, targetInputRef, ...wrapperDivAttributes }) => {
   const { className: customClassName, style: customStyle } = wrapperDivAttributes;

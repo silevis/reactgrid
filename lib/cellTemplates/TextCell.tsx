@@ -1,4 +1,4 @@
-import { FC, useEffect, useRef } from "react";
+import { FC, useEffect, useRef, useState } from "react";
 import CellWrapper from "../components/CellWrapper";
 import { useCellContext } from "../components/CellContext";
 import { useDoubleTouch } from "../hooks/useDoubleTouch";
@@ -14,32 +14,33 @@ interface TextCellProps {
 export const TextCell: FC<TextCellProps> = ({ value: initialValue, onTextChanged, reverse }) => {
   const ctx = useCellContext();
   const targetInputRef = useRef<HTMLTextAreaElement>(null);
-  const { handleDoubleTouch } = useDoubleTouch(ctx, ctx.setEditMode);
+  const [isEditMode, setEditMode] = useState(false);
+  const { handleDoubleTouch } = useDoubleTouch(ctx, setEditMode);
 
   useEffect(() => {
     if (initialValue) targetInputRef.current?.setSelectionRange(initialValue.length, initialValue.length);
-  }, [ctx.isInEditMode, initialValue]);
+  }, [isEditMode, initialValue]);
 
   return (
     <CellWrapper
       onTouchEnd={handleDoubleTouch}
       style={{ padding: ".2rem", textAlign: "center", outline: "none" }}
       onDoubleClick={() => {
-        ctx.setEditMode(true);
+        setEditMode(true);
         ctx.requestFocus();
       }}
       onKeyDown={(e) => {
         if (isAlphaNumericWithoutModifiers(e) || e.key === "Enter") {
-          ctx.setEditMode(true);
+          setEditMode(true);
         }
-        if (!ctx.isInEditMode && e.key === "Enter") {
+        if (!isEditMode && e.key === "Enter") {
           e.preventDefault();
           e.stopPropagation();
           ctx.requestFocus();
         }
       }}
     >
-      {ctx.isInEditMode ? (
+      {isEditMode ? (
         <textarea
           defaultValue={initialValue}
           style={{
@@ -59,19 +60,19 @@ export const TextCell: FC<TextCellProps> = ({ value: initialValue, onTextChanged
           }}
           onBlur={(e) => {
             onTextChanged(e.currentTarget.value);
-            ctx.setEditMode(false);
+            setEditMode(false);
           }}
           onPointerDown={(e) => e.stopPropagation()}
           onKeyDown={(e) => {
             e.stopPropagation();
             if (e.key === "Escape") {
-              ctx.setEditMode(false);
+              setEditMode(false);
             } else if (e.key === "Enter") {
               e.preventDefault();
               // We don't stop propagation here, because we want to trigger the
               // focus move event
               onTextChanged(e.currentTarget.value);
-              ctx.setEditMode(false);
+              setEditMode(false);
               ctx.requestFocus("Bottom");
             }
           }}

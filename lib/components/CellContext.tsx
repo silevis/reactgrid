@@ -29,10 +29,6 @@ export const CellContext = createContext<CellContextType>({
   requestFocus: function (): void {
     throw new Error("Function not implemented.");
   },
-  setEditMode: function (): void {
-    throw new Error("Function not implemented.");
-  },
-  isInEditMode: false,
   containerStyle: {},
 });
 
@@ -60,8 +56,6 @@ export const CellContextProvider = memo(
     cell,
     isFocused,
   }: CellContextProviderProps) => {
-    const [isInEditMode, setIsInEditMode] = useState(false);
-
     const { Template, props } = cell;
 
     const id = useReactGridId();
@@ -80,7 +74,6 @@ export const CellContextProvider = memo(
           rowId: rowId,
           colId: colId,
           realRowIndex,
-          isInEditMode,
           realColumnIndex,
           rowSpan: rowSpan,
           colSpan: colSpan,
@@ -97,15 +90,9 @@ export const CellContextProvider = memo(
             gridColumnStart: realColumnIndex + 1,
             ...props.style,
           },
-          setEditMode: (value) => {
-            if (value === false) {
-              hiddenFocusTargetRef?.focus({ preventScroll: true });
-              setIsInEditMode(false);
-            } else {
-              setIsInEditMode(true);
-            }
-          },
           requestFocus: (direction?: Direction) => {
+            hiddenFocusTargetRef?.focus({ preventScroll: true });
+
             if (direction) {
               store.setFocusedCellByDirection(direction);
               return;

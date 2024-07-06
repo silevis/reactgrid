@@ -56,7 +56,7 @@ export const BigGrid = () => {
   );
   const [rows, setRows] = useState<Array<Row<string>>>(
     Array.from({ length: ROW_COUNT }).map((_, j) => {
-      if (j === 0) return { id: j.toString(), height: "100px", reorderable: false };
+      if (j === 0) return { id: j.toString(), height: "100px", reorderable: true };
 
       return { id: j.toString(), height: "max-content", reorderable: true };
     })

@@ -1,4 +1,4 @@
-import { FC, forwardRef, useEffect, useRef } from "react";
+import { FC, forwardRef, useEffect, useRef, useState } from "react";
 import CellWrapper from "../components/CellWrapper";
 import { useCellContext } from "../components/CellContext";
 import { formatDate } from "../utils/formatDate";
@@ -22,6 +22,7 @@ interface DateCellProps {
 export const DateCell: FC<DateCellProps> = ({ value, onDateChanged, formatter, Calendar }) => {
   const ctx = useCellContext();
   const targetInputRef = useRef<HTMLInputElement>(null);
+  const [isEditMode, setEditMode] = useState(false);
 
   let formattedDate: string | undefined;
 
@@ -41,43 +42,43 @@ export const DateCell: FC<DateCellProps> = ({ value, onDateChanged, formatter, C
     <CellWrapper
       style={{ padding: ".2rem", textAlign: "center", outline: "none" }}
       onDoubleClick={() => {
-        ctx.setEditMode(true);
+        setEditMode(true);
         ctx.requestFocus();
       }}
       onKeyDown={(e) => {
-        if (!ctx.isInEditMode && e.key === "Enter") {
+        if (!isEditMode && e.key === "Enter") {
           e.preventDefault();
           e.stopPropagation();
           ctx.requestFocus();
-          ctx.setEditMode(true);
+          setEditMode(true);
         }
       }}
       targetInputRef={targetInputRef}
     >
-      {ctx.isInEditMode ? (
+      {isEditMode ? (
         Calendar?.Template ? (
           <Calendar.Template
             {...Calendar?.props}
             onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
               e.stopPropagation();
               if (e.key === "Escape") {
-                ctx.setEditMode(false);
+                setEditMode(false);
               } else if (e.key === "Enter") {
                 e.preventDefault();
                 onDateChanged({ date: new Date(e.currentTarget.value) });
-                ctx.setEditMode(false);
+                setEditMode(false);
               }
             }}
             onBlur={(e: React.PointerEvent<HTMLInputElement>) => {
               const changedDate = e.currentTarget.value;
               changedDate && onDateChanged({ date: new Date(e.currentTarget.value) });
-              ctx.setEditMode(false);
+              setEditMode(false);
             }}
             onPointerDown={(e: React.PointerEvent<HTMLInputElement>) => e.stopPropagation()}
           />
         ) : (
           <DefaultCalendar
-            setIsInEditMode={ctx.setEditMode}
+            setIsInEditMode={setEditMode}
             ref={targetInputRef}
             date={formattedDate}
             onDateChanged={onDateChanged}

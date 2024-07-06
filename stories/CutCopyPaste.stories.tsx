@@ -46,7 +46,27 @@ export const CutCopyPasteExample = () => {
                 fontWeight: "bold",
               },
             },
-            { isFocusable: false }
+            { isFocusable: false, isSelectable: false }
+          );
+          return;
+        }
+
+        if (rowIndex === 2 && columnIndex === 1) {
+          setCell(
+            rowId,
+            columnId,
+            HeaderCell,
+            {
+              text: val?.text,
+              style: {
+                backgroundColor: "#55bc71",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                fontWeight: "bold",
+              },
+            },
+            { isFocusable: false, isSelectable: false }
           );
           return;
         }

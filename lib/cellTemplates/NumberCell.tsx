@@ -1,4 +1,4 @@
-import React, { FC, useEffect, useRef } from "react";
+import React, { FC, useEffect, useRef, useState } from "react";
 import { useCellContext } from "../components/CellContext";
 import CellWrapper from "../components/CellWrapper";
 import { useDoubleTouch } from "../hooks/useDoubleTouch";
@@ -24,7 +24,9 @@ export const NumberCell: FC<NumberCellProps> = ({
 }) => {
   const ctx = useCellContext();
   const targetInputRef = useRef<HTMLTextAreaElement>(null);
-  const { handleDoubleTouch } = useDoubleTouch(ctx, ctx.setEditMode);
+  const [isEditMode, setEditMode] = useState(false);
+
+  const { handleDoubleTouch } = useDoubleTouch(ctx, setEditMode);
 
   const isValid = validator ? validator(Number(initialValue)) : true;
 
@@ -40,21 +42,21 @@ export const NumberCell: FC<NumberCellProps> = ({
 
   useEffect(() => {
     if (initialValue) targetInputRef.current?.setSelectionRange(textToDisplay.length, textToDisplay.length);
-  }, [ctx.isInEditMode, textToDisplay]);
+  }, [isEditMode, textToDisplay]);
 
   return (
     <CellWrapper
       onTouchEnd={handleDoubleTouch}
       style={{ padding: ".2rem", textAlign: "center", outline: "none" }}
       onDoubleClick={() => {
-        ctx.setEditMode(true);
+        setEditMode(true);
         ctx.requestFocus();
       }}
       onKeyDown={(e) => {
-        if (!ctx.isInEditMode && (inNumericKey(e.keyCode) || e.key === "Enter")) {
-          ctx.setEditMode(true);
+        if (!isEditMode && (inNumericKey(e.keyCode) || e.key === "Enter")) {
+          setEditMode(true);
         }
-        if (!ctx.isInEditMode && e.key === "Enter") {
+        if (!isEditMode && e.key === "Enter") {
           e.preventDefault();
           e.stopPropagation();
           ctx.requestFocus();
@@ -62,12 +64,12 @@ export const NumberCell: FC<NumberCellProps> = ({
       }}
       targetInputRef={targetInputRef}
     >
-      {ctx.isInEditMode ? (
+      {isEditMode ? (
         <textarea
           defaultValue={initialValue.toString()}
           onBlur={(e) => {
             onValueChanged(Number(e.currentTarget.value));
-            ctx.setEditMode(false);
+            setEditMode(false);
           }}
           style={{
             resize: "none",
@@ -87,11 +89,12 @@ export const NumberCell: FC<NumberCellProps> = ({
           onKeyDown={(e) => {
             e.stopPropagation();
             if (e.key === "Escape") {
-              ctx.setEditMode(false);
+              setEditMode(false);
             } else if (e.key === "Enter") {
               e.preventDefault();
               onValueChanged(Number(e.currentTarget.value));
-              ctx.setEditMode(false);
+              setEditMode(false);
+              ctx.requestFocus("Bottom");
             }
           }}
           autoFocus

@@ -44,7 +44,7 @@ export const ColumnReorderExample = () => {
                 fontWeight: "bold",
               },
             },
-            { isFocusable: false }
+            { isFocusable: false, isSelectable: false }
           );
           return;
         }
