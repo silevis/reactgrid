@@ -206,8 +206,6 @@ export const CellSelectionBehavior: Behavior = {
     const shouldSelectEntireColumn = startingCellPos?.rowIndex === 0 && store.enableColumnSelectionOnFirstRow;
     const shouldEnableRowSelection = startingCellPos?.colIndex === 0 && store.enableRowSelectionOnFirstColumn;
 
-    console.log({ shouldEnableRowSelection, shouldSelectEntireColumn });
-
     if (cellContainer) {
       const scrollableParent = getScrollableParent(cellContainer as HTMLElement, true);
       const scrollableParentIsNotAWindow =
