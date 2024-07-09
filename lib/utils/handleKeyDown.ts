@@ -288,7 +288,7 @@ export const handleKeyDown = (
         // Get currently selected area
         let area: NumericalRange = { ...store.selectedArea };
 
-        const numberOfVisibleRows: number = getNumberOfVisibleRows(store, `${focusedCell.colIndex}`);
+        const numberOfVisibleRows: number = getNumberOfVisibleRows(store, focusedCell.colIndex);
 
         // If there is no selected area, get focused cell area
         const isAnyAreaSelected = !areAreasEqual(area, EMPTY_AREA);
@@ -326,13 +326,20 @@ export const handleKeyDown = (
               endRowIdx: focusedCell ? focusedCell?.rowIndex + 1 : 0,
             });
 
+            const rowIndex = 0;
+            const colIndex = minimalSelectedArea.startColIdx;
+
+            const cellIsFocusable = store.getCellByIndexes(rowIndex, colIndex)?.isFocusable !== false;
+
             return {
               ...store,
               selectedArea: { ...minimalSelectedArea },
-              focusedLocation: {
-                rowIndex: 0,
-                colIndex: minimalSelectedArea.startColIdx,
-              },
+              ...(cellIsFocusable && {
+                focusedLocation: {
+                  rowIndex,
+                  colIndex,
+                },
+              }),
             };
           }
           if (isCellInPane(store, focusedCell, "Bottom")) {
@@ -346,13 +353,20 @@ export const handleKeyDown = (
                 startRowIdx: newRowIdx,
               });
 
+              const rowIndex = minimalSelectedArea.startRowIdx;
+              const colIndex = minimalSelectedArea.startColIdx;
+
+              const cellIsFocusable = store.getCellByIndexes(rowIndex, colIndex)?.isFocusable !== false;
+
               return {
                 ...store,
                 selectedArea: { ...minimalSelectedArea },
-                focusedLocation: {
-                  rowIndex: minimalSelectedArea.startRowIdx,
-                  colIndex: minimalSelectedArea.startColIdx,
-                },
+                ...(cellIsFocusable && {
+                  focusedLocation: {
+                    rowIndex,
+                    colIndex,
+                  },
+                }),
               };
             }
 
@@ -362,13 +376,20 @@ export const handleKeyDown = (
               endRowIdx: +focusedCell.rowIndex + 1,
             });
 
+            const rowIndex = nearestBottomStickyCell ? nearestBottomStickyCellIdx.rowIndex : -1;
+            const colIndex = minimalSelectedArea.startColIdx;
+
+            const cellIsFocusable = store.getCellByIndexes(rowIndex, colIndex)?.isFocusable !== false;
+
             return {
               ...store,
               selectedArea: { ...minimalSelectedArea },
-              focusedLocation: {
-                rowIndex: nearestBottomStickyCell ? nearestBottomStickyCellIdx.rowIndex : -1,
-                colIndex: minimalSelectedArea.startColIdx,
-              },
+              ...(cellIsFocusable && {
+                focusedLocation: {
+                  rowIndex,
+                  colIndex,
+                },
+              }),
             };
           }
         }
@@ -378,13 +399,20 @@ export const handleKeyDown = (
           startRowIdx: newRowIdx,
         });
 
+        const rowIndex = minimalSelectedArea.startRowIdx;
+        const colIndex = minimalSelectedArea.startColIdx;
+
+        const cellIsFocusable = store.getCellByIndexes(rowIndex, colIndex)?.isFocusable !== false;
+
         return {
           ...store,
           selectedArea: { ...minimalSelectedArea },
-          focusedLocation: {
-            rowIndex: minimalSelectedArea.startRowIdx,
-            colIndex: minimalSelectedArea.startColIdx,
-          },
+          ...(cellIsFocusable && {
+            focusedLocation: {
+              rowIndex,
+              colIndex,
+            },
+          }),
         };
       }
 
@@ -394,7 +422,7 @@ export const handleKeyDown = (
         // Get currently selected area
         let area: NumericalRange = { ...store.selectedArea };
 
-        const numberOfVisibleRows: number = getNumberOfVisibleRows(store, `${focusedCell.colIndex}`);
+        const numberOfVisibleRows: number = getNumberOfVisibleRows(store, focusedCell.colIndex);
 
         // If there is no selected area, get focused cell area
         const isAnyAreaSelected = !areAreasEqual(area, EMPTY_AREA);
@@ -426,20 +454,27 @@ export const handleKeyDown = (
 
         if (isStickyCell) {
           if (isCellInPane(store, focusedCell, "Bottom")) {
-            const lastRowCellSpan = store.getCellByIds(`${lastGridRowIdx}`, `${focusedCell.colIndex}`)?.rowSpan;
+            const lastRowCellSpan = store.getCellByIndexes(lastGridRowIdx, focusedCell.colIndex)?.rowSpan;
             const minimalSelectedArea = findMinimalSelectedArea(store, {
               ...area,
               startRowIdx: focusedCell ? focusedCell.rowIndex : 0,
               endRowIdx: store.rows.length,
             });
 
+            const rowIndex = lastGridRowIdx - (lastRowCellSpan ? lastRowCellSpan - 1 : 0);
+            const colIndex = minimalSelectedArea.startColIdx;
+
+            const cellIsFocusable = store.getCellByIndexes(rowIndex, colIndex)?.isFocusable !== false;
+
             return {
               ...store,
               selectedArea: { ...minimalSelectedArea },
-              focusedLocation: {
-                rowIndex: lastGridRowIdx - (lastRowCellSpan ? lastRowCellSpan - 1 : 0),
-                colIndex: minimalSelectedArea.startColIdx,
-              },
+              ...(cellIsFocusable && {
+                focusedLocation: {
+                  rowIndex,
+                  colIndex,
+                },
+              }),
             };
           }
           if (isCellInPane(store, focusedCell, "Top")) {
@@ -465,13 +500,20 @@ export const handleKeyDown = (
                 endRowIdx: targetCellIdx.rowIndex,
               });
 
+              const rowIndex = targetCellIdx.rowIndex - 1;
+              const colIndex = minimalSelectedArea.startColIdx;
+
+              const cellIsFocusable = store.getCellByIndexes(rowIndex, colIndex)?.isFocusable !== false;
+
               return {
                 ...store,
                 selectedArea: { ...minimalSelectedArea },
-                focusedLocation: {
-                  rowIndex: targetCellIdx.rowIndex - 1,
-                  colIndex: minimalSelectedArea.startColIdx,
-                },
+                ...(cellIsFocusable && {
+                  focusedLocation: {
+                    rowIndex,
+                    colIndex,
+                  },
+                }),
               };
             }
 
@@ -480,19 +522,26 @@ export const handleKeyDown = (
               endRowIdx: newRowIdx + 1,
             });
 
+            const rowIndex = newRowIdx;
+            const colIndex = minimalSelectedArea.startColIdx;
+
+            const cellIsFocusable = store.getCellByIndexes(rowIndex, colIndex)?.isFocusable !== false;
+
             return {
               ...store,
               selectedArea: { ...minimalSelectedArea },
-              focusedLocation: {
-                rowIndex: newRowIdx,
-                colIndex: minimalSelectedArea.startColIdx,
-              },
+              ...(cellIsFocusable && {
+                focusedLocation: {
+                  rowIndex,
+                  colIndex,
+                },
+              }),
             };
           }
         }
 
         if (newRowIdx >= lastGridRowIdx) {
-          const lastRowCellSpan = store.getCellByIds(`${lastGridRowIdx}`, `${focusedCell.colIndex}`)?.rowSpan;
+          const lastRowCellSpan = store.getCellByIndexes(lastGridRowIdx, focusedCell.colIndex)?.rowSpan;
           newRowIdx = lastGridRowIdx - (lastRowCellSpan ? lastRowCellSpan - 1 : 0);
         }
 
@@ -501,13 +550,20 @@ export const handleKeyDown = (
           endRowIdx: newRowIdx + 1,
         });
 
+        const rowIndex = newRowIdx;
+        const colIndex = minimalSelectedArea.startColIdx;
+
+        const cellIsFocusable = store.getCellByIndexes(rowIndex, colIndex)?.isFocusable !== false;
+
         return {
           ...store,
           selectedArea: { ...minimalSelectedArea },
-          focusedLocation: {
-            rowIndex: newRowIdx,
-            colIndex: minimalSelectedArea.startColIdx,
-          },
+          ...(cellIsFocusable && {
+            focusedLocation: {
+              rowIndex: rowIndex,
+              colIndex: colIndex,
+            },
+          }),
         };
       }
 
@@ -540,13 +596,20 @@ export const handleKeyDown = (
               startColIdx: 0,
             });
 
+            const rowIndex = minimalSelectedArea.startRowIdx;
+            const colIndex = minimalSelectedArea.startColIdx;
+
+            const cellIsFocusable = store.getCellByIndexes(rowIndex, colIndex)?.isFocusable !== false;
+
             return {
               ...store,
               selectedArea: { ...minimalSelectedArea },
-              focusedLocation: {
-                rowIndex: minimalSelectedArea.startRowIdx,
-                colIndex: minimalSelectedArea.startColIdx,
-              },
+              ...(cellIsFocusable && {
+                focusedLocation: {
+                  rowIndex,
+                  colIndex,
+                },
+              }),
             };
           }
           if (isCellInRange(store, focusedCell, store.paneRanges.Right)) {
@@ -556,13 +619,20 @@ export const handleKeyDown = (
                 startColIdx: nearestRightStickyCellIdx.colIndex,
               });
 
+              const rowIndex = minimalSelectedArea.startRowIdx;
+              const colIndex = minimalSelectedArea.startColIdx;
+
+              const cellIsFocusable = store.getCellByIndexes(rowIndex, colIndex)?.isFocusable !== false;
+
               return {
                 ...store,
                 selectedArea: { ...minimalSelectedArea },
-                focusedLocation: {
-                  rowIndex: minimalSelectedArea.startRowIdx,
-                  colIndex: minimalSelectedArea.startColIdx,
-                },
+                ...(cellIsFocusable && {
+                  focusedLocation: {
+                    rowIndex,
+                    colIndex,
+                  },
+                }),
               };
             }
           }
@@ -579,13 +649,20 @@ export const handleKeyDown = (
             startColIdx: 0,
           });
 
+          const rowIndex = minimalSelectedArea.startRowIdx;
+          const colIndex = 0;
+
+          const cellIsFocusable = store.getCellByIndexes(rowIndex, colIndex)?.isFocusable !== false;
+
           return {
             ...store,
             selectedArea: { ...minimalSelectedArea },
-            focusedLocation: {
-              rowIndex: minimalSelectedArea.startRowIdx,
-              colIndex: 0,
-            },
+            ...(cellIsFocusable && {
+              focusedLocation: {
+                rowIndex,
+                colIndex,
+              },
+            }),
           };
         }
 
@@ -594,14 +671,20 @@ export const handleKeyDown = (
           startColIdx: nearestLeftStickyCell ? nearestLeftStickyCellIdx.colIndex + 1 : 0,
         });
 
+        const rowIndex = focusedCell.rowIndex;
+        const colIndex = nearestLeftStickyCell ? nearestLeftStickyCellIdx.colIndex + 1 : 0;
+
+        const cellIsFocusable = store.getCellByIndexes(rowIndex, colIndex)?.isFocusable !== false;
+
         return {
           ...store,
           selectedArea: { ...minimalSelectedArea },
-          focusedLocation: {
-            rowIndex: focusedCell.rowIndex,
-
-            colIndex: nearestLeftStickyCell ? nearestLeftStickyCellIdx.colIndex + 1 : 0,
-          },
+          ...(cellIsFocusable && {
+            focusedLocation: {
+              rowIndex,
+              colIndex,
+            },
+          }),
         };
       }
 
@@ -642,13 +725,20 @@ export const handleKeyDown = (
                 endColIdx: nearestLeftStickyCellIdx.colIndex + 1,
               });
 
+              const rowIndex = nearestLeftStickyCellIdx.rowIndex;
+              const colIndex = nearestLeftStickyCellIdx.colIndex;
+
+              const cellIsFocusable = store.getCellByIndexes(rowIndex, colIndex)?.isFocusable !== false;
+
               return {
                 ...store,
                 selectedArea: { ...minimalSelectedArea },
-                focusedLocation: {
-                  rowIndex: nearestLeftStickyCellIdx.rowIndex,
-                  colIndex: nearestLeftStickyCellIdx.colIndex,
-                },
+                ...(cellIsFocusable && {
+                  focusedLocation: {
+                    rowIndex,
+                    colIndex,
+                  },
+                }),
               };
             }
           }
@@ -658,13 +748,20 @@ export const handleKeyDown = (
               endColIdx: lastColumnIdx + 1,
             });
 
+            const rowIndex = minimalSelectedArea.startRowIdx;
+            const colIndex = lastColumnCellSpan ? lastColumnIdx - lastColumnCellSpan + 1 : lastColumnIdx;
+
+            const cellIsFocusable = store.getCellByIndexes(rowIndex, colIndex)?.isFocusable !== false;
+
             return {
               ...store,
               selectedArea: { ...minimalSelectedArea },
-              focusedLocation: {
-                rowIndex: minimalSelectedArea.startRowIdx,
-                colIndex: lastColumnCellSpan ? lastColumnIdx - lastColumnCellSpan + 1 : lastColumnIdx,
-              },
+              ...(cellIsFocusable && {
+                focusedLocation: {
+                  rowIndex,
+                  colIndex,
+                },
+              }),
             };
           }
         }
@@ -680,13 +777,20 @@ export const handleKeyDown = (
             endColIdx: lastColumnIdx + 1,
           });
 
+          const rowIndex = minimalSelectedArea.startRowIdx;
+          const colIndex = lastColumnCellSpan ? lastColumnIdx - lastColumnCellSpan + 1 : lastColumnIdx;
+
+          const cellIsFocusable = store.getCellByIndexes(rowIndex, colIndex)?.isFocusable !== false;
+
           return {
             ...store,
             selectedArea: { ...minimalSelectedArea },
-            focusedLocation: {
-              rowIndex: minimalSelectedArea.startRowIdx,
-              colIndex: lastColumnCellSpan ? lastColumnIdx - lastColumnCellSpan + 1 : lastColumnIdx,
-            },
+            ...(cellIsFocusable && {
+              focusedLocation: {
+                rowIndex,
+                colIndex,
+              },
+            }),
           };
         }
 
@@ -695,17 +799,24 @@ export const handleKeyDown = (
           endColIdx: nearestRightStickyCell ? nearestRightStickyCellIdx.colIndex : lastColumnIdx + 1,
         });
 
+        const rowIndex = focusedCell.rowIndex;
+        const colIndex = nearestRightStickyCell
+          ? nearestRightStickyCellIdx.colIndex - 1
+          : lastColumnCellSpan
+          ? lastColumnIdx - lastColumnCellSpan + 1
+          : lastColumnIdx;
+
+        const cellIsFocusable = store.getCellByIndexes(rowIndex, colIndex)?.isFocusable !== false;
+
         return {
           ...store,
           selectedArea: { ...minimalSelectedArea },
-          focusedLocation: {
-            rowIndex: focusedCell.rowIndex,
-            colIndex: nearestRightStickyCell
-              ? nearestRightStickyCellIdx.colIndex - 1
-              : lastColumnCellSpan
-              ? lastColumnIdx - lastColumnCellSpan + 1
-              : lastColumnIdx,
-          },
+          ...(cellIsFocusable && {
+            focusedLocation: {
+              rowIndex,
+              colIndex,
+            },
+          }),
         };
       }
 

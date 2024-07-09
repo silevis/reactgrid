@@ -45,15 +45,13 @@ export const DefaultBehavior = (config: DefaultBehaviorConfig = CONFIG_DEFAULTS)
 
     const shouldSelectEntireRow = colIndex === 0 && store.enableRowSelectionOnFirstColumn;
 
-    const clickedCell = store.getCellByIndexes(rowIndex, colIndex);
+    const focusedCell = store.getCellByIndexes(rowIndex, colIndex);
 
-    if (!clickedCell) return store;
+    if (!focusedCell) return store;
 
-    const cellArea = getCellArea(store, clickedCell);
+    const cellArea = getCellArea(store, focusedCell);
 
     let newBehavior: Behavior = store.getBehavior("CellSelection") || store.currentBehavior;
-
-    const focusedCell = store.getCellByIndexes(rowIndex, colIndex);
 
     let newSelectedArea = { startRowIdx: -1, endRowIdx: -1, startColIdx: -1, endColIdx: -1 };
 
@@ -66,7 +64,7 @@ export const DefaultBehavior = (config: DefaultBehaviorConfig = CONFIG_DEFAULTS)
       });
 
       if (
-        isCellInRange(store, clickedCell, store.selectedArea) &&
+        isCellInRange(store, focusedCell, store.selectedArea) &&
         store.selectedArea.endRowIdx === store.rows.length &&
         store.onColumnReorder &&
         store.columns[colIndex].reorderable
@@ -82,7 +80,7 @@ export const DefaultBehavior = (config: DefaultBehaviorConfig = CONFIG_DEFAULTS)
       });
 
       if (
-        isCellInRange(store, clickedCell, store.selectedArea) &&
+        isCellInRange(store, focusedCell, store.selectedArea) &&
         store.selectedArea.endColIdx === store.columns.length &&
         store.onRowReorder &&
         store.rows[rowIndex].reorderable
@@ -127,14 +125,14 @@ export const DefaultBehavior = (config: DefaultBehaviorConfig = CONFIG_DEFAULTS)
     if (shouldSelectEntireColumn) {
       if (store.selectedArea.endRowIdx === store.rows.length) {
         // If we already selected the entire column, we should change focus location only if the clicked cell is not in the selected area.
-        shouldChangeFocusLocation = !isCellInRange(store, clickedCell, store.selectedArea);
+        shouldChangeFocusLocation = !isCellInRange(store, focusedCell, store.selectedArea);
       } else if (focusedCell?.isFocusable === false) {
         shouldChangeFocusLocation = false;
       }
     } else if (shouldSelectEntireRow) {
       if (store.selectedArea.endColIdx === store.columns.length) {
         // If we already selected the entire row, we should change focus location only if the clicked cell is not in the selected area.
-        shouldChangeFocusLocation = !isCellInRange(store, clickedCell, store.selectedArea);
+        shouldChangeFocusLocation = !isCellInRange(store, focusedCell, store.selectedArea);
       } else if (focusedCell?.isFocusable === false) {
         shouldChangeFocusLocation = false;
       }

@@ -1,24 +1,22 @@
-import { Cell } from "../types/PublicModel";
 import { ReactGridStore } from "../types/ReactGridStore";
 import { getCellContainer } from "./getCellContainer";
 import { isCellInRange } from "./isCellInRange";
 import { isInViewport } from "./isInViewport";
 
-export const getNumberOfVisibleRows = (store: ReactGridStore, columnId?: string) => {
+export const getNumberOfVisibleRows = (store: ReactGridStore, columnIdx: number) => {
   const scrollableParent = store.reactGridRef!;
-
   let visibleCells = 0;
 
-  if (!columnId) return 0;
+  if (columnIdx === undefined) return 0;
 
   // Get all cells in the current column
-  const cellsInCol = (Array.from(store.cells.values()) as Cell[]).filter((cell) => {
-    return cell.colId === columnId;
-  });
+  const cellsInCol = store.getColumnCells(columnIdx);
 
   // Find the last cell in the viewport
   for (const cell of cellsInCol) {
-    const currentCellContainer = getCellContainer(store, cell) as HTMLElement;
+    const currentCellContainer = getCellContainer(store, cell) as HTMLElement | undefined;
+
+    if (!currentCellContainer) continue;
 
     if (
       isInViewport(currentCellContainer, scrollableParent) &&

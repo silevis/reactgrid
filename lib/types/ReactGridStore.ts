@@ -62,6 +62,8 @@ export interface ReactGridStore extends ReactGridStoreProps {
   readonly getColumnById: (columnId: string) => Column | null;
   readonly getColumnAmount: () => number;
 
+  readonly getColumnCells: (columnIdx: number) => Cell<string, string>[];
+
   readonly setCells: (cellMap: CellMap) => void;
 
   readonly setStyles: (styles: RGTheme) => void;

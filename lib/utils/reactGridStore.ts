@@ -1,7 +1,7 @@
 import { create, createStore, StoreApi, useStore } from "zustand";
 import { CellSelectionBehavior } from "../behaviors/CellSelectionBehavior.ts";
 import { DefaultBehavior } from "../behaviors/DefaultBehavior.ts";
-import { Range, StyledRange } from "../types/PublicModel.ts";
+import { Cell, Range, StyledRange } from "../types/PublicModel.ts";
 import { isSpanMember } from "./isSpanMember.ts";
 import { ReactGridStore, ReactGridStoreProps } from "../types/ReactGridStore.ts";
 import { FillHandleBehavior } from "../behaviors/FillHandleBehavior.ts";
@@ -84,6 +84,18 @@ export function initReactGridStore(id: string, initialProps?: Partial<ReactGridS
           return set(() => ({ ...externalData }));
         },
         getColumnAmount: () => get().columns.length,
+        getColumnCells: (columnIdx: number) => {
+          const { cells } = get();
+          const column = get().columns[columnIdx];
+
+          return Array.from(cells.values()).filter((cell) => {
+            if (!isSpanMember(cell)) {
+              return cell.colId === column.id;
+            }
+            return false;
+          }) as Cell[];
+        },
+
         setCells: (cells) => set(() => ({ cells })),
         setStyles: (styles) => set(() => ({ styles })),
         getCellByIds: (rowId, colId) => {
@@ -123,6 +135,7 @@ export function initReactGridStore(id: string, initialProps?: Partial<ReactGridS
         },
 
         setRowMeasurements: (rowMeasurements) => set(() => ({ rowMeasurements })),
+
         setColMeasurements: (colMeasurements) => set(() => ({ colMeasurements })),
 
         setPaneRanges: (paneRanges) => set(() => ({ paneRanges })),
@@ -131,6 +144,7 @@ export function initReactGridStore(id: string, initialProps?: Partial<ReactGridS
           set(() => {
             return { focusedLocation: { rowIndex, colIndex } };
           }),
+
         getFocusedCell: () => {
           const { focusedLocation } = get();
           const cell = get().getCellByIndexes(focusedLocation.rowIndex, focusedLocation.colIndex);
@@ -167,7 +181,7 @@ export function initReactGridStore(id: string, initialProps?: Partial<ReactGridS
         assignHiddenFocusTargetRef: (hiddenFocusTargetRef) => set(() => ({ hiddenFocusTargetRef })),
 
         setFocusedCellByDirection: (direction: Direction) => {
-          const state_ = get();
+          const _state = get();
 
           const focusedCell = get().getFocusedCell();
 
@@ -175,16 +189,16 @@ export function initReactGridStore(id: string, initialProps?: Partial<ReactGridS
 
           switch (direction) {
             case "Top":
-              set(() => ({ ...moveFocusUp(state_, focusedCell), selectedArea: EMPTY_AREA }));
+              set(() => ({ ...moveFocusUp(_state, focusedCell), selectedArea: EMPTY_AREA }));
               break;
             case "Bottom":
-              set(() => ({ ...moveFocusDown(state_, focusedCell), selectedArea: EMPTY_AREA }));
+              set(() => ({ ...moveFocusDown(_state, focusedCell), selectedArea: EMPTY_AREA }));
               break;
             case "Left":
-              set(() => ({ ...moveFocusLeft(state_, focusedCell), selectedArea: EMPTY_AREA }));
+              set(() => ({ ...moveFocusLeft(_state, focusedCell), selectedArea: EMPTY_AREA }));
               break;
             case "Right":
-              set(() => ({ ...moveFocusRight(state_, focusedCell), selectedArea: EMPTY_AREA }));
+              set(() => ({ ...moveFocusRight(_state, focusedCell), selectedArea: EMPTY_AREA }));
               break;
           }
         },
