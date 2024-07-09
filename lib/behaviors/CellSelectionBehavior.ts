@@ -120,8 +120,8 @@ export const CellSelectionBehavior: Behavior = {
       if (!startingCellPos) startingCellPos = { rowIndex, colIndex };
     }
 
-    const shouldSelectEntireColumn = startingCellPos?.rowIndex === 0 && store.enableColumnSelectionOnFirstRow;
-    const shouldEnableRowSelection = startingCellPos?.colIndex === 0 && store.enableRowSelectionOnFirstColumn;
+    const shouldSelectEntireColumn = startingCellPos?.rowIndex === 0 && !!store.enableColumnSelectionOnFirstRow;
+    const shouldEnableRowSelection = startingCellPos?.colIndex === 0 && !!store.enableRowSelectionOnFirstColumn;
 
     return tryExpandingTowardsCell(store, cell, rowIndex, colIndex, shouldSelectEntireColumn, shouldEnableRowSelection);
   },

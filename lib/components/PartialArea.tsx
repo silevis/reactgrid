@@ -246,16 +246,16 @@ export const PartialArea: FC<PartialAreaProps> = React.memo(
               left: `-${theme.grid.gap.width}`,
 
               ...(shouldRenderTopBorder && {
-                borderTop: `${theme.focusIndicator.border.width} ${areaBorder.style} ${areaBorder.color}`,
+                borderTop: `${areaBorder.width} ${areaBorder.style} ${areaBorder.color}`,
               }),
               ...(shouldRenderRightBorder && {
-                borderRight: `${theme.focusIndicator.border.width} ${areaBorder.style} ${areaBorder.color}`,
+                borderRight: `${areaBorder.width} ${areaBorder.style} ${areaBorder.color}`,
               }),
               ...(shouldRenderBottomBorder && {
-                borderBottom: `${theme.focusIndicator.border.width} ${areaBorder.style} ${areaBorder.color}`,
+                borderBottom: `${areaBorder.width} ${areaBorder.style} ${areaBorder.color}`,
               }),
               ...(shouldRenderLeftBorder && {
-                borderLeft: `${theme.focusIndicator.border.width} ${areaBorder.style} ${areaBorder.color}`,
+                borderLeft: `${areaBorder.width} ${areaBorder.style} ${areaBorder.color}`,
               }),
             }}
           />

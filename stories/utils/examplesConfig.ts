@@ -45,8 +45,14 @@ export const rgStyles = {
     background: "rgba(144, 238, 144, 0.1)",
     border: {
       color: "#81df9b",
-      width: "1px",
       style: "solid",
+    },
+  },
+  fillHandle: {
+    background: "transparent",
+    border: {
+      color: "#32a852",
+      style: "dashed",
     },
   },
   line: {
