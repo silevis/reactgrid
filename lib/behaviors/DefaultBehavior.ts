@@ -126,17 +126,17 @@ export const DefaultBehavior = (config: DefaultBehaviorConfig = CONFIG_DEFAULTS)
       if (store.selectedArea.endRowIdx === store.rows.length) {
         // If we already selected the entire column, we should change focus location only if the clicked cell is not in the selected area.
         shouldChangeFocusLocation = !isCellInRange(store, focusedCell, store.selectedArea);
-      } else if (focusedCell?.isFocusable === false) {
+      } else if (focusedCell.isFocusable === false) {
         shouldChangeFocusLocation = false;
       }
     } else if (shouldSelectEntireRow) {
       if (store.selectedArea.endColIdx === store.columns.length) {
         // If we already selected the entire row, we should change focus location only if the clicked cell is not in the selected area.
         shouldChangeFocusLocation = !isCellInRange(store, focusedCell, store.selectedArea);
-      } else if (focusedCell?.isFocusable === false) {
+      } else if (focusedCell.isFocusable === false) {
         shouldChangeFocusLocation = false;
       }
-    } else if (focusedCell?.isFocusable === false) {
+    } else if (focusedCell.isFocusable === false) {
       shouldChangeFocusLocation = false;
     }
 
