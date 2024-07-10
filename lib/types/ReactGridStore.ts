@@ -4,7 +4,7 @@ import { ColumnMeasurement } from "./ColumnMeasurement.ts";
 import { Direction, FocusedCell, IndexedLocation, NestedStylesPartial, PaneName } from "./InternalModel.ts";
 import { NumericalRange } from "./CellMatrix.ts";
 import { Behavior, BehaviorId } from "./Behavior.ts";
-import { RGTheme } from "./Theme";
+import { RGTheme } from "./RGTheme.ts";
 
 export interface ReactGridStoreProps {
   rows: Row[];

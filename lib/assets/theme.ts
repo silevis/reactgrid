@@ -1,4 +1,4 @@
-import { RGTheme } from "../types/Theme";
+import { RGTheme } from "../types/RGTheme";
 
 const lightTheme: RGTheme = {
   font: {

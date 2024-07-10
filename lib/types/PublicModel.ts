@@ -3,7 +3,7 @@ import React from "react";
 import { Behavior, BehaviorId } from "./Behavior";
 import { NumericalRange } from "./CellMatrix";
 import { Direction, IndexedLocation, NestedStylesPartial } from "./InternalModel";
-import { RGTheme } from "./Theme";
+import { RGTheme } from "./RGTheme";
 
 export type Row<Id = string> = {
   id: Id;

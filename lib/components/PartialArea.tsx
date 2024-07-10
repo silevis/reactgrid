@@ -1,7 +1,6 @@
 import React, { CSSProperties, FC } from "react";
 import { NumericalRange } from "../types/CellMatrix";
 import { GetCellOffsets, PaneName } from "../types/InternalModel";
-import { Border, Offset } from "../types/Theme";
 import { useTheme } from "../hooks/useTheme";
 import { useReactGridId } from "./ReactGridIdProvider";
 import { reactGridStores, useReactGridStore } from "../utils/reactGridStore";
@@ -9,6 +8,7 @@ import { FillHandleBehavior } from "../behaviors/FillHandleBehavior";
 import { CellSelectionBehavior } from "../behaviors/CellSelectionBehavior";
 import { getCellArea } from "../utils/getCellArea";
 import { areAreasEqual } from "../utils/areAreasEqual";
+import { Border, Offset } from "../types/RGTheme";
 
 interface PartialAreaProps {
   /** The range of cells to area. */

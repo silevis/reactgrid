@@ -1,7 +1,6 @@
 import React, { CSSProperties, useCallback } from "react";
 import { NumericalRange } from "../types/CellMatrix";
 import { GetCellOffsets, PaneName, StickyOffsets } from "../types/InternalModel";
-import { RGTheme } from "../types/Theme";
 import { isSpanMember } from "../utils/isSpanMember";
 import { areAreasEqual } from "../utils/areAreasEqual";
 import { useReactGridStore } from "../utils/reactGridStore";
@@ -9,6 +8,7 @@ import { useTheme } from "../hooks/useTheme";
 import { CellContextProvider } from "./CellContext";
 import { PartialArea } from "./PartialArea";
 import { useReactGridId } from "./ReactGridIdProvider";
+import { RGTheme } from "../types/RGTheme";
 
 interface PaneGridContentProps {
   range: NumericalRange;
