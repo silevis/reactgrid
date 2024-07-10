@@ -3,7 +3,7 @@ import { ReactGridStore } from "../types/ReactGridStore.ts";
 import { getCellIndexes } from "./getCellIndexes.1.ts";
 
 export function getCellContainer(store: ReactGridStore, cell: Cell) {
-  if (!store.reactGridRef) throw new Error("ReactGridRef is not defined!");
+  if (!store.reactGridRef) return;
 
   const cellIdx = getCellIndexes(store, cell);
 

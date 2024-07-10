@@ -43,7 +43,7 @@ export const handlePointerDown = (event: React.PointerEvent<HTMLDivElement>, sto
   const { rowIndex, colIndex } = getCellIndexesFromPointerLocation(clientX, clientY);
   const cell = store.getCellByIndexes(rowIndex, colIndex);
 
-  const PreviousPane = getPaneNameByCell(store.paneRanges, cell);
+  const PreviousPane = getPaneNameByCell(store, cell);
 
   const handlePointerMove = (event: PointerEvent) => {
     const handler = usedTouch
