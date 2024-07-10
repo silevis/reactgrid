@@ -1,6 +1,6 @@
-import { createContext, memo, useContext, useMemo, useState } from "react";
+import { createContext, memo, useContext, useMemo } from "react";
 import { Cell, CellContextType } from "../types/PublicModel";
-import { reactGridStores } from "../utils/reactGridStore";
+import { reactGridStores, useReactGridStore } from "../utils/reactGridStore";
 import { useReactGridId } from "./ReactGridIdProvider";
 import { Direction, StickyOffsets } from "../types/InternalModel";
 
@@ -60,11 +60,10 @@ export const CellContextProvider = memo(
 
     const id = useReactGridId();
 
-    // non-reactive way to access store in order to avoid unnecessary re-renders
-    const store = reactGridStores()[id].getState();
+    const hiddenFocusTargetRef = useReactGridStore(id, (store) => store.hiddenFocusTargetRef, isFocused);
 
-    const hiddenFocusTargetRef = store.hiddenFocusTargetRef;
-    const setFocusedLocation = store.setFocusedLocation;
+    const setFocusedLocation = useReactGridStore(id, (store) => store.setFocusedLocation);
+    const setFocusedCellByDirection = useReactGridStore(id, (store) => store.setFocusedCellByDirection);
 
     const children = useMemo(() => <Template {...props} />, [Template, props]);
 
@@ -94,7 +93,7 @@ export const CellContextProvider = memo(
             hiddenFocusTargetRef?.focus({ preventScroll: true });
 
             if (direction) {
-              store.setFocusedCellByDirection(direction);
+              setFocusedCellByDirection(direction);
               return;
             }
 

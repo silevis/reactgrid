@@ -58,6 +58,7 @@ const DEFAULT_STORE_PROPS: ReactGridStoreProps = {
   shadowPosition: undefined,
   shadowSize: undefined,
   currentBehavior: DefaultBehavior(),
+  empty: undefined,
 };
 
 export function initReactGridStore(id: string, initialProps?: Partial<ReactGridStoreProps>) {
@@ -229,14 +230,18 @@ export function initReactGridStore(id: string, initialProps?: Partial<ReactGridS
   });
 }
 
-export function useReactGridStore<T>(id: string, selector: (store: ReactGridStore) => T): T {
+export function useReactGridStore<T>(
+  id: string,
+  selector: (store: ReactGridStore) => T,
+  shouldGetSelectorData = true
+): T {
   const store = reactGridStores()[id];
 
   if (store?.getState() === undefined) {
     throw new Error(`ReactGridStore with id "${id}" doesn't exist!`);
   }
 
-  return useStore(store, selector);
+  return useStore(store, shouldGetSelectorData ? selector : (store) => store.empty as T);
 }
 
 export const useReactGridStoreApi = <T>(id: string, selector: (store: ReactGridStore) => T): T | undefined => {

@@ -1,9 +1,11 @@
-import { FC, forwardRef, useEffect, useRef, useState } from "react";
-import CellWrapper from "../components/CellWrapper";
-import { useCellContext } from "../components/CellContext";
+import React, { FC, forwardRef, useEffect, useRef, useState } from "react";
+import { useCellContext } from "../../lib/components/CellContext";
 import { formatDate } from "../utils/formatDate";
+import CellWrapper from "../../lib/components/CellWrapper";
+import { CellContextType } from "../../lib/main";
 
 interface DefaultCalendarProps {
+  ctx: CellContextType;
   date: string;
   setIsInEditMode: (value: boolean) => void;
   onDateChanged: (data: { date?: Date; text?: string }) => void;
@@ -67,6 +69,7 @@ export const DateCell: FC<DateCellProps> = ({ value, onDateChanged, formatter, C
                 e.preventDefault();
                 onDateChanged({ date: new Date(e.currentTarget.value) });
                 setEditMode(false);
+                ctx.requestFocus("Bottom");
               }
             }}
             onBlur={(e: React.PointerEvent<HTMLInputElement>) => {
@@ -78,6 +81,7 @@ export const DateCell: FC<DateCellProps> = ({ value, onDateChanged, formatter, C
           />
         ) : (
           <DefaultCalendar
+            ctx={ctx}
             setIsInEditMode={setEditMode}
             ref={targetInputRef}
             date={formattedDate}
@@ -92,7 +96,7 @@ export const DateCell: FC<DateCellProps> = ({ value, onDateChanged, formatter, C
 };
 
 const DefaultCalendar = forwardRef(
-  ({ date, setIsInEditMode, onDateChanged }: DefaultCalendarProps, ref: React.ForwardedRef<HTMLInputElement>) => {
+  ({ ctx, date, setIsInEditMode, onDateChanged }: DefaultCalendarProps, ref: React.ForwardedRef<HTMLInputElement>) => {
     return (
       <input
         type="date"
@@ -124,6 +128,7 @@ const DefaultCalendar = forwardRef(
             e.preventDefault();
             onDateChanged({ date: new Date(e.currentTarget.value) });
             setIsInEditMode(false);
+            ctx.requestFocus("Bottom");
           }
         }}
         autoFocus

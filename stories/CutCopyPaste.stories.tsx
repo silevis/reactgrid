@@ -1,6 +1,6 @@
 import { StrictMode, useState } from "react";
 import { cellMatrixBuilder } from "../lib/utils/cellMatrixBuilder";
-import { Column, Row, HeaderCell, TextCell, ReactGrid, NumberCell } from "../lib/main";
+import { Column, Row, TextCell, ReactGrid, NumberCell } from "../lib/main";
 import { StoryDefault } from "@ladle/react";
 import { ErrorBoundary } from "../lib/components/ErrorBoundary";
 import React from "react";
@@ -8,6 +8,7 @@ import { initialColumns, initialRows, CellData, headerRow, dataRows, rgStyles } 
 import { handleCut } from "./utils/handleCut";
 import { handlePaste } from "./utils/handlePaste";
 import { handleCopy } from "./utils/handleCopy";
+import { HeaderCell } from "./cellTemplates/HeaderCell";
 
 export const CutCopyPasteExample = () => {
   const [columns, setColumns] = useState<Array<Column>>(initialColumns);

@@ -6,7 +6,6 @@ import { ErrorBoundary } from "../lib/components/ErrorBoundary";
 import { TextCell } from "../lib/cellTemplates/TextCell";
 import { cellMatrixBuilder } from "../lib/utils/cellMatrixBuilder";
 import { NumberCell } from "../lib/cellTemplates/NumberCell";
-import { DateCell } from "../lib/cellTemplates/DateCell";
 import { Column, Row } from "../lib/types/PublicModel";
 import { handleFill } from "./utils/handleFill";
 import { handleCut } from "./utils/handleCut";
@@ -15,6 +14,7 @@ import { handleCopy } from "./utils/handleCopy";
 import { handleColumnReorder } from "./utils/handleColumnReorder";
 import { handleResizeColumn } from "./utils/handleResizeColumn";
 import { handleRowReorder } from "./utils/handleRowReorder";
+import { DateCell } from "./cellTemplates/DateCell";
 
 interface CellData {
   text?: string;

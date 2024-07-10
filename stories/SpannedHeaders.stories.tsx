@@ -2,16 +2,16 @@ import { StoryDefault } from "@ladle/react";
 import { StrictMode, useState } from "react";
 import { cellMatrixBuilder } from "../lib/utils/cellMatrixBuilder";
 import { TextCell } from "../lib/cellTemplates/TextCell";
-import { HeaderCell } from "../lib/cellTemplates/HeaderCell";
 import { ReactGrid } from "../lib/components/ReactGrid";
 import { ErrorBoundary } from "../lib/components/ErrorBoundary";
 import { Column, Row } from "../lib/types/PublicModel";
 import { handleFill } from "./utils/handleFill";
 import { handleColumnReorder } from "./utils/handleColumnReorder";
 import { handleResizeColumn } from "./utils/handleResizeColumn";
-import { DateCell } from "../lib/cellTemplates/DateCell";
 import { handleRowReorder } from "./utils/handleRowReorder";
+import { HeaderCell } from "./cellTemplates/HeaderCell";
 import React from "react";
+import { DateCell } from "./cellTemplates/DateCell";
 
 interface CellData {
   text?: string;

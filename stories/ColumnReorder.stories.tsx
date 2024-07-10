@@ -1,11 +1,12 @@
 import React from "react";
 import { StrictMode, useState } from "react";
 import { cellMatrixBuilder } from "../lib/utils/cellMatrixBuilder";
-import { Column, Row, HeaderCell, TextCell, ReactGrid, NumberCell } from "../lib/main";
+import { Column, Row, TextCell, ReactGrid, NumberCell } from "../lib/main";
 import { StoryDefault } from "@ladle/react";
 import { ErrorBoundary } from "../lib/components/ErrorBoundary";
 import { initialColumns, initialRows, CellData, headerRow, dataRows, rgStyles } from "./utils/examplesConfig";
 import { handleColumnReorder } from "./utils/handleColumnReorder";
+import { HeaderCell } from "./cellTemplates/HeaderCell";
 
 export const ColumnReorderExample = () => {
   const [columns, setColumns] = useState<Array<Column>>(initialColumns);
