@@ -1,6 +1,6 @@
 import { createContext, memo, useContext, useMemo } from "react";
 import { Cell, CellContextType } from "../types/PublicModel";
-import { reactGridStores, useReactGridStore } from "../utils/reactGridStore";
+import { useReactGridStore } from "../utils/reactGridStore";
 import { useReactGridId } from "./ReactGridIdProvider";
 import { Direction, StickyOffsets } from "../types/InternalModel";
 
