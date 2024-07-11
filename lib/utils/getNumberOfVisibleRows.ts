@@ -14,7 +14,7 @@ export const getNumberOfVisibleRows = (store: ReactGridStore, columnIdx: number)
 
   // Find the last cell in the viewport
   for (const cell of cellsInCol) {
-    const currentCellContainer = getCellContainer(store, cell) as HTMLElement | undefined;
+    const currentCellContainer = getCellContainer(store, cell);
 
     if (!currentCellContainer) continue;
 

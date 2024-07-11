@@ -87,7 +87,7 @@ const handlePointerMove = (store: ReactGridStore, event: React.PointerEvent<HTML
 
   if (!firstCellInSelectedArea) return store;
 
-  const cellContainer = getCellContainer(store, firstCellInSelectedArea) as HTMLElement | null;
+  const cellContainer = getCellContainer(store, firstCellInSelectedArea);
 
   if (!cellContainer) return store;
 
@@ -127,8 +127,8 @@ const handlePointerMove = (store: ReactGridStore, event: React.PointerEvent<HTML
 
   if (!leftCell || !rightCell) return store;
 
-  const leftCellContainer = getCellContainer(store, leftCell) as HTMLElement | null;
-  const rightCellContainer = getCellContainer(store, rightCell) as HTMLElement | null;
+  const leftCellContainer = getCellContainer(store, leftCell);
+  const rightCellContainer = getCellContainer(store, rightCell);
 
   if (!leftCellContainer || !rightCellContainer) return store;
 

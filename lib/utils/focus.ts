@@ -11,7 +11,9 @@ import { handlePaneOverlap } from "./handlePaneOverlap.ts";
 export const moveFocusUp = (store: ReactGridStore, currentFocus: FocusedCell): ReactGridStore => {
   if (currentFocus.rowIndex === 0) return store;
 
-  const cellContainer = getCellContainer(store, currentFocus) as HTMLElement;
+  const cellContainer = getCellContainer(store, currentFocus);
+
+  if (!cellContainer) return store;
 
   const scrollableParent = (getScrollableParent(cellContainer, true) as Element) ?? store.reactGridRef!;
 
@@ -52,7 +54,9 @@ export const moveFocusUp = (store: ReactGridStore, currentFocus: FocusedCell): R
 export const moveFocusRight = (store: ReactGridStore, currentFocus: FocusedCell): ReactGridStore => {
   if (currentFocus.colIndex === store.columns.length - 1) return store;
 
-  const cellContainer = getCellContainer(store, currentFocus) as HTMLElement;
+  const cellContainer = getCellContainer(store, currentFocus);
+
+  if (!cellContainer) return store;
 
   const scrollableParent = (getScrollableParent(cellContainer, true) as Element) ?? store.reactGridRef!;
 
@@ -96,7 +100,9 @@ export const moveFocusRight = (store: ReactGridStore, currentFocus: FocusedCell)
 export const moveFocusDown = (store: ReactGridStore, currentFocus: FocusedCell) => {
   if (currentFocus.rowIndex === store.rows.length - 1) return store;
 
-  const cellContainer = getCellContainer(store, currentFocus) as HTMLElement;
+  const cellContainer = getCellContainer(store, currentFocus);
+
+  if (!cellContainer) return store;
 
   const scrollableParent = (getScrollableParent(cellContainer, true) as Element) ?? store.reactGridRef!;
 
@@ -136,7 +142,9 @@ export const moveFocusDown = (store: ReactGridStore, currentFocus: FocusedCell) 
 export const moveFocusLeft = (store: ReactGridStore, currentFocus: FocusedCell) => {
   if (currentFocus.colIndex === 0) return store;
 
-  const cellContainer = getCellContainer(store, currentFocus) as HTMLElement;
+  const cellContainer = getCellContainer(store, currentFocus);
+
+  if (!cellContainer) return store;
 
   const scrollableParent = (getScrollableParent(cellContainer, true) as Element) ?? store.reactGridRef!;
 

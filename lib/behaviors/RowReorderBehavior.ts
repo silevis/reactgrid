@@ -80,7 +80,7 @@ const handlePointerMove = (
 
   if (!firstColumnCell) return store;
 
-  const firstColumnCellContainer = getCellContainer(store, firstColumnCell) as HTMLElement | undefined;
+  const firstColumnCellContainer = getCellContainer(store, firstColumnCell);
 
   if (!firstColumnCellContainer) return store;
 
@@ -101,7 +101,7 @@ const handlePointerMove = (
 
   if (!firstCellInSelectedArea) return store;
 
-  const cellContainer = getCellContainer(store, firstCellInSelectedArea) as HTMLElement | undefined;
+  const cellContainer = getCellContainer(store, firstCellInSelectedArea);
 
   if (!cellContainer) return store;
 
@@ -139,8 +139,8 @@ const handlePointerMove = (
 
   if (!topCell || !bottomCell) return store;
 
-  const topCellContainer = getCellContainer(store, topCell) as HTMLElement | null;
-  const bottomCellContainer = getCellContainer(store, bottomCell) as HTMLElement | null;
+  const topCellContainer = getCellContainer(store, topCell);
+  const bottomCellContainer = getCellContainer(store, bottomCell);
 
   if (!topCellContainer || !bottomCellContainer) return store;
 

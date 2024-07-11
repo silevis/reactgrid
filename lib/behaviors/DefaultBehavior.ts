@@ -13,6 +13,7 @@ import isDevEnvironment from "../utils/isDevEnvironment.ts";
 import { getScrollableParent } from "../utils/scrollHelpers.ts";
 import { ColumnReorderBehavior } from "./ColumnReorderBehavior.ts";
 import { RowReorderBehavior } from "./RowReorderBehavior.ts";
+import { handlePaneOverlap } from "../utils/handlePaneOverlap.ts";
 
 const devEnvironment = isDevEnvironment();
 
@@ -91,34 +92,7 @@ export const DefaultBehavior = (config: DefaultBehaviorConfig = CONFIG_DEFAULTS)
 
     const scrollableParent = (getScrollableParent(element, true) as Element) ?? store.reactGridRef!;
 
-    const leftPaneOverlapValue = getCellPaneOverlap(store, { rowIndex, colIndex }, "Left");
-    const rightPaneOverlapValue = getCellPaneOverlap(store, { rowIndex, colIndex }, "Right");
-    const topPaneOverlapValue = getCellPaneOverlap(store, { rowIndex, colIndex }, "Top");
-    const bottomOverlapValue = getCellPaneOverlap(store, { rowIndex, colIndex }, "Bottom");
-
-    if (leftPaneOverlapValue) {
-      scrollableParent?.scrollBy({
-        left: -leftPaneOverlapValue,
-      });
-    }
-
-    if (rightPaneOverlapValue) {
-      scrollableParent?.scrollBy({
-        left: rightPaneOverlapValue,
-      });
-    }
-
-    if (topPaneOverlapValue) {
-      scrollableParent?.scrollBy({
-        top: -topPaneOverlapValue,
-      });
-    }
-
-    if (bottomOverlapValue) {
-      scrollableParent?.scrollBy({
-        top: bottomOverlapValue,
-      });
-    }
+    handlePaneOverlap(store, rowIndex, colIndex, scrollableParent);
 
     let shouldChangeFocusLocation: boolean = true;
 
@@ -141,7 +115,6 @@ export const DefaultBehavior = (config: DefaultBehaviorConfig = CONFIG_DEFAULTS)
       ...store,
       ...(shouldChangeFocusLocation && { focusedLocation: { rowIndex: rowIndex, colIndex: colIndex } }),
       absoluteFocusedLocation: { rowIndex: rowIndex, colIndex: colIndex },
-      fillHandleArea: { startRowIdx: -1, endRowIdx: -1, startColIdx: -1, endColIdx: -1 },
       ...(newBehavior.id !== ColumnReorderBehavior.id &&
         newBehavior.id !== RowReorderBehavior.id && {
           selectedArea: newSelectedArea,

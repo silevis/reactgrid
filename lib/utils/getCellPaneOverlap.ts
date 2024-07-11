@@ -32,8 +32,8 @@ export const getCellPaneOverlap = (
 
   if (!paneCell || !cell || isCellInPane(store, cell, panePosition)) return 0;
 
-  const paneCellContainer = getCellContainer(store, paneCell) as HTMLElement | null;
-  const cellContainer = getCellContainer(store, cell) as HTMLElement | null;
+  const paneCellContainer = getCellContainer(store, paneCell);
+  const cellContainer = getCellContainer(store, cell);
 
   if (!paneCellContainer || !cellContainer) return 0;
 

@@ -22,9 +22,10 @@ import { ReactGridStore } from "../types/ReactGridStore.ts";
  */
 export function handleJumpScroll(store: ReactGridStore, previousCell: Cell, nextCell: Cell): void {
   if (!previousCell) return;
-  const nextCellContainer = getCellContainer(store, nextCell) as HTMLElement;
-  if (!nextCellContainer) return;
-  const previousCellContainer = getCellContainer(store, previousCell) as HTMLElement;
+  const nextCellContainer = getCellContainer(store, nextCell);
+  const previousCellContainer = getCellContainer(store, previousCell);
+
+  if (!previousCellContainer || !nextCellContainer) return;
 
   const scrollableParent = (getScrollableParent(nextCellContainer, true) as Element) ?? store.reactGridRef!;
   const directions: Direction[] = ["Right", "Left", "Bottom", "Top"];
@@ -32,8 +33,12 @@ export function handleJumpScroll(store: ReactGridStore, previousCell: Cell, next
 
   directions.forEach((scrollingDirection, i) => {
     const borderStickyCell = getStickyCellAdjacentToCenterPane(store, nextCell, scrollingDirection);
+
     if (!borderStickyCell) return;
-    const borderStickyContainer = getCellContainer(store, borderStickyCell) as HTMLElement;
+
+    const borderStickyContainer = getCellContainer(store, borderStickyCell);
+
+    if (!borderStickyContainer) return;
 
     const isNextCellFullyVisible =
       isInViewport(nextCellContainer, scrollableParent) && !isCollision(nextCellContainer, borderStickyContainer);

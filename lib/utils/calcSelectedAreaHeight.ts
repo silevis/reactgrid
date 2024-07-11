@@ -8,7 +8,7 @@ export const calcSelectedAreaHeight = (store: ReactGridStore): number => {
   for (let rowIndex = selectedArea.startRowIdx; rowIndex < selectedArea.endRowIdx; rowIndex++) {
     const cell = getCellByIndexes(rowIndex, 0); // get the first cell of the row
     if (cell) {
-      const cellContainer = getCellContainer(store, cell) as HTMLElement | null;
+      const cellContainer = getCellContainer(store, cell);
       if (cellContainer) {
         height += cellContainer.offsetHeight;
       }

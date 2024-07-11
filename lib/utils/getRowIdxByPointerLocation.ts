@@ -10,7 +10,9 @@ export const getRowIdxByPointerLocation = (store: ReactGridStore, x: number, y: 
     const { rowIndex, colIndex } = getCellContainerLocation(pointerCell);
     const cell = store.getCellByIndexes(rowIndex, colIndex);
 
-    const cellContainer = getCellContainer(store, cell!);
+    if (!cell) return -1;
+
+    const cellContainer = getCellContainer(store, cell);
 
     if (!cellContainer) return -1;
 
