@@ -6,6 +6,7 @@ import isDevEnvironment from "../utils/isDevEnvironment";
 import { ReactGridProps } from "../types/PublicModel";
 import { ReactGridStore } from "../types/ReactGridStore";
 import isEqual from "lodash.isequal";
+import { getHiddenTargetFocusByIdx } from "../utils/getHiddenTargetFocusByIdx";
 
 const devEnvironment = isDevEnvironment();
 
@@ -70,7 +71,8 @@ export const useReactGridSync = (
           console.error("The provided 'initialFocusLocation' is invalid as it targets !");
       }
 
-      setFocusedLocation(rowIndex, colIndex);
+      getHiddenTargetFocusByIdx(rowIndex, colIndex)?.focus();
+      // setFocusedLocation(rowIndex, colIndex);
     }
   }, []);
 };

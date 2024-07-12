@@ -3,6 +3,7 @@ import { Cell, CellContextType } from "../types/PublicModel";
 import { useReactGridStore } from "../utils/reactGridStore";
 import { useReactGridId } from "./ReactGridIdProvider";
 import { Direction, StickyOffsets } from "../types/InternalModel";
+import { getHiddenTargetFocusByIdx } from "../utils/getHiddenTargetFocusByIdx";
 
 interface CellContextProviderProps {
   rowId: string;
@@ -60,7 +61,7 @@ export const CellContextProvider = memo(
 
     const id = useReactGridId();
 
-    const hiddenFocusTargetRef = useReactGridStore(id, (store) => store.hiddenFocusTargetRef, isFocused);
+    // const hiddenFocusTargetRef = useReactGridStore(id, (store) => store.hiddenFocusTargetRef, isFocused);
 
     const setFocusedLocation = useReactGridStore(id, (store) => store.setFocusedLocation);
     const setFocusedCellByDirection = useReactGridStore(id, (store) => store.setFocusedCellByDirection);
@@ -90,7 +91,7 @@ export const CellContextProvider = memo(
             ...props.style,
           },
           requestFocus: (direction?: Direction) => {
-            hiddenFocusTargetRef?.focus({ preventScroll: true });
+            getHiddenTargetFocusByIdx(realRowIndex, realColumnIndex)?.focus();
 
             if (direction) {
               setFocusedCellByDirection(direction);

@@ -3,6 +3,7 @@ import CellWrapper from "../components/CellWrapper";
 import { useCellContext } from "../components/CellContext";
 import { useDoubleTouch } from "../hooks/useDoubleTouch";
 import { isAlphaNumericWithoutModifiers } from "../utils/keyCodeCheckings";
+import { getHiddenTargetFocusByIdx } from "../utils/getHiddenTargetFocusByIdx";
 
 interface TextCellProps {
   value?: string;
@@ -26,8 +27,8 @@ export const TextCell: FC<TextCellProps> = ({ value: initialValue, onTextChanged
       onTouchEnd={handleDoubleTouch}
       style={{ padding: ".2rem", textAlign: "center", outline: "none" }}
       onDoubleClick={() => {
-        setEditMode(true);
-        ctx.requestFocus();
+        ctx.isFocused && setEditMode(true);
+        // ctx.requestFocus();
       }}
       onKeyDown={(e) => {
         if (isAlphaNumericWithoutModifiers(e) || e.key === "Enter") {
@@ -36,7 +37,7 @@ export const TextCell: FC<TextCellProps> = ({ value: initialValue, onTextChanged
         if (!isEditMode && e.key === "Enter") {
           e.preventDefault();
           e.stopPropagation();
-          ctx.requestFocus();
+          // ctx.requestFocus();
         }
       }}
     >
@@ -73,7 +74,7 @@ export const TextCell: FC<TextCellProps> = ({ value: initialValue, onTextChanged
               // focus move event
               onTextChanged(e.currentTarget.value);
               setEditMode(false);
-              ctx.requestFocus("Bottom");
+              // ctx.requestFocus("Bottom");
             }
           }}
           autoFocus
@@ -84,6 +85,7 @@ export const TextCell: FC<TextCellProps> = ({ value: initialValue, onTextChanged
       ) : (
         initialValue
       )}
+      {/* <button onClick={() => getHiddenTargetFocusByIdx(ctx.realRowIndex, ctx.realColumnIndex)?.focus()}>focus</button> */}
     </CellWrapper>
   );
 };

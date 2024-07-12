@@ -40,7 +40,7 @@ const CellWrapper: FC<CellWrapperProps> = ({ children, targetInputRef, ...wrappe
     >
       {ctx.realRowIndex === 0 && <ColumnResize />}
       {children}
-      {ctx.isFocused && <HiddenFocusTarget />}
+      <HiddenFocusTarget colIdx={ctx.realColumnIndex} rowIdx={ctx.realRowIndex} />
     </div>
   );
 };

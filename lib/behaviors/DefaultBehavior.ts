@@ -14,6 +14,8 @@ import { getScrollableParent } from "../utils/scrollHelpers.ts";
 import { ColumnReorderBehavior } from "./ColumnReorderBehavior.ts";
 import { RowReorderBehavior } from "./RowReorderBehavior.ts";
 import { handlePaneOverlap } from "../utils/handlePaneOverlap.ts";
+import { getHiddenTargetFocusByIdx } from "../utils/getHiddenTargetFocusByIdx.ts";
+import { getCellIndexesFromPointerLocation } from "../utils/getCellIndexesFromPointerLocation.ts";
 
 const devEnvironment = isDevEnvironment();
 
@@ -36,23 +38,60 @@ export const DefaultBehavior = (config: DefaultBehaviorConfig = CONFIG_DEFAULTS)
   handlePointerDown: function (event, store): ReactGridStore {
     devEnvironment && console.log("DB/handlePointerDown");
 
-    const element = getCellContainerFromPoint(event.clientX, event.clientY);
+    const cellContainer = getCellContainerFromPoint(event.clientX, event.clientY);
 
-    if (!element) return store;
+    if (!cellContainer) return store;
 
-    const { rowIndex, colIndex } = getCellContainerLocation(element);
+    const { rowIndex, colIndex } = getCellContainerLocation(cellContainer);
+
+    getHiddenTargetFocusByIdx(rowIndex, colIndex)?.focus({ preventScroll: true });
+
+    const scrollableParent = (getScrollableParent(cellContainer, true) as Element) ?? store.reactGridRef!;
+
+    handlePaneOverlap(store, rowIndex, colIndex, scrollableParent);
+
+    return store;
+  },
+
+  handleFocus: (event, store) => {
+    devEnvironment && console.log("DB/handleFocus");
+
+    const hiddenFocusTargetRef = document.activeElement;
+
+    if (!hiddenFocusTargetRef) return store;
+
+    const { rowIndex, colIndex } = getCellIndexesFromPointerLocation(
+      hiddenFocusTargetRef?.getBoundingClientRect?.().left,
+      hiddenFocusTargetRef?.getBoundingClientRect?.().top
+    );
 
     const shouldSelectEntireColumn = rowIndex === 0 && store.enableColumnSelectionOnFirstRow;
-
     const shouldSelectEntireRow = colIndex === 0 && store.enableRowSelectionOnFirstColumn;
 
-    const focusedCell = store.getCellByIndexes(rowIndex, colIndex);
+    const clickedCell = store.getCellByIndexes(rowIndex, colIndex);
 
-    if (!focusedCell) return store;
+    if (!clickedCell) return store;
 
-    const cellArea = getCellArea(store, focusedCell);
+    let shouldChangeFocusLocation: boolean = true;
 
-    let newBehavior: Behavior = store.getBehavior("CellSelection") || store.currentBehavior;
+    if (shouldSelectEntireColumn) {
+      if (store.selectedArea.endRowIdx === store.rows.length) {
+        // If we already selected the entire column, we should change focus location only if the clicked cell is not in the selected area.
+        shouldChangeFocusLocation = !isCellInRange(store, clickedCell, store.selectedArea);
+      }
+    } else if (shouldSelectEntireRow) {
+      if (store.selectedArea.endColIdx === store.columns.length) {
+        // If we already selected the entire row, we should change focus location only if the clicked cell is not in the selected area.
+        shouldChangeFocusLocation = !isCellInRange(store, clickedCell, store.selectedArea);
+      }
+    }
+    if (clickedCell.isFocusable === false) {
+      shouldChangeFocusLocation = false;
+    }
+
+    const cellArea = getCellArea(store, clickedCell);
+
+    let newBehavior: Behavior = store.currentBehavior;
 
     let newSelectedArea = { startRowIdx: -1, endRowIdx: -1, startColIdx: -1, endColIdx: -1 };
 
@@ -65,7 +104,7 @@ export const DefaultBehavior = (config: DefaultBehaviorConfig = CONFIG_DEFAULTS)
       });
 
       if (
-        isCellInRange(store, focusedCell, store.selectedArea) &&
+        isCellInRange(store, clickedCell, store.selectedArea) &&
         store.selectedArea.endRowIdx === store.rows.length &&
         store.onColumnReorder &&
         store.columns[colIndex].reorderable
@@ -81,7 +120,7 @@ export const DefaultBehavior = (config: DefaultBehaviorConfig = CONFIG_DEFAULTS)
       });
 
       if (
-        isCellInRange(store, focusedCell, store.selectedArea) &&
+        isCellInRange(store, clickedCell, store.selectedArea) &&
         store.selectedArea.endColIdx === store.columns.length &&
         store.onRowReorder &&
         store.rows[rowIndex].reorderable
@@ -90,31 +129,10 @@ export const DefaultBehavior = (config: DefaultBehaviorConfig = CONFIG_DEFAULTS)
       }
     }
 
-    const scrollableParent = (getScrollableParent(element, true) as Element) ?? store.reactGridRef!;
-
-    handlePaneOverlap(store, rowIndex, colIndex, scrollableParent);
-
-    let shouldChangeFocusLocation: boolean = true;
-
-    if (shouldSelectEntireColumn) {
-      if (store.selectedArea.endRowIdx === store.rows.length) {
-        // If we already selected the entire column, we should change focus location only if the clicked cell is not in the selected area.
-        shouldChangeFocusLocation = !isCellInRange(store, focusedCell, store.selectedArea);
-      }
-    } else if (shouldSelectEntireRow) {
-      if (store.selectedArea.endColIdx === store.columns.length) {
-        // If we already selected the entire row, we should change focus location only if the clicked cell is not in the selected area.
-        shouldChangeFocusLocation = !isCellInRange(store, focusedCell, store.selectedArea);
-      }
-    }
-    if (focusedCell.isFocusable === false) {
-      shouldChangeFocusLocation = false;
-    }
-
     return {
       ...store,
-      ...(shouldChangeFocusLocation && { focusedLocation: { rowIndex: rowIndex, colIndex: colIndex } }),
-      absoluteFocusedLocation: { rowIndex: rowIndex, colIndex: colIndex },
+      ...(shouldChangeFocusLocation && { focusedLocation: { rowIndex, colIndex } }),
+      absoluteFocusedLocation: { rowIndex, colIndex },
       ...(newBehavior.id !== ColumnReorderBehavior.id &&
         newBehavior.id !== RowReorderBehavior.id && {
           selectedArea: newSelectedArea,
@@ -129,7 +147,7 @@ export const DefaultBehavior = (config: DefaultBehaviorConfig = CONFIG_DEFAULTS)
   handlePointerMove: (event, store) => {
     devEnvironment && console.log("DB/handlePointerMove");
 
-    return store;
+    return { ...store, currentBehavior: store.getBehavior("CellSelection") };
   },
 
   handlePointerUp: function (event, store) {
@@ -147,6 +165,8 @@ export const DefaultBehavior = (config: DefaultBehaviorConfig = CONFIG_DEFAULTS)
   },
 
   handleKeyDown: function (event, store) {
+    devEnvironment && console.log("DB/handleKeyDown");
+
     return handleKeyDown(event, store, { moveHorizontallyOnEnter: config.moveHorizontallyOnEnter });
   },
 
