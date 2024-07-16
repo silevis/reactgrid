@@ -199,8 +199,11 @@ const handlePointerUp = (
   event: React.PointerEvent<HTMLDivElement> | PointerEvent
 ): ReactGridStore => {
   mouseToCellTopBorderDistanceY = 0;
+
   // Prevent triggering the resize behavior when a row is selected twice without moving the pointer
-  if (!initialMouseYPos) return { ...store, currentBehavior: store.getBehavior("Default") };
+  if (!initialMouseYPos)
+    return { ...store, lineOrientation: "vertical", currentBehavior: store.getBehavior("Default") };
+
   if (!store.linePosition) {
     initialMouseYPos = 0;
     if (!initialMouseYPos)

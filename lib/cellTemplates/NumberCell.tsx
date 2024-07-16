@@ -50,7 +50,6 @@ export const NumberCell: FC<NumberCellProps> = ({
       style={{ padding: ".2rem", textAlign: "center", outline: "none" }}
       onDoubleClick={() => {
         setEditMode(true);
-        ctx.requestFocus();
       }}
       onKeyDown={(e) => {
         if (!isEditMode && (inNumericKey(e.keyCode) || e.key === "Enter")) {
@@ -59,7 +58,6 @@ export const NumberCell: FC<NumberCellProps> = ({
         if (!isEditMode && e.key === "Enter") {
           e.preventDefault();
           e.stopPropagation();
-          ctx.requestFocus();
         }
       }}
       targetInputRef={targetInputRef}
@@ -87,14 +85,12 @@ export const NumberCell: FC<NumberCellProps> = ({
             fontFamily: "inherit",
           }}
           onKeyDown={(e) => {
-            e.stopPropagation();
             if (e.key === "Escape") {
               setEditMode(false);
             } else if (e.key === "Enter") {
               e.preventDefault();
               onValueChanged(Number(e.currentTarget.value));
               setEditMode(false);
-              ctx.requestFocus("Bottom");
             }
           }}
           autoFocus

@@ -1,9 +1,6 @@
 import { createContext, memo, useContext, useMemo } from "react";
 import { Cell, CellContextType } from "../types/PublicModel";
-import { useReactGridStore } from "../utils/reactGridStore";
-import { useReactGridId } from "./ReactGridIdProvider";
-import { Direction, StickyOffsets } from "../types/InternalModel";
-import { getHiddenTargetFocusByIdx } from "../utils/getHiddenTargetFocusByIdx";
+import { StickyOffsets } from "../types/InternalModel";
 
 interface CellContextProviderProps {
   rowId: string;
@@ -27,9 +24,6 @@ export const CellContext = createContext<CellContextType>({
   realRowIndex: -1,
   realColumnIndex: -1,
   isFocused: false,
-  requestFocus: function (): void {
-    throw new Error("Function not implemented.");
-  },
   containerStyle: {},
 });
 
@@ -59,13 +53,6 @@ export const CellContextProvider = memo(
   }: CellContextProviderProps) => {
     const { Template, props } = cell;
 
-    const id = useReactGridId();
-
-    // const hiddenFocusTargetRef = useReactGridStore(id, (store) => store.hiddenFocusTargetRef, isFocused);
-
-    const setFocusedLocation = useReactGridStore(id, (store) => store.setFocusedLocation);
-    const setFocusedCellByDirection = useReactGridStore(id, (store) => store.setFocusedCellByDirection);
-
     const children = useMemo(() => <Template {...props} />, [Template, props]);
 
     return (
@@ -89,16 +76,6 @@ export const CellContextProvider = memo(
             gridRowStart: realRowIndex + 1,
             gridColumnStart: realColumnIndex + 1,
             ...props.style,
-          },
-          requestFocus: (direction?: Direction) => {
-            getHiddenTargetFocusByIdx(realRowIndex, realColumnIndex)?.focus();
-
-            if (direction) {
-              setFocusedCellByDirection(direction);
-              return;
-            }
-
-            setFocusedLocation(realRowIndex, realColumnIndex);
           },
         }}
       >

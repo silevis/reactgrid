@@ -53,7 +53,7 @@ export const EMPTY_AREA = {
   endRowIdx: -1,
   startColIdx: -1,
   endColIdx: -1,
-} as const;
+};
 
 /**
  * Indicates location for non-existing cell.

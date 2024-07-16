@@ -3,16 +3,14 @@ import CellWrapper from "../components/CellWrapper";
 import { useCellContext } from "../components/CellContext";
 import { useDoubleTouch } from "../hooks/useDoubleTouch";
 import { isAlphaNumericWithoutModifiers } from "../utils/keyCodeCheckings";
-import { getHiddenTargetFocusByIdx } from "../utils/getHiddenTargetFocusByIdx";
 
 interface TextCellProps {
   value?: string;
   onTextChanged: (newText: string) => void;
-  reverse?: boolean;
   style?: React.CSSProperties;
 }
 
-export const TextCell: FC<TextCellProps> = ({ value: initialValue, onTextChanged, reverse }) => {
+export const TextCell: FC<TextCellProps> = ({ value: initialValue, onTextChanged }) => {
   const ctx = useCellContext();
   const targetInputRef = useRef<HTMLTextAreaElement>(null);
   const [isEditMode, setEditMode] = useState(false);
@@ -28,7 +26,6 @@ export const TextCell: FC<TextCellProps> = ({ value: initialValue, onTextChanged
       style={{ padding: ".2rem", textAlign: "center", outline: "none" }}
       onDoubleClick={() => {
         ctx.isFocused && setEditMode(true);
-        // ctx.requestFocus();
       }}
       onKeyDown={(e) => {
         if (isAlphaNumericWithoutModifiers(e) || e.key === "Enter") {
@@ -37,7 +34,6 @@ export const TextCell: FC<TextCellProps> = ({ value: initialValue, onTextChanged
         if (!isEditMode && e.key === "Enter") {
           e.preventDefault();
           e.stopPropagation();
-          // ctx.requestFocus();
         }
       }}
     >
@@ -65,7 +61,11 @@ export const TextCell: FC<TextCellProps> = ({ value: initialValue, onTextChanged
           }}
           onPointerDown={(e) => e.stopPropagation()}
           onKeyDown={(e) => {
-            e.stopPropagation();
+            // Stop propagation for all keys except "Escape" and "Enter"
+            if (e.key !== "Escape" && e.key !== "Enter" && e.key !== "Tab" && e.key !== "Shift") {
+              e.stopPropagation();
+            }
+
             if (e.key === "Escape") {
               setEditMode(false);
             } else if (e.key === "Enter") {
@@ -74,18 +74,14 @@ export const TextCell: FC<TextCellProps> = ({ value: initialValue, onTextChanged
               // focus move event
               onTextChanged(e.currentTarget.value);
               setEditMode(false);
-              // ctx.requestFocus("Bottom");
             }
           }}
           autoFocus
           ref={targetInputRef}
         />
-      ) : reverse ? (
-        initialValue?.split?.("").reverse().join("")
       ) : (
         initialValue
       )}
-      {/* <button onClick={() => getHiddenTargetFocusByIdx(ctx.realRowIndex, ctx.realColumnIndex)?.focus()}>focus</button> */}
     </CellWrapper>
   );
 };

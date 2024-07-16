@@ -10,7 +10,6 @@ export const useDoubleTouch = (ctx: CellContextType, setIsInEditMode: (enableEdi
     if (timesince < 300 && timesince > 0) {
       // double touch detected
       setIsInEditMode(true);
-      ctx.requestFocus();
     }
     setLastTouchEnd(now);
   };

@@ -7,7 +7,7 @@ export type BehaviorId = "Default" | "CellSelection" | string;
 export type HandlerFn<TEvent extends React.SyntheticEvent | Event> = (
   event: TEvent,
   store: ReactGridStore
-) => ReactGridStore;
+) => Partial<ReactGridStore>;
 
 export type PointerEventHandler = HandlerFn<React.PointerEvent<HTMLDivElement> | PointerEvent>;
 export type PointerHoldEventHandler = HandlerFn<React.PointerEvent<HTMLDivElement> | PointerEvent>;

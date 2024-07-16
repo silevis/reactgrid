@@ -83,9 +83,6 @@ export type CellContextType = {
   containerStyle: React.CSSProperties;
 
   isFocused: boolean;
-
-  /** Requests focus and enables edit mode if true is passed as a parameter. */
-  requestFocus: (cellIdx?: Direction) => void;
 };
 
 export type CellMap<RowIdType extends string = string, ColIdType extends string = string> = Map<

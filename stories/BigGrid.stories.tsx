@@ -213,29 +213,36 @@ export const BigGrid = () => {
       "3",
       "6",
       TextCell,
-      { value: gridData[realRowIdx3][realColIdx6]?.text ?? "", reverse: true, onTextChanged: () => null },
+      { value: gridData[realRowIdx3][realColIdx6]?.text ?? "", onTextChanged: () => null },
       { colSpan: 2, rowSpan: 2 }
     );
     setCell(
       "5",
       "4",
       TextCell,
-      { value: gridData[realRowIdx5][realColIdx4]?.text ?? "", reverse: true, onTextChanged: () => null },
+      { value: gridData[realRowIdx5][realColIdx4]?.text ?? "", onTextChanged: () => null },
       { rowSpan: 2 }
     );
     setCell(
       "5",
       "5",
       TextCell,
-      { value: gridData[realRowIdx5][realColIdx5]?.text ?? "", reverse: true, onTextChanged: () => null },
+      { value: gridData[realRowIdx5][realColIdx5]?.text ?? "", onTextChanged: () => null },
       { colSpan: 3 }
     );
     setCell(
       "6",
       "6",
       TextCell,
-      { value: gridData[realRowIdx6][realColIdx6]?.text ?? "", reverse: true, onTextChanged: () => null },
+      { value: gridData[realRowIdx6][realColIdx6]?.text ?? "", onTextChanged: () => null },
       { colSpan: 3 }
+    );
+    setCell(
+      "18",
+      "1",
+      TextCell,
+      { value: gridData[realRowIdx6][realColIdx6]?.text ?? "", onTextChanged: () => null },
+      { rowSpan: 2 }
     );
   });
 
@@ -247,7 +254,7 @@ export const BigGrid = () => {
       <div className="rgScrollableContainer" style={{ height: "100%", width: "100%", overflow: "auto" }}>
         <ReactGrid
           id="big-grid"
-          stickyTopRows={1}
+          stickyTopRows={3}
           stickyLeftColumns={3}
           stickyRightColumns={2}
           stickyBottomRows={2}

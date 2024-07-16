@@ -45,13 +45,11 @@ export const DateCell: FC<DateCellProps> = ({ value, onDateChanged, formatter, C
       style={{ padding: ".2rem", textAlign: "center", outline: "none" }}
       onDoubleClick={() => {
         setEditMode(true);
-        ctx.requestFocus();
       }}
       onKeyDown={(e) => {
         if (!isEditMode && e.key === "Enter") {
           e.preventDefault();
           e.stopPropagation();
-          ctx.requestFocus();
           setEditMode(true);
         }
       }}
@@ -69,7 +67,6 @@ export const DateCell: FC<DateCellProps> = ({ value, onDateChanged, formatter, C
                 e.preventDefault();
                 onDateChanged({ date: new Date(e.currentTarget.value) });
                 setEditMode(false);
-                ctx.requestFocus("Bottom");
               }
             }}
             onBlur={(e: React.PointerEvent<HTMLInputElement>) => {
@@ -128,7 +125,6 @@ const DefaultCalendar = forwardRef(
             e.preventDefault();
             onDateChanged({ date: new Date(e.currentTarget.value) });
             setIsInEditMode(false);
-            ctx.requestFocus("Bottom");
           }
         }}
         autoFocus

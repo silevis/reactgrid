@@ -28,8 +28,6 @@ export const updateStoreWithApiAndEventHandler = <TEvent extends React.Synthetic
 
     const isEquals = isEqual(store, newStore);
 
-    // console.log("isEquals: ", isEquals);
-
     if (isEquals) {
       return;
     }
@@ -53,7 +51,11 @@ function getEventNameFromKeyName(keyName: ChangeObservedKeys): ReactGridEventNam
   }
 }
 
-function findChangesInStore(oldStore: ReactGridStore, newStore: ReactGridStore, keysToCompare: ChangeObservedKeys[]) {
+function findChangesInStore(
+  oldStore: ReactGridStore,
+  newStore: Partial<ReactGridStore>,
+  keysToCompare: ChangeObservedKeys[]
+) {
   const updatedKeys: RegisteredChanges = {};
 
   keysToCompare.forEach((key: ChangeObservedKeys) => {
