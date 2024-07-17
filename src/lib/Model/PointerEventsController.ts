@@ -35,7 +35,7 @@ export class PointerEventsController extends AbstractPointerEventsController {
         state as State
       );
       if (state.props?.onContextMenu && onClickableAreaOnPro) {
-        window.addEventListener("contextmenu", this.handleContextMenu);
+        window.addEventListener("contextmenu", this.handleContextMenu, true);
       }
       if (!onClickableAreaOnPro) {
         return {
