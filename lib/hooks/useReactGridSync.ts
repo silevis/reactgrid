@@ -14,7 +14,7 @@ export const useReactGridSync = (
   store: ReactGridStore,
   { initialSelectedRange, initialFocusLocation, ...rgProps }: Partial<ReactGridProps>
 ) => {
-  const { setSelectedArea, setFocusedLocation, getCellOrSpanMemberByIndexes, getCellByIds, setExternalData } = store;
+  const { setSelectedArea, getCellOrSpanMemberByIndexes, getCellByIds, setExternalData } = store;
 
   function useDeepCompareGridProps(callback: () => void, dependencies: Partial<ReactGridProps>[]) {
     const currentDependenciesRef = useRef<Partial<ReactGridProps>[]>();
@@ -72,7 +72,6 @@ export const useReactGridSync = (
       }
 
       getHiddenTargetFocusByIdx(rowIndex, colIndex)?.focus();
-      // setFocusedLocation(rowIndex, colIndex);
     }
   }, []);
 };

@@ -6,8 +6,6 @@ import { isSpanMember } from "./isSpanMember.ts";
 import { ReactGridStore, ReactGridStoreProps } from "../types/ReactGridStore.ts";
 import { FillHandleBehavior } from "../behaviors/FillHandleBehavior.ts";
 import { ColumnReorderBehavior } from "../behaviors/ColumnReorderBehavior.ts";
-import { Direction, EMPTY_AREA } from "../types/InternalModel.ts";
-import { moveFocusDown, moveFocusLeft, moveFocusRight, moveFocusUp } from "./focus.ts";
 
 type ReactGridStores = Record<string, StoreApi<ReactGridStore>>;
 
@@ -47,7 +45,6 @@ const DEFAULT_STORE_PROPS: ReactGridStoreProps = {
   rowMeasurements: [],
   colMeasurements: [],
   focusedLocation: { rowIndex: 0, colIndex: 0 },
-  absoluteFocusedLocation: { rowIndex: 0, colIndex: 0 },
   selectedArea: { startRowIdx: -1, endRowIdx: -1, startColIdx: -1, endColIdx: -1 },
   fillHandleArea: { startRowIdx: -1, endRowIdx: -1, startColIdx: -1, endColIdx: -1 },
   reactGridRef: undefined,
@@ -58,7 +55,6 @@ const DEFAULT_STORE_PROPS: ReactGridStoreProps = {
   shadowPosition: undefined,
   shadowSize: undefined,
   currentBehavior: DefaultBehavior(),
-  empty: undefined,
 };
 
 export function initReactGridStore(id: string, initialProps?: Partial<ReactGridStoreProps>) {
@@ -181,29 +177,6 @@ export function initReactGridStore(id: string, initialProps?: Partial<ReactGridS
         assignReactGridRef: (reactGridRef) => set(() => ({ reactGridRef })),
         assignHiddenFocusTargetRef: (hiddenFocusTargetRef) => set(() => ({ hiddenFocusTargetRef })),
 
-        setFocusedCellByDirection: (direction: Direction) => {
-          const _state = get();
-
-          const focusedCell = get().getFocusedCell();
-
-          if (!focusedCell) return;
-
-          switch (direction) {
-            case "Top":
-              set(() => ({ ...moveFocusUp(_state, focusedCell), selectedArea: EMPTY_AREA }));
-              break;
-            case "Bottom":
-              set(() => ({ ...moveFocusDown(_state, focusedCell), selectedArea: EMPTY_AREA }));
-              break;
-            case "Left":
-              set(() => ({ ...moveFocusLeft(_state, focusedCell), selectedArea: EMPTY_AREA }));
-              break;
-            case "Right":
-              set(() => ({ ...moveFocusRight(_state, focusedCell), selectedArea: EMPTY_AREA }));
-              break;
-          }
-        },
-
         setBehaviors: (behaviors) => set(() => ({ ...get().behaviors, ...behaviors })),
         getBehavior: (behaviorId) => {
           const behavior = get().behaviors?.[behaviorId];
@@ -230,18 +203,14 @@ export function initReactGridStore(id: string, initialProps?: Partial<ReactGridS
   });
 }
 
-export function useReactGridStore<T>(
-  id: string,
-  selector: (store: ReactGridStore) => T,
-  shouldGetSelectorData = true
-): T {
+export function useReactGridStore<T>(id: string, selector: (store: ReactGridStore) => T): T {
   const store = reactGridStores()[id];
 
   if (store?.getState() === undefined) {
     throw new Error(`ReactGridStore with id "${id}" doesn't exist!`);
   }
 
-  return useStore(store, shouldGetSelectorData ? selector : (store) => store.empty as T);
+  return useStore(store, selector);
 }
 
 export const useReactGridStoreApi = <T>(id: string, selector: (store: ReactGridStore) => T): T | undefined => {

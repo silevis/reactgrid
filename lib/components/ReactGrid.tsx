@@ -49,6 +49,9 @@ export const ReactGrid: FC<ReactGridProps> = ({
     );
   }
 
+  const isReorderBehavior =
+    currentBehavior.id === ColumnReorderBehavior.id || currentBehavior.id === RowReorderBehavior.id;
+
   return (
     <ReactGridIdProvider id={id}>
       <ErrorBoundary>
@@ -62,13 +65,9 @@ export const ReactGrid: FC<ReactGridProps> = ({
             stickyRightColumns={stickyRightColumns ?? 0}
           />
           {linePosition && <Line />}
-          {(currentBehavior.id === ColumnReorderBehavior.id || currentBehavior.id === RowReorderBehavior.id) && (
-            <Shadow />
-          )}
+          {isReorderBehavior && <Shadow />}
         </GridWrapper>
       </ErrorBoundary>
     </ReactGridIdProvider>
   );
 };
-
-// export default ReactGrid;

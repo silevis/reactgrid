@@ -1,14 +1,12 @@
 import { Behavior } from "../types/Behavior.ts";
 import { NumericalRange } from "../types/CellMatrix.ts";
-import { Cell, Position } from "../types/PublicModel.ts";
+import { Position } from "../types/PublicModel.ts";
 import { ReactGridStore } from "../types/ReactGridStore.ts";
-import { findMinimalSelectedArea } from "../utils/findMinimalSelectedArea.ts";
 import { getCellArea } from "../utils/getCellArea.ts";
 import { getCellContainerFromPoint } from "../utils/getCellContainerFromPoint.ts";
 import { getCellContainerLocation } from "../utils/getCellContainerLocation.ts";
 import { handleKeyDown } from "../utils/handleKeyDown.ts";
 import { isCellInRange } from "../utils/isCellInRange.ts";
-import { getCellPaneOverlap } from "../utils/getCellPaneOverlap.ts";
 import isDevEnvironment from "../utils/isDevEnvironment.ts";
 import { getScrollableParent } from "../utils/scrollHelpers.ts";
 import { ColumnReorderBehavior } from "./ColumnReorderBehavior.ts";
@@ -39,41 +37,22 @@ let touchEndPosition: Position | null = null;
 
 export const DefaultBehavior = (config: DefaultBehaviorConfig = CONFIG_DEFAULTS): Behavior => ({
   id: "Default",
-  handlePointerDown: function (event, store): ReactGridStore {
+  handlePointerDown: function (event, store): Partial<ReactGridStore> {
     devEnvironment && console.log("DB/handlePointerDown");
 
     const cellContainer = getCellContainerFromPoint(event.clientX, event.clientY);
-
     if (!cellContainer) return store;
 
     const { rowIndex, colIndex } = getCellContainerLocation(cellContainer);
 
-    getHiddenTargetFocusByIdx(rowIndex, colIndex)?.blur();
-    getHiddenTargetFocusByIdx(rowIndex, colIndex)?.focus({ preventScroll: true });
-
     const scrollableParent = (getScrollableParent(cellContainer, true) as Element) ?? store.reactGridRef!;
-
     handlePaneOverlap(store, rowIndex, colIndex, scrollableParent);
 
-    return store;
-  },
-
-  handleFocus: (event, store) => {
-    devEnvironment && console.log("DB/handleFocus");
-
-    const hiddenFocusTarget = document.activeElement;
-
-    if (!hiddenFocusTarget) return store;
-
-    const { rowIndex, colIndex } = getHiddenFocusTargetLocation(hiddenFocusTarget);
+    const focusingCell = store.getCellByIndexes(rowIndex, colIndex);
+    if (!focusingCell) return store;
 
     const shouldSelectEntireColumn = rowIndex === 0 && store.enableColumnSelectionOnFirstRow;
     const shouldSelectEntireRow = colIndex === 0 && store.enableRowSelectionOnFirstColumn;
-
-    const focusingCell = store.getCellByIndexes(rowIndex, colIndex);
-
-    if (!focusingCell) return store;
-
     let shouldChangeFocusLocation: boolean = true;
 
     if (shouldSelectEntireColumn) {
@@ -87,15 +66,10 @@ export const DefaultBehavior = (config: DefaultBehaviorConfig = CONFIG_DEFAULTS)
         shouldChangeFocusLocation = !isCellInRange(store, focusingCell, store.selectedArea);
       }
     }
-    if (focusingCell.isFocusable === false) {
-      shouldChangeFocusLocation = false;
-    }
 
     const cellArea = getCellArea(store, focusingCell);
-
     let newBehavior: Behavior = store.currentBehavior;
-
-    let newSelectedArea: NumericalRange | null = null;
+    let newSelectedArea: NumericalRange = EMPTY_AREA;
 
     if (shouldSelectEntireColumn) {
       if (canReorder(store, "column", focusingCell)) {
@@ -111,19 +85,41 @@ export const DefaultBehavior = (config: DefaultBehaviorConfig = CONFIG_DEFAULTS)
       if (newBehavior.id !== RowReorderBehavior.id) {
         newSelectedArea = selectEntireRow(store, cellArea);
       }
-    } else {
-      newSelectedArea = EMPTY_AREA;
     }
 
-    return {
-      ...store,
-      ...(shouldChangeFocusLocation && { focusedLocation: { rowIndex, colIndex } }),
-      absoluteFocusedLocation: { rowIndex, colIndex },
-      ...(newSelectedArea && {
+    if (shouldChangeFocusLocation) {
+      if (focusingCell?.isFocusable !== false) {
+        getHiddenTargetFocusByIdx(rowIndex, colIndex)?.focus({ preventScroll: true });
+      }
+
+      return {
         selectedArea: newSelectedArea,
-      }),
-      ...(newBehavior.id === RowReorderBehavior.id && { lineOrientation: "horizontal" }),
-      currentBehavior: newBehavior,
+      };
+    }
+
+    if (newBehavior.id === RowReorderBehavior.id || newBehavior.id === ColumnReorderBehavior.id) {
+      return {
+        ...(newBehavior.id === RowReorderBehavior.id && { lineOrientation: "horizontal" }),
+        currentBehavior: newBehavior,
+      };
+    }
+
+    return store;
+  },
+
+  handleFocus: (event, store) => {
+    devEnvironment && console.log("DB/handleFocus");
+
+    const hiddenFocusTarget = document.activeElement;
+
+    if (!hiddenFocusTarget) return store;
+
+    const { rowIndex, colIndex } = getHiddenFocusTargetLocation(hiddenFocusTarget);
+
+    if (rowIndex === -1 || colIndex === -1) return store;
+
+    return {
+      focusedLocation: { rowIndex, colIndex },
     };
   },
 
@@ -153,7 +149,6 @@ export const DefaultBehavior = (config: DefaultBehaviorConfig = CONFIG_DEFAULTS)
     return handleKeyDown(event, store, { moveHorizontallyOnEnter: config.moveHorizontallyOnEnter });
   },
 
-  // TODO: Adjust touch event for row reordering
   handlePointerDownTouch: function (event, store) {
     devEnvironment && console.log("DB/handlePointerDownTouch");
 
@@ -170,16 +165,14 @@ export const DefaultBehavior = (config: DefaultBehaviorConfig = CONFIG_DEFAULTS)
     const { rowIndex, colIndex } = getCellContainerLocation(element);
 
     const shouldSelectEntireColumn = rowIndex === 0 && store.enableColumnSelectionOnFirstRow;
-
     const shouldSelectEntireRow = colIndex === 0 && store.enableRowSelectionOnFirstColumn;
 
     const touchedCell = store.getCellByIndexes(rowIndex, colIndex);
-
     if (!touchedCell) return store;
 
-    const cellArea = getCellArea(store, touchedCell);
-
     let newBehavior: Behavior = store.currentBehavior;
+    const cellArea = getCellArea(store, touchedCell);
+    let newSelectedArea: NumericalRange = EMPTY_AREA;
 
     if (focusedCell && element) {
       const { rowIndex: touchRowIndex, colIndex: touchColIndex } = getCellContainerLocation(element);
@@ -191,11 +184,19 @@ export const DefaultBehavior = (config: DefaultBehaviorConfig = CONFIG_DEFAULTS)
       }
     }
 
-    if (shouldSelectEntireRow || shouldSelectEntireColumn) {
-      newBehavior = store.getBehavior("CellSelection");
-    }
+    let shouldChangeFocusLocation: boolean = true;
 
-    let newSelectedArea: NumericalRange | null = null;
+    if (shouldSelectEntireColumn) {
+      if (store.selectedArea.endRowIdx === store.rows.length) {
+        // If we already selected the entire column, we should change focus location only if the clicked cell is not in the selected area.
+        shouldChangeFocusLocation = !isCellInRange(store, touchedCell, store.selectedArea);
+      }
+    } else if (shouldSelectEntireRow) {
+      if (store.selectedArea.endColIdx === store.columns.length) {
+        // If we already selected the entire row, we should change focus location only if the clicked cell is not in the selected area.
+        shouldChangeFocusLocation = !isCellInRange(store, touchedCell, store.selectedArea);
+      }
+    }
 
     if (shouldSelectEntireColumn) {
       if (canReorder(store, "column", touchedCell)) {
@@ -213,18 +214,30 @@ export const DefaultBehavior = (config: DefaultBehaviorConfig = CONFIG_DEFAULTS)
       }
     }
 
-    return {
-      ...store,
-      ...(newSelectedArea && { selectedArea: newSelectedArea }),
-      ...(newBehavior.id === RowReorderBehavior.id && { lineOrientation: "horizontal" }),
-      currentBehavior: newBehavior,
-    };
+    if (touchedCell?.isFocusable !== false && shouldChangeFocusLocation) {
+      if (shouldSelectEntireColumn || shouldSelectEntireRow) {
+        getHiddenTargetFocusByIdx(rowIndex, colIndex)?.focus({ preventScroll: true });
+      }
+
+      return {
+        selectedArea: newSelectedArea,
+      };
+    }
+
+    if (newBehavior.id === RowReorderBehavior.id || newBehavior.id === ColumnReorderBehavior.id) {
+      return {
+        ...(newBehavior.id === RowReorderBehavior.id && { lineOrientation: "horizontal" }),
+        currentBehavior: newBehavior,
+      };
+    }
+
+    return store;
   },
 
   handlePointerMoveTouch: function (event, store) {
     devEnvironment && console.log("DB/handlePointerMoveTouch");
 
-    return store;
+    return { ...store, currentBehavior: store.getBehavior("CellSelection") };
   },
 
   handlePointerUpTouch: function (event, store) {
@@ -234,44 +247,16 @@ export const DefaultBehavior = (config: DefaultBehaviorConfig = CONFIG_DEFAULTS)
 
     touchEndPosition = { x: clientX, y: clientY };
 
-    const element = getCellContainerFromPoint(event.clientX, event.clientY);
+    const cellContainer = getCellContainerFromPoint(event.clientX, event.clientY);
+    if (!cellContainer) return store;
 
-    if (!element) return store;
-
-    const { rowIndex, colIndex } = getCellContainerLocation(element);
+    const { rowIndex, colIndex } = getCellContainerLocation(cellContainer);
 
     const focusedCell = store.getCellByIndexes(rowIndex, colIndex);
 
-    const scrollableParent = (getScrollableParent(element, true) as Element) ?? store.reactGridRef!;
+    const scrollableParent = (getScrollableParent(cellContainer, true) as Element) ?? store.reactGridRef!;
 
-    const leftPaneOverlapValue = getCellPaneOverlap(store, { rowIndex, colIndex }, "Left");
-    const rightPaneOverlapValue = getCellPaneOverlap(store, { rowIndex, colIndex }, "Right");
-    const topPaneOverlapValue = getCellPaneOverlap(store, { rowIndex, colIndex }, "Top");
-    const bottomOverlapValue = getCellPaneOverlap(store, { rowIndex, colIndex }, "Bottom");
-
-    if (leftPaneOverlapValue) {
-      scrollableParent?.scrollBy({
-        left: -leftPaneOverlapValue,
-      });
-    }
-
-    if (rightPaneOverlapValue) {
-      scrollableParent?.scrollBy({
-        left: rightPaneOverlapValue,
-      });
-    }
-
-    if (topPaneOverlapValue) {
-      scrollableParent?.scrollBy({
-        top: -topPaneOverlapValue,
-      });
-    }
-
-    if (bottomOverlapValue) {
-      scrollableParent?.scrollBy({
-        top: bottomOverlapValue,
-      });
-    }
+    handlePaneOverlap(store, rowIndex, colIndex, scrollableParent);
 
     if (touchStartPosition && touchEndPosition) {
       const prevElement = getCellContainerFromPoint(touchStartPosition.x, touchStartPosition.y);

@@ -19,8 +19,8 @@ export const moveFocusUp = (store: ReactGridStore, currentFocus: FocusedCell): P
   const scrollableParent = (getScrollableParent(cellContainer, true) as Element) ?? store.reactGridRef!;
 
   const colIndex =
-    "colSpan" in currentFocus && store.absoluteFocusedLocation.colIndex !== -1
-      ? store.absoluteFocusedLocation.colIndex
+    "colSpan" in currentFocus && store.focusedLocation.colIndex !== -1
+      ? store.focusedLocation.colIndex
       : currentFocus.colIndex;
 
   // Look for the next focusable cell in the rows above the current focus
@@ -33,9 +33,9 @@ export const moveFocusUp = (store: ReactGridStore, currentFocus: FocusedCell): P
       const originRowIndex = store.rows.findIndex((row) => row.id === originCell.rowId);
       const originColIndex = store.columns.findIndex((col) => col.id === originCell.colId);
 
-      if (originCell.rowSpan ?? 1 > 1) store.absoluteFocusedLocation.rowIndex = originRowIndex;
-      else store.absoluteFocusedLocation.rowIndex = rowIndex;
-      store.absoluteFocusedLocation.colIndex = colIndex;
+      if (originCell.rowSpan ?? 1 > 1) store.focusedLocation.rowIndex = originRowIndex;
+      else store.focusedLocation.rowIndex = rowIndex;
+      store.focusedLocation.colIndex = colIndex;
 
       emitEvent("focuschange", { currentFocus });
 
@@ -62,8 +62,8 @@ export const moveFocusRight = (store: ReactGridStore, currentFocus: FocusedCell)
   const scrollableParent = (getScrollableParent(cellContainer, true) as Element) ?? store.reactGridRef!;
 
   const rowIndex =
-    "rowSpan" in currentFocus && store.absoluteFocusedLocation.rowIndex !== -1
-      ? store.absoluteFocusedLocation.rowIndex
+    "rowSpan" in currentFocus && store.focusedLocation.rowIndex !== -1
+      ? store.focusedLocation.rowIndex
       : currentFocus.rowIndex;
 
   // Look for the next focusable cell to the right of the current focus
@@ -80,8 +80,8 @@ export const moveFocusRight = (store: ReactGridStore, currentFocus: FocusedCell)
       const originRowIndex = store.rows.findIndex((row) => row.id === originCell.rowId);
       const originColIndex = store.columns.findIndex((col) => col.id === originCell.colId);
 
-      store.absoluteFocusedLocation.rowIndex = rowIndex;
-      store.absoluteFocusedLocation.colIndex = colIndex;
+      store.focusedLocation.rowIndex = rowIndex;
+      store.focusedLocation.colIndex = colIndex;
 
       emitEvent("focuschange", { currentFocus });
 
@@ -108,8 +108,8 @@ export const moveFocusDown = (store: ReactGridStore, currentFocus: FocusedCell) 
   const scrollableParent = (getScrollableParent(cellContainer, true) as Element) ?? store.reactGridRef!;
 
   const colIndex =
-    "colSpan" in currentFocus && store.absoluteFocusedLocation.colIndex !== -1
-      ? store.absoluteFocusedLocation.colIndex
+    "colSpan" in currentFocus && store.focusedLocation.colIndex !== -1
+      ? store.focusedLocation.colIndex
       : currentFocus.colIndex;
 
   // Look for the next focusable cell in the rows below the current focus
@@ -122,8 +122,8 @@ export const moveFocusDown = (store: ReactGridStore, currentFocus: FocusedCell) 
       const originRowIndex = store.rows.findIndex((row) => row.id === originCell.rowId);
       const originColIndex = store.columns.findIndex((col) => col.id === originCell.colId);
 
-      store.absoluteFocusedLocation.rowIndex = rowIndex;
-      store.absoluteFocusedLocation.colIndex = colIndex;
+      store.focusedLocation.rowIndex = rowIndex;
+      store.focusedLocation.colIndex = colIndex;
 
       emitEvent("focuschange", { currentFocus });
 
@@ -150,8 +150,8 @@ export const moveFocusLeft = (store: ReactGridStore, currentFocus: FocusedCell) 
   const scrollableParent = (getScrollableParent(cellContainer, true) as Element) ?? store.reactGridRef!;
 
   const rowIndex =
-    "rowSpan" in currentFocus && store.absoluteFocusedLocation.rowIndex !== -1
-      ? store.absoluteFocusedLocation.rowIndex
+    "rowSpan" in currentFocus && store.focusedLocation.rowIndex !== -1
+      ? store.focusedLocation.rowIndex
       : currentFocus.rowIndex;
 
   // Look for the next focusable cell to the left of the current focus
@@ -164,9 +164,9 @@ export const moveFocusLeft = (store: ReactGridStore, currentFocus: FocusedCell) 
       const originRowIndex = store.rows.findIndex((row) => row.id === originCell.rowId);
       const originColIndex = store.columns.findIndex((col) => col.id === originCell.colId);
 
-      store.absoluteFocusedLocation.rowIndex = rowIndex;
-      if (originCell.colSpan ?? 1 > 1) store.absoluteFocusedLocation.colIndex = originColIndex;
-      else store.absoluteFocusedLocation.colIndex = colIndex;
+      store.focusedLocation.rowIndex = rowIndex;
+      if (originCell.colSpan ?? 1 > 1) store.focusedLocation.colIndex = originColIndex;
+      else store.focusedLocation.colIndex = colIndex;
 
       emitEvent("focuschange", { currentFocus });
 

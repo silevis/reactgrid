@@ -1,7 +1,7 @@
 import { Cell, CellMap, Column, Range, Row, SpanMember, StyledRange } from "./PublicModel.ts";
 import { RowMeasurement } from "./RowMeasurement.ts";
 import { ColumnMeasurement } from "./ColumnMeasurement.ts";
-import { Direction, FocusedCell, IndexedLocation, NestedStylesPartial, PaneName } from "./InternalModel.ts";
+import { FocusedCell, IndexedLocation, NestedStylesPartial, PaneName } from "./InternalModel.ts";
 import { NumericalRange } from "./CellMatrix.ts";
 import { Behavior, BehaviorId } from "./Behavior.ts";
 import { RGTheme } from "./RGTheme.ts";
@@ -21,7 +21,6 @@ export interface ReactGridStoreProps {
   styles?: NestedStylesPartial<RGTheme>;
 
   focusedLocation: IndexedLocation;
-  absoluteFocusedLocation: IndexedLocation;
   selectedArea: NumericalRange;
   fillHandleArea: NumericalRange;
 
@@ -42,8 +41,6 @@ export interface ReactGridStoreProps {
 
   shadowPosition?: number;
   shadowSize?: number;
-
-  empty?: undefined;
 
   onFillHandle?: (selectedArea: NumericalRange, fillRange: NumericalRange) => void;
   onAreaSelected?: (selectedArea: NumericalRange) => void;
@@ -92,8 +89,6 @@ export interface ReactGridStore extends ReactGridStoreProps {
   readonly setSelectedColumns: (startColIdx: number, endColIdx: number) => void;
 
   readonly setSelectedRows: (startColIdx: number, endColIdx: number) => void;
-
-  readonly setFocusedCellByDirection: (direction: Direction) => void;
 
   readonly setResizingColId: (columnId: string) => void;
 

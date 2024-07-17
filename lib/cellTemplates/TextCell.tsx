@@ -61,8 +61,8 @@ export const TextCell: FC<TextCellProps> = ({ value: initialValue, onTextChanged
           }}
           onPointerDown={(e) => e.stopPropagation()}
           onKeyDown={(e) => {
-            // Stop propagation for all keys except "Escape" and "Enter"
-            if (e.key !== "Escape" && e.key !== "Enter" && e.key !== "Tab" && e.key !== "Shift") {
+            const controlKeys = ["Escape", "Enter", "Tab"];
+            if (!controlKeys.includes(e.key)) {
               e.stopPropagation();
             }
 

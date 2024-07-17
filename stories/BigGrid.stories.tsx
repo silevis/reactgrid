@@ -111,6 +111,28 @@ export const BigGrid = () => {
         const rowId = rows[rowIndex].id; // necessary for row reordering
         if (val === null) return;
 
+        if (rowIndex === 0) {
+          setCell(
+            rowId,
+            columnId,
+            TextCell,
+            {
+              value: val?.text,
+              onTextChanged: (data) => {
+                setGridData((prev) => {
+                  const next = [...prev];
+                  if (next[rowIndex][columnIndex] !== null) {
+                    next[rowIndex][columnIndex].text = data;
+                  }
+                  return next;
+                });
+              },
+            },
+            { isFocusable: false }
+          );
+          return;
+        }
+
         setCell(rowId, columnId, TextCell, {
           value: val?.text,
           onTextChanged: (data) => {
