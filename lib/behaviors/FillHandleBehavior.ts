@@ -10,16 +10,16 @@ const devEnvironment = isDevEnvironment();
 
 export const FillHandleBehavior: Behavior = {
   id: "FillHandle",
-  handlePointerDown: function (event, store): ReactGridStore {
+  handlePointerDown: function (event, store) {
     devEnvironment && console.log("FHB/handlePointerDown");
     return store;
   },
-  handlePointerMove: function (event, store): ReactGridStore {
+  handlePointerMove: function (event, store) {
     devEnvironment && console.log("FHB/handlePointerMove");
 
     return handlePointerMove(store, event);
   },
-  handlePointerUp: function (event, store): ReactGridStore {
+  handlePointerUp: function (event, store) {
     devEnvironment && console.log("FHB/handlePointerUp");
 
     return handlePointerUp(store);
@@ -31,7 +31,7 @@ export const FillHandleBehavior: Behavior = {
     return store;
   },
 
-  handlePointerMoveTouch: function (event, store): ReactGridStore {
+  handlePointerMoveTouch: function (event, store) {
     devEnvironment && console.log("FHB/handlePointerMoveTouch");
 
     return handlePointerMove(store, event);

@@ -11,7 +11,7 @@ let initialHeaderWidth = 0;
 
 export const ResizeColumnBehavior: Behavior = {
   id: "ResizeColumn",
-  handlePointerDown: function (event, store): ReactGridStore {
+  handlePointerDown: function (event, store) {
     devEnvironment && console.log("CRB/handlePointerDown");
 
     return handlePointerDown(event, store);
@@ -61,7 +61,7 @@ export const ResizeColumnBehavior: Behavior = {
 const handlePointerDown = (
   event: React.PointerEvent<HTMLDivElement> | PointerEvent,
   store: ReactGridStore
-): ReactGridStore => {
+): Partial<ReactGridStore> => {
   const targetElement = event.target as HTMLDivElement;
   const headerContainer = targetElement.parentNode as HTMLDivElement;
   const headerContainerInitialWidth = headerContainer.offsetWidth;
@@ -82,7 +82,7 @@ const handlePointerDown = (
 const handlePointerMove = (
   event: React.PointerEvent<HTMLDivElement> | PointerEvent,
   store: ReactGridStore
-): ReactGridStore => {
+): Partial<ReactGridStore> => {
   const reactGridRef = store.reactGridRef;
 
   if (!reactGridRef) return store;
@@ -108,7 +108,7 @@ const handlePointerMove = (
 const handlePointerUp = (
   event: React.PointerEvent<HTMLDivElement> | PointerEvent,
   store: ReactGridStore
-): ReactGridStore => {
+): Partial<ReactGridStore> => {
   // calculate the change in x-position
   const deltaX = event.clientX - initialPointerX;
 

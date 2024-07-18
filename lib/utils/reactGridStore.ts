@@ -6,6 +6,7 @@ import { isSpanMember } from "./isSpanMember.ts";
 import { ReactGridStore, ReactGridStoreProps } from "../types/ReactGridStore.ts";
 import { FillHandleBehavior } from "../behaviors/FillHandleBehavior.ts";
 import { ColumnReorderBehavior } from "../behaviors/ColumnReorderBehavior.ts";
+import { getHiddenTargetFocusByIdx } from "./getHiddenTargetFocusByIdx.ts";
 
 type ReactGridStores = Record<string, StoreApi<ReactGridStore>>;
 
@@ -137,10 +138,12 @@ export function initReactGridStore(id: string, initialProps?: Partial<ReactGridS
 
         setPaneRanges: (paneRanges) => set(() => ({ paneRanges })),
 
-        setFocusedLocation: (rowIndex, colIndex) =>
+        setFocusedLocation: (rowIndex, colIndex) => {
+          getHiddenTargetFocusByIdx(rowIndex, colIndex)?.focus();
           set(() => {
             return { focusedLocation: { rowIndex, colIndex } };
-          }),
+          });
+        },
 
         getFocusedCell: () => {
           const { focusedLocation } = get();

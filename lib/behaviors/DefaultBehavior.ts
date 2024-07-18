@@ -37,7 +37,7 @@ let touchEndPosition: Position | null = null;
 
 export const DefaultBehavior = (config: DefaultBehaviorConfig = CONFIG_DEFAULTS): Behavior => ({
   id: "Default",
-  handlePointerDown: function (event, store): Partial<ReactGridStore> {
+  handlePointerDown: function (event, store) {
     devEnvironment && console.log("DB/handlePointerDown");
 
     const cellContainer = getCellContainerFromPoint(event.clientX, event.clientY);
@@ -282,7 +282,7 @@ export const DefaultBehavior = (config: DefaultBehaviorConfig = CONFIG_DEFAULTS)
   },
 
   handleCopy: function (event, store) {
-    console.log("DB/handleCopy");
+    devEnvironment && console.log("DB/handleCopy");
 
     const focusedCell = store.getCellByIndexes(store.focusedLocation.rowIndex, store.focusedLocation.colIndex);
 
@@ -301,7 +301,7 @@ export const DefaultBehavior = (config: DefaultBehaviorConfig = CONFIG_DEFAULTS)
   },
 
   handleCut: function (event, store) {
-    console.log("DB/handleCut");
+    devEnvironment && console.log("DB/handleCut");
 
     const focusedCell = store.getCellByIndexes(store.focusedLocation.rowIndex, store.focusedLocation.colIndex);
 
@@ -321,7 +321,7 @@ export const DefaultBehavior = (config: DefaultBehaviorConfig = CONFIG_DEFAULTS)
   },
 
   handlePaste: function (event, store) {
-    console.log("DB/handlePaste");
+    devEnvironment && console.log("DB/handlePaste");
 
     const focusedCell = store.getCellByIndexes(store.focusedLocation.rowIndex, store.focusedLocation.colIndex);
 
