@@ -42,7 +42,9 @@ export const handleKeyDown = (
     };
   }
 
-  const isAnyAreaSelected = !areAreasEqual(store.selectedArea, EMPTY_AREA);
+  const isAnyAreaSelected =
+    !areAreasEqual(store.selectedArea, EMPTY_AREA) &&
+    !areAreasEqual(store.selectedArea, getCellArea(store, focusedCell));
 
   // * SHIFT + CTRL/COMMAND (⌘) + <Key>
   if (event.shiftKey && (event.ctrlKey || event.metaKey)) {

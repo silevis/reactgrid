@@ -10,7 +10,10 @@ import { handlePaneOverlap } from "./handlePaneOverlap.ts";
 import { getHiddenTargetFocusByIdx } from "./getHiddenTargetFocusByIdx.ts";
 
 export const moveFocusUp = (store: ReactGridStore, currentFocus: FocusedCell): Partial<ReactGridStore> => {
-  if (currentFocus.rowIndex === 0) return store;
+  if (currentFocus.rowIndex === 0) {
+    getHiddenTargetFocusByIdx(currentFocus.rowIndex, currentFocus.colIndex)?.focus();
+    return store;
+  }
 
   const cellContainer = getCellContainer(store, currentFocus);
 
@@ -53,7 +56,10 @@ export const moveFocusUp = (store: ReactGridStore, currentFocus: FocusedCell): P
 };
 
 export const moveFocusRight = (store: ReactGridStore, currentFocus: FocusedCell) => {
-  if (currentFocus.colIndex === store.columns.length - 1) return store;
+  if (currentFocus.colIndex === store.columns.length - 1) {
+    getHiddenTargetFocusByIdx(currentFocus.rowIndex, currentFocus.colIndex)?.focus();
+    return store;
+  }
 
   const cellContainer = getCellContainer(store, currentFocus);
 
@@ -99,7 +105,10 @@ export const moveFocusRight = (store: ReactGridStore, currentFocus: FocusedCell)
 };
 
 export const moveFocusDown = (store: ReactGridStore, currentFocus: FocusedCell) => {
-  if (currentFocus.rowIndex === store.rows.length - 1) return store;
+  if (currentFocus.rowIndex === store.rows.length - 1) {
+    getHiddenTargetFocusByIdx(currentFocus.rowIndex, currentFocus.colIndex)?.focus();
+    return store;
+  }
 
   const cellContainer = getCellContainer(store, currentFocus);
 
@@ -141,7 +150,10 @@ export const moveFocusDown = (store: ReactGridStore, currentFocus: FocusedCell) 
 };
 
 export const moveFocusLeft = (store: ReactGridStore, currentFocus: FocusedCell) => {
-  if (currentFocus.colIndex === 0) return store;
+  if (currentFocus.colIndex === 0) {
+    getHiddenTargetFocusByIdx(currentFocus.rowIndex, currentFocus.colIndex)?.focus();
+    return store;
+  }
 
   const cellContainer = getCellContainer(store, currentFocus);
 
