@@ -12,6 +12,7 @@ import { getStickyCellAdjacentToCenterPane } from "./getStickyCellAdjacentToCent
 import { getCellIndexes } from "./getCellIndexes.1.ts";
 import { getHiddenTargetFocusByIdx } from "./getHiddenTargetFocusByIdx.ts";
 import { isInPaneRange } from "./isInPaneRange.ts";
+import { isCellInRange } from "./isCellInRange.ts";
 
 type HandleKeyDownConfig = {
   moveHorizontallyOnEnter: boolean;
@@ -43,8 +44,7 @@ export const handleKeyDown = (
   }
 
   const isAnyAreaSelected =
-    !areAreasEqual(store.selectedArea, EMPTY_AREA) &&
-    !areAreasEqual(store.selectedArea, getCellArea(store, focusedCell));
+    !areAreasEqual(store.selectedArea, EMPTY_AREA) && isCellInRange(store, focusedCell, store.selectedArea);
 
   // * SHIFT + CTRL/COMMAND (⌘) + <Key>
   if (event.shiftKey && (event.ctrlKey || event.metaKey)) {

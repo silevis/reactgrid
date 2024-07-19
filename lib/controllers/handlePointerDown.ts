@@ -95,8 +95,6 @@ export const handlePointerDown = (event: React.PointerEvent<HTMLDivElement>, sto
   window.addEventListener("pointermove", handlePointerMove);
   window.addEventListener("pointerup", handlePointerUp);
 
-  // console.log(store.currentBehavior.id);
-
   const handler = usedTouch ? store.currentBehavior.handlePointerDownTouch : store.currentBehavior.handlePointerDown;
 
   updateWithStoreApi(event, handler);

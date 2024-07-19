@@ -28,6 +28,7 @@ export const updateStoreWithApiAndEventHandler = <TEvent extends React.Synthetic
 
     const isEquals = isEqual(store, newStore);
 
+    // if newStore is equal to old store, do not set state
     if (isEquals) {
       return;
     }

@@ -1,7 +1,6 @@
 import { Behavior } from "../types/Behavior.ts";
 import { NumericalRange } from "../types/CellMatrix.ts";
 import { Position } from "../types/PublicModel.ts";
-import { ReactGridStore } from "../types/ReactGridStore.ts";
 import { getCellArea } from "../utils/getCellArea.ts";
 import { getCellContainerFromPoint } from "../utils/getCellContainerFromPoint.ts";
 import { getCellContainerLocation } from "../utils/getCellContainerLocation.ts";
@@ -18,6 +17,8 @@ import { selectEntireColumn } from "../utils/selectEntireColumn.ts";
 import { selectEntireRow } from "../utils/selectEntireRow.ts";
 import { canReorder } from "../utils/canReorder.ts";
 import { getHiddenFocusTargetLocation } from "../utils/getHiddenFocusTargetLocation.ts";
+import { isReorderBehavior } from "../utils/isReorderBehavior.ts";
+import { getCellIndexesFromPointerLocation } from "../utils/getCellIndexesFromPointerLocation.ts";
 
 const devEnvironment = isDevEnvironment();
 
@@ -53,16 +54,17 @@ export const DefaultBehavior = (config: DefaultBehaviorConfig = CONFIG_DEFAULTS)
 
     const shouldSelectEntireColumn = rowIndex === 0 && store.enableColumnSelectionOnFirstRow;
     const shouldSelectEntireRow = colIndex === 0 && store.enableRowSelectionOnFirstColumn;
+
     let shouldChangeFocusLocation: boolean = true;
 
     if (shouldSelectEntireColumn) {
       if (store.selectedArea.endRowIdx === store.rows.length) {
-        // If we already selected the entire column, we should change focus location only if the clicked cell is not in the selected area.
+        // Change focus only if clicked cell is outside the selected column ( & first row).
         shouldChangeFocusLocation = !isCellInRange(store, focusingCell, store.selectedArea);
       }
     } else if (shouldSelectEntireRow) {
       if (store.selectedArea.endColIdx === store.columns.length) {
-        // If we already selected the entire row, we should change focus location only if the clicked cell is not in the selected area.
+        // Change focus only if clicked cell is outside the selected column ( & first col).
         shouldChangeFocusLocation = !isCellInRange(store, focusingCell, store.selectedArea);
       }
     }
@@ -97,7 +99,7 @@ export const DefaultBehavior = (config: DefaultBehaviorConfig = CONFIG_DEFAULTS)
       };
     }
 
-    if (newBehavior.id === RowReorderBehavior.id || newBehavior.id === ColumnReorderBehavior.id) {
+    if (isReorderBehavior(newBehavior.id)) {
       return {
         ...(newBehavior.id === RowReorderBehavior.id && { lineOrientation: "horizontal" }),
         currentBehavior: newBehavior,
@@ -111,11 +113,9 @@ export const DefaultBehavior = (config: DefaultBehaviorConfig = CONFIG_DEFAULTS)
     devEnvironment && console.log("DB/handleFocus");
 
     const hiddenFocusTarget = document.activeElement;
-
     if (!hiddenFocusTarget) return store;
 
     const { rowIndex, colIndex } = getHiddenFocusTargetLocation(hiddenFocusTarget);
-
     if (rowIndex === -1 || colIndex === -1) return store;
 
     return {
@@ -156,13 +156,8 @@ export const DefaultBehavior = (config: DefaultBehaviorConfig = CONFIG_DEFAULTS)
 
     touchStartPosition = { x: clientX, y: clientY };
 
-    // Disable moving (horizontal & vertical scrolling) if touchStartPosition is the same as focusedCell position.
     const focusedCell = store.getFocusedCell();
-    const element = getCellContainerFromPoint(touchStartPosition.x, touchStartPosition.y);
-
-    if (!element) return store;
-
-    const { rowIndex, colIndex } = getCellContainerLocation(element);
+    const { rowIndex, colIndex } = getCellIndexesFromPointerLocation(touchStartPosition.x, touchStartPosition.y);
 
     const shouldSelectEntireColumn = rowIndex === 0 && store.enableColumnSelectionOnFirstRow;
     const shouldSelectEntireRow = colIndex === 0 && store.enableRowSelectionOnFirstColumn;
@@ -174,8 +169,11 @@ export const DefaultBehavior = (config: DefaultBehaviorConfig = CONFIG_DEFAULTS)
     const cellArea = getCellArea(store, touchedCell);
     let newSelectedArea: NumericalRange = EMPTY_AREA;
 
-    if (focusedCell && element) {
-      const { rowIndex: touchRowIndex, colIndex: touchColIndex } = getCellContainerLocation(element);
+    if (focusedCell) {
+      const { rowIndex: touchRowIndex, colIndex: touchColIndex } = getCellIndexesFromPointerLocation(
+        touchStartPosition.x,
+        touchStartPosition.y
+      );
 
       const focusedCellWasTouched = touchRowIndex === focusedCell.rowIndex && touchColIndex === focusedCell.colIndex;
 
@@ -188,12 +186,12 @@ export const DefaultBehavior = (config: DefaultBehaviorConfig = CONFIG_DEFAULTS)
 
     if (shouldSelectEntireColumn) {
       if (store.selectedArea.endRowIdx === store.rows.length) {
-        // If we already selected the entire column, we should change focus location only if the clicked cell is not in the selected area.
+        // Change focus only if clicked cell is outside the selected column ( & first row).
         shouldChangeFocusLocation = !isCellInRange(store, touchedCell, store.selectedArea);
       }
     } else if (shouldSelectEntireRow) {
       if (store.selectedArea.endColIdx === store.columns.length) {
-        // If we already selected the entire row, we should change focus location only if the clicked cell is not in the selected area.
+        // Change focus only if clicked cell is outside the selected column ( & first col).
         shouldChangeFocusLocation = !isCellInRange(store, touchedCell, store.selectedArea);
       }
     }
@@ -214,17 +212,19 @@ export const DefaultBehavior = (config: DefaultBehaviorConfig = CONFIG_DEFAULTS)
       }
     }
 
-    if (touchedCell?.isFocusable !== false && shouldChangeFocusLocation) {
+    if (shouldChangeFocusLocation) {
       if (shouldSelectEntireColumn || shouldSelectEntireRow) {
-        getHiddenTargetFocusByIdx(rowIndex, colIndex)?.focus({ preventScroll: true });
-      }
+        if (touchedCell?.isFocusable !== false) {
+          getHiddenTargetFocusByIdx(rowIndex, colIndex)?.focus({ preventScroll: true });
+        }
 
-      return {
-        selectedArea: newSelectedArea,
-      };
+        return {
+          selectedArea: newSelectedArea,
+        };
+      }
     }
 
-    if (newBehavior.id === RowReorderBehavior.id || newBehavior.id === ColumnReorderBehavior.id) {
+    if (isReorderBehavior(newBehavior.id)) {
       return {
         ...(newBehavior.id === RowReorderBehavior.id && { lineOrientation: "horizontal" }),
         currentBehavior: newBehavior,
@@ -236,6 +236,22 @@ export const DefaultBehavior = (config: DefaultBehaviorConfig = CONFIG_DEFAULTS)
 
   handlePointerMoveTouch: function (event, store) {
     devEnvironment && console.log("DB/handlePointerMoveTouch");
+
+    const { rowIndex, colIndex } = getCellIndexesFromPointerLocation(
+      touchStartPosition?.x ?? 0,
+      touchStartPosition?.y ?? 0
+    );
+
+    const shouldSelectEntireColumn = rowIndex === 0 && store.enableColumnSelectionOnFirstRow;
+    const shouldSelectEntireRow = colIndex === 0 && store.enableRowSelectionOnFirstColumn;
+
+    if (shouldSelectEntireColumn || shouldSelectEntireRow) {
+      return { ...store, currentBehavior: store.getBehavior("CellSelection") };
+    }
+
+    if (rowIndex !== store.focusedLocation.rowIndex || colIndex !== store.focusedLocation.colIndex) {
+      return store;
+    }
 
     return { ...store, currentBehavior: store.getBehavior("CellSelection") };
   },
@@ -265,15 +281,17 @@ export const DefaultBehavior = (config: DefaultBehaviorConfig = CONFIG_DEFAULTS)
         const prevCell = getCellContainerLocation(prevElement);
         const currCell = getCellContainerLocation(currElement);
 
+        const shouldSelectEntireRow = colIndex === 0 && store.enableRowSelectionOnFirstColumn;
         const shouldSelectEntireColumn = currCell.rowIndex === 0 && store.enableColumnSelectionOnFirstRow;
 
         if (prevCell.rowIndex === currCell.rowIndex && prevCell.colIndex === currCell.colIndex) {
           if (!shouldSelectEntireColumn && focusedCell?.isFocusable !== false) {
-            getHiddenTargetFocusByIdx(rowIndex, colIndex)?.blur();
             getHiddenTargetFocusByIdx(rowIndex, colIndex)?.focus({ preventScroll: true });
           }
 
-          return store;
+          if (!shouldSelectEntireColumn && !shouldSelectEntireRow) {
+            return { selectedArea: EMPTY_AREA };
+          }
         }
       }
     }
@@ -297,6 +315,7 @@ export const DefaultBehavior = (config: DefaultBehaviorConfig = CONFIG_DEFAULTS)
     }
 
     store.onCopy?.(cellsArea);
+
     return store;
   },
 

@@ -121,7 +121,7 @@ export const CellSelectionBehavior: Behavior = {
       return store;
     }
 
-    const cellContainer = getCellContainerFromPoint(event.clientX, event.clientY);
+    const cellContainer = getCellContainerFromPoint(clientX, clientY);
     if (!cellContainer) return store;
 
     const { rowIndex, colIndex } = getCellContainerLocation(cellContainer);
