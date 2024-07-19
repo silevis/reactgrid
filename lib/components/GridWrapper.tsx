@@ -49,12 +49,8 @@ const GridWrapper: FC<PropsWithChildren<GridWrapperProps>> = ({ reactGridId, sty
         e.preventDefault();
         handlePointerDown(e, store);
       }}
-      onFocus={(e) => {
-        withStoreApi(e, currentBehavior?.handleFocus);
-      }}
-      onKeyDown={(e) => {
-        withStoreApi(e, currentBehavior?.handleKeyDown);
-      }}
+      onFocus={(e) => withStoreApi(e, currentBehavior?.handleFocus)}
+      onKeyDown={(e) => withStoreApi(e, currentBehavior?.handleKeyDown)}
       onKeyUp={(e) => withStoreApi(e, currentBehavior?.handleKeyUp)}
       onCompositionStart={(e) => withStoreApi(e, currentBehavior?.handleCompositionStart)}
       onCompositionUpdate={(e) => withStoreApi(e, currentBehavior?.handleCompositionUpdate)}

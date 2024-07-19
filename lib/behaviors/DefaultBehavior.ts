@@ -22,6 +22,8 @@ import { getCellContainerByIndexes } from "../utils/getCellContainerByIndexes.ts
 
 const devEnvironment = isDevEnvironment();
 
+let isShiftPressed = false;
+
 type DefaultBehaviorConfig = {
   moveHorizontallyOnEnter: boolean;
 };
@@ -40,7 +42,8 @@ export const DefaultBehavior = (config: DefaultBehaviorConfig = CONFIG_DEFAULTS)
 
     const { rowIndex, colIndex } = getCellContainerLocation(cellContainer);
 
-    const scrollableParent = (getScrollableParent(cellContainer, true) as Element) ?? store.reactGridRef!;
+    const scrollableParent = (getScrollableParent(cellContainer, true) as Element) ?? store.reactGridRef;
+
     handlePaneOverlap(store, rowIndex, colIndex, scrollableParent);
 
     const focusingCell = store.getCellByIndexes(rowIndex, colIndex);
@@ -81,6 +84,24 @@ export const DefaultBehavior = (config: DefaultBehaviorConfig = CONFIG_DEFAULTS)
       if (newBehavior.id !== RowReorderBehavior.id) {
         newSelectedArea = selectEntireRow(store, cellArea);
       }
+    }
+
+    // If shift is pressed, extend the selection area.
+    if (isShiftPressed) {
+      const focusedCell = store.getFocusedCell();
+      if (!focusedCell) return store;
+
+      const focusedCellArea = getCellArea(store, focusedCell);
+      const newSelectedArea = {
+        startRowIdx: Math.min(focusedCellArea.startRowIdx, cellArea.startRowIdx),
+        endRowIdx: Math.max(focusedCellArea.endRowIdx, cellArea.endRowIdx),
+        startColIdx: Math.min(focusedCellArea.startColIdx, cellArea.startColIdx),
+        endColIdx: Math.max(focusedCellArea.endColIdx, cellArea.endColIdx),
+      };
+
+      isShiftPressed = false;
+
+      return { selectedArea: newSelectedArea };
     }
 
     if (shouldChangeFocusLocation) {
@@ -142,7 +163,17 @@ export const DefaultBehavior = (config: DefaultBehaviorConfig = CONFIG_DEFAULTS)
   handleKeyDown: function (event, store) {
     devEnvironment && console.log("DB/handleKeyDown");
 
+    if (event.key === "Shift") isShiftPressed = true;
+
     return handleKeyDown(event, store, { moveHorizontallyOnEnter: config.moveHorizontallyOnEnter });
+  },
+
+  handleKeyUp: function (event, store) {
+    devEnvironment && console.log("DB/handleKeyUp");
+
+    if (event.key === "Shift") isShiftPressed = false;
+
+    return store;
   },
 
   handlePointerDownTouch: function (event, store) {

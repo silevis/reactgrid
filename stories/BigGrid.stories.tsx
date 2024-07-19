@@ -269,7 +269,6 @@ export const BigGrid = () => {
   });
 
   const [toggleRanges, setToggleRanges] = useState(false);
-  const [toggleFill, setToggleFill] = useState(true);
 
   return (
     <>
@@ -293,16 +292,13 @@ export const BigGrid = () => {
           enableColumnSelectionOnFirstRow
           enableRowSelectionOnFirstColumn
           onAreaSelected={(selectedArea) => {}}
-          onFillHandle={
-            toggleFill ? (selectedArea, fillRange) => handleFill(selectedArea, fillRange, setGridData) : undefined
-          }
+          onFillHandle={(selectedArea, fillRange) => handleFill(selectedArea, fillRange, setGridData)}
           onCut={(selectedArea) => handleCut(gridData, selectedArea, setGridData)}
           onPaste={(selectedArea, pastedData) => handlePaste(selectedArea, pastedData, setGridData)}
           onCopy={(selectedArea) => handleCopy(gridData, selectedArea)}
           onCellFocused={(cellLocation) => {}}
         />
         <button onClick={() => setToggleRanges((prev) => !prev)}>toggle ranges</button>
-        <button onClick={() => setToggleFill((prev) => !prev)}>toggle fill</button>
       </div>
     </>
   );
