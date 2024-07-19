@@ -42,6 +42,8 @@ export interface ReactGridStoreProps {
   shadowPosition?: number;
   shadowSize?: number;
 
+  pointerStartIdx: IndexedLocation;
+
   onFillHandle?: (selectedArea: NumericalRange, fillRange: NumericalRange) => void;
   onAreaSelected?: (selectedArea: NumericalRange) => void;
   onCellFocused?: (cellLocation: IndexedLocation) => void;

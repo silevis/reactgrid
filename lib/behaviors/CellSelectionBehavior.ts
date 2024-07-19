@@ -5,7 +5,6 @@ import { ReactGridStore } from "../types/ReactGridStore.ts";
 import { findMinimalSelectedArea } from "../utils/findMinimalSelectedArea.ts";
 import { getCellContainer } from "../utils/getCellContainer.ts";
 import { getCellContainerFromPoint } from "../utils/getCellContainerFromPoint.ts";
-import { getCellContainerLocation } from "../utils/getCellContainerLocation.ts";
 import { getCellIndexesFromContainerElement } from "../utils/getCellIndexes.ts";
 import { getCellIndexesFromPointerLocation } from "../utils/getCellIndexesFromPointerLocation.ts";
 import { getNonStickyCellContainer } from "../utils/getNonStickyCellContainer.ts";
@@ -15,8 +14,6 @@ import { getScrollableParent } from "../utils/scrollHelpers.ts";
 import { scrollToElementEdge } from "../utils/scrollToElementEdge.ts";
 
 const devEnvironment = isDevEnvironment();
-
-let startingPointerIdx: IndexedLocation | null = null;
 
 /**
  * Tries to expand the selected area towards a target cell.
@@ -124,15 +121,12 @@ export const CellSelectionBehavior: Behavior = {
     const cellContainer = getCellContainerFromPoint(clientX, clientY);
     if (!cellContainer) return store;
 
-    const { rowIndex, colIndex } = getCellContainerLocation(cellContainer);
-    if (!startingPointerIdx) startingPointerIdx = { rowIndex, colIndex };
-
-    const shouldSelectEntireColumn = startingPointerIdx?.rowIndex === 0 && !!store.enableColumnSelectionOnFirstRow;
-    const shouldEnableRowSelection = startingPointerIdx?.colIndex === 0 && !!store.enableRowSelectionOnFirstColumn;
+    const shouldSelectEntireColumn = store.pointerStartIdx.rowIndex === 0 && !!store.enableColumnSelectionOnFirstRow;
+    const shouldEnableRowSelection = store.pointerStartIdx.colIndex === 0 && !!store.enableRowSelectionOnFirstColumn;
 
     return tryExpandingTowardsCell(store, {
       cell,
-      startingPointerIdx,
+      startingPointerIdx: store.pointerStartIdx,
       currentPointerIdx,
       shouldSelectEntireColumn,
       shouldEnableRowSelection,
@@ -141,8 +135,6 @@ export const CellSelectionBehavior: Behavior = {
 
   handlePointerUp(event, store) {
     devEnvironment && console.log("CSB/handlePointerUp");
-
-    startingPointerIdx = null;
 
     const DefaultBehavior = store.getBehavior("Default");
 
@@ -167,8 +159,6 @@ export const CellSelectionBehavior: Behavior = {
 
   handlePointerUpTouch(event, store) {
     devEnvironment && console.log("CSB/handlePointerUpTouch");
-
-    startingPointerIdx = null;
 
     const DefaultBehavior = store.getBehavior("Default");
 
@@ -198,8 +188,8 @@ export const CellSelectionBehavior: Behavior = {
     const { clientX, clientY } = event;
 
     const currentPointerIdx = getCellIndexesFromPointerLocation(clientX, clientY);
-    const cell = store.getCellByIndexes(currentPointerIdx.rowIndex, currentPointerIdx.colIndex);
 
+    const cell = store.getCellByIndexes(currentPointerIdx.rowIndex, currentPointerIdx.colIndex);
     if (!cell) {
       return store;
     }
@@ -211,11 +201,8 @@ export const CellSelectionBehavior: Behavior = {
 
     if (!cellContainer) return store;
 
-    const { rowIndex, colIndex } = getCellContainerLocation(cellContainer);
-    if (!startingPointerIdx) startingPointerIdx = { rowIndex, colIndex };
-
-    const shouldSelectEntireColumn = startingPointerIdx?.rowIndex === 0 && !!store.enableColumnSelectionOnFirstRow;
-    const shouldEnableRowSelection = startingPointerIdx?.colIndex === 0 && !!store.enableRowSelectionOnFirstColumn;
+    const shouldSelectEntireColumn = store.pointerStartIdx.rowIndex === 0 && !!store.enableColumnSelectionOnFirstRow;
+    const shouldEnableRowSelection = store.pointerStartIdx.colIndex === 0 && !!store.enableRowSelectionOnFirstColumn;
 
     if (cellContainer) {
       const scrollableParent = getScrollableParent(cellContainer as HTMLElement, true);
@@ -232,7 +219,7 @@ export const CellSelectionBehavior: Behavior = {
 
         return tryExpandingTowardsCell(store, {
           cell,
-          startingPointerIdx,
+          startingPointerIdx: store.pointerStartIdx,
           currentPointerIdx,
           shouldSelectEntireColumn,
           shouldEnableRowSelection,
@@ -242,7 +229,7 @@ export const CellSelectionBehavior: Behavior = {
 
     return tryExpandingTowardsCell(store, {
       cell,
-      startingPointerIdx,
+      startingPointerIdx: store.pointerStartIdx,
       currentPointerIdx,
       shouldSelectEntireColumn,
       shouldEnableRowSelection,

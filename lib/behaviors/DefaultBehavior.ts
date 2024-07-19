@@ -1,6 +1,5 @@
 import { Behavior } from "../types/Behavior.ts";
 import { NumericalRange } from "../types/CellMatrix.ts";
-import { Position } from "../types/PublicModel.ts";
 import { getCellArea } from "../utils/getCellArea.ts";
 import { getCellContainerFromPoint } from "../utils/getCellContainerFromPoint.ts";
 import { getCellContainerLocation } from "../utils/getCellContainerLocation.ts";
@@ -19,6 +18,7 @@ import { canReorder } from "../utils/canReorder.ts";
 import { getHiddenFocusTargetLocation } from "../utils/getHiddenFocusTargetLocation.ts";
 import { isReorderBehavior } from "../utils/isReorderBehavior.ts";
 import { getCellIndexesFromPointerLocation } from "../utils/getCellIndexesFromPointerLocation.ts";
+import { getCellContainerByIndexes } from "../utils/getCellContainerByIndexes.ts";
 
 const devEnvironment = isDevEnvironment();
 
@@ -29,12 +29,6 @@ type DefaultBehaviorConfig = {
 const CONFIG_DEFAULTS: DefaultBehaviorConfig = {
   moveHorizontallyOnEnter: false,
 } as const;
-
-let touchStartPosition: Position | null = null;
-let touchEndPosition: Position | null = null;
-
-// TODO: Remove all non-(Pointer/Mouse/Touch)Down handlers to other behaviors (not DefaultBehavior!)
-// TODO: handle everything on Pointer BUT check pointerType (mouse/touch)!!!
 
 export const DefaultBehavior = (config: DefaultBehaviorConfig = CONFIG_DEFAULTS): Behavior => ({
   id: "Default",
@@ -96,6 +90,7 @@ export const DefaultBehavior = (config: DefaultBehaviorConfig = CONFIG_DEFAULTS)
 
       return {
         selectedArea: newSelectedArea,
+        touchStartIdx: { rowIndex, colIndex },
       };
     }
 
@@ -103,10 +98,11 @@ export const DefaultBehavior = (config: DefaultBehaviorConfig = CONFIG_DEFAULTS)
       return {
         ...(newBehavior.id === RowReorderBehavior.id && { lineOrientation: "horizontal" }),
         currentBehavior: newBehavior,
+        touchStartIdx: { rowIndex, colIndex },
       };
     }
 
-    return store;
+    return { touchStartIdx: { rowIndex, colIndex } };
   },
 
   handleFocus: (event, store) => {
@@ -126,7 +122,7 @@ export const DefaultBehavior = (config: DefaultBehaviorConfig = CONFIG_DEFAULTS)
   handlePointerMove: (event, store) => {
     devEnvironment && console.log("DB/handlePointerMove");
 
-    return { ...store, currentBehavior: store.getBehavior("CellSelection") };
+    return { currentBehavior: store.getBehavior("CellSelection") };
   },
 
   handlePointerUp: function (event, store) {
@@ -152,12 +148,8 @@ export const DefaultBehavior = (config: DefaultBehaviorConfig = CONFIG_DEFAULTS)
   handlePointerDownTouch: function (event, store) {
     devEnvironment && console.log("DB/handlePointerDownTouch");
 
-    const { clientX, clientY } = event;
-
-    touchStartPosition = { x: clientX, y: clientY };
-
     const focusedCell = store.getFocusedCell();
-    const { rowIndex, colIndex } = getCellIndexesFromPointerLocation(touchStartPosition.x, touchStartPosition.y);
+    const { rowIndex, colIndex } = getCellIndexesFromPointerLocation(event.clientX, event.clientY);
 
     const shouldSelectEntireColumn = rowIndex === 0 && store.enableColumnSelectionOnFirstRow;
     const shouldSelectEntireRow = colIndex === 0 && store.enableRowSelectionOnFirstColumn;
@@ -171,8 +163,8 @@ export const DefaultBehavior = (config: DefaultBehaviorConfig = CONFIG_DEFAULTS)
 
     if (focusedCell) {
       const { rowIndex: touchRowIndex, colIndex: touchColIndex } = getCellIndexesFromPointerLocation(
-        touchStartPosition.x,
-        touchStartPosition.y
+        rowIndex,
+        colIndex
       );
 
       const focusedCellWasTouched = touchRowIndex === focusedCell.rowIndex && touchColIndex === focusedCell.colIndex;
@@ -220,6 +212,7 @@ export const DefaultBehavior = (config: DefaultBehaviorConfig = CONFIG_DEFAULTS)
 
         return {
           selectedArea: newSelectedArea,
+          touchStartIdx: { rowIndex, colIndex },
         };
       }
     }
@@ -228,28 +221,27 @@ export const DefaultBehavior = (config: DefaultBehaviorConfig = CONFIG_DEFAULTS)
       return {
         ...(newBehavior.id === RowReorderBehavior.id && { lineOrientation: "horizontal" }),
         currentBehavior: newBehavior,
+        touchStartIdx: { rowIndex, colIndex },
       };
     }
 
-    return store;
+    return { touchStartIdx: { rowIndex, colIndex } };
   },
 
   handlePointerMoveTouch: function (event, store) {
     devEnvironment && console.log("DB/handlePointerMoveTouch");
 
-    const { rowIndex, colIndex } = getCellIndexesFromPointerLocation(
-      touchStartPosition?.x ?? 0,
-      touchStartPosition?.y ?? 0
-    );
-
-    const shouldSelectEntireColumn = rowIndex === 0 && store.enableColumnSelectionOnFirstRow;
-    const shouldSelectEntireRow = colIndex === 0 && store.enableRowSelectionOnFirstColumn;
+    const shouldSelectEntireColumn = store.pointerStartIdx.rowIndex === 0 && store.enableColumnSelectionOnFirstRow;
+    const shouldSelectEntireRow = store.pointerStartIdx.colIndex === 0 && store.enableRowSelectionOnFirstColumn;
 
     if (shouldSelectEntireColumn || shouldSelectEntireRow) {
       return { ...store, currentBehavior: store.getBehavior("CellSelection") };
     }
 
-    if (rowIndex !== store.focusedLocation.rowIndex || colIndex !== store.focusedLocation.colIndex) {
+    if (
+      store.pointerStartIdx.rowIndex !== store.focusedLocation.rowIndex ||
+      store.pointerStartIdx.colIndex !== store.focusedLocation.colIndex
+    ) {
       return store;
     }
 
@@ -258,10 +250,6 @@ export const DefaultBehavior = (config: DefaultBehaviorConfig = CONFIG_DEFAULTS)
 
   handlePointerUpTouch: function (event, store) {
     devEnvironment && console.log("DB/handlePointerUpTouch");
-
-    const { clientX, clientY } = event;
-
-    touchEndPosition = { x: clientX, y: clientY };
 
     const cellContainer = getCellContainerFromPoint(event.clientX, event.clientY);
     if (!cellContainer) return store;
@@ -274,24 +262,23 @@ export const DefaultBehavior = (config: DefaultBehaviorConfig = CONFIG_DEFAULTS)
 
     handlePaneOverlap(store, rowIndex, colIndex, scrollableParent);
 
-    if (touchStartPosition && touchEndPosition) {
-      const prevElement = getCellContainerFromPoint(touchStartPosition.x, touchStartPosition.y);
-      const currElement = getCellContainerFromPoint(touchEndPosition.x, touchEndPosition.y);
-      if (prevElement && currElement) {
-        const prevCell = getCellContainerLocation(prevElement);
-        const currCell = getCellContainerLocation(currElement);
+    const prevElement = getCellContainerByIndexes(store, store.pointerStartIdx);
+    const currElement = getCellContainerByIndexes(store, { rowIndex, colIndex });
 
-        const shouldSelectEntireRow = colIndex === 0 && store.enableRowSelectionOnFirstColumn;
-        const shouldSelectEntireColumn = currCell.rowIndex === 0 && store.enableColumnSelectionOnFirstRow;
+    if (prevElement && currElement) {
+      const prevCell = getCellContainerLocation(prevElement);
+      const currCell = getCellContainerLocation(currElement);
 
-        if (prevCell.rowIndex === currCell.rowIndex && prevCell.colIndex === currCell.colIndex) {
-          if (!shouldSelectEntireColumn && focusedCell?.isFocusable !== false) {
-            getHiddenTargetFocusByIdx(rowIndex, colIndex)?.focus({ preventScroll: true });
-          }
+      const shouldSelectEntireRow = colIndex === 0 && store.enableRowSelectionOnFirstColumn;
+      const shouldSelectEntireColumn = currCell.rowIndex === 0 && store.enableColumnSelectionOnFirstRow;
 
-          if (!shouldSelectEntireColumn && !shouldSelectEntireRow) {
-            return { selectedArea: EMPTY_AREA };
-          }
+      if (prevCell.rowIndex === currCell.rowIndex && prevCell.colIndex === currCell.colIndex) {
+        if (!shouldSelectEntireColumn && focusedCell?.isFocusable !== false) {
+          getHiddenTargetFocusByIdx(rowIndex, colIndex)?.focus({ preventScroll: true });
+        }
+
+        if (!shouldSelectEntireColumn && !shouldSelectEntireRow) {
+          return { selectedArea: EMPTY_AREA };
         }
       }
     }

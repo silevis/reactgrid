@@ -45,7 +45,7 @@ const DEFAULT_STORE_PROPS: ReactGridStoreProps = {
   // internal state
   rowMeasurements: [],
   colMeasurements: [],
-  focusedLocation: { rowIndex: 0, colIndex: 0 },
+  focusedLocation: { rowIndex: -1, colIndex: -1 },
   selectedArea: { startRowIdx: -1, endRowIdx: -1, startColIdx: -1, endColIdx: -1 },
   fillHandleArea: { startRowIdx: -1, endRowIdx: -1, startColIdx: -1, endColIdx: -1 },
   reactGridRef: undefined,
@@ -55,6 +55,7 @@ const DEFAULT_STORE_PROPS: ReactGridStoreProps = {
   linePosition: undefined,
   shadowPosition: undefined,
   shadowSize: undefined,
+  pointerStartIdx: { rowIndex: -1, colIndex: -1 }, // used for cell selection behavior
   currentBehavior: DefaultBehavior(),
 };
 
