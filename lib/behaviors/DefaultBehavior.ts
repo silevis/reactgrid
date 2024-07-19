@@ -90,7 +90,7 @@ export const DefaultBehavior = (config: DefaultBehaviorConfig = CONFIG_DEFAULTS)
 
       return {
         selectedArea: newSelectedArea,
-        touchStartIdx: { rowIndex, colIndex },
+        pointerStartIdx: { rowIndex, colIndex },
       };
     }
 
@@ -98,11 +98,11 @@ export const DefaultBehavior = (config: DefaultBehaviorConfig = CONFIG_DEFAULTS)
       return {
         ...(newBehavior.id === RowReorderBehavior.id && { lineOrientation: "horizontal" }),
         currentBehavior: newBehavior,
-        touchStartIdx: { rowIndex, colIndex },
+        pointerStartIdx: { rowIndex, colIndex },
       };
     }
 
-    return { touchStartIdx: { rowIndex, colIndex } };
+    return { pointerStartIdx: { rowIndex, colIndex } };
   },
 
   handleFocus: (event, store) => {
@@ -212,7 +212,7 @@ export const DefaultBehavior = (config: DefaultBehaviorConfig = CONFIG_DEFAULTS)
 
         return {
           selectedArea: newSelectedArea,
-          touchStartIdx: { rowIndex, colIndex },
+          pointerStartIdx: { rowIndex, colIndex },
         };
       }
     }
@@ -221,11 +221,11 @@ export const DefaultBehavior = (config: DefaultBehaviorConfig = CONFIG_DEFAULTS)
       return {
         ...(newBehavior.id === RowReorderBehavior.id && { lineOrientation: "horizontal" }),
         currentBehavior: newBehavior,
-        touchStartIdx: { rowIndex, colIndex },
+        pointerStartIdx: { rowIndex, colIndex },
       };
     }
 
-    return { touchStartIdx: { rowIndex, colIndex } };
+    return { pointerStartIdx: { rowIndex, colIndex } };
   },
 
   handlePointerMoveTouch: function (event, store) {

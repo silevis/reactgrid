@@ -3,8 +3,11 @@ import { Cell, SpanMember } from "../types/PublicModel.ts";
 import { isCellSpanned } from "./isCellSpanned.ts";
 import { getOriginCell } from "./getOriginCell.ts";
 import { ReactGridStore } from "../types/ReactGridStore.ts";
+import { EMPTY_AREA } from "../types/InternalModel.ts";
 
 export const getCellArea = (store: ReactGridStore, cell: Cell | SpanMember): NumericalRange => {
+  if (!cell) return EMPTY_AREA;
+
   const originCell = getOriginCell(store, cell);
   const rowIndex = store.rows.findIndex((row) => row.id === originCell.rowId);
   const colIndex = store.columns.findIndex((col) => col.id === originCell.colId);
