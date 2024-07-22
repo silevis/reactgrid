@@ -76,7 +76,7 @@ export class PointerEventsController extends AbstractPointerEventsController {
     private handleContextMenu = (event: PointerEvent | MouseEvent): void => {
       window.removeEventListener("pointerup", this.handlePointerUp);
       window.removeEventListener("pointermove", this.handlePointerMove);
-      window.removeEventListener("contextmenu", this.handleContextMenu);
+      window.removeEventListener("contextmenu", this.handleContextMenu, true);
       window.addEventListener("pointerdown", this.handleHideContextMenu);
       this.updateState((state) => {
         if (this.isContainElement(event, state)) {
@@ -184,7 +184,7 @@ export class PointerEventsController extends AbstractPointerEventsController {
       if (event.button !== 0 && event.button !== undefined) return;
       window.removeEventListener("pointerup", this.handlePointerUp);
       window.removeEventListener("pointermove", this.handlePointerMove);
-      window.removeEventListener("contextmenu", this.handleContextMenu);
+      window.removeEventListener("contextmenu", this.handleContextMenu, true);
       this.updateState((state) => {
         const currentLocation = getLocationFromClient(
           state as State,
