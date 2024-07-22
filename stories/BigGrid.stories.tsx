@@ -67,9 +67,6 @@ export const BigGrid = () => {
       return Array.from({ length: COLUMN_COUNT }).map((_, j) => {
         if (i === 1 && j === 4) return null;
         if (i === 1 && j === 24) return null;
-        if (i === 2 && j === 4) return null;
-        if (i === 3 && j === 3) return null;
-        if (i === 3 && j === 4) return null;
 
         if (i === 3 && j === 7) return null;
         if (i === 4 && j === 6) return null;
@@ -87,8 +84,6 @@ export const BigGrid = () => {
         if (i === 1 && j === 23) return { date: new Date() };
 
         if (i === 0 && j === 0) return { number: 100 };
-
-        if (i === 2 && j === 3) return { number: 125 };
 
         return {
           text:
@@ -211,26 +206,6 @@ export const BigGrid = () => {
       { colSpan: 2 }
     );
 
-    setCell(
-      "2",
-      "3",
-      NumberCell,
-      {
-        value: gridData[realRowIdx2][realColIdx3]?.number ?? 0,
-        validator: (value) => !isNaN(value),
-        errorMessage: "ERR",
-        format: myNumberFormat,
-        hideZero: true,
-        onValueChanged: (newNumber) => {
-          setGridData((prev) => {
-            const next = [...prev];
-            next[realRowIdx2][realColIdx3] = { number: newNumber };
-            return next;
-          });
-        },
-      },
-      { colSpan: 2, rowSpan: 2 }
-    );
     setCell(
       "3",
       "6",
