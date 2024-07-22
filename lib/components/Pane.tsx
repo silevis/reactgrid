@@ -61,9 +61,9 @@ export const PaneGridContent: React.FC<PaneGridContentProps> = React.memo(
 
     const getCellOffset_ = useCallback(getCellOffset, [stickyOffsets]);
 
-    return rows.map((row, rowIndex) => {
-      return columns.map((col, colIndex) => {
-        const cell = cells.get(`${row.id} ${col.id}`);
+    return rows.map((_, rowIndex) => {
+      return columns.map((_, colIndex) => {
+        const cell = cells[startRowIdx + rowIndex][startColIdx + colIndex];
 
         if (!cell || isSpanMember(cell)) return null;
 
@@ -75,8 +75,6 @@ export const PaneGridContent: React.FC<PaneGridContentProps> = React.memo(
         return (
           <CellContextProvider
             key={`${realRowIndex}-${realColumnIndex}`}
-            rowId={row.id}
-            colId={col.id}
             rowIndex={rowIndex}
             colIndex={colIndex}
             rowSpan={cell.rowSpan}

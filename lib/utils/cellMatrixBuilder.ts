@@ -1,5 +1,5 @@
 import { CellMatrix } from "../types/CellMatrix";
-import { Cell, CellMap, Column, Row, SpanMember } from "../types/PublicModel";
+import { Cell, Column, Row, SpanMember } from "../types/PublicModel";
 
 // type AddRowsFn<TRowId extends string> = (...newRows: Array<Row<TRowId>>) => void;
 
@@ -7,20 +7,20 @@ import { Cell, CellMap, Column, Row, SpanMember } from "../types/PublicModel";
 
 // Type `any` is required to use React.ComponentType here
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-type SetCellFn<TRowId extends string, TColumnId extends string> = <TComponent extends React.ComponentType<any>>(
-  rowId: TRowId,
-  colId: TColumnId,
+type SetCellFn = <TComponent extends React.ComponentType<any>>(
+  rowIndex: number,
+  colIndex: number,
   Template: TComponent,
   props?: React.ComponentPropsWithRef<TComponent>,
-  { ...args }?: Omit<Cell<TRowId, TColumnId>, "rowId" | "colId" | "Template" | "props">
+  { ...args }?: Omit<Cell, "rowIndex" | "colIndex" | "Template" | "props">
 ) => void;
 
 // type InsertColumnsFn<TColumnId extends string> = (newColumns: Array<Column<TColumnId>>, id: TColumnId, position: 'before' | 'after') => void;
 
-interface CellMatrixBuilderTools<TRowId extends string, TColumnId extends string> {
+interface CellMatrixBuilderTools<TRowIdx extends number, TColumnIdx extends number> {
   // addRows: AddRowsFn<TRowId>;
   // addColumns: AddColumnsFn<TColumnId>;
-  setCell: SetCellFn<TRowId, TColumnId>;
+  setCell: SetCellFn;
 }
 
 /**
@@ -59,48 +59,55 @@ interface CellMatrixBuilderTools<TRowId extends string, TColumnId extends string
  * @param builder Function which receives {@link CellMatrixBuilderTools} as an argument and is used to build your cell matrix
  * @returns rows, columns and cellMap
  */
-export const cellMatrixBuilder = <TRowId extends string = string, TColumnId extends string = string>(
-  rows: Row<TRowId>[],
-  columns: Column<TColumnId>[],
+export const cellMatrixBuilder = <TRowIdx extends number = number, TColumnIdx extends number = number>(
+  rows: Row[],
+  columns: Column[],
 
-  builder: ({ ...tools }: CellMatrixBuilderTools<TRowId, TColumnId>) => void
-): CellMatrix<TRowId, TColumnId> => {
-  const cells: CellMap<TRowId, TColumnId> = new Map();
+  builder: ({ ...tools }: CellMatrixBuilderTools<TRowIdx, TColumnIdx>) => void
+): CellMatrix<TRowIdx, TColumnIdx> => {
+  const cells: (Cell | SpanMember)[][] = [];
 
-  const setCell: SetCellFn<TRowId, TColumnId> = (rowId, colId, Template, props, { ...args } = {}) => {
-    const baseRowIdIndex = rows.findIndex((row) => row.id === rowId);
-    const baseColIdIndex = columns.findIndex((col) => col.id === colId);
+  // Initialize each row in cells array to ensure it's not undefined
+  for (let i = 0; i < rows.length; i++) {
+    cells[i] = [];
+  }
 
-    if (baseRowIdIndex === -1) throw new Error(`Row with id "${rowId}" isn't defined in rows array`);
-    if (baseColIdIndex === -1) throw new Error(`Column with id "${colId}" isn't defined in columns array`);
+  const setCell: SetCellFn = (baseRowIndex, baseColIndex, Template, props, { ...args } = {}) => {
+    if (baseRowIndex === -1) throw new Error(`Row with id "${baseRowIndex}" isn't defined in rows array`);
+    if (baseColIndex === -1) throw new Error(`Column with id "${baseColIndex}" isn't defined in columns array`);
 
-    if (process.env.NODE_ENV === "development" && cells.has(`${rowId} ${colId}`)) {
-      // console.warn(`Cell with coordinates [${rowId}, ${colId}] already exists and will be overwritten!`);
+    if (process.env.NODE_ENV === "development" && cells[baseRowIndex][baseColIndex]) {
+      // console.warn(`Cell with coordinates [${baseRowIndex}, ${baseColIndex}] already exists and will be overwritten!`);
     }
 
-    const cell = { rowId, colId, Template, props, ...args };
+    const cell = { rowIndex: baseRowIndex, colIndex: baseColIndex, Template, props, ...args };
 
     const rowSpan = cell.rowSpan ?? 1;
     const colSpan = cell.colSpan ?? 1;
 
-    for (let rowIdx = 0; rowIdx < rowSpan; rowIdx++) {
-      const rowIdIndex = baseRowIdIndex + rowIdx;
+    for (let rowOffset = 0; rowOffset < rowSpan; rowOffset++) {
+      const currentRowIndex = baseRowIndex + rowOffset;
 
-      for (let colIdx = 0; colIdx < colSpan; colIdx++) {
-        const colIdIndex = baseColIdIndex + colIdx;
+      // Ensure the row exists before trying to access a column
+      if (!cells[currentRowIndex]) {
+        cells[currentRowIndex] = [];
+      }
 
-        if (rowIdx === 0 && colIdx === 0) continue;
+      for (let colOffset = 0; colOffset < colSpan; colOffset++) {
+        const currentColIndex = baseColIndex + colOffset;
+
+        if (rowOffset === 0 && colOffset === 0) continue;
 
         const spanMember: SpanMember = {
-          originRowId: rowId,
-          originColId: colId,
+          originRowIndex: baseRowIndex,
+          originColIndex: baseColIndex,
         };
 
-        cells.set(`${rows[rowIdIndex].id} ${columns[colIdIndex].id}`, spanMember);
+        cells[currentRowIndex][currentColIndex] = spanMember;
       }
     }
 
-    cells.set(`${rowId} ${colId}`, cell);
+    cells[baseRowIndex][baseColIndex] = cell;
   };
 
   builder({ setCell });

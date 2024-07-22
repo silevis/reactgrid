@@ -2,28 +2,26 @@ import React from "react";
 
 import { Behavior, BehaviorId } from "./Behavior";
 import { NumericalRange } from "./CellMatrix";
-import { Direction, IndexedLocation, NestedStylesPartial } from "./InternalModel";
+import { IndexedLocation, NestedStylesPartial } from "./InternalModel";
 import { RGTheme } from "./RGTheme";
 
-export type Row<Id = string> = {
-  id: Id;
+export type Row = {
   height: string | number;
   reorderable?: boolean;
 };
 
-export type Column<Id = string> = {
-  id: Id;
+export type Column = {
   width: string | number;
   minWidth?: string | number;
   resizable?: boolean;
   reorderable?: boolean;
 };
 
-export type Cell<RowIdType extends string = string, ColIdType extends string = string> = {
-  /** User defined row ID, must exist in the `rows` array! */
-  rowId: RowIdType;
-  /** User defined column ID, must exist in the `columns` array! */
-  colId: ColIdType;
+export type Cell<RowIdxType extends number = number, ColIdxType extends number = number> = {
+  /** User defined row IDx, must exist in the `rows` array! */
+  rowIndex: RowIdxType;
+  /** User defined column IDx, must exist in the `columns` array! */
+  colIndex: ColIdxType;
 
   /** Cell's template - typically the name of the React component. Should start from the uppercase letter. */
   // Type `any` is required to use React.ComponentType here
@@ -43,8 +41,8 @@ export type Cell<RowIdType extends string = string, ColIdType extends string = s
 };
 
 export type SpanMember = {
-  originRowId: string;
-  originColId: string;
+  originRowIndex: number;
+  originColIndex: number;
 };
 
 export type Position = {
@@ -52,23 +50,18 @@ export type Position = {
   y: number;
 };
 
-export type Range<RowIdType extends string = string, ColIdType extends string = string> = {
+export type Range = {
   start: {
-    rowId: RowIdType;
-    columnId: ColIdType;
+    rowIndex: number;
+    columnIndex: number;
   };
   end: {
-    rowId: RowIdType;
-    columnId: ColIdType;
+    rowIndex: number;
+    columnIndex: number;
   };
 };
 
 export type CellContextType = {
-  /** User defined row ID. */
-  rowId: string;
-  /** User defined column ID. */
-  colId: string;
-
   /** Numerical cell's row index representation in relation to whole grid (incl. sticky). */
   realRowIndex: number;
   /** Numerical cell's column index representation in relation to whole grid (incl. sticky). */
@@ -85,11 +78,6 @@ export type CellContextType = {
   isFocused: boolean;
 };
 
-export type CellMap<RowIdType extends string = string, ColIdType extends string = string> = Map<
-  `${RowIdType} ${ColIdType}`,
-  Cell<RowIdType, ColIdType> | SpanMember
->;
-
 export type StyledRange = {
   styles: React.CSSProperties;
   range: Range;
@@ -98,11 +86,6 @@ export type StyledRange = {
 export type StyledRangesCSS = {
   [selector: string]: React.CSSProperties;
 }[];
-
-export type Location = {
-  rowId: string;
-  columnId: string;
-};
 
 export interface ReactGridProps {
   id: string;
@@ -114,7 +97,7 @@ export interface ReactGridProps {
   columns: Column[];
   rows: Row[];
 
-  cells: CellMap;
+  cells: (Cell | SpanMember)[][];
 
   onAreaSelected?: (selectedArea: NumericalRange) => void;
   onCellFocused?: (cellLocation: IndexedLocation) => void;
@@ -132,16 +115,16 @@ export interface ReactGridProps {
 
   behaviors?: Record<BehaviorId, Behavior>;
 
-  initialFocusLocation?: Location;
+  initialFocusLocation?: IndexedLocation;
   initialSelectedRange?: Range;
 
-  onFocusLocationChanging?: ({ location }: { location: Location }) => boolean;
-  onFocusLocationChanged?: ({ location }: { location: Location }) => void;
+  onFocusLocationChanging?: ({ location }: { location: IndexedLocation }) => boolean;
+  onFocusLocationChanged?: ({ location }: { location: IndexedLocation }) => void;
   onFillHandle?: (selectedArea: NumericalRange, fillRange: NumericalRange) => void;
   onCut?: (selectedArea: NumericalRange) => void;
   onCopy?: (selectedArea: NumericalRange) => void;
   onPaste?: (selectedArea: NumericalRange, pastedData: string) => void;
   onColumnReorder?: (selectedColIndexes: number[], destinationColIdx: number) => void;
   onRowReorder?: (selectedRowIndexes: number[], destinationRowIdx: number) => void;
-  onResizeColumn?: (width: number, columnId: number | string) => void;
+  onResizeColumn?: (width: number, columnIdx: number) => void;
 }

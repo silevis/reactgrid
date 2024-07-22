@@ -12,7 +12,7 @@ type SetData<T extends CellData> = React.Dispatch<React.SetStateAction<(T | null
 export const handleRowReorder = (
   selectedRowIndexes: number[],
   destinationRowIdx: number,
-  setRows: Dispatch<SetStateAction<Row<string>[]>>,
+  setRows: Dispatch<SetStateAction<Row[]>>,
   setData: SetData<CellData>
 ) => {
   setRows((prevRows) => {

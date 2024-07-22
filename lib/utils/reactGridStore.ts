@@ -16,7 +16,7 @@ const DEFAULT_STORE_PROPS: ReactGridStoreProps = {
   // fields passed by the user
   rows: [],
   columns: [],
-  cells: new Map(),
+  cells: [],
   paneRanges: {
     TopLeft: { startRowIdx: 0, endRowIdx: 0, startColIdx: 0, endColIdx: 0 },
     TopCenter: { startRowIdx: 0, endRowIdx: 0, startColIdx: 0, endColIdx: 0 },
@@ -50,7 +50,7 @@ const DEFAULT_STORE_PROPS: ReactGridStoreProps = {
   fillHandleArea: { startRowIdx: -1, endRowIdx: -1, startColIdx: -1, endColIdx: -1 },
   reactGridRef: undefined,
   hiddenFocusTargetRef: undefined,
-  resizingColId: undefined,
+  resizingColIdx: undefined,
   lineOrientation: "vertical",
   linePosition: undefined,
   shadowPosition: undefined,
@@ -72,11 +72,8 @@ export function initReactGridStore(id: string, initialProps?: Partial<ReactGridS
         setRows: (rows) => set(() => ({ rows })),
         getRowAmount: () => get().rows.length,
         setColumns: (columns) => set(() => ({ columns })),
-        getColumnById: (columnId) => {
-          const column = get().columns.find((col) => col.id === columnId);
-
-          if (!column) throw new Error(`Column with id "${columnId}" doesn't exist!`);
-
+        getColumnByIdx: (columnIdx) => {
+          const column = get().columns[columnIdx];
           return column;
         },
         setExternalData: (externalData) => {
@@ -85,39 +82,31 @@ export function initReactGridStore(id: string, initialProps?: Partial<ReactGridS
         getColumnAmount: () => get().columns.length,
         getColumnCells: (columnIdx: number) => {
           const { cells } = get();
-          const column = get().columns[columnIdx];
 
-          return Array.from(cells.values()).filter((cell) => {
-            if (!isSpanMember(cell)) {
-              return cell.colId === column.id;
+          return cells.flat().filter((cell) => {
+            if (isSpanMember(cell)) {
+              return cell.originColIndex === columnIdx;
+            } else {
+              return cell.colIndex === columnIdx;
             }
-            return false;
           }) as Cell[];
         },
 
-        setCells: (cells) => set(() => ({ cells })),
         setStyles: (styles) => set(() => ({ styles })),
-        getCellByIds: (rowId, colId) => {
-          const { cells, getCellByIds } = get();
+        getCellByIndexes: (rowIndex, colIndex) => {
+          const { cells } = get();
 
-          const cell = cells.get(`${rowId} ${colId}`);
+          if (rowIndex === -1 || colIndex === -1) return null;
+
+          const cell = cells[rowIndex][colIndex];
 
           if (!cell) return null;
 
           if (isSpanMember(cell)) {
-            return getCellByIds(cell.originRowId, cell.originColId) || null;
+            return cells[cell.originRowIndex][cell.originColIndex] as Cell;
           }
 
           return cell;
-        },
-        getCellByIndexes: (rowIndex, colIndex) => {
-          const { rows, columns, getCellByIds } = get();
-          const row = rows[rowIndex];
-          const col = columns[colIndex];
-
-          if (!row || !col) return null;
-
-          return getCellByIds(row.id, col.id) || null;
         },
         getCellOrSpanMemberByIndexes: (rowIndex, colIndex) => {
           const { rows, columns, cells } = get();
@@ -126,7 +115,7 @@ export function initReactGridStore(id: string, initialProps?: Partial<ReactGridS
 
           if (!row || !col) return null;
 
-          const cell = cells.get(`${row.id} ${col.id}`);
+          const cell = cells[rowIndex][colIndex];
 
           if (!cell) return null;
 
@@ -160,7 +149,7 @@ export function initReactGridStore(id: string, initialProps?: Partial<ReactGridS
         setSelectedColumns: (startColIdx: number, endColIdx: number) => {
           const { setSelectedArea } = get();
 
-          setSelectedArea({ startRowIdx: 0, endRowIdx: get().getRowAmount(), startColIdx, endColIdx });
+          setSelectedArea({ startRowIdx: 0, endRowIdx: get().getRowAmount() - 1, startColIdx, endColIdx });
         },
 
         setSelectedRows: (startRowIdx: number, endRowIdx: number) => {
@@ -173,7 +162,7 @@ export function initReactGridStore(id: string, initialProps?: Partial<ReactGridS
 
         setCurrentBehavior: (currentBehavior) => set(() => ({ currentBehavior })),
 
-        setResizingColId: (resizingColId) => set(() => ({ resizingColId })),
+        setResizingColIdx: (resizingColIdx) => set(() => ({ resizingColIdx })),
 
         setLineOrientation: (lineOrientation) => set(() => ({ lineOrientation })),
         setLinePosition: (linePosition) => set(() => ({ linePosition })),

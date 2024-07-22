@@ -87,7 +87,7 @@ const handlePointerMove = (
 
   if (!reactGridRef) return store;
 
-  const resizingColumn = store.getColumnById(store.resizingColId ?? "");
+  const resizingColumn = store.getColumnByIdx(store.resizingColIdx ?? 0);
 
   const minColumnWidth = getNumberFromPixelString(resizingColumn?.minWidth ?? 0);
 
@@ -119,7 +119,7 @@ const handlePointerUp = (
 
   if (!reactGridRef) return store;
 
-  const resizingColumn = store.getColumnById(store.resizingColId ?? "");
+  const resizingColumn = store.getColumnByIdx(store.resizingColIdx ?? 0);
 
   const minColumnWidth = getNumberFromPixelString(resizingColumn?.minWidth ?? 0);
 
@@ -130,11 +130,11 @@ const handlePointerUp = (
 
   const linePosition = event.clientX - reactGridLeftPosition;
 
-  if (store.resizingColId) {
+  if (store.resizingColIdx) {
     if (linePosition <= headerLeftPosition + minColumnWidth) {
-      store.onResizeColumn?.(minColumnWidth, store.resizingColId);
+      store.onResizeColumn?.(minColumnWidth, store.resizingColIdx ?? 0);
     } else {
-      store.onResizeColumn?.(resultWidth, store.resizingColId);
+      store.onResizeColumn?.(resultWidth, store.resizingColIdx ?? 0);
     }
   }
 
@@ -142,5 +142,10 @@ const handlePointerUp = (
   initialPointerX = 0;
   initialHeaderWidth = 0;
 
-  return { ...store, linePosition: undefined, currentBehavior: store.getBehavior("Default"), resizingColId: undefined };
+  return {
+    ...store,
+    linePosition: undefined,
+    currentBehavior: store.getBehavior("Default"),
+    resizingColIdx: undefined,
+  };
 };

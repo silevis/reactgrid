@@ -1,10 +1,10 @@
 import { Column, Row } from "../../lib/main";
 
 export const initialColumns: Column[] = [
-  { id: "1", width: "150px", resizable: true, reorderable: true, minWidth: 50 },
-  { id: "2", width: "150px", resizable: true, reorderable: true, minWidth: 50 },
-  { id: "4", width: "150px", resizable: true, reorderable: true, minWidth: 50 },
-  { id: "5", width: "150px", resizable: true, reorderable: true, minWidth: 50 },
+  { width: "150px", resizable: true, reorderable: true, minWidth: 50 },
+  { width: "150px", resizable: true, reorderable: true, minWidth: 50 },
+  { width: "150px", resizable: true, reorderable: true, minWidth: 50 },
+  { width: "150px", resizable: true, reorderable: true, minWidth: 50 },
 ];
 
 export const initialRows: Row[] = Array.from({ length: 7 }, (_, index) => ({

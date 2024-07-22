@@ -9,22 +9,19 @@ export const getCellArea = (store: ReactGridStore, cell: Cell | SpanMember): Num
   if (!cell) return EMPTY_AREA;
 
   const originCell = getOriginCell(store, cell);
-  const rowIndex = store.rows.findIndex((row) => row.id === originCell.rowId);
-  const colIndex = store.columns.findIndex((col) => col.id === originCell.colId);
-
   if (isCellSpanned(originCell)) {
     return {
-      startRowIdx: rowIndex,
-      endRowIdx: rowIndex + (originCell?.rowSpan ?? 1),
-      startColIdx: colIndex,
-      endColIdx: colIndex + (originCell?.colSpan ?? 1),
+      startRowIdx: originCell.rowIndex,
+      endRowIdx: originCell.rowIndex + (originCell?.rowSpan ?? 1),
+      startColIdx: originCell.colIndex,
+      endColIdx: originCell.colIndex + (originCell?.colSpan ?? 1),
     };
   }
 
   return {
-    startRowIdx: rowIndex,
-    endRowIdx: rowIndex + 1,
-    startColIdx: colIndex,
-    endColIdx: colIndex + 1,
+    startRowIdx: originCell.rowIndex,
+    endRowIdx: originCell.rowIndex + 1,
+    startColIdx: originCell.colIndex,
+    endColIdx: originCell.colIndex + 1,
   };
 };

@@ -33,18 +33,12 @@ export const moveFocusUp = (store: ReactGridStore, currentFocus: FocusedCell): P
     // Check if the cell is focusable (by default it is)
     if (nextPossibleLocation && nextPossibleLocation?.isFocusable !== false) {
       const originCell = getOriginCell(store, nextPossibleLocation);
-      const originRowIndex = store.rows.findIndex((row) => row.id === originCell.rowId);
-      const originColIndex = store.columns.findIndex((col) => col.id === originCell.colId);
-
-      if (originCell.rowSpan ?? 1 > 1) store.focusedLocation.rowIndex = originRowIndex;
-      else store.focusedLocation.rowIndex = rowIndex;
-      store.focusedLocation.colIndex = colIndex;
 
       emitEvent("focuschange", { currentFocus });
 
       handlePaneOverlap(store, rowIndex, colIndex, scrollableParent);
 
-      getHiddenTargetFocusByIdx(originRowIndex, originColIndex)?.focus();
+      getHiddenTargetFocusByIdx(originCell.rowIndex, originCell.colIndex)?.focus();
 
       return {
         selectedArea: EMPTY_AREA,
@@ -83,17 +77,12 @@ export const moveFocusRight = (store: ReactGridStore, currentFocus: FocusedCell)
     // Check if the cell is focusable (by default it is)
     if (nextPossibleLocation && nextPossibleLocation?.isFocusable !== false) {
       const originCell = getOriginCell(store, nextPossibleLocation);
-      const originRowIndex = store.rows.findIndex((row) => row.id === originCell.rowId);
-      const originColIndex = store.columns.findIndex((col) => col.id === originCell.colId);
-
-      store.focusedLocation.rowIndex = rowIndex;
-      store.focusedLocation.colIndex = colIndex;
 
       emitEvent("focuschange", { currentFocus });
 
       handlePaneOverlap(store, rowIndex, colIndex, scrollableParent);
 
-      getHiddenTargetFocusByIdx(originRowIndex, originColIndex)?.focus();
+      getHiddenTargetFocusByIdx(originCell.rowIndex, originCell.colIndex)?.focus();
 
       return {
         selectedArea: EMPTY_AREA,
@@ -128,17 +117,12 @@ export const moveFocusDown = (store: ReactGridStore, currentFocus: FocusedCell) 
     // Check if the cell is focusable (by default it is)
     if (nextPossibleLocation && nextPossibleLocation?.isFocusable !== false) {
       const originCell = getOriginCell(store, nextPossibleLocation);
-      const originRowIndex = store.rows.findIndex((row) => row.id === originCell.rowId);
-      const originColIndex = store.columns.findIndex((col) => col.id === originCell.colId);
-
-      store.focusedLocation.rowIndex = rowIndex;
-      store.focusedLocation.colIndex = colIndex;
 
       emitEvent("focuschange", { currentFocus });
 
       handlePaneOverlap(store, rowIndex, colIndex, scrollableParent);
 
-      getHiddenTargetFocusByIdx(originRowIndex, originColIndex)?.focus();
+      getHiddenTargetFocusByIdx(originCell.rowIndex, originCell.colIndex)?.focus();
 
       return {
         selectedArea: EMPTY_AREA,
@@ -173,18 +157,12 @@ export const moveFocusLeft = (store: ReactGridStore, currentFocus: FocusedCell) 
     // Check if the cell is focusable (by default it is)
     if (nextPossibleLocation && nextPossibleLocation?.isFocusable !== false) {
       const originCell = getOriginCell(store, nextPossibleLocation);
-      const originRowIndex = store.rows.findIndex((row) => row.id === originCell.rowId);
-      const originColIndex = store.columns.findIndex((col) => col.id === originCell.colId);
-
-      store.focusedLocation.rowIndex = rowIndex;
-      if (originCell.colSpan ?? 1 > 1) store.focusedLocation.colIndex = originColIndex;
-      else store.focusedLocation.colIndex = colIndex;
 
       emitEvent("focuschange", { currentFocus });
 
       handlePaneOverlap(store, rowIndex, colIndex, scrollableParent);
 
-      getHiddenTargetFocusByIdx(originRowIndex, originColIndex)?.focus();
+      getHiddenTargetFocusByIdx(originCell.rowIndex, originCell.colIndex)?.focus();
 
       return {
         selectedArea: EMPTY_AREA,

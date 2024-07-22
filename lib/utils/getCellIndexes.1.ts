@@ -8,12 +8,12 @@ import { ReactGridStore } from "../types/ReactGridStore.ts";
  * @returns An object containing the row index and column index of the cell.
  */
 
-export function getCellIndexes(store: ReactGridStore, cell: Cell): { rowIndex: number; colIndex: number } {
-  const rowIndex = store.rows.findIndex((row) => row.id === cell.rowId);
-  const colIndex = store.columns.findIndex((col) => col.id === cell.colId);
+// export function getCellIndexes(store: ReactGridStore, cell: Cell): { rowIndex: number; colIndex: number } {
+//   const rowIndex = store.rows.findIndex((row) => row.id === cell.rowId);
+//   const colIndex = store.columns.findIndex((col) => col.id === cell.colId);
 
-  return {
-    rowIndex,
-    colIndex,
-  };
-}
+//   return {
+//     rowIndex,
+//     colIndex,
+//   };
+// }
