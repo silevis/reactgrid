@@ -17,12 +17,16 @@
     /* Linting */
     "strict": true,
     "noUnusedLocals": true,
-    "noUnusedParameters": true,
+    "noUnusedParameters": false,
     "noFallthroughCasesInSwitch": true,
 
     /* Type checking */
     "jsxImportSource": "@emotion/react",
   },
-  "include": ["src"],
+  "include": [
+    "lib",
+    "lib/**/*.ts",
+    "stories/**/*.{ts,tsx}"
+  ],
   "references": [{ "path": "./tsconfig.node.json" }]
 }
