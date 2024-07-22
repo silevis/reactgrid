@@ -156,7 +156,7 @@
   background-color: #e2ebfe;
 }
 
-[contenteditable] {
+.rg-copy-container[contenteditable] {
   -webkit-user-select: text;
   user-select: text;
 }
