@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { Cell, CellTemplate, Compatible, Uncertain, UncertainCompatible } from '../Model/PublicModel';
+import { CSSObjectWithLabel } from 'react-select';
 export type OptionType = {
     label: string;
     value: string;
@@ -12,6 +13,16 @@ export interface DropdownCell extends Cell {
     isDisabled?: boolean;
     isOpen?: boolean;
     inputValue?: string;
+    styles?: {
+        container?: CSSObjectWithLabel;
+        control?: CSSObjectWithLabel;
+        indicatorsContainer?: CSSObjectWithLabel;
+        dropdownIndicator?: CSSObjectWithLabel;
+        singleValue?: CSSObjectWithLabel;
+        indicatorSeparator?: CSSObjectWithLabel;
+        input?: CSSObjectWithLabel;
+        valueContainer?: CSSObjectWithLabel;
+    };
 }
 export declare class DropdownCellTemplate implements CellTemplate<DropdownCell> {
     getCompatibleCell(uncertainCell: Uncertain<DropdownCell>): Compatible<DropdownCell>;
