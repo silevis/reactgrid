@@ -1,4 +1,4 @@
-import React, { FC, forwardRef, useEffect, useRef, useState } from "react";
+import React, { FC, forwardRef, useRef, useState } from "react";
 import { useCellContext } from "../../lib/components/CellContext";
 import { formatDate } from "../utils/formatDate";
 import CellWrapper from "../../lib/components/CellWrapper";
@@ -6,22 +6,22 @@ import { CellContextType } from "../../lib/main";
 
 interface DefaultCalendarProps {
   ctx: CellContextType;
-  date: string;
+  value: string | undefined;
   setIsInEditMode: (value: boolean) => void;
-  onDateChanged: (data: { date?: Date; text?: string }) => void;
+  onValueChanged: (data: Date) => void;
   style?: React.CSSProperties;
 }
 
 interface DateCellProps {
-  value?: Date;
+  value: Date;
   formatter?: (date: Date) => string;
-  onDateChanged: (data: { date?: Date; text?: string }) => void;
+  onValueChanged: (data: Date) => void;
   format?: string;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   Calendar?: { Template: React.ComponentType<any>; props: { [key: string]: any } };
 }
 
-export const DateCell: FC<DateCellProps> = ({ value, onDateChanged, formatter, Calendar }) => {
+export const DateCell: FC<DateCellProps> = ({ value, onValueChanged, formatter, Calendar }) => {
   const ctx = useCellContext();
   const targetInputRef = useRef<HTMLInputElement>(null);
   const [isEditMode, setEditMode] = useState(false);
@@ -35,10 +35,6 @@ export const DateCell: FC<DateCellProps> = ({ value, onDateChanged, formatter, C
   } else {
     formattedDate = formatter(value);
   }
-
-  useEffect(() => {
-    onDateChanged({ date: value, text: formattedDate });
-  }, [value]);
 
   return (
     <CellWrapper
@@ -65,13 +61,13 @@ export const DateCell: FC<DateCellProps> = ({ value, onDateChanged, formatter, C
                 setEditMode(false);
               } else if (e.key === "Enter") {
                 e.preventDefault();
-                onDateChanged({ date: new Date(e.currentTarget.value) });
+                onValueChanged(new Date(e.currentTarget.value));
                 setEditMode(false);
               }
             }}
             onBlur={(e: React.PointerEvent<HTMLInputElement>) => {
               const changedDate = e.currentTarget.value;
-              changedDate && onDateChanged({ date: new Date(e.currentTarget.value) });
+              changedDate && onValueChanged(new Date(e.currentTarget.value));
               setEditMode(false);
             }}
             onPointerDown={(e: React.PointerEvent<HTMLInputElement>) => e.stopPropagation()}
@@ -81,8 +77,8 @@ export const DateCell: FC<DateCellProps> = ({ value, onDateChanged, formatter, C
             ctx={ctx}
             setIsInEditMode={setEditMode}
             ref={targetInputRef}
-            date={formattedDate}
-            onDateChanged={onDateChanged}
+            value={formattedDate}
+            onValueChanged={onValueChanged}
           />
         )
       ) : (
@@ -93,11 +89,14 @@ export const DateCell: FC<DateCellProps> = ({ value, onDateChanged, formatter, C
 };
 
 const DefaultCalendar = forwardRef(
-  ({ ctx, date, setIsInEditMode, onDateChanged }: DefaultCalendarProps, ref: React.ForwardedRef<HTMLInputElement>) => {
+  (
+    { ctx, value, setIsInEditMode, onValueChanged }: DefaultCalendarProps,
+    ref: React.ForwardedRef<HTMLInputElement>
+  ) => {
     return (
       <input
         type="date"
-        defaultValue={date}
+        defaultValue={value}
         style={{
           boxSizing: "border-box",
           textAlign: "center",
@@ -113,7 +112,7 @@ const DefaultCalendar = forwardRef(
         }}
         onBlur={(e) => {
           const changedDate = e.currentTarget.value;
-          changedDate && onDateChanged({ date: new Date(e.currentTarget.value) });
+          changedDate && onValueChanged(new Date(e.currentTarget.value));
           setIsInEditMode(false);
         }}
         onPointerDown={(e) => e.stopPropagation()}
@@ -123,7 +122,7 @@ const DefaultCalendar = forwardRef(
             setIsInEditMode(false);
           } else if (e.key === "Enter") {
             e.preventDefault();
-            onDateChanged({ date: new Date(e.currentTarget.value) });
+            onValueChanged(new Date(e.currentTarget.value));
             setIsInEditMode(false);
           }
         }}

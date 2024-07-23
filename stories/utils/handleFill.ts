@@ -1,15 +1,23 @@
 import { NumericalRange } from "../../lib/types/CellMatrix";
 import { parseLocaleNumber } from "../../lib/utils/parseLocaleNumber";
 
-type CellData = {
-  text?: string;
-  number?: number;
+interface CellData {
+  type: "text" | "number" | "date";
+  value: string | number | Date;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  template: React.ComponentType<any>;
+
+  rowSpan?: number;
+  colSpan?: number;
+  format?: Intl.NumberFormat;
   date?: Date;
-};
+}
 
-type SetData<T extends CellData> = React.Dispatch<React.SetStateAction<(T | null)[][]>>;
-
-export const handleFill = (selectedArea: NumericalRange, fillRange: NumericalRange, setData: SetData<CellData>) => {
+export const handleFill = <T extends CellData | null>(
+  selectedArea: NumericalRange,
+  fillRange: NumericalRange,
+  setData: React.Dispatch<React.SetStateAction<T[][]>>
+) => {
   setData((prev) => {
     const next = [...prev];
     // Check if the fill handle is being dragged upwards
@@ -24,6 +32,8 @@ export const handleFill = (selectedArea: NumericalRange, fillRange: NumericalRan
         // Skip null cells.
         if (next[i][j] === null) continue;
 
+        const currentCellData = next[i][j] as T;
+
         // Calculate the relative row and column indices within the selected area
         const relativeRowIdx = isFillingUpwards
           ? (selectedArea.endRowIdx - i - 1) % relativeRowSize
@@ -35,8 +45,8 @@ export const handleFill = (selectedArea: NumericalRange, fillRange: NumericalRan
 
         // Set the value of the cell in the fill range to the value from the selected area
         next[i][j] = {
-          text: newValue?.number ? newValue.number.toString() : newValue?.text,
-          number: newValue?.number ?? parseLocaleNumber(newValue?.text),
+          ...currentCellData,
+          value: newValue ? newValue.value : "",
         };
       }
     }

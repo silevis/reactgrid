@@ -1,10 +1,6 @@
 import { CellMatrix } from "../types/CellMatrix";
 import { Cell, Column, Row, SpanMember } from "../types/PublicModel";
 
-// type AddRowsFn<TRowId extends string> = (...newRows: Array<Row<TRowId>>) => void;
-
-// type AddColumnsFn<TColumnId extends string> = (...newColumns: Column<TColumnId>[]) => void;
-
 // Type `any` is required to use React.ComponentType here
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type SetCellFn = <TComponent extends React.ComponentType<any>>(
@@ -15,11 +11,7 @@ type SetCellFn = <TComponent extends React.ComponentType<any>>(
   { ...args }?: Omit<Cell, "rowIndex" | "colIndex" | "Template" | "props">
 ) => void;
 
-// type InsertColumnsFn<TColumnId extends string> = (newColumns: Array<Column<TColumnId>>, id: TColumnId, position: 'before' | 'after') => void;
-
-interface CellMatrixBuilderTools<TRowIdx extends number, TColumnIdx extends number> {
-  // addRows: AddRowsFn<TRowId>;
-  // addColumns: AddColumnsFn<TColumnId>;
+interface CellMatrixBuilderTools {
   setCell: SetCellFn;
 }
 
@@ -31,23 +23,20 @@ interface CellMatrixBuilderTools<TRowIdx extends number, TColumnIdx extends numb
  * It's `setCell` method infers the `props` type based on the provided `Template`
  * so that you don't have to specify it manually.
  *
- * You can also provide `RowId` and `ColumnId` types to make sure you don't make any typos
+ * You can also provide `RowIdx` and `ColumnIdx` types to make sure you don't make any typos
  * when defining rows and columns and providing coordinates for your cells.
  *
  * @example
- * type RowId = 'Player1' | 'Player2';
- * type ColumnId = 'name' | 'score';
+ * type RowIdx = 2;
+ * type ColumnIdx = 3;
  *
- * const [players, setPlayers] = useState<Map<RowId, { name: string, score: number }>>(new Map([
+ * const [players, setPlayers] = useState<Map<RowIdx, { name: string, score: number }>>(new Map([
  *  ["Player1", { name: "John", score: 70 }],
  *  ["Player2", { name: "Jane", score: 45 }],
  * ]));
  *
  * const { rows, columns, cellMatrix } = useMemo(
- *  () => cellMatrixBuilder<RowId, ColumnId>(({ addRows, addColumns, setCell }) => {
- *   addRows({ id: 'Player1', height: 100 }, { id: 'Player2', height: 50 });
- *
- *   addColumns({ id: 'name', width: 100 }, { id: 'score', width: 50 });
+ *  () => cellMatrixBuilder<RowIdx, ColumnIdx>(({ addRows, addColumns, setCell }) => {
  *
  *   setCell('Player1', 'name', TextCell, { value: players.get('Player1')?.name || '' });
  *   setCell('Player1', 'score', TextCell, { value: players.get('Player1')?.score.toString() || '' });
@@ -63,7 +52,7 @@ export const cellMatrixBuilder = <TRowIdx extends number = number, TColumnIdx ex
   rows: Row[],
   columns: Column[],
 
-  builder: ({ ...tools }: CellMatrixBuilderTools<TRowIdx, TColumnIdx>) => void
+  builder: ({ ...tools }: CellMatrixBuilderTools) => void
 ): CellMatrix<TRowIdx, TColumnIdx> => {
   const cells: (Cell | SpanMember)[][] = [];
 
@@ -77,7 +66,7 @@ export const cellMatrixBuilder = <TRowIdx extends number = number, TColumnIdx ex
     if (baseColIndex === -1) throw new Error(`Column with id "${baseColIndex}" isn't defined in columns array`);
 
     if (process.env.NODE_ENV === "development" && cells[baseRowIndex][baseColIndex]) {
-      // console.warn(`Cell with coordinates [${baseRowIndex}, ${baseColIndex}] already exists and will be overwritten!`);
+      console.warn(`Cell with coordinates [${baseRowIndex}, ${baseColIndex}] already exists and will be overwritten!`);
     }
 
     const cell = { rowIndex: baseRowIndex, colIndex: baseColIndex, Template, props, ...args };

@@ -17,8 +17,14 @@ import { handleRowReorder } from "./utils/handleRowReorder";
 import { DateCell } from "./cellTemplates/DateCell";
 
 interface CellData {
-  text?: string;
-  number?: number;
+  type: "text" | "number" | "date";
+  value: string | number | Date;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  template: React.ComponentType<any>;
+
+  rowSpan?: number;
+  colSpan?: number;
+  format?: Intl.NumberFormat;
   date?: Date;
 }
 
@@ -71,21 +77,39 @@ export const BigGrid = () => {
         if (i === 4 && j === 4) return null;
         if (i === 5 && j === 6) return null;
         if (i === 5 && j === 7) return null;
-
         if (i === 6 && j === 4) return null;
         if (i === 6 && j === 7) return null;
         if (i === 6 && j === 8) return null;
-
         if (i === 19 && j === 1) return null;
         if (i === 1 && j === 24) return null;
 
-        if (i === 0 && j === 0) return { number: 100 };
-
-        if (i === 1 && j === 3) return { date: new Date() };
-        if (i === 1 && j === 23) return { date: new Date() };
+        if (i === 0 && j === 0) return { type: "number", value: 100, template: NumberCell };
+        if (i === 1 && j === 3)
+          return { type: "date", value: new Date(), template: DateCell, format: myNumberFormat, colSpan: 2 };
+        if (i === 1 && j === 23)
+          return { type: "date", value: new Date(), template: DateCell, format: myNumberFormat, colSpan: 2 };
+        if (i === 3 && j === 3)
+          return { type: "text", value: "Lorem ipsum dolor sit amet", template: TextCell, colSpan: 2, rowSpan: 2 };
+        if (i === 5 && j === 4)
+          return {
+            type: "text",
+            value: "Reiciendis illum, nihil, ab officiis explicabo!",
+            template: TextCell,
+            rowSpan: 2,
+          };
+        if (i === 5 && j === 5)
+          return {
+            type: "text",
+            value: "Excepturi in adipisci omnis illo eveniet obcaecati!",
+            template: TextCell,
+            colSpan: 3,
+          };
+        if (i === 6 && j === 6) return { type: "text", value: "Doloremque, sit!", template: TextCell, colSpan: 3 };
+        if (i === 18 && j === 1) return { type: "text", value: "Doloremque, sit!", template: TextCell, rowSpan: 2 };
 
         return {
-          text:
+          type: "text",
+          value:
             `[${i.toString()}:${j.toString()}]` +
             [
               "Lorem ipsum dolor sit amet",
@@ -93,113 +117,37 @@ export const BigGrid = () => {
               "Excepturi in adipisci omnis illo eveniet obcaecati!",
               "Doloremque, sit!",
             ][Math.floor(Math.random() * 4)],
+          template: TextCell,
         };
       });
     })
   );
 
   const cellMatrix = cellMatrixBuilder(rows, columns, ({ setCell }) => {
-    gridData.forEach((row, rowIndex) => {
-      row.forEach((val, columnIndex) => {
-        if (val === null) return;
+    gridData.forEach((row, rowIdx) => {
+      row.forEach((cell, columnIx) => {
+        if (cell === null) return;
 
-        if (rowIndex === 0) {
-          setCell(
-            rowIndex,
-            columnIndex,
-            TextCell,
-            {
-              value: val?.text,
-              onTextChanged: (data) => {
-                setGridData((prev) => {
-                  const next = [...prev];
-                  if (next[rowIndex][columnIndex] !== null) {
-                    next[rowIndex][columnIndex].text = data;
-                  }
-                  return next;
-                });
-              },
+        setCell(
+          rowIdx,
+          columnIx,
+          cell.template,
+          {
+            value: cell.value,
+            onValueChanged: (data) => {
+              setGridData((prev) => {
+                const next = [...prev];
+                if (next[rowIdx][columnIx] !== null) {
+                  next[rowIdx][columnIx].value = data;
+                }
+                return next;
+              });
             },
-            { isFocusable: false }
-          );
-          return;
-        }
-
-        setCell(rowIndex, columnIndex, TextCell, {
-          value: val?.text,
-          onTextChanged: (data) => {
-            setGridData((prev) => {
-              const next = [...prev];
-              if (next[rowIndex][columnIndex] !== null) {
-                next[rowIndex][columnIndex].text = data;
-              }
-              return next;
-            });
           },
-        });
+          { ...(cell?.rowSpan && { rowSpan: cell.rowSpan }), ...(cell?.colSpan && { colSpan: cell.colSpan }) }
+        );
       });
     });
-
-    setCell(0, 0, NumberCell, {
-      value: gridData[0][0]?.number ?? 0,
-      validator: (value) => !isNaN(value),
-      errorMessage: "ERR",
-      format: myNumberFormat,
-      hideZero: true,
-      onValueChanged: (newNumber) => {
-        setGridData((prev) => {
-          const next = [...prev];
-          next[0][0] = { number: newNumber };
-          return next;
-        });
-      },
-    });
-
-    setCell(
-      1,
-      3,
-      DateCell,
-      {
-        value: gridData[1][3]?.date,
-        onDateChanged: (newDate) => {
-          setGridData((prev) => {
-            const next = [...prev];
-            next[1][3] = newDate;
-            return next;
-          });
-        },
-      },
-      { colSpan: 2 }
-    );
-
-    setCell(
-      1,
-      23,
-      DateCell,
-      {
-        value: gridData[1][23]?.date,
-        onDateChanged: (newDate) => {
-          setGridData((prev) => {
-            const next = [...prev];
-            next[1][23] = newDate;
-            return next;
-          });
-        },
-      },
-      { colSpan: 2 }
-    );
-
-    setCell(
-      3,
-      3,
-      TextCell,
-      { value: gridData[3][6]?.text ?? "", onTextChanged: () => null },
-      { colSpan: 2, rowSpan: 2 }
-    );
-    setCell(5, 4, TextCell, { value: gridData[5][4]?.text ?? "", onTextChanged: () => null }, { rowSpan: 2 });
-    setCell(5, 5, TextCell, { value: gridData[5][5]?.text ?? "", onTextChanged: () => null }, { colSpan: 3 });
-    setCell(6, 6, TextCell, { value: gridData[6][6]?.text ?? "", onTextChanged: () => null }, { colSpan: 3 });
-    setCell(18, 1, TextCell, { value: gridData[18][1]?.text ?? "", onTextChanged: () => null }, { rowSpan: 2 });
   });
 
   const [toggleRanges, setToggleRanges] = useState(false);
