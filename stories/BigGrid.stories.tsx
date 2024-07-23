@@ -65,29 +65,24 @@ export const BigGrid = () => {
     Array.from({ length: ROW_COUNT }).map((_, i) => {
       return Array.from({ length: COLUMN_COUNT }).map((_, j) => {
         if (i === 1 && j === 4) return null;
-        // if (i === 1 && j === 24) return null;
-        // if (i === 2 && j === 4) return null;
-        // if (i === 3 && j === 3) return null;
-        // if (i === 3 && j === 4) return null;
+        if (i === 1 && j === 24) return null;
+        if (i === 3 && j === 4) return null;
+        if (i === 4 && j === 3) return null;
+        if (i === 4 && j === 4) return null;
+        if (i === 5 && j === 6) return null;
+        if (i === 5 && j === 7) return null;
 
-        // if (i === 3 && j === 7) return null;
-        // if (i === 4 && j === 6) return null;
-        // if (i === 4 && j === 7) return null;
+        if (i === 6 && j === 4) return null;
+        if (i === 6 && j === 7) return null;
+        if (i === 6 && j === 8) return null;
 
-        // if (i === 5 && j === 6) return null;
-        // if (i === 5 && j === 7) return null;
-
-        // if (i === 6 && j === 4) return null;
-
-        // if (i === 6 && j === 7) return null;
-        // if (i === 6 && j === 8) return null;
-
-        if (i === 1 && j === 3) return { date: new Date() };
-        if (i === 1 && j === 23) return { date: new Date() };
+        if (i === 19 && j === 1) return null;
+        if (i === 1 && j === 24) return null;
 
         if (i === 0 && j === 0) return { number: 100 };
 
-        if (i === 2 && j === 3) return { number: 125 };
+        if (i === 1 && j === 3) return { date: new Date() };
+        if (i === 1 && j === 23) return { date: new Date() };
 
         return {
           text:
@@ -145,20 +140,20 @@ export const BigGrid = () => {
       });
     });
 
-    // setCell(0, 0, NumberCell, {
-    //   value: gridData[0][0]?.number ?? 0,
-    //   validator: (value) => !isNaN(value),
-    //   errorMessage: "ERR",
-    //   format: myNumberFormat,
-    //   hideZero: true,
-    //   onValueChanged: (newNumber) => {
-    //     setGridData((prev) => {
-    //       const next = [...prev];
-    //       next[0][0] = { number: newNumber };
-    //       return next;
-    //     });
-    //   },
-    // });
+    setCell(0, 0, NumberCell, {
+      value: gridData[0][0]?.number ?? 0,
+      validator: (value) => !isNaN(value),
+      errorMessage: "ERR",
+      format: myNumberFormat,
+      hideZero: true,
+      onValueChanged: (newNumber) => {
+        setGridData((prev) => {
+          const next = [...prev];
+          next[0][0] = { number: newNumber };
+          return next;
+        });
+      },
+    });
 
     setCell(
       1,
@@ -177,57 +172,35 @@ export const BigGrid = () => {
       { colSpan: 2 }
     );
 
-    // setCell(
-    //   1,
-    //   23,
-    //   DateCell,
-    //   {
-    //     value: gridData[1][23]?.date,
-    //     onDateChanged: (newDate) => {
-    //       setGridData((prev) => {
-    //         const next = [...prev];
-    //         next[1][23] = newDate;
-    //         return next;
-    //       });
-    //     },
-    //   },
-    //   { colSpan: 2 }
-    // );
+    setCell(
+      1,
+      23,
+      DateCell,
+      {
+        value: gridData[1][23]?.date,
+        onDateChanged: (newDate) => {
+          setGridData((prev) => {
+            const next = [...prev];
+            next[1][23] = newDate;
+            return next;
+          });
+        },
+      },
+      { colSpan: 2 }
+    );
 
-    // setCell(
-    //   2,
-    //   3,
-    //   NumberCell,
-    //   {
-    //     value: gridData[2][3]?.number ?? 0,
-    //     validator: (value) => !isNaN(value),
-    //     errorMessage: "ERR",
-    //     format: myNumberFormat,
-    //     hideZero: true,
-    //     onValueChanged: (newNumber) => {
-    //       setGridData((prev) => {
-    //         const next = [...prev];
-    //         next[2][3] = { number: newNumber };
-    //         return next;
-    //       });
-    //     },
-    //   },
-    //   { colSpan: 2, rowSpan: 2 }
-    // );
-    // setCell(
-    //   3,
-    //   3,
-    //   TextCell,
-    //   { value: gridData[3][6]?.text ?? "", onTextChanged: () => null },
-    //   { colSpan: 2, rowSpan: 2 }
-    // );
-    // setCell(5, 4, TextCell, { value: gridData[5][4]?.text ?? "", onTextChanged: () => null }, { rowSpan: 2 });
-    // setCell(5, 5, TextCell, { value: gridData[5][5]?.text ?? "", onTextChanged: () => null }, { colSpan: 3 });
-    // setCell(6, 6, TextCell, { value: gridData[6][6]?.text ?? "", onTextChanged: () => null }, { colSpan: 3 });
-    // setCell(18, 1, TextCell, { value: gridData[18][1]?.text ?? "", onTextChanged: () => null }, { rowSpan: 2 });
+    setCell(
+      3,
+      3,
+      TextCell,
+      { value: gridData[3][6]?.text ?? "", onTextChanged: () => null },
+      { colSpan: 2, rowSpan: 2 }
+    );
+    setCell(5, 4, TextCell, { value: gridData[5][4]?.text ?? "", onTextChanged: () => null }, { rowSpan: 2 });
+    setCell(5, 5, TextCell, { value: gridData[5][5]?.text ?? "", onTextChanged: () => null }, { colSpan: 3 });
+    setCell(6, 6, TextCell, { value: gridData[6][6]?.text ?? "", onTextChanged: () => null }, { colSpan: 3 });
+    setCell(18, 1, TextCell, { value: gridData[18][1]?.text ?? "", onTextChanged: () => null }, { rowSpan: 2 });
   });
-
-  console.log("cellMatrix", cellMatrix);
 
   const [toggleRanges, setToggleRanges] = useState(false);
 
