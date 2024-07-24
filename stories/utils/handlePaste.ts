@@ -14,7 +14,7 @@ export const handlePaste = <T>(
       for (let j = 0; j < parsedData[i].length; j++) {
         const rowIdx = selectedArea.startRowIdx + i;
         const colIdx = selectedArea.startColIdx + j;
-        if (next[rowIdx][colIdx] !== null) {
+        if (next[rowIdx] && next[rowIdx][colIdx] !== null) {
           if (parsedData[i][j]?.value) {
             next[rowIdx][colIdx] = {
               ...next[rowIdx][colIdx],

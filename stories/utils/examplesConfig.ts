@@ -1,4 +1,5 @@
-import { Column, Row } from "../../lib/main";
+import { Column, NumberCell, Row, TextCell } from "../../lib/main";
+import { HeaderCell } from "../cellTemplates/HeaderCell";
 
 export const initialColumns: Column[] = [
   { width: "150px", resizable: true, reorderable: true, minWidth: 50 },
@@ -7,11 +8,11 @@ export const initialColumns: Column[] = [
   { width: "150px", resizable: true, reorderable: true, minWidth: 50 },
 ];
 
-export const initialRows: Row[] = Array.from({ length: 7 }, (_, index) => ({
-  id: (index + 1).toString(),
-  height: "min-content",
-  reorderable: true,
-}));
+export const initialRows: Row[] = Array.from({ length: 7 }, (_, idx) => {
+  if (idx === 0) return { height: "30px", reorderable: false };
+
+  return { height: "min-content", reorderable: true };
+});
 
 export const headerRow = ["Name", "Surname", "Email", "Phone"];
 
@@ -24,9 +25,57 @@ export const dataRows = [
   ["Isabella", "Wilson", "i.wilson@gmail.com", "123789456"],
 ];
 
+export const initialGridData: CellData[][] = [headerRow, ...dataRows].map((row, rowIdx) =>
+  row.map((cellValue, index) => {
+    if (rowIdx === 0) {
+      return {
+        type: "text",
+        value: cellValue,
+        template: HeaderCell,
+        isFocusable: false,
+        isSelectable: false,
+        style: {
+          backgroundColor: "#55bc71",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          fontWeight: "bold",
+        },
+      };
+    }
+
+    if (index === row.length - 1 && rowIdx !== 0) {
+      return {
+        type: "number",
+        value: cellValue,
+        template: NumberCell,
+        validator: (value) => !isNaN(value),
+        errorMessage: "ERR",
+        hideZero: true,
+      };
+    }
+
+    return { type: "text", value: cellValue, template: TextCell };
+  })
+);
+
 export interface CellData {
-  text?: string;
-  number?: number;
+  type: "text" | "number" | "date";
+  value: string | number | Date;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  template: React.ComponentType<any>;
+
+  style?: React.CSSProperties;
+
+  rowSpan?: number;
+  colSpan?: number;
+
+  isFocusable?: boolean;
+  isSelectable?: boolean;
+
+  validator?: (value: number) => boolean;
+  errorMessage?: string;
+  hideZero?: boolean;
 }
 
 export const rgStyles = {

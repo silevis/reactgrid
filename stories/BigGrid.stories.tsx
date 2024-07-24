@@ -25,7 +25,6 @@ interface CellData {
   rowSpan?: number;
   colSpan?: number;
   format?: Intl.NumberFormat;
-  date?: Date;
 }
 
 const styledRanges = [
