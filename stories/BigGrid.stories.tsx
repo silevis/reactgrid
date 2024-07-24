@@ -25,6 +25,9 @@ interface CellData {
   rowSpan?: number;
   colSpan?: number;
   format?: Intl.NumberFormat;
+
+  isFocusable?: boolean;
+  isSelectable?: boolean;
 }
 
 const styledRanges = [
@@ -66,59 +69,78 @@ export const BigGrid = () => {
     })
   );
 
+  const generateCellData = (i: number, j: number): CellData | null => {
+    if (i === 1 && j === 4) return null;
+    if (i === 1 && j === 24) return null;
+    if (i === 3 && j === 4) return null;
+    if (i === 4 && j === 3) return null;
+    if (i === 4 && j === 4) return null;
+    if (i === 5 && j === 6) return null;
+    if (i === 5 && j === 7) return null;
+    if (i === 6 && j === 4) return null;
+    if (i === 6 && j === 7) return null;
+    if (i === 6 && j === 8) return null;
+    if (i === 19 && j === 1) return null;
+    if (i === 1 && j === 24) return null;
+
+    if (i === 0) return { type: "text", value: `Col ${j}`, template: TextCell, isFocusable: false };
+    if (i === 0 && j === 0) return { type: "number", value: 100, template: NumberCell };
+    if (i === 1 && j === 3)
+      return { type: "date", value: new Date(), template: DateCell, format: myNumberFormat, colSpan: 2 };
+    if (i === 1 && j === 23)
+      return { type: "date", value: new Date(), template: DateCell, format: myNumberFormat, colSpan: 2 };
+    if (i === 3 && j === 3)
+      return { type: "text", value: "Lorem ipsum dolor sit amet", template: TextCell, colSpan: 2, rowSpan: 2 };
+    if (i === 5 && j === 4)
+      return {
+        type: "text",
+        value: "Reiciendis illum, nihil, ab officiis explicabo!",
+        template: TextCell,
+        rowSpan: 2,
+      };
+    if (i === 5 && j === 5)
+      return {
+        type: "text",
+        value: "Excepturi in adipisci omnis illo eveniet obcaecati!",
+        template: TextCell,
+        colSpan: 3,
+      };
+    if (i === 6 && j === 6) return { type: "text", value: "Doloremque, sit!", template: TextCell, colSpan: 3 };
+    if (i === 18 && j === 1) return { type: "text", value: "Doloremque, sit!", template: TextCell, rowSpan: 2 };
+
+    if (i > 0 && j === 0) {
+      return {
+        type: "text",
+        value:
+          `[${i.toString()}:${j.toString()}]` +
+          [
+            "Lorem ipsum dolor sit amet",
+            "Reiciendis illum, nihil, ab officiis explicabo!",
+            "Excepturi in adipisci omnis illo eveniet obcaecati!",
+            "Doloremque, sit!",
+          ][Math.floor(Math.random() * 4)],
+        template: TextCell,
+        isFocusable: false,
+      };
+    }
+
+    return {
+      type: "text",
+      value:
+        `[${i.toString()}:${j.toString()}]` +
+        [
+          "Lorem ipsum dolor sit amet",
+          "Reiciendis illum, nihil, ab officiis explicabo!",
+          "Excepturi in adipisci omnis illo eveniet obcaecati!",
+          "Doloremque, sit!",
+        ][Math.floor(Math.random() * 4)],
+      template: TextCell,
+    };
+  };
+
   const [gridData, setGridData] = useState<(CellData | null)[][]>(
     Array.from({ length: ROW_COUNT }).map((_, i) => {
-      return Array.from({ length: COLUMN_COUNT }).map((_, j) => {
-        if (i === 1 && j === 4) return null;
-        if (i === 1 && j === 24) return null;
-        if (i === 3 && j === 4) return null;
-        if (i === 4 && j === 3) return null;
-        if (i === 4 && j === 4) return null;
-        if (i === 5 && j === 6) return null;
-        if (i === 5 && j === 7) return null;
-        if (i === 6 && j === 4) return null;
-        if (i === 6 && j === 7) return null;
-        if (i === 6 && j === 8) return null;
-        if (i === 19 && j === 1) return null;
-        if (i === 1 && j === 24) return null;
-
-        if (i === 0 && j === 0) return { type: "number", value: 100, template: NumberCell };
-        if (i === 1 && j === 3)
-          return { type: "date", value: new Date(), template: DateCell, format: myNumberFormat, colSpan: 2 };
-        if (i === 1 && j === 23)
-          return { type: "date", value: new Date(), template: DateCell, format: myNumberFormat, colSpan: 2 };
-        if (i === 3 && j === 3)
-          return { type: "text", value: "Lorem ipsum dolor sit amet", template: TextCell, colSpan: 2, rowSpan: 2 };
-        if (i === 5 && j === 4)
-          return {
-            type: "text",
-            value: "Reiciendis illum, nihil, ab officiis explicabo!",
-            template: TextCell,
-            rowSpan: 2,
-          };
-        if (i === 5 && j === 5)
-          return {
-            type: "text",
-            value: "Excepturi in adipisci omnis illo eveniet obcaecati!",
-            template: TextCell,
-            colSpan: 3,
-          };
-        if (i === 6 && j === 6) return { type: "text", value: "Doloremque, sit!", template: TextCell, colSpan: 3 };
-        if (i === 18 && j === 1) return { type: "text", value: "Doloremque, sit!", template: TextCell, rowSpan: 2 };
-
-        return {
-          type: "text",
-          value:
-            `[${i.toString()}:${j.toString()}]` +
-            [
-              "Lorem ipsum dolor sit amet",
-              "Reiciendis illum, nihil, ab officiis explicabo!",
-              "Excepturi in adipisci omnis illo eveniet obcaecati!",
-              "Doloremque, sit!",
-            ][Math.floor(Math.random() * 4)],
-          template: TextCell,
-        };
-      });
+      return Array.from({ length: COLUMN_COUNT }).map((_, j) => generateCellData(i, j));
     })
   );
 
@@ -143,7 +165,12 @@ export const BigGrid = () => {
               });
             },
           },
-          { ...(cell?.rowSpan && { rowSpan: cell.rowSpan }), ...(cell?.colSpan && { colSpan: cell.colSpan }) }
+          {
+            ...(cell?.isFocusable === false && { isFocusable: cell.isFocusable }),
+            ...(cell?.isSelectable === false && { isSelectable: cell.isSelectable }),
+            ...(cell?.rowSpan && { rowSpan: cell.rowSpan }),
+            ...(cell?.colSpan && { colSpan: cell.colSpan }),
+          }
         );
       });
     });

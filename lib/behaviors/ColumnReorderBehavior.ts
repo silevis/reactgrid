@@ -10,7 +10,6 @@ import { getLastColumnMetrics } from "../utils/getLastColumnMetrics.ts";
 import { getCellPaneOverlap } from "../utils/getCellPaneOverlap.ts";
 import isDevEnvironment from "../utils/isDevEnvironment.ts";
 import { scrollTowardsSticky } from "../utils/scrollTowardsSticky.ts";
-import { getHiddenTargetFocusByIdx } from "../utils/getHiddenTargetFocusByIdx.ts";
 import { getHiddenFocusTargetLocation } from "../utils/getHiddenFocusTargetLocation.ts";
 
 const devEnvironment = isDevEnvironment();
@@ -45,14 +44,12 @@ export const ColumnReorderBehavior: Behavior = {
   },
 
   handleFocus: (event, store) => {
-    devEnvironment && console.log("DB/handleFocus");
+    devEnvironment && console.log("CRB/handleFocus");
 
     const hiddenFocusTarget = document.activeElement;
-
     if (!hiddenFocusTarget) return store;
 
     const { rowIndex, colIndex } = getHiddenFocusTargetLocation(hiddenFocusTarget);
-
     if (rowIndex === -1 || colIndex === -1) return store;
 
     return {
@@ -84,7 +81,10 @@ export const ColumnReorderBehavior: Behavior = {
   },
 };
 
-const handlePointerMove = (store: ReactGridStore, event: React.PointerEvent<HTMLDivElement> | PointerEvent) => {
+const handlePointerMove = (
+  store: ReactGridStore,
+  event: React.PointerEvent<HTMLDivElement> | PointerEvent
+): Partial<ReactGridStore> => {
   devEnvironment && console.log("CRB/handlePointerMove");
 
   if (!initialMouseXPos) {
@@ -191,8 +191,13 @@ const handlePointerMove = (store: ReactGridStore, event: React.PointerEvent<HTML
   };
 };
 
-const handlePointerUp = (store: ReactGridStore, event: React.PointerEvent<HTMLDivElement> | PointerEvent) => {
+const handlePointerUp = (
+  store: ReactGridStore,
+  event: React.PointerEvent<HTMLDivElement> | PointerEvent
+): Partial<ReactGridStore> => {
   mouseToCellLeftBorderDistanceX = 0;
+
+  // const focusedCell = store.getFocusedCell();
 
   // Prevent triggering the resize behavior when a column is selected twice without moving the pointer
   if (!initialMouseXPos) return { ...store, currentBehavior: store.getBehavior("Default") };
@@ -230,6 +235,26 @@ const handlePointerUp = (store: ReactGridStore, event: React.PointerEvent<HTMLDi
         ? destinationColIdx + offset
         : destinationColIdx - (selectedColIndexes.length - 1) + offset,
     };
+  } else if (
+    isLeftDirection &&
+    store.selectedArea.startColIdx > store.focusedLocation.colIndex &&
+    destinationColIdx <= store.focusedLocation.colIndex
+  ) {
+    const offset = store.selectedArea.endColIdx - store.selectedArea.startColIdx;
+    newFocusedLocation = {
+      rowIndex: store.focusedLocation.rowIndex,
+      colIndex: store.focusedLocation.colIndex + offset,
+    };
+  } else if (
+    !isLeftDirection &&
+    store.selectedArea.endColIdx <= store.focusedLocation.colIndex &&
+    destinationColIdx >= store.focusedLocation.colIndex
+  ) {
+    const offset = store.selectedArea.endColIdx - store.selectedArea.startColIdx;
+    newFocusedLocation = {
+      rowIndex: store.focusedLocation.rowIndex,
+      colIndex: store.focusedLocation.colIndex - offset,
+    };
   }
 
   const { lastColumnCellWidth, lastColumnClientOffsetLeft } = getLastColumnMetrics(store);
@@ -237,12 +262,11 @@ const handlePointerUp = (store: ReactGridStore, event: React.PointerEvent<HTMLDi
   // CASE 1
   // If the mouse pointer is beyond the last column, move the selected columns to the last column
   if (event.clientX > lastColumnClientOffsetLeft + lastColumnCellWidth) {
-    getHiddenTargetFocusByIdx(newFocusedLocation.rowIndex, newFocusedLocation.colIndex)?.focus();
-
     store.onColumnReorder?.(selectedColIndexes, store.columns.length - 1);
 
     return {
       currentBehavior: store.getBehavior("Default"),
+      changedFocusedLocation: newFocusedLocation,
       selectedArea: {
         startRowIdx: 0,
         endRowIdx: store.rows.length,
@@ -262,12 +286,11 @@ const handlePointerUp = (store: ReactGridStore, event: React.PointerEvent<HTMLDi
   // CASE 2
   // If the mouse pointer is beyond the first column, move the selected columns to the first column
   if (event.clientX < gridWrapper.getBoundingClientRect().left) {
-    getHiddenTargetFocusByIdx(newFocusedLocation.rowIndex, newFocusedLocation.colIndex)?.focus();
-
     store.onColumnReorder?.(selectedColIndexes, 0);
 
     return {
       currentBehavior: store.getBehavior("Default"),
+      changedFocusedLocation: newFocusedLocation,
       selectedArea: {
         startRowIdx: 0,
         endRowIdx: store.rows.length,
@@ -288,14 +311,13 @@ const handlePointerUp = (store: ReactGridStore, event: React.PointerEvent<HTMLDi
 
   if (!cellContainer) return store;
 
-  getHiddenTargetFocusByIdx(newFocusedLocation.rowIndex, newFocusedLocation.colIndex)?.focus();
-
   // CASE 3
   // If the mouse pointer is within the first and last column, move the selected columns to the destination column
   store.onColumnReorder?.(selectedColIndexes, destinationColIdx);
 
   return {
     currentBehavior: store.getBehavior("Default"),
+    changedFocusedLocation: newFocusedLocation,
     selectedArea: {
       startRowIdx: 0,
       endRowIdx: store.rows.length,

@@ -1,6 +1,6 @@
 import React, { CSSProperties, FC } from "react";
 import { NumericalRange } from "../types/CellMatrix";
-import { GetCellOffsets, PaneName } from "../types/InternalModel";
+import { EMPTY_AREA, GetCellOffsets, PaneName } from "../types/InternalModel";
 import { useTheme } from "../hooks/useTheme";
 import { useReactGridId } from "./ReactGridIdProvider";
 import { reactGridStores, useReactGridStore } from "../utils/reactGridStore";
@@ -20,9 +20,9 @@ interface PartialAreaProps {
   /** A function that returns the offset of a cell relative to the grid. */
   border?: Border;
   /** Specifies whether PartialArea is a focused cell. */
-  isFocusedCell?: boolean;
+  isFocusedCellPartial?: boolean;
   /** Specifies whether the area is a fill handle. */
-  isFillHandle?: boolean;
+  isFillHandlePartial?: boolean;
   /** A function that returns the offset of a cell relative to the grid. */
   getCellOffset?: GetCellOffsets;
   /** Additional styles to apply to the area. */
@@ -76,8 +76,8 @@ export const PartialArea: FC<PartialAreaProps> = React.memo(
     parentPaneName,
     parentPaneRange,
     getCellOffset,
-    isFocusedCell = false,
-    isFillHandle = false,
+    isFocusedCellPartial = false,
+    isFillHandlePartial = false,
     border,
     style,
     className,
@@ -92,14 +92,12 @@ export const PartialArea: FC<PartialAreaProps> = React.memo(
     const setCurrentBehavior = useReactGridStore(id, (store) => store.setCurrentBehavior);
 
     const selectedArea = useReactGridStore(id, (store) => store.selectedArea);
+    const paneRanges = useReactGridStore(id, (store) => store.paneRanges);
     const fillHandleArea = useReactGridStore(id, (store) => store.fillHandleArea);
     const onFillHandle = useReactGridStore(id, (store) => store.onFillHandle);
     const focusedCell = store.getCellByIndexes(store.focusedLocation.rowIndex, store.focusedLocation.colIndex);
 
     const focusedCellArea = getCellArea(store, focusedCell!);
-
-    const isAreaSelected = selectedArea.startRowIdx !== -1;
-    const isFillAreaExists = fillHandleArea.endRowIdx !== -1;
 
     if (areaRange.startRowIdx < 0 || areaRange.startColIdx < 0 || areaRange.endRowIdx < 0 || areaRange.endColIdx < 0)
       return null;
@@ -117,20 +115,20 @@ export const PartialArea: FC<PartialAreaProps> = React.memo(
 
     const shouldRenderTopBorder =
       areaRange.startRowIdx >= parentPaneRange.startRowIdx &&
-      (!isFillHandle ||
-        (isFillHandle &&
+      (!isFillHandlePartial ||
+        (isFillHandlePartial &&
           fillHandleArea.startRowIdx !== focusedCellArea.endRowIdx &&
           selectedArea.endRowIdx !== fillHandleArea.startRowIdx));
     const shouldRenderRightBorder =
       areaRange.endColIdx <= parentPaneRange.endColIdx &&
-      (!isFillHandle || (isFillHandle && fillHandleArea.endColIdx !== focusedCellArea.startColIdx));
+      (!isFillHandlePartial || (isFillHandlePartial && fillHandleArea.endColIdx !== focusedCellArea.startColIdx));
     const shouldRenderBottomBorder =
       areaRange.endRowIdx <= parentPaneRange.endRowIdx &&
-      (!isFillHandle || (isFillHandle && fillHandleArea.endRowIdx !== focusedCellArea.startRowIdx));
+      (!isFillHandlePartial || (isFillHandlePartial && fillHandleArea.endRowIdx !== focusedCellArea.startRowIdx));
     const shouldRenderLeftBorder =
       areaRange.startColIdx >= parentPaneRange.startColIdx &&
-      (!isFillHandle ||
-        (isFillHandle &&
+      (!isFillHandlePartial ||
+        (isFillHandlePartial &&
           fillHandleArea.startColIdx !== focusedCellArea.endColIdx &&
           selectedArea.endColIdx !== fillHandleArea.startColIdx));
 
@@ -193,32 +191,34 @@ export const PartialArea: FC<PartialAreaProps> = React.memo(
     let shouldEnableFillHandle = false;
 
     if (onFillHandle) {
-      if (currentBehavior.id === FillHandleBehavior.id) {
-        shouldEnableFillHandle = false;
-      } else {
-        if (!isFillHandle && !isFillAreaExists && shouldRenderRightBorder && shouldRenderBottomBorder) {
+      const isTopPane = ["TopLeft", "TopCenter", "TopRight"].includes(parentPaneName);
+      const isCenterPane = ["Left", "Center", "Right"].includes(parentPaneName);
+
+      const exceedsRowLimit =
+        (isTopPane && selectedArea.endRowIdx > paneRanges.TopCenter.endRowIdx) ||
+        (isCenterPane && selectedArea.endRowIdx > paneRanges.Center.endRowIdx);
+
+      const exceedsColLimit =
+        (parentPaneName === "TopLeft" && selectedArea.endColIdx > paneRanges.TopLeft.endColIdx) ||
+        (parentPaneName === "TopCenter" && selectedArea.endColIdx > paneRanges.TopCenter.endColIdx) ||
+        (parentPaneName === "Left" && selectedArea.endColIdx > paneRanges.Left.endColIdx) ||
+        (parentPaneName === "Center" && selectedArea.endColIdx > paneRanges.Center.endColIdx) ||
+        (parentPaneName === "BottomLeft" && selectedArea.endColIdx > paneRanges.BottomLeft.endColIdx) ||
+        (parentPaneName === "BottomCenter" && selectedArea.endColIdx > paneRanges.BottomCenter.endColIdx);
+
+      if (selectedArea !== EMPTY_AREA) {
+        if (isFocusedCellPartial && areAreasEqual(selectedArea, focusedCellArea)) {
+          shouldEnableFillHandle = true;
+        } else if (!isFocusedCellPartial && !isFillHandlePartial) {
           shouldEnableFillHandle = true;
         }
-        if (isFocusedCell && !isAreaSelected) {
-          shouldEnableFillHandle = true;
-        } else if (isFocusedCell && !areAreasEqual(focusedCellArea, selectedArea)) {
+
+        // if selected area includes multiple panes (e.g. top and center panes) - prevent showing multiple fill handle buttons
+        if (exceedsRowLimit || exceedsColLimit) {
           shouldEnableFillHandle = false;
         }
-        if (isFillHandle && currentBehavior.id === "Default") {
-          if (
-            fillHandleArea.endRowIdx !== focusedCellArea.startRowIdx &&
-            fillHandleArea.endColIdx !== focusedCellArea.startColIdx
-          ) {
-            shouldEnableFillHandle = true;
-          }
-        } else if (!isFillHandle && currentBehavior.id === "Default") {
-          if (
-            fillHandleArea.endRowIdx === focusedCellArea.startRowIdx ||
-            fillHandleArea.endColIdx === focusedCellArea.startColIdx
-          ) {
-            shouldEnableFillHandle = true;
-          }
-        }
+      } else if (isFocusedCellPartial) {
+        shouldEnableFillHandle = true;
       }
     }
 
@@ -268,7 +268,7 @@ export const PartialArea: FC<PartialAreaProps> = React.memo(
                 bottom: -5,
                 width: 6.5,
                 height: 6.5,
-                backgroundColor: isFillHandle ? areaBorder.color : theme.focusIndicator.border.color,
+                backgroundColor: isFillHandlePartial ? areaBorder.color : theme.focusIndicator.border.color,
                 cursor: "crosshair",
                 pointerEvents: "auto",
                 touchAction: "none",

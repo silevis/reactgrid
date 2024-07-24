@@ -21,6 +21,7 @@ export interface ReactGridStoreProps {
   styles?: NestedStylesPartial<RGTheme>;
 
   focusedLocation: IndexedLocation;
+  changedFocusedLocation?: IndexedLocation;
   selectedArea: NumericalRange;
   fillHandleArea: NumericalRange;
 

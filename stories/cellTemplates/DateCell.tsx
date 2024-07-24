@@ -2,10 +2,8 @@ import React, { FC, forwardRef, useRef, useState } from "react";
 import { useCellContext } from "../../lib/components/CellContext";
 import { formatDate } from "../utils/formatDate";
 import CellWrapper from "../../lib/components/CellWrapper";
-import { CellContextType } from "../../lib/main";
 
 interface DefaultCalendarProps {
-  ctx: CellContextType;
   value: string | undefined;
   setIsInEditMode: (value: boolean) => void;
   onValueChanged: (data: Date) => void;
@@ -40,11 +38,10 @@ export const DateCell: FC<DateCellProps> = ({ value, onValueChanged, formatter, 
     <CellWrapper
       style={{ padding: ".2rem", textAlign: "center", outline: "none" }}
       onDoubleClick={() => {
-        setEditMode(true);
+        ctx.isFocused && setEditMode(true);
       }}
       onKeyDown={(e) => {
         if (!isEditMode && e.key === "Enter") {
-          e.preventDefault();
           e.stopPropagation();
           setEditMode(true);
         }
@@ -56,11 +53,9 @@ export const DateCell: FC<DateCellProps> = ({ value, onValueChanged, formatter, 
           <Calendar.Template
             {...Calendar?.props}
             onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
-              e.stopPropagation();
               if (e.key === "Escape") {
                 setEditMode(false);
               } else if (e.key === "Enter") {
-                e.preventDefault();
                 onValueChanged(new Date(e.currentTarget.value));
                 setEditMode(false);
               }
@@ -74,7 +69,6 @@ export const DateCell: FC<DateCellProps> = ({ value, onValueChanged, formatter, 
           />
         ) : (
           <DefaultCalendar
-            ctx={ctx}
             setIsInEditMode={setEditMode}
             ref={targetInputRef}
             value={formattedDate}
@@ -89,10 +83,7 @@ export const DateCell: FC<DateCellProps> = ({ value, onValueChanged, formatter, 
 };
 
 const DefaultCalendar = forwardRef(
-  (
-    { ctx, value, setIsInEditMode, onValueChanged }: DefaultCalendarProps,
-    ref: React.ForwardedRef<HTMLInputElement>
-  ) => {
+  ({ value, setIsInEditMode, onValueChanged }: DefaultCalendarProps, ref: React.ForwardedRef<HTMLInputElement>) => {
     return (
       <input
         type="date"
@@ -117,11 +108,9 @@ const DefaultCalendar = forwardRef(
         }}
         onPointerDown={(e) => e.stopPropagation()}
         onKeyDown={(e) => {
-          e.stopPropagation();
           if (e.key === "Escape") {
             setIsInEditMode(false);
           } else if (e.key === "Enter") {
-            e.preventDefault();
             onValueChanged(new Date(e.currentTarget.value));
             setIsInEditMode(false);
           }

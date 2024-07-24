@@ -46,6 +46,7 @@ const DEFAULT_STORE_PROPS: ReactGridStoreProps = {
   rowMeasurements: [],
   colMeasurements: [],
   focusedLocation: { rowIndex: -1, colIndex: -1 },
+  changedFocusedLocation: undefined, // used from reorder behaviors
   selectedArea: { startRowIdx: -1, endRowIdx: -1, startColIdx: -1, endColIdx: -1 },
   fillHandleArea: { startRowIdx: -1, endRowIdx: -1, startColIdx: -1, endColIdx: -1 },
   reactGridRef: undefined,
