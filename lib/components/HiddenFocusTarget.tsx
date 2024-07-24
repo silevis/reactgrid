@@ -21,7 +21,7 @@ const HiddenFocusTarget = ({ rowIdx, colIdx }: { colIdx: number; rowIdx: number 
           if (e.key === "Tab") e.preventDefault();
         }}
         className={`rgHiddenFocusTarget rgFocusRowIdx-${rowIdx} rgFocusColIdx-${colIdx}`}
-        style={{ width: 5, height: 5, opacity: 1 }}
+        style={{ width: 1, height: 1, opacity: 0 }}
         inputMode="none"
       />
     </div>
