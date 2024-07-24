@@ -223,7 +223,7 @@ export const Pane: React.FC<PaneProps> = ({
           isFillHandlePartial={true}
           border={theme.fillHandle.border}
           style={{ background: theme.focusIndicator.background }}
-          className="rgFocusIndicator"
+          className="rgFillHandleIndicator"
         />
       )}
     </div>
