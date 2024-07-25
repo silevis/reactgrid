@@ -155,7 +155,7 @@ const DropdownInput: FC<DIProps> = ({ onCellChanged, cell }) => {
             onChange={(e) => onCellChanged({ ...cell, selectedValue: (e as OptionType).value, isOpen: false, inputValue: undefined })}
             blurInputOnSelect={true}
             defaultValue={selectedValue}
-            value={selectedValue}
+            value={selectedValue !== undefined ? selectedValue : null}
             isDisabled={cell.isDisabled}
             options={cell.values}
             onKeyDown={e => {
