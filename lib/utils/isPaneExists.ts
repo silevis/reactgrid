@@ -16,11 +16,11 @@ export const isPaneExists = (store: ReactGridStore, panePosition: PaneName) => {
     case "Right":
       return paneRanges.Right.startColIdx < store.columns.length;
     case "BottomLeft":
-      return paneRanges.BottomLeft.startRowIdx < store.columns.length;
+      return paneRanges.BottomLeft.startRowIdx < store.rows.length;
     case "BottomCenter":
-      return paneRanges.BottomCenter.startRowIdx < store.columns.length;
+      return paneRanges.BottomCenter.startRowIdx < store.rows.length;
     case "BottomRight":
-      return paneRanges.BottomCenter.startRowIdx < store.columns.length;
+      return paneRanges.BottomCenter.startRowIdx < store.rows.length;
     default:
       return false;
   }

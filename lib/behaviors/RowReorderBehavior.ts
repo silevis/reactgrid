@@ -11,6 +11,8 @@ import { getCellPaneOverlap } from "../utils/getCellPaneOverlap.ts";
 import isDevEnvironment from "../utils/isDevEnvironment.ts";
 import { scrollTowardsSticky } from "../utils/scrollTowardsSticky.ts";
 import { getHiddenFocusTargetLocation } from "../utils/getHiddenFocusTargetLocation.ts";
+import { getCellArea } from "../utils/getCellArea.ts";
+import { isCellInPane } from "../utils/isCellInPane.ts";
 
 const devEnvironment = isDevEnvironment();
 
@@ -82,8 +84,6 @@ export const RowReorderBehavior: Behavior = {
 };
 
 const handlePointerMove = (store: ReactGridStore, event: React.PointerEvent<HTMLDivElement> | PointerEvent) => {
-  devEnvironment && console.log("RRB/handlePointerMove");
-
   if (!initialMouseYPos) {
     initialMouseYPos = event.clientY;
   }
@@ -129,16 +129,19 @@ const handlePointerMove = (store: ReactGridStore, event: React.PointerEvent<HTML
   let shadowPosition = event.clientY - gridWrapperRectTop - mouseToCellTopBorderDistanceY;
 
   const element = getCellContainerFromPoint(cellContainer.getBoundingClientRect().left, event.clientY);
-
   if (!element) return store;
 
-  const cell = getCellIndexesFromContainerElement(element);
-  if (!cell) return store;
+  const pointerCellIndexes = getCellIndexesFromContainerElement(element);
+
+  const pointerCell = store.getCellByIndexes(pointerCellIndexes.rowIndex, pointerCellIndexes.colIndex);
+  if (!pointerCell) return store;
+
+  const pointerCellArea = getCellArea(store, pointerCell);
 
   // In case a row can have spanned cells, it's necessary to find the minimal selected area
   const minimalSelection = findMinimalSelectedArea(store, {
-    startRowIdx: cell.rowIndex,
-    endRowIdx: cell.rowIndex + 1,
+    startRowIdx: pointerCellArea.startRowIdx,
+    endRowIdx: pointerCellArea.endRowIdx,
     startColIdx: 0,
     endColIdx: store.columns.length,
   });

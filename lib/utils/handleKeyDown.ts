@@ -8,10 +8,10 @@ import { resizeSelectionInDirection } from "./resizeSelectionInDirection.ts";
 import { ReactGridStore } from "../types/ReactGridStore.ts";
 import React from "react";
 import { getNumberOfVisibleRows } from "./getNumberOfVisibleRows.ts";
-import { getStickyCellAdjacentToCenterPane } from "./getStickyCellAdjacentToCenterPane.ts";
 import { getHiddenTargetFocusByIdx } from "./getHiddenTargetFocusByIdx.ts";
 import { isInPaneRange } from "./isInPaneRange.ts";
 import { isCellInRange } from "./isCellInRange.ts";
+import { isPaneExists } from "./isPaneExists.ts";
 
 type HandleKeyDownConfig = {
   moveHorizontallyOnEnter: boolean;
@@ -160,12 +160,7 @@ export const handleKeyDown = (
         if (areAreasEqual(store.selectedArea, wholeGridArea)) {
           return {
             ...store,
-            selectedArea: {
-              startRowIdx: -1,
-              endRowIdx: -1,
-              startColIdx: -1,
-              endColIdx: -1,
-            },
+            selectedArea: EMPTY_AREA,
           };
         }
 
@@ -408,28 +403,24 @@ export const handleKeyDown = (
 
         if (currentSelectedArea.startColIdx === 0) return store;
 
-        const nearestLeftStickyCell = getStickyCellAdjacentToCenterPane(store, focusedCell, "Left");
-        const nearestRightStickyCell = getStickyCellAdjacentToCenterPane(store, focusedCell, "Right");
+        const leftPaneExists = isPaneExists(store, "Left");
 
         let newSelectedAreaStartColIdx = -1;
-
-        if (!nearestLeftStickyCell || !nearestRightStickyCell) {
-          return store;
-        }
 
         if (isInPaneRange(store, currentSelectedArea, "Left")) {
           newSelectedAreaStartColIdx = 0;
         }
         if (isInPaneRange(store, currentSelectedArea, "Right")) {
-          newSelectedAreaStartColIdx =
-            currentSelectedArea.startColIdx === store.paneRanges.Right.startColIdx
-              ? nearestLeftStickyCell.colIndex + (nearestLeftStickyCell.colSpan ? nearestLeftStickyCell?.colSpan : 1)
-              : store.paneRanges.Right.startColIdx;
+          if (currentSelectedArea.startColIdx === store.paneRanges.Right.startColIdx) {
+            if (leftPaneExists) newSelectedAreaStartColIdx = store.paneRanges.Left.endColIdx;
+            else newSelectedAreaStartColIdx = store.paneRanges.Right.startColIdx;
+          }
         } else {
-          newSelectedAreaStartColIdx =
-            currentSelectedArea.startColIdx === store.paneRanges.Left.endColIdx
-              ? 0
-              : nearestLeftStickyCell.colIndex + (nearestLeftStickyCell.colSpan ? nearestLeftStickyCell?.colSpan : 1);
+          if (currentSelectedArea.startColIdx === store.paneRanges.Left.endColIdx) {
+            newSelectedAreaStartColIdx = 0;
+          } else {
+            newSelectedAreaStartColIdx = store.paneRanges.Left.endColIdx;
+          }
         }
 
         const minimalSelectedArea = findMinimalSelectedArea(store, {
@@ -459,24 +450,26 @@ export const handleKeyDown = (
 
         if (currentSelectedArea.endColIdx === lastColIdx) return store;
 
-        const nearestRightStickyCell = getStickyCellAdjacentToCenterPane(store, focusedCell, "Right");
+        const rightPaneExists = isPaneExists(store, "Right");
 
         let newSelectedAreaEndColIdx = -1;
 
-        if (!nearestRightStickyCell) return store;
-
         if (isInPaneRange(store, currentSelectedArea, "Left")) {
-          newSelectedAreaEndColIdx =
-            currentSelectedArea.endColIdx === store.paneRanges.Left.endColIdx
-              ? nearestRightStickyCell.colIndex
-              : store.paneRanges.Left.endColIdx;
+          if (currentSelectedArea.endColIdx === store.paneRanges.Left.endColIdx) {
+            if (rightPaneExists) newSelectedAreaEndColIdx = store.paneRanges.Right.startColIdx;
+            else newSelectedAreaEndColIdx = lastColIdx;
+          } else {
+            newSelectedAreaEndColIdx = store.paneRanges.Left.endColIdx;
+          }
         } else if (isInPaneRange(store, currentSelectedArea, "Right")) {
           newSelectedAreaEndColIdx = lastColIdx;
         } else {
-          newSelectedAreaEndColIdx =
-            currentSelectedArea.endColIdx === store.paneRanges.Right.startColIdx
-              ? lastColIdx
-              : nearestRightStickyCell.colIndex;
+          if (currentSelectedArea.endColIdx === store.paneRanges.Right.startColIdx) {
+            if (rightPaneExists) newSelectedAreaEndColIdx = store.paneRanges.Right.endColIdx;
+            else newSelectedAreaEndColIdx = lastColIdx;
+          } else {
+            newSelectedAreaEndColIdx = store.paneRanges.Right.startColIdx;
+          }
         }
 
         const minimalSelectedArea = findMinimalSelectedArea(store, {

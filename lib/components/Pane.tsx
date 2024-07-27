@@ -1,6 +1,6 @@
 import React, { CSSProperties, useCallback } from "react";
 import { NumericalRange } from "../types/CellMatrix";
-import { GetCellOffsets, PaneName, StickyOffsets } from "../types/InternalModel";
+import { EMPTY_AREA, GetCellOffsets, PaneName, StickyOffsets } from "../types/InternalModel";
 import { isSpanMember } from "../utils/isSpanMember";
 import { areAreasEqual } from "../utils/areAreasEqual";
 import { useReactGridStore } from "../utils/reactGridStore";
@@ -167,7 +167,7 @@ export const Pane: React.FC<PaneProps> = ({
         startColIdx: focusedCell.colIndex,
         endColIdx: focusedCell.colIndex + (focusedCell.colSpan ?? 1),
       }
-    : { startRowIdx: -1, endRowIdx: -1, startColIdx: -1, endColIdx: -1 };
+    : EMPTY_AREA;
 
   const selectedArea = useReactGridStore(id, (store) => store.selectedArea);
 

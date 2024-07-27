@@ -9,6 +9,7 @@ import { CellSelectionBehavior } from "../behaviors/CellSelectionBehavior";
 import { getCellArea } from "../utils/getCellArea";
 import { areAreasEqual } from "../utils/areAreasEqual";
 import { Border, Offset } from "../types/RGTheme";
+import isEqual from "lodash.isequal";
 
 interface PartialAreaProps {
   /** The range of cells to area. */
@@ -206,9 +207,9 @@ export const PartialArea: FC<PartialAreaProps> = React.memo(
         (parentPaneName === "BottomLeft" && selectedArea.endColIdx > paneRanges.BottomLeft.endColIdx) ||
         (parentPaneName === "BottomCenter" && selectedArea.endColIdx > paneRanges.BottomCenter.endColIdx);
 
-      /** `exceedsRowLimit` and `exceedsColLimit` are used to prevent showing fill handle button when selected area exceeds the pane limits  */
+      // `exceedsRowLimit` and `exceedsColLimit` are used to prevent showing fill handle button when selected area exceeds the pane limits
 
-      if (selectedArea !== EMPTY_AREA) {
+      if (!isEqual(selectedArea, EMPTY_AREA)) {
         if (isFocusedCellPartial && areAreasEqual(selectedArea, focusedCellArea)) {
           if (!(exceedsRowLimit || exceedsColLimit)) {
             shouldEnableFillHandle = true;
