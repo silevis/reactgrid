@@ -183,10 +183,10 @@ export const BigGrid = () => {
       <div className="rgScrollableContainer" style={{ height: "100%", width: "100%", overflow: "auto" }}>
         <ReactGrid
           id="big-grid"
-          stickyTopRows={3}
+          stickyTopRows={5}
           stickyLeftColumns={3}
           stickyRightColumns={2}
-          stickyBottomRows={2}
+          stickyBottomRows={3}
           styles={testStyles}
           styledRanges={toggleRanges ? styledRanges : []}
           onResizeColumn={(width, columnIdx) => handleResizeColumn(width, columnIdx, cellMatrix, setColumns)}
