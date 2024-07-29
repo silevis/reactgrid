@@ -56,8 +56,16 @@ export const handlePointerDown = (event: React.PointerEvent<HTMLDivElement>, sto
     const { rowIndex, colIndex } = getCellIndexesFromPointerLocation(clientX, clientY);
     const currentDragOverCell = store.getCellByIndexes(rowIndex, colIndex);
 
-    if (currentDragOverCell && PreviousPane === "Center") {
-      scrollTowardsSticky(store, currentDragOverCell, { rowIndex, colIndex });
+    if (currentDragOverCell) {
+      if (PreviousPane === "Center") {
+        scrollTowardsSticky(store, currentDragOverCell, { rowIndex, colIndex });
+      }
+      if (PreviousPane === "Left" || PreviousPane === "Right") {
+        scrollTowardsSticky(store, currentDragOverCell, { rowIndex, colIndex }, false, true);
+      }
+      if (PreviousPane === "TopCenter" || PreviousPane === "BottomCenter") {
+        scrollTowardsSticky(store, currentDragOverCell, { rowIndex, colIndex }, true);
+      }
     }
 
     const hoveredCellContainer = getCellContainerFromPoint(event.clientX, event.clientY);

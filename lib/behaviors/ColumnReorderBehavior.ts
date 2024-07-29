@@ -188,8 +188,8 @@ const handlePointerMove = (
             }
           }
 
-          const colIndex = store.paneRanges.Right.endColIdx - selectedAreaColQuantity;
-          let colSpannedCellRight = null;
+          const colIndex = store.paneRanges.Right.startColIdx + selectedAreaColQuantity;
+          let colSpannedCellRight = undefined;
 
           // Iterate over each row in the specified column
           for (let rowIndex = 0; rowIndex < store.cells.length; rowIndex++) {
@@ -202,7 +202,10 @@ const handlePointerMove = (
           }
 
           // If there is no spanned cell that will be partly to the left of the Right pane - then show the line
-          if (!colSpannedCellLeft && !colSpannedCellRight) {
+          if (
+            (!colSpannedCellLeft && !colSpannedCellRight) ||
+            (colSpannedCellRight && destinationStartColIdx === store.paneRanges.Right.startColIdx)
+          ) {
             linePosition = rightCellContainer.offsetLeft + rightCellContainer.offsetWidth;
           }
         }
@@ -224,7 +227,7 @@ const handlePointerMove = (
           }
 
           const colIndex = store.selectedArea.endColIdx - (destinationColIdx + 1 - store.paneRanges.Right.startColIdx);
-          let colSpannedCellRight = null;
+          let colSpannedCellRight = undefined;
 
           // Iterate over each row in the specified column
           for (let rowIndex = 0; rowIndex < store.cells.length; rowIndex++) {
@@ -250,14 +253,18 @@ const handlePointerMove = (
         if (destinationStartColIdx === store.paneRanges.TopLeft.endColIdx) {
           linePosition = rightCellContainer.offsetLeft + rightCellContainer.offsetWidth;
         } else if (destinationStartColIdx < store.paneRanges.TopLeft.endColIdx) {
-          // If reordered selected columns are going to be partly in the Left pane
-          // Check if there will be a spanned cell that will be partly in the Left pane - after reorder
-          const colSpannedCell = store.cells[
-            store.selectedArea.endColIdx - (destinationColIdx - store.paneRanges.TopLeft.endColIdx)
-          ].find((cell) => {
+          const colIndex = store.selectedArea.endColIdx - (destinationColIdx + 1 - store.paneRanges.TopLeft.endColIdx);
+          let colSpannedCell = undefined;
+
+          // Iterate over each row in the specified column
+          for (let rowIndex = 0; rowIndex < store.cells.length; rowIndex++) {
+            const cell = store.cells[rowIndex][colIndex];
             const cellArea = getCellArea(store, cell);
-            return "originColIndex" in cell && cellArea.endColIdx - cellArea.startColIdx > 1;
-          });
+            if ("originColIndex" in cell && cellArea.endColIdx - cellArea.startColIdx > 1) {
+              colSpannedCell = cell;
+              break;
+            }
+          }
 
           // If there is no spanned cell that will be partly in the Left pane - then show the line
           if (!colSpannedCell) {
@@ -265,9 +272,8 @@ const handlePointerMove = (
           }
         } else {
           const colIndex = store.paneRanges.TopLeft.endColIdx + selectedAreaColQuantity;
-          let colSpannedCell = null;
+          let colSpannedCell = undefined;
 
-          // Iterate over each row in the specified column
           for (let rowIndex = 0; rowIndex < store.cells.length; rowIndex++) {
             const cell = store.cells[rowIndex][colIndex];
             const cellArea = getCellArea(store, cell);
@@ -300,18 +306,140 @@ const handlePointerMove = (
     } else {
       const selectedAreaColQuantity = store.selectedArea.endColIdx - store.selectedArea.startColIdx;
       const destinationEndColIdx = destinationColIdx + selectedAreaColQuantity;
-      linePosition = leftCellContainer.offsetLeft;
-      // if (isCellInPane(store, leftCell, "Left")) {
-      //   if (store.selectedArea.endColIdx - store.paneRanges.Left.endColIdx) {
-      //     {
-      //       linePosition = leftCellContainer.offsetLeft;
-      //     }
-      //   } else if (destinationEndColIdx <= store.paneRanges.Left.endColIdx) {
-      //     linePosition = leftCellContainer.offsetLeft;
-      //   } else {
 
-      //   }
-      // }
+      // If the destination column is in the Left pane
+      if (isCellInPane(store, leftCell, "TopLeft")) {
+        // If initial selected area is fully in the Left pane
+        if (store.selectedArea.endColIdx <= store.paneRanges.Left.endColIdx) {
+          linePosition = leftCellContainer.offsetLeft;
+        }
+        // If reordered selected columns are going to be fully to the right of the Left pane
+        else if (destinationEndColIdx <= store.paneRanges.Left.endColIdx) {
+          let colSpannedCellRight;
+          // If initial selected area is in the Right pane and reordered selected columns are going to be partly to the left of the Left pane
+          if (store.selectedArea.endColIdx > store.paneRanges.Right.startColIdx) {
+            const colIndex = store.paneRanges.Right.startColIdx - selectedAreaColQuantity;
+
+            for (let rowIndex = 0; rowIndex < store.cells.length; rowIndex++) {
+              const cell = store.cells[rowIndex][colIndex];
+              const cellArea = getCellArea(store, cell);
+              if ("originColIndex" in cell && cellArea.endColIdx - cellArea.startColIdx > 1) {
+                colSpannedCellRight = cell;
+                break;
+              }
+            }
+          }
+
+          const colIndex = store.paneRanges.Left.startColIdx + selectedAreaColQuantity;
+          let colSpannedCellLeft = undefined;
+
+          // Iterate over each row in the specified column
+          for (let rowIndex = 0; rowIndex < store.cells.length; rowIndex++) {
+            const cell = store.cells[rowIndex][colIndex];
+            const cellArea = getCellArea(store, cell);
+            if ("originColIndex" in cell && cellArea.endColIdx - cellArea.startColIdx > 1) {
+              colSpannedCellLeft = cell;
+              break;
+            }
+          }
+
+          // If there is no spanned cell that will be partly to the right of the Left pane - then show the line
+          if (
+            (!colSpannedCellLeft && !colSpannedCellRight) ||
+            (colSpannedCellLeft && destinationEndColIdx === store.paneRanges.Left.endColIdx)
+          ) {
+            linePosition = leftCellContainer.offsetLeft;
+          }
+        }
+        // Check if selected area has not spanned cell at col idx equal to the end col idx of the Left pane
+        else {
+          let colSpannedCellRight;
+          // If initial selected area is in the Right pane and reordered selected columns are going to be partly to the left of the Left pane
+          if (store.selectedArea.endColIdx > store.paneRanges.Right.startColIdx) {
+            const colIndex = store.paneRanges.Right.startColIdx - selectedAreaColQuantity;
+
+            for (let rowIndex = 0; rowIndex < store.cells.length; rowIndex++) {
+              const cell = store.cells[rowIndex][colIndex];
+              const cellArea = getCellArea(store, cell);
+              if ("originColIndex" in cell && cellArea.endColIdx - cellArea.startColIdx > 1) {
+                colSpannedCellRight = cell;
+                break;
+              }
+            }
+          }
+
+          const colIndex = store.selectedArea.startColIdx + (store.paneRanges.Left.endColIdx - destinationColIdx);
+          let colSpannedCellLeft = undefined;
+
+          // Iterate over each row in the specified column
+          for (let rowIndex = 0; rowIndex < store.cells.length; rowIndex++) {
+            const cell = store.cells[rowIndex][colIndex];
+            const cellArea = getCellArea(store, cell);
+            if ("originColIndex" in cell && cellArea.endColIdx - cellArea.startColIdx > 1) {
+              colSpannedCellLeft = cell;
+              break;
+            }
+          }
+
+          // Same as above - if there are no spanned cells that will be moved to the right - show the line
+          if (!colSpannedCellLeft && !colSpannedCellRight) {
+            linePosition = leftCellContainer.offsetLeft;
+          }
+        }
+      }
+      // If the destination column is to the left of the Right pane but selected area end col idx is in the Right pane
+      else if (store.selectedArea.endColIdx > store.paneRanges.TopRight.startColIdx) {
+        if (destinationColIdx >= store.paneRanges.TopRight.startColIdx) {
+          linePosition = leftCellContainer.offsetLeft;
+        } else if (destinationEndColIdx > store.paneRanges.TopRight.startColIdx) {
+          // If reordered selected columns are going to be partly in the Right pane
+          // Check if there will be a spanned cell that will be partly in the Right pane - after reorder
+
+          const colIndex =
+            store.selectedArea.endColIdx - (destinationEndColIdx - store.paneRanges.TopRight.startColIdx);
+          let colSpannedCell = null;
+
+          // Iterate over each row in the specified column
+          for (let rowIndex = 0; rowIndex < store.cells.length; rowIndex++) {
+            const cell = store.cells[rowIndex][colIndex];
+            const cellArea = getCellArea(store, cell);
+            if ("originColIndex" in cell && cellArea.endColIdx - cellArea.startColIdx > 1) {
+              colSpannedCell = cell;
+              break;
+            }
+          }
+
+          // If there is no spanned cell that will be partly in the Right pane - then show the line
+          if (!colSpannedCell) {
+            linePosition = leftCellContainer.offsetLeft;
+          }
+        } else {
+          const colIndex = store.paneRanges.TopRight.startColIdx - selectedAreaColQuantity;
+          let colSpannedCell = null;
+
+          // Iterate over each row in the specified column
+          for (let rowIndex = 0; rowIndex < store.cells.length; rowIndex++) {
+            const cell = store.cells[rowIndex][colIndex];
+            const cellArea = getCellArea(store, cell);
+            if ("originColIndex" in cell && cellArea.endColIdx - cellArea.startColIdx > 1) {
+              colSpannedCell = cell;
+              break;
+            }
+          }
+
+          if (
+            !colSpannedCell ||
+            ("originColIndex" in colSpannedCell &&
+              colSpannedCell.originColIndex - selectedAreaColQuantity === store.paneRanges.TopRight.startColIdx)
+          ) {
+            linePosition = leftCellContainer.offsetLeft;
+          }
+        }
+      }
+      // If destination column is between the Left and Right panes - no need to check for spanned cells - just show the line
+      else {
+        linePosition = leftCellContainer.offsetLeft;
+      }
     }
   }
 

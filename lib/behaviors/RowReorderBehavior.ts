@@ -314,8 +314,6 @@ const handlePointerMove = (store: ReactGridStore, event: React.PointerEvent<HTML
             }
           );
 
-          console.log(rowSpannedCellTop);
-
           // If there is no spanned cell that will be partly below the Top pane - then show the line
           if (
             (!rowSpannedCellTop && !rowSpannedCellBottom) ||
