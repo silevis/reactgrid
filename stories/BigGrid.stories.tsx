@@ -186,7 +186,7 @@ export const BigGrid = () => {
           stickyTopRows={5}
           stickyLeftColumns={3}
           stickyRightColumns={2}
-          stickyBottomRows={3}
+          stickyBottomRows={4}
           styles={testStyles}
           styledRanges={toggleRanges ? styledRanges : []}
           onResizeColumn={(width, columnIdx) => handleResizeColumn(width, columnIdx, cellMatrix, setColumns)}
