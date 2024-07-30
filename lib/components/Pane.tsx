@@ -208,7 +208,7 @@ export const Pane: React.FC<PaneProps> = ({
           parentPaneRange={gridContentRange}
           parentPaneName={paneName}
           getCellOffset={getCellOffset}
-          isFocusedCellPartial={true}
+          isFocusedCellPartial
           border={theme.focusIndicator.border}
           style={{ background: theme.focusIndicator.background }}
           className="rgFocusIndicator"
@@ -220,7 +220,7 @@ export const Pane: React.FC<PaneProps> = ({
           parentPaneRange={gridContentRange}
           parentPaneName={paneName}
           getCellOffset={getCellOffset}
-          isFillHandlePartial={true}
+          isFillHandlePartial
           border={theme.fillHandle.border}
           style={{ background: theme.focusIndicator.background }}
           className="rgFillHandleIndicator"

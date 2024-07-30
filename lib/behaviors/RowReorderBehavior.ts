@@ -172,7 +172,7 @@ const handlePointerMove = (store: ReactGridStore, event: React.PointerEvent<HTML
       // If the destination row is in the Bottom pane
       if (isCellInPane(store, bottomCell, "BottomLeft")) {
         // If initial selected area is fully in the Bottom pane
-        if (store.selectedArea.startRowIdx >= store.paneRanges.BottomLeft.startRowIdx) {
+        if (destinationStartRowIdx === store.paneRanges.BottomLeft.startRowIdx) {
           linePosition = bottomCellContainer.offsetTop + bottomCellContainer.offsetHeight;
         }
         // If reordered selected rows are going to be fully above the Bottom pane

@@ -207,7 +207,7 @@ export const PartialArea: FC<PartialAreaProps> = React.memo(
         (parentPaneName === "BottomLeft" && selectedArea.endColIdx > paneRanges.BottomLeft.endColIdx) ||
         (parentPaneName === "BottomCenter" && selectedArea.endColIdx > paneRanges.BottomCenter.endColIdx);
 
-      // `exceedsRowLimit` and `exceedsColLimit` are used to prevent showing fill handle button when selected area exceeds the pane limits
+      // `exceedsRowLimit` and `exceedsColLimit` are used to prevent showing multiple fill handle button when selected area exceeds the pane limits
 
       if (!isEqual(selectedArea, EMPTY_AREA)) {
         if (isFocusedCellPartial && areAreasEqual(selectedArea, focusedCellArea)) {

@@ -66,6 +66,7 @@ const generateCellData = (i: number, j: number): CellData | null => {
   if (i === 6 && j === 8) return null;
   if (i === 19 && j === 1) return null;
   if (i === 1 && j === 24) return null;
+  // if (i === 5 && j === 8) return null;
 
   if (i === 0) return { type: "text", value: `Col ${j}`, template: TextCell, isFocusable: false };
   if (i === 0 && j === 0) return { type: "number", value: 100, template: NumberCell };
@@ -91,6 +92,7 @@ const generateCellData = (i: number, j: number): CellData | null => {
     };
   if (i === 6 && j === 6) return { type: "text", value: "Doloremque, sit!", template: TextCell, colSpan: 3 };
   if (i === 18 && j === 1) return { type: "text", value: "Doloremque, sit!", template: TextCell, rowSpan: 2 };
+  // if (i === 4 && j === 8) return { type: "text", value: "Doloremque, sit!", template: TextCell, rowSpan: 2 };
 
   if (i > 0 && j === 0) {
     return {
@@ -185,7 +187,7 @@ export const BigGrid = () => {
           id="big-grid"
           stickyTopRows={5}
           stickyLeftColumns={3}
-          stickyRightColumns={5}
+          stickyRightColumns={2}
           stickyBottomRows={4}
           styles={testStyles}
           styledRanges={toggleRanges ? styledRanges : []}
