@@ -5,29 +5,24 @@ import { getNumberFromPixelString } from "../../lib/utils/getNumberFromPixelValu
 
 export const handleResizeColumn = (
   width: number,
-  columnId: string | number,
-  cellMatrix: CellMatrix<string, string>,
-  setColumns: Dispatch<SetStateAction<Column<string>[]>>
+  columnIdx: number,
+  cellMatrix: CellMatrix,
+  setColumns: Dispatch<SetStateAction<Column[]>>
 ) => {
-  // TODO: adjust line min position for spanned columns
-  setColumns((prevColumns) => {
-    return prevColumns.map((column, columnIdx) => {
-      if (column.id === columnId) {
-        const cell = cellMatrix.cells.get(`0 ${columnId}`);
-        if (cell && "colSpan" in cell) {
-          let newWidth = width;
-          if (cell.colSpan) {
-            for (let i = columnIdx + 1; i < columnIdx + cell.colSpan; i++) {
-              const widthValue = getNumberFromPixelString(prevColumns[i].width);
-              newWidth -= widthValue;
-            }
-          }
-          return { ...column, width: `${newWidth}px` };
-        } else {
-          return { ...column, width: `${width}px` };
+  setColumns((prevColumns) =>
+    prevColumns.map((column, idx) => {
+      if (idx !== columnIdx) return column;
+
+      const cell = cellMatrix.cells[0][columnIdx];
+      let newWidth = width;
+
+      if ("colSpan" in cell && cell.colSpan) {
+        for (let i = columnIdx + 1; i < columnIdx + cell.colSpan; i++) {
+          newWidth -= getNumberFromPixelString(prevColumns[i].width);
         }
       }
-      return column;
-    });
-  });
+
+      return { ...column, width: `${newWidth}px` };
+    })
+  );
 };

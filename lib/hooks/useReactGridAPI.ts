@@ -1,5 +1,5 @@
-import { EMPTY_AREA } from "../types/InternalModel.ts";
-import { Location, Range } from "../types/PublicModel.ts";
+import { EMPTY_AREA, IndexedLocation } from "../types/InternalModel.ts";
+import { Range } from "../types/PublicModel.ts";
 import { areAreasEqual } from "../utils/areAreasEqual.ts";
 import { getNumericalRange } from "../utils/getNumericalRange.ts";
 import isDevEnvironment from "../utils/isDevEnvironment.ts";
@@ -33,15 +33,12 @@ export function useReactGridAPI(id: string) {
        * Set the focused cell in the ReactGrid.
        * @param location - The id-based location of the cell to be focused.
        */
-      setFocusedCell: ({ rowId, columnId }: Location) => {
-        const cell = store.getCellByIds(rowId, columnId);
+      setFocusedCell: ({ rowIndex, colIndex }: IndexedLocation) => {
+        const cell = store.getCellByIndexes(rowIndex, colIndex);
 
         if (devEnvironment && !cell) {
-          console.warn(`Cell with rowId "${rowId}" and colId "${columnId}" does not exist.`);
+          console.warn(`Cell with rowIdx "${rowIndex}" and colIdx "${colIndex}" does not exist.`);
         }
-
-        const rowIndex = store.rows.findIndex((row) => row.id === rowId);
-        const colIndex = store.columns.findIndex((col) => col.id === columnId);
 
         return store.setFocusedLocation(rowIndex, colIndex);
       },
@@ -51,11 +48,8 @@ export function useReactGridAPI(id: string) {
        * @param startColId
        * @param endColId
        */
-      setSelectedColumns: (startColId: string, endColId: string) => {
-        const startColIndex = store.columns.findIndex((col) => col.id === startColId);
-        const endColIndex = store.columns.findIndex((col) => col.id === endColId);
-
-        return store.setSelectedColumns(startColIndex, endColIndex);
+      setSelectedColumns: (startColIdx: number, endColIdx: number) => {
+        return store.setSelectedColumns(startColIdx, endColIdx);
       },
 
       /**
@@ -63,11 +57,8 @@ export function useReactGridAPI(id: string) {
        * @param startRowId
        * @param endRowId
        */
-      setSelectedRows: (startRowId: string, endRowId: string) => {
-        const startRowIndex = store.rows.findIndex((row) => row.id === startRowId);
-        const endRowIndex = store.columns.findIndex((row) => row.id === endRowId);
-
-        return store.setSelectedRows(startRowIndex, endRowIndex);
+      setSelectedRows: (startRowIdx: number, endRowIdx: number) => {
+        return store.setSelectedRows(startRowIdx, endRowIdx);
       },
 
       // Getters
@@ -85,14 +76,6 @@ export function useReactGridAPI(id: string) {
        * @returns The cell at the specified indexes.
        */
       getCellByIndexes: store.getCellByIndexes,
-
-      /**
-       * Get the cell with the specified IDs in the ReactGrid.
-       * @param rowId - The row ID of the cell.
-       * @param colId - The column ID of the cell.
-       * @returns The cell with the specified IDs.
-       */
-      getCellByIds: store.getCellByIds,
 
       /**
        * Get the cell or span member at the specified indexes in the ReactGrid.

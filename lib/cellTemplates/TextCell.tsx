@@ -6,12 +6,11 @@ import { isAlphaNumericWithoutModifiers } from "../utils/keyCodeCheckings";
 
 interface TextCellProps {
   value?: string;
-  onTextChanged: (newText: string) => void;
-  reverse?: boolean;
+  onValueChanged: (newText: string) => void;
   style?: React.CSSProperties;
 }
 
-export const TextCell: FC<TextCellProps> = ({ value: initialValue, onTextChanged, reverse }) => {
+export const TextCell: FC<TextCellProps> = ({ value: initialValue, onValueChanged }) => {
   const ctx = useCellContext();
   const targetInputRef = useRef<HTMLTextAreaElement>(null);
   const [isEditMode, setEditMode] = useState(false);
@@ -26,8 +25,7 @@ export const TextCell: FC<TextCellProps> = ({ value: initialValue, onTextChanged
       onTouchEnd={handleDoubleTouch}
       style={{ padding: ".2rem", textAlign: "center", outline: "none" }}
       onDoubleClick={() => {
-        setEditMode(true);
-        ctx.requestFocus();
+        ctx.isFocused && setEditMode(true);
       }}
       onKeyDown={(e) => {
         if (isAlphaNumericWithoutModifiers(e) || e.key === "Enter") {
@@ -36,7 +34,6 @@ export const TextCell: FC<TextCellProps> = ({ value: initialValue, onTextChanged
         if (!isEditMode && e.key === "Enter") {
           e.preventDefault();
           e.stopPropagation();
-          ctx.requestFocus();
         }
       }}
     >
@@ -59,28 +56,29 @@ export const TextCell: FC<TextCellProps> = ({ value: initialValue, onTextChanged
             fontFamily: "inherit",
           }}
           onBlur={(e) => {
-            onTextChanged(e.currentTarget.value);
+            onValueChanged(e.currentTarget.value);
             setEditMode(false);
           }}
           onPointerDown={(e) => e.stopPropagation()}
           onKeyDown={(e) => {
-            e.stopPropagation();
+            const controlKeys = ["Escape", "Enter", "Tab"];
+            if (!controlKeys.includes(e.key)) {
+              e.stopPropagation();
+            }
+
             if (e.key === "Escape") {
               setEditMode(false);
             } else if (e.key === "Enter") {
               e.preventDefault();
               // We don't stop propagation here, because we want to trigger the
               // focus move event
-              onTextChanged(e.currentTarget.value);
+              onValueChanged(e.currentTarget.value);
               setEditMode(false);
-              ctx.requestFocus("Bottom");
             }
           }}
           autoFocus
           ref={targetInputRef}
         />
-      ) : reverse ? (
-        initialValue?.split?.("").reverse().join("")
       ) : (
         initialValue
       )}

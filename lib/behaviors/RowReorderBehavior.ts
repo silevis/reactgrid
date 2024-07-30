@@ -10,6 +10,9 @@ import { getLastRowMetrics } from "../utils/getLastRowMetrics.ts";
 import { getCellPaneOverlap } from "../utils/getCellPaneOverlap.ts";
 import isDevEnvironment from "../utils/isDevEnvironment.ts";
 import { scrollTowardsSticky } from "../utils/scrollTowardsSticky.ts";
+import { getHiddenFocusTargetLocation } from "../utils/getHiddenFocusTargetLocation.ts";
+import { getCellArea } from "../utils/getCellArea.ts";
+import { isCellInPane } from "../utils/isCellInPane.ts";
 
 const devEnvironment = isDevEnvironment();
 
@@ -19,59 +22,68 @@ let destinationRowIdx = 0;
 
 export const RowReorderBehavior: Behavior = {
   id: "RowReorder",
-  handlePointerDown: function (event, store): ReactGridStore {
-    devEnvironment && console.log("CRB/handlePointerDown");
+  handlePointerDown: function (event, store) {
+    devEnvironment && console.log("RRB/handlePointerDown");
 
     return store;
   },
 
   handlePointerMove: (event, store) => {
-    devEnvironment && console.log("CRB/handlePointerMove");
+    devEnvironment && console.log("RRB/handlePointerMove");
 
     return handlePointerMove(store, event);
   },
 
   handlePointerUp: function (event, store) {
-    devEnvironment && console.log("CRB/handlePointerUp");
+    devEnvironment && console.log("RRB/handlePointerUp");
 
     return handlePointerUp(store, event);
   },
 
+  handleFocus: (event, store) => {
+    devEnvironment && console.log("RRB/handleFocus");
+
+    const hiddenFocusTarget = document.activeElement;
+    if (!hiddenFocusTarget) return store;
+
+    const { rowIndex, colIndex } = getHiddenFocusTargetLocation(hiddenFocusTarget);
+    if (rowIndex === -1 || colIndex === -1) return store;
+
+    return {
+      focusedLocation: { rowIndex, colIndex },
+    };
+  },
+
   handlePointerHold: function (event, store) {
-    devEnvironment && console.log("CRB/handlePointerHold");
+    devEnvironment && console.log("RRB/handlePointerHold");
     return store;
   },
 
   handlePointerHoldTouch: function (event, store) {
-    devEnvironment && console.log("CRB/handlePointerHoldTouch");
+    devEnvironment && console.log("RRB/handlePointerHoldTouch");
     return store;
   },
 
   handlePointerDownTouch: function (event, store) {
-    devEnvironment && console.log("CRB/handlePointerDownTouch");
+    devEnvironment && console.log("RRB/handlePointerDownTouch");
 
     return store;
   },
 
   handlePointerMoveTouch: function (event, store) {
-    devEnvironment && console.log("CRB/handlePointerMoveTouch");
+    devEnvironment && console.log("RRB/handlePointerMoveTouch");
 
     return handlePointerMove(store, event);
   },
 
   handlePointerUpTouch: function (event, store) {
-    devEnvironment && console.log("CRB/handlePointerUpTouch");
+    devEnvironment && console.log("RRB/handlePointerUpTouch");
 
     return handlePointerUp(store, event);
   },
 };
 
-const handlePointerMove = (
-  store: ReactGridStore,
-  event: React.PointerEvent<HTMLDivElement> | PointerEvent
-): ReactGridStore => {
-  devEnvironment && console.log("RRB/handlePointerMove");
-
+const handlePointerMove = (store: ReactGridStore, event: React.PointerEvent<HTMLDivElement> | PointerEvent) => {
   if (!initialMouseYPos) {
     initialMouseYPos = event.clientY;
   }
@@ -81,7 +93,6 @@ const handlePointerMove = (
   if (!firstColumnCell) return store;
 
   const firstColumnCellContainer = getCellContainer(store, firstColumnCell);
-
   if (!firstColumnCellContainer) return store;
 
   const firstColumnClientOffsetLeft = firstColumnCellContainer.getBoundingClientRect().left;
@@ -98,7 +109,6 @@ const handlePointerMove = (
   const { lastRowRelativeOffsetTop, lastRowHeight } = getLastRowMetrics(store);
 
   const firstCellInSelectedArea = store.getCellByIndexes(store.selectedArea.startRowIdx, 0);
-
   if (!firstCellInSelectedArea) return store;
 
   const cellContainer = getCellContainer(store, firstCellInSelectedArea);
@@ -119,17 +129,19 @@ const handlePointerMove = (
   let shadowPosition = event.clientY - gridWrapperRectTop - mouseToCellTopBorderDistanceY;
 
   const element = getCellContainerFromPoint(cellContainer.getBoundingClientRect().left, event.clientY);
-
   if (!element) return store;
 
-  const cell = getCellIndexesFromContainerElement(element);
+  const pointerCellIndexes = getCellIndexesFromContainerElement(element);
 
-  if (!cell) return store;
+  const pointerCell = store.getCellByIndexes(pointerCellIndexes.rowIndex, pointerCellIndexes.colIndex);
+  if (!pointerCell) return store;
+
+  const pointerCellArea = getCellArea(store, pointerCell);
 
   // In case a row can have spanned cells, it's necessary to find the minimal selected area
   const minimalSelection = findMinimalSelectedArea(store, {
-    startRowIdx: cell.rowIndex,
-    endRowIdx: cell.rowIndex + 1,
+    startRowIdx: pointerCellArea.startRowIdx,
+    endRowIdx: pointerCellArea.endRowIdx,
     startColIdx: 0,
     endColIdx: store.columns.length,
   });
@@ -151,7 +163,7 @@ const handlePointerMove = (
   if (event.clientY > cellContainer.getBoundingClientRect().top + selectedAreaHeight) {
     destinationRowIdx = minimalSelection.endRowIdx - 1;
 
-    if (getCellPaneOverlap(store, { rowIndex: destinationRowIdx, colIndex: 0 }, "Bottom")) {
+    if (getCellPaneOverlap(store, { rowIndex: destinationRowIdx, colIndex: 0 }, "BottomCenter")) {
       linePosition = undefined;
     } else {
       linePosition = bottomCellContainer.offsetTop + bottomCellContainer.offsetHeight;
@@ -160,7 +172,7 @@ const handlePointerMove = (
     // Case 2 - Cursor is moving above the selected rows
     destinationRowIdx = minimalSelection.startRowIdx;
 
-    if (getCellPaneOverlap(store, { rowIndex: destinationRowIdx, colIndex: 0 }, "Top")) {
+    if (getCellPaneOverlap(store, { rowIndex: destinationRowIdx, colIndex: 0 }, "TopCenter")) {
       linePosition = undefined;
     } else {
       linePosition = topCellContainer.offsetTop;
@@ -197,10 +209,13 @@ const handlePointerMove = (
 const handlePointerUp = (
   store: ReactGridStore,
   event: React.PointerEvent<HTMLDivElement> | PointerEvent
-): ReactGridStore => {
+): Partial<ReactGridStore> => {
   mouseToCellTopBorderDistanceY = 0;
+
   // Prevent triggering the resize behavior when a row is selected twice without moving the pointer
-  if (!initialMouseYPos) return { ...store, currentBehavior: store.getBehavior("Default") };
+  if (!initialMouseYPos)
+    return { ...store, lineOrientation: "vertical", currentBehavior: store.getBehavior("Default") };
+
   if (!store.linePosition) {
     initialMouseYPos = 0;
     if (!initialMouseYPos)
@@ -224,7 +239,7 @@ const handlePointerUp = (
 
   const isFocusedCellInSelectedArea = selectedRowIndexes.includes(store.focusedLocation.rowIndex);
 
-  let newFocusedLocation;
+  let newFocusedLocation = store.focusedLocation;
 
   if (isFocusedCellInSelectedArea) {
     const offset = store.focusedLocation.rowIndex - store.selectedArea.startRowIdx;
@@ -232,6 +247,26 @@ const handlePointerUp = (
       rowIndex: isUpDirection
         ? destinationRowIdx + offset
         : destinationRowIdx - (selectedRowIndexes.length - 1) + offset,
+      colIndex: store.focusedLocation.colIndex,
+    };
+  } else if (
+    isUpDirection &&
+    store.selectedArea.startRowIdx > store.focusedLocation.rowIndex &&
+    destinationRowIdx <= store.focusedLocation.rowIndex
+  ) {
+    const offset = store.selectedArea.endRowIdx - store.selectedArea.startRowIdx;
+    newFocusedLocation = {
+      rowIndex: store.focusedLocation.rowIndex + offset,
+      colIndex: store.focusedLocation.colIndex,
+    };
+  } else if (
+    !isUpDirection &&
+    store.selectedArea.endRowIdx <= store.focusedLocation.rowIndex &&
+    destinationRowIdx >= store.focusedLocation.rowIndex
+  ) {
+    const offset = store.selectedArea.endRowIdx - store.selectedArea.startRowIdx;
+    newFocusedLocation = {
+      rowIndex: store.focusedLocation.rowIndex - offset,
       colIndex: store.focusedLocation.colIndex,
     };
   }
@@ -242,10 +277,10 @@ const handlePointerUp = (
   // If the mouse pointer is beyond the last row, move the selected rows to the last row
   if (event.clientY > lastRowClientOffsetTop + lastRowHeight) {
     store.onRowReorder?.(selectedRowIndexes, store.rows.length - 1);
+
     return {
-      ...store,
       currentBehavior: store.getBehavior("Default"),
-      ...(newFocusedLocation && { focusedLocation: newFocusedLocation }),
+      changedFocusedLocation: newFocusedLocation,
       selectedArea: {
         startRowIdx: store.rows.length - 1 - (selectedRowIndexes.length - 1),
         endRowIdx: store.rows.length,
@@ -260,17 +295,16 @@ const handlePointerUp = (
   }
 
   const gridWrapper = store.reactGridRef;
-
   if (!gridWrapper) return store;
 
   // CASE 2
   // If the mouse pointer is beyond the first row, move the selected rows to the first row
   if (event.clientY < gridWrapper.getBoundingClientRect().top) {
     store.onRowReorder?.(selectedRowIndexes, 0);
+
     return {
-      ...store,
       currentBehavior: store.getBehavior("Default"),
-      ...(newFocusedLocation && { focusedLocation: newFocusedLocation }),
+      changedFocusedLocation: newFocusedLocation,
       selectedArea: {
         startRowIdx: 0,
         endRowIdx: 0 + selectedRowIndexes.length,
@@ -285,20 +319,18 @@ const handlePointerUp = (
   }
 
   const firstSelectedCell = store.getCellByIndexes(store.selectedArea.startRowIdx, 0);
-
   if (!firstSelectedCell) return store;
 
   const cellContainer = getCellContainer(store, firstSelectedCell);
-
   if (!cellContainer) return store;
 
   // CASE 3
   // If the mouse pointer is within the first and last row, move the selected rows to the destination row
   store.onRowReorder?.(selectedRowIndexes, destinationRowIdx);
+
   return {
-    ...store,
     currentBehavior: store.getBehavior("Default"),
-    ...(newFocusedLocation && { focusedLocation: newFocusedLocation }),
+    changedFocusedLocation: newFocusedLocation,
     selectedArea: {
       startRowIdx: isUpDirection ? destinationRowIdx : destinationRowIdx - (selectedRowIndexes.length - 1),
       endRowIdx: isUpDirection ? destinationRowIdx + selectedRowIndexes.length : destinationRowIdx + 1,

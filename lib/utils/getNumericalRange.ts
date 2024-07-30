@@ -8,22 +8,17 @@ import { ReactGridStore } from "../types/ReactGridStore.ts";
 export function getNumericalRange(store: ReactGridStore, range: Range): NumericalRange {
   const { start, end } = range;
 
-  const startCell = store.getCellByIds(start.rowId, start.columnId);
-  const endCell = store.getCellByIds(end.rowId, end.columnId);
+  const startCell = store.getCellByIndexes(start.rowIndex, start.columnIndex);
+  const endCell = store.getCellByIndexes(end.rowIndex, end.columnIndex);
 
   if (!startCell) throw new Error("Could not find a startCell with provided id's");
   else if (!endCell) throw new Error("Could not find a endCell with provided id's");
 
-  const startRowIndex = store.rows.findIndex((row) => startCell.rowId === row.id);
-  const endRowIndex = store.rows.findIndex((row) => endCell.rowId === row.id);
-  const startColIndex = store.columns.findIndex((col) => startCell.colId === col.id);
-  const endColIndex = store.columns.findIndex((col) => endCell.colId === col.id);
-
   const numericalRange: NumericalRange = {
-    startRowIdx: startRowIndex,
-    startColIdx: startColIndex,
-    endRowIdx: endRowIndex,
-    endColIdx: endColIndex,
+    startRowIdx: start.rowIndex,
+    startColIdx: start.columnIndex,
+    endRowIdx: end.rowIndex,
+    endColIdx: end.columnIndex,
   };
 
   if (areAreasEqual(numericalRange, EMPTY_AREA)) console.warn("Each of numerical range properties is -1!");

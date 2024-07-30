@@ -1,11 +1,11 @@
 import { useEffect, useRef } from "react";
-import { getCellIndexes } from "../utils/getCellIndexes.1";
 import { getNumericalRange } from "../utils/getNumericalRange";
 import { isSpanMember } from "../utils/isSpanMember";
 import isDevEnvironment from "../utils/isDevEnvironment";
 import { ReactGridProps } from "../types/PublicModel";
 import { ReactGridStore } from "../types/ReactGridStore";
 import isEqual from "lodash.isequal";
+import { getHiddenTargetFocusByIdx } from "../utils/getHiddenTargetFocusByIdx";
 
 const devEnvironment = isDevEnvironment();
 
@@ -13,7 +13,7 @@ export const useReactGridSync = (
   store: ReactGridStore,
   { initialSelectedRange, initialFocusLocation, ...rgProps }: Partial<ReactGridProps>
 ) => {
-  const { setSelectedArea, setFocusedLocation, getCellOrSpanMemberByIndexes, getCellByIds, setExternalData } = store;
+  const { setSelectedArea, getCellOrSpanMemberByIndexes, setExternalData } = store;
 
   function useDeepCompareGridProps(callback: () => void, dependencies: Partial<ReactGridProps>[]) {
     const currentDependenciesRef = useRef<Partial<ReactGridProps>[]>();
@@ -38,7 +38,7 @@ export const useReactGridSync = (
           "If you set initial selected range, be careful, as it may cut-trough spanned cells in an unintended way!"
         );
       if (initialFocusLocation && devEnvironment) {
-        const cell = getCellByIds(initialFocusLocation.rowId, initialFocusLocation.rowId);
+        const cell = store.getCellByIndexes(initialFocusLocation.rowIndex, initialFocusLocation.colIndex);
         if (!cell) {
           devEnvironment && console.error("There is no cell with indexes passed in initialFocusLocation prop.");
         }
@@ -52,14 +52,12 @@ export const useReactGridSync = (
 
   useEffect(() => {
     if (initialFocusLocation) {
-      const { rowId, columnId } = initialFocusLocation;
-      const cell = getCellByIds(rowId, columnId);
+      const { rowIndex, colIndex } = initialFocusLocation;
+      const cell = store.getCellByIndexes(rowIndex, colIndex);
 
       if (!cell) {
         return;
       }
-
-      const { colIndex, rowIndex } = getCellIndexes(store, cell);
 
       const targetCellOrSpanMember = getCellOrSpanMemberByIndexes(rowIndex, colIndex);
 
@@ -70,7 +68,7 @@ export const useReactGridSync = (
           console.error("The provided 'initialFocusLocation' is invalid as it targets !");
       }
 
-      setFocusedLocation(rowIndex, colIndex);
+      getHiddenTargetFocusByIdx(rowIndex, colIndex)?.focus();
     }
   }, []);
 };

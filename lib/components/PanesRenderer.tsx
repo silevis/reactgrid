@@ -1,7 +1,6 @@
-import { FC, useEffect, useRef, useState } from "react";
-import { NumericalRange } from "../types/CellMatrix";
-import { PaneName, StickyOffsets } from "../types/InternalModel";
-import { useReactGridStore } from "../utils/reactGridStore";
+import { FC, useEffect, useMemo, useRef, useState } from "react";
+import { StickyOffsets } from "../types/InternalModel";
+import { reactGridStores, useReactGridStore } from "../utils/reactGridStore";
 import { useTheme } from "../hooks/useTheme";
 import { Pane } from "./Pane";
 import { useReactGridId } from "./ReactGridIdProvider";
@@ -11,6 +10,8 @@ import {
   getStickyRowsOffsetsFromMeasurements,
 } from "../utils/getStickyOffsetsFromMeasurements";
 import { ColumnMeasurement } from "../types/ColumnMeasurement";
+import { getCellArea } from "../utils/getCellArea";
+import { isSpanMember } from "../utils/isSpanMember";
 
 interface PanesRendererProps {
   rowAmount: number;
@@ -30,7 +31,10 @@ const PanesRenderer: FC<PanesRendererProps> = ({
   stickyRightColumns,
 }) => {
   const id = useReactGridId();
+  const store = reactGridStores()[id].getState();
+
   const theme = useTheme();
+  const cells = useReactGridStore(id, (store) => store.cells);
   const rows = useReactGridStore(id, (store) => store.rows);
   const focusedLocation = useReactGridStore(id, (store) => store.focusedLocation);
   const columns = useReactGridStore(id, (store) => store.columns);
@@ -41,68 +45,107 @@ const PanesRenderer: FC<PanesRendererProps> = ({
 
   const onCellFocused = useReactGridStore(id, (store) => store.onCellFocused);
 
-  const ranges: Record<PaneName, NumericalRange> = {
-    TopLeft: {
-      startRowIdx: 0,
-      endRowIdx: stickyTopRows,
-      startColIdx: 0,
-      endColIdx: stickyLeftColumns,
-    },
-    TopCenter: {
-      startRowIdx: 0,
-      endRowIdx: stickyTopRows,
-      startColIdx: stickyLeftColumns,
-      endColIdx: columnAmount - stickyRightColumns,
-    },
-    TopRight: {
-      startRowIdx: 0,
-      endRowIdx: stickyTopRows,
-      startColIdx: columnAmount - stickyRightColumns,
-      endColIdx: columnAmount,
-    },
-    Left: {
-      startRowIdx: stickyTopRows,
-      endRowIdx: rowAmount - stickyBottomRows,
-      startColIdx: 0,
-      endColIdx: stickyLeftColumns,
-    },
-    Center: {
-      startRowIdx: stickyTopRows,
-      endRowIdx: rowAmount - stickyBottomRows,
-      startColIdx: stickyLeftColumns,
-      endColIdx: columnAmount - stickyRightColumns,
-    },
-    Right: {
-      startRowIdx: stickyTopRows,
-      endRowIdx: rowAmount - stickyBottomRows,
-      startColIdx: columnAmount - stickyRightColumns,
-      endColIdx: columnAmount,
-    },
-    BottomLeft: {
-      startRowIdx: rowAmount - stickyBottomRows,
-      endRowIdx: rowAmount,
-      startColIdx: 0,
-      endColIdx: stickyLeftColumns,
-    },
-    BottomCenter: {
-      startRowIdx: rowAmount - stickyBottomRows,
-      endRowIdx: rowAmount,
-      startColIdx: stickyLeftColumns,
-      endColIdx: columnAmount - stickyRightColumns,
-    },
-    BottomRight: {
-      startRowIdx: rowAmount - stickyBottomRows,
-      endRowIdx: rowAmount,
-      startColIdx: columnAmount - stickyRightColumns,
-      endColIdx: columnAmount,
-    },
-  };
+  const ranges = useMemo(
+    () => ({
+      TopLeft: {
+        startRowIdx: 0,
+        endRowIdx: stickyTopRows,
+        startColIdx: 0,
+        endColIdx: stickyLeftColumns,
+      },
+      TopCenter: {
+        startRowIdx: 0,
+        endRowIdx: stickyTopRows,
+        startColIdx: stickyLeftColumns,
+        endColIdx: columnAmount - stickyRightColumns,
+      },
+      TopRight: {
+        startRowIdx: 0,
+        endRowIdx: stickyTopRows,
+        startColIdx: columnAmount - stickyRightColumns,
+        endColIdx: columnAmount,
+      },
+      Left: {
+        startRowIdx: stickyTopRows,
+        endRowIdx: rowAmount - stickyBottomRows,
+        startColIdx: 0,
+        endColIdx: stickyLeftColumns,
+      },
+      Center: {
+        startRowIdx: stickyTopRows,
+        endRowIdx: rowAmount - stickyBottomRows,
+        startColIdx: stickyLeftColumns,
+        endColIdx: columnAmount - stickyRightColumns,
+      },
+      Right: {
+        startRowIdx: stickyTopRows,
+        endRowIdx: rowAmount - stickyBottomRows,
+        startColIdx: columnAmount - stickyRightColumns,
+        endColIdx: columnAmount,
+      },
+      BottomLeft: {
+        startRowIdx: rowAmount - stickyBottomRows,
+        endRowIdx: rowAmount,
+        startColIdx: 0,
+        endColIdx: stickyLeftColumns,
+      },
+      BottomCenter: {
+        startRowIdx: rowAmount - stickyBottomRows,
+        endRowIdx: rowAmount,
+        startColIdx: stickyLeftColumns,
+        endColIdx: columnAmount - stickyRightColumns,
+      },
+      BottomRight: {
+        startRowIdx: rowAmount - stickyBottomRows,
+        endRowIdx: rowAmount,
+        startColIdx: columnAmount - stickyRightColumns,
+        endColIdx: columnAmount,
+      },
+    }),
+    [stickyTopRows, stickyLeftColumns, stickyRightColumns, rowAmount, columnAmount, stickyBottomRows]
+  );
 
   useEffect(() => {
     onCellFocused?.(focusedLocation);
   }, [focusedLocation]);
 
   useEffect(() => {
+    cells?.forEach((row) => {
+      row.forEach((cell) => {
+        const cellArea = getCellArea(store, cell);
+
+        if (!isSpanMember(cell)) {
+          if (cellArea.startRowIdx < ranges.TopCenter.endRowIdx) {
+            if (cellArea.endRowIdx > ranges.TopCenter.endRowIdx) {
+              console.error(`Cell with indexes [${cell.rowIndex}, ${cell.colIndex}] does not fit in sticky top pane.`);
+            }
+          }
+
+          if (cellArea.endRowIdx > ranges.BottomCenter.startRowIdx) {
+            if (cellArea.startRowIdx < ranges.BottomCenter.startRowIdx) {
+              console.error(
+                `Cell with indexes [${cell.rowIndex}, ${cell.colIndex}] does not fit in sticky bottom pane.`
+              );
+            }
+          }
+
+          if (cellArea.startColIdx < ranges.Left.endColIdx) {
+            if (cellArea.endColIdx > ranges.Left.endColIdx) {
+              console.error(`Cell with indexes [${cell.rowIndex}, ${cell.colIndex}] does not fit in sticky left pane.`);
+            }
+          }
+
+          if (cellArea.endColIdx > ranges.Right.startColIdx) {
+            if (cellArea.startColIdx < ranges.Right.startColIdx) {
+              console.error(
+                `Cell with indexes [${cell.rowIndex}, ${cell.colIndex}] does not fit in sticky right pane.`
+              );
+            }
+          }
+        }
+      });
+    });
+
     setPaneRanges(ranges);
   }, [ranges]);
 

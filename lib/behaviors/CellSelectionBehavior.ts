@@ -5,7 +5,6 @@ import { ReactGridStore } from "../types/ReactGridStore.ts";
 import { findMinimalSelectedArea } from "../utils/findMinimalSelectedArea.ts";
 import { getCellContainer } from "../utils/getCellContainer.ts";
 import { getCellContainerFromPoint } from "../utils/getCellContainerFromPoint.ts";
-import { getCellContainerLocation } from "../utils/getCellContainerLocation.ts";
 import { getCellIndexesFromContainerElement } from "../utils/getCellIndexes.ts";
 import { getCellIndexesFromPointerLocation } from "../utils/getCellIndexesFromPointerLocation.ts";
 import { getNonStickyCellContainer } from "../utils/getNonStickyCellContainer.ts";
@@ -15,8 +14,6 @@ import { getScrollableParent } from "../utils/scrollHelpers.ts";
 import { scrollToElementEdge } from "../utils/scrollToElementEdge.ts";
 
 const devEnvironment = isDevEnvironment();
-
-let startingCellPos: IndexedLocation | null = null;
 
 /**
  * Tries to expand the selected area towards a target cell.
@@ -30,11 +27,19 @@ let startingCellPos: IndexedLocation | null = null;
  */
 const tryExpandingTowardsCell = (
   store: ReactGridStore,
-  cell: Cell,
-  rowIndex: number,
-  colIndex: number,
-  shouldSelectEntireColumn: boolean = true,
-  shouldEnableRowSelection: boolean = true
+  {
+    cell,
+    startingPointerIdx,
+    currentPointerIdx,
+    shouldSelectEntireColumn = true,
+    shouldEnableRowSelection = true,
+  }: {
+    cell: Cell;
+    startingPointerIdx: IndexedLocation;
+    currentPointerIdx: IndexedLocation;
+    shouldSelectEntireColumn: boolean;
+    shouldEnableRowSelection: boolean;
+  }
 ): ReactGridStore => {
   if (cell.isSelectable === false) {
     return store;
@@ -47,46 +52,46 @@ const tryExpandingTowardsCell = (
     selectedArea.startRowIdx = 0;
     selectedArea.endRowIdx = store.rows.length;
 
-    if (colIndex < store.absoluteFocusedLocation.colIndex) {
+    if (currentPointerIdx.colIndex < startingPointerIdx.colIndex) {
       // Moving to the left
-      selectedArea.startColIdx = colIndex;
-      selectedArea.endColIdx = store.absoluteFocusedLocation.colIndex + 1;
+      selectedArea.startColIdx = currentPointerIdx.colIndex;
+      selectedArea.endColIdx = startingPointerIdx.colIndex + 1;
     } else {
       // Moving to the right
-      selectedArea.startColIdx = store.absoluteFocusedLocation.colIndex;
-      selectedArea.endColIdx = colIndex + (cell?.colSpan || 1);
+      selectedArea.startColIdx = startingPointerIdx.colIndex;
+      selectedArea.endColIdx = currentPointerIdx.colIndex + (cell?.colSpan || 1);
     }
   } else if (shouldEnableRowSelection) {
     selectedArea.startColIdx = 0;
     selectedArea.endColIdx = store.columns.length;
 
-    if (rowIndex < store.absoluteFocusedLocation.rowIndex) {
+    if (currentPointerIdx.rowIndex < startingPointerIdx.rowIndex) {
       // Moving up
-      selectedArea.startRowIdx = rowIndex;
-      selectedArea.endRowIdx = store.absoluteFocusedLocation.rowIndex + 1;
+      selectedArea.startRowIdx = currentPointerIdx.rowIndex;
+      selectedArea.endRowIdx = startingPointerIdx.rowIndex + 1;
     } else {
       // Moving down
-      selectedArea.startRowIdx = store.absoluteFocusedLocation.rowIndex;
-      selectedArea.endRowIdx = rowIndex + (cell?.rowSpan || 1);
+      selectedArea.startRowIdx = startingPointerIdx.rowIndex;
+      selectedArea.endRowIdx = currentPointerIdx.rowIndex + (cell?.rowSpan || 1);
     }
   } else {
-    if (rowIndex < focusedLocation.rowIndex) {
+    if (currentPointerIdx.rowIndex < focusedLocation.rowIndex) {
       // Targeted cell start's at the row before the focused cell
       selectedArea.endRowIdx = focusedLocation.rowIndex + 1;
-      selectedArea.startRowIdx = rowIndex;
+      selectedArea.startRowIdx = currentPointerIdx.rowIndex;
     } else {
       // Targeted cell start's at the row after the focused cell
-      selectedArea.endRowIdx = rowIndex + (cell?.rowSpan || 1);
+      selectedArea.endRowIdx = currentPointerIdx.rowIndex + (cell?.rowSpan || 1);
       selectedArea.startRowIdx = focusedLocation.rowIndex;
     }
 
-    if (colIndex < focusedLocation.colIndex) {
+    if (currentPointerIdx.colIndex < focusedLocation.colIndex) {
       // Targeted cell start's at the column before the focused cell
       selectedArea.endColIdx = focusedLocation.colIndex + 1;
-      selectedArea.startColIdx = colIndex;
+      selectedArea.startColIdx = currentPointerIdx.colIndex;
     } else {
       // Targeted cell start's at the column after the focused cell
-      selectedArea.endColIdx = colIndex + (cell?.colSpan || 1);
+      selectedArea.endColIdx = currentPointerIdx.colIndex + (cell?.colSpan || 1);
       selectedArea.startColIdx = focusedLocation.colIndex;
     }
   }
@@ -106,30 +111,30 @@ export const CellSelectionBehavior: Behavior = {
     devEnvironment && console.log("CSB/handlePointerMove");
 
     const { clientX, clientY } = event;
-    const { rowIndex, colIndex } = getCellIndexesFromPointerLocation(clientX, clientY);
-    const cell = store.getCellByIndexes(rowIndex, colIndex);
+    const currentPointerIdx = getCellIndexesFromPointerLocation(clientX, clientY);
+    const cell = store.getCellByIndexes(currentPointerIdx.rowIndex, currentPointerIdx.colIndex);
 
     if (!cell) {
       return store;
     }
 
-    const element = getCellContainerFromPoint(event.clientX, event.clientY);
+    const cellContainer = getCellContainerFromPoint(clientX, clientY);
+    if (!cellContainer) return store;
 
-    if (element) {
-      const { rowIndex, colIndex } = getCellContainerLocation(element);
-      if (!startingCellPos) startingCellPos = { rowIndex, colIndex };
-    }
+    const shouldSelectEntireColumn = store.pointerStartIdx.rowIndex === 0 && !!store.enableColumnSelectionOnFirstRow;
+    const shouldEnableRowSelection = store.pointerStartIdx.colIndex === 0 && !!store.enableRowSelectionOnFirstColumn;
 
-    const shouldSelectEntireColumn = startingCellPos?.rowIndex === 0 && !!store.enableColumnSelectionOnFirstRow;
-    const shouldEnableRowSelection = startingCellPos?.colIndex === 0 && !!store.enableRowSelectionOnFirstColumn;
-
-    return tryExpandingTowardsCell(store, cell, rowIndex, colIndex, shouldSelectEntireColumn, shouldEnableRowSelection);
+    return tryExpandingTowardsCell(store, {
+      cell,
+      startingPointerIdx: store.pointerStartIdx,
+      currentPointerIdx,
+      shouldSelectEntireColumn,
+      shouldEnableRowSelection,
+    });
   },
 
   handlePointerUp(event, store) {
     devEnvironment && console.log("CSB/handlePointerUp");
-
-    startingCellPos = null;
 
     const DefaultBehavior = store.getBehavior("Default");
 
@@ -154,8 +159,6 @@ export const CellSelectionBehavior: Behavior = {
 
   handlePointerUpTouch(event, store) {
     devEnvironment && console.log("CSB/handlePointerUpTouch");
-
-    startingCellPos = null;
 
     const DefaultBehavior = store.getBehavior("Default");
 
@@ -184,9 +187,9 @@ export const CellSelectionBehavior: Behavior = {
 
     const { clientX, clientY } = event;
 
-    const { rowIndex, colIndex } = getCellIndexesFromPointerLocation(clientX, clientY);
-    const cell = store.getCellByIndexes(rowIndex, colIndex);
+    const currentPointerIdx = getCellIndexesFromPointerLocation(clientX, clientY);
 
+    const cell = store.getCellByIndexes(currentPointerIdx.rowIndex, currentPointerIdx.colIndex);
     if (!cell) {
       return store;
     }
@@ -196,15 +199,10 @@ export const CellSelectionBehavior: Behavior = {
       isStickyCell ? getCellContainer(store, cell) : getNonStickyCellContainer(clientX, clientY)
     ) as HTMLElement | undefined;
 
-    const element = getCellContainerFromPoint(event.clientX, event.clientY);
+    if (!cellContainer) return store;
 
-    if (element) {
-      const { rowIndex, colIndex } = getCellContainerLocation(element);
-      if (!startingCellPos) startingCellPos = { rowIndex, colIndex };
-    }
-
-    const shouldSelectEntireColumn = startingCellPos?.rowIndex === 0 && store.enableColumnSelectionOnFirstRow;
-    const shouldEnableRowSelection = startingCellPos?.colIndex === 0 && store.enableRowSelectionOnFirstColumn;
+    const shouldSelectEntireColumn = store.pointerStartIdx.rowIndex === 0 && !!store.enableColumnSelectionOnFirstRow;
+    const shouldEnableRowSelection = store.pointerStartIdx.colIndex === 0 && !!store.enableRowSelectionOnFirstColumn;
 
     if (cellContainer) {
       const scrollableParent = getScrollableParent(cellContainer as HTMLElement, true);
@@ -217,20 +215,25 @@ export const CellSelectionBehavior: Behavior = {
 
       if (isStickyCell) {
         const nonStickyRowsAndColumns = getCellIndexesFromContainerElement(cellContainer);
-        const { rowIndex, colIndex } = nonStickyRowsAndColumns || NO_CELL_LOCATION;
+        const currentPointerIdx = nonStickyRowsAndColumns || NO_CELL_LOCATION;
 
-        return tryExpandingTowardsCell(
-          store,
+        return tryExpandingTowardsCell(store, {
           cell,
-          rowIndex,
-          colIndex,
+          startingPointerIdx: store.pointerStartIdx,
+          currentPointerIdx,
           shouldSelectEntireColumn,
-          shouldEnableRowSelection
-        );
+          shouldEnableRowSelection,
+        });
       }
     }
 
-    return tryExpandingTowardsCell(store, cell, rowIndex, colIndex, shouldSelectEntireColumn, shouldEnableRowSelection);
+    return tryExpandingTowardsCell(store, {
+      cell,
+      startingPointerIdx: store.pointerStartIdx,
+      currentPointerIdx,
+      shouldSelectEntireColumn,
+      shouldEnableRowSelection,
+    });
   },
 
   handlePointerEnterTouch(event, store) {

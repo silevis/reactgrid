@@ -1,11 +1,11 @@
-import { Cell } from "../types/PublicModel.ts";
+import { IndexedLocation } from "../types/InternalModel.ts";
 import { ReactGridStore } from "../types/ReactGridStore.ts";
 
-export function getCellContainer(store: ReactGridStore, cell: Cell) {
+export function getCellContainerByIndexes(store: ReactGridStore, cellIdx: IndexedLocation) {
   if (!store.reactGridRef) return;
 
   const cellContainers = store.reactGridRef?.getElementsByClassName(
-    `rgRowIdx-${cell.rowIndex} rgColIdx-${cell.colIndex}`
+    `rgRowIdx-${cellIdx.rowIndex} rgColIdx-${cellIdx.colIndex}`
   );
 
   if (!cellContainers || cellContainers?.length === 0) return;

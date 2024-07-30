@@ -45,7 +45,11 @@ const GridWrapper: FC<PropsWithChildren<GridWrapperProps>> = ({ reactGridId, sty
       className="ReactGrid"
       ref={reactGridElement}
       style={style}
-      onPointerDown={(e) => handlePointerDown(e, store)}
+      onPointerDown={(e) => {
+        e.preventDefault();
+        handlePointerDown(e, store);
+      }}
+      onFocus={(e) => withStoreApi(e, currentBehavior?.handleFocus)}
       onKeyDown={(e) => withStoreApi(e, currentBehavior?.handleKeyDown)}
       onKeyUp={(e) => withStoreApi(e, currentBehavior?.handleKeyUp)}
       onCompositionStart={(e) => withStoreApi(e, currentBehavior?.handleCompositionStart)}

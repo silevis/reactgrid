@@ -1,19 +1,11 @@
 import { Dispatch, SetStateAction } from "react";
 import { Row } from "../../lib/types/PublicModel";
 
-type CellData = {
-  text?: string;
-  number?: number;
-  date?: Date;
-};
-
-type SetData<T extends CellData> = React.Dispatch<React.SetStateAction<(T | null)[][]>>;
-
-export const handleRowReorder = (
+export const handleRowReorder = <T>(
   selectedRowIndexes: number[],
   destinationRowIdx: number,
-  setRows: Dispatch<SetStateAction<Row<string>[]>>,
-  setData: SetData<CellData>
+  setRows: Dispatch<SetStateAction<Row[]>>,
+  setData: React.Dispatch<React.SetStateAction<T[][]>>
 ) => {
   setRows((prevRows) => {
     // Create arrays of selected and unselected rows

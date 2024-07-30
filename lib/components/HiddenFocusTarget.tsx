@@ -1,30 +1,28 @@
-import React from "react";
+import { useEffect } from "react";
 import { useReactGridStore } from "../utils/reactGridStore";
 import { useReactGridId } from "./ReactGridIdProvider";
+import { getHiddenTargetFocusByIdx } from "../utils/getHiddenTargetFocusByIdx";
 
-const HiddenFocusTarget = () => {
+const HiddenFocusTarget = ({ rowIdx, colIdx }: { colIdx: number; rowIdx: number }) => {
   const id = useReactGridId();
-  const assignHiddenFocusTargetRef = useReactGridStore(id, (store) => store.assignHiddenFocusTargetRef);
-  const hiddenFocusTargetRef = React.useRef<HTMLInputElement>(null);
+  const changedFocusedLocation = useReactGridStore(id, (store) => store.changedFocusedLocation);
 
-  React.useEffect(() => {
-    assignHiddenFocusTargetRef(hiddenFocusTargetRef.current!);
-  }, [hiddenFocusTargetRef]);
+  useEffect(() => {
+    if (changedFocusedLocation) {
+      getHiddenTargetFocusByIdx(changedFocusedLocation.rowIndex, changedFocusedLocation.colIndex)?.focus();
+    }
+  }, [changedFocusedLocation]);
 
   return (
-    <div style={{ position: "relative" }}>
+    <div style={{ position: "absolute", bottom: 0, right: "50%" }}>
       <input
-        className="rgHiddenFocusTarget"
-        style={{ position: "absolute", top: 0, left: 0, width: 1, height: 1, opacity: 0 }}
-        ref={hiddenFocusTargetRef}
-        inputMode="none"
-        autoFocus
-        onBlur={(e) => {
-          if (!e.relatedTarget) {
-            // prevents from losing focus on hidden element on mobile devices
-            hiddenFocusTargetRef.current?.focus({ preventScroll: true });
-          }
+        onKeyDown={(e) => {
+          // Let a 'tab' key to be triggered only by the GridWrapper onKeyDown event
+          if (e.key === "Tab") e.preventDefault();
         }}
+        className={`rgHiddenFocusTarget rgFocusRowIdx-${rowIdx} rgFocusColIdx-${colIdx}`}
+        style={{ width: 1, height: 1, opacity: 0 }}
+        inputMode="none"
       />
     </div>
   );

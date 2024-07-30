@@ -8,25 +8,25 @@ export const ColumnResize = () => {
   const id = useReactGridId();
   const ctx = useCellContext();
 
-  const resizingColId = useReactGridStore(id, (store) => store.resizingColId);
+  const resizingColIdx = useReactGridStore(id, (store) => store.resizingColIdx);
   const columns = useReactGridStore(id, (store) => store.columns);
   const shadowSize = useReactGridStore(id, (store) => store.shadowSize);
 
   const onResizeColumn = useReactGridStore(id, (store) => store.onResizeColumn);
   const setCurrentBehavior = useReactGridStore(id, (store) => store.setCurrentBehavior);
-  const setResizingColId = useReactGridStore(id, (store) => store.setResizingColId);
+  const setResizingColIdx = useReactGridStore(id, (store) => store.setResizingColIdx);
 
-  const cellColumn = columns.find((col) => col.id === ctx.colId);
+  const cellColumn = columns[ctx.realColumnIndex];
 
   const shouldEnableColumnResize =
-    resizingColId === undefined && onResizeColumn && cellColumn?.resizable && !shadowSize;
+    resizingColIdx === undefined && onResizeColumn && cellColumn?.resizable && !shadowSize;
 
   return (
     shouldEnableColumnResize && (
       <div
         className="rg-resize-column"
         onPointerDown={() => {
-          setResizingColId(ctx.colId);
+          setResizingColIdx(ctx.realColumnIndex);
           setCurrentBehavior(ResizeColumnBehavior);
         }}
         css={{

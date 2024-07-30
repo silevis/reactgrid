@@ -4,7 +4,7 @@ import { isSpanMember } from "./isSpanMember.ts";
 
 export const getOriginCell = (store: ReactGridStore, cell: Cell | SpanMember): Cell => {
   if (isSpanMember(cell)) {
-    return store.getCellByIds(cell.originRowId, cell.originColId) as Cell;
+    return store.getCellByIndexes(cell.originRowIndex, cell.originColIndex) as Cell;
   }
 
   return cell;

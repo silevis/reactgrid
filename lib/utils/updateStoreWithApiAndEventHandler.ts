@@ -5,6 +5,7 @@ import { ReactGridEventNames } from "../types/Events.ts";
 import { ReactGridStore } from "../types/ReactGridStore.ts";
 import { emitEvent } from "./emitEvent.ts";
 import { EventKeyPair, ChangeObservedKeys, RegisteredChanges } from "../types/Events.ts";
+import isEqual from "lodash.isequal";
 
 const eventsAndKey: EventKeyPair[] = [
   ["focuschange", "focusedLocation"],
@@ -24,6 +25,14 @@ export const updateStoreWithApiAndEventHandler = <TEvent extends React.Synthetic
     const newStore = handler(event, store);
 
     const updatedProperties = findChangesInStore(store, newStore, eventEmittingKeys);
+
+    const isEquals = isEqual(store, newStore);
+
+    // if newStore is equal to old store, do not set state
+    if (isEquals) {
+      return;
+    }
+
     emitEventWithChanges(updatedProperties);
 
     // Save changes to store
@@ -43,7 +52,11 @@ function getEventNameFromKeyName(keyName: ChangeObservedKeys): ReactGridEventNam
   }
 }
 
-function findChangesInStore(oldStore: ReactGridStore, newStore: ReactGridStore, keysToCompare: ChangeObservedKeys[]) {
+function findChangesInStore(
+  oldStore: ReactGridStore,
+  newStore: Partial<ReactGridStore>,
+  keysToCompare: ChangeObservedKeys[]
+) {
   const updatedKeys: RegisteredChanges = {};
 
   keysToCompare.forEach((key: ChangeObservedKeys) => {

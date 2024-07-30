@@ -14,7 +14,8 @@ export const getCellParentPaneName = (store: ReactGridStore, cell: Cell): PaneNa
     return isCellInRange(store, cell, paneRange);
   });
 
-  if (!parentPane) throw new Error(`Could not find cell's [rowId: ${cell.rowId}, colId: ${cell.colId}] parent pane!`);
+  if (!parentPane)
+    throw new Error(`Could not find cell's [rowIdx: ${cell.rowIndex}, colIdx: ${cell.colIndex}] parent pane!`);
 
   return parentPane[PANE_NAME_IDX] as PaneName;
 };

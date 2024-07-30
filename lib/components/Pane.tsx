@@ -1,6 +1,6 @@
 import React, { CSSProperties, useCallback } from "react";
 import { NumericalRange } from "../types/CellMatrix";
-import { GetCellOffsets, PaneName, StickyOffsets } from "../types/InternalModel";
+import { EMPTY_AREA, GetCellOffsets, PaneName, StickyOffsets } from "../types/InternalModel";
 import { isSpanMember } from "../utils/isSpanMember";
 import { areAreasEqual } from "../utils/areAreasEqual";
 import { useReactGridStore } from "../utils/reactGridStore";
@@ -61,9 +61,9 @@ export const PaneGridContent: React.FC<PaneGridContentProps> = React.memo(
 
     const getCellOffset_ = useCallback(getCellOffset, [stickyOffsets]);
 
-    return rows.map((row, rowIndex) => {
-      return columns.map((col, colIndex) => {
-        const cell = cells.get(`${row.id} ${col.id}`);
+    return rows.map((_, rowIndex) => {
+      return columns.map((_, colIndex) => {
+        const cell = cells[startRowIdx + rowIndex][startColIdx + colIndex];
 
         if (!cell || isSpanMember(cell)) return null;
 
@@ -75,8 +75,6 @@ export const PaneGridContent: React.FC<PaneGridContentProps> = React.memo(
         return (
           <CellContextProvider
             key={`${realRowIndex}-${realColumnIndex}`}
-            rowId={row.id}
-            colId={col.id}
             rowIndex={rowIndex}
             colIndex={colIndex}
             rowSpan={cell.rowSpan}
@@ -169,7 +167,7 @@ export const Pane: React.FC<PaneProps> = ({
         startColIdx: focusedCell.colIndex,
         endColIdx: focusedCell.colIndex + (focusedCell.colSpan ?? 1),
       }
-    : { startRowIdx: -1, endRowIdx: -1, startColIdx: -1, endColIdx: -1 };
+    : EMPTY_AREA;
 
   const selectedArea = useReactGridStore(id, (store) => store.selectedArea);
 
@@ -210,7 +208,7 @@ export const Pane: React.FC<PaneProps> = ({
           parentPaneRange={gridContentRange}
           parentPaneName={paneName}
           getCellOffset={getCellOffset}
-          isFocusedCell={true}
+          isFocusedCellPartial={true}
           border={theme.focusIndicator.border}
           style={{ background: theme.focusIndicator.background }}
           className="rgFocusIndicator"
@@ -222,10 +220,10 @@ export const Pane: React.FC<PaneProps> = ({
           parentPaneRange={gridContentRange}
           parentPaneName={paneName}
           getCellOffset={getCellOffset}
-          isFillHandle={true}
+          isFillHandlePartial={true}
           border={theme.fillHandle.border}
           style={{ background: theme.focusIndicator.background }}
-          className="rgFocusIndicator"
+          className="rgFillHandleIndicator"
         />
       )}
     </div>

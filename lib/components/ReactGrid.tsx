@@ -8,9 +8,8 @@ import isDevEnvironment from "../utils/isDevEnvironment";
 import { initReactGridStore, reactGridStores, useReactGridStore } from "../utils/reactGridStore";
 import { useReactGridSync } from "../hooks/useReactGridSync";
 import { Line } from "./Line";
-import { ColumnReorderBehavior } from "../behaviors/ColumnReorderBehavior";
 import { Shadow } from "./Shadow";
-import { RowReorderBehavior } from "../behaviors/RowReorderBehavior";
+import { isReorderBehavior } from "../utils/isReorderBehavior";
 
 const devEnvironment = isDevEnvironment();
 
@@ -26,6 +25,7 @@ export const ReactGrid: FC<ReactGridProps> = ({
     ...rgProps,
   });
 
+  // access store in non-reactive way
   const store = reactGridStores()[id].getState();
 
   const currentBehavior = useReactGridStore(id, (store) => store.currentBehavior);
@@ -62,13 +62,9 @@ export const ReactGrid: FC<ReactGridProps> = ({
             stickyRightColumns={stickyRightColumns ?? 0}
           />
           {linePosition && <Line />}
-          {(currentBehavior.id === ColumnReorderBehavior.id || currentBehavior.id === RowReorderBehavior.id) && (
-            <Shadow />
-          )}
+          {isReorderBehavior(currentBehavior.id) && <Shadow />}
         </GridWrapper>
       </ErrorBoundary>
     </ReactGridIdProvider>
   );
 };
-
-// export default ReactGrid;

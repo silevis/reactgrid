@@ -6,8 +6,7 @@ import { isSpanMember } from "./isSpanMember.ts";
 import { ReactGridStore, ReactGridStoreProps } from "../types/ReactGridStore.ts";
 import { FillHandleBehavior } from "../behaviors/FillHandleBehavior.ts";
 import { ColumnReorderBehavior } from "../behaviors/ColumnReorderBehavior.ts";
-import { Direction, EMPTY_AREA } from "../types/InternalModel.ts";
-import { moveFocusDown, moveFocusLeft, moveFocusRight, moveFocusUp } from "./focus.ts";
+import { getHiddenTargetFocusByIdx } from "./getHiddenTargetFocusByIdx.ts";
 
 type ReactGridStores = Record<string, StoreApi<ReactGridStore>>;
 
@@ -17,7 +16,7 @@ const DEFAULT_STORE_PROPS: ReactGridStoreProps = {
   // fields passed by the user
   rows: [],
   columns: [],
-  cells: new Map(),
+  cells: [],
   paneRanges: {
     TopLeft: { startRowIdx: 0, endRowIdx: 0, startColIdx: 0, endColIdx: 0 },
     TopCenter: { startRowIdx: 0, endRowIdx: 0, startColIdx: 0, endColIdx: 0 },
@@ -46,19 +45,19 @@ const DEFAULT_STORE_PROPS: ReactGridStoreProps = {
   // internal state
   rowMeasurements: [],
   colMeasurements: [],
-  focusedLocation: { rowIndex: 0, colIndex: 0 },
-  absoluteFocusedLocation: { rowIndex: 0, colIndex: 0 },
+  focusedLocation: { rowIndex: -1, colIndex: -1 },
+  changedFocusedLocation: undefined, // used from reorder behaviors
   selectedArea: { startRowIdx: -1, endRowIdx: -1, startColIdx: -1, endColIdx: -1 },
   fillHandleArea: { startRowIdx: -1, endRowIdx: -1, startColIdx: -1, endColIdx: -1 },
   reactGridRef: undefined,
   hiddenFocusTargetRef: undefined,
-  resizingColId: undefined,
+  resizingColIdx: undefined,
   lineOrientation: "vertical",
   linePosition: undefined,
   shadowPosition: undefined,
   shadowSize: undefined,
+  pointerStartIdx: { rowIndex: -1, colIndex: -1 }, // used for cell selection behavior
   currentBehavior: DefaultBehavior(),
-  empty: undefined,
 };
 
 export function initReactGridStore(id: string, initialProps?: Partial<ReactGridStoreProps>) {
@@ -74,11 +73,8 @@ export function initReactGridStore(id: string, initialProps?: Partial<ReactGridS
         setRows: (rows) => set(() => ({ rows })),
         getRowAmount: () => get().rows.length,
         setColumns: (columns) => set(() => ({ columns })),
-        getColumnById: (columnId) => {
-          const column = get().columns.find((col) => col.id === columnId);
-
-          if (!column) throw new Error(`Column with id "${columnId}" doesn't exist!`);
-
+        getColumnByIdx: (columnIdx) => {
+          const column = get().columns[columnIdx];
           return column;
         },
         setExternalData: (externalData) => {
@@ -87,39 +83,31 @@ export function initReactGridStore(id: string, initialProps?: Partial<ReactGridS
         getColumnAmount: () => get().columns.length,
         getColumnCells: (columnIdx: number) => {
           const { cells } = get();
-          const column = get().columns[columnIdx];
 
-          return Array.from(cells.values()).filter((cell) => {
-            if (!isSpanMember(cell)) {
-              return cell.colId === column.id;
+          return cells.flat().filter((cell) => {
+            if (isSpanMember(cell)) {
+              return cell.originColIndex === columnIdx;
+            } else {
+              return cell.colIndex === columnIdx;
             }
-            return false;
           }) as Cell[];
         },
 
-        setCells: (cells) => set(() => ({ cells })),
         setStyles: (styles) => set(() => ({ styles })),
-        getCellByIds: (rowId, colId) => {
-          const { cells, getCellByIds } = get();
+        getCellByIndexes: (rowIndex, colIndex) => {
+          const { cells } = get();
 
-          const cell = cells.get(`${rowId} ${colId}`);
+          if (rowIndex === -1 || colIndex === -1) return null;
+
+          const cell = cells[rowIndex][colIndex];
 
           if (!cell) return null;
 
           if (isSpanMember(cell)) {
-            return getCellByIds(cell.originRowId, cell.originColId) || null;
+            return cells[cell.originRowIndex][cell.originColIndex] as Cell;
           }
 
           return cell;
-        },
-        getCellByIndexes: (rowIndex, colIndex) => {
-          const { rows, columns, getCellByIds } = get();
-          const row = rows[rowIndex];
-          const col = columns[colIndex];
-
-          if (!row || !col) return null;
-
-          return getCellByIds(row.id, col.id) || null;
         },
         getCellOrSpanMemberByIndexes: (rowIndex, colIndex) => {
           const { rows, columns, cells } = get();
@@ -128,7 +116,7 @@ export function initReactGridStore(id: string, initialProps?: Partial<ReactGridS
 
           if (!row || !col) return null;
 
-          const cell = cells.get(`${row.id} ${col.id}`);
+          const cell = cells[rowIndex][colIndex];
 
           if (!cell) return null;
 
@@ -141,10 +129,12 @@ export function initReactGridStore(id: string, initialProps?: Partial<ReactGridS
 
         setPaneRanges: (paneRanges) => set(() => ({ paneRanges })),
 
-        setFocusedLocation: (rowIndex, colIndex) =>
+        setFocusedLocation: (rowIndex, colIndex) => {
+          getHiddenTargetFocusByIdx(rowIndex, colIndex)?.focus();
           set(() => {
             return { focusedLocation: { rowIndex, colIndex } };
-          }),
+          });
+        },
 
         getFocusedCell: () => {
           const { focusedLocation } = get();
@@ -160,7 +150,7 @@ export function initReactGridStore(id: string, initialProps?: Partial<ReactGridS
         setSelectedColumns: (startColIdx: number, endColIdx: number) => {
           const { setSelectedArea } = get();
 
-          setSelectedArea({ startRowIdx: 0, endRowIdx: get().getRowAmount(), startColIdx, endColIdx });
+          setSelectedArea({ startRowIdx: 0, endRowIdx: get().getRowAmount() - 1, startColIdx, endColIdx });
         },
 
         setSelectedRows: (startRowIdx: number, endRowIdx: number) => {
@@ -173,36 +163,13 @@ export function initReactGridStore(id: string, initialProps?: Partial<ReactGridS
 
         setCurrentBehavior: (currentBehavior) => set(() => ({ currentBehavior })),
 
-        setResizingColId: (resizingColId) => set(() => ({ resizingColId })),
+        setResizingColIdx: (resizingColIdx) => set(() => ({ resizingColIdx })),
 
         setLineOrientation: (lineOrientation) => set(() => ({ lineOrientation })),
         setLinePosition: (linePosition) => set(() => ({ linePosition })),
 
         assignReactGridRef: (reactGridRef) => set(() => ({ reactGridRef })),
         assignHiddenFocusTargetRef: (hiddenFocusTargetRef) => set(() => ({ hiddenFocusTargetRef })),
-
-        setFocusedCellByDirection: (direction: Direction) => {
-          const _state = get();
-
-          const focusedCell = get().getFocusedCell();
-
-          if (!focusedCell) return;
-
-          switch (direction) {
-            case "Top":
-              set(() => ({ ...moveFocusUp(_state, focusedCell), selectedArea: EMPTY_AREA }));
-              break;
-            case "Bottom":
-              set(() => ({ ...moveFocusDown(_state, focusedCell), selectedArea: EMPTY_AREA }));
-              break;
-            case "Left":
-              set(() => ({ ...moveFocusLeft(_state, focusedCell), selectedArea: EMPTY_AREA }));
-              break;
-            case "Right":
-              set(() => ({ ...moveFocusRight(_state, focusedCell), selectedArea: EMPTY_AREA }));
-              break;
-          }
-        },
 
         setBehaviors: (behaviors) => set(() => ({ ...get().behaviors, ...behaviors })),
         getBehavior: (behaviorId) => {
@@ -230,18 +197,14 @@ export function initReactGridStore(id: string, initialProps?: Partial<ReactGridS
   });
 }
 
-export function useReactGridStore<T>(
-  id: string,
-  selector: (store: ReactGridStore) => T,
-  shouldGetSelectorData = true
-): T {
+export function useReactGridStore<T>(id: string, selector: (store: ReactGridStore) => T): T {
   const store = reactGridStores()[id];
 
   if (store?.getState() === undefined) {
     throw new Error(`ReactGridStore with id "${id}" doesn't exist!`);
   }
 
-  return useStore(store, shouldGetSelectorData ? selector : (store) => store.empty as T);
+  return useStore(store, selector);
 }
 
 export const useReactGridStoreApi = <T>(id: string, selector: (store: ReactGridStore) => T): T | undefined => {

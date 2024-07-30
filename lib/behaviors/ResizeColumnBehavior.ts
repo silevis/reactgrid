@@ -11,7 +11,7 @@ let initialHeaderWidth = 0;
 
 export const ResizeColumnBehavior: Behavior = {
   id: "ResizeColumn",
-  handlePointerDown: function (event, store): ReactGridStore {
+  handlePointerDown: function (event, store) {
     devEnvironment && console.log("CRB/handlePointerDown");
 
     return handlePointerDown(event, store);
@@ -61,7 +61,7 @@ export const ResizeColumnBehavior: Behavior = {
 const handlePointerDown = (
   event: React.PointerEvent<HTMLDivElement> | PointerEvent,
   store: ReactGridStore
-): ReactGridStore => {
+): Partial<ReactGridStore> => {
   const targetElement = event.target as HTMLDivElement;
   const headerContainer = targetElement.parentNode as HTMLDivElement;
   const headerContainerInitialWidth = headerContainer.offsetWidth;
@@ -82,12 +82,12 @@ const handlePointerDown = (
 const handlePointerMove = (
   event: React.PointerEvent<HTMLDivElement> | PointerEvent,
   store: ReactGridStore
-): ReactGridStore => {
+): Partial<ReactGridStore> => {
   const reactGridRef = store.reactGridRef;
 
   if (!reactGridRef) return store;
 
-  const resizingColumn = store.getColumnById(store.resizingColId ?? "");
+  const resizingColumn = store.getColumnByIdx(store.resizingColIdx ?? 0);
 
   const minColumnWidth = getNumberFromPixelString(resizingColumn?.minWidth ?? 0);
 
@@ -108,10 +108,11 @@ const handlePointerMove = (
 const handlePointerUp = (
   event: React.PointerEvent<HTMLDivElement> | PointerEvent,
   store: ReactGridStore
-): ReactGridStore => {
+): Partial<ReactGridStore> => {
   // calculate the change in x-position
   const deltaX = event.clientX - initialPointerX;
 
+  if (store.resizingColIdx === undefined) return store;
   // calculate the new width of the header
   const resultWidth = initialHeaderWidth + deltaX;
 
@@ -119,7 +120,7 @@ const handlePointerUp = (
 
   if (!reactGridRef) return store;
 
-  const resizingColumn = store.getColumnById(store.resizingColId ?? "");
+  const resizingColumn = store.getColumnByIdx(store.resizingColIdx);
 
   const minColumnWidth = getNumberFromPixelString(resizingColumn?.minWidth ?? 0);
 
@@ -130,17 +131,20 @@ const handlePointerUp = (
 
   const linePosition = event.clientX - reactGridLeftPosition;
 
-  if (store.resizingColId) {
-    if (linePosition <= headerLeftPosition + minColumnWidth) {
-      store.onResizeColumn?.(minColumnWidth, store.resizingColId);
-    } else {
-      store.onResizeColumn?.(resultWidth, store.resizingColId);
-    }
+  if (linePosition <= headerLeftPosition + minColumnWidth) {
+    store.onResizeColumn?.(minColumnWidth, store.resizingColIdx);
+  } else {
+    store.onResizeColumn?.(resultWidth, store.resizingColIdx);
   }
 
   headerLeftPosition = 0;
   initialPointerX = 0;
   initialHeaderWidth = 0;
 
-  return { ...store, linePosition: undefined, currentBehavior: store.getBehavior("Default"), resizingColId: undefined };
+  return {
+    ...store,
+    linePosition: undefined,
+    currentBehavior: store.getBehavior("Default"),
+    resizingColIdx: undefined,
+  };
 };

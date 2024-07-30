@@ -1,5 +1,7 @@
+import isEqual from "lodash.isequal";
 import { Behavior } from "../types/Behavior";
 import { NumericalRange } from "../types/CellMatrix";
+import { EMPTY_AREA } from "../types/InternalModel";
 import { ReactGridStore } from "../types/ReactGridStore";
 import { getCellArea } from "../utils/getCellArea";
 import { getFillDirection } from "../utils/getFillDirection";
@@ -10,16 +12,16 @@ const devEnvironment = isDevEnvironment();
 
 export const FillHandleBehavior: Behavior = {
   id: "FillHandle",
-  handlePointerDown: function (event, store): ReactGridStore {
+  handlePointerDown: function (event, store) {
     devEnvironment && console.log("FHB/handlePointerDown");
     return store;
   },
-  handlePointerMove: function (event, store): ReactGridStore {
+  handlePointerMove: function (event, store) {
     devEnvironment && console.log("FHB/handlePointerMove");
 
     return handlePointerMove(store, event);
   },
-  handlePointerUp: function (event, store): ReactGridStore {
+  handlePointerUp: function (event, store) {
     devEnvironment && console.log("FHB/handlePointerUp");
 
     return handlePointerUp(store);
@@ -31,7 +33,7 @@ export const FillHandleBehavior: Behavior = {
     return store;
   },
 
-  handlePointerMoveTouch: function (event, store): ReactGridStore {
+  handlePointerMoveTouch: function (event, store) {
     devEnvironment && console.log("FHB/handlePointerMoveTouch");
 
     return handlePointerMove(store, event);
@@ -59,12 +61,7 @@ const handlePointerMove = (store: ReactGridStore, event: React.PointerEvent<HTML
   if (!fillDirection || fillDirection.value === null) {
     return {
       ...store,
-      fillHandleArea: {
-        startRowIdx: -1,
-        endRowIdx: -1,
-        startColIdx: -1,
-        endColIdx: -1,
-      },
+      fillHandleArea: EMPTY_AREA,
     };
   }
 
@@ -143,6 +140,14 @@ const handlePointerUp = (store: ReactGridStore) => {
 
   const newSelectedArea = store.fillHandleArea;
 
+  if (isEqual(newSelectedArea, EMPTY_AREA)) {
+    return {
+      ...store,
+      fillHandleArea: EMPTY_AREA,
+      currentBehavior: store.getBehavior("Default"),
+    };
+  }
+
   if (side === "bottom") {
     if (isPreviouslySelectedArea) {
       newSelectedArea.startRowIdx =
@@ -168,12 +173,7 @@ const handlePointerUp = (store: ReactGridStore) => {
   return {
     ...store,
     selectedArea: newSelectedArea,
-    fillHandleArea: {
-      startRowIdx: -1,
-      endRowIdx: -1,
-      startColIdx: -1,
-      endColIdx: -1,
-    },
+    fillHandleArea: EMPTY_AREA,
     currentBehavior: store.getBehavior("Default"),
   };
 };

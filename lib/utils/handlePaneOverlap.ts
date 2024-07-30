@@ -7,14 +7,14 @@ export const handlePaneOverlap = (
   colIndex: number,
   scrollableParent: Element
 ) => {
-  const topPaneOverlapValue = getCellPaneOverlap(store, { rowIndex, colIndex }, "Top");
-  const rightPaneOverlapValue = getCellPaneOverlap(store, { rowIndex, colIndex }, "Right");
-  const bottomOverlapValue = getCellPaneOverlap(store, { rowIndex, colIndex }, "Bottom");
+  const bottomCenterOverlapValue = getCellPaneOverlap(store, { rowIndex, colIndex }, "BottomCenter");
+  const topCenterPaneOverlapValue = getCellPaneOverlap(store, { rowIndex, colIndex }, "TopCenter");
   const leftPaneOverlapValue = getCellPaneOverlap(store, { rowIndex, colIndex }, "Left");
+  const rightPaneOverlapValue = getCellPaneOverlap(store, { rowIndex, colIndex }, "Right");
 
-  if (topPaneOverlapValue) {
+  if (topCenterPaneOverlapValue) {
     scrollableParent?.scrollBy({
-      top: -topPaneOverlapValue,
+      top: -topCenterPaneOverlapValue,
     });
   }
 
@@ -24,9 +24,9 @@ export const handlePaneOverlap = (
     });
   }
 
-  if (bottomOverlapValue) {
+  if (bottomCenterOverlapValue) {
     scrollableParent?.scrollBy({
-      top: bottomOverlapValue,
+      top: bottomCenterOverlapValue,
     });
   }
 
