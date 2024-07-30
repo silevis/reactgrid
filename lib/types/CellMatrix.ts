@@ -1,15 +1,15 @@
-import { Row, Column, CellMap } from "./PublicModel";
+import { Row, Column, SpanMember, Cell } from "./PublicModel";
 
-export interface CellMatrix<TRowId extends string = string, TColumnId extends string = string> {
-  rows: Row<TRowId>[];
-  columns: Column<TColumnId>[];
+export interface CellMatrix<TRowIdx extends number = number, TColumnIdx extends number = number> {
+  rows: Row[];
+  columns: Column[];
 
-  cells: CellMap<TRowId, TColumnId>;
+  cells: (Cell | SpanMember)[][];
 }
 
 export type NumericalRange = {
-  startRowIdx: number,
-  endRowIdx: number,
-  startColIdx: number,
-  endColIdx: number
+  startRowIdx: number;
+  endRowIdx: number;
+  startColIdx: number;
+  endColIdx: number;
 };

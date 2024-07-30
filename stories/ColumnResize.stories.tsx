@@ -1,85 +1,48 @@
+import React from "react";
 import { StrictMode, useState } from "react";
-import { handleResizeColumn } from "./utils/handleResizeColumn";
 import { cellMatrixBuilder } from "../lib/utils/cellMatrixBuilder";
-import { Column, Row, TextCell, ReactGrid, NumberCell } from "../lib/main";
+import { Column, Row, ReactGrid } from "../lib/main";
 import { StoryDefault } from "@ladle/react";
 import { ErrorBoundary } from "../lib/components/ErrorBoundary";
-import React from "react";
-import { initialColumns, initialRows, CellData, headerRow, dataRows, rgStyles } from "./utils/examplesConfig";
-import { HeaderCell } from "./cellTemplates/HeaderCell";
+import { initialColumns, initialRows, CellData, rgStyles, initialGridData } from "./utils/examplesConfig";
+import { handleResizeColumn } from "./utils/handleResizeColumn";
 
 export const ColumnResizeExample = () => {
   const [columns, setColumns] = useState<Array<Column>>(initialColumns);
   const [rows, setRows] = useState<Array<Row>>(initialRows);
 
-  const [gridData, setGridData] = useState<(CellData | null)[][]>(
-    [headerRow, ...dataRows].map((row, rowIdx) =>
-      row.map((item, index) =>
-        index === row.length - 1 && rowIdx !== 0
-          ? { number: typeof item === "number" ? item : parseFloat(item) }
-          : { text: item.toString() }
-      )
-    )
-  );
+  const [gridData, setGridData] = useState<(CellData | null)[][]>(initialGridData);
 
   const cellMatrix = cellMatrixBuilder(rows, columns, ({ setCell }) => {
-    gridData.forEach((row, rowIndex) => {
-      row.forEach((val, columnIndex) => {
-        const columnId = columns[columnIndex].id;
-        const rowId = rows[rowIndex].id;
+    gridData.forEach((row, rowIdx) => {
+      row.forEach((cell, colIdx) => {
+        if (cell === null) return;
 
-        if (val === null) return;
-
-        if (rowIndex === 0) {
-          setCell(
-            rowId,
-            columnId,
-            HeaderCell,
-            {
-              text: val?.text,
-              style: {
-                backgroundColor: "#55bc71",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                fontWeight: "bold",
-              },
-            },
-            { isFocusable: false, isSelectable: false }
-          );
-          return;
-        }
-
-        if (columnId === "5") {
-          setCell(rowId, columnId, NumberCell, {
-            value: gridData[rowIndex][columnIndex]?.number ?? 0,
-            validator: (value) => !isNaN(value),
-            errorMessage: "ERR",
-            hideZero: true,
-            onValueChanged: (newNumber) => {
+        setCell(
+          rowIdx,
+          colIdx,
+          cell.template,
+          {
+            ...(cell.hideZero && { hideZero: cell.hideZero }),
+            ...(cell.errorMessage && { errorMessage: cell.errorMessage }),
+            ...(cell.validator && { validator: cell.validator }),
+            value: cell.value,
+            style: cell.style,
+            onValueChanged: (data) => {
               setGridData((prev) => {
                 const next = [...prev];
-                next[rowIndex][columnIndex] = { number: newNumber };
+                if (next[rowIdx][colIdx] !== null) {
+                  next[rowIdx][colIdx].value = data;
+                }
                 return next;
               });
             },
-          });
-          return;
-        }
-
-        setCell(rowId, columnId, TextCell, {
-          value: val?.text,
-          style: { alignContent: "center" },
-          onTextChanged: (data) => {
-            setGridData((prev) => {
-              const next = [...prev];
-              if (next[rowIndex][columnIndex] !== null) {
-                next[rowIndex][columnIndex].text = data;
-              }
-              return next;
-            });
           },
-        });
+          {
+            ...(cell?.isFocusable === false && { isFocusable: cell.isFocusable }),
+            ...(cell?.isSelectable === false && { isSelectable: cell.isSelectable }),
+          }
+        );
       });
     });
   });
@@ -90,8 +53,10 @@ export const ColumnResizeExample = () => {
         id="column-resize-example"
         styles={rgStyles}
         enableColumnSelectionOnFirstRow
-        onResizeColumn={(width, columnId) => handleResizeColumn(width, columnId, cellMatrix, setColumns)}
-        initialFocusLocation={{ rowId: "2", columnId: "1" }}
+        onResizeColumn={(selectedColIndexes, destinationColIdx) =>
+          handleResizeColumn(selectedColIndexes, destinationColIdx, cellMatrix, setColumns)
+        }
+        initialFocusLocation={{ rowIndex: 2, colIndex: 1 }}
         {...cellMatrix}
       />
     </div>

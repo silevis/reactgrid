@@ -3,13 +3,11 @@ import { Cell, CellContextType } from "../types/PublicModel";
 import { StickyOffsets } from "../types/InternalModel";
 
 interface CellContextProviderProps {
-  rowId: string;
-  colId: string;
   rowIndex: number;
   colIndex: number;
   realRowIndex: number;
   realColumnIndex: number;
-  cell: Cell<string, string>;
+  cell: Cell;
   isFocused: boolean;
   rowSpan?: number;
   colSpan?: number;
@@ -19,8 +17,6 @@ interface CellContextProviderProps {
 }
 
 export const CellContext = createContext<CellContextType>({
-  rowId: "",
-  colId: "",
   realRowIndex: -1,
   realColumnIndex: -1,
   isFocused: false,
@@ -39,8 +35,6 @@ export const useCellContext = () => {
 
 export const CellContextProvider = memo(
   ({
-    rowId,
-    colId,
     rowIndex,
     colIndex,
     realRowIndex,
@@ -58,8 +52,6 @@ export const CellContextProvider = memo(
     return (
       <CellContext.Provider
         value={{
-          rowId: rowId,
-          colId: colId,
           realRowIndex,
           realColumnIndex,
           rowSpan: rowSpan,

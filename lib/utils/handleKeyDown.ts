@@ -8,11 +8,10 @@ import { resizeSelectionInDirection } from "./resizeSelectionInDirection.ts";
 import { ReactGridStore } from "../types/ReactGridStore.ts";
 import React from "react";
 import { getNumberOfVisibleRows } from "./getNumberOfVisibleRows.ts";
-import { getStickyCellAdjacentToCenterPane } from "./getStickyCellAdjacentToCenterPane.ts";
-import { getCellIndexes } from "./getCellIndexes.1.ts";
 import { getHiddenTargetFocusByIdx } from "./getHiddenTargetFocusByIdx.ts";
 import { isInPaneRange } from "./isInPaneRange.ts";
 import { isCellInRange } from "./isCellInRange.ts";
+import { isPaneExists } from "./isPaneExists.ts";
 
 type HandleKeyDownConfig = {
   moveHorizontallyOnEnter: boolean;
@@ -37,8 +36,6 @@ export const handleKeyDown = (
 
     // If there is no focused cell, set it to the first cell in the grid.
     focusedCell = {
-      rowIndex: 0,
-      colIndex: 0,
       ...firstCell,
     };
   }
@@ -65,7 +62,7 @@ export const handleKeyDown = (
         // Expand the obtained area by the area of cells that are spanned-cells, in selected direction (up).
         const areaWithSpannedCells = findMinimalSelectedArea(store, {
           ...area,
-          startRowIdx: Number(store.rows[0].id),
+          startRowIdx: 0,
         });
 
         // Select all cells in obtained area, including spanned cells.
@@ -111,7 +108,7 @@ export const handleKeyDown = (
         // Expand the obtained area by the area of cells that are spanned-cells, in selected direction (to left).
         const areaWithSpannedCells = findMinimalSelectedArea(store, {
           ...area,
-          startColIdx: Number(store.columns[0].id),
+          startColIdx: 0,
         });
 
         // Select all cells in obtained area, including spanned cells.
@@ -163,12 +160,7 @@ export const handleKeyDown = (
         if (areAreasEqual(store.selectedArea, wholeGridArea)) {
           return {
             ...store,
-            selectedArea: {
-              startRowIdx: -1,
-              endRowIdx: -1,
-              startColIdx: -1,
-              endColIdx: -1,
-            },
+            selectedArea: EMPTY_AREA,
           };
         }
 
@@ -257,7 +249,7 @@ export const handleKeyDown = (
         // Expand the obtained area by the area of cells that are spanned-cells.
         const areaWithSpannedCells = findMinimalSelectedArea(store, {
           ...area,
-          startRowIdx: Number(store.rows[0].id),
+          startRowIdx: 0,
           endRowIdx: store.rows.length,
         });
 
@@ -360,7 +352,8 @@ export const handleKeyDown = (
         let newSelectedAreaEndRowIdx = -1;
 
         const lastGridRowIdx = store.rows.length;
-        const lastRowCellSpan = store.getCellByIndexes(lastGridRowIdx, focusedCell.colIndex)?.rowSpan;
+
+        const lastRowCellSpan = store.getCellByIndexes(lastGridRowIdx - 1, focusedCell.colIndex)?.rowSpan;
 
         if (currentSelectedArea.endRowIdx === lastGridRowIdx) return store;
 
@@ -410,31 +403,24 @@ export const handleKeyDown = (
 
         if (currentSelectedArea.startColIdx === 0) return store;
 
-        const nearestLeftStickyCell = getStickyCellAdjacentToCenterPane(store, focusedCell, "Left");
-        const nearestRightStickyCell = getStickyCellAdjacentToCenterPane(store, focusedCell, "Right");
+        const leftPaneExists = isPaneExists(store, "Left");
 
         let newSelectedAreaStartColIdx = -1;
-
-        if (!nearestLeftStickyCell || !nearestRightStickyCell) {
-          return store;
-        }
-
-        const nearestLeftStickyCellIdx = getCellIndexes(store, nearestLeftStickyCell);
 
         if (isInPaneRange(store, currentSelectedArea, "Left")) {
           newSelectedAreaStartColIdx = 0;
         }
         if (isInPaneRange(store, currentSelectedArea, "Right")) {
-          newSelectedAreaStartColIdx =
-            currentSelectedArea.startColIdx === store.paneRanges.Right.startColIdx
-              ? nearestLeftStickyCellIdx.colIndex + (nearestLeftStickyCell.colSpan ? nearestLeftStickyCell?.colSpan : 1)
-              : store.paneRanges.Right.startColIdx;
+          if (currentSelectedArea.startColIdx === store.paneRanges.Right.startColIdx) {
+            if (leftPaneExists) newSelectedAreaStartColIdx = store.paneRanges.Left.endColIdx;
+            else newSelectedAreaStartColIdx = store.paneRanges.Right.startColIdx;
+          }
         } else {
-          newSelectedAreaStartColIdx =
-            currentSelectedArea.startColIdx === store.paneRanges.Left.endColIdx
-              ? 0
-              : nearestLeftStickyCellIdx.colIndex +
-                (nearestLeftStickyCell.colSpan ? nearestLeftStickyCell?.colSpan : 1);
+          if (currentSelectedArea.startColIdx === store.paneRanges.Left.endColIdx) {
+            newSelectedAreaStartColIdx = 0;
+          } else {
+            newSelectedAreaStartColIdx = store.paneRanges.Left.endColIdx;
+          }
         }
 
         const minimalSelectedArea = findMinimalSelectedArea(store, {
@@ -464,26 +450,26 @@ export const handleKeyDown = (
 
         if (currentSelectedArea.endColIdx === lastColIdx) return store;
 
-        const nearestRightStickyCell = getStickyCellAdjacentToCenterPane(store, focusedCell, "Right");
+        const rightPaneExists = isPaneExists(store, "Right");
 
         let newSelectedAreaEndColIdx = -1;
 
-        if (!nearestRightStickyCell) return store;
-
-        const nearestRightStickyCellColIdx = getCellIndexes(store, nearestRightStickyCell).colIndex;
-
         if (isInPaneRange(store, currentSelectedArea, "Left")) {
-          newSelectedAreaEndColIdx =
-            currentSelectedArea.endColIdx === store.paneRanges.Left.endColIdx
-              ? nearestRightStickyCellColIdx
-              : store.paneRanges.Left.endColIdx;
+          if (currentSelectedArea.endColIdx === store.paneRanges.Left.endColIdx) {
+            if (rightPaneExists) newSelectedAreaEndColIdx = store.paneRanges.Right.startColIdx;
+            else newSelectedAreaEndColIdx = lastColIdx;
+          } else {
+            newSelectedAreaEndColIdx = store.paneRanges.Left.endColIdx;
+          }
         } else if (isInPaneRange(store, currentSelectedArea, "Right")) {
           newSelectedAreaEndColIdx = lastColIdx;
         } else {
-          newSelectedAreaEndColIdx =
-            currentSelectedArea.endColIdx === store.paneRanges.Right.startColIdx
-              ? lastColIdx
-              : nearestRightStickyCellColIdx;
+          if (currentSelectedArea.endColIdx === store.paneRanges.Right.startColIdx) {
+            if (rightPaneExists) newSelectedAreaEndColIdx = store.paneRanges.Right.endColIdx;
+            else newSelectedAreaEndColIdx = lastColIdx;
+          } else {
+            newSelectedAreaEndColIdx = store.paneRanges.Right.startColIdx;
+          }
         }
 
         const minimalSelectedArea = findMinimalSelectedArea(store, {
@@ -513,7 +499,7 @@ export const handleKeyDown = (
         // Expand the obtained area by the area of cells that are spanned-cells.
         const areaWithSpannedCells = findMinimalSelectedArea(store, {
           ...area,
-          startColIdx: Number(store.columns[0].id),
+          startColIdx: 0,
           endColIdx: store.columns.length,
         });
 

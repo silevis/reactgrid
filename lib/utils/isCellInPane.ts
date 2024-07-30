@@ -1,34 +1,13 @@
-import { Cell } from "../types/PublicModel";
+import { PaneName } from "../types/InternalModel";
+import { Cell, SpanMember } from "../types/PublicModel";
 import { ReactGridStore } from "../types/ReactGridStore";
 import { isCellInRange } from "./isCellInRange";
+import { isSpanMember } from "./isSpanMember";
 
-export const isCellInPane = (store: ReactGridStore, cell: Cell, panePosition: "Top" | "Bottom" | "Right" | "Left") => {
-  if (panePosition === "Left") {
-    return (
-      isCellInRange(store, cell, store.paneRanges.TopLeft) ||
-      isCellInRange(store, cell, store.paneRanges.Left) ||
-      isCellInRange(store, cell, store.paneRanges.BottomLeft)
-    );
+export const isCellInPane = (store: ReactGridStore, cell: Cell | SpanMember, panePosition: PaneName) => {
+  if (isSpanMember(cell)) {
+    return isCellInRange(store, store.cells[cell.originRowIndex][cell.originColIndex], store.paneRanges[panePosition]);
   }
-  if (panePosition === "Right") {
-    return (
-      isCellInRange(store, cell, store.paneRanges.TopRight) ||
-      isCellInRange(store, cell, store.paneRanges.Right) ||
-      isCellInRange(store, cell, store.paneRanges.BottomRight)
-    );
-  }
-  if (panePosition === "Top") {
-    return (
-      isCellInRange(store, cell, store.paneRanges.TopLeft) ||
-      isCellInRange(store, cell, store.paneRanges.TopCenter) ||
-      isCellInRange(store, cell, store.paneRanges.TopRight)
-    );
-  }
-  if (panePosition === "Bottom") {
-    return (
-      isCellInRange(store, cell, store.paneRanges.BottomLeft) ||
-      isCellInRange(store, cell, store.paneRanges.BottomCenter) ||
-      isCellInRange(store, cell, store.paneRanges.BottomRight)
-    );
-  }
+
+  return isCellInRange(store, cell, store.paneRanges[panePosition]);
 };

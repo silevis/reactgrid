@@ -2,51 +2,64 @@ import { IndexedLocation } from "../types/InternalModel";
 import { ReactGridStore } from "../types/ReactGridStore";
 import { getCellContainer } from "./getCellContainer";
 import { isCellInPane } from "./isCellInPane";
+import { isPaneExists } from "./isPaneExists";
 import { isTheSameCell } from "./isTheSameCell";
+import { Cell } from "../types/PublicModel";
 
-// TODO: rename
 export const getCellPaneOverlap = (
   store: ReactGridStore,
   destinationCellIdx: IndexedLocation,
-  panePosition: "Top" | "Bottom" | "Right" | "Left"
+  panePosition: "Left" | "Right" | "TopCenter" | "BottomCenter"
 ) => {
   const cell = store.getCellByIndexes(destinationCellIdx.rowIndex, destinationCellIdx.colIndex);
-  let paneCell;
+
+  if (!cell || !isPaneExists(store, panePosition)) {
+    return 0;
+  }
+
+  let edgePaneCell: Cell | null = null;
 
   switch (panePosition) {
     case "Left":
-      paneCell = store.getCellByIndexes(destinationCellIdx.rowIndex, store.paneRanges.Left.endColIdx - 1);
+      edgePaneCell = store.getCellByIndexes(destinationCellIdx.rowIndex, store.paneRanges.Left.endColIdx - 1);
       break;
     case "Right":
-      paneCell = store.getCellByIndexes(destinationCellIdx.rowIndex, store.paneRanges.Right.startColIdx);
+      edgePaneCell = store.getCellByIndexes(destinationCellIdx.rowIndex, store.paneRanges.Right.startColIdx);
       break;
-    case "Top":
-      paneCell = store.getCellByIndexes(store.paneRanges.TopLeft.endRowIdx - 1, destinationCellIdx.colIndex);
+    case "TopCenter":
+      edgePaneCell = store.getCellByIndexes(store.paneRanges.TopCenter.endRowIdx - 1, destinationCellIdx.colIndex);
       break;
-    case "Bottom":
-      paneCell = store.getCellByIndexes(store.paneRanges.BottomLeft.startRowIdx, destinationCellIdx.colIndex);
+    case "BottomCenter":
+      edgePaneCell = store.getCellByIndexes(store.paneRanges.BottomCenter.startRowIdx, destinationCellIdx.colIndex);
       break;
-    default:
-      paneCell = null;
   }
 
-  if (!paneCell || !cell || isCellInPane(store, cell, panePosition)) return 0;
+  if (
+    !edgePaneCell ||
+    isCellInPane(store, cell, panePosition) ||
+    isCellInPane(store, cell, "TopRight") ||
+    isCellInPane(store, cell, "BottomRight") ||
+    isCellInPane(store, cell, "TopLeft") ||
+    isCellInPane(store, cell, "BottomLeft")
+  ) {
+    return 0;
+  }
 
-  const paneCellContainer = getCellContainer(store, paneCell);
+  const edgePaneCellContainer = getCellContainer(store, edgePaneCell);
   const cellContainer = getCellContainer(store, cell);
 
-  if (!paneCellContainer || !cellContainer) return 0;
+  if (!edgePaneCellContainer || !cellContainer) return 0;
 
-  if (isTheSameCell(paneCellContainer, cellContainer)) {
+  if (isTheSameCell(edgePaneCellContainer, cellContainer)) {
     return 0;
   }
 
   if (panePosition === "Right") {
     const horizontalOffsetDifference = Math.abs(
-      paneCellContainer.offsetLeft - (cellContainer.offsetLeft + cellContainer.offsetWidth)
+      edgePaneCellContainer.offsetLeft - (cellContainer.offsetLeft + cellContainer.offsetWidth)
     );
 
-    if (cellContainer.offsetLeft + cellContainer.offsetWidth <= paneCellContainer.offsetLeft) {
+    if (cellContainer.offsetLeft + cellContainer.offsetWidth <= edgePaneCellContainer.offsetLeft) {
       return 0;
     }
 
@@ -54,31 +67,31 @@ export const getCellPaneOverlap = (
   }
   if (panePosition === "Left") {
     const horizontalOffsetDifference = Math.abs(
-      paneCellContainer.offsetLeft + paneCellContainer.offsetWidth - cellContainer.offsetLeft
+      edgePaneCellContainer.offsetLeft + edgePaneCellContainer.offsetWidth - cellContainer.offsetLeft
     );
 
-    if (cellContainer.offsetLeft >= paneCellContainer.offsetLeft + paneCellContainer.offsetWidth) {
+    if (cellContainer.offsetLeft >= edgePaneCellContainer.offsetLeft + edgePaneCellContainer.offsetWidth) {
       return 0;
     }
 
     return horizontalOffsetDifference;
   }
-  if (panePosition === "Bottom") {
+  if (panePosition === "BottomCenter") {
     const verticalOffsetDifference = Math.abs(
-      cellContainer.offsetTop + cellContainer.offsetHeight - paneCellContainer.offsetTop
+      cellContainer.offsetTop + cellContainer.offsetHeight - edgePaneCellContainer.offsetTop
     );
 
-    if (cellContainer.offsetTop + cellContainer.offsetHeight <= paneCellContainer.offsetTop) {
+    if (cellContainer.offsetTop + cellContainer.offsetHeight <= edgePaneCellContainer.offsetTop) {
       return 0;
     }
     return verticalOffsetDifference;
   }
-  if (panePosition === "Top") {
+  if (panePosition === "TopCenter") {
     const verticalOffsetDifference = Math.abs(
-      paneCellContainer.offsetTop + paneCellContainer.offsetHeight - cellContainer.offsetTop
+      edgePaneCellContainer.offsetTop + edgePaneCellContainer.offsetHeight - cellContainer.offsetTop
     );
 
-    if (cellContainer.offsetTop >= paneCellContainer.offsetTop + paneCellContainer.offsetHeight) {
+    if (cellContainer.offsetTop >= edgePaneCellContainer.offsetTop + edgePaneCellContainer.offsetHeight) {
       return 0;
     }
 

@@ -6,11 +6,11 @@ import { isAlphaNumericWithoutModifiers } from "../utils/keyCodeCheckings";
 
 interface TextCellProps {
   value?: string;
-  onTextChanged: (newText: string) => void;
+  onValueChanged: (newText: string) => void;
   style?: React.CSSProperties;
 }
 
-export const TextCell: FC<TextCellProps> = ({ value: initialValue, onTextChanged }) => {
+export const TextCell: FC<TextCellProps> = ({ value: initialValue, onValueChanged }) => {
   const ctx = useCellContext();
   const targetInputRef = useRef<HTMLTextAreaElement>(null);
   const [isEditMode, setEditMode] = useState(false);
@@ -56,7 +56,7 @@ export const TextCell: FC<TextCellProps> = ({ value: initialValue, onTextChanged
             fontFamily: "inherit",
           }}
           onBlur={(e) => {
-            onTextChanged(e.currentTarget.value);
+            onValueChanged(e.currentTarget.value);
             setEditMode(false);
           }}
           onPointerDown={(e) => e.stopPropagation()}
@@ -72,7 +72,7 @@ export const TextCell: FC<TextCellProps> = ({ value: initialValue, onTextChanged
               e.preventDefault();
               // We don't stop propagation here, because we want to trigger the
               // focus move event
-              onTextChanged(e.currentTarget.value);
+              onValueChanged(e.currentTarget.value);
               setEditMode(false);
             }
           }}

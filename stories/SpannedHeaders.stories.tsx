@@ -14,15 +14,24 @@ import React from "react";
 import { DateCell } from "./cellTemplates/DateCell";
 
 interface CellData {
-  text?: string;
-  date?: Date;
+  type: "text" | "number" | "date";
+  value: string | number | Date;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  template: React.ComponentType<any>;
+  style?: React.CSSProperties;
+
+  rowSpan?: number;
+  colSpan?: number;
+
+  isFocusable?: boolean;
+  isSelectable?: boolean;
 }
 
 const ROW_COUNT = 4;
 const COLUMN_COUNT = 4;
 
 export const SpannedHeaders = () => {
-  const [columns, setColumns] = useState<Array<Column<string>>>(
+  const [columns, setColumns] = useState<Array<Column>>(
     Array.from({ length: COLUMN_COUNT }).map((_, j) => {
       if (j === 2)
         return {
@@ -42,10 +51,9 @@ export const SpannedHeaders = () => {
       };
     })
   );
-  const [rows, setRows] = useState<Array<Row<string>>>(
+  const [rows, setRows] = useState<Array<Row>>(
     Array.from({ length: ROW_COUNT }).map((_, j) => {
       if (j === 0) return { id: j.toString(), height: "50px", reorderable: false };
-
       return { id: j.toString(), height: "50px", reorderable: true };
     })
   );
@@ -56,32 +64,13 @@ export const SpannedHeaders = () => {
         if (i === 0 && j === 3) return null;
         if (i === 2 && j === 2) return null;
         if (i === 3 && j === 3) return null;
-        if (i === 2 && j === 1) return { date: new Date() };
 
-        if (i === 0) return { text: `title ${j + 1}` };
-
-        return {
-          text: `[${i.toString()}:${j.toString()}]`,
-        };
-      });
-    })
-  );
-
-  const cellMatrix = cellMatrixBuilder(rows, columns, ({ setCell }) => {
-    gridData.forEach((row, rowIndex) => {
-      row.forEach((val, columnIndex) => {
-        const columnId = columns[columnIndex].id;
-        const rowId = rows[rowIndex].id;
-
-        if (val === null) return;
-
-        if (rowIndex === 0) {
-          setCell(
-            rowId,
-            columnId,
-            HeaderCell,
-            {
-              text: val?.text,
+        if (i === 0) {
+          if (j === 2) {
+            return {
+              type: "text",
+              value: `title ${j + 1}`,
+              template: HeaderCell,
               style: {
                 backgroundColor: "#fcff91",
                 display: "flex",
@@ -89,52 +78,85 @@ export const SpannedHeaders = () => {
                 justifyContent: "center",
                 fontWeight: "bold",
               },
+              isFocusable: false,
+              colSpan: 2,
+            };
+          }
+
+          return {
+            type: "text",
+            value: `title ${j + 1}`,
+            template: HeaderCell,
+            style: {
+              backgroundColor: "#fcff91",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              fontWeight: "bold",
             },
-            { isFocusable: false }
-          );
-          return;
+            isFocusable: false,
+          };
         }
 
-        setCell(rowId, columnId, TextCell, {
-          value: val?.text,
-          style: {},
-          onTextChanged: (data) => {
-            setGridData((prev) => {
-              const next = [...prev];
-              if (next[rowIndex][columnIndex] !== null) {
-                next[rowIndex][columnIndex].text = data;
-              }
-              return next;
-            });
+        if (i === 3 && j === 2) {
+          return {
+            type: "text",
+            value: "text",
+            template: TextCell,
+            colSpan: 2,
+          };
+        }
+        if (i === 2 && j === 1) {
+          return {
+            type: "date",
+            value: new Date(),
+            template: DateCell,
+            colSpan: 2,
+          };
+        }
+
+        return {
+          type: "text",
+          value: `[${i.toString()}:${j.toString()}]`,
+          template: TextCell,
+        };
+      });
+    })
+  );
+
+  const cellMatrix = cellMatrixBuilder(rows, columns, ({ setCell }) => {
+    gridData.forEach((row, rowIdx) => {
+      row.forEach((cell, colIdx) => {
+        if (cell === null) return;
+
+        setCell(
+          rowIdx,
+          colIdx,
+          cell.template,
+          {
+            value: cell.value,
+            style: cell.style,
+            onValueChanged: (data) => {
+              setGridData((prev) => {
+                const next = [...prev];
+                if (next[rowIdx][colIdx] !== null) {
+                  next[rowIdx][colIdx].value = data;
+                }
+                return next;
+              });
+            },
           },
-        });
+          {
+            ...(cell?.rowSpan && { rowSpan: cell.rowSpan }),
+            ...(cell?.colSpan && { colSpan: cell.colSpan }),
+            ...(cell?.isFocusable === false && { isFocusable: cell.isFocusable }),
+          }
+        );
       });
     });
-
-    const realRowIdx = rows.findIndex((row) => row.id === "2");
-    const realColIdx = columns.findIndex((col) => col.id === "1");
-
-    setCell("3", "2", TextCell, { value: "text" ?? "", onTextChanged: () => null }, { colSpan: 2 });
-
-    setCell("0", "2", TextCell, { value: "text" ?? "", onTextChanged: () => null }, { colSpan: 2 });
-
-    setCell(
-      "2",
-      "1",
-      DateCell,
-      {
-        value: gridData[realRowIdx][realColIdx]?.date,
-        onDateChanged: (newDate) => {
-          setGridData((prev) => {
-            const next = [...prev];
-            next[realRowIdx][realColIdx] = newDate;
-            return next;
-          });
-        },
-      },
-      { colSpan: 2 }
-    );
   });
+
+  console.log("cellMatrix", cellMatrix);
 
   return (
     <div style={{ height: "100%", overflow: "auto" }}>
@@ -151,7 +173,7 @@ export const SpannedHeaders = () => {
         enableRowSelectionOnFirstColumn
         onResizeColumn={(width, columnId) => handleResizeColumn(width, columnId, cellMatrix, setColumns)}
         stickyTopRows={1}
-        initialFocusLocation={{ rowId: "1", columnId: "0" }}
+        initialFocusLocation={{ rowIndex: 1, colIndex: 0 }}
         {...cellMatrix}
       />
     </div>

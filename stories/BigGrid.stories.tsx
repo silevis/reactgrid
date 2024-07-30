@@ -17,18 +17,26 @@ import { handleRowReorder } from "./utils/handleRowReorder";
 import { DateCell } from "./cellTemplates/DateCell";
 
 interface CellData {
-  text?: string;
-  number?: number;
-  date?: Date;
+  type: "text" | "number" | "date";
+  value: string | number | Date;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  template: React.ComponentType<any>;
+
+  rowSpan?: number;
+  colSpan?: number;
+  format?: Intl.NumberFormat;
+
+  isFocusable?: boolean;
+  isSelectable?: boolean;
 }
 
 const styledRanges = [
   {
-    range: { start: { rowId: "0", columnId: "5" }, end: { rowId: "14", columnId: "12" } },
+    range: { start: { rowIndex: 0, columnIndex: 5 }, end: { rowIndex: 14, columnIndex: 12 } },
     styles: { background: "red", color: "yellow" },
   },
   {
-    range: { start: { rowId: "7", columnId: "10" }, end: { rowId: "10", columnId: "14" } },
+    range: { start: { rowIndex: 7, columnIndex: 10 }, end: { rowIndex: 10, columnIndex: 14 } },
     styles: { background: "green", color: "purple" },
   },
 ];
@@ -45,202 +53,127 @@ const myNumberFormat = new Intl.NumberFormat("pl", {
   currency: "PLN",
 });
 
+const generateCellData = (i: number, j: number): CellData | null => {
+  if (i === 1 && j === 4) return null;
+  if (i === 1 && j === 24) return null;
+  if (i === 3 && j === 4) return null;
+  if (i === 4 && j === 3) return null;
+  if (i === 4 && j === 4) return null;
+  if (i === 5 && j === 6) return null;
+  if (i === 5 && j === 7) return null;
+  if (i === 6 && j === 4) return null;
+  if (i === 6 && j === 7) return null;
+  if (i === 6 && j === 8) return null;
+  if (i === 19 && j === 1) return null;
+  if (i === 1 && j === 24) return null;
+
+  if (i === 0) return { type: "text", value: `Col ${j}`, template: TextCell, isFocusable: false };
+  if (i === 0 && j === 0) return { type: "number", value: 100, template: NumberCell };
+  if (i === 1 && j === 3)
+    return { type: "date", value: new Date(), template: DateCell, format: myNumberFormat, colSpan: 2 };
+  if (i === 1 && j === 23)
+    return { type: "date", value: new Date(), template: DateCell, format: myNumberFormat, colSpan: 2 };
+  if (i === 3 && j === 3)
+    return { type: "text", value: "Lorem ipsum dolor sit amet", template: TextCell, colSpan: 2, rowSpan: 2 };
+  if (i === 5 && j === 4)
+    return {
+      type: "text",
+      value: "Reiciendis illum, nihil, ab officiis explicabo!",
+      template: TextCell,
+      rowSpan: 2,
+    };
+  if (i === 5 && j === 5)
+    return {
+      type: "text",
+      value: "Excepturi in adipisci omnis illo eveniet obcaecati!",
+      template: TextCell,
+      colSpan: 3,
+    };
+  if (i === 6 && j === 6) return { type: "text", value: "Doloremque, sit!", template: TextCell, colSpan: 3 };
+  if (i === 18 && j === 1) return { type: "text", value: "Doloremque, sit!", template: TextCell, rowSpan: 2 };
+
+  if (i > 0 && j === 0) {
+    return {
+      type: "text",
+      value:
+        `[${i.toString()}:${j.toString()}]` +
+        [
+          "Lorem ipsum dolor sit amet",
+          "Reiciendis illum, nihil, ab officiis explicabo!",
+          "Excepturi in adipisci omnis illo eveniet obcaecati!",
+          "Doloremque, sit!",
+        ][Math.floor(Math.random() * 4)],
+      template: TextCell,
+      isFocusable: false,
+    };
+  }
+
+  return {
+    type: "text",
+    value:
+      `[${i.toString()}:${j.toString()}]` +
+      [
+        "Lorem ipsum dolor sit amet",
+        "Reiciendis illum, nihil, ab officiis explicabo!",
+        "Excepturi in adipisci omnis illo eveniet obcaecati!",
+        "Doloremque, sit!",
+      ][Math.floor(Math.random() * 4)],
+    template: TextCell,
+  };
+};
+
 export const BigGrid = () => {
-  const [columns, setColumns] = useState<Array<Column<string>>>(
+  const [columns, setColumns] = useState<Array<Column>>(
     Array.from({ length: COLUMN_COUNT }).map((_, j) => ({
-      id: j.toString(),
       width: 150,
       reorderable: true,
       resizable: true,
     }))
   );
-  const [rows, setRows] = useState<Array<Row<string>>>(
+  const [rows, setRows] = useState<Array<Row>>(
     Array.from({ length: ROW_COUNT }).map((_, j) => {
-      if (j === 0) return { id: j.toString(), height: "100px", reorderable: true };
+      if (j === 0) return { height: "100px", reorderable: true };
 
-      return { id: j.toString(), height: "max-content", reorderable: true };
+      return { height: "max-content", reorderable: true };
     })
   );
 
   const [gridData, setGridData] = useState<(CellData | null)[][]>(
     Array.from({ length: ROW_COUNT }).map((_, i) => {
-      return Array.from({ length: COLUMN_COUNT }).map((_, j) => {
-        if (i === 1 && j === 4) return null;
-        if (i === 1 && j === 24) return null;
-
-        if (i === 3 && j === 7) return null;
-        if (i === 4 && j === 6) return null;
-        if (i === 4 && j === 7) return null;
-
-        if (i === 5 && j === 6) return null;
-        if (i === 5 && j === 7) return null;
-
-        if (i === 6 && j === 4) return null;
-
-        if (i === 6 && j === 7) return null;
-        if (i === 6 && j === 8) return null;
-
-        if (i === 1 && j === 3) return { date: new Date() };
-        if (i === 1 && j === 23) return { date: new Date() };
-
-        if (i === 0 && j === 0) return { number: 100 };
-
-        return {
-          text:
-            `[${i.toString()}:${j.toString()}]` +
-            [
-              "Lorem ipsum dolor sit amet",
-              "Reiciendis illum, nihil, ab officiis explicabo!",
-              "Excepturi in adipisci omnis illo eveniet obcaecati!",
-              "Doloremque, sit!",
-            ][Math.floor(Math.random() * 4)],
-        };
-      });
+      return Array.from({ length: COLUMN_COUNT }).map((_, j) => generateCellData(i, j));
     })
   );
 
   const cellMatrix = cellMatrixBuilder(rows, columns, ({ setCell }) => {
-    gridData.forEach((row, rowIndex) => {
-      row.forEach((val, columnIndex) => {
-        const columnId = columns[columnIndex].id; // necessary for column reordering
-        const rowId = rows[rowIndex].id; // necessary for row reordering
-        if (val === null) return;
+    gridData.forEach((row, rowIdx) => {
+      row.forEach((cell, columnIx) => {
+        if (cell === null) return;
 
-        if (rowIndex === 0) {
-          setCell(
-            rowId,
-            columnId,
-            TextCell,
-            {
-              value: val?.text,
-              onTextChanged: (data) => {
-                setGridData((prev) => {
-                  const next = [...prev];
-                  if (next[rowIndex][columnIndex] !== null) {
-                    next[rowIndex][columnIndex].text = data;
-                  }
-                  return next;
-                });
-              },
+        setCell(
+          rowIdx,
+          columnIx,
+          cell.template,
+          {
+            value: cell.value,
+            onValueChanged: (data) => {
+              setGridData((prev) => {
+                const next = [...prev];
+                if (next[rowIdx][columnIx] !== null) {
+                  next[rowIdx][columnIx].value = data;
+                }
+                return next;
+              });
             },
-            { isFocusable: false }
-          );
-          return;
-        }
-
-        setCell(rowId, columnId, TextCell, {
-          value: val?.text,
-          onTextChanged: (data) => {
-            setGridData((prev) => {
-              const next = [...prev];
-              if (next[rowIndex][columnIndex] !== null) {
-                next[rowIndex][columnIndex].text = data;
-              }
-              return next;
-            });
           },
-        });
+          {
+            ...(cell?.isFocusable === false && { isFocusable: cell.isFocusable }),
+            ...(cell?.isSelectable === false && { isSelectable: cell.isSelectable }),
+            ...(cell?.rowSpan && { rowSpan: cell.rowSpan }),
+            ...(cell?.colSpan && { colSpan: cell.colSpan }),
+          }
+        );
       });
     });
-
-    const realColIdx0 = columns.findIndex((col) => col.id === "0");
-    const realColIdx3 = columns.findIndex((col) => col.id === "3");
-    const realColIdx4 = columns.findIndex((col) => col.id === "4");
-    const realColIdx5 = columns.findIndex((col) => col.id === "5");
-    const realColIdx6 = columns.findIndex((col) => col.id === "6");
-    const realColIdx23 = columns.findIndex((col) => col.id === "23");
-
-    const realRowIdx0 = rows.findIndex((row) => row.id === "0");
-    const realRowIdx1 = rows.findIndex((row) => row.id === "1");
-    const realRowIdx2 = rows.findIndex((row) => row.id === "2");
-    const realRowIdx3 = rows.findIndex((row) => row.id === "3");
-    const realRowIdx5 = rows.findIndex((row) => row.id === "5");
-    const realRowIdx6 = rows.findIndex((row) => row.id === "6");
-
-    setCell("0", "0", NumberCell, {
-      value: gridData[realRowIdx0][realColIdx0]?.number ?? 0,
-      validator: (value) => !isNaN(value),
-      errorMessage: "ERR",
-      format: myNumberFormat,
-      hideZero: true,
-      onValueChanged: (newNumber) => {
-        setGridData((prev) => {
-          const next = [...prev];
-          next[realRowIdx0][realColIdx0] = { number: newNumber };
-          return next;
-        });
-      },
-    });
-
-    setCell(
-      "1",
-      "3",
-      DateCell,
-      {
-        value: gridData[realRowIdx1][realColIdx3]?.date,
-        onDateChanged: (newDate) => {
-          setGridData((prev) => {
-            const next = [...prev];
-            next[realRowIdx1][realColIdx3] = newDate;
-            return next;
-          });
-        },
-      },
-      { colSpan: 2 }
-    );
-
-    setCell(
-      "1",
-      "23",
-      DateCell,
-      {
-        value: gridData[realRowIdx1][realColIdx23]?.date,
-        onDateChanged: (newDate) => {
-          setGridData((prev) => {
-            const next = [...prev];
-            next[realRowIdx1][realColIdx23] = newDate;
-            return next;
-          });
-        },
-      },
-      { colSpan: 2 }
-    );
-
-    setCell(
-      "3",
-      "6",
-      TextCell,
-      { value: gridData[realRowIdx3][realColIdx6]?.text ?? "", onTextChanged: () => null },
-      { colSpan: 2, rowSpan: 2 }
-    );
-    setCell(
-      "5",
-      "4",
-      TextCell,
-      { value: gridData[realRowIdx5][realColIdx4]?.text ?? "", onTextChanged: () => null },
-      { rowSpan: 2 }
-    );
-    setCell(
-      "5",
-      "5",
-      TextCell,
-      { value: gridData[realRowIdx5][realColIdx5]?.text ?? "", onTextChanged: () => null },
-      { colSpan: 3 }
-    );
-    setCell(
-      "6",
-      "6",
-      TextCell,
-      { value: gridData[realRowIdx6][realColIdx6]?.text ?? "", onTextChanged: () => null },
-      { colSpan: 3 }
-    );
-    setCell(
-      "18",
-      "1",
-      TextCell,
-      { value: gridData[realRowIdx6][realColIdx6]?.text ?? "", onTextChanged: () => null },
-      { rowSpan: 2 }
-    );
   });
 
   const [toggleRanges, setToggleRanges] = useState(false);
@@ -256,7 +189,7 @@ export const BigGrid = () => {
           stickyBottomRows={2}
           styles={testStyles}
           styledRanges={toggleRanges ? styledRanges : []}
-          onResizeColumn={(width, columnId) => handleResizeColumn(width, columnId, cellMatrix, setColumns)}
+          onResizeColumn={(width, columnIdx) => handleResizeColumn(width, columnIdx, cellMatrix, setColumns)}
           {...cellMatrix}
           onRowReorder={(selectedRowIndexes, destinationRowIdx) =>
             handleRowReorder(selectedRowIndexes, destinationRowIdx, setRows, setGridData)

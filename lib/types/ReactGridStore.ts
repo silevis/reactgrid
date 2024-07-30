@@ -1,4 +1,4 @@
-import { Cell, CellMap, Column, Range, Row, SpanMember, StyledRange } from "./PublicModel.ts";
+import { Cell, Column, Range, Row, SpanMember, StyledRange } from "./PublicModel.ts";
 import { RowMeasurement } from "./RowMeasurement.ts";
 import { ColumnMeasurement } from "./ColumnMeasurement.ts";
 import { FocusedCell, IndexedLocation, NestedStylesPartial, PaneName } from "./InternalModel.ts";
@@ -10,7 +10,7 @@ export interface ReactGridStoreProps {
   rows: Row[];
   columns: Column[];
 
-  cells: CellMap;
+  cells: (Cell | SpanMember)[][];
 
   rowMeasurements: RowMeasurement[];
   colMeasurements: ColumnMeasurement[];
@@ -21,6 +21,7 @@ export interface ReactGridStoreProps {
   styles?: NestedStylesPartial<RGTheme>;
 
   focusedLocation: IndexedLocation;
+  changedFocusedLocation?: IndexedLocation;
   selectedArea: NumericalRange;
   fillHandleArea: NumericalRange;
 
@@ -30,7 +31,7 @@ export interface ReactGridStoreProps {
   behaviors: Record<BehaviorId, Behavior>;
   currentBehavior: Behavior;
 
-  resizingColId?: string;
+  resizingColIdx?: number;
 
   enableColumnSelectionOnFirstRow?: boolean;
 
@@ -50,7 +51,7 @@ export interface ReactGridStoreProps {
   onCut?: (selectedArea: NumericalRange) => void;
   onCopy?: (selectedArea: NumericalRange) => void;
   onPaste?: (selectedArea: NumericalRange, pastedData: string) => void;
-  onResizeColumn?: (width: number, columnId: string) => void;
+  onResizeColumn?: (width: number, columnIdx: number) => void;
   onColumnReorder?: (selectedColIndexes: number[], destinationColIdx: number) => void;
   onRowReorder?: (selectedRowIndexes: number[], destinationRowIdx: number) => void;
 }
@@ -60,20 +61,13 @@ export interface ReactGridStore extends ReactGridStoreProps {
   readonly getRowAmount: () => number;
 
   readonly setColumns: (columns: Column[]) => void;
-  readonly getColumnById: (columnId: string) => Column | null;
+  readonly getColumnByIdx: (columnIdx: number) => Column | null;
   readonly getColumnAmount: () => number;
 
-  readonly getColumnCells: (columnIdx: number) => Cell<string, string>[];
-
-  readonly setCells: (cellMap: CellMap) => void;
+  readonly getColumnCells: (columnIdx: number) => Cell[];
 
   readonly setStyles: (styles: RGTheme) => void;
 
-  readonly getCellByIds: (
-    rowId: ReactGridStore["rows"][number]["id"],
-    colId: ReactGridStore["rows"][number]["id"]
-  ) => Cell | null;
-  // TODO: don't return null:
   readonly getCellByIndexes: (rowIndex: number, colIndex: number) => Cell | null;
   readonly getCellOrSpanMemberByIndexes: (rowIndex: number, colIndex: number) => Cell | SpanMember | null;
 
@@ -92,7 +86,7 @@ export interface ReactGridStore extends ReactGridStoreProps {
 
   readonly setSelectedRows: (startColIdx: number, endColIdx: number) => void;
 
-  readonly setResizingColId: (columnId: string) => void;
+  readonly setResizingColIdx: (columnIdx: number) => void;
 
   readonly setCurrentBehavior: (currentBehavior: Behavior) => void;
   readonly setLineOrientation: (lineOrientation: "horizontal" | "vertical") => void;

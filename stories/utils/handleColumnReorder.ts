@@ -1,19 +1,11 @@
 import { Dispatch, SetStateAction } from "react";
 import { Column } from "../../lib/types/PublicModel";
 
-type CellData = {
-  text?: string;
-  number?: number;
-  date?: Date;
-};
-
-type SetData<T extends CellData> = React.Dispatch<React.SetStateAction<(T | null)[][]>>;
-
-export const handleColumnReorder = (
+export const handleColumnReorder = <T>(
   selectedColIndexes: number[],
   destinationColIdx: number,
-  setColumns: Dispatch<SetStateAction<Column<string>[]>>,
-  setData: SetData<CellData>
+  setColumns: Dispatch<SetStateAction<Column[]>>,
+  setData: React.Dispatch<React.SetStateAction<T[][]>>
 ) => {
   setColumns((prevColumns) => {
     // Create arrays of selected and unselected columns
