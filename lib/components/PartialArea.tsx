@@ -10,6 +10,7 @@ import { getCellArea } from "../utils/getCellArea";
 import { areAreasEqual } from "../utils/areAreasEqual";
 import { Border, Offset } from "../types/RGTheme";
 import isEqual from "lodash.isequal";
+import { isCellInRange } from "../utils/isCellInRange";
 
 interface PartialAreaProps {
   /** The range of cells to area. */
@@ -114,24 +115,81 @@ export const PartialArea: FC<PartialAreaProps> = React.memo(
     if (areaRange.endColIdx <= parentPaneRange.startColIdx) return null;
     if (areaRange.endRowIdx <= parentPaneRange.startRowIdx) return null;
 
-    const shouldRenderTopBorder =
-      areaRange.startRowIdx >= parentPaneRange.startRowIdx &&
-      (!isFillHandlePartial ||
-        (isFillHandlePartial &&
-          fillHandleArea.startRowIdx !== focusedCellArea.endRowIdx &&
-          selectedArea.endRowIdx !== fillHandleArea.startRowIdx));
-    const shouldRenderRightBorder =
-      areaRange.endColIdx <= parentPaneRange.endColIdx &&
-      (!isFillHandlePartial || (isFillHandlePartial && fillHandleArea.endColIdx !== focusedCellArea.startColIdx));
-    const shouldRenderBottomBorder =
-      areaRange.endRowIdx <= parentPaneRange.endRowIdx &&
-      (!isFillHandlePartial || (isFillHandlePartial && fillHandleArea.endRowIdx !== focusedCellArea.startRowIdx));
-    const shouldRenderLeftBorder =
-      areaRange.startColIdx >= parentPaneRange.startColIdx &&
-      (!isFillHandlePartial ||
-        (isFillHandlePartial &&
-          fillHandleArea.startColIdx !== focusedCellArea.endColIdx &&
-          selectedArea.endColIdx !== fillHandleArea.startColIdx));
+    let shouldRenderTopBorder = false;
+    if (areaRange.startRowIdx >= parentPaneRange.startRowIdx) {
+      if (!isFillHandlePartial) {
+        shouldRenderTopBorder = true;
+      } else if (
+        selectedArea.startRowIdx > focusedCellArea.endRowIdx &&
+        selectedArea !== EMPTY_AREA &&
+        !isCellInRange(store, focusedCell, selectedArea) &&
+        fillHandleArea.startRowIdx < selectedArea.startRowIdx
+      ) {
+        shouldRenderTopBorder = true;
+      } else if (
+        fillHandleArea.startRowIdx !== focusedCellArea.endRowIdx &&
+        fillHandleArea.startRowIdx !== selectedArea.endRowIdx
+      ) {
+        shouldRenderTopBorder = true;
+      }
+    }
+
+    let shouldRenderRightBorder = false;
+    if (areaRange.endColIdx <= parentPaneRange.endColIdx) {
+      if (!isFillHandlePartial) {
+        shouldRenderRightBorder = true;
+      } else if (
+        selectedArea.startColIdx < focusedCellArea.endColIdx &&
+        selectedArea !== EMPTY_AREA &&
+        !isCellInRange(store, focusedCell, selectedArea) &&
+        fillHandleArea.endColIdx > selectedArea.endColIdx
+      ) {
+        shouldRenderRightBorder = true;
+      } else if (
+        fillHandleArea.endColIdx !== focusedCellArea.startColIdx &&
+        fillHandleArea.endColIdx !== selectedArea.startColIdx
+      ) {
+        shouldRenderRightBorder = true;
+      }
+    }
+
+    let shouldRenderBottomBorder = false;
+    if (areaRange.endRowIdx <= parentPaneRange.endRowIdx) {
+      if (!isFillHandlePartial) {
+        shouldRenderBottomBorder = true;
+      } else if (
+        selectedArea.startRowIdx < focusedCellArea.endRowIdx &&
+        selectedArea !== EMPTY_AREA &&
+        !isCellInRange(store, focusedCell, selectedArea) &&
+        fillHandleArea.endRowIdx > selectedArea.endRowIdx
+      ) {
+        shouldRenderBottomBorder = true;
+      } else if (
+        fillHandleArea.endRowIdx !== focusedCellArea.startRowIdx &&
+        fillHandleArea.endRowIdx !== selectedArea.startRowIdx
+      ) {
+        shouldRenderBottomBorder = true;
+      }
+    }
+
+    let shouldRenderLeftBorder = false;
+    if (areaRange.startColIdx >= parentPaneRange.startColIdx) {
+      if (!isFillHandlePartial) {
+        shouldRenderLeftBorder = true;
+      } else if (
+        selectedArea.startColIdx > focusedCellArea.endColIdx &&
+        selectedArea !== EMPTY_AREA &&
+        !isCellInRange(store, focusedCell, selectedArea) &&
+        fillHandleArea.startColIdx < selectedArea.startColIdx
+      ) {
+        shouldRenderLeftBorder = true;
+      } else if (
+        fillHandleArea.startColIdx !== focusedCellArea.endColIdx &&
+        fillHandleArea.startColIdx !== selectedArea.endColIdx
+      ) {
+        shouldRenderLeftBorder = true;
+      }
+    }
 
     let width = "100%";
     let height = "100%";

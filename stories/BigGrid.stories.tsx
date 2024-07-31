@@ -187,7 +187,7 @@ export const BigGrid = () => {
           id="big-grid"
           stickyTopRows={5}
           stickyLeftColumns={3}
-          stickyRightColumns={2}
+          stickyRightColumns={3}
           stickyBottomRows={4}
           styles={testStyles}
           styledRanges={toggleRanges ? styledRanges : []}

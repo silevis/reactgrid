@@ -7,9 +7,10 @@ export const checkColumnHasSpannedCell = (store: ReactGridStore, colIndex: numbe
   for (let rowIndex = 0; rowIndex < store.cells.length; rowIndex++) {
     const cell = store.cells[rowIndex][colIndex];
     const cellArea = getCellArea(store, cell);
-    console.log(cellArea, cell);
-    
-    if ("originColIndex" in cell && cellArea.endColIdx - cellArea.startColIdx > 1) {
+
+    if ("originColIndex" in cell && cellArea.endColIdx - cellArea.startColIdx > 1 && colIndex !== cell.originColIndex) {
+      console.log(cellArea, cell);
+
       return cell;
     }
   }

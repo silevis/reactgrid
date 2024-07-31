@@ -5,9 +5,6 @@ import { getCellContainerFromPoint } from "../utils/getCellContainerFromPoint.ts
 import { isTheSameCell } from "../utils/isTheSameCell.ts";
 import { updateStoreWithApiAndEventHandler } from "../utils/updateStoreWithApiAndEventHandler.ts";
 import { ReactGridStore } from "../types/ReactGridStore.ts";
-import { getPaneNameByCell } from "../utils/getPaneNameByCell.ts";
-import { getCellIndexesFromPointerLocation } from "../utils/getCellIndexesFromPointerLocation.ts";
-import { scrollTowardsSticky } from "../utils/scrollTowardsSticky.ts";
 
 export const handlePointerDown = (event: React.PointerEvent<HTMLDivElement>, storeApi: StoreApi<ReactGridStore>) => {
   const usedTouch = event.pointerType !== "mouse"; // * keep in mind there is also "pen" pointerType
@@ -39,34 +36,12 @@ export const handlePointerDown = (event: React.PointerEvent<HTMLDivElement>, sto
 
   let previousCellContainer: HTMLElement | null = null;
 
-  const { clientX, clientY } = event;
-  const { rowIndex, colIndex } = getCellIndexesFromPointerLocation(clientX, clientY);
-  const cell = store.getCellByIndexes(rowIndex, colIndex);
-
-  const PreviousPane = getPaneNameByCell(store, cell);
-
   const handlePointerMove = (event: PointerEvent) => {
     const handler = usedTouch
       ? getNewestState().currentBehavior.handlePointerMoveTouch
       : getNewestState().currentBehavior.handlePointerMove;
 
     updateWithStoreApi(event, handler);
-
-    const { clientX, clientY } = event;
-    const { rowIndex, colIndex } = getCellIndexesFromPointerLocation(clientX, clientY);
-    const currentDragOverCell = store.getCellByIndexes(rowIndex, colIndex);
-
-    if (currentDragOverCell) {
-      if (PreviousPane === "Center") {
-        scrollTowardsSticky(store, currentDragOverCell, { rowIndex, colIndex });
-      }
-      if (PreviousPane === "Left" || PreviousPane === "Right") {
-        scrollTowardsSticky(store, currentDragOverCell, { rowIndex, colIndex }, false, true);
-      }
-      if (PreviousPane === "TopCenter" || PreviousPane === "BottomCenter") {
-        scrollTowardsSticky(store, currentDragOverCell, { rowIndex, colIndex }, true);
-      }
-    }
 
     const hoveredCellContainer = getCellContainerFromPoint(event.clientX, event.clientY);
 

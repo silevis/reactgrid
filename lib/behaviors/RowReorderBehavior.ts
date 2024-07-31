@@ -13,6 +13,7 @@ import { scrollTowardsSticky } from "../utils/scrollTowardsSticky.ts";
 import { getHiddenFocusTargetLocation } from "../utils/getHiddenFocusTargetLocation.ts";
 import { getCellArea } from "../utils/getCellArea.ts";
 import { isCellInPane } from "../utils/isCellInPane.ts";
+import { checkRowHasSpannedCell } from "../utils/checkRowHasSpannedCell.ts";
 
 const devEnvironment = isDevEnvironment();
 
@@ -171,95 +172,67 @@ const handlePointerMove = (store: ReactGridStore, event: React.PointerEvent<HTML
 
       // If the destination row is in the Bottom pane
       if (isCellInPane(store, bottomCell, "BottomLeft")) {
-        // If initial selected area is fully in the Bottom pane
-        if (destinationStartRowIdx === store.paneRanges.BottomLeft.startRowIdx) {
+        if (
+          destinationStartRowIdx >= store.paneRanges.BottomLeft.startRowIdx &&
+          store.selectedArea.startRowIdx >= store.paneRanges.BottomLeft.startRowIdx
+        ) {
           linePosition = bottomCellContainer.offsetTop + bottomCellContainer.offsetHeight;
-        }
-        // If reordered selected rows are going to be fully above the Bottom pane
-        else if (destinationStartRowIdx >= store.paneRanges.BottomLeft.startRowIdx) {
+        } else if (destinationStartRowIdx >= store.paneRanges.BottomLeft.startRowIdx) {
           let rowSpannedCellTop;
-          // If initial selected area is in the Top pane and reordered selected rows are going to be partly below the Bottom pane
+
           if (store.selectedArea.startRowIdx < store.paneRanges.TopLeft.endRowIdx) {
-            // Check if there will be a spanned cell that will be partly above the Top pane - after reorder
-            rowSpannedCellTop = store.cells[store.paneRanges.TopLeft.endRowIdx + selectedAreaRowQuantity].find(
-              (cell) => {
-                const cellArea = getCellArea(store, cell);
-                return "originRowIndex" in cell && cellArea.endRowIdx - cellArea.startRowIdx > 1;
-              }
+            rowSpannedCellTop = checkRowHasSpannedCell(
+              store,
+              store.paneRanges.TopLeft.endRowIdx + selectedAreaRowQuantity
             );
           }
 
-          // Check if there will be a spanned cell that will be partly above the Bottom pane - after reorder
-          const rowSpannedCellBottom = store.cells[
+          const rowSpannedCellBottom = checkRowHasSpannedCell(
+            store,
             store.paneRanges.BottomLeft.startRowIdx + selectedAreaRowQuantity
-          ].find((cell) => {
-            const cellArea = getCellArea(store, cell);
-            return "originRowIndex" in cell && cellArea.endRowIdx - cellArea.startRowIdx > 1;
-          });
+          );
 
-          // If there is no spanned cell that will be partly above the Bottom pane - then show the line
           if (!rowSpannedCellTop && !rowSpannedCellBottom) {
             linePosition = bottomCellContainer.offsetTop + bottomCellContainer.offsetHeight;
           }
-        }
-        // Check if selected area has not spanned cell at row idx equal to the start row idx of the Bottom pane
-        else {
+        } else {
           let rowSpannedCellTop;
-          // If initial selected area is in the Top pane and reordered selected rows are going to be partly below the Bottom pane
+
           if (store.selectedArea.startRowIdx < store.paneRanges.TopLeft.endRowIdx) {
-            // Check if there will be a spanned cell that will be partly above the Top pane - after reorder
-            rowSpannedCellTop = store.cells[store.paneRanges.TopLeft.endRowIdx + selectedAreaRowQuantity].find(
-              (cell) => {
-                const cellArea = getCellArea(store, cell);
-                if (cellArea.endRowIdx - cellArea.startRowIdx > 1) {
-                  return true;
-                }
-              }
+            rowSpannedCellTop = checkRowHasSpannedCell(
+              store,
+              store.paneRanges.TopLeft.endRowIdx + selectedAreaRowQuantity
             );
           }
 
-          const rowSpannedCellBottom = store.cells[
-            store.selectedArea.startRowIdx + (destinationRowIdx + 1 - store.paneRanges.BottomLeft.startRowIdx)
-          ].find((cell) => {
-            const cellArea = getCellArea(store, cell);
-            return "originRowIndex" in cell && cellArea.endRowIdx - cellArea.startRowIdx > 1;
-          });
+          const rowSpannedCellBottom = checkRowHasSpannedCell(
+            store,
+            store.selectedArea.endRowIdx - (destinationRowIdx + 1 - store.paneRanges.BottomCenter.startRowIdx)
+          );
 
-          // Same as above - if there are no spanned cells that will be moved to the top - show the line
           if (!rowSpannedCellBottom && !rowSpannedCellTop) {
             linePosition = bottomCellContainer.offsetTop + bottomCellContainer.offsetHeight;
           }
         }
-      }
-      // If the destination row is below the Top pane but selected area start row idx is in the Top pane
-      else if (
+      } else if (
         store.selectedArea.startRowIdx < store.paneRanges.TopLeft.endRowIdx &&
         destinationRowIdx + 1 > store.paneRanges.TopLeft.endRowIdx
       ) {
         if (destinationStartRowIdx === store.paneRanges.TopLeft.endRowIdx) {
           linePosition = bottomCellContainer.offsetTop + bottomCellContainer.offsetHeight;
         } else if (destinationStartRowIdx < store.paneRanges.TopLeft.endRowIdx) {
-          // If reordered selected rows are going to be partly in the Top pane
-          // Check if there will be a spanned cell that will be partly in the Top pane - after reorder
-          const rowSpannedCell = store.cells[
+          const rowSpannedCell = checkRowHasSpannedCell(
+            store,
             store.selectedArea.endRowIdx - (destinationRowIdx + 1 - store.paneRanges.TopLeft.endRowIdx)
-          ].find((cell) => {
-            const cellArea = getCellArea(store, cell);
-            return "originRowIndex" in cell && cellArea.endRowIdx - cellArea.startRowIdx > 1;
-          });
+          );
 
-          // If there is no spanned cell that will be partly in the Top pane - then show the line
           if (!rowSpannedCell) {
             linePosition = bottomCellContainer.offsetTop + bottomCellContainer.offsetHeight;
           }
-        }
-        // If reordered selected rows are going to be fully below the Top pane - now need to check if there are no spanned cells that now will be moved to top
-        else {
-          const rowSpannedCell = store.cells[store.paneRanges.TopLeft.endRowIdx + selectedAreaRowQuantity].find(
-            (cell) => {
-              const cellArea = getCellArea(store, cell);
-              return "originRowIndex" in cell && cellArea.endRowIdx - cellArea.startRowIdx > 1;
-            }
+        } else {
+          const rowSpannedCell = checkRowHasSpannedCell(
+            store,
+            store.paneRanges.TopLeft.endRowIdx + selectedAreaRowQuantity
           );
 
           if (
@@ -270,9 +243,7 @@ const handlePointerMove = (store: ReactGridStore, event: React.PointerEvent<HTML
             linePosition = bottomCellContainer.offsetTop + bottomCellContainer.offsetHeight;
           }
         }
-      }
-      // If destination row is between the Top and Bottom panes - no need to check for spanned cells - just show the line
-      else {
+      } else {
         linePosition = bottomCellContainer.offsetTop + bottomCellContainer.offsetHeight;
       }
     }
@@ -288,33 +259,23 @@ const handlePointerMove = (store: ReactGridStore, event: React.PointerEvent<HTML
 
       // If the destination row is in the Top pane
       if (isCellInPane(store, topCell, "TopLeft")) {
-        // If initial selected area is fully in the Top pane
         if (store.selectedArea.endRowIdx <= store.paneRanges.TopLeft.endRowIdx) {
           linePosition = topCellContainer.offsetTop;
-        }
-        // If reordered selected rows are going to be fully below the Top pane
-        else if (destinationEndRowIdx <= store.paneRanges.TopLeft.endRowIdx) {
+        } else if (destinationEndRowIdx <= store.paneRanges.TopLeft.endRowIdx) {
           let rowSpannedCellBottom;
-          // If initial selected area is in the Bottom pane and reordered selected rows are going to be partly above the Top pane
+
           if (store.selectedArea.endRowIdx > store.paneRanges.BottomLeft.startRowIdx) {
-            // Check if there will be a spanned cell that will be partly below the Bottom pane - after reorder
-            rowSpannedCellBottom = store.cells[store.paneRanges.BottomLeft.startRowIdx - selectedAreaRowQuantity].find(
-              (cell) => {
-                const cellArea = getCellArea(store, cell);
-                return "originRowIndex" in cell && cellArea.endRowIdx - cellArea.startRowIdx > 1;
-              }
+            rowSpannedCellBottom = checkRowHasSpannedCell(
+              store,
+              store.paneRanges.BottomLeft.startRowIdx - selectedAreaRowQuantity
             );
           }
 
-          // Check if there will be a spanned cell that will be partly below the Top pane - after reorder
-          const rowSpannedCellTop = store.cells[store.paneRanges.TopLeft.endRowIdx - selectedAreaRowQuantity].find(
-            (cell) => {
-              const cellArea = getCellArea(store, cell);
-              return "originRowIndex" in cell && cellArea.endRowIdx - cellArea.startRowIdx > 1;
-            }
+          const rowSpannedCellTop = checkRowHasSpannedCell(
+            store,
+            store.paneRanges.TopLeft.endRowIdx - selectedAreaRowQuantity
           );
 
-          // If there is no spanned cell that will be partly below the Top pane - then show the line
           if (
             (!rowSpannedCellTop && !rowSpannedCellBottom) ||
             (rowSpannedCellTop &&
@@ -324,44 +285,30 @@ const handlePointerMove = (store: ReactGridStore, event: React.PointerEvent<HTML
             linePosition = topCellContainer.offsetTop;
           }
         }
-      }
-      // If the destination row is above the Bottom pane but selected area end row idx is in the Bottom pane
-      else if (
+      } else if (
         store.selectedArea.endRowIdx > store.paneRanges.BottomLeft.startRowIdx &&
         destinationRowIdx < store.paneRanges.BottomLeft.startRowIdx
       ) {
-        // If reordered selected rows are going to be partly in the Bottom pane
         if (destinationEndRowIdx > store.paneRanges.BottomLeft.startRowIdx) {
-          // Check if there will be a spanned cell that will be partly in the Bottom pane - after reorder
-          const rowSpannedCell = store.cells[
+          const rowSpannedCell = checkRowHasSpannedCell(
+            store,
             store.selectedArea.startRowIdx + (store.paneRanges.BottomLeft.startRowIdx - destinationRowIdx)
-          ].find((cell) => {
-            const cellArea = getCellArea(store, cell);
-            return "originRowIndex" in cell && cellArea.endRowIdx - cellArea.startRowIdx > 1;
-          });
-
-          // If there is no spanned cell that will be partly in the Bottom pane - then show the line
-          if (!rowSpannedCell) {
-            linePosition = topCellContainer.offsetTop;
-          }
-        }
-        // If reordered selected rows are going to be fully above the Bottom pane - now need to check if there are no spanned cells that now will be moved to bottom
-        else {
-          const rowSpannedCell = store.cells[store.paneRanges.BottomLeft.startRowIdx - selectedAreaRowQuantity].find(
-            (cell) => {
-              const cellArea = getCellArea(store, cell);
-              return "originRowIndex" in cell && cellArea.endRowIdx - cellArea.startRowIdx > 1;
-            }
           );
 
-          // Same as above - if there are no spanned cells that will be moved to the bottom - show the line
+          if (!rowSpannedCell) {
+            linePosition = topCellContainer.offsetTop;
+          }
+        } else {
+          const rowSpannedCell = checkRowHasSpannedCell(
+            store,
+            store.paneRanges.BottomLeft.startRowIdx - selectedAreaRowQuantity
+          );
+
           if (!rowSpannedCell) {
             linePosition = topCellContainer.offsetTop;
           }
         }
-      }
-      // If destination row is between the Top and Bottom panes - no need to check for spanned cells - just show the line
-      else {
+      } else {
         linePosition = topCellContainer.offsetTop;
       }
     }

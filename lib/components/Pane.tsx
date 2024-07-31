@@ -186,6 +186,18 @@ export const Pane: React.FC<PaneProps> = ({
         />
       )}
       <PaneGridContent range={gridContentRange} getCellOffset={getCellOffset} stickyOffsets={stickyOffsets} />
+      {isFillHandleActive && (
+        <PartialArea
+          areaRange={fillHandleArea}
+          parentPaneRange={gridContentRange}
+          parentPaneName={paneName}
+          getCellOffset={getCellOffset}
+          isFillHandlePartial
+          border={theme.fillHandle.border}
+          style={{ background: theme.focusIndicator.background }}
+          className="rgFillHandleIndicator"
+        />
+      )}
       {selectedArea && !areAreasEqual(focusedCellArea, selectedArea) && (
         <PartialArea
           areaRange={{
@@ -202,6 +214,7 @@ export const Pane: React.FC<PaneProps> = ({
           className="rgSelectionIndicator"
         />
       )}
+
       {focusedCell && (
         <PartialArea
           areaRange={focusedCellArea}
@@ -212,18 +225,6 @@ export const Pane: React.FC<PaneProps> = ({
           border={theme.focusIndicator.border}
           style={{ background: theme.focusIndicator.background }}
           className="rgFocusIndicator"
-        />
-      )}
-      {isFillHandleActive && (
-        <PartialArea
-          areaRange={fillHandleArea}
-          parentPaneRange={gridContentRange}
-          parentPaneName={paneName}
-          getCellOffset={getCellOffset}
-          isFillHandlePartial
-          border={theme.fillHandle.border}
-          style={{ background: theme.focusIndicator.background }}
-          className="rgFillHandleIndicator"
         />
       )}
     </div>

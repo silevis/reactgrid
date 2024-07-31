@@ -1,3 +1,4 @@
+import { EMPTY_AREA } from "../types/InternalModel";
 import { ReactGridStore } from "../types/ReactGridStore";
 import { getCellArea } from "./getCellArea";
 import { getColumnIdxByPointerLocation } from "./getColumnIdxByPointerLocation";
@@ -19,13 +20,20 @@ export const getFillDirection = (
 
   const currectFocusedCell = store.getCellByIndexes(store.focusedLocation.rowIndex, store.focusedLocation.colIndex);
 
-  if (!currectFocusedCell || pointerColIdx === -1) return undefined;
+  if (pointerColIdx === -1) return undefined;
 
   const selectedArea = store.selectedArea;
 
   const isSelectedArea = store.selectedArea.startRowIdx !== -1;
 
-  const cellArea = isSelectedArea ? selectedArea : getCellArea(store, currectFocusedCell);
+  let cellArea;
+  if (isSelectedArea) {
+    cellArea = selectedArea;
+  } else if (currectFocusedCell) {
+    cellArea = getCellArea(store, currectFocusedCell);
+  } else {
+    cellArea = EMPTY_AREA;
+  }
 
   const differences: { direction: FillDirection; value: number | null }[] = [];
 

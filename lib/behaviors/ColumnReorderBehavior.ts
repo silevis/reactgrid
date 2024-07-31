@@ -168,7 +168,10 @@ const handlePointerMove = (
       // If the destination column is in the Right pane
       if (isCellInPane(store, rightCell, "TopRight")) {
         // If initial selected area is fully in the Right pane
-        if (destinationStartColIdx === store.paneRanges.Right.startColIdx) {
+        if (
+          destinationStartColIdx >= store.paneRanges.Right.startColIdx &&
+          store.selectedArea.startColIdx >= store.paneRanges.Right.startColIdx
+        ) {
           linePosition = rightCellContainer.offsetLeft + rightCellContainer.offsetWidth;
         } else if (destinationStartColIdx >= store.paneRanges.Right.startColIdx) {
           let colSpannedCellLeft;

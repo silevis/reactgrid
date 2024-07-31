@@ -7,7 +7,8 @@ export const checkRowHasSpannedCell = (store: ReactGridStore, rowIndex: number):
   for (let colIndex = 0; colIndex < store.cells[rowIndex].length; colIndex++) {
     const cell = store.cells[rowIndex][colIndex];
     const cellArea = getCellArea(store, cell);
-    if ("originRowIndex" in cell && cellArea.endRowIdx - cellArea.startRowIdx > 1) {
+
+    if ("originRowIndex" in cell && cellArea.endRowIdx - cellArea.startRowIdx > 1 && rowIndex !== cell.originRowIndex) {
       return cell;
     }
   }

@@ -5,8 +5,11 @@ import { EMPTY_AREA } from "../types/InternalModel";
 import { ReactGridStore } from "../types/ReactGridStore";
 import { getCellArea } from "../utils/getCellArea";
 import { getFillDirection } from "../utils/getFillDirection";
-import { getFillSideFromFocusedLocation } from "../utils/getFillSideFromFocusedLocation";
+import { getFillSideLocation } from "../utils/getFillSideLocation";
 import isDevEnvironment from "../utils/isDevEnvironment";
+import { getCellIndexesFromPointerLocation } from "../utils/getCellIndexesFromPointerLocation";
+import { scrollTowardsSticky } from "../utils/scrollTowardsSticky";
+import { getPaneNameByCell } from "../utils/getPaneNameByCell";
 
 const devEnvironment = isDevEnvironment();
 
@@ -47,6 +50,35 @@ export const FillHandleBehavior: Behavior = {
 };
 
 const handlePointerMove = (store: ReactGridStore, event: React.PointerEvent<HTMLDivElement> | PointerEvent) => {
+  const { clientX, clientY } = event;
+  const currentPointerIdx = getCellIndexesFromPointerLocation(clientX, clientY);
+  const currentDragOverCell = store.getCellByIndexes(currentPointerIdx.rowIndex, currentPointerIdx.colIndex);
+
+  let PreviousPane;
+
+  if (store.selectedArea !== EMPTY_AREA) {
+    // Get the previous pane based on the last cell of the selected area (where the fill handle button is located)
+    PreviousPane = getPaneNameByCell(
+      store,
+      store.getCellByIndexes(store.selectedArea.endRowIdx - 1, store.selectedArea.endColIdx - 1)
+    );
+  } else {
+    // Get the previous pane based on the focused cell
+    PreviousPane = getPaneNameByCell(store, store.getFocusedCell());
+  }
+
+  if (currentDragOverCell) {
+    if (PreviousPane === "Center") {
+      scrollTowardsSticky(store, currentDragOverCell, currentPointerIdx);
+    }
+    if (PreviousPane === "Left" || PreviousPane === "Right") {
+      scrollTowardsSticky(store, currentDragOverCell, currentPointerIdx, false, true);
+    }
+    if (PreviousPane === "TopCenter" || PreviousPane === "BottomCenter") {
+      scrollTowardsSticky(store, currentDragOverCell, currentPointerIdx, true);
+    }
+  }
+
   const fillDirection = getFillDirection(store, event);
   const focusedCell = store.getCellByIndexes(store.focusedLocation.rowIndex, store.focusedLocation.colIndex);
 
@@ -54,13 +86,10 @@ const handlePointerMove = (store: ReactGridStore, event: React.PointerEvent<HTML
 
   const isSelectedArea = store.selectedArea.startRowIdx !== -1;
 
-  if (!focusedCell) return store;
-
-  const focusedCellArea = getCellArea(store, focusedCell);
+  const focusedCellArea = focusedCell ? getCellArea(store, focusedCell) : EMPTY_AREA;
 
   if (!fillDirection || fillDirection.value === null) {
     return {
-      ...store,
       fillHandleArea: EMPTY_AREA,
     };
   }
@@ -68,7 +97,6 @@ const handlePointerMove = (store: ReactGridStore, event: React.PointerEvent<HTML
   switch (fillDirection?.direction) {
     case "up": {
       return {
-        ...store,
         fillHandleArea: {
           startColIdx: isSelectedArea ? selectedArea.startColIdx : focusedCellArea.startColIdx,
           startRowIdx: fillDirection.value,
@@ -79,7 +107,6 @@ const handlePointerMove = (store: ReactGridStore, event: React.PointerEvent<HTML
     }
     case "right": {
       return {
-        ...store,
         fillHandleArea: {
           startColIdx: isSelectedArea ? selectedArea.endColIdx : focusedCellArea.endColIdx,
           startRowIdx: isSelectedArea ? selectedArea.startRowIdx : focusedCellArea.startRowIdx,
@@ -90,7 +117,6 @@ const handlePointerMove = (store: ReactGridStore, event: React.PointerEvent<HTML
     }
     case "down": {
       return {
-        ...store,
         fillHandleArea: {
           startColIdx: isSelectedArea ? selectedArea.startColIdx : focusedCellArea.startColIdx,
           startRowIdx: isSelectedArea ? selectedArea.endRowIdx : focusedCellArea.endRowIdx,
@@ -101,7 +127,6 @@ const handlePointerMove = (store: ReactGridStore, event: React.PointerEvent<HTML
     }
     case "left": {
       return {
-        ...store,
         fillHandleArea: {
           startColIdx: fillDirection.value,
           startRowIdx: isSelectedArea ? selectedArea.startRowIdx : focusedCellArea.startRowIdx,
@@ -116,11 +141,9 @@ const handlePointerMove = (store: ReactGridStore, event: React.PointerEvent<HTML
 };
 
 const handlePointerUp = (store: ReactGridStore) => {
-  const side = getFillSideFromFocusedLocation(store);
+  const fillSide = getFillSideLocation(store);
 
   const focusedCell = store.getCellByIndexes(store.focusedLocation.rowIndex, store.focusedLocation.colIndex);
-
-  if (!focusedCell) return store;
 
   const previouslySelectedArea = store.selectedArea;
 
@@ -130,7 +153,7 @@ const handlePointerUp = (store: ReactGridStore) => {
     if (store.selectedArea.startRowIdx !== -1) {
       selectedArea = store.selectedArea;
     } else {
-      selectedArea = getCellArea(store, focusedCell);
+      selectedArea = focusedCell ? getCellArea(store, focusedCell) : EMPTY_AREA;
     }
 
     store.onFillHandle?.(selectedArea, store.fillHandleArea);
@@ -148,26 +171,30 @@ const handlePointerUp = (store: ReactGridStore) => {
     };
   }
 
-  if (side === "bottom") {
+  if (fillSide === "bottom") {
     if (isPreviouslySelectedArea) {
-      newSelectedArea.startRowIdx =
-        newSelectedArea.startRowIdx - (previouslySelectedArea.endRowIdx - previouslySelectedArea.startRowIdx);
-    } else newSelectedArea.startRowIdx = newSelectedArea.startRowIdx - (focusedCell.rowSpan ?? 1);
-  } else if (side === "top") {
+      newSelectedArea.startRowIdx = store.selectedArea.startRowIdx;
+    } else {
+      newSelectedArea.startRowIdx = newSelectedArea.startRowIdx - ((focusedCell?.rowSpan ?? 1) || 1);
+    }
+  } else if (fillSide === "top") {
     if (isPreviouslySelectedArea) {
-      newSelectedArea.endRowIdx =
-        newSelectedArea.endRowIdx + (previouslySelectedArea.endRowIdx - previouslySelectedArea.startRowIdx);
-    } else newSelectedArea.endRowIdx = newSelectedArea.endRowIdx + (focusedCell.rowSpan ?? 1);
-  } else if (side === "right") {
+      newSelectedArea.endRowIdx = store.selectedArea.endRowIdx;
+    } else {
+      newSelectedArea.endRowIdx = newSelectedArea.endRowIdx + ((focusedCell?.rowSpan ?? 1) || 1);
+    }
+  } else if (fillSide === "right") {
     if (isPreviouslySelectedArea) {
-      newSelectedArea.startColIdx =
-        newSelectedArea.startColIdx - (previouslySelectedArea.endColIdx - previouslySelectedArea.startColIdx);
-    } else newSelectedArea.startColIdx = newSelectedArea.startColIdx - (focusedCell.colSpan ?? 1);
-  } else if (side === "left") {
+      newSelectedArea.startColIdx = store.selectedArea.startColIdx;
+    } else {
+      newSelectedArea.startColIdx = newSelectedArea.startColIdx - ((focusedCell?.colSpan ?? 1) || 1);
+    }
+  } else if (fillSide === "left") {
     if (isPreviouslySelectedArea) {
-      newSelectedArea.endColIdx =
-        newSelectedArea.endColIdx + (previouslySelectedArea.endColIdx - previouslySelectedArea.startColIdx);
-    } else newSelectedArea.endColIdx = newSelectedArea.endColIdx + (focusedCell.colSpan ?? 1);
+      newSelectedArea.endColIdx = store.selectedArea.endColIdx;
+    } else {
+      newSelectedArea.endColIdx = newSelectedArea.endColIdx + ((focusedCell?.colSpan ?? 1) || 1);
+    }
   }
 
   return {
