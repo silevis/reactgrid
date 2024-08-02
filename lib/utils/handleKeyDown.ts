@@ -1,4 +1,4 @@
-import { NumericalRange } from "../types/CellMatrix.ts";
+import { NumericalRange } from "../types/PublicModel.ts";
 import { getCellArea } from "./getCellArea.ts";
 import { areAreasEqual } from "./areAreasEqual.ts";
 import { findMinimalSelectedArea } from "./findMinimalSelectedArea.ts";

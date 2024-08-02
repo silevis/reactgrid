@@ -1,6 +1,6 @@
 import isEqual from "lodash.isequal";
 import { Behavior } from "../types/Behavior";
-import { NumericalRange } from "../types/CellMatrix";
+import { NumericalRange } from "../types/PublicModel";
 import { EMPTY_AREA } from "../types/InternalModel";
 import { ReactGridStore } from "../types/ReactGridStore";
 import { getCellArea } from "../utils/getCellArea";

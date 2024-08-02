@@ -1,7 +1,5 @@
 import React from "react";
-
 import { Behavior, BehaviorId } from "./Behavior";
-import { NumericalRange } from "./CellMatrix";
 import { IndexedLocation, NestedStylesPartial } from "./InternalModel";
 import { RGTheme } from "./RGTheme";
 
@@ -76,6 +74,13 @@ export type CellContextType = {
   containerStyle: React.CSSProperties;
 
   isFocused: boolean;
+};
+
+export type NumericalRange = {
+  startRowIdx: number;
+  endRowIdx: number;
+  startColIdx: number;
+  endColIdx: number;
 };
 
 export type StyledRange = {

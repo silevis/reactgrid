@@ -1,4 +1,4 @@
-import { NumericalRange } from "../../lib/types/CellMatrix";
+import { NumericalRange } from "../../lib/types/PublicModel";
 
 interface CellData {
   type: "text" | "number" | "date";

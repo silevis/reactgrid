@@ -1,4 +1,4 @@
-import { NumericalRange } from "./CellMatrix";
+import { NumericalRange } from "./PublicModel";
 import { Cell } from "./PublicModel";
 
 export interface StickyOffsets {

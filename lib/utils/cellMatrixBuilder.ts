@@ -53,7 +53,7 @@ export const cellMatrixBuilder = <TRowIdx extends number = number, TColumnIdx ex
   columns: Column[],
 
   builder: ({ ...tools }: CellMatrixBuilderTools) => void
-): CellMatrix<TRowIdx, TColumnIdx> => {
+): CellMatrix => {
   const cells: (Cell | SpanMember)[][] = [];
 
   // Initialize each row in cells array to ensure it's not undefined

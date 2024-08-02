@@ -1,4 +1,4 @@
-import { NumericalRange } from "../types/CellMatrix";
+import { NumericalRange } from "../types/PublicModel";
 import { ReactGridStore } from "../types/ReactGridStore";
 
 /**

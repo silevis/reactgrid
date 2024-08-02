@@ -1,5 +1,4 @@
-import { NumericalRange } from "../types/CellMatrix.ts";
-import { Cell, SpanMember } from "../types/PublicModel.ts";
+import { Cell, SpanMember, NumericalRange } from "../types/PublicModel.ts";
 import { isCellSpanned } from "./isCellSpanned.ts";
 import { getOriginCell } from "./getOriginCell.ts";
 import { ReactGridStore } from "../types/ReactGridStore.ts";

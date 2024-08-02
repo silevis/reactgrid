@@ -1,5 +1,4 @@
-import { Column, NumberCell, Row, TextCell } from "../../lib/main";
-import { HeaderCell } from "../cellTemplates/HeaderCell";
+import { Column, HeaderCell, NumberCell, Row, TextCell } from "../../lib/main";
 
 export const initialColumns: Column[] = [
   { width: "150px", resizable: true, reorderable: true, minWidth: 50 },

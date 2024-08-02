@@ -1,4 +1,4 @@
-import { NumericalRange } from "../types/CellMatrix.ts";
+import { NumericalRange } from "../types/PublicModel.ts";
 import { ReactGridStore } from "../types/ReactGridStore.ts";
 import { getCellArea } from "./getCellArea.ts";
 

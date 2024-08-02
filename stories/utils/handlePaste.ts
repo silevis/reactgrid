@@ -1,4 +1,4 @@
-import { NumericalRange } from "../../lib/types/CellMatrix";
+import { NumericalRange } from "../../lib/types/PublicModel";
 
 export const handlePaste = <T>(
   selectedArea: NumericalRange,

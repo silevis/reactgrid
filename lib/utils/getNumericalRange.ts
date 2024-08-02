@@ -1,4 +1,4 @@
-import { NumericalRange } from "../types/CellMatrix.ts";
+import { NumericalRange } from "../types/PublicModel.ts";
 import { Range } from "../types/PublicModel.ts";
 import { areAreasEqual } from "./areAreasEqual.ts";
 import { EMPTY_AREA } from "../types/InternalModel.ts";

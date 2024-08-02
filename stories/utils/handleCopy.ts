@@ -1,4 +1,4 @@
-import { NumericalRange } from "../../lib/types/CellMatrix";
+import { NumericalRange } from "../../lib/types/PublicModel";
 
 export const handleCopy = <T>(data: T[][], selectedArea: NumericalRange) => {
   // copy the data from the selected area to the clipboard

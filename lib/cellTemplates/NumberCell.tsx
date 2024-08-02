@@ -25,7 +25,7 @@ export const NumberCell: FC<NumberCellProps> = ({
   const ctx = useCellContext();
   const targetInputRef = useRef<HTMLTextAreaElement>(null);
   const [isEditMode, setEditMode] = useState(false);
-
+  const [currentValue, setCurrentValue] = useState(initialValue || 0);
   const { handleDoubleTouch } = useDoubleTouch(ctx, setEditMode);
 
   const isValid = validator ? validator(Number(initialValue)) : true;
@@ -41,13 +41,16 @@ export const NumberCell: FC<NumberCellProps> = ({
   }
 
   useEffect(() => {
+    if (initialValue !== currentValue) {
+      setCurrentValue(initialValue || 0);
+    }
+
     if (initialValue) targetInputRef.current?.setSelectionRange(textToDisplay.length, textToDisplay.length);
-  }, [isEditMode, textToDisplay]);
+  }, [currentValue, initialValue, isEditMode, textToDisplay]);
 
   return (
     <CellWrapper
       onTouchEnd={handleDoubleTouch}
-      style={{ padding: ".2rem", textAlign: "center", outline: "none" }}
       onDoubleClick={() => {
         setEditMode(true);
       }}
@@ -59,12 +62,16 @@ export const NumberCell: FC<NumberCellProps> = ({
           e.preventDefault();
           e.stopPropagation();
         }
+        if (e.key === "Backspace") {
+          e.stopPropagation();
+          onValueChanged(0);
+        }
       }}
       targetInputRef={targetInputRef}
     >
       {isEditMode ? (
         <textarea
-          defaultValue={initialValue.toString()}
+          value={currentValue}
           onBlur={(e) => {
             onValueChanged(Number(e.currentTarget.value));
             setEditMode(false);
@@ -84,6 +91,7 @@ export const NumberCell: FC<NumberCellProps> = ({
             fontSize: "inherit",
             fontFamily: "inherit",
           }}
+          onChange={(e) => setCurrentValue(Number(e.currentTarget.value))}
           onKeyDown={(e) => {
             if (e.key === "Escape") {
               setEditMode(false);

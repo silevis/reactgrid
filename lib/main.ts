@@ -5,6 +5,7 @@ export type * from "./types/Behavior";
 
 export { TextCell } from "./cellTemplates/TextCell";
 export { NumberCell } from "./cellTemplates/NumberCell";
+export { HeaderCell } from "./cellTemplates/HeaderCell";
 
 export { default as CellWrapper } from "./components/CellWrapper";
 export { useCellContext } from "./components/CellContext";

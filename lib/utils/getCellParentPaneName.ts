@@ -1,4 +1,4 @@
-import { NumericalRange } from "../types/CellMatrix.ts";
+import { NumericalRange } from "../types/PublicModel.ts";
 import { PaneName } from "../types/InternalModel.ts";
 import { Cell } from "../types/PublicModel.ts";
 import { ReactGridStore } from "../types/ReactGridStore.ts";

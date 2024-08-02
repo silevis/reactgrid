@@ -9,9 +9,8 @@ import { handleFill } from "./utils/handleFill";
 import { handleColumnReorder } from "./utils/handleColumnReorder";
 import { handleResizeColumn } from "./utils/handleResizeColumn";
 import { handleRowReorder } from "./utils/handleRowReorder";
-import { HeaderCell } from "./cellTemplates/HeaderCell";
 import React from "react";
-import { DateCell } from "./cellTemplates/DateCell";
+import { HeaderCell } from "../lib/main";
 
 interface CellData {
   type: "text" | "number" | "date";

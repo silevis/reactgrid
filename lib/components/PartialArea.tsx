@@ -1,5 +1,5 @@
 import React, { CSSProperties, FC } from "react";
-import { NumericalRange } from "../types/CellMatrix";
+import { NumericalRange } from "../types/PublicModel";
 import { EMPTY_AREA, GetCellOffsets, PaneName } from "../types/InternalModel";
 import { useTheme } from "../hooks/useTheme";
 import { useReactGridId } from "./ReactGridIdProvider";

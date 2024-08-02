@@ -1,4 +1,4 @@
-import { NumericalRange } from "../types/CellMatrix";
+import { NumericalRange } from "../types/PublicModel";
 
 export const areAreasEqual = (area1: NumericalRange, area2: NumericalRange): boolean => {
   return (

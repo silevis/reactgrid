@@ -1,5 +1,5 @@
 import React, { CSSProperties, useCallback } from "react";
-import { NumericalRange } from "../types/CellMatrix";
+import { NumericalRange } from "../types/PublicModel";
 import { EMPTY_AREA, GetCellOffsets, PaneName, StickyOffsets } from "../types/InternalModel";
 import { isSpanMember } from "../utils/isSpanMember";
 import { areAreasEqual } from "../utils/areAreasEqual";

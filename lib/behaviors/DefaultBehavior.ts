@@ -1,5 +1,5 @@
 import { Behavior } from "../types/Behavior.ts";
-import { NumericalRange } from "../types/CellMatrix.ts";
+import { NumericalRange } from "../types/PublicModel.ts";
 import { getCellArea } from "../utils/getCellArea.ts";
 import { getCellContainerFromPoint } from "../utils/getCellContainerFromPoint.ts";
 import { getCellContainerLocation } from "../utils/getCellContainerLocation.ts";
