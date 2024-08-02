@@ -25,7 +25,6 @@ export const NumberCell: FC<NumberCellProps> = ({
   const ctx = useCellContext();
   const targetInputRef = useRef<HTMLTextAreaElement>(null);
   const [isEditMode, setEditMode] = useState(false);
-  const [currentValue, setCurrentValue] = useState(initialValue || 0);
   const { handleDoubleTouch } = useDoubleTouch(ctx, setEditMode);
 
   const isValid = validator ? validator(Number(initialValue)) : true;
@@ -41,12 +40,8 @@ export const NumberCell: FC<NumberCellProps> = ({
   }
 
   useEffect(() => {
-    if (initialValue !== currentValue) {
-      setCurrentValue(initialValue || 0);
-    }
-
     if (initialValue) targetInputRef.current?.setSelectionRange(textToDisplay.length, textToDisplay.length);
-  }, [currentValue, initialValue, isEditMode, textToDisplay]);
+  }, [isEditMode, textToDisplay]);
 
   return (
     <CellWrapper
@@ -57,13 +52,11 @@ export const NumberCell: FC<NumberCellProps> = ({
       onKeyDown={(e) => {
         if (!isEditMode && (inNumericKey(e.keyCode) || e.key === "Enter")) {
           setEditMode(true);
-        }
-        if (!isEditMode && e.key === "Enter") {
-          e.preventDefault();
-          e.stopPropagation();
-        }
-        if (e.key === "Backspace") {
-          e.stopPropagation();
+          if (e.key === "Enter") {
+            e.preventDefault();
+            e.stopPropagation();
+          }
+        } else if (e.key === "Backspace") {
           onValueChanged(0);
         }
       }}
@@ -71,7 +64,7 @@ export const NumberCell: FC<NumberCellProps> = ({
     >
       {isEditMode ? (
         <textarea
-          value={currentValue}
+          defaultValue={initialValue.toString()}
           onBlur={(e) => {
             onValueChanged(Number(e.currentTarget.value));
             setEditMode(false);
@@ -91,7 +84,6 @@ export const NumberCell: FC<NumberCellProps> = ({
             fontSize: "inherit",
             fontFamily: "inherit",
           }}
-          onChange={(e) => setCurrentValue(Number(e.currentTarget.value))}
           onKeyDown={(e) => {
             if (e.key === "Escape") {
               setEditMode(false);

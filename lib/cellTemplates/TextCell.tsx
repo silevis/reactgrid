@@ -14,49 +14,34 @@ export const TextCell: FC<TextCellProps> = ({ value: initialValue, onValueChange
   const ctx = useCellContext();
   const targetInputRef = useRef<HTMLTextAreaElement>(null);
   const [isEditMode, setEditMode] = useState(false);
-  const [currentValue, setCurrentValue] = useState(initialValue || "");
   const { handleDoubleTouch } = useDoubleTouch(ctx, setEditMode);
 
   useEffect(() => {
-    if (initialValue !== currentValue) {
-      setCurrentValue(initialValue || "");
-    }
-
-    if (isEditMode && targetInputRef.current) {
-      targetInputRef.current.setSelectionRange(currentValue.length, currentValue.length);
-    }
-  }, [isEditMode, currentValue, initialValue]);
+    if (initialValue) targetInputRef.current?.setSelectionRange(initialValue.length, initialValue.length);
+  }, [isEditMode, initialValue]);
 
   return (
     <CellWrapper
       onTouchEnd={handleDoubleTouch}
+      style={{ padding: ".2rem", textAlign: "center", outline: "none" }}
       onDoubleClick={() => {
-        if (ctx.isFocused) {
-          setEditMode(true);
-        }
+        ctx.isFocused && setEditMode(true);
       }}
       onKeyDown={(e) => {
-        if (!isEditMode) {
-          if (isAlphaNumericWithoutModifiers(e)) {
-            setCurrentValue("");
-            onValueChanged("");
-            setEditMode(true);
-          }
-          if (e.key === "Enter") {
+        if (isAlphaNumericWithoutModifiers(e) || e.key === "Enter") {
+          setEditMode(true);
+          if (e.key === "Enter" && !isEditMode) {
             e.preventDefault();
             e.stopPropagation();
-            setEditMode(true);
           }
-          if (e.key === "Backspace") {
-            setCurrentValue("");
-            onValueChanged("");
-          }
+        } else if (e.key === "Backspace") {
+          onValueChanged("");
         }
       }}
     >
       {isEditMode ? (
         <textarea
-          value={currentValue}
+          defaultValue={initialValue}
           style={{
             resize: "none",
             overflowY: "hidden",
@@ -72,7 +57,6 @@ export const TextCell: FC<TextCellProps> = ({ value: initialValue, onValueChange
             fontSize: "inherit",
             fontFamily: "inherit",
           }}
-          onChange={(e) => setCurrentValue(e.currentTarget.value)}
           onBlur={(e) => {
             onValueChanged(e.currentTarget.value);
             setEditMode(false);
@@ -98,7 +82,7 @@ export const TextCell: FC<TextCellProps> = ({ value: initialValue, onValueChange
           ref={targetInputRef}
         />
       ) : (
-        currentValue
+        initialValue
       )}
     </CellWrapper>
   );
