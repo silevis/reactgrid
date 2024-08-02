@@ -28,7 +28,7 @@ export interface ReactGridStoreProps {
   reactGridRef?: HTMLDivElement;
   hiddenFocusTargetRef?: HTMLDivElement;
 
-  behaviors: Record<BehaviorId, Behavior>;
+  behaviors?: Partial<Record<BehaviorId, Behavior>>;
   currentBehavior: Behavior;
 
   resizingColIdx?: number;
@@ -98,7 +98,6 @@ export interface ReactGridStore extends ReactGridStoreProps {
 
   readonly getStyledRanges: (range?: Range) => StyledRange[] | [];
 
-  readonly setBehaviors: (behaviors: Record<BehaviorId, Behavior>) => void;
   readonly getBehavior: (behaviorId: BehaviorId) => Behavior;
 
   readonly setExternalData: (rgData: Partial<ReactGridStoreProps>) => void;

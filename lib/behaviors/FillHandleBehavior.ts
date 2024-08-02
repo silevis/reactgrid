@@ -56,7 +56,7 @@ const handlePointerMove = (store: ReactGridStore, event: React.PointerEvent<HTML
 
   let PreviousPane;
 
-  if (store.selectedArea !== EMPTY_AREA) {
+  if (!isEqual(store.selectedArea, EMPTY_AREA)) {
     // Get the previous pane based on the last cell of the selected area (where the fill handle button is located)
     PreviousPane = getPaneNameByCell(
       store,

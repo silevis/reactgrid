@@ -113,7 +113,7 @@ export interface ReactGridProps {
 
   enableRowSelectionOnFirstColumn?: boolean;
 
-  behaviors?: Record<BehaviorId, Behavior>;
+  behaviors?: Partial<Record<BehaviorId, Behavior>>;
 
   initialFocusLocation?: IndexedLocation;
   initialSelectedRange?: Range;

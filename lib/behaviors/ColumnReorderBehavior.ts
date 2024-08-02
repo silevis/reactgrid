@@ -154,9 +154,19 @@ const handlePointerMove = (
 
   let linePosition = undefined;
 
+  const crossesLeftPane =
+    store.selectedArea.startColIdx < store.paneRanges.Left.endColIdx &&
+    store.selectedArea.endColIdx > store.paneRanges.Left.endColIdx;
+  const crossesRightPane =
+    store.selectedArea.startColIdx < store.paneRanges.Right.startColIdx &&
+    store.selectedArea.endColIdx > store.paneRanges.Right.startColIdx;
+
+  if (crossesLeftPane || crossesRightPane) {
+    linePosition = undefined;
+  }
   // Determine the destination column index based on the cursor position and line position
   // Case 1 - Cursor is moving to the right of the selected columns
-  if (event.clientX > cellContainer.getBoundingClientRect().left + selectedAreaWidth) {
+  else if (event.clientX > cellContainer.getBoundingClientRect().left + selectedAreaWidth) {
     destinationColIdx = minimalSelection.endColIdx - 1;
 
     if (getCellPaneOverlap(store, { rowIndex: 0, colIndex: destinationColIdx }, "Right")) {
@@ -167,13 +177,7 @@ const handlePointerMove = (
 
       // If the destination column is in the Right pane
       if (isCellInPane(store, rightCell, "TopRight")) {
-        // If initial selected area is fully in the Right pane
-        if (
-          destinationStartColIdx >= store.paneRanges.Right.startColIdx &&
-          store.selectedArea.startColIdx >= store.paneRanges.Right.startColIdx
-        ) {
-          linePosition = rightCellContainer.offsetLeft + rightCellContainer.offsetWidth;
-        } else if (destinationStartColIdx >= store.paneRanges.Right.startColIdx) {
+        if (destinationStartColIdx >= store.paneRanges.Right.startColIdx) {
           let colSpannedCellLeft;
 
           if (store.selectedArea.startColIdx < store.paneRanges.TopLeft.endColIdx) {
@@ -183,15 +187,15 @@ const handlePointerMove = (
             );
           }
 
-          const colSpannedCellRight = checkColumnHasSpannedCell(
-            store,
-            store.paneRanges.Right.startColIdx + selectedAreaColQuantity
-          );
+          let colSpannedCellRight;
+          if (store.selectedArea.endColIdx <= store.paneRanges.Right.startColIdx) {
+            colSpannedCellRight = checkColumnHasSpannedCell(
+              store,
+              store.paneRanges.Right.startColIdx + selectedAreaColQuantity
+            );
+          }
 
-          if (
-            (!colSpannedCellLeft && !colSpannedCellRight) ||
-            (colSpannedCellRight && destinationStartColIdx === store.paneRanges.Right.startColIdx)
-          ) {
+          if (!colSpannedCellLeft && !colSpannedCellRight) {
             linePosition = rightCellContainer.offsetLeft + rightCellContainer.offsetWidth;
           }
         } else {

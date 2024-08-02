@@ -1,5 +1,4 @@
 import { NumericalRange } from "../../lib/types/CellMatrix";
-import { parseLocaleNumber } from "../../lib/utils/parseLocaleNumber";
 
 interface CellData {
   type: "text" | "number" | "date";

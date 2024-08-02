@@ -159,9 +159,19 @@ const handlePointerMove = (store: ReactGridStore, event: React.PointerEvent<HTML
 
   let linePosition = undefined;
 
+  const crossesBottomLeftPane =
+    store.selectedArea.startRowIdx < store.paneRanges.BottomLeft.startRowIdx &&
+    store.selectedArea.endRowIdx > store.paneRanges.BottomLeft.startRowIdx;
+  const crossesTopLeftPane =
+    store.selectedArea.startRowIdx < store.paneRanges.TopLeft.endRowIdx &&
+    store.selectedArea.endRowIdx > store.paneRanges.TopLeft.endRowIdx;
+
+  if (crossesBottomLeftPane || crossesTopLeftPane) {
+    linePosition = undefined;
+  }
   // Determine the destination row index based on the cursor position and line position
   // Case 1 - Cursor is moving below the selected rows
-  if (event.clientY > cellContainer.getBoundingClientRect().top + selectedAreaHeight) {
+  else if (event.clientY > cellContainer.getBoundingClientRect().top + selectedAreaHeight) {
     destinationRowIdx = minimalSelection.endRowIdx - 1;
 
     if (getCellPaneOverlap(store, { rowIndex: destinationRowIdx, colIndex: 0 }, "BottomCenter")) {
@@ -172,12 +182,7 @@ const handlePointerMove = (store: ReactGridStore, event: React.PointerEvent<HTML
 
       // If the destination row is in the Bottom pane
       if (isCellInPane(store, bottomCell, "BottomLeft")) {
-        if (
-          destinationStartRowIdx >= store.paneRanges.BottomLeft.startRowIdx &&
-          store.selectedArea.startRowIdx >= store.paneRanges.BottomLeft.startRowIdx
-        ) {
-          linePosition = bottomCellContainer.offsetTop + bottomCellContainer.offsetHeight;
-        } else if (destinationStartRowIdx >= store.paneRanges.BottomLeft.startRowIdx) {
+        if (destinationStartRowIdx >= store.paneRanges.BottomLeft.startRowIdx) {
           let rowSpannedCellTop;
 
           if (store.selectedArea.startRowIdx < store.paneRanges.TopLeft.endRowIdx) {
@@ -187,10 +192,13 @@ const handlePointerMove = (store: ReactGridStore, event: React.PointerEvent<HTML
             );
           }
 
-          const rowSpannedCellBottom = checkRowHasSpannedCell(
-            store,
-            store.paneRanges.BottomLeft.startRowIdx + selectedAreaRowQuantity
-          );
+          let rowSpannedCellBottom;
+          if (store.selectedArea.endRowIdx <= store.paneRanges.BottomLeft.startRowIdx) {
+            rowSpannedCellBottom = checkRowHasSpannedCell(
+              store,
+              store.paneRanges.BottomLeft.startRowIdx + selectedAreaRowQuantity
+            );
+          }
 
           if (!rowSpannedCellTop && !rowSpannedCellBottom) {
             linePosition = bottomCellContainer.offsetTop + bottomCellContainer.offsetHeight;

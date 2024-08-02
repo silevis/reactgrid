@@ -108,9 +108,9 @@ export const SpannedHeaders = () => {
         }
         if (i === 2 && j === 1) {
           return {
-            type: "date",
-            value: new Date(),
-            template: DateCell,
+            type: "text",
+            value: `[${i.toString()}:${j.toString()}]`,
+            template: TextCell,
             colSpan: 2,
           };
         }

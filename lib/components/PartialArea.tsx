@@ -321,22 +321,41 @@ export const PartialArea: FC<PartialAreaProps> = React.memo(
           />
           {currentBehavior.id !== CellSelectionBehavior.id && shouldEnableFillHandle && (
             <div
-              className="rg-fill-handle"
-              style={{
-                position: "absolute",
-                right: -5,
-                bottom: -5,
-                width: 6.5,
-                height: 6.5,
-                backgroundColor: isFillHandlePartial ? areaBorder.color : theme.focusIndicator.border.color,
-                cursor: "crosshair",
-                pointerEvents: "auto",
-                touchAction: "none",
-                border: "2px solid #fff",
-                borderRadius: "50%",
+              className="rg-touch-fill-handle"
+              style={
+                {
+                  position: "absolute",
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  right: -15,
+                  bottom: -15,
+                  width: 30,
+                  height: 30,
+                  pointerEvents: "auto",
+                  touchAction: "none",
+                } as CSSProperties
+              }
+              onPointerDown={(event) => {
+                if (event.pointerType !== "mouse") {
+                  setCurrentBehavior(FillHandleBehavior);
+                }
               }}
-              onPointerDown={() => setCurrentBehavior(FillHandleBehavior)}
-            />
+            >
+              <div
+                className="rg-fill-handle"
+                style={{
+                  width: 6.5,
+                  height: 6.5,
+                  backgroundColor: isFillHandlePartial ? areaBorder.color : theme.focusIndicator.border.color,
+                  cursor: "crosshair",
+                  pointerEvents: "auto",
+                  border: "2px solid #fff",
+                  borderRadius: "50%",
+                }}
+                onPointerDown={() => setCurrentBehavior(FillHandleBehavior)}
+              />
+            </div>
           )}
         </div>
       </>

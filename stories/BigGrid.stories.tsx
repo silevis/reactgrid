@@ -14,11 +14,10 @@ import { handleCopy } from "./utils/handleCopy";
 import { handleColumnReorder } from "./utils/handleColumnReorder";
 import { handleResizeColumn } from "./utils/handleResizeColumn";
 import { handleRowReorder } from "./utils/handleRowReorder";
-import { DateCell } from "./cellTemplates/DateCell";
 
 interface CellData {
   type: "text" | "number" | "date";
-  value: string | number | Date;
+  value: string | number;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   template: React.ComponentType<any>;
 
@@ -69,11 +68,21 @@ const generateCellData = (i: number, j: number): CellData | null => {
   // if (i === 5 && j === 8) return null;
 
   if (i === 0) return { type: "text", value: `Col ${j}`, template: TextCell, isFocusable: false };
-  if (i === 0 && j === 0) return { type: "number", value: 100, template: NumberCell };
+  if (i === 5 && j === 3) return { type: "number", value: 100, template: NumberCell, format: myNumberFormat };
   if (i === 1 && j === 3)
-    return { type: "date", value: new Date(), template: DateCell, format: myNumberFormat, colSpan: 2 };
+    return {
+      type: "text",
+      value: "Lorem ipsum dolor sit amet",
+      template: TextCell,
+      colSpan: 2,
+    };
   if (i === 1 && j === 23)
-    return { type: "date", value: new Date(), template: DateCell, format: myNumberFormat, colSpan: 2 };
+    return {
+      type: "text",
+      value: "Lorem ipsum dolor sit amet",
+      template: TextCell,
+      colSpan: 2,
+    };
   if (i === 3 && j === 3)
     return { type: "text", value: "Lorem ipsum dolor sit amet", template: TextCell, colSpan: 2, rowSpan: 2 };
   if (i === 5 && j === 4)
@@ -166,6 +175,7 @@ export const BigGrid = () => {
                 return next;
               });
             },
+            ...(cell.format && { format: cell.format }),
           },
           {
             ...(cell?.isFocusable === false && { isFocusable: cell.isFocusable }),
@@ -187,7 +197,7 @@ export const BigGrid = () => {
           id="big-grid"
           stickyTopRows={5}
           stickyLeftColumns={3}
-          stickyRightColumns={3}
+          stickyRightColumns={4}
           stickyBottomRows={4}
           styles={testStyles}
           styledRanges={toggleRanges ? styledRanges : []}

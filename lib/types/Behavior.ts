@@ -2,14 +2,7 @@ import React from "react";
 
 import { ReactGridStore } from "./ReactGridStore.ts";
 
-export type BehaviorId =
-  | "Default"
-  | "CellSelection"
-  | "ColumnReorder"
-  | "RowReorder"
-  | "ResizeColumn"
-  | "FillHandle"
-  | string;
+export type BehaviorId = "Default" | "CellSelection" | "ColumnReorder" | "RowReorder" | "ResizeColumn" | "FillHandle";
 
 export type HandlerFn<TEvent extends React.SyntheticEvent | Event> = (
   event: TEvent,

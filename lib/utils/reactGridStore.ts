@@ -7,6 +7,8 @@ import { ReactGridStore, ReactGridStoreProps } from "../types/ReactGridStore.ts"
 import { FillHandleBehavior } from "../behaviors/FillHandleBehavior.ts";
 import { ColumnReorderBehavior } from "../behaviors/ColumnReorderBehavior.ts";
 import { getHiddenTargetFocusByIdx } from "./getHiddenTargetFocusByIdx.ts";
+import { RowReorderBehavior } from "../behaviors/RowReorderBehavior.ts";
+import { ResizeColumnBehavior } from "../behaviors/ResizeColumnBehavior.ts";
 
 type ReactGridStores = Record<string, StoreApi<ReactGridStore>>;
 
@@ -31,8 +33,10 @@ const DEFAULT_STORE_PROPS: ReactGridStoreProps = {
   behaviors: {
     Default: DefaultBehavior(),
     CellSelection: CellSelectionBehavior,
-    FillHandle: FillHandleBehavior,
     ColumnReorder: ColumnReorderBehavior,
+    RowReorder: RowReorderBehavior,
+    ResizeColumn: ResizeColumnBehavior,
+    FillHandle: FillHandleBehavior,
   },
   styledRanges: [],
   onFillHandle: undefined,
@@ -78,7 +82,7 @@ export function initReactGridStore(id: string, initialProps?: Partial<ReactGridS
           return column;
         },
         setExternalData: (externalData) => {
-          return set(() => ({ ...externalData }));
+          return set(() => ({ ...externalData, behaviors: { ...get().behaviors, ...externalData.behaviors } }));
         },
         getColumnAmount: () => get().columns.length,
         getColumnCells: (columnIdx: number) => {
@@ -171,7 +175,6 @@ export function initReactGridStore(id: string, initialProps?: Partial<ReactGridS
         assignReactGridRef: (reactGridRef) => set(() => ({ reactGridRef })),
         assignHiddenFocusTargetRef: (hiddenFocusTargetRef) => set(() => ({ hiddenFocusTargetRef })),
 
-        setBehaviors: (behaviors) => set(() => ({ ...get().behaviors, ...behaviors })),
         getBehavior: (behaviorId) => {
           const behavior = get().behaviors?.[behaviorId];
 
