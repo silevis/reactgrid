@@ -28,7 +28,7 @@ export const initialGridData: CellData[][] = [headerRow, ...dataRows].map((row, 
   row.map((cellValue, index) => {
     if (rowIdx === 0) {
       return {
-        type: "text",
+        type: "header",
         value: cellValue,
         template: HeaderCell,
         isFocusable: false,
@@ -59,7 +59,7 @@ export const initialGridData: CellData[][] = [headerRow, ...dataRows].map((row, 
 );
 
 export interface CellData {
-  type: "text" | "number" | "date";
+  type: "text" | "number" | "date" | "header";
   value: string | number | Date;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   template: React.ComponentType<any>;

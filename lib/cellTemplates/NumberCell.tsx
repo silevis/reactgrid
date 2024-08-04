@@ -25,22 +25,27 @@ export const NumberCell: FC<NumberCellProps> = ({
   const ctx = useCellContext();
   const targetInputRef = useRef<HTMLTextAreaElement>(null);
   const [isEditMode, setEditMode] = useState(false);
+  const [currentValue, setCurrentValue] = useState(initialValue || 0);
   const { handleDoubleTouch } = useDoubleTouch(ctx, setEditMode);
 
   const isValid = validator ? validator(Number(initialValue)) : true;
 
-  let textToDisplay = initialValue.toString();
+  let textToDisplay = currentValue.toString();
 
-  if (hideZero && initialValue === 0) {
+  if (hideZero && currentValue === 0) {
     textToDisplay = "";
   } else if (format) {
-    textToDisplay = format.format(initialValue);
+    textToDisplay = format.format(currentValue);
   } else if (!isValid && errorMessage) {
     textToDisplay = errorMessage;
   }
 
   useEffect(() => {
-    if (initialValue) targetInputRef.current?.setSelectionRange(textToDisplay.length, textToDisplay.length);
+    setCurrentValue(initialValue || 0);
+  }, [initialValue]);
+
+  useEffect(() => {
+    if (targetInputRef.current) targetInputRef.current?.setSelectionRange(textToDisplay.length, textToDisplay.length);
   }, [isEditMode, textToDisplay]);
 
   return (
@@ -50,13 +55,17 @@ export const NumberCell: FC<NumberCellProps> = ({
         setEditMode(true);
       }}
       onKeyDown={(e) => {
-        if (!isEditMode && (inNumericKey(e.keyCode) || e.key === "Enter")) {
+        if (!isEditMode && inNumericKey(e.keyCode)) {
+          setCurrentValue(0);
+          onValueChanged(0);
           setEditMode(true);
-          if (e.key === "Enter") {
-            e.preventDefault();
-            e.stopPropagation();
-          }
-        } else if (e.key === "Backspace") {
+        } else if (!isEditMode && e.key === "Enter") {
+          e.preventDefault();
+          e.stopPropagation();
+          setCurrentValue(initialValue || 0);
+          setEditMode(true);
+        } else if (!isEditMode && e.key === "Backspace") {
+          setCurrentValue(0);
           onValueChanged(0);
         }
       }}
@@ -64,7 +73,8 @@ export const NumberCell: FC<NumberCellProps> = ({
     >
       {isEditMode ? (
         <textarea
-          defaultValue={initialValue.toString()}
+          value={currentValue}
+          onChange={(e) => setCurrentValue(Number(e.currentTarget.value))}
           onBlur={(e) => {
             onValueChanged(Number(e.currentTarget.value));
             setEditMode(false);

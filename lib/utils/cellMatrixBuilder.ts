@@ -23,32 +23,10 @@ interface CellMatrixBuilderTools {
  * It's `setCell` method infers the `props` type based on the provided `Template`
  * so that you don't have to specify it manually.
  *
- * You can also provide `RowIdx` and `ColumnIdx` types to make sure you don't make any typos
- * when defining rows and columns and providing coordinates for your cells.
- *
- * @example
- * type RowIdx = 2;
- * type ColumnIdx = 3;
- *
- * const [players, setPlayers] = useState<Map<RowIdx, { name: string, score: number }>>(new Map([
- *  ["Player1", { name: "John", score: 70 }],
- *  ["Player2", { name: "Jane", score: 45 }],
- * ]));
- *
- * const { rows, columns, cellMatrix } = useMemo(
- *  () => cellMatrixBuilder<RowIdx, ColumnIdx>(({ addRows, addColumns, setCell }) => {
- *
- *   setCell('Player1', 'name', TextCell, { value: players.get('Player1')?.name || '' });
- *   setCell('Player1', 'score', TextCell, { value: players.get('Player1')?.score.toString() || '' });
- *
- *   setCell('Player2', 'name', TextCell, { value: names.get('Player2')?.name || '' });
- *   setCell('Player2', 'score', TextCell, { value: players.get('Player2')?.score.toString() || '' });
- * }, [players]);
- *
  * @param builder Function which receives {@link CellMatrixBuilderTools} as an argument and is used to build your cell matrix
- * @returns rows, columns and cellMap
+ * @returns rows, columns and cells
  */
-export const cellMatrixBuilder = <TRowIdx extends number = number, TColumnIdx extends number = number>(
+export const cellMatrixBuilder = (
   rows: Row[],
   columns: Column[],
 
