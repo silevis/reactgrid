@@ -2,6 +2,7 @@ import logo from "@/public/static/logo-green.svg";
 import checkIcon from "@/public/static/check-icon.svg";
 import dotIcon from "@/public/static/dot-icon.svg";
 import Image from "next/image";
+import { ReactGrid } from "@silevis/reactgrid";
 
 const capabilities = [
   "This budget planner example shows the possibility of calculating values of all aggregation fields in a reactive way in two axes - for organization or project for some time. See the available functionality:",
