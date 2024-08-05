@@ -1,5 +1,5 @@
 import React, { FC } from "react";
-import CellWrapper from "../../lib/components/CellWrapper";
+import CellWrapper from "../components/CellWrapper";
 
 interface HeaderCellProps {
   value?: string;
