@@ -1,48 +1,48 @@
-variables:
-  - group: deployer-variables
-  - group: v5-dev-branch
+# variables:
+#   - group: deployer-variables
+#   - group: v5-dev-branch
 
-trigger:
-  branches:
-    include:
-      - v5-dev
+# trigger:
+#   branches:
+#     include:
+#       - v5-dev
 
-pr: none
+# pr: none
 
-pool:
-  vmImage: "ubuntu-latest"
+# pool:
+#   vmImage: "ubuntu-latest"
 
-stages:
-  - stage: upgrade_alpha_version_and_publish
-    displayName: "Upgrade Alpha version and publish"
-    jobs:
-      - job: upgrade_alpha_version_and_publis
-        steps:
-          - task: NodeTool@0
-            inputs:
-              versionSpec: "18.x"
-            displayName: "Install Node.js"
-          - checkout: self
-            persistCredentials: true
-          - script: git checkout $(V5_DEV_BRANCH_NAME)
-            displayName: "Git Checkout"
-          - script: cd reactgrid && npm version prerelease --preid=alpha -m "upgrade version to alpha [ci skip]"
-            displayName: "Upgrade version"
-          - script: cd reactgrid && npm install
-            displayName: "Install dependencies"
-          - script: cd reactgrid && npm run build
-            displayName: "Build TypeScript code"
-          - task: Npm@1
-            inputs:
-              command: "publish"
-              workingDir: "reactgrid/dist"
-              publishRegistry: useExternalRegistry
-              publishEndpoint: "npm-reactgrid"
-          - script: git config --global user.email "$(GIT_USER_MAIL)" && git config --global user.name "$(GIT_USER_NAME)"
-            displayName: "Set configuration"
-          - script: git add reactgrid/*
-            displayName: "Add changes"
-          - script: git commit -m "Upgrade version to alpha [ci skip]"
-            displayName: "Commit updated package version"
-          - script: git push
-            displayName: "Push upgraded version"
+# stages:
+#   - stage: upgrade_alpha_version_and_publish
+#     displayName: "Upgrade Alpha version and publish"
+#     jobs:
+#       - job: upgrade_alpha_version_and_publis
+#         steps:
+#           - task: NodeTool@0
+#             inputs:
+#               versionSpec: "18.x"
+#             displayName: "Install Node.js"
+#           - checkout: self
+#             persistCredentials: true
+#           - script: git checkout $(V5_DEV_BRANCH_NAME)
+#             displayName: "Git Checkout"
+#           - script: cd reactgrid && npm version prerelease --preid=alpha -m "upgrade version to alpha [ci skip]"
+#             displayName: "Upgrade version"
+#           - script: cd reactgrid && npm install
+#             displayName: "Install dependencies"
+#           - script: cd reactgrid && npm run build
+#             displayName: "Build TypeScript code"
+#           - task: Npm@1
+#             inputs:
+#               command: "publish"
+#               workingDir: "reactgrid/dist"
+#               publishRegistry: useExternalRegistry
+#               publishEndpoint: "npm-reactgrid"
+#           - script: git config --global user.email "$(GIT_USER_MAIL)" && git config --global user.name "$(GIT_USER_NAME)"
+#             displayName: "Set configuration"
+#           - script: git add reactgrid/*
+#             displayName: "Add changes"
+#           - script: git commit -m "Upgrade version to alpha [ci skip]"
+#             displayName: "Commit updated package version"
+#           - script: git push
+#             displayName: "Push upgraded version"
