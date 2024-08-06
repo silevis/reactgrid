@@ -1,0 +1,59 @@
+---
+posttype: "docs"
+title: Functions & Enums
+metaTitle: "Functions & Enums"
+metaDescription: "ReactGrid docs"
+---
+
+#### Keycodes
+
+Keycode related functions are commonly used by every cell template and they uses the unicode value of pressed keyboard key
+(exacly like `KeyboardEvent.keyCode`).
+
+```ts
+isAlphaNumericKey(keyCode: number): boolean
+```
+Used in creating custom cell templates. Checks if `keycode` is alphanumeric.
+
+```ts
+inNumericKey(keyCode: number): boolean
+```
+Used in creating custom cell templates. Checks if `keycode` is between 0 and 9 (also on numpad).
+
+```ts
+isNumpadNumericKey(keyCode: number): boolean
+```
+Used in creating custom cell templates. Checks if `keycode` is between 0 and 9 on numpad.
+
+```ts
+isAllowedOnNumberTypingKey(keyCode: number): boolean
+```
+Used in creating custom cell templates. Checks if `keycode` is allowed while typing 
+numbers (for chars like comma, dash, period).
+
+```ts
+isNavigationKey(keyCode: number): boolean
+```
+Used in creating custom cell templates. Checks if `keycode` is allowed for navigation 
+(arrows, end, home, backspace, delete keys).
+
+```ts
+getCharFromKeyCode(keyCode: number, isShiftKey: boolean = false): boolean
+```
+Converts key code into char including the <kbd>Shift</kbd> key. 
+
+#### Helpers
+
+```ts
+getCellProperty = <TCell extends Cell, TKey extends keyof TCell>(
+    uncertainCell: Uncertain<TCell>,
+    propName: TKey,
+    expectedType: 'string' | 'number' | 'boolean' | 'undefined' | 'function' | 'object' | string
+)
+```
+Returns cell property value. Used to create a compatible cell.
+
+#### Enums
+
+`keyCodes` enum contains a set of key codes + `POINTER = 1` to mark a pointer event (ReactGrid addon). 
+Used in cell templates.

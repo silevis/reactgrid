@@ -1,0 +1,15 @@
+---
+posttype: "docs"
+title: Uncertain
+metaTitle: "Uncertain type"
+metaDescription: "ReactGrid docs"
+---
+
+`Uncertain` is a cell type that every field of `TCell` is optional. 
+Cell of this type will have only one essential field provided by [`Cell`](/docs/3.0/7-api/0-interfaces/4-cell/) interface - `type`.
+
+#### Definition
+
+```ts
+type Uncertain<TCell extends Cell> = Partial<TCell> & Cell;
+```

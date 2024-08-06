@@ -1,0 +1,31 @@
+---
+posttype: "docs"
+title: TextCell
+metaTitle: "TextCell template"
+metaDescription: "ReactGrid docs"
+---
+
+This template allows to display text as a string value. Optionally it also gives 
+a possibility to change rendering method and validate displaying text.
+
+#### Implementation
+
+ - Open `TextCell` implementation on <a href="https://github.com/silevis/reactgrid/blob/develop/src/lib/CellTemplates/TextCellTemplate.tsx" target="_blank"> github <i className="fas fa-external-link-alt fa-xs pl-1"></i></a>
+
+#### Interface declaration 
+
+```ts
+interface TextCell extends Cell {
+    type: 'text',
+    text: string,
+    validator?: (text: string) => boolean,
+    renderer?: (text: string) => React.ReactNode
+}
+```
+
+| Property name     | Type                                  | Property description | 
+| ------------      | -------------                         | -------------------- |
+| `type`            | `header`                              | Type of cell template | 
+| `text`            | `string`                              | Text content of cell | 
+| `validator?`      | `(text: string) => boolean`           | Optional validation function, if undefined - returns `true`  | 
+| `renderer?`       | `(text: string) => React.ReactNode`   | Optional, gives oportunity to wrap `text` property into any `ReactNode` object | 

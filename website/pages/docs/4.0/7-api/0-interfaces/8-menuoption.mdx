@@ -1,0 +1,26 @@
+---
+posttype: "docs"
+title: MenuOption
+metaTitle: "MenuOption interface"
+metaDescription: "ReactGrid docs"
+--- 
+
+The context menu is part of the grid, each menu option must implement the interface below.
+
+#### Definition
+
+```ts
+interface MenuOption {
+    id: string;
+    label: string;
+    handler: (selectedRowIds: Id[], selectedColIds: Id[], selectionMode: SelectionMode, selectedRanges: Array<CellLocation[]>) => void;
+}
+```
+
+#### Properties
+
+| Property name | Type                                                                                                                                                                                                              | Property description |
+| -----------   | ------                                                                                                                                                                                                            | -------------------- |
+| `id`          | `string`                                                                                                                                                                                                          | Text that identifies each menu option |
+| `label`       | `string`                                                                                                                                                                                                          | Label displayed in menu |
+| `handler`     | `(selectedRowIds: `[`Id`](/docs/4.0/7-api/1-types/4-id/)[]`, selectedColIds: `[`Id`](/docs/4.0/7-api/1-types/4-id/)`[], selectionMode: `[`SelectionMode`](/docs/4.0/7-api/1-types/7-selection-mode/)`, selectedRanges: Array<`[`CellLocation`](/docs/4.0/7-api/0-interfaces/6-cell-location/)`[]>)` => void`   | Function that is called when option is clicked |

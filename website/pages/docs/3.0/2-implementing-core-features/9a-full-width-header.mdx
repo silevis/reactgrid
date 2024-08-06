@@ -1,0 +1,39 @@
+---
+posttype: "docs"
+title: Full width header
+metaTitle: "Full width header"
+metaDescription: "ReactGrid docs"
+---
+
+#### Introduction
+
+import { Callout } from 'nextra/components'
+
+<Callout color="warning" transition={{baseClass: ''}}>
+	
+	Full width header feature is experimental and it can be changed in the future
+</Callout>
+
+This feature extends width of top sticky pane to full available space inside ReactGrid's parent. 
+
+#### Usage
+
+1. Add `enableFullWidthHeader` property to ReactGrid component and add any number of `stickyTopRows`. In our example, the sample
+ReactGrid component was also wrapped inside a div element that is wider than all columns. 
+
+```tsx
+return (
+    <ReactGrid
+      rows={rows}
+      columns={columns}
+      enableFullWidthHeader // highlight-line
+      stickyTopRows={1}  // highlight-line
+    />
+);
+```
+
+## 
+#### Issues
+
+- If the width of ReactGrid's parent is less then the sum of all the columns (including left sticky), there might be bugs
+- enabling right and bottom sticky panes can cause bugs related with scrolling, ranges selection etc.

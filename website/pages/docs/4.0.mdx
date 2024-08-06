@@ -1,0 +1,48 @@
+---
+posttype: "docs"
+title: "4.0"
+metaTitle: "Introduction to 4.0"
+metaDescription: "ReactGrid docs"
+---
+
+
+import Image from 'next/image'
+
+
+ReactGrid lets you create custom data grids inside your ReactJS applications, which look and feel like spreadsheets.
+
+#### Caveats
+a) If you notice `sticky` incorrect behavior, when you try to pin them to HTML `<body>` tag, add this line to `index.html` file in your project.
+It should be helpful in many cases and different mobile devices.
+
+```html
+<meta name="viewport" content="width=device-width, initial-scale=0.86, maximum-scale=5.0, minimum-scale=0.86">
+```
+
+#### Supported browsers
+
+Desktop Browsers
+
+<br/>
+
+
+<div style={{display: "flex",  gap: "2rem", height: "3rem"}}>
+<Image src="/chrome.svg" alt="Chrome logo." width={50} height={50} />
+<Image src="/firefox.svg" alt="Firefox logo." width={50} height={50} />
+<Image src="/edge.svg" alt="Edge logo." width={50} height={50} />
+<Image src="/safari.svg" alt="Safari logo." width={50} height={50} />
+ </div>
+
+<br/>
+
+
+Mobile Browsers
+
+<br/>
+
+
+<div style={{display: "flex",  gap: "2rem", height: "3rem"}}>
+<Image src="/chrome.svg" alt="Chrome logo." width={50} height={50} />
+<Image src="/firefox.svg" alt="Firefox logo." width={50} height={50} />
+<Image src="/safari.svg" alt="Safari logo." width={50} height={50} />
+ </div>

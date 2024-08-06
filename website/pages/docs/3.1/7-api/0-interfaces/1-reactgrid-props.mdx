@@ -1,0 +1,83 @@
+---
+posttype: "docs"
+title: ReactGrid & ReactGridProps
+metaTitle: "ReactGridProps interface"
+metaDescription: "ReactGrid docs"
+---
+
+ReactGrid component has two essential properties which you must pass in properties to render - `columns` and `rows`.
+
+## Definition
+
+```ts
+interface ReactGridProps {
+    readonly columns: Column[];
+    readonly rows: Row<Cell>[];
+    readonly customCellTemplates?: CellTemplates;
+    readonly focusLocation?: CellLocation;
+    readonly initialFocusLocation?: CellLocation;
+    readonly highlights?: Highlight[];
+    readonly stickyTopRows?: number;
+    readonly stickyBottomRows?: number;
+    readonly stickyLeftColumns?: number;
+    readonly stickyRightColumns?: number;
+    readonly enableFillHandle?: boolean;
+    readonly enableRangeSelection?: boolean;
+    readonly enableRowSelection?: boolean;
+    readonly enableColumnSelection?: boolean;
+    readonly labels?: TextLabels;
+    readonly enableFullWidthHeader?: boolean;
+    readonly enableGroupIdRender?: boolean;
+    readonly horizontalStickyBreakpoint?: number;
+    readonly verticalStickyBreakpoint?: number;
+
+
+    readonly onCellsChanged?: (cellChanges: CellChange[]) => void;
+    readonly onFocusLocationChanged?: (location: CellLocation) => void;
+    readonly onFocusLocationChanging?: (location: CellLocation) => boolean;
+    readonly onColumnResized?: (columnId: Id, width: number, selectedColIds: Id[]) => void;
+    readonly onRowsReordered?: (targetRowId: Id, rowIds: Id[], dropPosition: DropPosition) => void;
+    readonly onColumnsReordered?: (targetColumnId: Id, columnIds: Id[], dropPosition: DropPosition) => void;
+    readonly onContextMenu?: (selectedRowIds: Id[], selectedColIds: Id[], selectionMode: SelectionMode, menuOptions: MenuOption[], selectedRanges: Array<CellLocation[]>) => MenuOption[];
+    readonly canReorderColumns?: (targetColumnId: Id, columnIds: Id[], dropPosition: DropPosition) => boolean;
+    readonly canReorderRows?: (targetRowId: Id, rowIds: Id[], dropPosition: DropPosition) => boolean;
+}
+```
+
+#### Properties
+
+Name                                    | Type                                                              | Description |
+------------------------                | ---------------------------                                       | -------------  |
+`columns`                               | [`Columns`](/docs/3.1/7-api/0-interfaces/3-column/)`[]`           | Column's data |
+`rows`                                  | [`Rows<Cell>`](/docs/3.1/7-api/0-interfaces/2-row/)`[]`           | Row's data |
+`customCellTemplates?`                  | `CellTemplates`                                                   | Set of available custom cell templates |
+`focusLocation?`                        | [`CellLocation`](/docs/3.1/7-api/0-interfaces/6-cell-location/)   | Focus position (managed constantly by outer app) |
+`initialFocusLocation?`                 | [`CellLocation`](/docs/3.1/7-api/0-interfaces/6-cell-location/)   | Initial position of focus |
+`highlights?`                           | [`Highlight`](/docs/3.1/7-api/0-interfaces/9-highlight/)`[]`      | Array of highlight positions |
+`stickyTopRows?`                        | `number`                                                          | Amount of rows which are sticky at the top |
+`stickyBottomRows?`                     | `number`                                                          | Amount of rows which are sticky at the bottom |
+`stickyLeftColumns?`                    | `number`                                                          | Amount of columns which are sticky on the left side |
+`stickyRightColumns?`                   | `number`                                                          | Amount of columns which are sticky on the right side |
+`enableFillHandle?`                     | `boolean`                                                         | Set `true` to enable cell fill feature (by default `false`) |
+`enableRangeSelection?`                 | `boolean`                                                         | Set `true` to enable selection feature (by default `false`) |
+`enableRowSelection?`                   | `boolean`                                                         | Set `true` to enable row selection feature (by default `false`) |
+`enableColumnSelection?`                | `boolean`                                                         | Set `true` to enable column selection feature (by default `false`) |
+`labels?`                               | [`TextLabels`](/docs/3.1/7-api/0-interfaces/90-textlabels/)       | Object that contains labels of texts used by ReactGrid |
+`enableFullWidthHeader?`                | `boolean`                                                         | Set `true` to enable full width header (by default `false`, feature is experimental) |
+`enableGroupIdRender?`                  | `boolean`                                                         | Set `true` to enable groupId element rendering (by default `false`) |
+`readonly horizontalStickyBreakpoint?`  | `number`                                                          | Horizontal breakpoint in percents (%) of ReactGrid scrollable parent element width. Disables sticky when the sum of the sizes of sticky panes overflows given breakpoint value (by default `50`) |
+`verticalStickyBreakpoint?`             | `number`                                                          | Vertical breakpoint in percents (%) of ReactGrid scrollable parent element height. Disables sticky when the sum of the sizes of sticky panes overflows given breakpoint value (by default `50`) |
+
+#### Callbacks
+
+Name                        | Type  | Description  |
+------------------------    | ----- | ------------ |
+`onCellsChanged?`           | `(cellChanges: `[`CellChange`](/docs/3.1/7-api/1-types/2-cell-change/)`[]) => void;`                                                                                                                                                                                                                                                                          | Called when cell property (e.g. `value`) was changed |
+`onFocusLocationChanged?`   | `(location: `[`CellLocation`](/docs/3.1/7-api/0-interfaces/6-cell-location/)`) => void;`                                                                                                                                                                                                                                                                      | Focus position has been changed |
+`onFocusLocationChanging?`  | `(location: `[`CellLocation`](/docs/3.1/7-api/0-interfaces/6-cell-location/)`) => boolean;`                                                                                                                                                                                                                                                                   | Called when trying to change focus location. Return `false` to prevent position changing |
+`onColumnResized?`          | `(columnId: `[`Id`](/docs/3.1/7-api/1-types/4-id/)`, dropPosition: `[`DropPosition`](/docs/3.1/7-api/1-types/5-drop-position/)`) => void;`                                                                                                                                                                                                                    | Callback called when column resize action was ended |
+`onRowsReordered?`          | `(targetRowId: `[`Id`](/docs/3.1/7-api/1-types/4-id/)`, rowIds: `[`Id`](/docs/3.1/7-api/1-types/4-id/)`[], dropPosition: `[`DropPosition`](/docs/3.1/7-api/1-types/5-drop-position/)`) => void;`                                                                                                                                                              | Callback called when row reorder action was ended |
+`onColumnsReordered?`       | `(targetColumnId: `[`Id`](/docs/3.1/7-api/1-types/4-id/)`, columnIds: `[`Id`](/docs/3.1/7-api/1-types/4-id/)`[], dropPosition: `[`DropPosition`](/docs/3.1/7-api/1-types/5-drop-position/)`) => void;`                                                                                                                                                        | Callback called when column reorder action was ended |
+`onContextMenu?`            | `(selectedRowIds: `[`Id`](/docs/3.1/7-api/1-types/4-id/)`[], selectedColIds: `[`Id`](/docs/3.1/7-api/1-types/4-id/)`[], selectionMode: `[`SelectionMode`](/docs/3.1/7-api/1-types/7-selection-mode/)`, menuOptions: `[`MenuOption`](/docs/3.1/7-api/0-interfaces/8-menuoption/)`[], selectedRanges: Array<`[`CellLocation`](/docs/3.1/7-api/0-interfaces/6-cell-location/)`[]>) => `[`MenuOption`](/docs/3.1/7-api/0-interfaces/8-menuoption/)`[];`       | Called when user opens context menu inside grid, used to compose own menu options |
+`canReorderColumns?`        | `(targetColumnId: `[`Id`](/docs/3.1/7-api/1-types/4-id/)`, columnIds: `[`Id`](/docs/3.1/7-api/1-types/4-id/)`[], dropPosition: `[`DropPosition`](/docs/3.1/7-api/1-types/5-drop-position/)`) => boolean;`                                                                                                                                                     | Allow or not to change specific columns order |
+`canReorderRows?`           | `(targetRowId: `[`Id`](/docs/3.1/7-api/1-types/4-id/)`, rowIds: `[`Id`](/docs/3.1/7-api/1-types/4-id/)`[], dropPosition: `[`DropPosition`](/docs/3.1/7-api/1-types/5-drop-position/)`) => boolean;`                                                                                                                                                           | Allow or not to change specific rows order | 

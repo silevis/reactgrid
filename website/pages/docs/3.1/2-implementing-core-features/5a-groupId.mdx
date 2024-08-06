@@ -1,0 +1,35 @@
+---
+posttype: "docs"
+title: Group Id
+metaTitle: "Group Id"
+metaDescription: "ReactGrid docs"
+---
+
+ReactGrid introduces a brand new feature called *group Id*. The main purpose of it is to avoid queueing changes  
+by marking cells on `groupId` property using [`Id`](/docs/3.1/7-api/1-types/4-id/) interface.
+
+Marked cell with a `groupId` has a following behavior. While you paste data or execute fill handle action: the change will 
+be queued only for a cell with the same `groupId`. If the change can't be queued, then you will be warned in browser's console.
+Even if no cell is marked, then they are treated as a separate group.
+
+Every cell with declared `groupId` renders with additional `span` element (containing its value) inside a cell if 
+you have passed `enableGroupIdRender` property:
+
+```tsx
+<ReactGrid
+    {...props}
+    enableFillHandle
+    enableRangeSelection
+    enableGroupIdRender // highlight-line
+/>
+```
+
+`groupId` property is available in every cell template because it's provided by [`Cell`](/docs/3.1/7-api/0-interfaces/4-cell/)
+interface. 
+
+#### Live example
+
+An example shows that a few cells were marked with `group: A` or `group: B` *group Id*.
+Try and select any range and then copy and paste or use fill handle to clone data. 
+
+<GroupIdSample />

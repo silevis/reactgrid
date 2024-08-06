@@ -1,0 +1,28 @@
+---
+posttype: "docs"
+title: Cell
+metaTitle: "Cell interface"
+metaDescription: "ReactGrid docs"
+---
+
+`Cell` interface is a base for built-in cell templates and your own, it has only one necessary property - `type`.
+
+#### Definition
+
+```ts
+interface Cell {
+    type: string;
+    groupId?: Id;
+    style?: CellStyle;
+    className?: string;
+}
+```
+
+#### Properties
+
+| Properties     | Type                                                         | Properties description |
+| -----------    | ---------                                                    | ---------- |
+| `type`         | `string`                                                     | Name of cell type, must be unique |
+| `groupId`      | [`Id`](/docs/3.0/7-api/1-types/4-id/)                        | [`Id`](/docs/3.0/7-api/1-types/4-id/) of group to which this cell belongs to |
+| `style?`       | [`CellStyle`](/docs/3.0/7-api/0-interfaces/7-cell-style/)    | Allowed style properties contained in [`CellStyle`](/docs/3.0/7-api/0-interfaces/7-cell-style/) interface |
+| `className?`   | `string`                                                     | Additional CSS classes |

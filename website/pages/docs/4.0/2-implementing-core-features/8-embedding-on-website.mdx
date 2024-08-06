@@ -1,0 +1,66 @@
+---
+posttype: "docs"
+title: Embedding on a website
+metaTitle: "Embedding on a website"
+metaDescription: "ReactGrid docs"
+---
+
+#### About ReactGrig embedding, virtual scrolling and sticky panes pinning
+
+`ReactGrid` component isn't limited by height and width so its behaviour can change a little bit depending on its scrollable parent element.
+
+ReactGrid appends scroll event to its immediate scrollable parent and lets itself expand to full height/width with the option of
+constant observation of available viewport size.
+
+Limiting the size of `ReactGrid` can be achieved by adding CSS class listed below 
+(bear in mind that the total rows height must be bigger than scrollable element height)
+
+```css
+.reactgrid-wrapper {
+    height: 100px;
+    overflow: scroll;
+}
+```
+
+Multiple nested scrollable elements can cause unexpected experience like incorrect cell editor position, wrong focus location etc.
+
+import { Callout } from 'nextra/components'
+
+<Callout color="info">
+	If all rows/columns can't be rendered in viewport - virtual scrolling still works fine.
+</Callout>
+
+#### Example: ReactGrid component limited by the height of its parent
+
+import LiveCode from "nextra/components/LiveCode.tsx";
+import { ReactGrid, Column, Row } from "@silevis/reactgrid-4";
+import "@silevis/reactgrid-4/styles.css";
+import {LimitedHeightByParentSample} from "../../content/samplesSrc/limitedHeightByParentSample/LimitedHeightByParentSample"
+import {NotLimitedHeightByParentSample} from "../../content/samplesSrc/notLimitedHeightByParentSample/NotLimitedHeightByParentSample"
+
+<LiveCode
+scope={{ReactGrid, LimitedHeightByParentSample}}
+code={`
+const App = () => <LimitedHeightByParentSample/>
+render(<App/>)
+`}
+/>
+
+
+In this case, not all the passed rows can be rendered, so scrollbar appears and sticky pane is pinned directly to the top of the 
+parent element. 
+
+#### Example: ReactGrid component NOT limited by the height of its parent
+
+<LiveCode
+scope={{ReactGrid, NotLimitedHeightByParentSample}}
+code={`
+const App = () => <NotLimitedHeightByParentSample/>
+render(<App/>)
+`}
+/>
+
+ 
+
+ReactGrid renders all the passed rows and columns if sticky panes are passed - they are pinned directly to the edge 
+of `body` element.

@@ -1,0 +1,32 @@
+---
+posttype: "docs"
+title: NumberCell
+metaTitle: "NumberCell template"
+metaDescription: "ReactGrid docs"
+---
+
+Displays number, this cell allows to customize format number values using `Intl.NumberFormat`. 
+
+#### Implementation
+
+ - Open `NumberCell` implementation on <a href="https://github.com/silevis/reactgrid/blob/develop/src/lib/CellTemplates/NumberCellTemplate.tsx" target="_blank"> github <i className="fas fa-external-link-alt fa-xs pl-1"></i></a>
+
+#### Interface declaration 
+
+```ts
+interface NumberCell extends Cell {
+    type: 'number';
+    value: number;
+    format?: Intl.NumberFormat;
+    nanToZero?: boolean;
+    hideZero?: boolean;
+}
+```
+
+| Property name     | Type                  | Property description | 
+| ------------      | -------------         | -------------------- |
+| `type`            | `header`              | Type of cell template | 
+| `value`           | `number`              | Value of cell | 
+| `format?`         | `Intl.NumberFormat`   | Formats value, if undefined formats number according to currect browser locale | 
+| `nanToZero?`      | `boolean`             | If `value` equals `NaN` then displays `0` | 
+| `hideZero?`       | `boolean`             | If displayed value equals `0` then value is not rendered | 

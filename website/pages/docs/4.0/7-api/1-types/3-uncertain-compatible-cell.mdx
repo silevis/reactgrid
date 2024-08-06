@@ -1,0 +1,18 @@
+---
+posttype: "docs"
+title: UncertainCompatible
+metaTitle: "UncertainCompatible type"
+metaDescription: "ReactGrid docs"
+---
+
+`UncertainCompatible` is a cell type that is compatible with other cell types 
+that can be instances of various cell types (e.g. `DataCell` and `TimeCell`).
+
+#### Definition
+
+```ts
+type UncertainCompatible<TCell extends Cell> = Uncertain<TCell> & {
+    text: string;
+    value: number;
+}
+```

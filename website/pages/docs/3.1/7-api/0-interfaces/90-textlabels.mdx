@@ -1,0 +1,37 @@
+---
+posttype: "docs"
+title: TextLabels
+metaTitle: "TextLabels interface"
+metaDescription: "ReactGrid docs"
+--- 
+
+`TextLabels` describes a set of text labels used by ReactGrids internal i18n module. 
+Each text label has its own default value.
+
+#### Definition
+
+```ts
+interface TextLabels {
+    legacyBrowserHeader?: string,
+    legacyBrowserText?: string,
+    copyLabel?: string,
+    cutLabel?: string,
+    pasteLabel?: string,
+    macOsContextMenuPasteAlert?: string,
+    otherBrowsersContextMenuPasteAlert?: string,
+    contextMenuPasteAlert?: string
+}
+```
+
+##### Properties
+
+| Property name                             | Type      | Property description |
+| -----------                               | ------    | -------------------- |
+| `legacyBrowserHeader?`                    | `string`  | Label of text header when browser isn't supported, by default: `Please update to a modern browser.`  |
+| `legacyBrowserText?`                      | `string`  | Label of text paragraph when browser isn't supported, by default: `Your current browser cannot run our content, please make sure you browser is fully updated or try adifferent browser. We highly recommend using the most recent release of Google Chrome, Microsoft Edge, Firefox, Safari, and Opera browser` |
+| `copyLabel?`                              | `string`  | Label of copy action displayed inside context menu (just PRO), by default: `Copy` |
+| `cutLabel?`                               | `string`  | Label of cut action displayed inside context menu (just PRO), by default: `Cut` |
+| `pasteLabel?`                             | `string`  | Label of paste action displayed inside context menu (just PRO), by default: `Paste` |
+| `macOsContextMenuPasteAlert?`             | `string`  | Alert label in use (e.g. MacOS) if access to the clipboard is denied (just PRO), by default: `Use ⌘ + c for copy, ⌘ + x for cut and ⌘ + v for paste.` |
+| `otherBrowsersContextMenuPasteAlert?`     | `string`  | Alert label in use (e.g. Firefox) if access to the clipboard is denied (just PRO), by default: ` Use ctrl + c for copy, ctrl + x for cut and ctrl + v for paste.` |
+| `contextMenuPasteAlert?`                  | `string`  | Alert label in use (e.g. Firefox) if access to the clipboard is denied (just PRO), by default: `This action is not supported in this browser.` |

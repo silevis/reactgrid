@@ -1,0 +1,54 @@
+---
+posttype: "docs"
+title: CellStyle
+metaTitle: "CellStyle interface"
+metaDescription: "ReactGrid docs"
+---
+
+`CellStyle` styles single cell and prevents passing unwanted CSS properties that could break down view rendering.
+This interface uses also a `BorderProps` to style particular cells border edge.
+
+#### Definition
+
+```ts
+interface CellStyle {
+    readonly color?: string;
+    readonly background?: string;
+    readonly overflow?: string;
+    readonly paddingLeft?: string;
+    readonly border?: {
+        readonly left?: BorderProps;
+        readonly top?: BorderProps;
+        readonly right?: BorderProps;
+        readonly bottom?: BorderProps;
+    }
+}
+
+interface BorderProps {
+    readonly color?: string;
+    readonly style?: string;
+    readonly width?: string;
+}
+```
+
+#### Properties
+
+`CellStyle` interface properties. 
+
+
+| Property name     | Type                                                                                      |  Property description                                 |
+| ------------      | --------------------------------------------------                                        | -------------------------------------                 |
+| `color?`          | `string`                                                                                  | CSS `color` property                                  |
+| `background?`     | `string`                                                                                  | CSS `background` property                             |
+| `overflow?`       | `string`                                                                                  | CSS `overflow` property                               |
+| `paddingLeft?`    | `string`                                                                                  | CSS `padding-left` property                           |
+| `border?`         | `{ left?: BorderProps; top?: BorderProps; right?: BorderProps; bottom?: BorderProps; }`   | Object that contains all cell's borders properties    |
+
+`BorderProps` interface properties. By default, cell has only right and bottom border, except cells on panes edges.
+If you want to style cell border properly, it's important to declare all properties: `color, style, width`.
+
+| Property name     | Type                                                                                      | Property description                      |
+| ------------      | --------------------------------------------------                                        | -------------------------------------     |
+| `color?`          | `string`                                                                                  | Color of border - e.g. `#eee`/`red`       |
+| `style?`          | `string`                                                                                  | Style of border - e.g. `dotted`/`solid`   |
+| `width?`          | `string`                                                                                  | Width of border - e.g. `2px`              |

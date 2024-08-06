@@ -1,0 +1,24 @@
+---
+posttype: "docs"
+title: CellLocation
+metaTitle: "CellLocation interface"
+metaDescription: "ReactGrid docs"
+---
+
+`CellLocation` is an interface that describes position inside the grid.
+
+#### Definition
+
+```ts
+interface CellLocation {
+    readonly rowId: Id;
+    readonly columnId: Id;
+}
+```
+
+#### Properties
+
+| Property name | Type                                      | Property description          |
+| -----------   | -----                                     | ---------                     |
+| `rowId`       | [`Id`](/docs/4.0/7-api/1-types/4-id/)     | Row [`Id`](/docs/4.0/7-api/1-types/4-id/) of cell location       |
+| `columnId`    | [`Id`](/docs/4.0/7-api/1-types/4-id/)     | Column [`Id`](/docs/4.0/7-api/1-types/4-id/) of cell location    |

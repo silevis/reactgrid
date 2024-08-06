@@ -1,0 +1,12 @@
+{
+  "index": {
+    "title": "Introduction" 
+  },
+  "1-getting-started": "Getting started",
+  "2-implementing-core-features": "Implementing core features",
+  "4-cell-templates": "Cell templates",
+  "5-create-your-own-cell-template": "Create your own cell template",
+  "6-styling": "Styling",
+  "7-api": "API",
+  "8-FAQ": "FAQ"
+}

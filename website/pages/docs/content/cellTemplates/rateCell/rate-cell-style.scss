@@ -1,0 +1,43 @@
+$rate-star-color: #ffc700 !default;
+$rate-star-color-hover: #deb217  !default;
+$rate-star-color-pale: #c59b08 !default;
+$rate-star-color-disabled: #cccccc !default;
+
+.rate {
+  float: left;
+  & > label { margin-bottom: 0 }
+  &:not(:checked) {
+    & > input {
+      position: absolute;
+      top: -9999px;
+      &:checked {
+        & + label:hover,
+        & + label:hover ~ label,
+        & ~ label:hover,
+        & ~ label:hover ~ label {
+          color: $rate-star-color-pale
+        }
+        & ~ label {
+          color: $rate-star-color
+        }
+      }
+    }
+    & > label {
+      float: right;
+      width: 1em;
+      overflow: hidden;
+      white-space: nowrap;
+      cursor: pointer;
+      font-size: 1.3em;
+      color: $rate-star-color-disabled;
+      &:before { content: '★ ' }
+      &:hover ~ input:checked ~ label {
+        color: $rate-star-color-pale
+      }
+      &:hover,
+      &:hover ~ label { 
+        color: $rate-star-color-hover
+      }
+    }
+  }
+}

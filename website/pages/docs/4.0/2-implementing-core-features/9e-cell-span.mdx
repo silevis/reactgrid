@@ -1,0 +1,56 @@
+---
+posttype: "docs"
+title: Cell span
+metaTitle: "Cell span"
+metaDescription: "ReactGrid docs"
+---
+
+#### Introduction
+
+import { Callout } from 'nextra/components'
+
+<Callout color="warning" transition={{baseClass: ''}}>
+	
+	This feature is experimental, incomplete and can be changed in the future.
+</Callout>
+
+This feature allows you to set colspan and rowspan in a cell. Spanned cell don't pushes the other from their origin position.
+Insted, spanned cell stretches to desired size. 
+
+#### Usage
+
+If you want to use it, please use only cells which type is ```header```. 
+The use of this type of cell results in less undesirable behavior. 
+Cells that lie underneath the spanned cell should also be  marksed as ```header``` type.
+
+```tsx
+import { Row } from "@silevis/reactgrid";
+
+const row: Row = {
+    rowId: 0,
+    cells: [
+       { type: 'header', text: 'total', colspan: 3}, // highlight-line
+       { type: 'header', text: '' }, // highlight-line
+       { type: 'header', text: '' }, // highlight-line
+       { type: 'text', text: 'some text'},
+      // ...
+    ]
+}
+```
+
+#### Caveats
+
+Currently, the span of cells plays a visual role, functionalities related to interaction will be successively implemented 
+in the future.
+
+| Feature             | Support       |
+| ------------        | ------------- |
+| Displaying          | 🟢            | 
+| Highlights          | 🟢            |
+| Keyboard actions    | 🟠            |
+| Focus               | 🔴            |
+| Cell editor         | 🔴            |
+| Copy/cut/paste      | 🔴            |
+| Selection           | 🔴            |
+| Fill handle         | 🔴            |
+| Scrolling           | 🔴            |

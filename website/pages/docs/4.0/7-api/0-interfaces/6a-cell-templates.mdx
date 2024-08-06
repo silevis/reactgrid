@@ -1,0 +1,40 @@
+---
+posttype: "docs"
+title: CellTemplates
+metaTitle: "CellTemplates interface"
+metaDescription: "ReactGrid docs"
+---
+
+`CellTemplates` is an interface describes your custom cell templates as key-value object. 
+Key of `CellTemplates` interface have to be equal to coresponding cell `type` field (with extends [`Cell`](/docs/4.0/7-api/0-interfaces/4-cell/) interface).
+
+#### Definition
+```ts
+interface CellTemplates {
+    [key: string]: CellTemplate;
+}
+```
+
+#### Example
+
+```ts
+const myCellTemplates: CellTemplates = {
+    'flag': FlagCellTemplate,
+    'dropdownNumber': DropdownNumberCellTemplate,
+}
+
+return (
+    <ReactGrid
+      {...props}
+      customCellTemplates={myCellTemplates} // highlight-line
+    />
+);
+```
+
+#### Properties
+
+| Properties        | Type                                                              | Properties description |
+| -----------       | -------                                                           | -----------   |
+| [`key: string`]   | [`CellTemplate`](/docs/4.0/7-api/0-interfaces/5-cell-template/)   | Type of a cell template and its implementation |
+
+

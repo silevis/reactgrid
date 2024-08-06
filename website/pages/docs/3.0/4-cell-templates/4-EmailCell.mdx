@@ -1,0 +1,30 @@
+---
+posttype: "docs"
+title: EmailCell
+metaTitle: "EmailCell template"
+metaDescription: "ReactGrid docs"
+---
+
+This cell renders text value with the possibility to validate its value and wrap the result into `React.ReactNode` objects.
+
+#### Implementation
+
+ - Open `EmailCell` implementation on <a href="https://github.com/silevis/reactgrid/blob/develop/src/lib/CellTemplates/EmailCellTemplate.tsx" target="_blank"> github <i className="fas fa-external-link-alt fa-xs pl-1"></i></a>
+
+#### Interface declaration 
+
+```ts
+interface EmailCell extends Cell {
+    type: 'email',
+    text: string,
+    validator?: (text: string) => boolean,
+    renderer?: (text: string) => React.ReactNode
+}
+```
+
+| Property name     | Type                                  | Property description | 
+| ------------      | -------------                         | -------------------- |
+| `type`            | `email`                               | Type of cell template | 
+| `text`            | `string`                              | Text content of cell | 
+| `validator?`      | `(text: string) => boolean`           | Optional validation function, if undefined - returns `true`  | 
+| `renderer?`       | `(text: string) => React.ReactNode`   | Optional, gives oportunity to wrap `text` property into any `ReactNode` object | 

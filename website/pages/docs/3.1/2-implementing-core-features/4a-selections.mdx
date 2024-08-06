@@ -1,0 +1,53 @@
+---
+posttype: "docs"
+title: Selections
+metaTitle: "Selections"
+metaDescription: "ReactGrid docs"
+proMark: true
+---
+
+import { Callout } from 'nextra/components'
+
+<Callout color="warning">
+	
+	This feature is only available in PRO version
+</Callout>
+
+ReactGrid has three properties related to selections inside the grid via `ReactGrid`:
+
+1. `enableRangeSelection`
+2. `enableRowSelection`
+3. `enableColumnSelection`
+
+#### ```enableRangeSelection``` property
+
+The range selection is the most common selection, but in case you want to use it, it's necessary to enable it before.
+You can do multiple selections by holding the <kbd>Ctrl</kbd> or <kbd>Command ⌘</kbd> key on Apple devices.
+
+```tsx
+<ReactGrid
+    {...props}
+    enableRangeSelection //highlight-line
+/>
+```
+
+#### ```enableRowSelection``` and enableColumnSelection property
+
+Way how ```enableRowSelection``` and ```enableColumnSelection``` property works is very similar.
+
+When you first click on:
+- the left cell of a row, the whole row will be selected, then you can expand this selection to other rows;
+- the top cell of the column, the whole column will be selected, then you can expand this selection to other columns.
+
+You can then select or unselect any row/column by <kbd>Ctrl</kbd> or <kbd>Command ⌘</kbd> key.
+
+If you click on the first top-left cell and ```enableColumnSelection``` is enabled then the column has a priority 
+over the row in this particular case.
+
+```tsx
+<ReactGrid
+    {...props}
+    enableRowSelection //highlight-line
+    enableColumnSelection //highlight-line
+/>
+```

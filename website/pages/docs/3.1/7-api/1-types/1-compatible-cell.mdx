@@ -1,0 +1,24 @@
+---
+posttype: "docs"
+title: Compatible
+metaTitle: "Compatible type"
+metaDescription: "ReactGrid docs"
+---
+
+`CompatibleCell` is an extended and exchangeable cell (compatible with different types). 
+
+#### Definition
+
+```ts
+type Compatible<TCell extends Cell> = TCell & {
+    text: string;
+    value: number;
+}
+```
+
+#### Properties
+
+| Property name     | Type                  | Property description  |
+| -----------       | --------              | -------------------------|
+| `text`            | `string`              | Text value of a cell  |
+| `value`           | `number`              | Numeric value of a cell, if there is no numeric value representation use `NaN` |

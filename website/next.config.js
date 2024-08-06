@@ -1,6 +1,9 @@
 /** @type {import('next').NextConfig} */
-const nextConfig = {
-  distDir: "dist",
-};
 
-module.exports = nextConfig;
+const withNextra = require("nextra")({
+  distDir: "dist",
+  theme: "nextra-theme-docs",
+  themeConfig: "./nextra/theme.config.jsx",
+});
+
+module.exports = withNextra();

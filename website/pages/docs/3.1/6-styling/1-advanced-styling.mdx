@@ -1,0 +1,162 @@
+---
+posttype: "docs"
+title: Advanced styling
+metaTitle: "Advanced styling"
+metaDescription: "ReactGrid docs"
+---
+
+ReactGrid lets you style all key components using Sass variables. 
+
+Before you use `.scss` files you have to install `node-sass` package:
+
+```shell
+npm install node-sass
+```
+
+To override default styles of ReactGrid you have to assign new values 
+([available variables](/docs/3.1/6-styling/2-sass-variables/)) and then import all  necessary `.scss` files. 
+If variable is not passed before getting imported `core.scss` it will not be modified.
+
+Here's an example of how to add custom focus style on your grid.
+
+```scss
+// Your custom color
+$primary-color: #3579f8;
+
+@import '@silevis/reactgrid/styles.scss';
+```
+
+See full styling example below:
+
+
+
+import { ReactGrid, Column, Row, CellStyle  } from "@silevis/reactgrid-3.1";
+import LiveCode from "nextra/components/LiveCode.tsx";
+import "@silevis/reactgrid-3.1/styles.css";
+
+<LiveCode
+scope={{ReactGrid,
+  Column,
+  Row
+}}
+code={`
+interface Person {
+  name: string;
+  surname: string;
+}
+
+const getPeople = (): Person[] => [
+  { name: "Thomas", surname: "Goldman" },
+  { name: "Susie", surname: "Quattro" },
+  { name: "Dolly", surname: "Parton" },
+  { name: "Shakin'", surname: "Stevens" },
+  { name: "", surname: "" }
+];
+
+const getColumns = (): Column[] => [
+  { columnId: "id", width: 40 },
+  { columnId: "name", width: 150 },
+  { columnId: "surname", width: 150 }
+];
+
+const style: CellStyle = {
+  border: {
+    left: { color: "red", style: "dotted", width: "2px" },
+    top: { color: "red", style: "dotted" },
+    right: { color: "red", style: "dotted" },
+    bottom: { color: "red", style: "dotted" }
+  }
+};
+
+const headerRow: Row = {
+  rowId: "header",
+  height: 40,
+  cells: [
+    { type: "number", value: NaN },
+    { type: "header", text: "Name" },
+    { type: "header", text: "Surname" }
+  ]
+};
+
+const getRows = (people: Person[]): Row[] => [
+  headerRow,
+  ...people.map<Row>((person, idx) => ({
+    rowId: idx,
+    cells: [
+      { type: "number", value: idx, style: style },
+      { type: "text", text: person.name },
+      { type: "text", text: person.surname }
+    ]
+  }))
+];
+
+function App() {
+  const [people] = React.useState<Person[]>(getPeople());
+
+  const rows = getRows(people);
+  const columns = getColumns();
+
+  return (
+    <>
+      <div style={{ position: "relative", height: 200 }}>
+        <ReactGrid
+          rows={rows}
+          columns={columns}
+          focusLocation={{ rowId: 1, columnId: "name" }}
+        />
+      </div>
+      <div
+        style={{ position: "relative", height: 200 }}
+        className="reactgrid-red"
+      >
+        <ReactGrid
+          rows={rows}
+          columns={columns}
+          focusLocation={{ rowId: 1, columnId: "surname" }}
+        />
+      </div>
+      <div
+        style={{ position: "relative", height: 200 }}
+        className="reactgrid-gold"
+      >
+        <ReactGrid
+          rows={rows}
+          columns={columns}
+          focusLocation={{ rowId: 4, columnId: "surname" }}
+        />
+      </div>
+    </>
+  );
+}
+
+render(<App />, document.getElementById("root"));
+
+`}
+/>
+
+If you use multiple grids on the same page, make sure your grid styles are 'local'.
+
+```scss
+// Independent ReactGrid classess
+#reactgrid-red {
+    $primary-color: red;
+    @import '@silevis/reactgrid/styles.scss';
+}
+
+#reactgrid-blue {
+    $primary-color: blue;
+    @import '@silevis/reactgrid/styles.scss';
+}
+```
+
+Wrap ReactGrid component into `div` element with class name:
+
+```tsx
+<div id="reactgrid-red">
+    <ReactGrid {...props}/>
+</div>
+
+<div id="reactgrid-blue">
+    <ReactGrid {...props}/>
+</div>
+```

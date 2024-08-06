@@ -1,0 +1,38 @@
+---
+posttype: "docs"
+title: GroupCell
+metaTitle: "GroupCell template"
+metaDescription: "ReactGrid docs"
+---
+
+`GroupCell` contains data about a single node in the tree structure of the data. This cell template renders text with 
+the preceding chevron.
+
+Implementation of grouping functionality remains on developer (e.g., creating tree structure of cells, 
+filtering rows available to display, creating indents).
+
+#### Implementation
+
+ - Open `GroupCell` implementation on <a href="https://github.com/silevis/reactgrid/blob/develop/src/lib/CellTemplates/GroupCellTemplate.tsx" target="_blank"> github <i className="fas fa-external-link-alt fa-xs pl-1"></i></a>
+
+#### Interface declaration 
+
+```ts
+interface GroupCell extends Cell {
+    type: 'group';
+    text: string;
+    isExpanded?: boolean;
+    hasChildren?: boolean;
+    parentId?: Id;
+    indent?: number;
+}
+```
+
+| Property name         | Type                                      | Property description | 
+| ------------          | -------------                             | -------------------- |
+| `type`                | `group`                                   | Type of cell template | 
+| `text`                | `string`                                  | Text of cell content | 
+| `isExpanded?`         | `boolean`                                 | Is node expaned (displays chevron char as opened/closed) | 
+| `hasChildren?`        | `boolean`                                 | Determines if a node element has children | 
+| `parentId?`           | [`Id`](/docs/3.0/7-api/1-types/4-id/)     | [`Id`](/docs/3.0/7-api/1-types/4-id/) of parent node (cell), if undefined the node becomes a root | 
+| `indent?`             | `number`                                  | Indent size of cell content | 
