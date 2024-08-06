@@ -123,7 +123,7 @@ export const SpannedHeaders = () => {
     })
   );
 
-  const cellMatrix = cellMatrixBuilder(rows, columns, ({ setCell }) => {
+  const cells = cellMatrixBuilder(({ setCell }) => {
     gridData.forEach((row, rowIdx) => {
       row.forEach((cell, colIdx) => {
         if (cell === null) return;
@@ -155,8 +155,6 @@ export const SpannedHeaders = () => {
     });
   });
 
-  console.log("cellMatrix", cellMatrix);
-
   return (
     <div style={{ height: "100%", overflow: "auto" }}>
       <ReactGrid
@@ -170,10 +168,12 @@ export const SpannedHeaders = () => {
         }
         enableColumnSelectionOnFirstRow
         enableRowSelectionOnFirstColumn
-        onResizeColumn={(width, columnId) => handleResizeColumn(width, columnId, cellMatrix, setColumns)}
+        onResizeColumn={(width, columnId) => handleResizeColumn(width, columnId, cells, setColumns)}
         stickyTopRows={1}
         initialFocusLocation={{ rowIndex: 1, colIndex: 0 }}
-        {...cellMatrix}
+        rows={rows}
+        columns={columns}
+        cells={cells}
       />
     </div>
   );

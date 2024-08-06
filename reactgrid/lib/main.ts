@@ -10,4 +10,6 @@ export { HeaderCell } from "./cellTemplates/HeaderCell";
 export { default as CellWrapper } from "./components/CellWrapper";
 export { useCellContext } from "./components/CellContext";
 
+export { cellMatrixBuilder } from "./utils/cellMatrixBuilder";
+
 export * from "./hooks/useReactGridAPI";

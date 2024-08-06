@@ -13,7 +13,7 @@ export const CutCopyPasteExample = () => {
   const [rows, setRows] = useState<Array<Row>>(initialRows);
   const [gridData, setGridData] = useState<(CellData | null)[][]>(initialGridData);
 
-  const cellMatrix = cellMatrixBuilder(rows, columns, ({ setCell }) => {
+  const cells = cellMatrixBuilder(({ setCell }) => {
     gridData.forEach((row, rowIdx) => {
       row.forEach((cell, colIdx) => {
         if (cell === null) return;
@@ -56,7 +56,9 @@ export const CutCopyPasteExample = () => {
         onCopy={(selectedArea) => handleCopy(gridData, selectedArea)}
         onPaste={(selectedArea, pastedData) => handlePaste(selectedArea, pastedData, setGridData)}
         initialFocusLocation={{ rowIndex: 2, colIndex: 1 }}
-        {...cellMatrix}
+        cells={cells}
+        rows={rows}
+        columns={columns}
       />
     </div>
   );

@@ -1,0 +1,283 @@
+---
+posttype: "docs"
+title: Getting started
+metaTitle: "Getting started"
+metaDescription: "ReactGrid docs"
+---
+
+#### Introduction
+
+In this guide, we're going to build a very simple React App, which will make use of ReactGrid.
+
+#### NPM Install
+
+```shell
+npm i @silevis/reactgrid
+```
+
+#### Integrate ReactGrid into the App
+
+Once ReactGrid is installed and ready, we can import it in the following way:
+
+```tsx
+import { ReactGrid } from "@silevis/reactgrid";
+```
+
+#### Define some data to display in the grid
+
+After importing the ReactGrid component, we'll need three things: rows, columns, and the data that will populate our table's grid. Here's an example:
+
+```tsx
+import { Row, Column } from "@silevis/reactgrid";
+
+export interface CellData {
+  type: "text" | "header";
+  value: string;
+  template: React.ComponentType<any>;
+  style?: React.CSSProperties;
+}
+
+export const initialColumns: Column[] = [
+  { width: "150px", resizable: true, reorderable: true, minWidth: 50 },
+  { width: "150px", resizable: true, reorderable: true, minWidth: 50 },
+  { width: "150px", resizable: true, reorderable: true, minWidth: 50 },
+  { width: "150px", resizable: true, reorderable: true, minWidth: 50 },
+];
+
+export const headerRow = ["Name", "Surname", "Email", "City"];
+
+export const initialRows: Row[] = Array.from({ length: 7 }, (_, idx) => {
+  if (idx === 0) return { height: "30px", reorderable: false };
+
+  return { height: "min-content", reorderable: true };
+});
+
+export const dataRows = [
+  ["Jake", "Smith", "j.smith@gmail.com", "New York"],
+  ["Emily", "Jones", "e.jones@hotmail.com", "Paris"],
+  ["Liam", "Brown", "l.brown@yahoo.com", "Tokyo"],
+  ["Sophia", "Taylor", "s.taylor@gmail.com", "Sydney"],
+  ["Mason", "Lee", "m.lee@outlook.com", "San Francisco"],
+  ["Isabella", "Wilson", "i.wilson@gmail.com", "Rome"],
+];
+
+export const initialGridData: CellData[][] = [headerRow, ...dataRows].map(
+  (row, rowIdx) =>
+    row.map((cellValue, index) => {
+      const isHeaderRow = rowIdx === 0;
+
+      if (isHeaderRow) {
+        return {
+          type: "header",
+          value: cellValue,
+          template: HeaderCell,
+          style: {
+            backgroundColor: "#55bc71",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            fontWeight: "bold",
+          },
+        };
+      }
+
+      return { type: "text", value: cellValue, template: TextCell };
+    })
+);
+```
+
+#### Put data in your component
+
+ReactGrid `rows` prop expects an array of rows that are compatible with imported
+[`rows`](/docs/4.0/7-api/0-interfaces/2-row/)s interface.
+As you see this function returns the header row and mapped people array to ReactGrid's
+[`Rows`](/docs/4.0/7-api/0-interfaces/2-row/).
+
+```tsx
+const [columns, setColumns] = useState<Array<Column>>(initialColumns);
+const [rows, setRows] = useState<Array<Row>>(initialRows);
+const [gridData, setGridData] =
+  useState<(CellData | null)[][]>(initialGridData);
+
+const cellMatrix = cellMatrixBuilder(rows, columns, ({ setCell }) => {
+  gridData.forEach((row, rowIdx) => {
+    row.forEach((cell, colIdx) => {
+      if (cell === null) return;
+
+      setCell(
+        rowIdx,
+        colIdx,
+        cell.template,
+        {
+          ...(cell.hideZero && { hideZero: cell.hideZero }),
+          ...(cell.errorMessage && { errorMessage: cell.errorMessage }),
+          ...(cell.validator && { validator: cell.validator }),
+          value: cell.value,
+          style: cell.style,
+          onValueChanged: (data) => {
+            setGridData((prev) => {
+              const next = [...prev];
+              if (next[rowIdx][colIdx] !== null) {
+                next[rowIdx][colIdx].value = data;
+              }
+              return next;
+            });
+          },
+        },
+        {
+          ...(cell?.isFocusable === false && { isFocusable: cell.isFocusable }),
+          ...(cell?.isSelectable === false && {
+            isSelectable: cell.isSelectable,
+          }),
+        }
+      );
+    });
+  });
+});
+```
+
+#### Pass the data to ReactGrid
+
+We've got everything we need to see ReactGrid in action.
+It's finally time to use the ReactGrid component we imported earlier, and give it the data
+we defined in the previous steps. This is easy, and can be done like that:
+
+```tsx
+function App() {
+  const [people] = React.useState<Person[]>(getPeople());
+
+  const rows = getRows(people);
+
+  return <ReactGrid rows={rows} columns={columns} />;
+}
+```
+
+#### Putting it all together
+
+After having followed this guide, your `App.tsx` file should look more or less like this:
+
+```tsx
+import * as React from "react";
+import { render } from "react-dom";
+import { ReactGrid, Column, Row } from "@silevis/reactgrid";
+import "@silevis/reactgrid/styles.css";
+import "./styles.css";
+
+interface Person {
+  name: string;
+  surname: string;
+}
+
+const getPeople = (): Person[] => [
+  { name: "Thomas", surname: "Goldman" },
+  { name: "Susie", surname: "Quattro" },
+  { name: "", surname: "" },
+];
+
+const getColumns = (): Column[] => [
+  { columnId: "name", width: 150 },
+  { columnId: "surname", width: 150 },
+];
+
+const headerRow: Row = {
+  rowId: "header",
+  cells: [
+    { type: "header", text: "Name" },
+    { type: "header", text: "Surname" },
+  ],
+};
+
+const getRows = (people: Person[]): Row[] => [
+  headerRow,
+  ...people.map<Row>((person, idx) => ({
+    rowId: idx,
+    cells: [
+      { type: "text", text: person.name },
+      { type: "text", text: person.surname },
+    ],
+  })),
+];
+
+function App() {
+  const [people] = React.useState<Person[]>(getPeople());
+
+  const rows = getRows(people);
+  const columns = getColumns();
+
+  return <ReactGrid rows={rows} columns={columns} />;
+}
+
+render(<App />, document.getElementById("root"));
+```
+
+You can now start the App locally with:
+
+```shell
+npm start
+```
+
+Or simply play around with the interactive demo below:
+
+import LiveCode from "nextra/components/LiveCode.tsx";
+import { ReactGrid, Column, Row } from "@silevis/reactgrid-4";
+import "@silevis/reactgrid-4/styles.css";
+
+<LiveCode
+scope={{ReactGrid,
+  Column,
+  Row
+}}
+code={`
+interface Person {
+  name: string;
+  surname: string;
+}
+
+const getPeople = (): Person[] => [
+{ name: "Thomas", surname: "Goldman" },
+{ name: "Susie", surname: "Quattro" },
+{ name: "", surname: "" }
+];
+
+const getColumns = (): Column[] => [
+{ columnId: "name", width: 150 },
+{ columnId: "surname", width: 150 }
+];
+
+const headerRow: Row = {
+rowId: "header",
+cells: [
+{ type: "header", text: "Name" },
+{ type: "header", text: "Surname" }
+]
+};
+
+const getRows = (people: Person[]): Row[] => [
+headerRow,
+...people.map<Row>((person, idx) => ({
+rowId: idx,
+cells: [
+{ type: "text", text: person.name },
+{ type: "text", text: person.surname }
+]
+}))
+];
+
+function App() {
+const [people] = React.useState<Person[]>(getPeople());
+
+const rows = getRows(people);
+const columns = getColumns();
+
+return <ReactGrid rows={rows} columns={columns} />;
+}
+
+render(<App />, document.getElementById("root"));
+
+`}
+/>
+
+#### Summary
+
+You should now have a basic understanding of what ReactGrid is and how it can be used.
+Continue to the next page for more advanced usage examples.

@@ -6,14 +6,14 @@ import { getNumberFromPixelString } from "../../lib/utils/getNumberFromPixelValu
 export const handleResizeColumn = (
   width: number,
   columnIdx: number,
-  cellMatrix: CellMatrix,
+  cells: CellMatrix,
   setColumns: Dispatch<SetStateAction<Column[]>>
 ) => {
   setColumns((prevColumns) =>
     prevColumns.map((column, idx) => {
       if (idx !== columnIdx) return column;
 
-      const cell = cellMatrix.cells[0][columnIdx];
+      const cell = cells[0][columnIdx];
       let newWidth = width;
 
       if ("colSpan" in cell && cell.colSpan) {

@@ -19,7 +19,7 @@ export const HeaderLink = ({ href, children }: Props) => {
   return (
     <Link
       href={href}
-      className={`md:border-l-1 border-green-light flex  ${
+      className={`md:border-l-1 border-green-light rounded-none flex ${
         isHomePage ? "md:text-white-primary" : "md:text-black-primary"
       } text-xs font-bold justify-start md:justify-center items-center ${underlineClass}`}
     >

@@ -1,5 +1,5 @@
 import { CellMatrix } from "../types/CellMatrix";
-import { Cell, Column, Row, SpanMember } from "../types/PublicModel";
+import { Cell, SpanMember } from "../types/PublicModel";
 
 // Type `any` is required to use React.ComponentType here
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -24,26 +24,16 @@ interface CellMatrixBuilderTools {
  * so that you don't have to specify it manually.
  *
  * @param builder Function which receives {@link CellMatrixBuilderTools} as an argument and is used to build your cell matrix
- * @returns rows, columns and cells
+ * @returns cells
  */
-export const cellMatrixBuilder = (
-  rows: Row[],
-  columns: Column[],
-
-  builder: ({ ...tools }: CellMatrixBuilderTools) => void
-): CellMatrix => {
-  const cells: (Cell | SpanMember)[][] = [];
-
-  // Initialize each row in cells array to ensure it's not undefined
-  for (let i = 0; i < rows.length; i++) {
-    cells[i] = [];
-  }
+export const cellMatrixBuilder = (builder: ({ ...tools }: CellMatrixBuilderTools) => void): CellMatrix => {
+  const cells: CellMatrix = [];
 
   const setCell: SetCellFn = (baseRowIndex, baseColIndex, Template, props, { ...args } = {}) => {
     if (baseRowIndex === -1) throw new Error(`Row with id "${baseRowIndex}" isn't defined in rows array`);
     if (baseColIndex === -1) throw new Error(`Column with id "${baseColIndex}" isn't defined in columns array`);
 
-    if (process.env.NODE_ENV === "development" && cells[baseRowIndex][baseColIndex]) {
+    if (process.env.NODE_ENV === "development" && cells[baseRowIndex]?.[baseColIndex]) {
       console.warn(`Cell with coordinates [${baseRowIndex}, ${baseColIndex}] already exists and will be overwritten!`);
     }
 
@@ -79,9 +69,5 @@ export const cellMatrixBuilder = (
 
   builder({ setCell });
 
-  return {
-    rows,
-    columns,
-    cells,
-  };
+  return cells;
 };

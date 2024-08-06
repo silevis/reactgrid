@@ -155,7 +155,7 @@ export const BigGrid = () => {
     })
   );
 
-  const cellMatrix = cellMatrixBuilder(rows, columns, ({ setCell }) => {
+  const cells = cellMatrixBuilder(({ setCell }) => {
     gridData.forEach((row, rowIdx) => {
       row.forEach((cell, columnIx) => {
         if (cell === null) return;
@@ -196,13 +196,15 @@ export const BigGrid = () => {
         <ReactGrid
           id="big-grid"
           stickyTopRows={5}
+          rows={rows}
+          columns={columns}
+          cells={cells}
           stickyLeftColumns={3}
           stickyRightColumns={4}
           stickyBottomRows={4}
           styles={testStyles}
           styledRanges={toggleRanges ? styledRanges : []}
-          onResizeColumn={(width, columnIdx) => handleResizeColumn(width, columnIdx, cellMatrix, setColumns)}
-          {...cellMatrix}
+          onResizeColumn={(width, columnIdx) => handleResizeColumn(width, columnIdx, cells, setColumns)}
           onRowReorder={(selectedRowIndexes, destinationRowIdx) =>
             handleRowReorder(selectedRowIndexes, destinationRowIdx, setRows, setGridData)
           }

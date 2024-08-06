@@ -15,11 +15,11 @@ export type Column = {
   reorderable?: boolean;
 };
 
-export type Cell<RowIdxType extends number = number, ColIdxType extends number = number> = {
+export type Cell = {
   /** User defined row IDx, must exist in the `rows` array! */
-  rowIndex: RowIdxType;
+  rowIndex: number;
   /** User defined column IDx, must exist in the `columns` array! */
-  colIndex: ColIdxType;
+  colIndex: number;
 
   /** Cell's template - typically the name of the React component. Should start from the uppercase letter. */
   // Type `any` is required to use React.ComponentType here

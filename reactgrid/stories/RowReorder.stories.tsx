@@ -11,7 +11,7 @@ export const RowReorderExample = () => {
   const [rows, setRows] = useState<Array<Row>>(initialRows);
   const [gridData, setGridData] = useState<(CellData | null)[][]>(initialGridData);
 
-  const cellMatrix = cellMatrixBuilder(rows, columns, ({ setCell }) => {
+  const cells = cellMatrixBuilder(({ setCell }) => {
     gridData.forEach((row, rowIdx) => {
       row.forEach((cell, colIdx) => {
         if (cell === null) return;
@@ -55,7 +55,9 @@ export const RowReorderExample = () => {
           handleRowReorder(selectedRowIndexes, destinationRowIdx, setRows, setGridData)
         }
         initialFocusLocation={{ rowIndex: 2, colIndex: 1 }}
-        {...cellMatrix}
+        rows={rows}
+        columns={columns}
+        cells={cells}
       />
     </div>
   );

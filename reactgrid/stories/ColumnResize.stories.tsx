@@ -13,7 +13,7 @@ export const ColumnResizeExample = () => {
 
   const [gridData, setGridData] = useState<(CellData | null)[][]>(initialGridData);
 
-  const cellMatrix = cellMatrixBuilder(rows, columns, ({ setCell }) => {
+  const cells = cellMatrixBuilder(({ setCell }) => {
     gridData.forEach((row, rowIdx) => {
       row.forEach((cell, colIdx) => {
         if (cell === null) return;
@@ -54,10 +54,12 @@ export const ColumnResizeExample = () => {
         styles={rgStyles}
         enableColumnSelectionOnFirstRow
         onResizeColumn={(selectedColIndexes, destinationColIdx) =>
-          handleResizeColumn(selectedColIndexes, destinationColIdx, cellMatrix, setColumns)
+          handleResizeColumn(selectedColIndexes, destinationColIdx, cells, setColumns)
         }
         initialFocusLocation={{ rowIndex: 2, colIndex: 1 }}
-        {...cellMatrix}
+        cells={cells}
+        rows={rows}
+        columns={columns}
       />
     </div>
   );
