@@ -121,7 +121,7 @@ export const PartialArea: FC<PartialAreaProps> = React.memo(
         shouldRenderTopBorder = true;
       } else if (
         selectedArea.startRowIdx > focusedCellArea.endRowIdx &&
-        selectedArea !== EMPTY_AREA &&
+        !isEqual(selectedArea, EMPTY_AREA) &&
         !isCellInRange(store, focusedCell, selectedArea) &&
         fillHandleArea.startRowIdx < selectedArea.startRowIdx
       ) {
@@ -140,7 +140,7 @@ export const PartialArea: FC<PartialAreaProps> = React.memo(
         shouldRenderRightBorder = true;
       } else if (
         selectedArea.startColIdx < focusedCellArea.endColIdx &&
-        selectedArea !== EMPTY_AREA &&
+        !isEqual(selectedArea, EMPTY_AREA) &&
         !isCellInRange(store, focusedCell, selectedArea) &&
         fillHandleArea.endColIdx > selectedArea.endColIdx
       ) {
@@ -159,7 +159,7 @@ export const PartialArea: FC<PartialAreaProps> = React.memo(
         shouldRenderBottomBorder = true;
       } else if (
         selectedArea.startRowIdx < focusedCellArea.endRowIdx &&
-        selectedArea !== EMPTY_AREA &&
+        !isEqual(selectedArea, EMPTY_AREA) &&
         !isCellInRange(store, focusedCell, selectedArea) &&
         fillHandleArea.endRowIdx > selectedArea.endRowIdx
       ) {
@@ -178,7 +178,7 @@ export const PartialArea: FC<PartialAreaProps> = React.memo(
         shouldRenderLeftBorder = true;
       } else if (
         selectedArea.startColIdx > focusedCellArea.endColIdx &&
-        selectedArea !== EMPTY_AREA &&
+        !isEqual(selectedArea, EMPTY_AREA) &&
         !isCellInRange(store, focusedCell, selectedArea) &&
         fillHandleArea.startColIdx < selectedArea.startColIdx
       ) {

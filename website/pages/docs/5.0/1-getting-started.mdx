@@ -40,17 +40,16 @@ Here is a detailed example of how to set up the `reactgrid.config.ts` file:
 import { Row, Column } from "@silevis/reactgrid";
 
 export interface CellData {
-  type: "text" | "header";
   value: string;
   template: React.ComponentType<any>;
   style?: React.CSSProperties;
 }
 
 export const initialColumns: Column[] = [
-  { width: "150px", resizable: true, reorderable: true, minWidth: 50 },
-  { width: "150px", resizable: true, reorderable: true, minWidth: 50 },
-  { width: "150px", resizable: true, reorderable: true, minWidth: 50 },
-  { width: "150px", resizable: true, reorderable: true, minWidth: 50 },
+  { width: "150px", minWidth: 50 },
+  { width: "150px", minWidth: 50 },
+  { width: "150px", minWidth: 50 },
+  { width: "150px", minWidth: 50 },
 ];
 
 export const headerRow = ["Name", "Surname", "Email", "City"];
@@ -75,7 +74,6 @@ export const initialGridData: CellData[][] = [headerRow, ...dataRows].map(
 
       if (isHeaderRow) {
         return {
-          type: "header",
           value: cellValue,
           template: HeaderCell,
           style: {
@@ -88,7 +86,7 @@ export const initialGridData: CellData[][] = [headerRow, ...dataRows].map(
         };
       }
 
-      return { type: "text", value: cellValue, template: TextCell };
+      return { value: cellValue, template: TextCell };
     })
 );
 ```
@@ -97,7 +95,7 @@ export const initialGridData: CellData[][] = [headerRow, ...dataRows].map(
 
 Next, you can integrate the above data into the component where ReactGrid will be utilized. The [`cellMatrixBuilder`](https://github.com/silevis/reactgrid/blob/v5-dev/lib/utils/cellMatrixBuilder.ts) provides a type-safe way to construct the cell grid, including support for merged cells.
 
-**Note:** If you prefer not to use [`cellMatrixBuilder`](https://github.com/silevis/reactgrid/blob/v5-dev/lib/utils/cellMatrixBuilder.ts), you can still implement the cell matrix in your own way.
+**Note:** If you prefer not to use [`cellMatrixBuilder`](https://github.com/silevis/reactgrid/blob/v5-dev/lib/utils/cellMatrixBuilder.ts), you can still create the cell matrix in your own way.
 
 ```tsx
 function App() {
@@ -170,17 +168,16 @@ scope={{
 }}
 code={`
 interface CellData {
-  type: "text" | "header";
   value: string;
   template: React.ComponentType<any>;
   style?: React.CSSProperties;
 }
 
 const initialColumns: Column[] = [
-  { width: "180px", resizable: true, reorderable: true, minWidth: 50 },
-  { width: "180px", resizable: true, reorderable: true, minWidth: 50 },
-  { width: "180px", resizable: true, reorderable: true, minWidth: 50 },
-  { width: "180px", resizable: true, reorderable: true, minWidth: 50 },
+  { width: "180px", minWidth: 50 },
+  { width: "180px", minWidth: 50 },
+  { width: "180px", minWidth: 50 },
+  { width: "180px", minWidth: 50 },
 ];
 
 const headerRow = ["Name", "Surname", "Email", "City"];
@@ -204,7 +201,6 @@ const initialGridData: CellData[][] = [headerRow, ...dataRows].map(
 
       if (isHeaderRow) {
         return {
-          type: "header",
           value: cellValue,
           template: HeaderCell,
           style: {
@@ -218,7 +214,6 @@ const initialGridData: CellData[][] = [headerRow, ...dataRows].map(
       }
 
       return {
-        type: "text",
         value: cellValue,
         template: TextCell,
       };
@@ -256,7 +251,6 @@ function App() {
     <div>
       <ReactGrid
         id="example"
-        initialFocusLocation={{ rowIndex: 2, colIndex: 1 }}
         rows={rows}
         columns={columns}
         cells={cells}

@@ -275,7 +275,7 @@ const handlePointerMove = (
 
           const colSpannedCellLeft = checkColumnHasSpannedCell(
             store,
-            store.paneRanges.Left.startColIdx + selectedAreaColQuantity
+            store.paneRanges.Left.endColIdx - selectedAreaColQuantity
           );
 
           if (

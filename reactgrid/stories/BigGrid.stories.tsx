@@ -16,7 +16,6 @@ import { handleResizeColumn } from "./utils/handleResizeColumn";
 import { handleRowReorder } from "./utils/handleRowReorder";
 
 interface CellData {
-  type: "text" | "number" | "date";
   value: string | number;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   template: React.ComponentType<any>;
@@ -67,45 +66,39 @@ const generateCellData = (i: number, j: number): CellData | null => {
   if (i === 1 && j === 24) return null;
   // if (i === 5 && j === 8) return null;
 
-  if (i === 0) return { type: "text", value: `Col ${j}`, template: TextCell, isFocusable: false };
-  if (i === 5 && j === 3) return { type: "number", value: 100, template: NumberCell, format: myNumberFormat };
+  if (i === 0) return { value: `Col ${j}`, template: TextCell, isFocusable: false };
+  if (i === 5 && j === 3) return { value: 100, template: NumberCell, format: myNumberFormat };
   if (i === 1 && j === 3)
     return {
-      type: "text",
       value: "Lorem ipsum dolor sit amet",
       template: TextCell,
       colSpan: 2,
     };
   if (i === 1 && j === 23)
     return {
-      type: "text",
       value: "Lorem ipsum dolor sit amet",
       template: TextCell,
       colSpan: 2,
     };
-  if (i === 3 && j === 3)
-    return { type: "text", value: "Lorem ipsum dolor sit amet", template: TextCell, colSpan: 2, rowSpan: 2 };
+  if (i === 3 && j === 3) return { value: "Lorem ipsum dolor sit amet", template: TextCell, colSpan: 2, rowSpan: 2 };
   if (i === 5 && j === 4)
     return {
-      type: "text",
       value: "Reiciendis illum, nihil, ab officiis explicabo!",
       template: TextCell,
       rowSpan: 2,
     };
   if (i === 5 && j === 5)
     return {
-      type: "text",
       value: "Excepturi in adipisci omnis illo eveniet obcaecati!",
       template: TextCell,
       colSpan: 3,
     };
-  if (i === 6 && j === 6) return { type: "text", value: "Doloremque, sit!", template: TextCell, colSpan: 3 };
-  if (i === 18 && j === 1) return { type: "text", value: "Doloremque, sit!", template: TextCell, rowSpan: 2 };
-  // if (i === 4 && j === 8) return { type: "text", value: "Doloremque, sit!", template: TextCell, rowSpan: 2 };
+  if (i === 6 && j === 6) return { value: "Doloremque, sit!", template: TextCell, colSpan: 3 };
+  if (i === 18 && j === 1) return { value: "Doloremque, sit!", template: TextCell, rowSpan: 2 };
+  // if (i === 4 && j === 8) return {  value: "Doloremque, sit!", template: TextCell, rowSpan: 2 };
 
   if (i > 0 && j === 0) {
     return {
-      type: "text",
       value:
         `[${i.toString()}:${j.toString()}]` +
         [
@@ -120,7 +113,6 @@ const generateCellData = (i: number, j: number): CellData | null => {
   }
 
   return {
-    type: "text",
     value:
       `[${i.toString()}:${j.toString()}]` +
       [
@@ -195,12 +187,12 @@ export const BigGrid = () => {
       <div className="rgScrollableContainer" style={{ height: "100%", width: "100%", overflow: "auto" }}>
         <ReactGrid
           id="big-grid"
-          stickyTopRows={5}
           rows={rows}
           columns={columns}
           cells={cells}
+          stickyTopRows={5}
           stickyLeftColumns={3}
-          stickyRightColumns={4}
+          stickyRightColumns={3}
           stickyBottomRows={4}
           styles={testStyles}
           styledRanges={toggleRanges ? styledRanges : []}

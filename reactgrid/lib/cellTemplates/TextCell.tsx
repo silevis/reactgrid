@@ -12,7 +12,7 @@ interface TextCellProps {
 
 export const TextCell: FC<TextCellProps> = ({ value: initialValue, onValueChanged }) => {
   const ctx = useCellContext();
-  const targetInputRef = useRef<HTMLTextAreaElement>(null);
+  const targetInputRef = useRef<HTMLInputElement>(null);
   const [isEditMode, setEditMode] = useState(false);
   const [currentValue, setCurrentValue] = useState(initialValue || "");
   const { handleDoubleTouch } = useDoubleTouch(ctx, setEditMode);
@@ -30,7 +30,7 @@ export const TextCell: FC<TextCellProps> = ({ value: initialValue, onValueChange
   return (
     <CellWrapper
       onTouchEnd={handleDoubleTouch}
-      style={{ padding: ".2rem", textAlign: "center", outline: "none" }}
+      style={{ padding: ".2rem", textAlign: "center", outline: "none", minHeight: 0 }}
       onDoubleClick={() => {
         if (ctx.isFocused) {
           setEditMode(true);
@@ -53,7 +53,7 @@ export const TextCell: FC<TextCellProps> = ({ value: initialValue, onValueChange
       }}
     >
       {isEditMode ? (
-        <textarea
+        <input
           value={currentValue}
           style={{
             resize: "none",

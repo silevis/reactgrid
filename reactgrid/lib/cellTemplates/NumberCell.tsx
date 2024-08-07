@@ -23,7 +23,7 @@ export const NumberCell: FC<NumberCellProps> = ({
   format,
 }) => {
   const ctx = useCellContext();
-  const targetInputRef = useRef<HTMLTextAreaElement>(null);
+  const targetInputRef = useRef<HTMLInputElement>(null);
   const [isEditMode, setEditMode] = useState(false);
   const [currentValue, setCurrentValue] = useState(initialValue || 0);
   const { handleDoubleTouch } = useDoubleTouch(ctx, setEditMode);
@@ -72,7 +72,7 @@ export const NumberCell: FC<NumberCellProps> = ({
       targetInputRef={targetInputRef}
     >
       {isEditMode ? (
-        <textarea
+        <input
           value={currentValue}
           onChange={(e) => setCurrentValue(Number(e.currentTarget.value))}
           onBlur={(e) => {

@@ -1,3 +1,4 @@
+import isEqual from "lodash.isequal";
 import { Behavior } from "../types/Behavior.ts";
 import { EMPTY_AREA, IndexedLocation, NO_CELL_LOCATION } from "../types/InternalModel.ts";
 import { Cell } from "../types/PublicModel.ts";
@@ -118,7 +119,7 @@ export const CellSelectionBehavior: Behavior = {
 
     let PreviousPane;
 
-    if (store.selectedArea !== EMPTY_AREA) {
+    if (!isEqual(store.selectedArea, EMPTY_AREA)) {
       // Get the previous pane based on the last cell of the selected area (where the fill handle button is located)
       PreviousPane = getPaneNameByCell(
         store,

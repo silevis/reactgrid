@@ -1,0 +1,198 @@
+---
+posttype: "docs"
+title: Column resizing
+metaTitle: "Column resizing"
+metaDescription: "ReactGrid docs"
+---
+
+## Column Resizing
+
+To enable column resizing, you need to set the `onResizeColumn` prop of the ReactGrid component.
+
+### Important Note
+The `onResizeColumn` will only be triggered if the `resizable` property of the column is set to `true`. 
+
+---
+
+You can copy/paste the following function to your project to handle the column resizing. If you want to implement a custom resizing logic, you can modify the function as needed.
+
+```tsx 
+import { Dispatch, SetStateAction } from "react";
+import { Column, CellMatrix } from "@silevis/reactgrid";
+
+export const handleResizeColumn = (
+  width: number,
+  columnIdx: number,
+  cells: CellMatrix,
+  setColumns: Dispatch<SetStateAction<Column[]>>
+) => {
+  setColumns((prevColumns) =>
+    prevColumns.map((column, idx) => {
+      if (idx !== columnIdx) return column;
+
+      const cell = cells[0][columnIdx];
+      let newWidth = width;
+
+      if ("colSpan" in cell && cell.colSpan) {
+        for (let i = columnIdx + 1; i < columnIdx + cell.colSpan; i++) {
+          const columnWidth = prevColumns[i].width;
+          const columnWidthNumber = columnWidth;
+          newWidth -= columnWidthNumber;
+        }
+      }
+
+      return { ...column, width: newWidth };
+    })
+  );
+};
+
+```
+
+### Live Demo
+
+import LiveCode from "@/nextra/components/LiveCode.tsx";
+import {
+  ReactGrid,
+  Column,
+  Row,
+  TextCell,
+  HeaderCell,
+  cellMatrixBuilder,
+} from "@silevis/reactgrid";
+import { useState } from "react";
+
+<LiveCode
+scope={{
+  useState,
+  ReactGrid,
+  Column,
+  Row,
+  cellMatrixBuilder,
+  TextCell, 
+  HeaderCell
+}}
+code={`
+const handleResizeColumn = (
+  width: number,
+  columnIdx: number,
+  cells: CellMatrix,
+  setColumns: Dispatch<SetStateAction<Column[]>>
+) => {
+  setColumns((prevColumns) =>
+    prevColumns.map((column, idx) => {
+      if (idx !== columnIdx) return column;
+
+      const cell = cells[0][columnIdx];
+      let newWidth = width;
+
+      if ("colSpan" in cell && cell.colSpan) {
+        for (let i = columnIdx + 1; i < columnIdx + cell.colSpan; i++) {
+          const columnWidth = prevColumns[i].width;
+          const columnWidthNumber = columnWidth;
+          newWidth -= columnWidthNumber;
+        }
+      }
+
+      return { ...column, width: newWidth };
+    })
+  );
+};
+
+interface CellData {
+  value: string;
+  template: React.ComponentType<any>;
+  style?: React.CSSProperties;
+}
+
+const initialColumns: Column[] = [
+  { width: 180, resizable: true, minWidth: 80 },
+  { width: 180, resizable: true, minWidth: 80 },
+  { width: 180, resizable: true, minWidth: 80 },
+  { width: 180, resizable: true, minWidth: 80 },
+];
+
+const headerRow = ["Name", "Surname", "Email", "City"];
+
+const initialRows: Row[] = Array.from({ length: 5 }, (_, idx) => {
+  if (idx === 0) return { height: "30px", reorderable: false };
+  return { height: "min-content", reorderable: true };
+});
+
+const dataRows = [
+  ["Jake", "Smith", "j.smith@gmail.com", "New York"],
+  ["Emily", "Jones", "e.jones@hotmail.com", "Paris"],
+  ["Liam", "Brown", "l.brown@yahoo.com", "Tokyo"],
+  ["Sophia", "Taylor", "s.taylor@gmail.com", "Sydney"],
+];
+
+const initialGridData: CellData[][] = [headerRow, ...dataRows].map(
+  (row, rowIdx) =>
+    row.map((cellValue, index) => {
+      const isHeaderRow = rowIdx === 0;
+
+      if (isHeaderRow) {
+        return {
+          value: cellValue,
+          template: HeaderCell,
+          style: {
+            backgroundColor: "#55bc71",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            fontWeight: "bold",
+          },
+        };
+      }
+
+      return {
+        value: cellValue,
+        template: TextCell,
+      };
+    })
+);
+
+function App() {
+  const [columns, setColumns] = useState<Array<Column>>(initialColumns);
+  const [rows, setRows] = useState<Array<Row>>(initialRows);
+  const [gridData, setGridData] = useState<(CellData | null)[][]>(initialGridData);
+
+  const cells = cellMatrixBuilder(({ setCell }) => {
+    gridData.forEach((row, rowIdx) => {
+      row.forEach((cell, colIdx) => {
+        if (cell === null) return;
+
+        setCell(rowIdx, colIdx, cell.template, {
+          value: cell.value,
+          style: cell.style,
+          onValueChanged: (data) => {
+            setGridData((prev) => {
+              const next = [...prev];
+              if (next[rowIdx][colIdx] !== null) {
+                next[rowIdx][colIdx].value = data;
+              }
+              return next;
+            });
+          },
+        });
+      });
+    });
+  });
+
+  return (
+    <div>
+      <ReactGrid
+        id="example"
+        initialFocusLocation={{ rowIndex: 2, colIndex: 1 }}
+        onResizeColumn={(width, columnIdx) => 
+          handleResizeColumn(width, columnIdx, cells, setColumns)}
+        rows={rows}
+        columns={columns}
+        cells={cells}
+      />
+    </div>
+  );
+}
+
+render(<App />, document.getElementById("root"));
+`}
+/>

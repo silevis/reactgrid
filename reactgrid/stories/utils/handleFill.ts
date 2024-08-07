@@ -1,7 +1,6 @@
 import { NumericalRange } from "../../lib/types/PublicModel";
 
 interface CellData {
-  type: "text" | "number" | "date" | "header";
   value: string | number | Date;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   template: React.ComponentType<any>;
@@ -34,7 +33,7 @@ export const handleFill = <T extends CellData | null>(
         const currentCellData = next[i][j] as T;
 
         // Skip cells of type 'header'
-        if (currentCellData?.type === "header") continue;
+        if (i === 0) continue;
 
         // Calculate the relative row and column indices within the selected area
         const relativeRowIdx = isFillingUpwards

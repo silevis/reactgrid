@@ -4,17 +4,17 @@ const config = {
       titleTemplate: "%s – React Grid Docs",
     };
   },
-  logo: false,
+  logo: null,
   project: {
     link: "https://github.com/silevis/reactgrid",
   },
   primaryHue: { dark: 147, light: 147 },
   primarySaturation: { dark: 27, light: 27 },
   footer: {
-    component: false,
+    component: null,
   },
   editLink: {
-    component: false,
+    component: null,
   },
   docsRepositoryBase:
     "https://github.com/silevis/reactgrid-website/tree/gh-pages-dev",

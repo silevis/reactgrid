@@ -1,3 +1,4 @@
+import isEqual from "lodash.isequal";
 import { EMPTY_AREA } from "../types/InternalModel";
 import { ReactGridStore } from "../types/ReactGridStore";
 import { getCellArea } from "./getCellArea";
@@ -11,7 +12,7 @@ export function getFillSideLocation(store: ReactGridStore): FillDirection {
 
   const focusedCellArea = focusedCell ? getCellArea(store, focusedCell) : EMPTY_AREA;
 
-  const relativeLocation = selectedArea !== EMPTY_AREA ? selectedArea : focusedCellArea;
+  const relativeLocation = !isEqual(selectedArea, EMPTY_AREA) ? selectedArea : focusedCellArea;
 
   if (fillHandleArea.startRowIdx === relativeLocation.endRowIdx) {
     return "bottom";

@@ -28,7 +28,6 @@ export const initialGridData: CellData[][] = [headerRow, ...dataRows].map((row, 
   row.map((cellValue, index) => {
     if (rowIdx === 0) {
       return {
-        type: "header",
         value: cellValue,
         template: HeaderCell,
         isFocusable: false,
@@ -45,7 +44,6 @@ export const initialGridData: CellData[][] = [headerRow, ...dataRows].map((row, 
 
     if (index === row.length - 1 && rowIdx !== 0) {
       return {
-        type: "number",
         value: cellValue,
         template: NumberCell,
         validator: (value) => !isNaN(value),
@@ -54,12 +52,11 @@ export const initialGridData: CellData[][] = [headerRow, ...dataRows].map((row, 
       };
     }
 
-    return { type: "text", value: cellValue, template: TextCell };
+    return { value: cellValue, template: TextCell };
   })
 );
 
 export interface CellData {
-  type: "text" | "number" | "date" | "header";
   value: string | number | Date;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   template: React.ComponentType<any>;

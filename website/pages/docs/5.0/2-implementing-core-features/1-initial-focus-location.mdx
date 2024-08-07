@@ -1,0 +1,23 @@
+---
+posttype: "docs"
+title: Initial focus location
+metaTitle: "Initial focus location"
+metaDescription: "ReactGrid docs"
+---
+
+#### Initial focus location
+
+The focused location isn't set up by default. You can enable it by setting the `initialFocusLocation` property in the `ReactGrid` component.
+
+
+Example:
+
+```tsx
+<ReactGrid
+  id="column-reorder-example"
+  cells={cells}
+  rows={rows}
+  columns={columns}
+  initialFocusLocation={{ rowIndex: 2, colIndex: 1 }}
+/>
+```

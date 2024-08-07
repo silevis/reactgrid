@@ -1,0 +1,172 @@
+---
+posttype: "docs"
+title: Sticky rows and columns
+metaTitle: "Sticky rows and columns"
+metaDescription: "ReactGrid docs"
+---
+
+
+#### Introduction
+
+ReactGrid allows you to stick chosen rows and columns at the top or left side and additionally on the right and at the bottom 
+of the ReactGrid viewport. Sticky rows or columns will be visible at all times, no matter what the scroll position is.
+
+Sticky rows and columns can be enabled by adding dedicated `ReactGrid` component properties:
+- `stickyTopRows`
+- `stickyBottomRows`
+- `stickyLeftColumns`
+- `stickyRightColumns`
+
+All of these properties are numeric and determine the number of columns or rows sticky next to the grid's edges.
+
+#### How to make columns and rows sticky?
+
+1. Use the properties mentioned in the introduction to set the number of sticky ranges at each edge
+
+```tsx
+return (
+	<ReactGrid
+		id="example" 
+		stickyLeftColumns={1} 
+		stickyRightColumns={1} 
+		stickyTopRows={1} 
+		stickyBottomRows={1}
+        // other props
+	/>
+);
+```
+
+### Live Demo
+
+import LiveCode from "@/nextra/components/LiveCode.tsx";
+import {
+  ReactGrid,
+  TextCell,
+  HeaderCell,
+  NumberCell,
+  cellMatrixBuilder,
+} from "@silevis/reactgrid";
+import {  useState } from "react";
+
+<LiveCode
+scope={{
+  useState,
+  ReactGrid,
+  cellMatrixBuilder,
+  TextCell, 
+  NumberCell,
+  HeaderCell
+}}
+code={`
+interface CellData {
+  value: string;
+  template: React.ComponentType<any>;
+  style?: React.CSSProperties;
+}
+
+const initialColumns: Column[] = [
+  { width: 180, resizable: true, minWidth: 80 },
+  { width: 180, resizable: true, minWidth: 80 },
+  { width: 180, resizable: true, minWidth: 80 },
+  { width: 180, resizable: true, minWidth: 80 },
+  { width: 180, resizable: true, minWidth: 80 },
+  { width: 180, resizable: true, minWidth: 80 },
+];
+
+const headerRow = ["Name", "Surname", "Email", "City", "Country", "Phone"];
+
+const initialRows: Row[] = Array.from({ length: 10 }, (_, idx) => {
+  if (idx === 0) return { height: "30px", reorderable: false };
+  return { height: "min-content", reorderable: true };
+});
+
+const dataRows = [
+  ["Jake", "Smith", "j.smith@gmail.com", "New York", "USA", "987654321"],
+  ["Emily", "Jones", "e.jones@hotmail.com", "Paris", "France", "4561237890"],
+  ["Liam", "Brown", "l.brown@yahoo.com", "Tokyo", "Japan", "321456987"],
+  ["Sophia", "Taylor", "s.taylor@gmail.com", "Sydney", "Australia", "6547891230"],
+  ["Mason", "Lee", "m.lee@outlook.com", "Toronto", "Canada", "789456123"],
+  ["Isabella", "Wilson", "i.wilson@gmail.com", "London", "UK", "123789456"],
+  ["Olivia", "Martinez", "o.martinez@gmail.com", "Madrid", "Spain", "987123654"],
+  ["Noah", "Davis", "n.davis@yahoo.com", "Berlin", "Germany", "654321789"],
+  ["Ava", "Garcia", "a.garcia@hotmail.com", "Rome", "Italy", "321789654"],
+];
+
+const initialGridData: CellData[][] = [headerRow, ...dataRows].map((row, rowIdx) =>
+  row.map((cellValue, index) => {
+    if (rowIdx === 0) {
+      return {
+        value: cellValue,
+        template: HeaderCell,
+        isFocusable: false,
+        isSelectable: false,
+        style: {
+          backgroundColor: "#55bc71",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          fontWeight: "bold",
+        },
+      };
+    }
+
+    if (index === row.length - 1 && rowIdx !== 0) {
+      return {
+        value: cellValue,
+        template: NumberCell,
+        validator: (value) => !isNaN(value),
+        errorMessage: "ERR",
+        hideZero: true,
+      };
+    }
+
+    return { value: cellValue, template: TextCell };
+  })
+);
+
+function App() {
+  const [columns, setColumns] = useState<Array<Column>>(initialColumns);
+  const [rows, setRows] = useState<Array<Row>>(initialRows);
+  const [gridData, setGridData] = useState<(CellData | null)[][]>(initialGridData);
+
+  const cells = cellMatrixBuilder(({ setCell }) => {
+    gridData.forEach((row, rowIdx) => {
+      row.forEach((cell, colIdx) => {
+        if (cell === null) return;
+
+        setCell(rowIdx, colIdx, cell.template, {
+          value: cell.value,
+          style: cell.style,
+          onValueChanged: (data) => {
+            setGridData((prev) => {
+              const next = [...prev];
+              if (next[rowIdx][colIdx] !== null) {
+                next[rowIdx][colIdx].value = data;
+              }
+              return next;
+            });
+          },
+        });
+      });
+    });
+  });
+
+  return (
+    <div style={{maxWidth: 700, maxHeight: 300, overflow: 'auto'}}>
+      <ReactGrid
+        id="example"
+        stickyTopRows={1}
+        stickyLeftColumns={1}
+        stickyRightColumns={0}
+        stickyBottomRows={0}
+        rows={rows}
+        columns={columns}
+        cells={cells}
+      />
+    </div>
+  );
+}
+
+render(<App />, document.getElementById("root"));
+`}
+/>
