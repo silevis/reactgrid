@@ -12,7 +12,7 @@
     "@silevis/reactgrid": "*",
     "@radix-ui/react-dialog": "^1.0.5",
     "hamburger-react": "^2.5.0",
-    "next": "14.2.4",
+    "next": "14.2.5",
     "react": "^18",
     "react-dom": "^18",
     "react-icons": "^4.12.0",

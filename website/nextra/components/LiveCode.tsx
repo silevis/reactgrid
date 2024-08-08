@@ -1,4 +1,4 @@
-import PreviewWindow from "@/components/PreviewWindow";
+import PreviewWindow from "@/components/preview-window";
 import { LiveProvider, LiveEditor, LiveError, LivePreview } from "react-live";
 // Import Head from 'next/head' if you haven't already
 
