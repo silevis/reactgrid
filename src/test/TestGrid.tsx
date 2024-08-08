@@ -254,7 +254,7 @@ export const TestGrid: React.FC<TestGridProps> = (props) => {
                 { value: "vue", label: "Vue" },
                 { value: "angular", label: "Angular" },
               ],
-              currentValue: "react",
+              currentValue: null,
               isDisabled: false,
             };
           case -1: // just for interface testing purposes
