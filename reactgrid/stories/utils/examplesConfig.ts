@@ -1,9 +1,9 @@
-import { Column, HeaderCell, NumberCell, Row, TextCell } from "../../lib/main";
+import { CellData, Column, HeaderCell, NumberCell, Row, TextCell } from "../../lib/main";
 
 export const initialColumns: Column[] = [
-  { width: "150px", resizable: true, reorderable: true, minWidth: 50 },
-  { width: "150px", resizable: true, reorderable: true, minWidth: 50 },
-  { width: "150px", resizable: true, reorderable: true, minWidth: 50 },
+  { width: "150px", resizable: true, reorderable: true, minWidth: 10 },
+  { width: "150px", resizable: true, reorderable: true, minWidth: 20 },
+  { width: "150px", resizable: true, reorderable: true, minWidth: 30 },
   { width: "150px", resizable: true, reorderable: true, minWidth: 50 },
 ];
 
@@ -25,54 +25,66 @@ export const dataRows = [
 ];
 
 export const initialGridData: CellData[][] = [headerRow, ...dataRows].map((row, rowIdx) =>
-  row.map((cellValue, index) => {
+  row.map((cellValue, colIdx) => {
     if (rowIdx === 0) {
       return {
-        value: cellValue,
-        template: HeaderCell,
+        rowIndex: rowIdx,
+        colIndex: colIdx,
+        Template: HeaderCell,
         isFocusable: false,
         isSelectable: false,
-        style: {
-          backgroundColor: "#55bc71",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          fontWeight: "bold",
+        props: {
+          value: cellValue,
+          style: {
+            backgroundColor: "#55bc71",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            fontWeight: "bold",
+          },
         },
       };
     }
 
-    if (index === row.length - 1 && rowIdx !== 0) {
+    if (colIdx === row.length - 1 && rowIdx !== 0) {
       return {
-        value: cellValue,
-        template: NumberCell,
-        validator: (value) => !isNaN(value),
-        errorMessage: "ERR",
-        hideZero: true,
+        rowIndex: rowIdx,
+        colIndex: colIdx,
+        Template: NumberCell,
+        props: {
+          value: cellValue,
+          validator: (value) => !isNaN(value),
+          errorMessage: "ERR",
+          hideZero: true,
+        },
       };
     }
 
-    return { value: cellValue, template: TextCell };
+    return { rowIndex: rowIdx, colIndex: colIdx, Template: TextCell, props: { value: cellValue } };
   })
 );
 
-export interface CellData {
-  value: string | number | Date;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  template: React.ComponentType<any>;
+// export interface CellData {
+//   rowIndex: number;
+//   colIndex: number;
 
-  style?: React.CSSProperties;
+//   value: string | number;
 
-  rowSpan?: number;
-  colSpan?: number;
+//   // eslint-disable-next-line @typescript-eslint/no-explicit-any
+//   Template: React.ComponentType<any>;
 
-  isFocusable?: boolean;
-  isSelectable?: boolean;
+//   style?: React.CSSProperties;
 
-  validator?: (value: number) => boolean;
-  errorMessage?: string;
-  hideZero?: boolean;
-}
+//   rowSpan?: number;
+//   colSpan?: number;
+
+//   isFocusable?: boolean;
+//   isSelectable?: boolean;
+
+//   validator?: (value: number) => boolean;
+//   errorMessage?: string;
+//   hideZero?: boolean;
+// }
 
 export const rgStyles = {
   font: {

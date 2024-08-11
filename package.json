@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "lodash.clonedeep": "^4.5.0"
   },
   "scripts": {
     "lib": "npm run dev --prefix reactgrid",
@@ -12,5 +13,6 @@
     "website"
   ],
   "devDependencies": {
+    "@types/lodash.clonedeep": "^4.5.9"
   }
 }

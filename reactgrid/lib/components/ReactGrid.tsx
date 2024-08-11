@@ -10,6 +10,8 @@ import { useReactGridSync } from "../hooks/useReactGridSync";
 import { Line } from "./Line";
 import { Shadow } from "./Shadow";
 import { isReorderBehavior } from "../utils/isReorderBehavior";
+import { cellMatrixBuilder } from "../utils/cellMatrixBuilder";
+import { useDeepCompareMemo } from "../hooks/useDeepCompareMemo";
 
 const devEnvironment = isDevEnvironment();
 
@@ -21,17 +23,37 @@ export const ReactGrid: FC<ReactGridProps> = ({
   stickyRightColumns,
   ...rgProps
 }) => {
+  const cellMatrix = useDeepCompareMemo(() => {
+    return cellMatrixBuilder(({ setCell }) => {
+      rgProps.cells.forEach((row) => {
+        row.forEach((cell) => {
+          if (cell === null) return;
+
+          const { Template, isFocusable, isSelectable, rowSpan, colSpan, rowIndex, colIndex, props } = cell;
+
+          setCell(rowIndex, colIndex, Template, props, {
+            isFocusable,
+            isSelectable,
+            rowSpan,
+            colSpan,
+          });
+        });
+      });
+    });
+  }, [rgProps.cells]);
+
   initReactGridStore(id, {
     ...rgProps,
+    cells: cellMatrix,
   });
 
   // access store in non-reactive way
   const store = reactGridStores()[id].getState();
 
+  useReactGridSync(store, rgProps, cellMatrix);
+
   const currentBehavior = useReactGridStore(id, (store) => store.currentBehavior);
   const linePosition = useReactGridStore(id, (store) => store.linePosition);
-
-  useReactGridSync(store, rgProps);
 
   const [bypassSizeWarning, setBypassSizeWarning] = useState(false);
 

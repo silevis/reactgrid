@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React from "react";
 import { Behavior, BehaviorId } from "./Behavior";
 import { IndexedLocation, NestedStylesPartial } from "./InternalModel";
@@ -23,7 +24,6 @@ export type Cell = {
 
   /** Cell's template - typically the name of the React component. Should start from the uppercase letter. */
   // Type `any` is required to use React.ComponentType here
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   Template: React.ComponentType<any>;
   /** Props passed to the cell's template. Types and structure is inherited from Template prop, but instead of JSX properties it's an object. */
   props?: React.ComponentPropsWithRef<Cell["Template"]>;
@@ -36,6 +36,18 @@ export type Cell = {
   isFocusable?: boolean;
   /** Marks a cell as selectable or not */
   isSelectable?: boolean;
+};
+
+export type CellData = {
+  rowIndex: number;
+  colIndex: number;
+  Template: React.ComponentType<any>;
+  style?: React.CSSProperties;
+  rowSpan?: number;
+  colSpan?: number;
+  isFocusable?: boolean;
+  isSelectable?: boolean;
+  props?: Record<string, any>;
 };
 
 export type SpanMember = {
@@ -70,6 +82,8 @@ export type CellContextType = {
   /** Represents how many columns should the cell occupy. */
   colSpan?: number;
 
+  onCellChanged: <T>(cellIndexes: IndexedLocation, value: T) => void;
+
   /** Internal: provides cell container's style  */
   containerStyle: React.CSSProperties;
 
@@ -102,10 +116,11 @@ export interface ReactGridProps {
   columns: Column[];
   rows: Row[];
 
-  cells: (Cell | SpanMember)[][];
+  cells: CellData[][];
 
   onAreaSelected?: (selectedArea: NumericalRange) => void;
   onCellFocused?: (cellLocation: IndexedLocation) => void;
+  onCellChanged?: (cellLocation: IndexedLocation, newValue: unknown) => void;
 
   stickyTopRows?: number;
   stickyRightColumns?: number;

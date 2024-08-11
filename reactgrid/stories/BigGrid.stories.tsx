@@ -4,29 +4,16 @@ import { StrictMode, useState } from "react";
 import { ReactGrid } from "../lib/components/ReactGrid";
 import { ErrorBoundary } from "../lib/components/ErrorBoundary";
 import { TextCell } from "../lib/cellTemplates/TextCell";
-import { cellMatrixBuilder } from "../lib/utils/cellMatrixBuilder";
 import { NumberCell } from "../lib/cellTemplates/NumberCell";
-import { Column, Row } from "../lib/types/PublicModel";
+import { CellData, Column, Row } from "../lib/types/PublicModel";
 import { handleFill } from "./utils/handleFill";
 import { handleCut } from "./utils/handleCut";
 import { handlePaste } from "./utils/handlePaste";
 import { handleCopy } from "./utils/handleCopy";
 import { handleColumnReorder } from "./utils/handleColumnReorder";
-import { handleResizeColumn } from "./utils/handleResizeColumn";
 import { handleRowReorder } from "./utils/handleRowReorder";
-
-interface CellData {
-  value: string | number;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  template: React.ComponentType<any>;
-
-  rowSpan?: number;
-  colSpan?: number;
-  format?: Intl.NumberFormat;
-
-  isFocusable?: boolean;
-  isSelectable?: boolean;
-}
+import { IndexedLocation } from "../lib/types/InternalModel";
+import { handleResizeColumn } from "./utils/handleResizeColumn";
 
 const styledRanges = [
   {
@@ -51,54 +38,84 @@ const myNumberFormat = new Intl.NumberFormat("pl", {
   currency: "PLN",
 });
 
-const generateCellData = (i: number, j: number): CellData | null => {
-  if (i === 1 && j === 4) return null;
-  if (i === 1 && j === 24) return null;
-  if (i === 3 && j === 4) return null;
-  if (i === 4 && j === 3) return null;
-  if (i === 4 && j === 4) return null;
-  if (i === 5 && j === 6) return null;
-  if (i === 5 && j === 7) return null;
-  if (i === 6 && j === 4) return null;
-  if (i === 6 && j === 7) return null;
-  if (i === 6 && j === 8) return null;
-  if (i === 19 && j === 1) return null;
-  if (i === 1 && j === 24) return null;
+const generateCellData = (i: number, j: number): CellData => {
+  // if (i === 1 && j === 4) return null;
+  // if (i === 1 && j === 24) return null;
+  // if (i === 3 && j === 4) return null;
+  // if (i === 4 && j === 3) return null;
+  // if (i === 4 && j === 4) return null;
+  // if (i === 5 && j === 6) return null;
+  // if (i === 5 && j === 7) return null;
+  // if (i === 6 && j === 4) return null;
+  // if (i === 6 && j === 7) return null;
+  // if (i === 6 && j === 8) return null;
+  // if (i === 19 && j === 1) return null;
+  // if (i === 1 && j === 24) return null;
+
   // if (i === 5 && j === 8) return null;
 
-  if (i === 0) return { value: `Col ${j}`, template: TextCell, isFocusable: false };
-  if (i === 5 && j === 3) return { value: 100, template: NumberCell, format: myNumberFormat };
+  const cellIdx = {
+    rowIndex: i,
+    colIndex: j,
+  };
+
+  if (i === 0) return { ...cellIdx, props: { value: `Col ${j}` }, Template: TextCell, isFocusable: false };
+  if (i === 5 && j === 3) return { ...cellIdx, props: { value: 100, format: myNumberFormat }, Template: NumberCell };
   if (i === 1 && j === 3)
     return {
-      value: "Lorem ipsum dolor sit amet",
-      template: TextCell,
+      ...cellIdx,
+      props: { value: "Lorem ipsum dolor sit amet" },
+      Template: TextCell,
       colSpan: 2,
     };
   if (i === 1 && j === 23)
     return {
-      value: "Lorem ipsum dolor sit amet",
-      template: TextCell,
+      ...cellIdx,
+      props: { value: "Lorem ipsum dolor sit amet" },
+      Template: TextCell,
       colSpan: 2,
     };
-  if (i === 3 && j === 3) return { value: "Lorem ipsum dolor sit amet", template: TextCell, colSpan: 2, rowSpan: 2 };
+  if (i === 3 && j === 3)
+    return { ...cellIdx, props: { value: "Lorem ipsum dolor sit amet" }, Template: TextCell, colSpan: 2, rowSpan: 2 };
   if (i === 5 && j === 4)
     return {
-      value: "Reiciendis illum, nihil, ab officiis explicabo!",
-      template: TextCell,
+      ...cellIdx,
+      props: { value: "Reiciendis illum, nihil, ab officiis explicabo!" },
+
+      Template: TextCell,
       rowSpan: 2,
     };
   if (i === 5 && j === 5)
     return {
-      value: "Excepturi in adipisci omnis illo eveniet obcaecati!",
-      template: TextCell,
+      ...cellIdx,
+      props: { value: "Excepturi in adipisci omnis illo eveniet obcaecati!" },
+      Template: TextCell,
       colSpan: 3,
     };
-  if (i === 6 && j === 6) return { value: "Doloremque, sit!", template: TextCell, colSpan: 3 };
-  if (i === 18 && j === 1) return { value: "Doloremque, sit!", template: TextCell, rowSpan: 2 };
-  // if (i === 4 && j === 8) return {  value: "Doloremque, sit!", template: TextCell, rowSpan: 2 };
+  if (i === 6 && j === 6) return { ...cellIdx, props: { value: "Doloremque, sit!" }, Template: TextCell, colSpan: 3 };
+  if (i === 18 && j === 1) return { ...cellIdx, props: { value: "Doloremque, sit!" }, Template: TextCell, rowSpan: 2 };
 
   if (i > 0 && j === 0) {
     return {
+      ...cellIdx,
+      props: {
+        value:
+          `[${i.toString()}:${j.toString()}]` +
+          [
+            "Lorem ipsum dolor sit amet",
+            "Reiciendis illum, nihil, ab officiis explicabo!",
+            "Excepturi in adipisci omnis illo eveniet obcaecati!",
+            "Doloremque, sit!",
+          ][Math.floor(Math.random() * 4)],
+      },
+      Template: TextCell,
+      isFocusable: false,
+    };
+  }
+
+  return {
+    ...cellIdx,
+    props: {
       value:
         `[${i.toString()}:${j.toString()}]` +
         [
@@ -107,21 +124,8 @@ const generateCellData = (i: number, j: number): CellData | null => {
           "Excepturi in adipisci omnis illo eveniet obcaecati!",
           "Doloremque, sit!",
         ][Math.floor(Math.random() * 4)],
-      template: TextCell,
-      isFocusable: false,
-    };
-  }
-
-  return {
-    value:
-      `[${i.toString()}:${j.toString()}]` +
-      [
-        "Lorem ipsum dolor sit amet",
-        "Reiciendis illum, nihil, ab officiis explicabo!",
-        "Excepturi in adipisci omnis illo eveniet obcaecati!",
-        "Doloremque, sit!",
-      ][Math.floor(Math.random() * 4)],
-    template: TextCell,
+    },
+    Template: TextCell,
   };
 };
 
@@ -133,6 +137,7 @@ export const BigGrid = () => {
       resizable: true,
     }))
   );
+
   const [rows, setRows] = useState<Array<Row>>(
     Array.from({ length: ROW_COUNT }).map((_, j) => {
       if (j === 0) return { height: "100px", reorderable: true };
@@ -141,46 +146,15 @@ export const BigGrid = () => {
     })
   );
 
-  const [gridData, setGridData] = useState<(CellData | null)[][]>(
+  const [cells, setCells] = useState<CellData[][]>(
     Array.from({ length: ROW_COUNT }).map((_, i) => {
       return Array.from({ length: COLUMN_COUNT }).map((_, j) => generateCellData(i, j));
     })
   );
 
-  const cells = cellMatrixBuilder(({ setCell }) => {
-    gridData.forEach((row, rowIdx) => {
-      row.forEach((cell, columnIx) => {
-        if (cell === null) return;
-
-        setCell(
-          rowIdx,
-          columnIx,
-          cell.template,
-          {
-            value: cell.value,
-            onValueChanged: (data) => {
-              setGridData((prev) => {
-                const next = [...prev];
-                if (next[rowIdx][columnIx] !== null) {
-                  next[rowIdx][columnIx].value = data;
-                }
-                return next;
-              });
-            },
-            ...(cell.format && { format: cell.format }),
-          },
-          {
-            ...(cell?.isFocusable === false && { isFocusable: cell.isFocusable }),
-            ...(cell?.isSelectable === false && { isSelectable: cell.isSelectable }),
-            ...(cell?.rowSpan && { rowSpan: cell.rowSpan }),
-            ...(cell?.colSpan && { colSpan: cell.colSpan }),
-          }
-        );
-      });
-    });
-  });
-
   const [toggleRanges, setToggleRanges] = useState(false);
+
+  console.log("cells", cells);
 
   return (
     <>
@@ -189,6 +163,16 @@ export const BigGrid = () => {
           id="big-grid"
           rows={rows}
           columns={columns}
+          onCellChanged={(cellLocation: IndexedLocation, newValue) => {
+            setCells((prev) => {
+              const next = [...prev];
+              const cell = next[cellLocation.rowIndex][cellLocation.colIndex];
+              if (cell !== null && cell.props !== undefined) {
+                cell.props.value = newValue;
+              }
+              return next;
+            });
+          }}
           cells={cells}
           stickyTopRows={5}
           stickyLeftColumns={3}
@@ -198,18 +182,18 @@ export const BigGrid = () => {
           styledRanges={toggleRanges ? styledRanges : []}
           onResizeColumn={(width, columnIdx) => handleResizeColumn(width, columnIdx, cells, setColumns)}
           onRowReorder={(selectedRowIndexes, destinationRowIdx) =>
-            handleRowReorder(selectedRowIndexes, destinationRowIdx, setRows, setGridData)
+            handleRowReorder(selectedRowIndexes, destinationRowIdx, setRows, setCells)
           }
           onColumnReorder={(selectedColIndexes, destinationColIdx) =>
-            handleColumnReorder(selectedColIndexes, destinationColIdx, setColumns, setGridData)
+            handleColumnReorder(selectedColIndexes, destinationColIdx, setColumns, setCells)
           }
           enableColumnSelectionOnFirstRow
           enableRowSelectionOnFirstColumn
           onAreaSelected={(selectedArea) => {}}
-          onFillHandle={(selectedArea, fillRange) => handleFill(selectedArea, fillRange, setGridData)}
-          onCut={(selectedArea) => handleCut(gridData, selectedArea, setGridData)}
-          onPaste={(selectedArea, pastedData) => handlePaste(selectedArea, pastedData, setGridData)}
-          onCopy={(selectedArea) => handleCopy(gridData, selectedArea)}
+          onFillHandle={(selectedArea, fillRange) => handleFill(selectedArea, fillRange, setCells)}
+          onCut={(selectedArea) => handleCut(cells, selectedArea, setCells)}
+          onPaste={(selectedArea, pastedData) => handlePaste(selectedArea, pastedData, setCells)}
+          onCopy={(selectedArea) => handleCopy(cells, selectedArea)}
           onCellFocused={(cellLocation) => {}}
         />
         <button onClick={() => setToggleRanges((prev) => !prev)}>toggle ranges</button>

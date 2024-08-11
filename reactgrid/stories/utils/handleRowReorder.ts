@@ -1,7 +1,8 @@
 import { Dispatch, SetStateAction } from "react";
 import { Row } from "../../lib/types/PublicModel";
+import { CellData } from "./examplesConfig";
 
-export const handleRowReorder = <T>(
+export const handleRowReorder = <T extends CellData>(
   selectedRowIndexes: number[],
   destinationRowIdx: number,
   setRows: Dispatch<SetStateAction<Row[]>>,
@@ -43,6 +44,15 @@ export const handleRowReorder = <T>(
 
     movedRows.forEach((item, index) => {
       newGridData.splice(adjustedDestinationRowIdx + index, 0, item);
+    });
+
+    // Update rowIndex for each cell in the new grid data
+    newGridData.forEach((row, rowIndex) => {
+      row.forEach((cell) => {
+        if (cell) {
+          cell.rowIndex = rowIndex;
+        }
+      });
     });
 
     return newGridData;

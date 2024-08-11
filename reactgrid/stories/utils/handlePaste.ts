@@ -1,9 +1,9 @@
-import { NumericalRange } from "../../lib/types/PublicModel";
+import { CellData, NumericalRange } from "../../lib/types/PublicModel";
 
-export const handlePaste = <T>(
+export const handlePaste = (
   selectedArea: NumericalRange,
   pastedData: string,
-  setData: React.Dispatch<React.SetStateAction<T[][]>>
+  setData: React.Dispatch<React.SetStateAction<CellData[][]>>
 ) => {
   // parse the pasted data
   const parsedData = JSON.parse(pastedData);
@@ -15,12 +15,10 @@ export const handlePaste = <T>(
         const rowIdx = selectedArea.startRowIdx + i;
         const colIdx = selectedArea.startColIdx + j;
         if (next[rowIdx] && next[rowIdx][colIdx] !== null) {
-          if (parsedData[i][j]?.value) {
-            next[rowIdx][colIdx] = {
-              ...next[rowIdx][colIdx],
-              value: parsedData[i][j]?.value,
-            };
-          }
+          next[rowIdx][colIdx] = {
+            ...next[rowIdx][colIdx],
+            props: { ...next[rowIdx][colIdx].props, value: parsedData[i][j]?.props?.value || "" },
+          };
         }
       }
     }

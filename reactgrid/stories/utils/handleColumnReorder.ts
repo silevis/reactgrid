@@ -1,7 +1,7 @@
 import { Dispatch, SetStateAction } from "react";
-import { Column } from "../../lib/types/PublicModel";
+import { CellData, Column } from "../../lib/types/PublicModel";
 
-export const handleColumnReorder = <T>(
+export const handleColumnReorder = <T extends CellData>(
   selectedColIndexes: number[],
   destinationColIdx: number,
   setColumns: Dispatch<SetStateAction<Column[]>>,
@@ -27,7 +27,7 @@ export const handleColumnReorder = <T>(
   });
 
   setData((prevGridData) => {
-    const newGridData = prevGridData.map((row, idx) => {
+    const newGridData = prevGridData.map((row) => {
       const newRow = [...row];
 
       if (!selectedColIndexes.includes(destinationColIdx)) {
@@ -49,6 +49,12 @@ export const handleColumnReorder = <T>(
           newRow.splice(adjustedDestinationColIdx + index, 0, item);
         });
       }
+
+      newRow.forEach((cell, colIdx) => {
+        if (cell) {
+          cell.colIndex = colIdx;
+        }
+      });
 
       return newRow;
     });

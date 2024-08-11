@@ -29,21 +29,28 @@ interface CellMatrixBuilderTools {
 export const cellMatrixBuilder = (builder: ({ ...tools }: CellMatrixBuilderTools) => void): CellMatrix => {
   const cells: CellMatrix = [];
 
-  const setCell: SetCellFn = (baseRowIndex, baseColIndex, Template, props, { ...args } = {}) => {
-    if (baseRowIndex === -1) throw new Error(`Row with id "${baseRowIndex}" isn't defined in rows array`);
-    if (baseColIndex === -1) throw new Error(`Column with id "${baseColIndex}" isn't defined in columns array`);
+  const setCell: SetCellFn = (rowIndex, colIndex, Template, props, { ...args }) => {
+    if (rowIndex === -1) throw new Error(`Row with id "${rowIndex}" isn't defined in rows array`);
+    if (colIndex === -1) throw new Error(`Column with id "${colIndex}" isn't defined in columns array`);
 
-    if (process.env.NODE_ENV === "development" && cells[baseRowIndex]?.[baseColIndex]) {
-      console.warn(`Cell with coordinates [${baseRowIndex}, ${baseColIndex}] already exists and will be overwritten!`);
+    if (process.env.NODE_ENV === "development" && cells[rowIndex]?.[colIndex]) {
+      console.warn(`Cell with coordinates [${rowIndex}, ${colIndex}] already exists and will be overwritten!`);
+      return;
     }
 
-    const cell = { rowIndex: baseRowIndex, colIndex: baseColIndex, Template, props, ...args };
+    const cell = {
+      rowIndex,
+      colIndex,
+      Template,
+      props,
+      ...args,
+    };
 
-    const rowSpan = cell.rowSpan ?? 1;
-    const colSpan = cell.colSpan ?? 1;
+    const rowSpan = args.rowSpan ?? 1;
+    const colSpan = args.colSpan ?? 1;
 
     for (let rowOffset = 0; rowOffset < rowSpan; rowOffset++) {
-      const currentRowIndex = baseRowIndex + rowOffset;
+      const currentRowIndex = rowIndex + rowOffset;
 
       // Ensure the row exists before trying to access a column
       if (!cells[currentRowIndex]) {
@@ -51,20 +58,20 @@ export const cellMatrixBuilder = (builder: ({ ...tools }: CellMatrixBuilderTools
       }
 
       for (let colOffset = 0; colOffset < colSpan; colOffset++) {
-        const currentColIndex = baseColIndex + colOffset;
+        const currentColIndex = colIndex + colOffset;
 
         if (rowOffset === 0 && colOffset === 0) continue;
 
         const spanMember: SpanMember = {
-          originRowIndex: baseRowIndex,
-          originColIndex: baseColIndex,
+          originRowIndex: rowIndex,
+          originColIndex: colIndex,
         };
 
         cells[currentRowIndex][currentColIndex] = spanMember;
       }
     }
 
-    cells[baseRowIndex][baseColIndex] = cell;
+    cells[rowIndex][colIndex] = cell;
   };
 
   builder({ setCell });

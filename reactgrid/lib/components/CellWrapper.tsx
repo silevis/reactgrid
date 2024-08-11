@@ -34,6 +34,7 @@ const CellWrapper: FC<CellWrapperProps> = ({ children, targetInputRef, ...wrappe
         textAlign: "center",
         position: "relative",
         outline: "none",
+        overflow: "hidden",
         touchAction: disableTouchAction ? "none" : "auto",
         ...customStyle,
         ...ctx.containerStyle,

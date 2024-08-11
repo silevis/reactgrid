@@ -14,14 +14,7 @@ interface NumberCellProps {
   style?: React.CSSProperties;
 }
 
-export const NumberCell: FC<NumberCellProps> = ({
-  value: initialValue,
-  onValueChanged,
-  validator,
-  errorMessage,
-  hideZero,
-  format,
-}) => {
+export const NumberCell: FC<NumberCellProps> = ({ value: initialValue, validator, errorMessage, hideZero, format }) => {
   const ctx = useCellContext();
   const targetInputRef = useRef<HTMLInputElement>(null);
   const [isEditMode, setEditMode] = useState(false);
@@ -29,6 +22,8 @@ export const NumberCell: FC<NumberCellProps> = ({
   const { handleDoubleTouch } = useDoubleTouch(ctx, setEditMode);
 
   const isValid = validator ? validator(Number(initialValue)) : true;
+
+  const cellIndexes = { rowIndex: ctx.realRowIndex, colIndex: ctx.realColumnIndex };
 
   let textToDisplay = currentValue.toString();
 
@@ -39,10 +34,6 @@ export const NumberCell: FC<NumberCellProps> = ({
   } else if (!isValid && errorMessage) {
     textToDisplay = errorMessage;
   }
-
-  useEffect(() => {
-    setCurrentValue(initialValue || 0);
-  }, [initialValue]);
 
   useEffect(() => {
     if (targetInputRef.current) targetInputRef.current?.setSelectionRange(textToDisplay.length, textToDisplay.length);
@@ -57,7 +48,6 @@ export const NumberCell: FC<NumberCellProps> = ({
       onKeyDown={(e) => {
         if (!isEditMode && inNumericKey(e.keyCode)) {
           setCurrentValue(0);
-          onValueChanged(0);
           setEditMode(true);
         } else if (!isEditMode && e.key === "Enter") {
           e.preventDefault();
@@ -65,8 +55,7 @@ export const NumberCell: FC<NumberCellProps> = ({
           setCurrentValue(initialValue || 0);
           setEditMode(true);
         } else if (!isEditMode && e.key === "Backspace") {
-          setCurrentValue(0);
-          onValueChanged(0);
+          ctx.onCellChanged(cellIndexes, 0);
         }
       }}
       targetInputRef={targetInputRef}
@@ -76,30 +65,16 @@ export const NumberCell: FC<NumberCellProps> = ({
           value={currentValue}
           onChange={(e) => setCurrentValue(Number(e.currentTarget.value))}
           onBlur={(e) => {
-            onValueChanged(Number(e.currentTarget.value));
+            ctx.onCellChanged(cellIndexes, Number(e.currentTarget.value));
             setEditMode(false);
           }}
-          style={{
-            resize: "none",
-            overflowY: "hidden",
-            boxSizing: "border-box",
-            textAlign: "center",
-            width: "100%",
-            height: "100%",
-            background: "transparent",
-            border: "none",
-            padding: 0,
-            outline: "none",
-            color: "inherit",
-            fontSize: "inherit",
-            fontFamily: "inherit",
-          }}
+          style={inputStyle}
           onKeyDown={(e) => {
             if (e.key === "Escape") {
               setEditMode(false);
             } else if (e.key === "Enter") {
               e.preventDefault();
-              onValueChanged(Number(e.currentTarget.value));
+              ctx.onCellChanged(cellIndexes, Number(e.currentTarget.value));
               setEditMode(false);
             }
           }}
@@ -107,8 +82,24 @@ export const NumberCell: FC<NumberCellProps> = ({
           ref={targetInputRef}
         />
       ) : (
-        textToDisplay
+        initialValue
       )}
     </CellWrapper>
   );
+};
+
+const inputStyle: React.CSSProperties = {
+  resize: "none",
+  overflowY: "hidden",
+  boxSizing: "border-box",
+  textAlign: "center",
+  width: "100%",
+  height: "100%",
+  background: "transparent",
+  border: "none",
+  padding: 0,
+  outline: "none",
+  color: "inherit",
+  fontSize: "inherit",
+  fontFamily: "inherit",
 };

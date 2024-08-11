@@ -45,6 +45,8 @@ export interface ReactGridStoreProps {
 
   pointerStartIdx: IndexedLocation;
 
+  onCellChanged: <T>(cellIndexes: IndexedLocation, value: T) => void;
+
   onFillHandle?: (selectedArea: NumericalRange, fillRange: NumericalRange) => void;
   onAreaSelected?: (selectedArea: NumericalRange) => void;
   onCellFocused?: (cellLocation: IndexedLocation) => void;

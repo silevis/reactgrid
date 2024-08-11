@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useRef } from "react";
 import { getNumericalRange } from "../utils/getNumericalRange";
 import { isSpanMember } from "../utils/isSpanMember";
@@ -6,20 +7,23 @@ import { ReactGridProps } from "../types/PublicModel";
 import { ReactGridStore } from "../types/ReactGridStore";
 import isEqual from "lodash.isequal";
 import { getHiddenTargetFocusByIdx } from "../utils/getHiddenTargetFocusByIdx";
+import { CellMatrix } from "../types/CellMatrix";
+import cloneDeep from "lodash.clonedeep";
 
 const devEnvironment = isDevEnvironment();
 
 export const useReactGridSync = (
   store: ReactGridStore,
-  { initialSelectedRange, initialFocusLocation, ...rgProps }: Partial<ReactGridProps>
+  { initialSelectedRange, initialFocusLocation, ...rgProps }: Partial<ReactGridProps>,
+  cellMatrix: CellMatrix
 ) => {
   const { setSelectedArea, getCellOrSpanMemberByIndexes, setExternalData } = store;
 
-  function useDeepCompareGridProps(callback: () => void, dependencies: Partial<ReactGridProps>[]) {
-    const currentDependenciesRef = useRef<Partial<ReactGridProps>[]>();
+  function useDeepCompareGridProps(callback: () => void, dependencies: Partial<any>[]) {
+    const currentDependenciesRef = useRef<Partial<any>[]>();
 
     if (!isEqual(currentDependenciesRef.current, dependencies)) {
-      currentDependenciesRef.current = dependencies;
+      currentDependenciesRef.current = cloneDeep(dependencies);
     }
 
     useEffect(callback, [currentDependenciesRef.current]);
@@ -28,6 +32,10 @@ export const useReactGridSync = (
   useDeepCompareGridProps(() => {
     setExternalData(rgProps);
   }, [rgProps]);
+
+  useDeepCompareGridProps(() => {
+    setExternalData({ cells: cellMatrix });
+  }, [cellMatrix]);
 
   useEffect(() => {
     if (!initialSelectedRange) {

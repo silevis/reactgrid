@@ -62,6 +62,7 @@ const DEFAULT_STORE_PROPS: ReactGridStoreProps = {
   shadowSize: undefined,
   pointerStartIdx: { rowIndex: -1, colIndex: -1 }, // used for cell selection behavior
   currentBehavior: DefaultBehavior(),
+  onCellChanged: (cellIndexes, value) => {}, // default noop
 };
 
 export function initReactGridStore(id: string, initialProps?: Partial<ReactGridStoreProps>) {

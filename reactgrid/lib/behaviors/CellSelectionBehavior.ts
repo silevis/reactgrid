@@ -123,7 +123,7 @@ export const CellSelectionBehavior: Behavior = {
       // Get the previous pane based on the last cell of the selected area (where the fill handle button is located)
       PreviousPane = getPaneNameByCell(
         store,
-        store.getCellByIndexes(store.selectedArea.endRowIdx - 1, store.selectedArea.endColIdx - 1)
+        store.getCellByIndexes(store.pointerStartIdx.rowIndex, store.pointerStartIdx.colIndex)
       );
     } else {
       // Get the previous pane based on the focused cell

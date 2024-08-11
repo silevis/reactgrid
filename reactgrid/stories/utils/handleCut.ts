@@ -1,9 +1,9 @@
-import { NumericalRange } from "../../lib/types/PublicModel";
+import { CellData, NumericalRange } from "../../lib/types/PublicModel";
 
-export const handleCut = <T>(
-  data: T[][],
+export const handleCut = (
+  data: CellData[][],
   selectedArea: NumericalRange,
-  setData: React.Dispatch<React.SetStateAction<T[][]>>
+  setData: React.Dispatch<React.SetStateAction<CellData[][]>>
 ) => {
   // copy the data from the selected area to the clipboard
   const selectedData = data
@@ -17,7 +17,7 @@ export const handleCut = <T>(
     const next = [...prev];
     for (let i = selectedArea.startRowIdx; i < selectedArea.endRowIdx; i++) {
       for (let j = selectedArea.startColIdx; j < selectedArea.endColIdx; j++) {
-        if (next[i][j] !== null) next[i][j] = { ...data[i][j], value: "" };
+        if (next[i][j] !== null) next[i][j] = { ...data[i][j], props: { ...data[i][j].props, value: "" } };
       }
     }
     return next;

@@ -1,6 +1,8 @@
-import { createContext, memo, useContext, useMemo } from "react";
+import { createContext, memo, useContext } from "react";
 import { Cell, CellContextType } from "../types/PublicModel";
 import { StickyOffsets } from "../types/InternalModel";
+import { useReactGridId } from "./ReactGridIdProvider";
+import { useReactGridStore } from "../utils/reactGridStore";
 
 interface CellContextProviderProps {
   rowIndex: number;
@@ -20,6 +22,7 @@ export const CellContext = createContext<CellContextType>({
   realRowIndex: -1,
   realColumnIndex: -1,
   isFocused: false,
+  onCellChanged: () => {},
   containerStyle: {},
 });
 
@@ -45,18 +48,21 @@ export const CellContextProvider = memo(
     cell,
     isFocused,
   }: CellContextProviderProps) => {
+    const storeId = useReactGridId();
+
+    const onCellChanged = useReactGridStore(storeId, (state) => state.onCellChanged);
+
     const { Template, props } = cell;
 
-    const children = useMemo(() => <Template {...props} />, [Template, props]);
+    const children = <Template {...props} />;
 
     return (
       <CellContext.Provider
         value={{
           realRowIndex,
           realColumnIndex,
-          rowSpan: rowSpan,
-          colSpan: colSpan,
           isFocused,
+          onCellChanged,
           containerStyle: {
             ...(rowSpan && {
               gridRowEnd: `span ${rowSpan}`,

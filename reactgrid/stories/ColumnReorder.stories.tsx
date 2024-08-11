@@ -1,51 +1,16 @@
 import React from "react";
 import { StrictMode, useState } from "react";
-import { cellMatrixBuilder } from "../lib/utils/cellMatrixBuilder";
-import { Column, Row, ReactGrid } from "../lib/main";
+import { Column, Row, ReactGrid, CellChange } from "../lib/main";
 import { StoryDefault } from "@ladle/react";
 import { ErrorBoundary } from "../lib/components/ErrorBoundary";
 import { initialColumns, initialRows, CellData, rgStyles, initialGridData } from "./utils/examplesConfig";
 import { handleColumnReorder } from "./utils/handleColumnReorder";
+import { IndexedLocation } from "../lib/types/InternalModel";
 
 export const ColumnReorderExample = () => {
   const [columns, setColumns] = useState<Array<Column>>(initialColumns);
   const [rows, setRows] = useState<Array<Row>>(initialRows);
-
-  const [gridData, setGridData] = useState<(CellData | null)[][]>(initialGridData);
-
-  const cells = cellMatrixBuilder(({ setCell }) => {
-    gridData.forEach((row, rowIdx) => {
-      row.forEach((cell, colIdx) => {
-        if (cell === null) return;
-
-        setCell(
-          rowIdx,
-          colIdx,
-          cell.template,
-          {
-            ...(cell.hideZero && { hideZero: cell.hideZero }),
-            ...(cell.errorMessage && { errorMessage: cell.errorMessage }),
-            ...(cell.validator && { validator: cell.validator }),
-            value: cell.value,
-            style: cell.style,
-            onValueChanged: (data) => {
-              setGridData((prev) => {
-                const next = [...prev];
-                if (next[rowIdx][colIdx] !== null) {
-                  next[rowIdx][colIdx].value = data;
-                }
-                return next;
-              });
-            },
-          },
-          {
-            ...(cell?.isFocusable === false && { isFocusable: cell.isFocusable }),
-            ...(cell?.isSelectable === false && { isSelectable: cell.isSelectable }),
-          }
-        );
-      });
-    });
-  });
+  const [cells, setCells] = useState<CellData[][]>(initialGridData);
 
   return (
     <div>
@@ -54,9 +19,17 @@ export const ColumnReorderExample = () => {
         styles={rgStyles}
         enableColumnSelectionOnFirstRow
         onColumnReorder={(selectedColIndexes, destinationColIdx) =>
-          handleColumnReorder(selectedColIndexes, destinationColIdx, setColumns, setGridData)
+          handleColumnReorder(selectedColIndexes, destinationColIdx, setColumns, setCells)
         }
         initialFocusLocation={{ rowIndex: 2, colIndex: 1 }}
+        onCellChanged={(cellLocation: IndexedLocation, newValue: CellChange<CellData["value"]>) => {
+          setCells((prev) => {
+            const next = [...prev];
+
+            next[cellLocation.rowIndex][cellLocation.colIndex].value = newValue;
+            return next;
+          });
+        }}
         cells={cells}
         rows={rows}
         columns={columns}

@@ -1,22 +1,11 @@
-import { NumericalRange } from "../../lib/types/PublicModel";
+import { NumericalRange, CellData } from "../../lib/types/PublicModel";
 
-interface CellData {
-  value: string | number | Date;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  template: React.ComponentType<any>;
-
-  rowSpan?: number;
-  colSpan?: number;
-  format?: Intl.NumberFormat;
-  date?: Date;
-}
-
-export const handleFill = <T extends CellData | null>(
+export const handleFill = <T extends CellData>(
   selectedArea: NumericalRange,
   fillRange: NumericalRange,
-  setData: React.Dispatch<React.SetStateAction<T[][]>>
+  setCells: React.Dispatch<React.SetStateAction<T[][]>>
 ) => {
-  setData((prev) => {
+  setCells((prev) => {
     const next = [...prev];
     // Check if the fill handle is being dragged upwards
     const isFillingUpwards = fillRange.startRowIdx < selectedArea.startRowIdx;
@@ -47,7 +36,10 @@ export const handleFill = <T extends CellData | null>(
         // Set the value of the cell in the fill range to the value from the selected area
         next[i][j] = {
           ...currentCellData,
-          value: newValue ? newValue.value : "",
+          props: {
+            ...currentCellData.props,
+            value: newValue?.props ? newValue.props.value : "",
+          },
         };
       }
     }
