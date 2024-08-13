@@ -11,7 +11,6 @@ import { handleCopy } from "./utils/handleCopy";
 import { handleColumnReorder } from "./utils/handleColumnReorder";
 import { handleRowReorder } from "./utils/handleRowReorder";
 import { IndexedLocation } from "../lib/types/InternalModel";
-import { handleResizeColumn } from "./utils/handleResizeColumn";
 import { COLUMN_COUNT, ROW_COUNT, generateCellData, testStyles, styledRanges } from "./utils/bigGridConfig";
 
 export const BigGrid = () => {
@@ -25,8 +24,6 @@ export const BigGrid = () => {
     }, [])
   );
 
-  console.log(cells);
-
   const [toggleRanges, setToggleRanges] = useState(false);
 
   return (
@@ -34,18 +31,15 @@ export const BigGrid = () => {
       <div className="rgScrollableContainer" style={{ height: "100%", width: "100%", overflow: "auto" }}>
         <ReactGrid
           id="big-grid"
-          onCellChanged={(cellLocation: IndexedLocation, newValue) => {
+          onCellChanged={(cellLocation, newValue) => {
             setCells((prev) => {
               const next = [...prev];
-
               const cell = next.find(
                 (cell) => cell.rowIndex === cellLocation.rowIndex && cell.colIndex === cellLocation.colIndex
               );
-
               if (cell && cell.props !== undefined) {
                 cell.props.value = newValue;
               }
-
               return next;
             });
           }}

@@ -18,19 +18,17 @@ export const ColumnReorderExample = () => {
         id="column-reorder-example"
         styles={rgStyles}
         enableColumnSelectionOnFirstRow
-        // onColumnReorder={(selectedColIndexes, destinationColIdx) =>
-        //   handleColumnReorder(selectedColIndexes, destinationColIdx, setColumns, setCells)
-        // }
+        onColumnReorder={(selectedColIndexes, destinationColIdx) =>
+          handleColumnReorder(selectedColIndexes, destinationColIdx, setCells)
+        }
         initialFocusLocation={{ rowIndex: 2, colIndex: 1 }}
-        onCellChanged={(cellLocation: IndexedLocation, newValue) => {
+        onCellChanged={(cellLocation, newValue) => {
           setCells((prev) => {
             const next = [...prev];
-
             const cell = next.find(
               (cell) => cell.rowIndex === cellLocation.rowIndex && cell.colIndex === cellLocation.colIndex
             );
-
-            if (cell?.props !== undefined) {
+            if (cell && cell.props !== undefined) {
               cell.props.value = newValue;
             }
             return next;

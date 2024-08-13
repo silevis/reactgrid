@@ -64,12 +64,12 @@ const DEFAULT_STORE_PROPS: ReactGridStoreProps = {
   onCellChanged: (cellIndexes, value) => {}, // default noop
 };
 
-export function initReactGridStore(id: string, initialProps?: Partial<ReactGridStoreProps>) {
+export function initReactGridStore(id: string, initialProps: Partial<ReactGridStoreProps>) {
   reactGridStores.setState((state) => {
     if (state[id]) return state;
 
-    const columns = createGridColumns(initialProps?.cells || new Map());
-    const rows = createGridRows(initialProps?.cells || new Map());
+    const rows = initGridRows(initialProps?.cells || new Map(), initialProps.customRows);
+    const columns = initGridColumns(initialProps?.cells || new Map(), initialProps.customColumns);
 
     return {
       ...state,
@@ -207,9 +207,18 @@ export function initReactGridStore(id: string, initialProps?: Partial<ReactGridS
   });
 }
 
-const createGridRows = (cellMap: CellMap): Row[] => {
+const initGridRows = (cellMap: CellMap, customRows?: Row[]): Row[] => {
   let maxRowIndex = 0;
 
+  // Create a map for custom rows for quick lookup
+  const customRowMap = new Map<number, Row>();
+  if (customRows) {
+    customRows.forEach((row) => {
+      customRowMap.set(row.rowIndex, row);
+    });
+  }
+
+  // Determine the maximum row index from the cellMap
   for (const key of cellMap.keys()) {
     const [rowIndexStr] = key.split(" ");
     const rowIndex = parseInt(rowIndexStr, 10);
@@ -218,16 +227,29 @@ const createGridRows = (cellMap: CellMap): Row[] => {
     }
   }
 
-  return Array.from({ length: maxRowIndex + 1 }).map((_, idx) => ({
-    rowIndex: idx,
-    height: "min-content",
-    reorderable: true,
-  }));
+  // Create rows up to the maximum index, applying custom configurations if available
+  return Array.from({ length: maxRowIndex + 1 }).map((_, idx) => {
+    const customRow = customRowMap.get(idx);
+    return {
+      rowIndex: idx,
+      height: customRow?.height ?? "min-content",
+      reorderable: customRow?.reorderable ?? true,
+    };
+  });
 };
 
-const createGridColumns = (cellMap: CellMap): Column[] => {
+const initGridColumns = (cellMap: CellMap, customColumns?: Column[]): Column[] => {
   let maxColIndex = 0;
 
+  // Create a map for custom columns for quick lookup
+  const customColumnMap = new Map<number, Column>();
+  if (customColumns) {
+    customColumns.forEach((col) => {
+      customColumnMap.set(col.colIndex, col);
+    });
+  }
+
+  // Determine the maximum column index from the cellMap
   for (const key of cellMap.keys()) {
     const [, colIndexStr] = key.split(" ");
     const colIndex = parseInt(colIndexStr, 10);
@@ -236,13 +258,17 @@ const createGridColumns = (cellMap: CellMap): Column[] => {
     }
   }
 
-  return Array.from({ length: maxColIndex + 1 }).map((_, idx) => ({
-    colIndex: idx,
-    resizable: true,
-    reorderable: true,
-    width: "min-content",
-    minWidth: 50,
-  }));
+  // Create columns up to the maximum index, applying custom configurations if available
+  return Array.from({ length: maxColIndex + 1 }).map((_, idx) => {
+    const customCol = customColumnMap.get(idx);
+    return {
+      colIndex: idx,
+      resizable: customCol?.resizable ?? true,
+      reorderable: customCol?.reorderable ?? true,
+      width: customCol?.width ?? "min-content",
+      minWidth: customCol?.minWidth ?? 50,
+    };
+  });
 };
 
 export function useReactGridStore<T>(id: string, selector: (store: ReactGridStore) => T): T {

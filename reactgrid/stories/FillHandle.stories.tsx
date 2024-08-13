@@ -1,14 +1,13 @@
 import React, { StrictMode, useState } from "react";
-import { Column, Row, ReactGrid, CellData } from "../lib/main";
+import { ReactGrid, CellData } from "../lib/main";
 import { StoryDefault } from "@ladle/react";
 import { ErrorBoundary } from "../lib/components/ErrorBoundary";
-import { initialColumns, initialRows, rgStyles, initialGridData } from "./utils/examplesConfig";
+import { rgStyles, initialGridData } from "./utils/examplesConfig";
 import { handleFill } from "./utils/handleFill";
 
 export const FillHandleExample = () => {
-  const [columns, setColumns] = useState<Column[]>(initialColumns);
-  const [rows, setRows] = useState<Row[]>(initialRows);
-  const [cells, setCells] = useState<CellData[][]>(initialGridData);
+  const [cells, setCells] = useState<CellData[]>(initialGridData);
+
   const [counter, setCounter] = useState(0);
 
   return (
@@ -25,15 +24,15 @@ export const FillHandleExample = () => {
         onCellChanged={(cellLocation, newValue) => {
           setCells((prev) => {
             const next = [...prev];
-            const cell = next[cellLocation.rowIndex][cellLocation.colIndex];
-            if (cell !== null && cell.props !== undefined) {
+            const cell = next.find(
+              (cell) => cell.rowIndex === cellLocation.rowIndex && cell.colIndex === cellLocation.colIndex
+            );
+            if (cell && cell.props !== undefined) {
               cell.props.value = newValue;
             }
             return next;
           });
         }}
-        rows={rows}
-        columns={columns}
         cells={cells}
       />
     </div>
