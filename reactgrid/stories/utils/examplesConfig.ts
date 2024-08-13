@@ -1,17 +1,17 @@
-import { CellData, Column, HeaderCell, NumberCell, Row, TextCell } from "../../lib/main";
+import { CellData, HeaderCell, NumberCell, TextCell } from "../../lib/main";
 
-export const initialColumns: Column[] = [
-  { width: "150px", resizable: true, reorderable: true, minWidth: 10 },
-  { width: "150px", resizable: true, reorderable: true, minWidth: 20 },
-  { width: "150px", resizable: true, reorderable: true, minWidth: 30 },
-  { width: "150px", resizable: true, reorderable: true, minWidth: 50 },
-];
+// export const initialColumns: Column[] = [
+//   { width: "150px", resizable: true, reorderable: true, minWidth: 10 },
+//   { width: "150px", resizable: true, reorderable: true, minWidth: 20 },
+//   { width: "150px", resizable: true, reorderable: true, minWidth: 30 },
+//   { width: "150px", resizable: true, reorderable: true, minWidth: 50 },
+// ];
 
-export const initialRows: Row[] = Array.from({ length: 7 }, (_, idx) => {
-  if (idx === 0) return { height: "30px", reorderable: false };
+// export const initialRows: Row[] = Array.from({ length: 7 }, (_, idx) => {
+//   if (idx === 0) return { height: "30px", reorderable: false };
 
-  return { height: "min-content", reorderable: true };
-});
+//   return { height: "min-content", reorderable: true };
+// });
 
 export const headerRow = ["Name", "Surname", "Email", "Phone"];
 
@@ -63,28 +63,6 @@ export const initialGridData: CellData[] = [headerRow, ...dataRows].flatMap((row
     return { rowIndex: rowIdx, colIndex: colIdx, Template: TextCell, props: { value: cellValue } };
   })
 );
-
-// export interface CellData {
-//   rowIndex: number;
-//   colIndex: number;
-
-//   value: string | number;
-
-//   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-//   Template: React.ComponentType<any>;
-
-//   style?: React.CSSProperties;
-
-//   rowSpan?: number;
-//   colSpan?: number;
-
-//   isFocusable?: boolean;
-//   isSelectable?: boolean;
-
-//   validator?: (value: number) => boolean;
-//   errorMessage?: string;
-//   hideZero?: boolean;
-// }
 
 export const rgStyles = {
   font: {

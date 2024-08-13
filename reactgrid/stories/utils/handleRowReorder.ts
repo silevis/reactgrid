@@ -1,31 +1,10 @@
-import { Dispatch, SetStateAction } from "react";
-import { CellData, Row } from "../../lib/types/PublicModel";
+import { CellData } from "../../lib/types/PublicModel";
 
 export const handleRowReorder = <T extends CellData>(
   selectedRowIndexes: number[],
   destinationRowIdx: number,
-  setRows: Dispatch<SetStateAction<Row[]>>,
   setData: React.Dispatch<React.SetStateAction<T[]>>
 ) => {
-  setRows((prevRows) => {
-    // Create arrays of selected and unselected rows
-    const selectedRows = prevRows.filter((_, index) => selectedRowIndexes.includes(index));
-    const unselectedRows = prevRows.filter((_, index) => !selectedRowIndexes.includes(index));
-
-    // Calculate the adjusted destination index
-    const adjustedDestinationRowIdx =
-      selectedRowIndexes[0] > destinationRowIdx ? destinationRowIdx : destinationRowIdx - selectedRows.length + 1;
-
-    // Create the new array of rows
-    const newRows = [
-      ...unselectedRows.slice(0, adjustedDestinationRowIdx),
-      ...selectedRows,
-      ...unselectedRows.slice(adjustedDestinationRowIdx),
-    ];
-
-    return newRows;
-  });
-
   setData((prevGridData) => {
     const minSelectedIndex = Math.min(...selectedRowIndexes);
     const maxSelectedIndex = Math.max(...selectedRowIndexes);

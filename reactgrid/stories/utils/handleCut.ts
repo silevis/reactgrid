@@ -26,26 +26,18 @@ export const handleCut = (
 
   // Convert the organized data to an HTML table string
   const htmlData = `
-    <table>
-      ${organizedData
-        .map(
-          (row) => `
-        <tr>
-          ${row
-            .map(
-              (value) => `
-            <td>
-              ${value || ""}
-            </td>
-          `
-            )
-            .join("")}
-        </tr>
-      `
-        )
-        .join("")}
-    </table>
-  `;
+  <table>
+    ${organizedData
+      .map(
+        (row) => `
+      <tr>
+        ${row.map((value) => `<td>${value || ""}</td>`).join("")}
+      </tr>
+    `
+      )
+      .join("")}
+  </table>
+`;
 
   // Create a ClipboardItem with the HTML string
   const clipboardItem = new ClipboardItem({

@@ -17,9 +17,7 @@ export const ColumnResizeExample = () => {
         id="column-resize-example"
         styles={rgStyles}
         enableColumnSelectionOnFirstRow
-        onResizeColumn={(selectedColIndexes, destinationColIdx) =>
-          handleResizeColumn(selectedColIndexes, destinationColIdx, cells, setColumns)
-        }
+        enableResizeColumns
         initialFocusLocation={{ rowIndex: 2, colIndex: 1 }}
         onCellChanged={(cellLocation, newValue) => {
           setCells((prev) => {

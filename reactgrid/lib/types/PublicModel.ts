@@ -5,11 +5,13 @@ import { IndexedLocation, NestedStylesPartial } from "./InternalModel";
 import { RGTheme } from "./RGTheme";
 
 export type Row = {
+  rowIndex: number;
   height: string | number;
   reorderable?: boolean;
 };
 
 export type Column = {
+  colIndex: number;
   width: string | number;
   minWidth?: string | number;
   resizable?: boolean;
@@ -38,7 +40,10 @@ export type Cell = {
   isSelectable?: boolean;
 };
 
-export type CellMap = Map<`${number} ${number}`, Cell | SpanMember>;
+export type CellMap<RowIdxType extends number = number, ColIdxType extends number = number> = Map<
+  `${RowIdxType} ${ColIdxType}`,
+  Cell | SpanMember
+>;
 
 export type CellData = {
   rowIndex: number;
@@ -115,8 +120,8 @@ export interface ReactGridProps {
 
   styledRanges?: StyledRange[];
 
-  columns: Column[];
-  rows: Row[];
+  customColumns?: Column[];
+  customRows?: Row[];
 
   cells: CellData[];
 
@@ -135,6 +140,8 @@ export interface ReactGridProps {
 
   enableRowSelectionOnFirstColumn?: boolean;
 
+  enableResizeColumns?: boolean;
+
   behaviors?: Partial<Record<BehaviorId, Behavior>>;
 
   initialFocusLocation?: IndexedLocation;
@@ -148,5 +155,4 @@ export interface ReactGridProps {
   onPaste?: (selectedArea: NumericalRange, pastedData: string) => void;
   onColumnReorder?: (selectedColIndexes: number[], destinationColIdx: number) => void;
   onRowReorder?: (selectedRowIndexes: number[], destinationRowIdx: number) => void;
-  onResizeColumn?: (width: number, columnIdx: number) => void;
 }

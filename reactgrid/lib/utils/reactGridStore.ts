@@ -1,7 +1,7 @@
 import { create, createStore, StoreApi, useStore } from "zustand";
 import { CellSelectionBehavior } from "../behaviors/CellSelectionBehavior.ts";
 import { DefaultBehavior } from "../behaviors/DefaultBehavior.ts";
-import { Cell, Range, StyledRange } from "../types/PublicModel.ts";
+import { Cell, CellMap, Column, Range, Row, StyledRange } from "../types/PublicModel.ts";
 import { isSpanMember } from "./isSpanMember.ts";
 import { ReactGridStore, ReactGridStoreProps } from "../types/ReactGridStore.ts";
 import { FillHandleBehavior } from "../behaviors/FillHandleBehavior.ts";
@@ -44,7 +44,6 @@ const DEFAULT_STORE_PROPS: ReactGridStoreProps = {
   onCellFocused: undefined,
   onCut: undefined,
   onPaste: undefined,
-  onResizeColumn: undefined,
 
   // internal state
   rowMeasurements: [],
@@ -69,11 +68,16 @@ export function initReactGridStore(id: string, initialProps?: Partial<ReactGridS
   reactGridStores.setState((state) => {
     if (state[id]) return state;
 
+    const columns = createGridColumns(initialProps?.cells || new Map());
+    const rows = createGridRows(initialProps?.cells || new Map());
+
     return {
       ...state,
       [id]: createStore<ReactGridStore>()((set, get) => ({
         ...DEFAULT_STORE_PROPS,
         ...initialProps,
+        rows,
+        columns,
         behaviors: { ...DEFAULT_STORE_PROPS.behaviors, ...initialProps?.behaviors },
         setRows: (rows) => set(() => ({ rows })),
         getRowAmount: () => get().rows.length,
@@ -202,6 +206,44 @@ export function initReactGridStore(id: string, initialProps?: Partial<ReactGridS
     };
   });
 }
+
+const createGridRows = (cellMap: CellMap): Row[] => {
+  let maxRowIndex = 0;
+
+  for (const key of cellMap.keys()) {
+    const [rowIndexStr] = key.split(" ");
+    const rowIndex = parseInt(rowIndexStr, 10);
+    if (rowIndex > maxRowIndex) {
+      maxRowIndex = rowIndex;
+    }
+  }
+
+  return Array.from({ length: maxRowIndex + 1 }).map((_, idx) => ({
+    rowIndex: idx,
+    height: "min-content",
+    reorderable: true,
+  }));
+};
+
+const createGridColumns = (cellMap: CellMap): Column[] => {
+  let maxColIndex = 0;
+
+  for (const key of cellMap.keys()) {
+    const [, colIndexStr] = key.split(" ");
+    const colIndex = parseInt(colIndexStr, 10);
+    if (colIndex > maxColIndex) {
+      maxColIndex = colIndex;
+    }
+  }
+
+  return Array.from({ length: maxColIndex + 1 }).map((_, idx) => ({
+    colIndex: idx,
+    resizable: true,
+    reorderable: true,
+    width: "min-content",
+    minWidth: 50,
+  }));
+};
 
 export function useReactGridStore<T>(id: string, selector: (store: ReactGridStore) => T): T {
   const store = reactGridStores()[id];

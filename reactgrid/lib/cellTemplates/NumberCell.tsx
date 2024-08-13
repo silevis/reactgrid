@@ -25,12 +25,12 @@ export const NumberCell: FC<NumberCellProps> = ({ value: initialValue, validator
 
   const cellIndexes = { rowIndex: ctx.realRowIndex, colIndex: ctx.realColumnIndex };
 
-  let textToDisplay = currentValue.toString();
+  let textToDisplay = initialValue.toString();
 
-  if (hideZero && currentValue === 0) {
+  if (hideZero && initialValue === 0) {
     textToDisplay = "";
   } else if (format) {
-    textToDisplay = format.format(currentValue);
+    textToDisplay = format.format(initialValue);
   } else if (!isValid && errorMessage) {
     textToDisplay = errorMessage;
   }
@@ -61,9 +61,12 @@ export const NumberCell: FC<NumberCellProps> = ({ value: initialValue, validator
         <input
           value={currentValue}
           onChange={(e) => {
-            console.log("e.currentTarget.value: ", e.currentTarget.value);
-
-            setCurrentValue(Number(e.currentTarget.value));
+            const value = Number(e.currentTarget.value);
+            if (!isNaN(value)) {
+              setCurrentValue(value);
+            } else {
+              setCurrentValue(0);
+            }
           }}
           onPointerDown={(e) => e.stopPropagation()}
           onBlur={(e) => {

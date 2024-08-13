@@ -168,7 +168,7 @@ export const SpannedHeaders = () => {
         }
         enableColumnSelectionOnFirstRow
         enableRowSelectionOnFirstColumn
-        onResizeColumn={(width, columnId) => handleResizeColumn(width, columnId, cells, setColumns)}
+        enableResizeColumns
         stickyTopRows={1}
         initialFocusLocation={{ rowIndex: 1, colIndex: 0 }}
         rows={rows}

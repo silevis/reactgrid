@@ -14,6 +14,7 @@ import { getHiddenFocusTargetLocation } from "../utils/getHiddenFocusTargetLocat
 import { getCellArea } from "../utils/getCellArea.ts";
 import { isCellInPane } from "../utils/isCellInPane.ts";
 import { checkRowHasSpannedCell } from "../utils/checkRowHasSpannedCell.ts";
+import { Row } from "../types/PublicModel.ts";
 
 const devEnvironment = isDevEnvironment();
 
@@ -419,10 +420,13 @@ const handlePointerUp = (
   // CASE 1
   // If the mouse pointer is beyond the last row, move the selected rows to the last row
   if (event.clientY > lastRowClientOffsetTop + lastRowHeight) {
+    const newRows = reorderRows(store.rows, selectedRowIndexes, store.rows.length - 1);
+
     store.onRowReorder?.(selectedRowIndexes, store.rows.length - 1);
 
     return {
       currentBehavior: store.getBehavior("Default"),
+      rows: newRows,
       changedFocusedLocation: newFocusedLocation,
       selectedArea: {
         startRowIdx: store.rows.length - 1 - (selectedRowIndexes.length - 1),
@@ -443,10 +447,13 @@ const handlePointerUp = (
   // CASE 2
   // If the mouse pointer is beyond the first row, move the selected rows to the first row
   if (event.clientY < gridWrapper.getBoundingClientRect().top) {
+    const newRows = reorderRows(store.rows, selectedRowIndexes, 0);
+
     store.onRowReorder?.(selectedRowIndexes, 0);
 
     return {
       currentBehavior: store.getBehavior("Default"),
+      rows: newRows,
       changedFocusedLocation: newFocusedLocation,
       selectedArea: {
         startRowIdx: 0,
@@ -469,10 +476,14 @@ const handlePointerUp = (
 
   // CASE 3
   // If the mouse pointer is within the first and last row, move the selected rows to the destination row
+
+  const newRows = reorderRows(store.rows, selectedRowIndexes, destinationRowIdx);
+
   store.onRowReorder?.(selectedRowIndexes, destinationRowIdx);
 
   return {
     currentBehavior: store.getBehavior("Default"),
+    rows: newRows,
     changedFocusedLocation: newFocusedLocation,
     selectedArea: {
       startRowIdx: isUpDirection ? destinationRowIdx : destinationRowIdx - (selectedRowIndexes.length - 1),
@@ -485,4 +496,23 @@ const handlePointerUp = (
     lineOrientation: "vertical",
     shadowSize: undefined,
   };
+};
+
+const reorderRows = (prevRows: Row[], selectedRowIndexes: number[], destinationRowIdx: number): Row[] => {
+  // Create arrays of selected and unselected rows
+  const selectedRows = prevRows.filter((_, index) => selectedRowIndexes.includes(index));
+  const unselectedRows = prevRows.filter((_, index) => !selectedRowIndexes.includes(index));
+
+  // Calculate the adjusted destination index
+  const adjustedDestinationRowIdx =
+    selectedRowIndexes[0] > destinationRowIdx ? destinationRowIdx : destinationRowIdx - selectedRows.length + 1;
+
+  // Create the new array of rows
+  const newRows = [
+    ...unselectedRows.slice(0, adjustedDestinationRowIdx),
+    ...selectedRows,
+    ...unselectedRows.slice(adjustedDestinationRowIdx),
+  ];
+
+  return newRows;
 };
