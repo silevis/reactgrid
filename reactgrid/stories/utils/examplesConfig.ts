@@ -24,15 +24,15 @@ export const dataRows = [
   ["Isabella", "Wilson", "i.wilson@gmail.com", "123789456"],
 ];
 
-export const initialGridData: CellData[][] = [headerRow, ...dataRows].map((row, rowIdx) =>
+export const initialGridData: CellData[] = [headerRow, ...dataRows].flatMap((row, rowIdx) =>
   row.map((cellValue, colIdx) => {
     if (rowIdx === 0) {
       return {
         rowIndex: rowIdx,
         colIndex: colIdx,
         Template: HeaderCell,
-        isFocusable: false,
-        isSelectable: false,
+        // isFocusable: false,
+        // isSelectable: false,
         props: {
           value: cellValue,
           style: {

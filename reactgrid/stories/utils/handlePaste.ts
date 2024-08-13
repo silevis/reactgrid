@@ -3,25 +3,46 @@ import { CellData, NumericalRange } from "../../lib/types/PublicModel";
 export const handlePaste = (
   selectedArea: NumericalRange,
   pastedData: string,
-  setData: React.Dispatch<React.SetStateAction<CellData[][]>>
+  setData: React.Dispatch<React.SetStateAction<CellData[]>>
 ) => {
-  // parse the pasted data
-  const parsedData = JSON.parse(pastedData);
+  // Parse the pasted HTML string
+  const parser = new DOMParser();
+  const doc = parser.parseFromString(pastedData, "text/html");
 
-  setData((prev) => {
-    const next = [...prev];
-    for (let i = 0; i < parsedData.length; i++) {
-      for (let j = 0; j < parsedData[i].length; j++) {
-        const rowIdx = selectedArea.startRowIdx + i;
-        const colIdx = selectedArea.startColIdx + j;
-        if (next[rowIdx] && next[rowIdx][colIdx] !== null) {
-          next[rowIdx][colIdx] = {
-            ...next[rowIdx][colIdx],
-            props: { ...next[rowIdx][colIdx].props, value: parsedData[i][j]?.props?.value || "" },
-          };
-        }
+  // Extract table rows from the parsed HTML
+  const rows = doc.querySelectorAll("tr");
+
+  // Initialize a 2D array with empty strings
+  const numRows = rows.length;
+  const numCols = Math.max(...Array.from(rows).map((row) => row.querySelectorAll("td").length));
+  const newValues: string[][] = Array.from({ length: numRows }, () => Array(numCols).fill(""));
+
+  // Populate the 2D array with the parsed cell values
+  rows.forEach((row, rowIndex) => {
+    const cells = row.querySelectorAll("td");
+    cells.forEach((cell, colIndex) => {
+      const value = cell.textContent || "";
+      newValues[rowIndex][colIndex] = value;
+    });
+  });
+
+  // Update the cells data in the state
+  setData((prevCells) => {
+    // Map over the previous cells and replace values within the selected area with newValues
+    const updatedCells = prevCells.map((cell) => {
+      const relativeRow = cell.rowIndex - selectedArea.startRowIdx;
+      const relativeCol = cell.colIndex - selectedArea.startColIdx;
+
+      if (relativeRow >= 0 && relativeRow < numRows && relativeCol >= 0 && relativeCol < numCols) {
+        return {
+          ...cell,
+          props: { ...cell.props, value: newValues[relativeRow][relativeCol] },
+        };
       }
-    }
-    return next;
+
+      return cell;
+    });
+
+    return updatedCells;
   });
 };

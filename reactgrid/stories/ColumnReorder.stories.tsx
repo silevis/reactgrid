@@ -1,16 +1,18 @@
 import React from "react";
 import { StrictMode, useState } from "react";
-import { Column, Row, ReactGrid, CellChange } from "../lib/main";
+import { Column, Row, ReactGrid, CellData } from "../lib/main";
 import { StoryDefault } from "@ladle/react";
 import { ErrorBoundary } from "../lib/components/ErrorBoundary";
-import { initialColumns, initialRows, CellData, rgStyles, initialGridData } from "./utils/examplesConfig";
+import { initialColumns, initialRows, rgStyles, initialGridData } from "./utils/examplesConfig";
 import { handleColumnReorder } from "./utils/handleColumnReorder";
 import { IndexedLocation } from "../lib/types/InternalModel";
 
 export const ColumnReorderExample = () => {
   const [columns, setColumns] = useState<Array<Column>>(initialColumns);
   const [rows, setRows] = useState<Array<Row>>(initialRows);
-  const [cells, setCells] = useState<CellData[][]>(initialGridData);
+  const [cells, setCells] = useState<CellData[]>(initialGridData);
+
+  console.log("cells", cells);
 
   return (
     <div>
@@ -22,11 +24,17 @@ export const ColumnReorderExample = () => {
           handleColumnReorder(selectedColIndexes, destinationColIdx, setColumns, setCells)
         }
         initialFocusLocation={{ rowIndex: 2, colIndex: 1 }}
-        onCellChanged={(cellLocation: IndexedLocation, newValue: CellChange<CellData["value"]>) => {
+        onCellChanged={(cellLocation: IndexedLocation, newValue) => {
           setCells((prev) => {
             const next = [...prev];
 
-            next[cellLocation.rowIndex][cellLocation.colIndex].value = newValue;
+            const cell = next.find(
+              (cell) => cell.rowIndex === cellLocation.rowIndex && cell.colIndex === cellLocation.colIndex
+            );
+
+            if (cell?.props !== undefined) {
+              cell.props.value = newValue;
+            }
             return next;
           });
         }}

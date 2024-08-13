@@ -38,6 +38,8 @@ export type Cell = {
   isSelectable?: boolean;
 };
 
+export type CellMap = Map<`${number} ${number}`, Cell | SpanMember>;
+
 export type CellData = {
   rowIndex: number;
   colIndex: number;
@@ -116,7 +118,7 @@ export interface ReactGridProps {
   columns: Column[];
   rows: Row[];
 
-  cells: CellData[][];
+  cells: CellData[];
 
   onAreaSelected?: (selectedArea: NumericalRange) => void;
   onCellFocused?: (cellLocation: IndexedLocation) => void;

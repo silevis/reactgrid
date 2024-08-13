@@ -1,3 +1,3 @@
-import { SpanMember, Cell } from "./PublicModel";
+import { CellMap } from "./PublicModel";
 
-export type CellMatrix = (Cell | SpanMember)[][];
+export type CellMatrix = CellMap;

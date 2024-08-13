@@ -1,4 +1,4 @@
-import React, { FC, useEffect, useRef, useState } from "react";
+import React, { FC, useRef, useState } from "react";
 import { useCellContext } from "../components/CellContext";
 import CellWrapper from "../components/CellWrapper";
 import { useDoubleTouch } from "../hooks/useDoubleTouch";
@@ -35,15 +35,13 @@ export const NumberCell: FC<NumberCellProps> = ({ value: initialValue, validator
     textToDisplay = errorMessage;
   }
 
-  useEffect(() => {
-    if (targetInputRef.current) targetInputRef.current?.setSelectionRange(textToDisplay.length, textToDisplay.length);
-  }, [isEditMode, textToDisplay]);
-
   return (
     <CellWrapper
       onTouchEnd={handleDoubleTouch}
       onDoubleClick={() => {
-        setEditMode(true);
+        if (ctx.isFocused) {
+          setEditMode(true);
+        }
       }}
       onKeyDown={(e) => {
         if (!isEditMode && inNumericKey(e.keyCode)) {
@@ -58,18 +56,26 @@ export const NumberCell: FC<NumberCellProps> = ({ value: initialValue, validator
           ctx.onCellChanged(cellIndexes, 0);
         }
       }}
-      targetInputRef={targetInputRef}
     >
       {isEditMode ? (
         <input
           value={currentValue}
-          onChange={(e) => setCurrentValue(Number(e.currentTarget.value))}
+          onChange={(e) => {
+            console.log("e.currentTarget.value: ", e.currentTarget.value);
+
+            setCurrentValue(Number(e.currentTarget.value));
+          }}
+          onPointerDown={(e) => e.stopPropagation()}
           onBlur={(e) => {
             ctx.onCellChanged(cellIndexes, Number(e.currentTarget.value));
             setEditMode(false);
           }}
           style={inputStyle}
           onKeyDown={(e) => {
+            const controlKeys = ["Escape", "Enter", "Tab"];
+            if (!controlKeys.includes(e.key)) {
+              e.stopPropagation();
+            }
             if (e.key === "Escape") {
               setEditMode(false);
             } else if (e.key === "Enter") {
@@ -82,7 +88,7 @@ export const NumberCell: FC<NumberCellProps> = ({ value: initialValue, validator
           ref={targetInputRef}
         />
       ) : (
-        initialValue
+        textToDisplay
       )}
     </CellWrapper>
   );

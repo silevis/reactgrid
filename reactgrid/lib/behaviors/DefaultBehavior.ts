@@ -372,7 +372,7 @@ export const DefaultBehavior = (config: DefaultBehaviorConfig = CONFIG_DEFAULTS)
       cellsArea = getCellArea(store, focusedCell);
     }
 
-    store.onPaste?.(cellsArea, event.clipboardData.getData("text/plain"));
+    store.onPaste?.(cellsArea, event.clipboardData.getData("text/html"));
 
     return store;
   },

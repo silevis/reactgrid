@@ -27,13 +27,13 @@ interface CellMatrixBuilderTools {
  * @returns cells
  */
 export const cellMatrixBuilder = (builder: ({ ...tools }: CellMatrixBuilderTools) => void): CellMatrix => {
-  const cells: CellMatrix = [];
+  const cells = new Map();
 
   const setCell: SetCellFn = (rowIndex, colIndex, Template, props, { ...args }) => {
     if (rowIndex === -1) throw new Error(`Row with id "${rowIndex}" isn't defined in rows array`);
     if (colIndex === -1) throw new Error(`Column with id "${colIndex}" isn't defined in columns array`);
 
-    if (process.env.NODE_ENV === "development" && cells[rowIndex]?.[colIndex]) {
+    if (process.env.NODE_ENV === "development" && cells.has(`${rowIndex} ${colIndex}`)) {
       console.warn(`Cell with coordinates [${rowIndex}, ${colIndex}] already exists and will be overwritten!`);
       return;
     }
@@ -52,11 +52,6 @@ export const cellMatrixBuilder = (builder: ({ ...tools }: CellMatrixBuilderTools
     for (let rowOffset = 0; rowOffset < rowSpan; rowOffset++) {
       const currentRowIndex = rowIndex + rowOffset;
 
-      // Ensure the row exists before trying to access a column
-      if (!cells[currentRowIndex]) {
-        cells[currentRowIndex] = [];
-      }
-
       for (let colOffset = 0; colOffset < colSpan; colOffset++) {
         const currentColIndex = colIndex + colOffset;
 
@@ -67,11 +62,11 @@ export const cellMatrixBuilder = (builder: ({ ...tools }: CellMatrixBuilderTools
           originColIndex: colIndex,
         };
 
-        cells[currentRowIndex][currentColIndex] = spanMember;
+        cells.set(`${currentRowIndex} ${currentColIndex}`, spanMember);
       }
     }
 
-    cells[rowIndex][colIndex] = cell;
+    cells.set(`${rowIndex} ${colIndex}`, cell);
   };
 
   builder({ setCell });

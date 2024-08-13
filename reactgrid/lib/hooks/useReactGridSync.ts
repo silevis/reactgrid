@@ -30,12 +30,8 @@ export const useReactGridSync = (
   }
 
   useDeepCompareGridProps(() => {
-    setExternalData(rgProps);
+    setExternalData({ ...rgProps, cells: cellMatrix });
   }, [rgProps]);
-
-  useDeepCompareGridProps(() => {
-    setExternalData({ cells: cellMatrix });
-  }, [cellMatrix]);
 
   useEffect(() => {
     if (!initialSelectedRange) {

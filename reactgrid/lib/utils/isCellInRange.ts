@@ -5,7 +5,7 @@ import { getCellArea } from "./getCellArea.ts";
 
 export const isCellInRange = (
   store: ReactGridStore,
-  cell: Cell | SpanMember | null,
+  cell: Cell | SpanMember | undefined,
   range: NumericalRange
 ): boolean => {
   if (!cell) {

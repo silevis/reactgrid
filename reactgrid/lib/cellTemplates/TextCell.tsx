@@ -1,4 +1,4 @@
-import { FC, useEffect, useRef, useState } from "react";
+import { FC, useRef, useState } from "react";
 import CellWrapper from "../components/CellWrapper";
 import { useCellContext } from "../components/CellContext";
 import { useDoubleTouch } from "../hooks/useDoubleTouch";
@@ -17,12 +17,6 @@ export const TextCell: FC<TextCellProps> = ({ value: initialValue }) => {
   const { handleDoubleTouch } = useDoubleTouch(ctx, setEditMode);
 
   const cellIndexes = { rowIndex: ctx.realRowIndex, colIndex: ctx.realColumnIndex };
-
-  useEffect(() => {
-    if (targetInputRef.current) {
-      targetInputRef.current.setSelectionRange(currentValue.length, currentValue.length);
-    }
-  }, [isEditMode, currentValue]);
 
   return (
     <CellWrapper
@@ -56,6 +50,7 @@ export const TextCell: FC<TextCellProps> = ({ value: initialValue }) => {
             ctx.onCellChanged(cellIndexes, e.currentTarget.value);
             setEditMode(false);
           }}
+          onPointerDown={(e) => e.stopPropagation()}
           onKeyDown={(e) => {
             const controlKeys = ["Escape", "Enter", "Tab"];
             if (!controlKeys.includes(e.key)) {

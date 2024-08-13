@@ -5,7 +5,7 @@ export const handleColumnReorder = <T extends CellData>(
   selectedColIndexes: number[],
   destinationColIdx: number,
   setColumns: Dispatch<SetStateAction<Column[]>>,
-  setData: React.Dispatch<React.SetStateAction<T[][]>>
+  setData: React.Dispatch<React.SetStateAction<T[]>>
 ) => {
   setColumns((prevColumns) => {
     // Create arrays of selected and unselected columns
@@ -27,36 +27,50 @@ export const handleColumnReorder = <T extends CellData>(
   });
 
   setData((prevGridData) => {
-    const newGridData = prevGridData.map((row) => {
-      const newRow = [...row];
+    const minSelectedIndex = Math.min(...selectedColIndexes);
+    const maxSelectedIndex = Math.max(...selectedColIndexes);
+    const reorderDirection = destinationColIdx > minSelectedIndex ? "right" : "left";
 
-      if (!selectedColIndexes.includes(destinationColIdx)) {
-        const reorderDirection = selectedColIndexes.find((idx) => idx > destinationColIdx) ? "left" : "right";
+    const newGridData = prevGridData.map((cell) => {
+      if (cell === null) return cell;
 
-        const movedItems = selectedColIndexes.map((selectedColIndex) => newRow[selectedColIndex]);
+      const { colIndex } = cell;
 
-        const sortedSelectedColIndexes = [...selectedColIndexes].sort((a, b) => b - a);
+      if (selectedColIndexes.includes(colIndex)) {
+        const offset =
+          reorderDirection === "right"
+            ? selectedColIndexes.length - 1 - selectedColIndexes.indexOf(colIndex)
+            : selectedColIndexes.indexOf(colIndex);
 
-        sortedSelectedColIndexes.forEach((selectedColIndex) => {
-          newRow.splice(selectedColIndex, 1);
-        });
+        const newColIndex = reorderDirection === "right" ? destinationColIdx - offset : destinationColIdx + offset;
 
-        // Adjust destination index if it's greater than the selected column indexes
-        const adjustedDestinationColIdx =
-          reorderDirection === "right" ? destinationColIdx - sortedSelectedColIndexes.length + 1 : destinationColIdx;
-
-        movedItems.forEach((item, index) => {
-          newRow.splice(adjustedDestinationColIdx + index, 0, item);
-        });
+        return {
+          ...cell,
+          colIndex: newColIndex,
+        };
       }
 
-      newRow.forEach((cell, colIdx) => {
-        if (cell) {
-          cell.colIndex = colIdx;
+      if (reorderDirection === "right") {
+        // Reordering to the right
+        if (colIndex >= minSelectedIndex && colIndex <= destinationColIdx) {
+          const newColIndex = colIndex - selectedColIndexes.length;
+          return {
+            ...cell,
+            colIndex: newColIndex,
+          };
         }
-      });
+      } else if (reorderDirection === "left") {
+        // Reordering to the left
+        if (colIndex >= destinationColIdx && colIndex <= maxSelectedIndex) {
+          const newColIndex = colIndex + selectedColIndexes.length;
+          return {
+            ...cell,
+            colIndex: newColIndex,
+          };
+        }
+      }
 
-      return newRow;
+      return cell;
     });
 
     return newGridData;

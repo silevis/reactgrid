@@ -1,11 +1,10 @@
 import { Dispatch, SetStateAction } from "react";
-import { CellMatrix } from "../../lib/types/CellMatrix";
-import { Column } from "../../lib/types/PublicModel";
+import { CellData, Column } from "../../lib/types/PublicModel";
 
 export const handleResizeColumn = (
   width: number,
   columnIdx: number,
-  cells: CellMatrix,
+  cells: CellData[][],
   setColumns: Dispatch<SetStateAction<Column[]>>
 ) => {
   setColumns((prevColumns) =>

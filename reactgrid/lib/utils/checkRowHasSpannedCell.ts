@@ -4,8 +4,13 @@ import { getCellArea } from "./getCellArea";
 
 // Utility function to check if a row has a spanned cell
 export const checkRowHasSpannedCell = (store: ReactGridStore, rowIndex: number): SpanMember | undefined => {
-  for (let colIndex = 0; colIndex < store.cells[rowIndex].length; colIndex++) {
-    const cell = store.cells[rowIndex][colIndex];
+  const numCols = store.getColumnAmount();
+
+  for (let colIndex = 0; colIndex < numCols; colIndex++) {
+    const cell = store.cells.get(`${rowIndex} ${colIndex}`);
+    if (!cell) {
+      continue;
+    }
     const cellArea = getCellArea(store, cell);
 
     if ("originRowIndex" in cell && cellArea.endRowIdx - cellArea.startRowIdx > 1 && rowIndex !== cell.originRowIndex) {

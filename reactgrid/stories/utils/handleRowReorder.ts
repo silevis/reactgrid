@@ -1,12 +1,11 @@
 import { Dispatch, SetStateAction } from "react";
-import { Row } from "../../lib/types/PublicModel";
-import { CellData } from "./examplesConfig";
+import { CellData, Row } from "../../lib/types/PublicModel";
 
 export const handleRowReorder = <T extends CellData>(
   selectedRowIndexes: number[],
   destinationRowIdx: number,
   setRows: Dispatch<SetStateAction<Row[]>>,
-  setData: React.Dispatch<React.SetStateAction<T[][]>>
+  setData: React.Dispatch<React.SetStateAction<T[]>>
 ) => {
   setRows((prevRows) => {
     // Create arrays of selected and unselected rows
@@ -28,31 +27,50 @@ export const handleRowReorder = <T extends CellData>(
   });
 
   setData((prevGridData) => {
-    const newGridData = [...prevGridData];
+    const minSelectedIndex = Math.min(...selectedRowIndexes);
+    const maxSelectedIndex = Math.max(...selectedRowIndexes);
+    const reorderDirection = destinationRowIdx > minSelectedIndex ? "down" : "up";
 
-    const movedRows = selectedRowIndexes.map((selectedRowIndex) => newGridData[selectedRowIndex]);
+    const newGridData = prevGridData.map((cell) => {
+      if (cell === null) return cell;
 
-    const sortedSelectedRowIndexes = [...selectedRowIndexes].sort((a, b) => b - a);
+      const { rowIndex } = cell;
 
-    sortedSelectedRowIndexes.forEach((selectedRowIndex) => {
-      newGridData.splice(selectedRowIndex, 1);
-    });
+      if (selectedRowIndexes.includes(rowIndex)) {
+        const offset =
+          reorderDirection === "down"
+            ? selectedRowIndexes.length - 1 - selectedRowIndexes.indexOf(rowIndex)
+            : selectedRowIndexes.indexOf(rowIndex);
 
-    // Adjust destination index if it's greater than the selected row indexes
-    const adjustedDestinationRowIdx =
-      sortedSelectedRowIndexes[0] > destinationRowIdx ? destinationRowIdx : destinationRowIdx - movedRows.length + 1;
+        const newRowIndex = reorderDirection === "down" ? destinationRowIdx - offset : destinationRowIdx + offset;
 
-    movedRows.forEach((item, index) => {
-      newGridData.splice(adjustedDestinationRowIdx + index, 0, item);
-    });
+        return {
+          ...cell,
+          rowIndex: newRowIndex,
+        };
+      }
 
-    // Update rowIndex for each cell in the new grid data
-    newGridData.forEach((row, rowIndex) => {
-      row.forEach((cell) => {
-        if (cell) {
-          cell.rowIndex = rowIndex;
+      if (reorderDirection === "down") {
+        // Reordering down
+        if (rowIndex >= minSelectedIndex && rowIndex <= destinationRowIdx) {
+          const newRowIndex = rowIndex - selectedRowIndexes.length;
+          return {
+            ...cell,
+            rowIndex: newRowIndex,
+          };
         }
-      });
+      } else if (reorderDirection === "up") {
+        // Reordering up
+        if (rowIndex >= destinationRowIdx && rowIndex <= maxSelectedIndex) {
+          const newRowIndex = rowIndex + selectedRowIndexes.length;
+          return {
+            ...cell,
+            rowIndex: newRowIndex,
+          };
+        }
+      }
+
+      return cell;
     });
 
     return newGridData;

@@ -110,40 +110,34 @@ const PanesRenderer: FC<PanesRendererProps> = ({
   }, [focusedLocation]);
 
   useEffect(() => {
-    cells?.forEach((row) => {
-      row.forEach((cell) => {
-        const cellArea = getCellArea(store, cell);
+    cells?.forEach((cell) => {
+      const cellArea = getCellArea(store, cell);
 
-        if (!isSpanMember(cell)) {
-          if (cellArea.startRowIdx < ranges.TopCenter.endRowIdx) {
-            if (cellArea.endRowIdx > ranges.TopCenter.endRowIdx) {
-              console.error(`Cell with indexes [${cell.rowIndex}, ${cell.colIndex}] does not fit in sticky top pane.`);
-            }
-          }
-
-          if (cellArea.endRowIdx > ranges.BottomCenter.startRowIdx) {
-            if (cellArea.startRowIdx < ranges.BottomCenter.startRowIdx) {
-              console.error(
-                `Cell with indexes [${cell.rowIndex}, ${cell.colIndex}] does not fit in sticky bottom pane.`
-              );
-            }
-          }
-
-          if (cellArea.startColIdx < ranges.Left.endColIdx) {
-            if (cellArea.endColIdx > ranges.Left.endColIdx) {
-              console.error(`Cell with indexes [${cell.rowIndex}, ${cell.colIndex}] does not fit in sticky left pane.`);
-            }
-          }
-
-          if (cellArea.endColIdx > ranges.Right.startColIdx) {
-            if (cellArea.startColIdx < ranges.Right.startColIdx) {
-              console.error(
-                `Cell with indexes [${cell.rowIndex}, ${cell.colIndex}] does not fit in sticky right pane.`
-              );
-            }
+      if (!isSpanMember(cell)) {
+        if (cellArea.startRowIdx < ranges.TopCenter.endRowIdx) {
+          if (cellArea.endRowIdx > ranges.TopCenter.endRowIdx) {
+            console.error(`Cell with indexes [${cell.rowIndex}, ${cell.colIndex}] does not fit in sticky top pane.`);
           }
         }
-      });
+
+        if (cellArea.endRowIdx > ranges.BottomCenter.startRowIdx) {
+          if (cellArea.startRowIdx < ranges.BottomCenter.startRowIdx) {
+            console.error(`Cell with indexes [${cell.rowIndex}, ${cell.colIndex}] does not fit in sticky bottom pane.`);
+          }
+        }
+
+        if (cellArea.startColIdx < ranges.Left.endColIdx) {
+          if (cellArea.endColIdx > ranges.Left.endColIdx) {
+            console.error(`Cell with indexes [${cell.rowIndex}, ${cell.colIndex}] does not fit in sticky left pane.`);
+          }
+        }
+
+        if (cellArea.endColIdx > ranges.Right.startColIdx) {
+          if (cellArea.startColIdx < ranges.Right.startColIdx) {
+            console.error(`Cell with indexes [${cell.rowIndex}, ${cell.colIndex}] does not fit in sticky right pane.`);
+          }
+        }
+      }
     });
 
     setPaneRanges(ranges);

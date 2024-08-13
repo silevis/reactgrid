@@ -25,18 +25,16 @@ export const ReactGrid: FC<ReactGridProps> = ({
 }) => {
   const cellMatrix = useDeepCompareMemo(() => {
     return cellMatrixBuilder(({ setCell }) => {
-      rgProps.cells.forEach((row) => {
-        row.forEach((cell) => {
-          if (cell === null) return;
+      rgProps.cells.forEach((cell) => {
+        if (cell === null) return;
 
-          const { Template, isFocusable, isSelectable, rowSpan, colSpan, rowIndex, colIndex, props } = cell;
+        const { Template, isFocusable, isSelectable, rowSpan, colSpan, rowIndex, colIndex, props } = cell;
 
-          setCell(rowIndex, colIndex, Template, props, {
-            isFocusable,
-            isSelectable,
-            rowSpan,
-            colSpan,
-          });
+        setCell(rowIndex, colIndex, Template, props, {
+          isFocusable,
+          isSelectable,
+          rowSpan,
+          colSpan,
         });
       });
     });

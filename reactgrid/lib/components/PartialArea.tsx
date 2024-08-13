@@ -97,9 +97,10 @@ export const PartialArea: FC<PartialAreaProps> = React.memo(
     const paneRanges = useReactGridStore(id, (store) => store.paneRanges);
     const fillHandleArea = useReactGridStore(id, (store) => store.fillHandleArea);
     const onFillHandle = useReactGridStore(id, (store) => store.onFillHandle);
-    const focusedCell = store.getCellByIndexes(store.focusedLocation.rowIndex, store.focusedLocation.colIndex);
+    const focusedCell =
+      store.getCellByIndexes(store.focusedLocation.rowIndex, store.focusedLocation.colIndex) ?? undefined;
 
-    const focusedCellArea = getCellArea(store, focusedCell!);
+    const focusedCellArea = focusedCell ? getCellArea(store, focusedCell) : EMPTY_AREA;
 
     if (areaRange.startRowIdx < 0 || areaRange.startColIdx < 0 || areaRange.endRowIdx < 0 || areaRange.endColIdx < 0)
       return null;

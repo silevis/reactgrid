@@ -6,7 +6,11 @@ import { isSpanMember } from "./isSpanMember";
 
 export const isCellInPane = (store: ReactGridStore, cell: Cell | SpanMember, panePosition: PaneName) => {
   if (isSpanMember(cell)) {
-    return isCellInRange(store, store.cells[cell.originRowIndex][cell.originColIndex], store.paneRanges[panePosition]);
+    return isCellInRange(
+      store,
+      store.cells.get(`${cell.originRowIndex} ${cell.originColIndex}`),
+      store.paneRanges[panePosition]
+    );
   }
 
   return isCellInRange(store, cell, store.paneRanges[panePosition]);

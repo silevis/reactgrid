@@ -18,7 +18,7 @@ const DEFAULT_STORE_PROPS: ReactGridStoreProps = {
   // fields passed by the user
   rows: [],
   columns: [],
-  cells: [],
+  cells: new Map(),
   paneRanges: {
     TopLeft: { startRowIdx: 0, endRowIdx: 0, startColIdx: 0, endColIdx: 0 },
     TopCenter: { startRowIdx: 0, endRowIdx: 0, startColIdx: 0, endColIdx: 0 },
@@ -89,13 +89,15 @@ export function initReactGridStore(id: string, initialProps?: Partial<ReactGridS
         getColumnCells: (columnIdx: number) => {
           const { cells } = get();
 
-          return cells.flat().filter((cell) => {
-            if (isSpanMember(cell)) {
-              return cell.originColIndex === columnIdx;
-            } else {
-              return cell.colIndex === columnIdx;
-            }
-          }) as Cell[];
+          return Array.from(cells.values())
+            .flat()
+            .filter((cell) => {
+              if (isSpanMember(cell)) {
+                return cell.originColIndex === columnIdx;
+              } else {
+                return cell.colIndex === columnIdx;
+              }
+            }) as Cell[];
         },
 
         setStyles: (styles) => set(() => ({ styles })),
@@ -104,12 +106,12 @@ export function initReactGridStore(id: string, initialProps?: Partial<ReactGridS
 
           if (rowIndex === -1 || colIndex === -1) return null;
 
-          const cell = cells[rowIndex][colIndex];
+          const cell = cells.get(`${rowIndex} ${colIndex}`);
 
           if (!cell) return null;
 
           if (isSpanMember(cell)) {
-            return cells[cell.originRowIndex][cell.originColIndex] as Cell;
+            return cells.get(`${cell.originRowIndex} ${cell.originColIndex}`) as Cell;
           }
 
           return cell;
@@ -121,7 +123,7 @@ export function initReactGridStore(id: string, initialProps?: Partial<ReactGridS
 
           if (!row || !col) return null;
 
-          const cell = cells[rowIndex][colIndex];
+          const cell = cells.get(`${rowIndex} ${colIndex}`);
 
           if (!cell) return null;
 

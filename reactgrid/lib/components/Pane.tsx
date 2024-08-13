@@ -63,7 +63,7 @@ export const PaneGridContent: React.FC<PaneGridContentProps> = React.memo(
 
     return rows.map((_, rowIndex) => {
       return columns.map((_, colIndex) => {
-        const cell = cells[startRowIdx + rowIndex][startColIdx + colIndex];
+        const cell = cells.get(`${startRowIdx + rowIndex} ${startColIdx + colIndex}`);
 
         if (!cell || isSpanMember(cell)) return null;
 

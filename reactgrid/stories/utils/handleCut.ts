@@ -1,25 +1,75 @@
 import { CellData, NumericalRange } from "../../lib/types/PublicModel";
 
 export const handleCut = (
-  data: CellData[][],
+  cells: CellData[],
   selectedArea: NumericalRange,
-  setData: React.Dispatch<React.SetStateAction<CellData[][]>>
+  setCells: React.Dispatch<React.SetStateAction<CellData[]>>
 ) => {
-  // copy the data from the selected area to the clipboard
-  const selectedData = data
-    .slice(selectedArea.startRowIdx, selectedArea.endRowIdx)
-    .map((row) => row.slice(selectedArea.startColIdx, selectedArea.endColIdx));
+  const selectedData = cells.filter(
+    (cell) =>
+      cell.rowIndex >= selectedArea.startRowIdx &&
+      cell.colIndex >= selectedArea.startColIdx &&
+      cell.rowIndex < selectedArea.endRowIdx &&
+      cell.colIndex < selectedArea.endColIdx
+  );
 
-  navigator.clipboard.writeText(JSON.stringify(selectedData));
+  // Organize the selected data into a 2D array including rowIndex and colIndex
+  const numRows = selectedArea.endRowIdx - selectedArea.startRowIdx;
+  const numCols = selectedArea.endColIdx - selectedArea.startColIdx;
+  const organizedData = Array.from({ length: numRows }, () => Array(numCols).fill(""));
 
-  // remove the data from the selected area
-  setData((prev) => {
-    const next = [...prev];
-    for (let i = selectedArea.startRowIdx; i < selectedArea.endRowIdx; i++) {
-      for (let j = selectedArea.startColIdx; j < selectedArea.endColIdx; j++) {
-        if (next[i][j] !== null) next[i][j] = { ...data[i][j], props: { ...data[i][j].props, value: "" } };
+  selectedData.forEach((cell) => {
+    const row = cell.rowIndex - selectedArea.startRowIdx;
+    const col = cell.colIndex - selectedArea.startColIdx;
+    organizedData[row][col] = cell.props?.value || "";
+  });
+
+  // Convert the organized data to an HTML table string
+  const htmlData = `
+    <table>
+      ${organizedData
+        .map(
+          (row) => `
+        <tr>
+          ${row
+            .map(
+              (value) => `
+            <td>
+              ${value || ""}
+            </td>
+          `
+            )
+            .join("")}
+        </tr>
+      `
+        )
+        .join("")}
+    </table>
+  `;
+
+  // Create a ClipboardItem with the HTML string
+  const clipboardItem = new ClipboardItem({
+    "text/html": new Blob([htmlData], { type: "text/html" }),
+  });
+
+  // Write the ClipboardItem to the clipboard
+  navigator.clipboard.write([clipboardItem]);
+
+  // Update cells data
+  setCells((prev) => {
+    return prev.map((cell) => {
+      const cuttedCell = selectedData.find(
+        (cell_) => cell_.rowIndex === cell.rowIndex && cell_.colIndex === cell.colIndex
+      );
+
+      if (cuttedCell) {
+        return {
+          ...cell,
+          props: { ...cell.props, value: "" },
+        };
       }
-    }
-    return next;
+
+      return cell;
+    });
   });
 };
