@@ -1,20 +1,47 @@
 import React from "react";
 import { StrictMode, useState } from "react";
-import { CellData, ReactGrid } from "../lib/main";
+import { ReactGrid, CellData, TextCell } from "../lib/main";
 import { StoryDefault } from "@ladle/react";
 import { ErrorBoundary } from "../lib/components/ErrorBoundary";
-import { rgStyles, initialGridData } from "./utils/examplesConfig";
+import { rgStyles } from "./utils/examplesConfig";
+import { handleColumnReorder } from "./utils/handleColumnReorder";
 
-export const ColumnResizeExample = () => {
-  const [cells, setCells] = useState<CellData[]>(initialGridData);
+export const TestGridExample = () => {
+  const [cells, setCells] = useState<CellData[]>([
+    {
+      rowIndex: 0,
+      colIndex: 0,
+      props: {
+        value: "A1",
+      },
+      Template: TextCell,
+    },
+    {
+      rowIndex: 5,
+      colIndex: 5,
+      props: {
+        value: "A5",
+      },
+      Template: TextCell,
+    },
+    {
+      rowIndex: 2,
+      colIndex: 3,
+      props: {
+        value: "A5",
+      },
+      Template: TextCell,
+    },
+  ]);
 
   return (
     <div>
       <ReactGrid
         styles={rgStyles}
         enableColumnSelectionOnFirstRow
-        enableResizeColumns
-        initialFocusLocation={{ rowIndex: 2, colIndex: 1 }}
+        onColumnReorder={(selectedColIndexes, destinationColIdx) =>
+          handleColumnReorder(selectedColIndexes, destinationColIdx, setCells)
+        }
         onCellChanged={(cellLocation, newValue) => {
           setCells((prev) => {
             const next = [...prev];

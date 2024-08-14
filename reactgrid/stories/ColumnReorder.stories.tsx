@@ -5,17 +5,13 @@ import { StoryDefault } from "@ladle/react";
 import { ErrorBoundary } from "../lib/components/ErrorBoundary";
 import { rgStyles, initialGridData } from "./utils/examplesConfig";
 import { handleColumnReorder } from "./utils/handleColumnReorder";
-import { IndexedLocation } from "../lib/types/InternalModel";
 
 export const ColumnReorderExample = () => {
   const [cells, setCells] = useState<CellData[]>(initialGridData);
 
-  console.log("cells", cells);
-
   return (
     <div>
       <ReactGrid
-        id="column-reorder-example"
         styles={rgStyles}
         enableColumnSelectionOnFirstRow
         onColumnReorder={(selectedColIndexes, destinationColIdx) =>

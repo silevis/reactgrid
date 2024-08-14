@@ -7,7 +7,7 @@ import { useReactGridId } from "./ReactGridIdProvider";
 
 type CellWrapperProps = React.HTMLAttributes<HTMLDivElement> & {
   targetInputRef?: React.RefObject<HTMLInputElement | HTMLElement>;
-  children: React.ReactNode;
+  children?: React.ReactNode;
 };
 
 const CellWrapper: FC<CellWrapperProps> = ({ children, targetInputRef, ...wrapperDivAttributes }) => {

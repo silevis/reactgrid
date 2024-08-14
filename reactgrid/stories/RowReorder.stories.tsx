@@ -11,7 +11,6 @@ export const RowReorderExample = () => {
   return (
     <div>
       <ReactGrid
-        id="row-reorder-example"
         styles={rgStyles}
         enableRowSelectionOnFirstColumn
         onRowReorder={(selectedRowIndexes, destinationRowIdx) =>

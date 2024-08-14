@@ -1,3 +1,4 @@
+import { EmptyCell } from "../cellTemplates/EmptyCell";
 import { CellMatrix } from "../types/CellMatrix";
 import { Cell, SpanMember } from "../types/PublicModel";
 
@@ -70,6 +71,26 @@ export const cellMatrixBuilder = (builder: ({ ...tools }: CellMatrixBuilderTools
   };
 
   builder({ setCell });
+
+  // fill empty areas with EmptyCell template
+  const maxRowIndex = Math.max(...Array.from(cells.values()).map((cell) => cell.rowIndex));
+  const maxColIndex = Math.max(...Array.from(cells.values()).map((cell) => cell.colIndex));
+
+  for (let rowIndex = 0; rowIndex <= maxRowIndex; rowIndex++) {
+    for (let colIndex = 0; colIndex <= maxColIndex; colIndex++) {
+      const cellKey = `${rowIndex} ${colIndex}`;
+      if (!cells.has(cellKey)) {
+        cells.set(cellKey, {
+          rowIndex,
+          colIndex,
+          Template: EmptyCell,
+          props: {
+            value: "",
+          },
+        });
+      }
+    }
+  }
 
   return cells;
 };

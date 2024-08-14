@@ -22,6 +22,7 @@
     "lodash.merge": "^4.6.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "uuid": "^10.0.0",
     "zustand": "^4.4.1"
   },
   "devDependencies": {
@@ -29,6 +30,7 @@
     "@types/node": "^20.6.2",
     "@types/react": "^18.2.15",
     "@types/react-dom": "^18.2.7",
+    "@types/uuid": "^10.0.0",
     "@typescript-eslint/eslint-plugin": "^6.0.0",
     "@typescript-eslint/parser": "^6.0.0",
     "@vitejs/plugin-react-swc": "^3.3.2",

@@ -30,7 +30,6 @@ export const BigGrid = () => {
     <>
       <div className="rgScrollableContainer" style={{ height: "100%", width: "100%", overflow: "auto" }}>
         <ReactGrid
-          id="big-grid"
           onCellChanged={(cellLocation, newValue) => {
             setCells((prev) => {
               const next = [...prev];

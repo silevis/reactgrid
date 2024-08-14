@@ -17,7 +17,6 @@ export const FillHandleExample = () => {
         <span style={{ marginLeft: "10px" }}>Counter: {counter}</span>
       </div>
       <ReactGrid
-        id="fill-handle-example"
         styles={rgStyles}
         onFillHandle={(selectedArea, fillRange) => handleFill(selectedArea, fillRange, setCells)}
         initialFocusLocation={{ rowIndex: 2, colIndex: 1 }}
