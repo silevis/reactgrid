@@ -1,7 +1,7 @@
 import { create, createStore, StoreApi, useStore } from "zustand";
 import { CellSelectionBehavior } from "../behaviors/CellSelectionBehavior.ts";
 import { DefaultBehavior } from "../behaviors/DefaultBehavior.ts";
-import { Cell, CellMap, Column, Range, Row, StyledRange } from "../types/PublicModel.ts";
+import { Cell, Range, StyledRange } from "../types/PublicModel.ts";
 import { isSpanMember } from "./isSpanMember.ts";
 import { ReactGridStore, ReactGridStoreProps } from "../types/ReactGridStore.ts";
 import { FillHandleBehavior } from "../behaviors/FillHandleBehavior.ts";

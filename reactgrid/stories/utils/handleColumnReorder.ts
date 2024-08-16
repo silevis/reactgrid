@@ -10,18 +10,19 @@ export const handleColumnReorder = <T extends CellData>(
     const selectedColumns = prevColumns.filter((_, index) => selectedColIndexes.includes(index));
     const unselectedColumns = prevColumns.filter((_, index) => !selectedColIndexes.includes(index));
 
-    // Calculate the adjusted destination index
+    // calculate the adjusted destination index
     const adjustedDestinationColIdx =
       selectedColIndexes[0] > destinationColIdx ? destinationColIdx : destinationColIdx - selectedColumns.length + 1;
 
-    // Create the new array of columns
+    // create the new array of columns
     const newColumns = [
       ...unselectedColumns.slice(0, adjustedDestinationColIdx),
       ...selectedColumns,
       ...unselectedColumns.slice(adjustedDestinationColIdx),
     ];
 
-    return newColumns;
+    // update colIndex for each column
+    return newColumns.map((col, index) => ({ ...col, colIndex: index }));
   });
 
   setCells((prevGridData) => {
@@ -49,7 +50,7 @@ export const handleColumnReorder = <T extends CellData>(
       }
 
       if (reorderDirection === "right") {
-        // Reordering to the right
+        // reordering to the right
         if (colIndex >= minSelectedIndex && colIndex <= destinationColIdx) {
           const newColIndex = colIndex - selectedColIndexes.length;
           return {
@@ -58,7 +59,7 @@ export const handleColumnReorder = <T extends CellData>(
           };
         }
       } else if (reorderDirection === "left") {
-        // Reordering to the left
+        // reordering to the left
         if (colIndex >= destinationColIdx && colIndex <= maxSelectedIndex) {
           const newColIndex = colIndex + selectedColIndexes.length;
           return {

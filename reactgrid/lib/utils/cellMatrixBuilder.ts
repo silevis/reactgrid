@@ -121,7 +121,7 @@ const initGridRows = (cellMap: CellMap, rows?: Row[]): Row[] => {
     const customRow = customRowMap.get(idx);
     return {
       rowIndex: idx,
-      height: customRow?.height ?? "min-content",
+      height: customRow?.height ?? 25,
       reorderable: customRow?.reorderable ?? true,
     };
   });
@@ -151,8 +151,8 @@ const initGridColumns = (cellMap: CellMap, columns?: Column[]): Column[] => {
       colIndex: idx,
       resizable: customCol?.resizable ?? true,
       reorderable: customCol?.reorderable ?? true,
-      width: customCol?.width ?? "min-content",
-      minWidth: customCol?.minWidth ?? 50,
+      width: customCol?.width ?? 150,
+      minWidth: customCol?.minWidth ?? 150,
     };
   });
 };

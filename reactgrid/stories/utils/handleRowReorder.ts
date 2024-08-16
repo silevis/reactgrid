@@ -22,7 +22,8 @@ export const handleRowReorder = <T extends CellData>(
       ...unselectedRows.slice(adjustedDestinationRowIdx),
     ];
 
-    return newRows;
+    // update rowIndex for each row
+    return newRows.map((row, index) => ({ ...row, rowIndex: index }));
   });
 
   setData((prevGridData) => {

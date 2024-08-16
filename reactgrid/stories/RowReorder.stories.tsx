@@ -6,13 +6,8 @@ import { rgStyles, initialGridData } from "./utils/examplesConfig";
 import { handleRowReorder } from "./utils/handleRowReorder";
 
 export const RowReorderExample = () => {
+  const [rows, setRows] = useState<Row[]>([{ rowIndex: 0, height: 40 }]);
   const [cells, setCells] = useState<CellData[]>(initialGridData);
-
-  const [rows, setRows] = useState<Row[]>([
-    { rowIndex: 0, height: 100 },
-    { rowIndex: 1, height: 100 },
-    { rowIndex: 2, height: 100 },
-  ]);
 
   return (
     <div>

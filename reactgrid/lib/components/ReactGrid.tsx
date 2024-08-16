@@ -55,8 +55,8 @@ export const ReactGrid: FC<ReactGridProps> = ({
     store.setExternalData({ ...rgProps, ...cellMatrix });
   }, [rgProps]);
 
-  useInitialSelectedRange(rgProps, store, devEnvironment);
-  useInitialFocusLocation(rgProps, store, devEnvironment);
+  useInitialSelectedRange(store, rgProps, devEnvironment);
+  useInitialFocusLocation(store, rgProps, devEnvironment);
 
   const rows = useReactGridStore(id, (store) => store.rows);
   const columns = useReactGridStore(id, (store) => store.columns);

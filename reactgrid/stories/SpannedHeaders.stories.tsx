@@ -9,6 +9,7 @@ import { handleColumnReorder } from "./utils/handleColumnReorder";
 import { handleRowReorder } from "./utils/handleRowReorder";
 import React from "react";
 import { HeaderCell } from "../lib/main";
+import { handleResizeColumn } from "./utils/handleResizeColumn";
 
 const ROW_COUNT = 4;
 const COLUMN_COUNT = 4;
@@ -116,7 +117,7 @@ export const SpannedHeaders = () => {
         }
         enableColumnSelectionOnFirstRow
         enableRowSelectionOnFirstColumn
-        // onResizeColumn={handleResizeColumn}
+        onResizeColumn={(width, columnIdx) => handleResizeColumn(width, columnIdx, setColumns)}
         columns={columns}
         rows={rows}
         onCellChanged={(cellLocation, newValue) => {

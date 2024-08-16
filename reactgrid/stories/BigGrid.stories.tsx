@@ -24,18 +24,19 @@ export const BigGrid = () => {
     }, [])
   );
 
-  const [rows, setRows] = useState<Row[]>([
-    { rowIndex: 0, height: 100 },
-    { rowIndex: 1, height: 100 },
-    { rowIndex: 2, height: 100 },
-    { rowIndex: 3, height: 100 },
-  ]);
+  const [rows, setRows] = useState<Row[]>(
+    Array.from({ length: ROW_COUNT }, (_, index) => ({
+      rowIndex: index,
+      height: 80,
+    }))
+  );
 
-  const [columns, setColumns] = useState<Column[]>([
-    { colIndex: 0, width: 300 },
-    { colIndex: 1, width: 300 },
-    { colIndex: 2, width: 300 },
-  ]);
+  const [columns, setColumns] = useState<Column[]>(
+    Array.from({ length: COLUMN_COUNT }, (_, index) => ({
+      colIndex: index,
+      width: 100,
+    }))
+  );
 
   const [toggleRanges, setToggleRanges] = useState(false);
 

@@ -12,6 +12,7 @@ import {
 import { ColumnMeasurement } from "../types/ColumnMeasurement";
 import { getCellArea } from "../utils/getCellArea";
 import { isSpanMember } from "../utils/isSpanMember";
+import { getNumberFromPixelString } from "../utils/getNumberFromPixelValueString";
 
 interface PanesRendererProps {
   rowAmount: number;
@@ -302,7 +303,12 @@ const PanesRenderer: FC<PanesRendererProps> = ({
           display: "grid",
           gridTemplateColumns: theme.grid.templates.columns({
             amount: columns.length,
-            widths: columns.map(({ width }) => (typeof width === "number" ? `${width}px` : width)),
+            widths: columns.map(({ width, minWidth }) => {
+              const widthValue = getNumberFromPixelString(width);
+              const minWidthValue = getNumberFromPixelString(minWidth ?? 0);
+
+              return widthValue < minWidthValue ? `${minWidthValue}px` : `${widthValue}px`;
+            }),
           }),
           gridTemplateRows: theme.grid.templates.rows({
             amount: rows.length,

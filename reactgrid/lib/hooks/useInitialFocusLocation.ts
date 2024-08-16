@@ -5,8 +5,8 @@ import { isSpanMember } from "../utils/isSpanMember";
 import { ReactGridStore } from "../types/ReactGridStore";
 
 export const useInitialFocusLocation = (
-  rgProps: Partial<ReactGridProps>,
   store: ReactGridStore,
+  rgProps: Partial<ReactGridProps>,
   devEnvironment: boolean
 ) => {
   useEffect(() => {

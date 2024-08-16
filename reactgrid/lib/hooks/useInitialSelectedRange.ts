@@ -4,8 +4,8 @@ import { getNumericalRange } from "../utils/getNumericalRange";
 import { ReactGridStore } from "../types/ReactGridStore";
 
 export const useInitialSelectedRange = (
-  rgProps: Partial<ReactGridProps>,
   store: ReactGridStore,
+  rgProps: Partial<ReactGridProps>,
   devEnvironment: boolean
 ) => {
   useEffect(() => {

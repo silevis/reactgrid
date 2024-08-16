@@ -153,5 +153,5 @@ export interface ReactGridProps {
   onPaste?: (selectedArea: NumericalRange, pastedData: string) => void;
   onColumnReorder?: (selectedColIndexes: number[], destinationColIdx: number) => void;
   onRowReorder?: (selectedRowIndexes: number[], destinationRowIdx: number) => void;
-  onResizeColumn?: (width: number, columnIdx: number) => void;
+  onResizeColumn?: (width: number, columnIdx: number[]) => void;
 }

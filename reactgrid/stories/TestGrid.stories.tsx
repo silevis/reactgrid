@@ -12,11 +12,6 @@ export const TestGridExample = () => {
     { colIndex: 1, width: 100 },
     { colIndex: 2, width: 100 },
   ]);
-  const [rows, setRows] = useState<Row[]>([
-    { rowIndex: 0, height: 100 },
-    { rowIndex: 1, height: 100 },
-    { rowIndex: 2, height: 100 },
-  ]);
 
   const [cells, setCells] = useState<CellData[]>(() => [
     {
@@ -54,7 +49,7 @@ export const TestGridExample = () => {
         onColumnReorder={(selectedColIndexes, destinationColIdx) =>
           handleColumnReorder(selectedColIndexes, destinationColIdx, setCells, setColumns)
         }
-        rows={rows}
+        rows={[]}
         columns={columns}
         onCellChanged={(cellLocation, newValue) => {
           setCells((prev) => {

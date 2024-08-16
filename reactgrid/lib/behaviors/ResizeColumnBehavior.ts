@@ -87,16 +87,25 @@ const handlePointerMove = (
 
   if (!reactGridRef) return store;
 
-  const resizingColumn = store.getColumnByIdx(store.resizingColIdx ?? 0);
-
-  const minColumnWidth = getNumberFromPixelString(resizingColumn?.minWidth ?? 0);
-
   const rect = reactGridRef.getBoundingClientRect();
 
   // get the left position relative to the viewport
   const gridContainerLeftPosition = rect.left;
 
   const linePosition = event.clientX - gridContainerLeftPosition;
+
+  const headerCell = store.getCellByIndexes(0, store.resizingColIdx ?? 0)!;
+
+  // get the column indexes that should be resized based on the cell's colSpan
+  const colIndexesToResize = headerCell.colSpan
+    ? Array.from({ length: headerCell.colSpan }, (_, i) => i + headerCell.colIndex)
+    : [headerCell.colIndex];
+
+  // calculate the minimum width for all columns in colSpan
+  const minColumnWidth = colIndexesToResize.reduce((acc, colIdx) => {
+    const column = store.getColumnByIdx(colIdx);
+    return acc + getNumberFromPixelString(column?.minWidth ?? 0);
+  }, 0);
 
   return {
     ...store,
@@ -131,10 +140,17 @@ const handlePointerUp = (
 
   const linePosition = event.clientX - reactGridLeftPosition;
 
+  const headerCell = store.getCellByIndexes(0, store.resizingColIdx)!;
+
+  // get the column indexes that should be resized based on the cell's colSpan
+  const colIndexesToResize = headerCell.colSpan
+    ? Array.from({ length: headerCell.colSpan }, (_, i) => i + headerCell.colIndex)
+    : [headerCell.colIndex];
+
   if (linePosition <= headerLeftPosition + minColumnWidth) {
-    store.onResizeColumn?.(minColumnWidth, store.resizingColIdx);
+    store.onResizeColumn?.(minColumnWidth, colIndexesToResize);
   } else {
-    store.onResizeColumn?.(resultWidth, store.resizingColIdx);
+    store.onResizeColumn?.(resultWidth, colIndexesToResize);
   }
 
   headerLeftPosition = 0;

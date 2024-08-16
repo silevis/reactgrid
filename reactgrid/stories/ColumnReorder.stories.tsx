@@ -10,6 +10,8 @@ export const ColumnReorderExample = () => {
   const [columns, setColumns] = useState<Column[]>([
     { colIndex: 0, width: 300 },
     { colIndex: 1, width: 300 },
+    { colIndex: 2, width: 100 },
+    { colIndex: 3, width: 50 },
   ]);
 
   const [cells, setCells] = useState<CellData[]>(initialGridData);
