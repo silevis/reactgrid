@@ -10,9 +10,6 @@ export interface ReactGridStoreProps {
   rows: Row[];
   columns: Column[];
 
-  customRows?: Row[];
-  customColumns?: Column[];
-
   cells: CellMap;
 
   rowMeasurements: RowMeasurement[];
@@ -40,8 +37,6 @@ export interface ReactGridStoreProps {
 
   enableRowSelectionOnFirstColumn?: boolean;
 
-  enableResizeColumns?: boolean;
-
   linePosition?: number;
   lineOrientation: "vertical" | "horizontal";
 
@@ -58,6 +53,7 @@ export interface ReactGridStoreProps {
   onCut?: (selectedArea: NumericalRange) => void;
   onCopy?: (selectedArea: NumericalRange) => void;
   onPaste?: (selectedArea: NumericalRange, pastedData: string) => void;
+  onResizeColumn?: (width: number, columnIdx: number) => void;
   onColumnReorder?: (selectedColIndexes: number[], destinationColIdx: number) => void;
   onRowReorder?: (selectedRowIndexes: number[], destinationRowIdx: number) => void;
 }

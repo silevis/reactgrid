@@ -88,8 +88,6 @@ const handlePointerMove = (
   store: ReactGridStore,
   event: React.PointerEvent<HTMLDivElement> | PointerEvent
 ): Partial<ReactGridStore> => {
-  devEnvironment && console.log("CRB/handlePointerMove");
-
   if (!initialMouseXPos) {
     initialMouseXPos = event.clientX;
   }

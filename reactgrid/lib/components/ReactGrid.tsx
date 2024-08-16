@@ -15,21 +15,19 @@ import cloneDeep from "lodash.clonedeep";
 import isEqual from "lodash.isequal";
 import { useInitialFocusLocation } from "../hooks/useInitialFocusLocation";
 import { useInitialSelectedRange } from "../hooks/useInitialSelectedRange";
-import { v4 as uuidv4 } from "uuid";
 
 const devEnvironment = isDevEnvironment();
 
 export const ReactGrid: FC<ReactGridProps> = ({
+  id,
   stickyTopRows,
   stickyBottomRows,
   stickyLeftColumns,
   stickyRightColumns,
   ...rgProps
 }) => {
-  const reactGridId = useRef(`rg-${uuidv4()}`);
-
   const cellMatrix = useDeepCompareMemo(() => {
-    return cellMatrixBuilder(({ setCell }) => {
+    return cellMatrixBuilder(rgProps.rows, rgProps.columns, ({ setCell }) => {
       rgProps.cells.forEach((cell) => {
         if (cell === null) return;
 
@@ -43,27 +41,27 @@ export const ReactGrid: FC<ReactGridProps> = ({
         });
       });
     });
-  }, [rgProps.cells]);
+  }, [rgProps.rows, rgProps.columns, rgProps.cells]);
 
-  initReactGridStore(reactGridId.current, {
+  initReactGridStore(id, {
     ...rgProps,
-    cells: cellMatrix,
+    ...cellMatrix,
   });
 
   // access store in non-reactive way
-  const store = reactGridStores()[reactGridId.current].getState();
+  const store = reactGridStores()[id].getState();
 
   useDeepCompareGridProps(() => {
-    store.setExternalData({ ...rgProps, cells: cellMatrix });
+    store.setExternalData({ ...rgProps, ...cellMatrix });
   }, [rgProps]);
 
   useInitialSelectedRange(rgProps, store, devEnvironment);
   useInitialFocusLocation(rgProps, store, devEnvironment);
 
-  const rows = useReactGridStore(reactGridId.current, (store) => store.rows);
-  const columns = useReactGridStore(reactGridId.current, (store) => store.columns);
-  const currentBehavior = useReactGridStore(reactGridId.current, (store) => store.currentBehavior);
-  const linePosition = useReactGridStore(reactGridId.current, (store) => store.linePosition);
+  const rows = useReactGridStore(id, (store) => store.rows);
+  const columns = useReactGridStore(id, (store) => store.columns);
+  const currentBehavior = useReactGridStore(id, (store) => store.currentBehavior);
+  const linePosition = useReactGridStore(id, (store) => store.linePosition);
 
   const [bypassSizeWarning, setBypassSizeWarning] = useState(false);
 
@@ -82,9 +80,9 @@ export const ReactGrid: FC<ReactGridProps> = ({
   }
 
   return (
-    <ReactGridIdProvider id={reactGridId.current}>
+    <ReactGridIdProvider id={id}>
       <ErrorBoundary>
-        <GridWrapper reactGridId={reactGridId.current} style={{ position: "relative", ...rgProps.styles?.gridWrapper }}>
+        <GridWrapper reactGridId={id} style={{ position: "relative", ...rgProps.styles?.gridWrapper }}>
           <PanesRenderer
             rowAmount={rows.length}
             columnAmount={columns.length}

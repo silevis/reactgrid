@@ -471,7 +471,6 @@ export const handleKeyDown = (
             newSelectedAreaEndColIdx = store.paneRanges.Right.startColIdx;
           }
         }
-
         const minimalSelectedArea = findMinimalSelectedArea(store, {
           ...currentSelectedArea,
           endColIdx: newSelectedAreaEndColIdx,

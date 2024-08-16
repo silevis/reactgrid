@@ -3,15 +3,15 @@ import { StoryDefault } from "@ladle/react";
 import { StrictMode, useState } from "react";
 import { ReactGrid } from "../lib/components/ReactGrid";
 import { ErrorBoundary } from "../lib/components/ErrorBoundary";
-import { CellData } from "../lib/types/PublicModel";
+import { CellData, Column } from "../lib/types/PublicModel";
 import { handleFill } from "./utils/handleFill";
 import { handleCut } from "./utils/handleCut";
 import { handlePaste } from "./utils/handlePaste";
 import { handleCopy } from "./utils/handleCopy";
 import { handleColumnReorder } from "./utils/handleColumnReorder";
 import { handleRowReorder } from "./utils/handleRowReorder";
-import { IndexedLocation } from "../lib/types/InternalModel";
 import { COLUMN_COUNT, ROW_COUNT, generateCellData, testStyles, styledRanges } from "./utils/bigGridConfig";
+import { handleResizeColumn } from "./utils/handleResizeColumn";
 
 export const BigGrid = () => {
   const [cells, setCells] = useState<CellData[]>(
@@ -24,12 +24,19 @@ export const BigGrid = () => {
     }, [])
   );
 
+  const [columns, setColumns] = useState<Column[]>([
+    { colIndex: 0, width: 300 },
+    { colIndex: 1, width: 300 },
+    { colIndex: 2, width: 300 },
+  ]);
+
   const [toggleRanges, setToggleRanges] = useState(false);
 
   return (
     <>
       <div className="rgScrollableContainer" style={{ height: "100%", width: "100%", overflow: "auto" }}>
         <ReactGrid
+          id="big-grid"
           onCellChanged={(cellLocation, newValue) => {
             setCells((prev) => {
               const next = [...prev];
@@ -49,7 +56,7 @@ export const BigGrid = () => {
           stickyBottomRows={4}
           styles={testStyles}
           styledRanges={toggleRanges ? styledRanges : []}
-          enableResizeColumns
+          onResizeColumn={(width, columnIdx) => handleResizeColumn(width, columnIdx, setColumns)}
           onRowReorder={(selectedRowIndexes, destinationRowIdx) =>
             handleRowReorder(selectedRowIndexes, destinationRowIdx, setCells)
           }
@@ -59,10 +66,7 @@ export const BigGrid = () => {
           enableColumnSelectionOnFirstRow
           enableRowSelectionOnFirstColumn
           onAreaSelected={(selectedArea) => {}}
-          customColumns={[
-            { colIndex: 1, width: "150px", minWidth: 80 },
-            { colIndex: 9, width: "250px", minWidth: 80 },
-          ]}
+          columns={columns}
           onFillHandle={(selectedArea, fillRange) => handleFill(selectedArea, fillRange, setCells)}
           onCut={(selectedArea) => handleCut(cells, selectedArea, setCells)}
           onPaste={(selectedArea, pastedData) => handlePaste(selectedArea, pastedData, setCells)}

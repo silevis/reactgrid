@@ -1,6 +1,6 @@
 import { EmptyCell } from "../cellTemplates/EmptyCell";
 import { CellMatrix } from "../types/CellMatrix";
-import { Cell, SpanMember } from "../types/PublicModel";
+import { Cell, CellMap, Column, Row, SpanMember } from "../types/PublicModel";
 
 // Type `any` is required to use React.ComponentType here
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -27,7 +27,11 @@ interface CellMatrixBuilderTools {
  * @param builder Function which receives {@link CellMatrixBuilderTools} as an argument and is used to build your cell matrix
  * @returns cells
  */
-export const cellMatrixBuilder = (builder: ({ ...tools }: CellMatrixBuilderTools) => void): CellMatrix => {
+export const cellMatrixBuilder = (
+  rows: Row[] | undefined,
+  columns: Column[] | undefined,
+  builder: ({ ...tools }: CellMatrixBuilderTools) => void
+): CellMatrix => {
   const cells = new Map();
 
   const setCell: SetCellFn = (rowIndex, colIndex, Template, props, { ...args }) => {
@@ -92,5 +96,63 @@ export const cellMatrixBuilder = (builder: ({ ...tools }: CellMatrixBuilderTools
     }
   }
 
-  return cells;
+  return { cells, rows: initGridRows(cells || new Map(), rows), columns: initGridColumns(cells || new Map(), columns) };
+};
+
+const initGridRows = (cellMap: CellMap, rows?: Row[]): Row[] => {
+  let maxRowIndex = 0;
+
+  const customRowMap = new Map<number, Row>();
+  if (rows) {
+    rows.forEach((row) => {
+      customRowMap.set(row.rowIndex, row);
+    });
+  }
+
+  for (const key of cellMap.keys()) {
+    const [rowIndexStr] = key.split(" ");
+    const rowIndex = parseInt(rowIndexStr, 10);
+    if (rowIndex > maxRowIndex) {
+      maxRowIndex = rowIndex;
+    }
+  }
+
+  return Array.from({ length: maxRowIndex + 1 }).map((_, idx) => {
+    const customRow = customRowMap.get(idx);
+    return {
+      rowIndex: idx,
+      height: customRow?.height ?? "min-content",
+      reorderable: customRow?.reorderable ?? true,
+    };
+  });
+};
+
+const initGridColumns = (cellMap: CellMap, columns?: Column[]): Column[] => {
+  let maxColIndex = 0;
+
+  const customColumnMap = new Map<number, Column>();
+  if (columns) {
+    columns.forEach((col) => {
+      customColumnMap.set(col.colIndex, col);
+    });
+  }
+
+  for (const key of cellMap.keys()) {
+    const [, colIndexStr] = key.split(" ");
+    const colIndex = parseInt(colIndexStr, 10);
+    if (colIndex > maxColIndex) {
+      maxColIndex = colIndex;
+    }
+  }
+
+  return Array.from({ length: maxColIndex + 1 }).map((_, idx) => {
+    const customCol = customColumnMap.get(idx);
+    return {
+      colIndex: idx,
+      resizable: customCol?.resizable ?? true,
+      reorderable: customCol?.reorderable ?? true,
+      width: customCol?.width ?? "min-content",
+      minWidth: customCol?.minWidth ?? 50,
+    };
+  });
 };

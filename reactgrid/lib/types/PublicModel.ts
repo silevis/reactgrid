@@ -114,12 +114,14 @@ export type StyledRangesCSS = {
 }[];
 
 export interface ReactGridProps {
+  id: string;
+
   styles?: NestedStylesPartial<RGTheme>;
 
   styledRanges?: StyledRange[];
 
-  customColumns?: Column[];
-  customRows?: Row[];
+  rows?: Row[];
+  columns?: Column[];
 
   cells: CellData[];
 
@@ -138,8 +140,6 @@ export interface ReactGridProps {
 
   enableRowSelectionOnFirstColumn?: boolean;
 
-  enableResizeColumns?: boolean;
-
   behaviors?: Partial<Record<BehaviorId, Behavior>>;
 
   initialFocusLocation?: IndexedLocation;
@@ -153,4 +153,5 @@ export interface ReactGridProps {
   onPaste?: (selectedArea: NumericalRange, pastedData: string) => void;
   onColumnReorder?: (selectedColIndexes: number[], destinationColIdx: number) => void;
   onRowReorder?: (selectedRowIndexes: number[], destinationRowIdx: number) => void;
+  onResizeColumn?: (width: number, columnIdx: number) => void;
 }

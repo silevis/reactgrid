@@ -12,14 +12,14 @@ export const ColumnResize = () => {
   const columns = useReactGridStore(id, (store) => store.columns);
   const shadowSize = useReactGridStore(id, (store) => store.shadowSize);
 
-  const enableResizeColumns = useReactGridStore(id, (store) => store.enableResizeColumns);
+  const onResizeColumn = useReactGridStore(id, (store) => store.onResizeColumn);
   const setCurrentBehavior = useReactGridStore(id, (store) => store.setCurrentBehavior);
   const setResizingColIdx = useReactGridStore(id, (store) => store.setResizingColIdx);
 
   const cellColumn = columns[ctx.realColumnIndex];
 
   const shouldEnableColumnResize =
-    resizingColIdx === undefined && enableResizeColumns && cellColumn?.resizable && !shadowSize;
+    resizingColIdx === undefined && onResizeColumn && cellColumn?.resizable && !shadowSize;
 
   return (
     shouldEnableColumnResize && (

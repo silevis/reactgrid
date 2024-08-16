@@ -1,9 +1,7 @@
 import { Behavior } from "../types/Behavior.ts";
-import { CellMatrix } from "../types/CellMatrix.ts";
 import { ReactGridStore } from "../types/ReactGridStore.ts";
 import { getNumberFromPixelString } from "../utils/getNumberFromPixelValueString.ts";
 import isDevEnvironment from "../utils/isDevEnvironment.ts";
-import { Column } from "../types/PublicModel.ts";
 
 const devEnvironment = isDevEnvironment();
 
@@ -133,16 +131,10 @@ const handlePointerUp = (
 
   const linePosition = event.clientX - reactGridLeftPosition;
 
-  let updatedColumns: Column[] | undefined = undefined;
-
   if (linePosition <= headerLeftPosition + minColumnWidth) {
-    updatedColumns = store.enableResizeColumns
-      ? resizeColumn(minColumnWidth, store.resizingColIdx, store.columns, store.cells)
-      : undefined;
+    store.onResizeColumn?.(minColumnWidth, store.resizingColIdx);
   } else {
-    updatedColumns = store.enableResizeColumns
-      ? resizeColumn(resultWidth, store.resizingColIdx, store.columns, store.cells)
-      : undefined;
+    store.onResizeColumn?.(resultWidth, store.resizingColIdx);
   }
 
   headerLeftPosition = 0;
@@ -151,32 +143,8 @@ const handlePointerUp = (
 
   return {
     ...store,
-    ...(updatedColumns && { columns: updatedColumns }),
     linePosition: undefined,
     currentBehavior: store.getBehavior("Default"),
     resizingColIdx: undefined,
   };
-};
-
-const resizeColumn = (width: number, columnIdx: number, columns: Column[], cells: CellMatrix): Column[] => {
-  return columns.map((column, idx) => {
-    if (idx !== columnIdx) return column;
-
-    const cell = cells.get(`${0} ${columnIdx}`);
-
-    if (!cell) return column;
-
-    let newWidth = width;
-
-    if ("colSpan" in cell && cell.colSpan) {
-      for (let i = columnIdx + 1; i < columnIdx + cell.colSpan; i++) {
-        const columnWidth = columns[i].width;
-        // Parse the column width in case it is a string (e.g., "100px")
-        const columnWidthNumber = typeof columnWidth === "string" ? parseInt(columnWidth, 10) : columnWidth;
-        newWidth -= columnWidthNumber;
-      }
-    }
-
-    return { ...column, width: `${newWidth}px` };
-  });
 };

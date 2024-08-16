@@ -1,75 +1,53 @@
 import { StoryDefault } from "@ladle/react";
 import { StrictMode, useState } from "react";
-import { cellMatrixBuilder } from "../lib/utils/cellMatrixBuilder";
 import { TextCell } from "../lib/cellTemplates/TextCell";
 import { ReactGrid } from "../lib/components/ReactGrid";
 import { ErrorBoundary } from "../lib/components/ErrorBoundary";
-import { Column, Row } from "../lib/types/PublicModel";
+import { CellData } from "../lib/types/PublicModel";
 import { handleFill } from "./utils/handleFill";
 import { handleColumnReorder } from "./utils/handleColumnReorder";
-import { handleResizeColumn } from "./utils/handleResizeColumn";
 import { handleRowReorder } from "./utils/handleRowReorder";
 import React from "react";
 import { HeaderCell } from "../lib/main";
-
-interface CellData {
-  type: "text" | "number" | "date";
-  value: string | number | Date;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  template: React.ComponentType<any>;
-  style?: React.CSSProperties;
-
-  rowSpan?: number;
-  colSpan?: number;
-
-  isFocusable?: boolean;
-  isSelectable?: boolean;
-}
 
 const ROW_COUNT = 4;
 const COLUMN_COUNT = 4;
 
 export const SpannedHeaders = () => {
-  const [columns, setColumns] = useState<Array<Column>>(
-    Array.from({ length: COLUMN_COUNT }).map((_, j) => {
-      if (j === 2)
-        return {
-          id: j.toString(),
-          width: "200px",
-          resizable: true,
-          reorderable: true,
-          minWidth: 150,
-        };
+  const [cells, setCells] = useState<CellData[]>(
+    Array.from({ length: ROW_COUNT })
+      .flatMap((_, i) =>
+        Array.from({ length: COLUMN_COUNT }).map((_, j) => {
+          if (i === 0 && j === 3) return null;
+          if (i === 2 && j === 2) return null;
+          if (i === 3 && j === 3) return null;
 
-      return {
-        id: j.toString(),
-        width: "150px",
-        resizable: true,
-        reorderable: true,
-        minWidth: 50,
-      };
-    })
-  );
-  const [rows, setRows] = useState<Array<Row>>(
-    Array.from({ length: ROW_COUNT }).map((_, j) => {
-      if (j === 0) return { id: j.toString(), height: "50px", reorderable: false };
-      return { id: j.toString(), height: "50px", reorderable: true };
-    })
-  );
+          if (i === 0) {
+            if (j === 2) {
+              return {
+                rowIndex: i,
+                colIndex: j,
+                Template: HeaderCell,
+                props: {
+                  value: `title ${j + 1}`,
+                },
+                style: {
+                  backgroundColor: "#fcff91",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  fontWeight: "bold",
+                },
+                isFocusable: false,
+                colSpan: 2,
+              };
+            }
 
-  const [gridData, setGridData] = useState<(CellData | null)[][]>(
-    Array.from({ length: ROW_COUNT }).map((_, i) => {
-      return Array.from({ length: COLUMN_COUNT }).map((_, j) => {
-        if (i === 0 && j === 3) return null;
-        if (i === 2 && j === 2) return null;
-        if (i === 3 && j === 3) return null;
-
-        if (i === 0) {
-          if (j === 2) {
             return {
-              type: "text",
-              value: `title ${j + 1}`,
-              template: HeaderCell,
+              rowIndex: i,
+              colIndex: j,
+              props: { value: `title ${j + 1}` },
+              Template: HeaderCell,
               style: {
                 backgroundColor: "#fcff91",
                 display: "flex",
@@ -78,101 +56,68 @@ export const SpannedHeaders = () => {
                 fontWeight: "bold",
               },
               isFocusable: false,
+            };
+          }
+
+          if (i === 3 && j === 2) {
+            return {
+              rowIndex: i,
+              colIndex: j,
+              props: { value: "text" },
+              value: "text",
+              Template: TextCell,
+              colSpan: 2,
+            };
+          }
+          if (i === 2 && j === 1) {
+            return {
+              rowIndex: i,
+              colIndex: j,
+              props: { value: `[${i.toString()}:${j.toString()}]` },
+              Template: TextCell,
               colSpan: 2,
             };
           }
 
           return {
-            type: "text",
-            value: `title ${j + 1}`,
-            template: HeaderCell,
-            style: {
-              backgroundColor: "#fcff91",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              fontWeight: "bold",
-            },
-            isFocusable: false,
+            rowIndex: i,
+            colIndex: j,
+            props: { value: `[${i.toString()}:${j.toString()}]` },
+            Template: TextCell,
           };
-        }
-
-        if (i === 3 && j === 2) {
-          return {
-            type: "text",
-            value: "text",
-            template: TextCell,
-            colSpan: 2,
-          };
-        }
-        if (i === 2 && j === 1) {
-          return {
-            type: "text",
-            value: `[${i.toString()}:${j.toString()}]`,
-            template: TextCell,
-            colSpan: 2,
-          };
-        }
-
-        return {
-          type: "text",
-          value: `[${i.toString()}:${j.toString()}]`,
-          template: TextCell,
-        };
-      });
-    })
+        })
+      )
+      .filter((cell) => cell !== null)
   );
-
-  const cells = cellMatrixBuilder(({ setCell }) => {
-    gridData.forEach((row, rowIdx) => {
-      row.forEach((cell, colIdx) => {
-        if (cell === null) return;
-
-        setCell(
-          rowIdx,
-          colIdx,
-          cell.template,
-          {
-            value: cell.value,
-            style: cell.style,
-            onValueChanged: (data) => {
-              setGridData((prev) => {
-                const next = [...prev];
-                if (next[rowIdx][colIdx] !== null) {
-                  next[rowIdx][colIdx].value = data;
-                }
-                return next;
-              });
-            },
-          },
-          {
-            ...(cell?.rowSpan && { rowSpan: cell.rowSpan }),
-            ...(cell?.colSpan && { colSpan: cell.colSpan }),
-            ...(cell?.isFocusable === false && { isFocusable: cell.isFocusable }),
-          }
-        );
-      });
-    });
-  });
 
   return (
     <div style={{ height: "100%", overflow: "auto" }}>
       <ReactGrid
-        id="grid-with-headers"
-        onFillHandle={(selectedArea, fillRange) => handleFill(selectedArea, fillRange, setGridData)}
-        onColumnReorder={(selectedColIndexes, destinationColIdx) =>
-          handleColumnReorder(selectedColIndexes, destinationColIdx, setColumns, setGridData)
-        }
+        id="spanned-headers-example"
+        onFillHandle={(selectedArea, fillRange) => handleFill(selectedArea, fillRange, setCells)}
         onRowReorder={(selectedRowIndexes, destinationRowIdx) =>
-          handleRowReorder(selectedRowIndexes, destinationRowIdx, setRows, setGridData)
+          handleRowReorder(selectedRowIndexes, destinationRowIdx, setCells)
+        }
+        onColumnReorder={(selectedColIndexes, destinationColIdx) =>
+          handleColumnReorder(selectedColIndexes, destinationColIdx, setCells)
         }
         enableColumnSelectionOnFirstRow
         enableRowSelectionOnFirstColumn
-        enableResizeColumns
+        // onResizeColumn={handleResizeColumn}
+        onCellChanged={(cellLocation, newValue) => {
+          setCells((prev) => {
+            const next = [...prev];
+            const cell = next.find(
+              (cell) => cell.rowIndex === cellLocation.rowIndex && cell.colIndex === cellLocation.colIndex
+            );
+            if (cell && cell.props !== undefined) {
+              cell.props.value = newValue;
+            }
+            return next;
+          });
+        }}
         stickyTopRows={1}
         initialFocusLocation={{ rowIndex: 1, colIndex: 0 }}
-        rows={rows}
-        columns={columns}
         cells={cells}
       />
     </div>
