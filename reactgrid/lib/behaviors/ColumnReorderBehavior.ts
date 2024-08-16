@@ -423,13 +423,10 @@ const handlePointerUp = (
   // CASE 1
   // If the mouse pointer is beyond the last column, move the selected columns to the last column
   if (event.clientX > lastColumnClientOffsetLeft + lastColumnCellWidth) {
-    const newCols = reorderColumns(store.columns, selectedColIndexes, store.columns.length - 1);
-
     store.onColumnReorder?.(selectedColIndexes, store.columns.length - 1);
 
     return {
       currentBehavior: store.getBehavior("Default"),
-      columns: newCols,
       changedFocusedLocation: newFocusedLocation,
       selectedArea: {
         startRowIdx: 0,
@@ -450,13 +447,10 @@ const handlePointerUp = (
   // CASE 2
   // If the mouse pointer is beyond the first column, move the selected columns to the first column
   if (event.clientX < gridWrapper.getBoundingClientRect().left) {
-    const newCols = reorderColumns(store.columns, selectedColIndexes, 0);
-
     store.onColumnReorder?.(selectedColIndexes, 0);
 
     return {
       currentBehavior: store.getBehavior("Default"),
-      columns: newCols,
       changedFocusedLocation: newFocusedLocation,
       selectedArea: {
         startRowIdx: 0,
@@ -481,13 +475,10 @@ const handlePointerUp = (
   // CASE 3
   // If the mouse pointer is within the first and last column, move the selected columns to the destination column
 
-  const newCols = reorderColumns(store.columns, selectedColIndexes, destinationColIdx);
-
   store.onColumnReorder?.(selectedColIndexes, destinationColIdx);
 
   return {
     currentBehavior: store.getBehavior("Default"),
-    columns: newCols,
     changedFocusedLocation: newFocusedLocation,
     selectedArea: {
       startRowIdx: 0,
@@ -499,27 +490,4 @@ const handlePointerUp = (
     linePosition: undefined,
     shadowSize: undefined,
   };
-};
-
-const reorderColumns = (
-  previousColumns: Column[],
-  selectedColIndexes: number[],
-  destinationColIdx: number
-): Column[] => {
-  // Create arrays of selected and unselected columns
-  const selectedColumns = previousColumns.filter((_, index) => selectedColIndexes.includes(index));
-  const unselectedColumns = previousColumns.filter((_, index) => !selectedColIndexes.includes(index));
-
-  // Calculate the adjusted destination index
-  const adjustedDestinationColIdx =
-    selectedColIndexes[0] > destinationColIdx ? destinationColIdx : destinationColIdx - selectedColumns.length + 1;
-
-  // Create the new array of columns
-  const newColumns = [
-    ...unselectedColumns.slice(0, adjustedDestinationColIdx),
-    ...selectedColumns,
-    ...unselectedColumns.slice(adjustedDestinationColIdx),
-  ];
-
-  return newColumns;
 };

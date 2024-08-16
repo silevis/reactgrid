@@ -52,7 +52,7 @@ export const TestGridExample = () => {
         styles={rgStyles}
         enableColumnSelectionOnFirstRow
         onColumnReorder={(selectedColIndexes, destinationColIdx) =>
-          handleColumnReorder(selectedColIndexes, destinationColIdx, setCells)
+          handleColumnReorder(selectedColIndexes, destinationColIdx, setCells, setColumns)
         }
         rows={rows}
         columns={columns}

@@ -3,7 +3,7 @@ import { StrictMode, useState } from "react";
 import { TextCell } from "../lib/cellTemplates/TextCell";
 import { ReactGrid } from "../lib/components/ReactGrid";
 import { ErrorBoundary } from "../lib/components/ErrorBoundary";
-import { CellData } from "../lib/types/PublicModel";
+import { CellData, Column, Row } from "../lib/types/PublicModel";
 import { handleFill } from "./utils/handleFill";
 import { handleColumnReorder } from "./utils/handleColumnReorder";
 import { handleRowReorder } from "./utils/handleRowReorder";
@@ -90,20 +90,35 @@ export const SpannedHeaders = () => {
       .filter((cell) => cell !== null)
   );
 
+  const [columns, setColumns] = useState<Column[]>([
+    { colIndex: 0, width: 200 },
+    { colIndex: 1, width: 200 },
+    { colIndex: 2, width: 200 },
+    { colIndex: 3, width: 200 },
+  ]);
+  const [rows, setRows] = useState<Row[]>([
+    { rowIndex: 0, height: 50 },
+    { rowIndex: 1, height: 50 },
+    { rowIndex: 2, height: 50 },
+    { rowIndex: 3, height: 50 },
+  ]);
+
   return (
     <div style={{ height: "100%", overflow: "auto" }}>
       <ReactGrid
         id="spanned-headers-example"
         onFillHandle={(selectedArea, fillRange) => handleFill(selectedArea, fillRange, setCells)}
         onRowReorder={(selectedRowIndexes, destinationRowIdx) =>
-          handleRowReorder(selectedRowIndexes, destinationRowIdx, setCells)
+          handleRowReorder(selectedRowIndexes, destinationRowIdx, setCells, setRows)
         }
         onColumnReorder={(selectedColIndexes, destinationColIdx) =>
-          handleColumnReorder(selectedColIndexes, destinationColIdx, setCells)
+          handleColumnReorder(selectedColIndexes, destinationColIdx, setCells, setColumns)
         }
         enableColumnSelectionOnFirstRow
         enableRowSelectionOnFirstColumn
         // onResizeColumn={handleResizeColumn}
+        columns={columns}
+        rows={rows}
         onCellChanged={(cellLocation, newValue) => {
           setCells((prev) => {
             const next = [...prev];

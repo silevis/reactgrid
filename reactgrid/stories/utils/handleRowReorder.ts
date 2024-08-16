@@ -1,10 +1,30 @@
-import { CellData } from "../../lib/types/PublicModel";
+import { CellData, Row } from "../../lib/types/PublicModel";
 
 export const handleRowReorder = <T extends CellData>(
   selectedRowIndexes: number[],
   destinationRowIdx: number,
-  setData: React.Dispatch<React.SetStateAction<T[]>>
+  setData: React.Dispatch<React.SetStateAction<T[]>>,
+  setRows: React.Dispatch<React.SetStateAction<Row[]>>
 ) => {
+  setRows((prevRows) => {
+    // create arrays of selected and unselected rows
+    const selectedRows = prevRows.filter((_, index) => selectedRowIndexes.includes(index));
+    const unselectedRows = prevRows.filter((_, index) => !selectedRowIndexes.includes(index));
+
+    // calculate the adjusted destination index
+    const adjustedDestinationRowIdx =
+      selectedRowIndexes[0] > destinationRowIdx ? destinationRowIdx : destinationRowIdx - selectedRows.length + 1;
+
+    // create the new array of rows
+    const newRows = [
+      ...unselectedRows.slice(0, adjustedDestinationRowIdx),
+      ...selectedRows,
+      ...unselectedRows.slice(adjustedDestinationRowIdx),
+    ];
+
+    return newRows;
+  });
+
   setData((prevGridData) => {
     const minSelectedIndex = Math.min(...selectedRowIndexes);
     const maxSelectedIndex = Math.max(...selectedRowIndexes);
@@ -30,7 +50,7 @@ export const handleRowReorder = <T extends CellData>(
       }
 
       if (reorderDirection === "down") {
-        // Reordering down
+        // reordering down
         if (rowIndex >= minSelectedIndex && rowIndex <= destinationRowIdx) {
           const newRowIndex = rowIndex - selectedRowIndexes.length;
           return {
@@ -39,7 +59,7 @@ export const handleRowReorder = <T extends CellData>(
           };
         }
       } else if (reorderDirection === "up") {
-        // Reordering up
+        //  reordering up
         if (rowIndex >= destinationRowIdx && rowIndex <= maxSelectedIndex) {
           const newRowIndex = rowIndex + selectedRowIndexes.length;
           return {

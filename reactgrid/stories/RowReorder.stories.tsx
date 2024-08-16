@@ -1,5 +1,5 @@
 import React, { StrictMode, useState } from "react";
-import { CellData, ReactGrid } from "../lib/main";
+import { CellData, ReactGrid, Row } from "../lib/main";
 import { StoryDefault } from "@ladle/react";
 import { ErrorBoundary } from "../lib/components/ErrorBoundary";
 import { rgStyles, initialGridData } from "./utils/examplesConfig";
@@ -8,13 +8,20 @@ import { handleRowReorder } from "./utils/handleRowReorder";
 export const RowReorderExample = () => {
   const [cells, setCells] = useState<CellData[]>(initialGridData);
 
+  const [rows, setRows] = useState<Row[]>([
+    { rowIndex: 0, height: 100 },
+    { rowIndex: 1, height: 100 },
+    { rowIndex: 2, height: 100 },
+  ]);
+
   return (
     <div>
       <ReactGrid
+        id="row-reorder-example"
         styles={rgStyles}
         enableRowSelectionOnFirstColumn
         onRowReorder={(selectedRowIndexes, destinationRowIdx) =>
-          handleRowReorder(selectedRowIndexes, destinationRowIdx, setCells)
+          handleRowReorder(selectedRowIndexes, destinationRowIdx, setCells, setRows)
         }
         onCellChanged={(cellLocation, newValue) => {
           setCells((prev) => {
@@ -28,6 +35,7 @@ export const RowReorderExample = () => {
             return next;
           });
         }}
+        rows={rows}
         initialFocusLocation={{ rowIndex: 2, colIndex: 1 }}
         cells={cells}
       />

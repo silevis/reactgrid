@@ -13,6 +13,7 @@ export const CutCopyPasteExample = () => {
   return (
     <div>
       <ReactGrid
+        id="cut-copy-paste-example"
         styles={rgStyles}
         onCellChanged={(cellLocation, newValue) => {
           setCells((prev) => {

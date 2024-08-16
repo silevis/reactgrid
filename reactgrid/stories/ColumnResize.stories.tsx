@@ -12,6 +12,7 @@ export const ColumnResizeExample = () => {
     { colIndex: 1, width: 300 },
     { colIndex: 2, width: 300 },
   ]);
+
   const [cells, setCells] = useState<CellData[]>(initialGridData);
 
   return (

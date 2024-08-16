@@ -3,7 +3,7 @@ import { StoryDefault } from "@ladle/react";
 import { StrictMode, useState } from "react";
 import { ReactGrid } from "../lib/components/ReactGrid";
 import { ErrorBoundary } from "../lib/components/ErrorBoundary";
-import { CellData, Column } from "../lib/types/PublicModel";
+import { CellData, Column, Row } from "../lib/types/PublicModel";
 import { handleFill } from "./utils/handleFill";
 import { handleCut } from "./utils/handleCut";
 import { handlePaste } from "./utils/handlePaste";
@@ -23,6 +23,13 @@ export const BigGrid = () => {
       return acc;
     }, [])
   );
+
+  const [rows, setRows] = useState<Row[]>([
+    { rowIndex: 0, height: 100 },
+    { rowIndex: 1, height: 100 },
+    { rowIndex: 2, height: 100 },
+    { rowIndex: 3, height: 100 },
+  ]);
 
   const [columns, setColumns] = useState<Column[]>([
     { colIndex: 0, width: 300 },
@@ -58,14 +65,15 @@ export const BigGrid = () => {
           styledRanges={toggleRanges ? styledRanges : []}
           onResizeColumn={(width, columnIdx) => handleResizeColumn(width, columnIdx, setColumns)}
           onRowReorder={(selectedRowIndexes, destinationRowIdx) =>
-            handleRowReorder(selectedRowIndexes, destinationRowIdx, setCells)
+            handleRowReorder(selectedRowIndexes, destinationRowIdx, setCells, setRows)
           }
           onColumnReorder={(selectedColIndexes, destinationColIdx) =>
-            handleColumnReorder(selectedColIndexes, destinationColIdx, setCells)
+            handleColumnReorder(selectedColIndexes, destinationColIdx, setCells, setColumns)
           }
           enableColumnSelectionOnFirstRow
           enableRowSelectionOnFirstColumn
           onAreaSelected={(selectedArea) => {}}
+          rows={rows}
           columns={columns}
           onFillHandle={(selectedArea, fillRange) => handleFill(selectedArea, fillRange, setCells)}
           onCut={(selectedArea) => handleCut(cells, selectedArea, setCells)}
