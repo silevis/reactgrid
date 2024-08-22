@@ -81,6 +81,7 @@ export interface ReactGridStore extends ReactGridStoreProps {
   readonly setFocusedLocation: (rowIndex: number, colIndex: number) => void;
   readonly getFocusedCell: () => FocusedCell | null;
 
+  readonly getSelectedArea: () => NumericalRange;
   readonly setSelectedArea: (selectedArea: NumericalRange) => void;
   readonly setFillHandleArea: (fillHandleArea: NumericalRange) => void;
 

@@ -12,6 +12,7 @@ import { handleColumnReorder } from "./utils/handleColumnReorder";
 import { handleRowReorder } from "./utils/handleRowReorder";
 import { COLUMN_COUNT, ROW_COUNT, generateCellData, testStyles, styledRanges } from "./utils/bigGridConfig";
 import { handleResizeColumn } from "./utils/handleResizeColumn";
+import { GridApi } from "./components/GridApi";
 
 export const BigGrid = () => {
   const [cells, setCells] = useState<CellData[]>(
@@ -34,11 +35,9 @@ export const BigGrid = () => {
   const [columns, setColumns] = useState<Column[]>(
     Array.from({ length: COLUMN_COUNT }, (_, index) => ({
       colIndex: index,
-      width: 100,
+      width: index % 2 === 0 ? 100 : 200,
     }))
   );
-
-  const [toggleRanges, setToggleRanges] = useState(false);
 
   return (
     <>
@@ -58,12 +57,12 @@ export const BigGrid = () => {
             });
           }}
           cells={cells}
-          stickyTopRows={5}
-          stickyLeftColumns={3}
-          stickyRightColumns={3}
-          stickyBottomRows={4}
+          stickyTopRows={2}
+          stickyLeftColumns={2}
+          stickyRightColumns={2}
+          stickyBottomRows={2}
           styles={testStyles}
-          styledRanges={toggleRanges ? styledRanges : []}
+          styledRanges={styledRanges}
           onResizeColumn={(width, columnIdx) => handleResizeColumn(width, columnIdx, setColumns)}
           onRowReorder={(selectedRowIndexes, destinationRowIdx) =>
             handleRowReorder(selectedRowIndexes, destinationRowIdx, setCells, setRows)
@@ -82,7 +81,7 @@ export const BigGrid = () => {
           onCopy={(selectedArea) => handleCopy(cells, selectedArea)}
           onCellFocused={(cellLocation) => {}}
         />
-        <button onClick={() => setToggleRanges((prev) => !prev)}>toggle ranges</button>
+        <GridApi />
       </div>
     </>
   );

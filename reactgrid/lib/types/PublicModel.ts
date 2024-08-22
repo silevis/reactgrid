@@ -114,7 +114,7 @@ export type StyledRangesCSS = {
 }[];
 
 export interface ReactGridProps {
-  id: string;
+  id?: string;
 
   styles?: NestedStylesPartial<RGTheme>;
 

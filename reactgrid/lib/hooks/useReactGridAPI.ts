@@ -1,7 +1,5 @@
-import { EMPTY_AREA, IndexedLocation } from "../types/InternalModel.ts";
-import { Range } from "../types/PublicModel.ts";
-import { areAreasEqual } from "../utils/areAreasEqual.ts";
-import { getNumericalRange } from "../utils/getNumericalRange.ts";
+import { IndexedLocation } from "../types/InternalModel.ts";
+import { NumericalRange } from "../types/PublicModel.ts";
 import isDevEnvironment from "../utils/isDevEnvironment.ts";
 import { ReactGridStore } from "../types/ReactGridStore.ts";
 import { useReactGridStoreApi } from "../utils/reactGridStore.ts";
@@ -21,12 +19,10 @@ export function useReactGridAPI(id: string) {
 
       /**
        * Set the selected area in the ReactGrid.
-       * @param range - The id-based range to be selected.
+       * @param range - The range to be selected.
        */
-      setSelectedArea: (range: Range) => {
-        const numericalRange = getNumericalRange(store, range);
-
-        return store.setSelectedArea(numericalRange);
+      setSelectedArea: (range: NumericalRange) => {
+        return store.setSelectedArea(range);
       },
 
       /**
@@ -95,13 +91,7 @@ export function useReactGridAPI(id: string) {
        * Get the selected area in the ReactGrid.
        * @returns The selected area.
        */
-      getSelectedArea: () => {
-        const { selectedArea } = store;
-
-        if (devEnvironment && areAreasEqual(selectedArea, EMPTY_AREA)) console.warn("No area is selected!");
-
-        return selectedArea;
-      },
+      getSelectedArea: store.getSelectedArea,
     };
   });
 }

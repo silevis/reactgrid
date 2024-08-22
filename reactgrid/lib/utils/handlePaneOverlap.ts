@@ -1,5 +1,7 @@
 import { ReactGridStore } from "../types/ReactGridStore";
 import { getCellPaneOverlap } from "./getCellPaneOverlap";
+import { getNumberFromPixelString } from "./getNumberFromPixelValueString";
+import { getTheme } from "./getTheme";
 
 export const handlePaneOverlap = (
   store: ReactGridStore,
@@ -7,6 +9,10 @@ export const handlePaneOverlap = (
   colIndex: number,
   scrollableParent: Element
 ) => {
+  const styles = getTheme(store);
+
+  const gridGap = getNumberFromPixelString(styles.grid.gap.width || 0);
+
   const bottomCenterOverlapValue = getCellPaneOverlap(store, { rowIndex, colIndex }, "BottomCenter");
   const topCenterPaneOverlapValue = getCellPaneOverlap(store, { rowIndex, colIndex }, "TopCenter");
   const leftPaneOverlapValue = getCellPaneOverlap(store, { rowIndex, colIndex }, "Left");
@@ -14,25 +20,25 @@ export const handlePaneOverlap = (
 
   if (topCenterPaneOverlapValue) {
     scrollableParent?.scrollBy({
-      top: -topCenterPaneOverlapValue,
+      top: -topCenterPaneOverlapValue - gridGap,
     });
   }
 
   if (rightPaneOverlapValue) {
     scrollableParent?.scrollBy({
-      left: rightPaneOverlapValue,
+      left: rightPaneOverlapValue + gridGap,
     });
   }
 
   if (bottomCenterOverlapValue) {
     scrollableParent?.scrollBy({
-      top: bottomCenterOverlapValue,
+      top: bottomCenterOverlapValue + gridGap,
     });
   }
 
   if (leftPaneOverlapValue) {
     scrollableParent?.scrollBy({
-      left: -leftPaneOverlapValue,
+      left: -leftPaneOverlapValue - gridGap,
     });
   }
 };

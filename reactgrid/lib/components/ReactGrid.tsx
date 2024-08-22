@@ -15,6 +15,7 @@ import cloneDeep from "lodash.clonedeep";
 import isEqual from "lodash.isequal";
 import { useInitialFocusLocation } from "../hooks/useInitialFocusLocation";
 import { useInitialSelectedRange } from "../hooks/useInitialSelectedRange";
+import { v4 as uuidv4 } from "uuid";
 
 const devEnvironment = isDevEnvironment();
 
@@ -26,6 +27,8 @@ export const ReactGrid: FC<ReactGridProps> = ({
   stickyRightColumns,
   ...rgProps
 }) => {
+  const reactGridId = useRef(id ?? `rg-${uuidv4()}`);
+
   const cellMatrix = useDeepCompareMemo(() => {
     return cellMatrixBuilder(rgProps.rows, rgProps.columns, ({ setCell }) => {
       rgProps.cells.forEach((cell) => {
@@ -43,13 +46,13 @@ export const ReactGrid: FC<ReactGridProps> = ({
     });
   }, [rgProps.rows, rgProps.columns, rgProps.cells]);
 
-  initReactGridStore(id, {
+  initReactGridStore(reactGridId.current, {
     ...rgProps,
     ...cellMatrix,
   });
 
   // access store in non-reactive way
-  const store = reactGridStores()[id].getState();
+  const store = reactGridStores()[reactGridId.current].getState();
 
   useDeepCompareGridProps(() => {
     store.setExternalData({ ...rgProps, ...cellMatrix });
@@ -58,10 +61,10 @@ export const ReactGrid: FC<ReactGridProps> = ({
   useInitialSelectedRange(store, rgProps, devEnvironment);
   useInitialFocusLocation(store, rgProps, devEnvironment);
 
-  const rows = useReactGridStore(id, (store) => store.rows);
-  const columns = useReactGridStore(id, (store) => store.columns);
-  const currentBehavior = useReactGridStore(id, (store) => store.currentBehavior);
-  const linePosition = useReactGridStore(id, (store) => store.linePosition);
+  const rows = useReactGridStore(reactGridId.current, (store) => store.rows);
+  const columns = useReactGridStore(reactGridId.current, (store) => store.columns);
+  const currentBehavior = useReactGridStore(reactGridId.current, (store) => store.currentBehavior);
+  const linePosition = useReactGridStore(reactGridId.current, (store) => store.linePosition);
 
   const [bypassSizeWarning, setBypassSizeWarning] = useState(false);
 
@@ -80,9 +83,9 @@ export const ReactGrid: FC<ReactGridProps> = ({
   }
 
   return (
-    <ReactGridIdProvider id={id}>
+    <ReactGridIdProvider id={reactGridId.current}>
       <ErrorBoundary>
-        <GridWrapper reactGridId={id} style={{ position: "relative", ...rgProps.styles?.gridWrapper }}>
+        <GridWrapper reactGridId={reactGridId.current} style={{ position: "relative", ...rgProps.styles?.gridWrapper }}>
           <PanesRenderer
             rowAmount={rows.length}
             columnAmount={columns.length}

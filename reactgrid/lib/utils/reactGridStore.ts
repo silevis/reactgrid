@@ -151,6 +151,11 @@ export function initReactGridStore(id: string, initialProps: Partial<ReactGridSt
           return { ...cell, ...focusedLocation };
         },
 
+        getSelectedArea: () => {
+          const { selectedArea } = get();
+          return selectedArea;
+        },
+
         setSelectedArea: (selectedArea) => set(() => ({ selectedArea })),
 
         setSelectedColumns: (startColIdx: number, endColIdx: number) => {
