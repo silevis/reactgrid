@@ -135,6 +135,11 @@ export function initReactGridStore(id: string, initialProps: Partial<ReactGridSt
 
         setPaneRanges: (paneRanges) => set(() => ({ paneRanges })),
 
+        getPaneRanges: () => {
+          const { paneRanges } = get();
+          return paneRanges;
+        },
+
         setFocusedLocation: (rowIndex, colIndex) => {
           getHiddenTargetFocusByIdx(rowIndex, colIndex)?.focus();
           set(() => {
@@ -161,7 +166,7 @@ export function initReactGridStore(id: string, initialProps: Partial<ReactGridSt
         setSelectedColumns: (startColIdx: number, endColIdx: number) => {
           const { setSelectedArea } = get();
 
-          setSelectedArea({ startRowIdx: 0, endRowIdx: get().getRowAmount() - 1, startColIdx, endColIdx });
+          setSelectedArea({ startRowIdx: 0, endRowIdx: get().getRowAmount(), startColIdx, endColIdx });
         },
 
         setSelectedRows: (startRowIdx: number, endRowIdx: number) => {
@@ -216,13 +221,3 @@ export function useReactGridStore<T>(id: string, selector: (store: ReactGridStor
 
   return useStore(store, selector);
 }
-
-export const useReactGridStoreApi = <T>(id: string, selector: (store: ReactGridStore) => T): T | undefined => {
-  const selectedStore = useStore(reactGridStores, (state) => state[id]);
-
-  const selectedStoreState = selectedStore?.getState();
-
-  if (selectedStoreState) {
-    return selector(selectedStoreState);
-  }
-};

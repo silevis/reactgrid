@@ -1,18 +1,18 @@
 import React from "react";
 import { StoryDefault } from "@ladle/react";
 import { StrictMode, useState } from "react";
-import { ReactGrid } from "../lib/components/ReactGrid";
-import { ErrorBoundary } from "../lib/components/ErrorBoundary";
-import { CellData, Column, Row } from "../lib/types/PublicModel";
-import { handleFill } from "./utils/handleFill";
-import { handleCut } from "./utils/handleCut";
-import { handlePaste } from "./utils/handlePaste";
-import { handleCopy } from "./utils/handleCopy";
-import { handleColumnReorder } from "./utils/handleColumnReorder";
-import { handleRowReorder } from "./utils/handleRowReorder";
-import { COLUMN_COUNT, ROW_COUNT, generateCellData, testStyles, styledRanges } from "./utils/bigGridConfig";
-import { handleResizeColumn } from "./utils/handleResizeColumn";
-import { GridApi } from "./components/GridApi";
+import { ReactGrid } from "../../lib/components/ReactGrid";
+import { ErrorBoundary } from "../../lib/components/ErrorBoundary";
+import { CellData, Column, Row } from "../../lib/types/PublicModel";
+import { handleFill } from "../utils/handleFill";
+import { handleCut } from "../utils/handleCut";
+import { handlePaste } from "../utils/handlePaste";
+import { handleCopy } from "../utils/handleCopy";
+import { handleColumnReorder } from "../utils/handleColumnReorder";
+import { handleRowReorder } from "../utils/handleRowReorder";
+import { COLUMN_COUNT, ROW_COUNT, generateCellData, testStyles, styledRanges } from "../utils/bigGridConfig";
+import { handleResizeColumn } from "../utils/handleResizeColumn";
+import { GridApi } from "../components/GridApi";
 
 export const BigGrid = () => {
   const [cells, setCells] = useState<CellData[]>(

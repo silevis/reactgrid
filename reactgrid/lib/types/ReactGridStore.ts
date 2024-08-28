@@ -76,6 +76,7 @@ export interface ReactGridStore extends ReactGridStoreProps {
   readonly setRowMeasurements: (rowMeasurements: RowMeasurement[]) => void;
   readonly setColMeasurements: (colMeasurements: ColumnMeasurement[]) => void;
 
+  readonly getPaneRanges: () => Record<PaneName, NumericalRange>;
   readonly setPaneRanges: (paneRanges: Record<PaneName, NumericalRange>) => void;
 
   readonly setFocusedLocation: (rowIndex: number, colIndex: number) => void;

@@ -13,7 +13,6 @@ import { scrollTowardsSticky } from "../utils/scrollTowardsSticky.ts";
 import { getHiddenFocusTargetLocation } from "../utils/getHiddenFocusTargetLocation.ts";
 import { isCellInPane } from "../utils/isCellInPane.ts";
 import { checkColumnHasSpannedCell } from "../utils/checkColumnHasSpannedCell.ts";
-import { Column } from "../types/PublicModel.ts";
 
 const devEnvironment = isDevEnvironment();
 

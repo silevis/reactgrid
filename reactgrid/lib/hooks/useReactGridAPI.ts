@@ -1,8 +1,23 @@
-import { IndexedLocation } from "../types/InternalModel.ts";
-import { NumericalRange } from "../types/PublicModel.ts";
+import { FocusedCell, IndexedLocation, PaneName } from "../types/InternalModel.ts";
+import { Cell, NumericalRange, SpanMember } from "../types/PublicModel.ts";
 import isDevEnvironment from "../utils/isDevEnvironment.ts";
 import { ReactGridStore } from "../types/ReactGridStore.ts";
-import { useReactGridStoreApi } from "../utils/reactGridStore.ts";
+import { useReactGridStore } from "../utils/reactGridStore.ts";
+
+/**
+ * Interface for the ReactGrid API.
+ */
+export interface ReactGridAPI {
+  setSelectedArea: (range: NumericalRange) => void;
+  setFocusedCell: ({ rowIndex, colIndex }: IndexedLocation) => void;
+  setSelectedColumns: (startColIdx: number, endColIdx: number) => void;
+  setSelectedRows: (startRowIdx: number, endRowIdx: number) => void;
+  getFocusedCell: () => FocusedCell | null;
+  getCellByIndexes: (rowIndex: number, colIndex: number) => Cell | null;
+  getCellOrSpanMemberByIndexes: (rowIndex: number, colIndex: number) => Cell | SpanMember | null;
+  getPaneRanges: () => Record<PaneName, NumericalRange>;
+  getSelectedArea: () => NumericalRange | null;
+}
 
 /**
  * Hook that provides access to the ReactGrid API.
@@ -12,8 +27,8 @@ import { useReactGridStoreApi } from "../utils/reactGridStore.ts";
 
 const devEnvironment = isDevEnvironment();
 
-export function useReactGridAPI(id: string) {
-  return useReactGridStoreApi(id, (store: ReactGridStore) => {
+export function useReactGridAPI(id: string): ReactGridAPI {
+  return useReactGridStore(id, (store: ReactGridStore) => {
     return {
       // Setters
 
@@ -85,7 +100,7 @@ export function useReactGridAPI(id: string) {
        * Get the pane ranges in the ReactGrid.
        * @returns The pane ranges.
        */
-      getPaneRanges: () => store.paneRanges,
+      getPaneRanges: store.getPaneRanges,
 
       /**
        * Get the selected area in the ReactGrid.

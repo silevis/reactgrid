@@ -34,14 +34,9 @@ export const ReactGrid: FC<ReactGridProps> = ({
       rgProps.cells.forEach((cell) => {
         if (cell === null) return;
 
-        const { Template, isFocusable, isSelectable, rowSpan, colSpan, rowIndex, colIndex, props } = cell;
+        const { Template, rowIndex, colIndex, props, ...args } = cell;
 
-        setCell(rowIndex, colIndex, Template, props, {
-          isFocusable,
-          isSelectable,
-          rowSpan,
-          colSpan,
-        });
+        setCell(rowIndex, colIndex, Template, props, args);
       });
     });
   }, [rgProps.rows, rgProps.columns, rgProps.cells]);

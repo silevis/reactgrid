@@ -14,7 +14,6 @@ import { getHiddenFocusTargetLocation } from "../utils/getHiddenFocusTargetLocat
 import { getCellArea } from "../utils/getCellArea.ts";
 import { isCellInPane } from "../utils/isCellInPane.ts";
 import { checkRowHasSpannedCell } from "../utils/checkRowHasSpannedCell.ts";
-import { Row } from "../types/PublicModel.ts";
 
 const devEnvironment = isDevEnvironment();
 

@@ -48,7 +48,7 @@ export const cellMatrixBuilder = (
       colIndex,
       Template,
       props,
-      ...args,
+      ...Object.fromEntries(Object.entries(args).filter(([_, value]) => value !== undefined)),
     };
 
     const rowSpan = args.rowSpan ?? 1;
