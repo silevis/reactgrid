@@ -1,8 +1,11 @@
+"use client";
+
 import logo from "@/public/static/logo-green.svg";
 import checkIcon from "@/public/static/check-icon.svg";
 import dotIcon from "@/public/static/dot-icon.svg";
 import Image from "next/image";
-import { ReactGrid } from "@silevis/reactgrid";
+import { CellData, Column, ReactGrid, TextCell } from "@silevis/reactgrid";
+import { useState } from "react";
 
 const capabilities = [
   "This budget planner example shows the possibility of calculating values of all aggregation fields in a reactive way in two axes - for organization or project for some time. See the available functionality:",
@@ -53,6 +56,39 @@ const coreFeatures = [
 ];
 
 export default function ExamplesPage() {
+  const [columns, setColumns] = useState<Column[]>([
+    { colIndex: 0, width: 100 },
+    { colIndex: 1, width: 100 },
+    { colIndex: 2, width: 100 },
+  ]);
+
+  const [cells, setCells] = useState<CellData[]>(() => [
+    {
+      rowIndex: 0,
+      colIndex: 0,
+      props: {
+        value: "0-0",
+      },
+      Template: TextCell,
+    },
+    {
+      rowIndex: 5,
+      colIndex: 5,
+      props: {
+        value: "5-5",
+      },
+      Template: TextCell,
+    },
+    {
+      rowIndex: 3,
+      colIndex: 3,
+      props: {
+        value: "3-3",
+      },
+      Template: TextCell,
+    },
+  ]);
+
   return (
     <section>
       <div className="grid grid-cols-main grid-rows-2 pt-[128px] pb-[40px]">
@@ -69,8 +105,8 @@ export default function ExamplesPage() {
           <div className="h-[60px] border-b-1 border-white-secondary3 flex items-center ps-5">
             <Image src={logo} alt="ReactGrid" />
           </div>
-          <div className="flex justify-center items-center h-full">
-            Placeholder.
+          <div className="flex h-full">
+            <ReactGrid cells={cells} columns={columns} />
           </div>
         </div>
       </div>

@@ -285,9 +285,8 @@ const PanesRenderer: FC<PanesRendererProps> = ({
   return (
     <div
       css={{
-        display: "inline-grid",
+        display: "flex",
         userSelect: "none",
-
         ".rgCellContainer": {
           paddingTop: theme.cellContainer.padding.top,
           paddingLeft: theme.cellContainer.padding.left,

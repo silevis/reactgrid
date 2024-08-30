@@ -11,7 +11,7 @@ export const GridApi = () => {
   const [focusedRowIdx, setFocusedRowIdx] = useState(1);
   const [focusedColIdx, setFocusedColIdx] = useState(1);
   const [output, setOutput] = useState("");
-  const [isExpanded, setIsExpanded] = useState(true);
+  const [isExpanded, setIsExpanded] = useState(false);
 
   const handleSetSelectedArea = () => {
     const range = { startColIdx, startRowIdx, endColIdx, endRowIdx };
