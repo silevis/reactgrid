@@ -11,11 +11,10 @@ import { Shadow } from "./Shadow";
 import { isReorderBehavior } from "../utils/isReorderBehavior";
 import { cellMatrixBuilder } from "../utils/cellMatrixBuilder";
 import { useDeepCompareMemo } from "../hooks/useDeepCompareMemo";
-import cloneDeep from "lodash.clonedeep";
-import isEqual from "lodash.isequal";
 import { useInitialFocusLocation } from "../hooks/useInitialFocusLocation";
 import { useInitialSelectedRange } from "../hooks/useInitialSelectedRange";
 import { v4 as uuidv4 } from "uuid";
+import { deepCompare } from "../utils/deepCompare";
 
 const devEnvironment = isDevEnvironment();
 
@@ -25,13 +24,17 @@ export const ReactGrid: FC<ReactGridProps> = ({
   stickyBottomRows,
   stickyLeftColumns,
   stickyRightColumns,
+  rows,
+  columns,
+  cells,
   ...rgProps
 }) => {
   const reactGridId = useRef(id ?? `rg-${uuidv4()}`);
+  const previousGridProps = useRef<Partial<ReactGridProps> | null>(null);
 
   const cellMatrix = useDeepCompareMemo(() => {
-    return cellMatrixBuilder(rgProps.rows, rgProps.columns, ({ setCell }) => {
-      rgProps.cells.forEach((cell) => {
+    return cellMatrixBuilder(rows, columns, ({ setCell }) => {
+      cells.forEach((cell) => {
         if (cell === null) return;
 
         const { Template, rowIndex, colIndex, props, ...args } = cell;
@@ -39,7 +42,7 @@ export const ReactGrid: FC<ReactGridProps> = ({
         setCell(rowIndex, colIndex, Template, props, args);
       });
     });
-  }, [rgProps.rows, rgProps.columns, rgProps.cells]);
+  }, [rows, columns, cells]);
 
   initReactGridStore(reactGridId.current, {
     ...rgProps,
@@ -49,21 +52,29 @@ export const ReactGrid: FC<ReactGridProps> = ({
   // access store in non-reactive way
   const store = reactGridStores()[reactGridId.current].getState();
 
-  useDeepCompareGridProps(() => {
-    store.setExternalData({ ...rgProps, ...cellMatrix });
+  // sync props with store in case of one of them changes
+  useEffect(() => {
+    if (!deepCompare(previousGridProps.current, rgProps)) {
+      store.setExternalData({ ...rgProps });
+      previousGridProps.current = rgProps;
+    }
   }, [rgProps]);
+
+  // sync cellMatrix with store
+  useEffect(() => {
+    //  no need to deep compare cellMatrix, because cellMatrix is already compared in useDeepCompareMemo
+    store.setExternalData({ ...cellMatrix });
+  }, [cellMatrix]);
 
   useInitialSelectedRange(store, rgProps, devEnvironment);
   useInitialFocusLocation(store, rgProps, devEnvironment);
 
-  const rows = useReactGridStore(reactGridId.current, (store) => store.rows);
-  const columns = useReactGridStore(reactGridId.current, (store) => store.columns);
   const currentBehavior = useReactGridStore(reactGridId.current, (store) => store.currentBehavior);
   const linePosition = useReactGridStore(reactGridId.current, (store) => store.linePosition);
 
   const [bypassSizeWarning, setBypassSizeWarning] = useState(false);
 
-  if (devEnvironment && !bypassSizeWarning && rows.length * columns.length > 25_000) {
+  if (devEnvironment && !bypassSizeWarning && cellMatrix.rows.length * cellMatrix.columns.length > 25_000) {
     return (
       <>
         <h1>You're about to render a huge grid!</h1>
@@ -82,8 +93,8 @@ export const ReactGrid: FC<ReactGridProps> = ({
       <ErrorBoundary>
         <GridWrapper reactGridId={reactGridId.current} style={{ position: "relative", ...rgProps.styles?.gridWrapper }}>
           <PanesRenderer
-            rowAmount={rows.length}
-            columnAmount={columns.length}
+            rowAmount={cellMatrix.rows.length}
+            columnAmount={cellMatrix.columns.length}
             stickyTopRows={stickyTopRows ?? 0}
             stickyBottomRows={stickyBottomRows ?? 0}
             stickyLeftColumns={stickyLeftColumns ?? 0}
@@ -96,13 +107,3 @@ export const ReactGrid: FC<ReactGridProps> = ({
     </ReactGridIdProvider>
   );
 };
-
-function useDeepCompareGridProps(callback: () => void, dependencies: Partial<unknown>[]) {
-  const currentDependenciesRef = useRef<Partial<unknown>[]>();
-
-  if (!isEqual(currentDependenciesRef.current, dependencies)) {
-    currentDependenciesRef.current = cloneDeep(dependencies);
-  }
-
-  useEffect(callback, [currentDependenciesRef.current]);
-}

@@ -39,6 +39,8 @@ export const BigGrid = () => {
     }))
   );
 
+  const [toggleRanges, setToggleRanges] = useState(false);
+
   return (
     <>
       <div className="rgScrollableContainer" style={{ height: "100%", width: "100%", overflow: "auto" }}>
@@ -62,7 +64,7 @@ export const BigGrid = () => {
           stickyRightColumns={2}
           stickyBottomRows={2}
           styles={testStyles}
-          styledRanges={styledRanges}
+          styledRanges={toggleRanges ? styledRanges : []}
           onResizeColumn={(width, columnIdx) => handleResizeColumn(width, columnIdx, setColumns)}
           onRowReorder={(selectedRowIndexes, destinationRowIdx) =>
             handleRowReorder(selectedRowIndexes, destinationRowIdx, setCells, setRows)
@@ -81,6 +83,7 @@ export const BigGrid = () => {
           onCopy={(selectedArea) => handleCopy(cells, selectedArea)}
           onCellFocused={(cellLocation) => {}}
         />
+        <button onClick={() => setToggleRanges((prev) => !prev)}>toggle ranges</button>
         <GridApi />
       </div>
     </>

@@ -5,6 +5,7 @@
   },
   "scripts": {
     "lib": "npm run dev --prefix reactgrid",
+    "lib-test": "npm run test --prefix reactgrid",
     "website": "npm run dev --prefix website"
   },
   "name": "reactgrid-monorepo",
