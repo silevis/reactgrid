@@ -1,17 +1,4 @@
-import { CellData, HeaderCell, NumberCell, TextCell } from "../../lib/main";
-
-// export const initialColumns: Column[] = [
-//   { width: "150px", resizable: true, reorderable: true, minWidth: 10 },
-//   { width: "150px", resizable: true, reorderable: true, minWidth: 20 },
-//   { width: "150px", resizable: true, reorderable: true, minWidth: 30 },
-//   { width: "150px", resizable: true, reorderable: true, minWidth: 50 },
-// ];
-
-// export const initialRows: Row[] = Array.from({ length: 7 }, (_, idx) => {
-//   if (idx === 0) return { height: "30px", reorderable: false };
-
-//   return { height: "min-content", reorderable: true };
-// });
+import { CellData, NonEditableCell, NumberCell, TextCell } from "../../lib/main";
 
 export const headerRow = ["Name", "Surname", "Email", "Phone"];
 
@@ -30,7 +17,7 @@ export const initialGridData: CellData[] = [headerRow, ...dataRows].flatMap((row
       return {
         rowIndex: rowIdx,
         colIndex: colIdx,
-        Template: HeaderCell,
+        Template: NonEditableCell,
         // isFocusable: false,
         // isSelectable: false,
         props: {

@@ -1,4 +1,4 @@
-import { EmptyCell } from "../cellTemplates/EmptyCell";
+import { NonEditableCell } from "../cellTemplates/NonEditableCell";
 import { CellMatrix } from "../types/CellMatrix";
 import { Cell, CellMap, Column, Row, SpanMember } from "../types/PublicModel";
 
@@ -76,7 +76,7 @@ export const cellMatrixBuilder = (
 
   builder({ setCell });
 
-  // fill empty areas with EmptyCell template
+  // fill empty areas with NonEditableCell template
   const maxRowIndex = Math.max(...Array.from(cells.values()).map((cell) => cell.rowIndex));
   const maxColIndex = Math.max(...Array.from(cells.values()).map((cell) => cell.colIndex));
 
@@ -87,7 +87,7 @@ export const cellMatrixBuilder = (
         cells.set(cellKey, {
           rowIndex,
           colIndex,
-          Template: EmptyCell,
+          Template: NonEditableCell,
           props: {
             value: "",
           },

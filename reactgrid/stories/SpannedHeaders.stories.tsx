@@ -8,7 +8,7 @@ import { handleFill } from "./utils/handleFill";
 import { handleColumnReorder } from "./utils/handleColumnReorder";
 import { handleRowReorder } from "./utils/handleRowReorder";
 import React from "react";
-import { HeaderCell } from "../lib/main";
+import { NonEditableCell } from "../lib/main";
 import { handleResizeColumn } from "./utils/handleResizeColumn";
 
 const ROW_COUNT = 4;
@@ -28,7 +28,7 @@ export const SpannedHeaders = () => {
               return {
                 rowIndex: i,
                 colIndex: j,
-                Template: HeaderCell,
+                Template: NonEditableCell,
                 props: {
                   value: `title ${j + 1}`,
                 },
@@ -48,7 +48,7 @@ export const SpannedHeaders = () => {
               rowIndex: i,
               colIndex: j,
               props: { value: `title ${j + 1}` },
-              Template: HeaderCell,
+              Template: NonEditableCell,
               style: {
                 backgroundColor: "#fcff91",
                 display: "flex",
