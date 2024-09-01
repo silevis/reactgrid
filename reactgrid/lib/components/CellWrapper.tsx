@@ -1,7 +1,7 @@
 import React, { FC } from "react";
 import { useCellContext } from "./CellContext";
 import HiddenFocusTarget from "./HiddenFocusTarget";
-import { ColumnResize } from "./ColumnResize";
+import { ColumnResizeBadge } from "./ColumnResizeBadge";
 import { useReactGridStore } from "../utils/reactGridStore";
 import { useReactGridId } from "./ReactGridIdProvider";
 
@@ -40,7 +40,7 @@ const CellWrapper: FC<CellWrapperProps> = ({ children, targetInputRef, ...wrappe
         ...ctx.containerStyle,
       }}
     >
-      {ctx.realRowIndex === 0 && <ColumnResize />}
+      {ctx.realRowIndex === 0 && <ColumnResizeBadge />}
       {children}
       <HiddenFocusTarget colIdx={ctx.realColumnIndex} rowIdx={ctx.realRowIndex} />
     </div>

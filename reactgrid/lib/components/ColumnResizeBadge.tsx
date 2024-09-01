@@ -4,7 +4,7 @@ import { useReactGridStore } from "../utils/reactGridStore";
 import { useCellContext } from "./CellContext";
 import { useReactGridId } from "./ReactGridIdProvider";
 
-export const ColumnResize = () => {
+export const ColumnResizeBadge = () => {
   const id = useReactGridId();
   const ctx = useCellContext();
 
