@@ -12,47 +12,47 @@ let initialHeaderWidth = 0;
 export const ResizeColumnBehavior: Behavior = {
   id: "ResizeColumn",
   handlePointerDown: function (event, store) {
-    devEnvironment && console.log("CRB/handlePointerDown");
+    devEnvironment && console.log("RCB/handlePointerDown");
 
     return handlePointerDown(event, store);
   },
 
   handlePointerMove: (event, store) => {
-    devEnvironment && console.log("CRB/handlePointerMove");
+    devEnvironment && console.log("RCB/handlePointerMove");
 
     return handlePointerMove(event, store);
   },
 
   handlePointerUp: function (event, store) {
-    devEnvironment && console.log("CRB/handlePointerUp");
+    devEnvironment && console.log("RCB/handlePointerUp");
 
     return handlePointerUp(event, store);
   },
 
   handlePointerHold: function (event, store) {
-    devEnvironment && console.log("CRB/handlePointerHold");
+    devEnvironment && console.log("RCB/handlePointerHold");
     return store;
   },
 
   handlePointerHoldTouch: function (event, store) {
-    devEnvironment && console.log("CRB/handlePointerHoldTouch");
+    devEnvironment && console.log("RCB/handlePointerHoldTouch");
     return store;
   },
 
   handlePointerDownTouch: function (event, store) {
-    devEnvironment && console.log("CRB/handlePointerDownTouch");
+    devEnvironment && console.log("RCB/handlePointerDownTouch");
 
     return handlePointerDown(event, store);
   },
 
   handlePointerMoveTouch: function (event, store) {
-    devEnvironment && console.log("CRB/handlePointerMoveTouch");
+    devEnvironment && console.log("RCB/handlePointerMoveTouch");
 
     return handlePointerMove(event, store);
   },
 
   handlePointerUpTouch: function (event, store) {
-    devEnvironment && console.log("CRB/handlePointerUpTouch");
+    devEnvironment && console.log("RCB/handlePointerUpTouch");
 
     return handlePointerUp(event, store);
   },
