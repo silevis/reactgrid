@@ -14,7 +14,12 @@ export const styledRanges = [
 export const ROW_COUNT = 20;
 export const COLUMN_COUNT = 25;
 
-export const testStyles = {};
+export const testStyles = {
+  gridWrapper: {
+    fontSize: "16px",
+    fontFamily: "Arial",
+  },
+};
 
 const myNumberFormat = new Intl.NumberFormat("pl", {
   style: "currency",

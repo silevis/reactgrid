@@ -1,16 +1,7 @@
 import { RGTheme } from "../types/RGTheme";
 
 const lightTheme: RGTheme = {
-  font: {
-    family: "",
-    size: "",
-    weight: "",
-  },
   grid: {
-    templates: {
-      columns: ({ widths }) => widths.join(" "),
-      rows: ({ heights }) => heights.join(" "),
-    },
     gap: {
       width: "1px",
       color: "#efefef",

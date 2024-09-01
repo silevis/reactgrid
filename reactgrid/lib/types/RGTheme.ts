@@ -1,20 +1,11 @@
 import React, { CSSProperties } from "react";
 
-type ColumnsTemplateFunction = ({ amount, widths }: { amount: number; widths: string[] }) => string;
-type RowsTemplateFunction = ({ amount, heights }: { amount: number; heights: string[] }) => string;
-
 export type Offset = { top?: number; right?: number; bottom?: number; left?: number };
 
 export type Border = {
   width: CSSProperties["borderWidth"];
   style: CSSProperties["borderStyle"];
   color: CSSProperties["borderColor"];
-};
-
-type Font = {
-  family: CSSProperties["fontFamily"];
-  size: CSSProperties["fontSize"];
-  weight: CSSProperties["fontWeight"];
 };
 
 type Padding = {
@@ -25,12 +16,7 @@ type Padding = {
 };
 
 export interface RGTheme {
-  font: Font;
   grid: {
-    templates: {
-      columns: ColumnsTemplateFunction;
-      rows: RowsTemplateFunction;
-    };
     gap: {
       width: React.CSSProperties["width"];
       /** Changes grid's background color for the gap to appear colored */

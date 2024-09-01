@@ -300,19 +300,15 @@ const PanesRenderer: FC<PanesRendererProps> = ({
         className="rgGridContent"
         style={{
           display: "grid",
-          gridTemplateColumns: theme.grid.templates.columns({
-            amount: columns.length,
-            widths: columns.map(({ width, minWidth }) => {
+          gridTemplateColumns: columns
+            .map(({ width, minWidth }) => {
               const widthValue = getNumberFromPixelString(width);
               const minWidthValue = getNumberFromPixelString(minWidth ?? 0);
 
               return widthValue < minWidthValue ? `${minWidthValue}px` : `${widthValue}px`;
-            }),
-          }),
-          gridTemplateRows: theme.grid.templates.rows({
-            amount: rows.length,
-            heights: rows.map(({ height }) => (typeof height === "number" ? `${height}px` : height)),
-          }),
+            })
+            .join(" "),
+          gridTemplateRows: rows.map(({ height }) => (typeof height === "number" ? `${height}px` : height)).join(" "),
           gap: theme.grid.gap.width,
           backgroundColor: theme.grid.gap.color,
           padding: theme.grid.gap.width,

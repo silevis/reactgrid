@@ -2,6 +2,7 @@ export { ReactGrid } from "./components/ReactGrid";
 
 export type * from "./types/PublicModel";
 export type * from "./types/Behavior";
+export type { RGTheme } from "./types/RGTheme";
 
 export { TextCell } from "./cellTemplates/TextCell";
 export { NumberCell } from "./cellTemplates/NumberCell";
