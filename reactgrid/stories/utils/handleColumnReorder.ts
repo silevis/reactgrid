@@ -1,6 +1,6 @@
-import { CellData, Column } from "../../lib/types/PublicModel";
+import { Cell, Column } from "../../lib/types/PublicModel";
 
-export const handleColumnReorder = <T extends CellData>(
+export const handleColumnReorder = <T extends Cell>(
   selectedColIndexes: number[],
   destinationColIdx: number,
   setCells: React.Dispatch<React.SetStateAction<T[]>>,

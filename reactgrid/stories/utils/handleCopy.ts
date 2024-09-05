@@ -1,6 +1,6 @@
-import { CellData, NumericalRange } from "../../lib/types/PublicModel";
+import { Cell, NumericalRange } from "../../lib/types/PublicModel";
 
-export const handleCopy = (cells: CellData[], selectedArea: NumericalRange) => {
+export const handleCopy = (cells: Cell[], selectedArea: NumericalRange) => {
   const selectedData = cells.filter(
     (cell) =>
       cell.rowIndex >= selectedArea.startRowIdx &&

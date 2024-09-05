@@ -1,4 +1,4 @@
-import { CellData, TextCell, NumberCell } from "../../lib/main";
+import { Cell, TextCell, NumberCell } from "../../lib/main";
 
 export const styledRanges = [
   {
@@ -28,7 +28,7 @@ const myNumberFormat = new Intl.NumberFormat("pl", {
   currency: "PLN",
 });
 
-export const generateCellData = (i: number, j: number): CellData | null => {
+export const generateCellData = (i: number, j: number): Cell | null => {
   if (i === 1 && j === 4) return null;
   if (i === 1 && j === 24) return null;
   if (i === 3 && j === 4) return null;

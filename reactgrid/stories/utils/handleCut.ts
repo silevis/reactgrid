@@ -1,9 +1,9 @@
-import { CellData, NumericalRange } from "../../lib/types/PublicModel";
+import { Cell, NumericalRange } from "../../lib/types/PublicModel";
 
 export const handleCut = (
-  cells: CellData[],
+  cells: Cell[],
   selectedArea: NumericalRange,
-  setCells: React.Dispatch<React.SetStateAction<CellData[]>>
+  setCells: React.Dispatch<React.SetStateAction<Cell[]>>
 ) => {
   const selectedData = cells.filter(
     (cell) =>

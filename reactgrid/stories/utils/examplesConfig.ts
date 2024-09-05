@@ -1,4 +1,4 @@
-import { CellData, NonEditableCell, NumberCell, TextCell } from "../../lib/main";
+import { Cell, NonEditableCell, NumberCell, TextCell } from "../../lib/main";
 
 export const headerRow = ["Name", "Surname", "Email", "Phone"];
 
@@ -11,7 +11,7 @@ export const dataRows = [
   ["Isabella", "Wilson", "i.wilson@gmail.com", "123789456"],
 ];
 
-export const initialGridData: CellData[] = [headerRow, ...dataRows].flatMap((row, rowIdx) =>
+export const initialGridData: Cell[] = [headerRow, ...dataRows].flatMap((row, rowIdx) =>
   row.map((cellValue, colIdx) => {
     if (rowIdx === 0) {
       return {

@@ -1,6 +1,6 @@
-import { CellData, Row } from "../../lib/types/PublicModel";
+import { Cell, Row } from "../../lib/types/PublicModel";
 
-export const handleRowReorder = <T extends CellData>(
+export const handleRowReorder = <T extends Cell>(
   selectedRowIndexes: number[],
   destinationRowIdx: number,
   setData: React.Dispatch<React.SetStateAction<T[]>>,

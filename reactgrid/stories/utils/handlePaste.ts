@@ -1,9 +1,9 @@
-import { CellData, NumericalRange } from "../../lib/types/PublicModel";
+import { Cell, NumericalRange } from "../../lib/types/PublicModel";
 
 export const handlePaste = (
   selectedArea: NumericalRange,
   pastedData: string,
-  setData: React.Dispatch<React.SetStateAction<CellData[]>>
+  setData: React.Dispatch<React.SetStateAction<Cell[]>>
 ) => {
   // Parse the pasted HTML string
   const parser = new DOMParser();

@@ -1,9 +1,9 @@
-import { NumericalRange, CellData } from "../../lib/types/PublicModel";
+import { NumericalRange, Cell } from "../../lib/types/PublicModel";
 
 export const handleFill = (
   selectedArea: NumericalRange,
   fillRange: NumericalRange,
-  setCells: React.Dispatch<React.SetStateAction<CellData[]>>
+  setCells: React.Dispatch<React.SetStateAction<Cell[]>>
 ) => {
   setCells((prev) => {
     let next = [...prev];
