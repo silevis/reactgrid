@@ -1,0 +1,51 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --green-light: #75b392;
+  --green-primary: #107c41;
+  --green-secondary: #00632e;
+  --white-primary: #ffffff;
+  --white-secondary: #cfe5d9;
+  --white-secondary2: #d2d2d2;
+  --white-secondary3: #a6a6a6;
+  --white-secondary4: #f4f4f4;
+  --black-primary: #202020;
+  --black-secondary: #4d4d4d;
+  --black-secondary2: #797979;
+}
+
+body {
+  background: var(--white-primary);
+  font-family: "DM Sans", sans-serif;
+}
+
+.react-grid-sample {
+  background: linear-gradient(to bottom, #107c41 50%, #ffffff 50%);
+}
+
+.react-grid-sample2 {
+  background: linear-gradient(to bottom, #ffffff 80%, #f4f4f4 80%);
+}
+
+/* override daisyui theme */
+.btn-success:hover {
+  color: white !important;
+}
+
+.drawer-side a.current {
+  cursor: pointer;
+  background-color: hsl(var(--bc) / 0.1);
+  --tw-text-opacity: 1;
+  background: hsl(var(--bc) / 0.1);
+  color: hsl(var(--bc) / var(--tw-text-opacity));
+  outline: 2px solid transparent;
+  outline-offset: 2px;
+}
+
+@media (min-width: 780px) {
+  .flex-none {
+    display: none;
+  }
+}

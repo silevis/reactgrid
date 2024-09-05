@@ -1,0 +1,27 @@
+$base-decrease:             rgba(255, 0, 0, 1) !default;
+$transparent-base-decrease: rgba(255, 0, 0, 0) !default;
+$base-growth:               rgba(0, 255, 0, 1) !default;
+$transparent-base-growth:   rgba(0, 255, 0, 0) !default;
+$time:                        3s !default;
+
+.rg-cssClass-cell {
+  justify-content: flex-end;
+  @keyframes decrease {
+    0% { background-color: $base-decrease; }
+    100% { background-color: $transparent-base-decrease; }
+  }
+
+  @keyframes growth {
+    0% { background-color : $base-growth; }
+    100% { background-color: $transparent-base-growth; }
+  }
+
+  &.decrease {
+    -webkit-animation: decrease $time infinite; 
+    animation: decrease $time infinite;
+  }
+  &.growth {
+    -webkit-animation: growth $time infinite; 
+    animation: growth $time infinite;
+  }
+}

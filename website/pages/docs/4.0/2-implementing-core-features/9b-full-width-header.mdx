@@ -1,0 +1,178 @@
+---
+posttype: "docs"
+title: Full width header
+metaTitle: "Full width header"
+metaDescription: "ReactGrid docs"
+---
+
+#### Introduction
+
+import { Callout } from 'nextra/components'
+
+<Callout color="warning">
+	
+	Full width header feature is experimental and it can be changed in the future
+</Callout>
+
+This feature extends width of top sticky pane to full available space inside ReactGrid's parent. 
+
+#### Usage
+
+1. Add `enableFullWidthHeader` property to ReactGrid component and add any number of `stickyTopRows`. In our example, the sample
+ReactGrid component was also wrapped inside a div element that is wider than all columns. 
+
+```tsx
+return (
+  <div style={{ width: "1200px", height: "200px" }}>
+    <ReactGrid
+      rows={rows}
+      columns={columns}
+      enableFullWidthHeader
+      stickyTopRows={1}
+    />
+  </div>
+);
+```
+
+
+import LiveCode from "@/nextra/components/LiveCode.tsx";
+import {
+  ReactGrid,
+  Column,
+  Row,
+} from "@silevis/reactgrid-4";
+import "@silevis/reactgrid-4/styles.css";
+
+<LiveCode
+scope={{ReactGrid,
+  Column,
+  Row,
+  }}
+code={`
+interface Person {
+  name: string;
+  surname: string;
+  birth: Date | undefined;
+  mobile: number;
+  company: string;
+  occupation: string;
+}
+
+const getPeople = (): Person[] => [
+  {
+    name: "Thomas",
+    surname: "Goldman",
+    birth: new Date("1970-12-02"),
+    mobile: 574839457,
+    company: "Snatia Ebereum",
+    occupation: "CEO"
+  },
+  {
+    name: "Mathew Lawrence",
+    surname: "Joshua",
+    birth: new Date("1943-12-02"),
+    mobile: 684739283,
+    company: "De-Jaiz Mens Clothing",
+    occupation: "Technical recruiter"
+  },
+  {
+    name: "Susie Evelyn",
+    surname: "Spencer",
+    birth: new Date("1976-01-23"),
+    mobile: 684739283,
+    company: "Harold Powell",
+    occupation: "Concrete paving machine operator"
+  },
+  {
+    name: "",
+    surname: "",
+    birth: undefined,
+    mobile: NaN,
+    company: "",
+    occupation: ""
+  },
+  {
+    name: "",
+    surname: "",
+    birth: undefined,
+    mobile: NaN,
+    company: "",
+    occupation: ""
+  },
+  {
+    name: "",
+    surname: "",
+    birth: undefined,
+    mobile: NaN,
+    company: "",
+    occupation: ""
+  }
+];
+
+const getColumns = (): Column[] => [
+  { columnId: "Name", width: 150 },
+  { columnId: "Surname", width: 100 },
+  { columnId: "Birth Data", width: 100 },
+  { columnId: "Phone", width: 100 },
+  { columnId: "Company", width: 150 },
+  { columnId: "Occupation", width: 230 }
+];
+
+const headerRow: Row = {
+  rowId: "header",
+  cells: [
+    { type: "header", text: "Name" },
+    { type: "header", text: "Surname" },
+    { type: "header", text: "Birth Data" },
+    { type: "header", text: "Phone" },
+    { type: "header", text: "Company" },
+    { type: "header", text: "Occupation" }
+  ]
+};
+
+const getRows = (people: Person[]): Row[] => [
+  headerRow,
+  ...people.map<Row>((person, idx) => ({
+    rowId: idx,
+    cells: [
+      { type: "text", text: person.name },
+      { type: "text", text: person.surname },
+      { type: "date", date: person.birth },
+      { type: "number", value: person.mobile },
+      { type: "text", text: person.company },
+      { type: "text", text: person.occupation }
+    ]
+  }))
+];
+
+function App() {
+  const [people] = React.useState<Person[]>(getPeople());
+
+  const rows = getRows(people);
+  const columns = getColumns();
+
+  return (
+    <div style={{ width: "1200px", height: "200px" }}>
+      <ReactGrid
+        rows={rows}
+        columns={columns}
+        enableFullWidthHeader
+        enableFillHandle
+        enableRangeSelection
+        stickyTopRows={1}
+      />
+    </div>
+  );
+}
+
+render(<App />, document.getElementById("root"));
+
+`}
+/>
+
+
+## 
+#### Issues
+
+- If the width of ReactGrid's parent is less then the sum of all the columns (including left sticky), there might be bugs
+- enabling right and bottom sticky panes can cause bugs related with scrolling, ranges selection etc.

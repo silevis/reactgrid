@@ -1,0 +1,214 @@
+---
+posttype: "docs"
+title: Sticky rows and columns
+metaTitle: "Sticky rows and columns"
+metaDescription: "ReactGrid docs"
+---
+
+
+#### Introduction
+
+ReactGrid allows you to stick chosen rows and columns at the top or left side and additionally on the right and at the bottom 
+of the ReactGrid viewport. Sticky rows or columns will be visible at all times, no matter what the scroll position is.
+
+Sticky rows and columns can be enabled by adding dedicated `ReactGrid` component properties:
+- `stickyTopRows`
+- `stickyBottomRows`
+- `stickyLeftColumns`
+- `stickyRightColumns`
+
+All of these properties are numeric and determine the number of columns or rows sticky next to the grid's edges.
+
+#### How to make columns and rows sticky?
+
+This guide is based on [getting started](/docs/4.0/1-getting-started/).
+
+1. Update `Person` interface and then add some more data to the table, so that it's more likely for a scrollbar to appear
+or reduce the height of the grid container.
+
+```ts
+interface Person {
+    name: string;
+    surname: string;
+    birth: Date | undefined; // highlight-line
+    mobile: number; // highlight-line
+    company: string; // highlight-line
+    occupation: string; // highlight-line
+}
+
+const getPeople = (): Person[] => [
+    {
+        name: "Thomas",
+        surname: "Goldman",
+        birth: new Date("1970-12-02"), // highlight-line
+        mobile: 574839457, // highlight-line
+        company: "Snatia Ebereum", // highlight-line
+        occupation: "CEO" // highlight-line
+    },
+    {
+        name: "Mathew Lawrence",
+        surname: "Joshua",
+        birth: new Date("1943-12-02"), // highlight-line
+        mobile: 684739283, // highlight-line
+        company: "De-Jaiz Mens Clothing", // highlight-line
+        occupation: "Technical recruiter" // highlight-line
+    },
+    {
+        name: "Susie Evelyn",
+        surname: "Spencer",
+        birth: new Date("1976-01-23"), // highlight-line
+        mobile: 684739283, // highlight-line
+        company: "Harold Powell", // highlight-line
+        occupation: "Concrete paving machine operator" // highlight-line
+    },
+    {
+        name: "",
+        surname: "",
+        birth: undefined, // highlight-line
+        mobile: NaN, // highlight-line
+        company: "", // highlight-line
+        occupation: "" // highlight-line
+    }
+];
+
+const getColumns = (): Column[] => [
+    { columnId: "Name", width: 150 },
+    { columnId: "Surname", width: 100 },
+    { columnId: "Birth Data", width: 100 }, // highlight-line
+    { columnId: "Phone", width: 100 }, // highlight-line
+    { columnId: "Company", width: 150 }, // highlight-line
+    { columnId: "Occupation", width: 230 } // highlight-line
+];
+```
+
+2. Use the properties mentioned in the introduction to set the number of sticky ranges at each edge
+
+```tsx
+return (
+	<ReactGrid
+		rows={rows}
+		columns={columns}
+		stickyLeftColumns={1} // highlight-line
+		stickyRightColumns={1} // highlight-line
+		stickyTopRows={1} // highlight-line
+		stickyBottomRows={1} // highlight-line
+	/>
+);
+```
+
+#### Result
+
+Here's how sticky rows and columns look in action (we recommend playing with this demo in the fullscreen mode):
+
+import LiveCode from "@/nextra/components/LiveCode.tsx";
+import { ReactGrid, Column, Row } from "@silevis/reactgrid-4";
+import "@silevis/reactgrid-4/styles.css";
+
+
+<LiveCode 
+  scope={{ReactGrid, Column, Row}}
+  code={`interface Person {
+  name: string;
+  surname: string;
+  birth: Date | undefined;
+  mobile: number;
+  company: string; 
+  occupation: string;
+}
+${``}
+const getPeople = (): Person[] => [
+  {
+    name: "Thomas",
+    surname: "Goldman",
+    birth: new Date("1970-12-02"),
+    mobile: 574839457,
+    company: "Snatia Ebereum",
+    occupation: "CEO"
+  },
+  {
+    name: "Mathew Lawrence",
+    surname: "Joshua",
+    birth: new Date("1943-12-02"),
+    mobile: 684739283,
+    company: "De-Jaiz Mens Clothing",
+    occupation: "Technical recruiter"
+  },
+  {
+    name: "Susie Evelyn",
+    surname: "Spencer",
+    birth: new Date("1976-01-23"),
+    mobile: 684739283,
+    company: "Harold Powell",
+    occupation: "Concrete paving machine operator"
+  },
+  {
+    name: "",
+    surname: "",
+    birth: undefined,
+    mobile: NaN,
+    company: "",
+    occupation: ""
+  }
+];
+${``}
+const getColumns = (): Column[] => [
+  { columnId: "Name", width: 150 },
+  { columnId: "Surname", width: 100 },
+  { columnId: "Birth Data", width: 100 },
+  { columnId: "Phone", width: 100 },
+  { columnId: "Company", width: 150 },
+  { columnId: "Occupation", width: 230 }
+];
+${``}
+const headerRow: Row = {
+  rowId: "header",
+  cells: [
+    { type: "header", text: "Name" },
+    { type: "header", text: "Surname" },
+    { type: "header", text: "Birth Data" },
+    { type: "header", text: "Phone" },
+    { type: "header", text: "Company" },
+    { type: "header", text: "Occupation" }
+  ]
+};
+${``}
+const getRows = (people: Person[]): Row[] => [
+  headerRow,
+  ...people.map<Row>((person, idx) => ({
+    rowId: idx,
+    cells: [
+      { type: "text", text: person.name },
+      { type: "text", text: person.surname },
+      { type: "date", date: person.birth },
+      { type: "number", value: person.mobile },
+      { type: "text", text: person.company },
+      { type: "text", text: person.occupation }
+    ]
+  }))
+];
+${``}
+function StickyPanesSample() {
+  const [people] = React.useState<Person[]>(getPeople());
+  ${``}
+  const rows = getRows(people);
+  const columns = getColumns();
+  ${``}
+  return (
+    <ReactGrid
+      rows={rows}
+      columns={columns}
+      stickyLeftColumns={1}
+      stickyRightColumns={1}
+      stickyTopRows={1}
+      stickyBottomRows={1}
+      enableFillHandle
+      enableRangeSelection
+    />
+  );
+}
+${``}
+render(<StickyPanesSample/>)
+`}
+  title='Sticky live demo'
+  noInline={true}
+/> 

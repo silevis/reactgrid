@@ -1,0 +1,48 @@
+---
+posttype: "docs"
+title: FAQ
+metaTitle: "Frequently asked question"
+metaDescription: "ReactGrid docs"
+---
+
+#### Why don’t you provide a ready to use DataTable component?
+
+This is actually a feature! We want to give you the freedom of how you want to 
+generate the cell matrix and how you want to react to data changes. 
+Feel free to use our tutorial example to implement your own DataTable component.
+
+#### Why `rows` property contains an array of cells?
+
+Our experience also shows that it does not matter even when:
+- it is the `column` property that would contain the cell array instead of `rows`
+- cells would be in a one-dimensional array
+
+`Rows` property contains an array of cells because it conforms to the previously known models in the form of columns and rows.
+
+#### Is row resize implemented yet?
+
+At this moment it isn't possible, the only way to change row height is by defining its height, 
+see the [`Row`](/docs/3.1/7-api/0-interfaces/2-row/) interface.
+
+#### How to identify the clicked cell?
+
+ReactGrid has an `onFocusLocationChanging` callback function. This function is called every time the focus tries to change
+its location. This callback provides location ([`CellLocation`](/docs/3.1/7-api/0-interfaces/6-cell-location/)) parameter.
+
+#### Is it possible to identify a cell using a unique ID?
+
+Of course, it's possible, but our approach is different from what you probably see in other products. 
+Here we don't use commands like: `getCell({column: 'A', row: 6}).setValue(0)`.
+Our task is to display a given cell-matrix and notify about changes. Then you are able to process this change or ignore it.
+
+#### What alternatives do I have?
+
+There are plenty of nice products out there which also integrate well with React. 
+Here a short and certainly incomplete list in no particular order:
+
+1. agGrid
+2. Handsontable
+3. Kendo UI (DataGrid or Spreadsheet)
+4. DevExtreme
+5. Bryntum
+6. dhtmlxSpreadsheet

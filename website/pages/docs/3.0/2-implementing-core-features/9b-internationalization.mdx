@@ -1,0 +1,40 @@
+---
+posttype: "docs"
+title: Internationalization
+metaTitle: "Internationalization"
+metaDescription: "ReactGrid docs"
+proMark: true
+---
+
+import { Callout } from 'nextra/components'
+
+<Callout color="warning">
+	
+	Some of the translations are available for the PRO version
+</Callout>
+
+#### Adding i18n
+
+ReactGrid has a few optional text labels that you could replace. All of the available translations are defined in 
+[`TextLabels`](/docs/3.0/7-api/0-interfaces/90-textlabels/) interface. You can create an object, and then pass it to `labels`
+property.
+
+```tsx
+return (
+	<ReactGrid
+    {...props}
+    labels={{
+        copyLabel: 'Copy me!',
+        pasteLabel: 'Paste me!',
+        cutLabel: 'Cut me!',
+    }}
+	/>
+);
+```
+
+#### Locale inside cell templates
+
+Some cell templates ([`NumberCell`](/docs/3.0/4-cell-templates/7-NumberCell/), [`DateCell`](/docs/3.0/4-cell-templates/3-DateCell/),
+[`TimeCell`](/docs/3.0/4-cell-templates/9-TimeCell/)) contain inside optional `format` field. This field uses 
+`Intl` object of [ECMAScript Internationalization API](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl).
+We suggest formatting cells content via mentioned API.

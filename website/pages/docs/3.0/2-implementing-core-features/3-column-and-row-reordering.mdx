@@ -1,0 +1,222 @@
+---
+posttype: "docs"
+title: Column and row reordering
+metaTitle: "Column and row reordering"
+metaDescription: "ReactGrid docs"
+proMark: true
+---
+
+
+#### How to implement column and row reordering?
+
+import { Callout } from 'nextra/components'
+
+<Callout color="warning">
+	This feature is only available in PRO version
+</Callout>
+
+This guide is based on [getting started](/docs/3.0/1-getting-started/).
+
+#### 1. Add some new imports for further usage
+
+We'll need [`Id`](/docs/3.0/7-api/1-types/4-id/), [`DropPosition`](/docs/3.0/7-api/1-types/5-drop-position/), 
+[`Column`](/docs/3.0/7-api/0-interfaces/3-column/) and [`Row`](/docs/3.0/7-api/0-interfaces/2-row/).
+
+```ts
+import { ReactGrid, Id, DropPosition, Column, Row } from "@silevis/reactgrid";  //highlight-line
+```
+
+#### 2. Modify the rows and columns to enable reordering
+
+This is done by adding the `reorderable` property to a column or row and setting its value to `true`.
+
+```ts
+const [columns, setColumns] = React.useState<Column[]>(() => [
+  { columnId: "Name", width: 100, reorderable: true },  //highlight-line
+  { columnId: "Surname", width: 100, reorderable: true }  //highlight-line
+]);
+```
+
+Notice that we don't want the first row to be reorderable because that's our grid's header so the `reorderable` 
+property will become `undefined` contrary to other rows.
+
+```ts
+const [rows, setRows] = React.useState<Row[]>(() => [
+  {
+    rowId: 0,
+    reorderable: true, //highlight-line
+    cells: [
+      { type: "header", text: "Name" },
+      { type: "header", text: "Surname" }
+    ]
+  },
+  {
+    rowId: 1,
+    reorderable: true, //highlight-line
+    cells: [
+      { type: "text", text: "Thomas" },
+      { type: "text", text: "Goldman" }
+    ]
+  },
+  {
+    rowId: 2,
+    reorderable: true, //highlight-line
+    cells: [
+      { type: "text", text: "Susie" },
+      { type: "text", text: "Spencer" }
+    ]
+  },
+  {
+    rowId: 3,
+    reorderable: true, //highlight-line
+    cells: [
+      { type: "text", text: "" },
+      { type: "text", text: "" }
+    ]
+  }
+]);
+```
+
+#### 3. Implement the handler functions
+
+`reorderArray` function is used to order columns or rows. 
+
+```ts
+// a helper function used to reorder arbitrary arrays
+const reorderArray = <T extends {}>(arr: T[], idxs: number[], to: number) => {
+  const movedElements: T[] = arr.filter((_: T, idx: number) => idxs.includes(idx));
+  to = Math.min(...idxs) < to ? to += 1 : to -= idxs.filter(idx => idx < to).length;
+  const leftSide: T[] = arr.filter((_: T, idx: number) => idx < to && !idxs.includes(idx));
+  const rightSide: T[] = arr.filter((_: T, idx: number) => idx >= to && !idxs.includes(idx));
+  return [...leftSide, ...movedElements, ...rightSide];
+}
+
+const handleColumnsReorder = (targetColumnId: Id, columnIds: Id[], dropPosition: DropPosition) => {
+  const to = columns.findIndex((column: Column) => column.columnId === targetColumnId);
+  const columnIdxs = columnIds.map((id: Id, idx: number) => columns.findIndex((c: Column) => c.columnId === id));
+  setRows(rows.map(row => ({ ...row, cells: reorderArray(row.cells, columnIdxs, to) })));
+  setColumns(reorderArray(columns, columnIdxs, to));
+}
+
+const handleRowsReorder = (targetRowId: Id, rowIds: Id[], dropPosition: DropPosition) => {
+  setRows((prevRows) => {
+    const to = rows.findIndex(row => row.rowId === targetRowId);
+    const columnIdxs = rowIds.map(id => rows.findIndex(r => r.rowId === id));
+    return reorderArray(prevRows, columnIdxs, to);
+  });
+}
+```
+
+4. Pass the handler functions to your `ReactGrid` component and add `enableRowSelection` and `enableColumnSelection` properties to
+enable this type of events handling.
+
+```tsx
+<ReactGrid
+	rows={rows}
+	columns={columns}
+	onColumnsReordered={handleColumnsReordered} // highlight-line
+	onRowsReordered={handleRowsReordered} // highlight-line
+	enableRowSelection // highlight-line
+	enableColumnSelection // highlight-line
+/>
+```
+
+#### Live demo
+
+import { ReactGrid, Column, Row } from "@silevis/reactgrid-3";
+import LiveCode from "@/nextra/components/LiveCode.tsx"
+import "@silevis/reactgrid-3/styles.css";
+
+<LiveCode 
+scope={{ReactGrid}}
+  code={`const ColumnsAndRowsReorderSample = () => {
+  ${``}
+  const [columns, setColumns] = React.useState<Column[]>(() => [
+    { columnId: "Name", width: 100, reorderable: true },
+    { columnId: "Surname", width: 100, reorderable: true }
+  ]);
+  ${``}
+  const [rows, setRows] = React.useState<Row[]>(() => [
+    {
+      rowId: 0,
+      reorderable: true,
+      cells: [
+        { type: "header", text: "Name" },
+        { type: "header", text: "Surname" }
+      ]
+    },
+    {
+      rowId: 1,
+      reorderable: true,
+      cells: [
+        { type: "text", text: "Thomas" },
+        { type: "text", text: "Goldman" }
+      ]
+    },
+    {
+      rowId: 2,
+      reorderable: true,
+      cells: [
+        { type: "text", text: "Susie" },
+        { type: "text", text: "Spencer" }
+      ]
+    },
+    {
+      rowId: 3,
+      reorderable: true,
+      cells: [
+        { type: "text", text: "" },
+        { type: "text", text: "" }
+      ]
+    }
+  ]);
+  ${``}
+  const reorderArray = <T extends {}>(arr: T[], idxs: number[], to: number) => {
+    const movedElements: T[] = arr.filter((_: T, idx: number) => idxs.includes(idx));
+    to = Math.min(...idxs) < to ? to += 1 : to -= idxs.filter(idx => idx < to).length;
+    const leftSide: T[] = arr.filter((_: T, idx: number) => idx < to && !idxs.includes(idx));
+    const rightSide: T[] = arr.filter((_: T, idx: number) => idx >= to && !idxs.includes(idx));
+    return [...leftSide, ...movedElements, ...rightSide];
+  }
+  ${``}
+  const handleColumnsReorder = (targetColumnId: Id, columnIds: Id[], dropPosition: DropPosition) => {
+    const to = columns.findIndex((column: Column) => column.columnId === targetColumnId);
+    const columnIdxs = columnIds.map((id: Id, idx: number) => columns.findIndex((c: Column) => c.columnId === id));
+    setRows(rows.map(row => ({ ...row, cells: reorderArray(row.cells, columnIdxs, to) })));
+    setColumns(reorderArray(columns, columnIdxs, to));
+  }
+  ${``}
+  const handleRowsReorder = (targetRowId: Id, rowIds: Id[], dropPosition: DropPosition) => {
+    setRows((prevRows) => {
+      const to = rows.findIndex(row => row.rowId === targetRowId);
+      const columnIdxs = rowIds.map(id => rows.findIndex(r => r.rowId === id));
+      return reorderArray(prevRows, columnIdxs, to);
+    });
+  }
+  ${``}
+  const handleCanReorderColumns = (targetColumnId: Id, columnIds: Id[], dropPosition: DropPosition): boolean => {
+    return true;
+  }
+  ${``}
+  const handleCanReorderRows = (targetColumnId: Id, rowIds: Id[], dropPosition: DropPosition): boolean => {
+    return true;
+  }
+  ${``}
+  return (
+    <ReactGrid
+      rows={rows}
+      columns={columns}
+      onColumnsReordered={handleColumnsReorder}
+      onRowsReordered={handleRowsReorder}
+      canReorderRows={handleCanReorderRows}
+      canReorderColumns={handleCanReorderColumns}
+      enableRowSelection
+      enableColumnSelection
+    />
+  );
+}
+render(<ColumnsAndRowsReorderSample/>)
+`}
+  title='Column and row reordering live demo'
+  noInline={true}
+/> 

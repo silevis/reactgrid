@@ -1,0 +1,216 @@
+---
+posttype: "docs"
+title: Sticky rows and columns
+metaTitle: "Sticky rows and columns"
+metaDescription: "ReactGrid docs"
+proMark: true
+---
+
+
+#### Introduction
+
+ReactGrid allows you to stick chosen rows and columns at the top or left side and additionally on the right and at the bottom 
+of the ReactGrid viewport only in PRO version. Sticky rows or columns will be visible at all times, no matter what the scroll position is.
+ 
+import { Callout } from 'nextra/components'
+
+<Callout color="warning" transition={{baseClass: ''}}>
+	Right and bottom sticky ranges are only available in PRO version
+</Callout>
+
+Sticky rows and columns can be enabled by adding dedicated `ReactGrid` component properties:
+- `stickyTopRows`
+- `stickyBottomRows`
+- `stickyLeftColumns`
+- `stickyRightColumns`
+
+All of these properties are numeric and determine the number of columns or rows sticky next to the grid's edges.
+
+#### How to make columns and rows sticky?
+
+This guide is based on [getting started](/docs/3.0/1-getting-started/).
+
+1. Add some more data to the table, so that it's more likely for a scrollbar to appear
+or reduce the height of the grid container
+
+```ts
+const [columns] = React.useState<Column[]>(() => [
+  { columnId: "Name", width: 150 },
+  { columnId: "Surname", width: 100 },
+  { columnId: "Birth Data", width: 100 }, // highlight-line
+  { columnId: "Phone", width: 100 }, // highlight-line
+  { columnId: "Company", width: 150 },  // highlight-line
+  { columnId: "Occupation", width: 250 } // highlight-line
+]);
+const [rows, setRows] = React.useState<Row[]>(() => [
+  {
+    rowId: 0,
+    cells: [
+      { type: "header", text: "Name" },
+      { type: "header", text: "Surname" },
+      { type: "header", text: "Birth Data" }, // highlight-line
+      { type: "header", text: "Phone" },  // highlight-line
+      { type: "header", text: "Company" }, // highlight-line
+      { type: "header", text: "Occupation" } // highlight-line
+    ]
+  },
+  {
+    rowId: 1,
+    cells: [
+      { type: "text", text: "Thomas Anthony" },
+      { type: "text", text: "Goldman" },
+      { type: "date", date: new Date("1989-04-01") }, // highlight-line
+      { type: "number", value: 293827394 }, // highlight-line
+      { type: "text", text: "Electronic Geek" }, // highlight-line
+      { type: "text", text: "Textile and furnishings occupation" } // highlight-line
+    ]
+  },
+  {
+    rowId: 2,
+    cells: [
+      { type: "text", text: "Susie Evelyn" },
+      { type: "text", text: "Spencer" },
+      { type: "date", date: new Date("1970-12-02") }, // highlight-line
+      { type: "number", value: 684739283 }, // highlight-line
+      { type: "text", text: "Harold Powell" }, // highlight-line
+      { type: "text", text: "Concrete paving machine operator" } // highlight-line
+    ]
+  },
+  {
+    rowId: 3,
+    cells: [
+      { type: "text", text: "Mathew Lawrence" },
+      { type: "text", text: "Joshua" },
+      { type: "date", date: new Date("1970-12-02") }, // highlight-line
+      { type: "number", value: 684739283 }, // highlight-line
+      { type: "text", text: "De-Jaiz Mens Clothing" }, // highlight-line
+      { type: "text", text: "Technical recruiter" } // highlight-line
+    ]
+  },
+  {
+    rowId: 4,
+    cells: [
+      { type: "text", text: "" },
+      { type: "text", text: "" },
+      { type: "date", date: undefined }, // highlight-line
+      { type: "number", value: NaN }, // highlight-line
+      { type: "text", text: "" }, // highlight-line
+      { type: "text", text: "" } // highlight-line
+    ]
+  }
+]);
+```
+
+2. Use the properties mentioned in the introduction to set the number of sticky ranges at each edge
+
+```tsx
+return (
+	<ReactGrid
+		rows={rows}
+		columns={columns}
+		stickyLeftColumns={1} // highlight-line
+		stickyRightColumns={1} // highlight-line
+		stickyTopRows={1} // highlight-line
+		stickyBottomRows={1} // highlight-line
+	/>
+);
+```
+
+#### Result
+
+import { ReactGrid} from "@silevis/reactgrid-3";
+import LiveCode from "@/nextra/components/LiveCode.tsx"
+import "@silevis/reactgrid-3/styles.css";
+
+Here's how sticky rows and columns look in action (we recommend playing with this demo in the fullscreen mode):
+
+<LiveCode 
+scope={{ReactGrid}}
+  code={`const StickyPanesSample = () => {
+  ${``}
+  const [columns] = React.useState<Column[]>(() => [
+    { columnId: "Name", width: 150 },
+    { columnId: "Surname", width: 100 },
+    { columnId: "Birth Data", width: 100 },
+    { columnId: "Phone", width: 100 },
+    { columnId: "Company", width: 150 },
+    { columnId: "Occupation", width: 250 }
+  ]);
+  ${``}
+  const [rows, setRows] = React.useState<Row[]>(() => [
+    {
+      rowId: 0,
+      cells: [
+        { type: "header", text: "Name" },
+        { type: "header", text: "Surname" },
+        { type: "header", text: "Birth Data" },
+        { type: "header", text: "Phone" },
+        { type: "header", text: "Company" },
+        { type: "header", text: "Occupation" }
+      ]
+    },
+    {
+      rowId: 1,
+      cells: [
+        { type: "text", text: "Thomas Anthony" },
+        { type: "text", text: "Goldman" },
+        { type: "date", date: new Date("1989-04-01") },
+        { type: "number", value: 293827394 },
+        { type: "text", text: "Electronic Geek" },
+        { type: "text", text: "Textile and furnishings occupation" }
+      ]
+    },
+    {
+      rowId: 2,
+      cells: [
+        { type: "text", text: "Susie Evelyn" },
+        { type: "text", text: "Spencer" },
+        { type: "date", date: new Date("1970-12-02") },
+        { type: "number", value: 684739283 },
+        { type: "text", text: "Harold Powell" },
+        { type: "text", text: "Concrete paving machine operator" }
+      ]
+    },
+    {
+      rowId: 3,
+      cells: [
+        { type: "text", text: "Mathew Lawrence" },
+        { type: "text", text: "Joshua" },
+        { type: "date", date: new Date("1970-12-02") },
+        { type: "number", value: 684739283 },
+        { type: "text", text: "De-Jaiz Mens Clothing" },
+        { type: "text", text: "Technical recruiter" }
+      ]
+    },
+    {
+      rowId: 4,
+      cells: [
+        { type: "text", text: "" },
+        { type: "text", text: "" },
+        { type: "date", date: undefined },
+        { type: "number", value: NaN },
+        { type: "text", text: "" },
+        { type: "text", text: "" }
+      ]
+    }
+  ]);
+  ${``}
+  return (
+    <ReactGrid
+      rows={rows}
+      columns={columns}
+      stickyLeftColumns={1}
+      stickyRightColumns={1}
+      stickyTopRows={1}
+      stickyBottomRows={1}
+      enableFillHandle
+      enableRangeSelection
+    />
+  );
+}
+${``}
+render(<StickyPanesSample/>)
+`}
+  title='Sticky live demo'
+  noInline={true}
+/> 

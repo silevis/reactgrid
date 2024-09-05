@@ -1,0 +1,65 @@
+---
+posttype: "docs"
+title: Row
+metaTitle: "Row interface"
+metaDescription: "ReactGrid docs"
+---
+
+Row interface contains two necessary properties: `rowId` and `cells`. It contains essential information about the grid row.
+`cells` field allows you to declare an array of objects that extends [`Cell`](/docs/4.0/7-api/0-interfaces/4-cell/)`[]` base interface.
+
+
+#### Usage 
+
+```ts
+const rows: Row[] = [
+  {
+    rowId: 0,
+    cells: [
+      { type: "text", text: 'John' },
+      { type: "text", text: "Doe" },
+    ]
+  }
+]
+```
+If you want to use your custom cell templates in code, the correct way of doing so is: `Row<DefaultCellTypes | MyCustomCell>`. 
+
+
+```ts
+interface FlagCell extends Cell {
+  type: 'flag';
+  text: string;
+}
+
+export const rows: Row<DefaultCellTypes | FlagCell>[] = [ // union of all  available cells
+  {
+    rowId: 0,
+    cells: [
+      { type: "text", text: 'John' },
+      { type: "text", text: "Doe" },
+      // `flag type is now allowed
+      { type: 'flag', text: 'ger' }, //highlight-line
+    ]
+  }
+]
+```
+
+#### Definition
+
+```ts
+export interface Row<TCell extends Cell = DefaultCellTypes> {
+  readonly rowId: Id;
+  readonly cells: TCell[];
+  readonly height?: number;
+  readonly reorderable?: boolean;
+};
+```
+
+#### Properties
+
+| Property name     | Type                                                                  | Property description  | 
+| ------------      | -------------                                                         | -------------         |
+| `rowId`           | [`Id`](/docs/4.0/7-api/1-types/4-id/)                                 | Unique [`Id`](/docs/4.0/7-api/1-types/4-id/) in all rows array |
+| `cells`           | [`Cell`](/docs/4.0/7-api/0-interfaces/4-cell/)`[]  TCell extends` [`Cell`](/docs/4.0/7-api/0-interfaces/4-cell/)`[]`    | Array of [`Cell`](/docs/4.0/7-api/0-interfaces/4-cell/) objects. |
+| `height?`         | `number`                                                              | Height of each grid row (in default set to `25px`)  | 
+| `reorderable?`    | `boolean`                                                             | Property that allows row to change is position in grid, default: `false` (row reorder implementation is on the developer's side) |  

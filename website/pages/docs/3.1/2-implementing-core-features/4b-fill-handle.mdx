@@ -1,0 +1,29 @@
+---
+posttype: "docs"
+title: Fill handle
+metaTitle: "Fill handle"
+metaDescription: "ReactGrid docs"
+proMark: true
+---
+
+import { Callout } from 'nextra/components'
+
+<Callout color="warning">
+	
+	This feature is only available in PRO version
+</Callout>
+
+ReactGrid supports fill handle action in PRO version, but it is disabled by default. To turn it on you have to simply
+add `enableFillHandle` property to `ReactGrid` component. Now you are able to use autocomplete feature by default.
+This feature allows you to set further values to be filled in based on the data contained in the selection. Otherwise, the data is repeated
+respective to the direction. Data isn't predicted when <kbd>ctrl</kbd> key is pressed (or <kbd>Option</kbd>/<kbd>⌥</kbd> key on Apple devices).
+
+```tsx
+<ReactGrid
+    {...props}
+    enableFillHandle //highlight-line
+/>
+```
+
+Note that if an incoming change will not be handled by the app, then there will be no visible changes, 
+though the action was correctly performed.

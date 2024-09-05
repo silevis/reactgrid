@@ -1,0 +1,28 @@
+---
+posttype: "docs"
+title: CellStyle
+metaTitle: "CellStyle interface"
+metaDescription: "ReactGrid docs"
+---
+
+`CellStyle` interface prevents passing unwanted CSS properties that could break down grid rendering.
+
+#### Definition
+
+```ts
+interface CellStyle {
+    readonly color?: string;
+    readonly background?: string;
+    readonly overflow?: string;
+    readonly paddingLeft?: string;
+}
+```
+
+#### Properties
+
+| Property name     | Type      |  Property description         |
+| -----------       | -------   | -------------------------     |
+| `color?`          | `string`  | CSS `color` property          |
+| `background?`     | `string`  | CSS `background` property     |
+| `overflow?`       | `string`  | CSS `overflow` property       |
+| `paddingLeft?`    | `string`  | CSS `padding-left` property   |

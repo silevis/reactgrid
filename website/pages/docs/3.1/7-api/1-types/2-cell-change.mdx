@@ -1,0 +1,77 @@
+---
+posttype: "docs"
+title: CellChange
+metaTitle: "CellChange type"
+metaDescription: "ReactGrid docs"
+---
+
+`CellChange` type is used by `onCellsChanged` callback in `ReactGrid` component. It represents 
+mutually exclusive changes to a single cell.
+
+`CellTypes` utility type extracts all possible cell types based on [`Cell`](/docs/3.1/7-api/0-interfaces/4-cell/) interface.
+
+Generic `Change` interface represents a particullar change on single cell on concrete cell template.
+
+#### Basic usage cases
+
+```ts
+const handleChangesOnDefaults = (changes: CellChange[]) => { // evaluates as `Change<TextCell> | Change<Datecell> | ...`
+  changes.forEach(change => {
+    if (change.type === 'checkbox') {
+      console.log(change.newCell.checked);
+      console.log(change.previousCell.checked);
+    }
+  });
+};
+
+const handleChangesOnDefaultsAndFlagCell = (changes: CellChange<DefaultCellTypes | FlagCell>[]) => { // evaluates as `Change<TextCell> | Change<Datecell> | ... | Change<FlagCell>`
+  changes.forEach(change => {
+    if (change.type === 'flag') {
+      // `FlagCell` specyfic fields are now available
+      console.log(change.newCell.text);
+      console.log(change.previousCell.text);
+    }
+  });
+};
+
+const handleChangesOnlyOnDateCell = (changes: CellChange<DateCell>[]) => { // evaluates as `Change<DateCell>`
+  changes.forEach(change => {
+    // only available type is now `date`
+    if (change.type === 'date') {
+      console.log(change.newCell.date);
+      console.log(change.previousCell.date);
+    }
+  });
+};
+```
+
+#### Definition
+
+```ts
+declare type CellChange<TCell extends Cell = DefaultCellTypes & Cell> = TCell extends Cell ? {
+    /** Row's `Id` where the change ocurred */
+    readonly rowId: Id;
+    /** Column's `Id` where the change ocurred */
+    readonly columnId: Id;
+    /** Extracted cell type of `TCell` (e.g. `text`, `chevron` and so on) */
+    readonly type: TCell['type'];
+    /** Previous content of the cell */
+    readonly previousCell: TCell;
+    /** New content of the cell */
+    readonly newCell: TCell;
+} : never;
+```
+
+`TCell` is type that extends common [`Cell`](/docs/3.1/7-api/0-interfaces/4-cell/) type. 
+It can be one of [default cell types](/docs/3.1/7-api/1-types/6-default-cells/) or one of yours. 
+Read more about creating [custom cell templates](/docs/3.1/5-create-your-own-cell-template/).
+
+#### Properties
+
+| Property name     | Type                                                                      | Property description      | 
+| ------------      | -------------                                                             | --------------------      |
+| `rowId`           | [`Id`](/docs/3.1/7-api/1-types/4-id/)                                     | Row [`Id`](/docs/3.1/7-api/1-types/4-id/) where the change ocurred | 
+| `columnId`        | [`Id`](/docs/3.1/7-api/1-types/4-id/)                                     | Column [`Id`](/docs/3.1/7-api/1-types/4-id/) where the change ocurred | 
+| `type`            | `CellTypes<TCell>`                                                        | Extracted cell type of `TCell` e.g. `text`, `chevron` | 
+| `previousCell`    | `TCell extends Cell = `[`Cell`](/docs/3.1/7-api/0-interfaces/4-cell/)     | Previous content of the cell | 
+| `newCell`         | `TCell extends Cell = `[`Cell`](/docs/3.1/7-api/0-interfaces/4-cell/)     | New content of the cell | 

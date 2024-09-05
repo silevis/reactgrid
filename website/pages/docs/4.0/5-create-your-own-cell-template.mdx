@@ -1,0 +1,301 @@
+---
+posttype: "docs"
+title: Create your own cell template
+metaTitle: "Create your own cell template"
+metaDescription: "ReactGrid docs"
+---
+
+#### Introduction
+
+Creating a cell template is the best way to customize data visualization and behaviour in ReactGrid.
+You can define your own one and then use it as other built-in cell types.
+
+In this example, we will explain how to make it.
+
+Let's imagine that you need to implement a brand new cell for displaying a country flag.
+
+Expected functionality:
+
+1. In edit mode a cell allows you to type in text without any constraints
+2. When a cell is displayed, it should show a country flag based on the cell text
+
+Let's get started!
+
+#### 1. Define flag cell interface
+
+For this tutorial we are going to use the previous project - [handling changes](/docs/4.0/2-implementing-core-features/1-handling-changes/).
+
+`type` attribute is necessary in any cell template, in our sample we will refer to this cell template by `flag`.
+`text` attribute will store our ISO code and it's also necessary.
+
+```ts
+export interface FlagCell extends Cell {
+  type: "flag";
+  text: string;
+}
+```
+
+#### 2. Data holders
+
+At the beginning we should update columns and rows displayed by the grid.
+Our data is no longer a people array, but a flag indentified by its `isoCode`.
+
+```tsx
+interface Flag {
+  isoCode: string;
+}
+
+const getFlags = (): Flag[] => [
+  { isoCode: "swe" },
+  { isoCode: "deu" },
+  { isoCode: "mex" },
+  { isoCode: "" },
+];
+
+const getColumns = (): Column[] => [{ columnId: "flag", width: 150 }];
+```
+
+#### 3. Creating necessary files
+
+Create new file named `FlagCellTemplate.tsx`, add the same imports as in the listing below and make `flag-cell-style.css`
+file that will contain some CSS styles (don't forget to import it into your project's file).
+
+```tsx
+// FlagCellTemplate.tsx
+import * as React from "react";
+import {
+  CellTemplate,
+  Cell,
+  Compatible,
+  Uncertain,
+  UncertainCompatible,
+  isNavigationKey,
+  getCellProperty,
+  isAlphaNumericKey,
+  keyCodes,
+} from "@silevis/reactgrid";
+import "./flag-cell-style.css";
+```
+
+#### 4. Creating `FlagCellTemplate` class
+
+For all defined methods below it is necessary to display and interface the flag cell with internal ReactGrid model correctly.
+
+- `getCompatibleCell` as a parameter gets an incoming cell and returns a compatible cell (with `text` and `value`
+  attribute required by [`Compatible`](/docs/4.0/7-api/1-types/1-compatible-cell/) type).
+  In more complex examples `getCellProperty` may throw an exception if the required cell field is `undefined`.
+
+```ts
+getCompatibleCell(uncertainCell: Uncertain<FlagCell>): Compatible<FlagCell> {
+    const text = getCellProperty(uncertainCell, 'text', 'string');
+    const value = parseFloat(text);
+    return { ...uncertainCell, text, value };
+}
+```
+
+- `handleKeyDown` method handles `keyDown` event on this cell template. Here it just returns unchanged cell and enables
+  edit mode when a user performed a click or pressed <kbd>ENTER</kbd> key.
+
+```ts
+handleKeyDown(
+    cell: Compatible<FlagCell>,
+    keyCode: number,
+    ctrl: boolean,
+    shift: boolean,
+    alt: boolean
+): { cell: Compatible<FlagCell>; enableEditMode: boolean } {
+    if (!ctrl && !alt && isAlphaNumericKey(keyCode))
+        return { cell, enableEditMode: true };
+    return {
+        cell,
+        enableEditMode: keyCode === keyCodes.POINTER || keyCode === keyCodes.ENTER
+    };
+}
+```
+
+- `update` - as we are not sure if an incoming cell has the same interface like `FlagCell` so we mark it
+  as `UncertainCompatible` (the incoming cell has attributes provided by [`Compatible`](/docs/4.0/7-api/1-types/1-compatible-cell/)
+  but it can have other attributes like `date` from `DateCell`). In our case, we just copy `cell` and replace `text` value.
+
+```ts
+update(cell: Compatible<FlagCell>, cellToMerge: UncertainCompatible<FlagCell>): Compatible<FlagCell> {
+    return this.getCompatibleCell({ ...cell, text: cellToMerge.text });
+}
+```
+
+- `render` method returns the content of a cell. In edit mode we will display `input` element. The change which is made in the
+  cell `input` is propagated outside ReactGrid by `onCellChanged` function.
+
+```tsx
+render(
+    cell: Compatible<FlagCell>,
+    isInEditMode: boolean,
+    onCellChanged: (cell: Compatible<FlagCell>, commit: boolean) => void
+): React.ReactNode {
+  if (!isInEditMode) {
+    const flagISO = cell.text.toLowerCase(); // ISO 3166-1, 2/3 letters
+    const flagURL = `https://restcountries.eu/data/${flagISO}.svg`;
+    const alternativeURL = `https://upload.wikimedia.org/wikipedia/commons/0/04/Nuvola_unknown_flag.svg`;
+    return (
+      <div
+        className="rg-flag-wrapper"
+        style={{ backgroundImage: `url(${flagURL}), url(${alternativeURL})` }}
+      />
+    );
+  }
+  return (
+    <input
+      ref={input => {
+        input && input.focus();
+      }}
+      defaultValue={cell.text}
+      onChange={e =>
+        onCellChanged(
+          this.getCompatibleCell({ ...cell, text: e.currentTarget.value }),
+          false
+        )
+      }
+      onCopy={e => e.stopPropagation()}
+      onCut={e => e.stopPropagation()}
+      onPaste={e => e.stopPropagation()}
+      onPointerDown={e => e.stopPropagation()}
+      onKeyDown={e => {
+      if (isAlphaNumericKey(e.keyCode) || isNavigationKey(e.keyCode))
+        e.stopPropagation();
+      }}
+    />
+  );
+}
+```
+
+#### 5. Styling
+
+To set a flag as the background covering the `div` element, we created CSS `rg-flag-wrapper` class.
+All of the cells have a class name created based on the cell `type` attribute. In our case, the cell class name will be `rg-flag-cell`.
+As `rg-cell` is a flex element we center its content with `justify-content: center;` attribute.
+
+```css
+.rg-flag-cell {
+  justify-content: center;
+}
+
+.rg-flag-wrapper {
+  width: 50%;
+  height: 80%;
+  background-size: cover;
+  border: 1px solid #cccccc;
+  background-position: center center;
+  background-repeat: no-repeat;
+}
+```
+
+#### 6. Updating header row and generating flag rows
+
+Header row is still static, but displays only one cell.
+
+```tsx
+const headerRow: Row = {
+  rowId: "header",
+  height: 40,
+  cells: [{ type: "header", text: "Flags" }],
+};
+```
+
+`getRows` function now process the flags array, and return array of `Row<DefaultCellTypes | FlagCell>`.
+This record tells us that cells rows can be on one of [`DefaultCellTypes`](/docs/4.0/7-api/1-types/6-default-cells/) (build-in cell types) or brand new
+template - `FlagCell` with type of `flag`.
+
+```tsx
+const getRows = (flags: Flag[]): Row<DefaultCellTypes | FlagCell>[] => [
+  headerRow,
+  ...flags.map<Row<DefaultCellTypes | FlagCell>>((flag, idx) => ({
+    rowId: idx,
+    height: 60,
+    cells: [{ type: "flag", text: flag.isoCode }],
+  })),
+];
+```
+
+#### 7. Finishing
+
+Go back to `index.tsx` file and add `customCellTemplates` property as shown below:
+
+```tsx
+function App() {
+  const [flags] = React.useState<Flag[]>(getFlags());
+
+  const rows = getRows(flags);
+  const columns = getColumns();
+
+  return (
+    <ReactGrid
+      rows={rows}
+      columns={columns}
+      customCellTemplates={{ flag: new FlagCellTemplate() }}
+    />
+  );
+}
+```
+
+#### Result
+
+import LiveCode from "@/nextra/components/LiveCode.tsx";
+import { ReactGrid, Column, Row, DefaultCellTypes } from "@silevis/reactgrid-4";
+import {
+  FlagCell,
+  FlagCellTemplate,
+} from "../content/cellTemplates/flagCell/FlagCellTemplate";
+import "@silevis/reactgrid-4/styles.css";
+
+<LiveCode
+scope={{ReactGrid, Column, Row, DefaultCellTypes,
+  FlagCell, FlagCellTemplate
+}}
+code={`
+interface Flag {
+  isoCode: string;
+}
+
+const getFlags = (): Flag[] => [
+  { isoCode: "pl" },
+  { isoCode: "de" },
+  { isoCode: "mx" },
+  { isoCode: "" },
+];
+
+const getColumns = (): Column[] => [{ columnId: "flag", width: 150 }];
+
+const headerRow: Row = {
+  rowId: "header",
+  height: 40,
+  cells: [{ type: "header", text: "Flags" }],
+};
+
+const getRows = (flags: Flag[]): Row<DefaultCellTypes | FlagCell>[] => [
+  headerRow,
+  ...flags.map<Row<DefaultCellTypes | FlagCell>>((flag, idx) => ({
+    rowId: idx,
+    height: 60,
+    cells: [{ type: "flag", text: flag.isoCode }],
+  })),
+];
+
+function App() {
+  const [flags] = React.useState<Flag[]>(getFlags());
+
+  const rows = getRows(flags);
+  const columns = getColumns();
+
+  return (
+    <ReactGrid
+      rows={rows}
+      columns={columns}
+      customCellTemplates={{ flag: new FlagCellTemplate() }}
+    />
+  );
+}
+
+render(<App />, document.getElementById("root"));
+
+`}
+/>

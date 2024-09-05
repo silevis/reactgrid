@@ -1,0 +1,28 @@
+---
+posttype: "docs"
+title: Column
+metaTitle: "Column interface"
+metaDescription: "ReactGrid docs"
+---
+
+This interface represents column in grid. `Column` interface contains only one necessary property: `columnId`.
+
+#### Definition
+
+```ts
+interface Column {
+    readonly columnId: Id;
+    readonly width?: number;
+    readonly reorderable?: boolean;
+    readonly resizable?: boolean;
+}
+```
+
+#### Properties
+
+| Property name     | Type                                          | Property description | 
+| ------------      | -------------                                 | -------------------- |
+| `columnId`        | [`Id`](/docs/4.0/7-api/1-types/4-id/)         | Unique [`Id`](/docs/4.0/7-api/1-types/4-id/) in all columns array |
+| `width?`          | `number`                                      | Width of each grid column (in default set to `150px`) | 
+| `reorderable?`    | `boolean`                                     | Allow column to change its position in grid, default: `false` (row reorder implementation is on the developers side)  | 
+| `resizable?`      | `boolean`                                     | Allow column to change is width in grid, default: `false` (row resize implementation is on the developers side)  | 

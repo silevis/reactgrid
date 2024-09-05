@@ -1,0 +1,32 @@
+{
+  "docs": {
+    "title": "Introduction"
+  },
+  "version": {
+    "title": "Version",
+    "type": "menu",
+    "items": {
+      "3.0": {
+        "title": "v3.0",
+        "href": "/docs/3.0"
+      },
+      "3.1": {
+        "title": "v3.1",
+        "href": "/docs/3.1"
+      },
+      "4.0": {
+        "title": "v4.0",
+        "href": "/docs/4.0"
+      },
+      "5.0": {
+        "title": "v5.0",
+        "href": "/docs/5.0"
+      }
+    }
+  },
+  "-- More": {
+    "type": "separator",
+    "title": "More"
+  },
+  "FAQ": "FAQ"
+}

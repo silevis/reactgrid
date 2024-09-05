@@ -1,0 +1,42 @@
+---
+posttype: "docs"
+title: Basic styling
+metaTitle: "Basic styling"
+metaDescription: "ReactGrid docs"
+---
+
+#### Introduction
+
+For the correct display of the component it's required to import the basic styles contained directly inside 
+`@silevis/reactgrid` package.
+
+#### Importing
+
+Styles are a necessary part of ReactGrid. For a correct display you have to import ReactGrid into your project.
+
+```css
+/* your-styles.css */
+
+@import '@silevis/reactgrid/styles.css';
+```
+
+or if you use Sass preprocessor:
+
+```scss
+/* your-styles.scss */
+
+@import '@silevis/reactgrid/styles.scss';
+```
+
+You can only import files that you need and then override variables yourself:
+
+```scss
+/* your-styles.scss */
+
+@import './default-colors.scss';
+@import './default-sizing.scss';
+@import './cell-templates-default-colors.scss';
+@import './mapping.scss';
+@import './cell-templates.scss';
+@import './main.scss';
+```

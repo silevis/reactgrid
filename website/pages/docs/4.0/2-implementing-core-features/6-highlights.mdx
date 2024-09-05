@@ -1,0 +1,100 @@
+---
+posttype: "docs"
+title: Highlights
+metaTitle: "Highlights"
+metaDescription: "ReactGrid docs"
+---
+
+#### Highlights usage
+
+This guide is based on [getting started](/docs/4.0/1-getting-started/).
+
+Highlights allow you to alter arbitrary cells in the grid
+by applying custom CSS classes to them or by setting their border colours.
+
+1. Import the [`Highlight`](/docs/4.0/7-api/0-interfaces/9-highlight/) interface
+
+```ts
+import { ReactGrid, Highlight } from "@silevis/reactgrid";
+```
+
+2. Define an array of [`Highlight`](/docs/4.0/7-api/0-interfaces/9-highlight/) objects
+
+```ts
+const highlights: Highlight[] = [
+  { columnId: "Name", rowId: 1, borderColor: "#00ff00" },
+  { columnId: "Surname", rowId: 2, borderColor: "#0000ff" },
+  { columnId: "Name", rowId: 3, borderColor: "#ff0000" }
+];
+```
+
+3. Pass the `highlights` object array to your component
+
+```tsx
+return <ReactGrid rows={rows} columns={columns} highlights={highlights} />;
+```
+
+#### Live demo
+
+import LiveCode from "@/nextra/components/LiveCode.tsx";
+import { ReactGrid, Column, Row } from "@silevis/reactgrid-4";
+import "@silevis/reactgrid-4/styles.css";
+
+
+<LiveCode 
+  scope={{ReactGrid, Column, Row}}
+  code={`interface Person {
+  name: string;
+  surname: string;
+}
+
+const getPeople = (): Person[] => [
+  { name: "Thomas", surname: "Goldman" },
+  { name: "Susie", surname: "Quattro" },
+  { name: "", surname: "" }
+];
+
+const getColumns = (): Column[] => [
+  { columnId: "name", width: 150 },
+  { columnId: "surname", width: 150 }
+];
+
+const headerRow: Row = {
+  rowId: "header",
+  cells: [
+    { type: "header", text: "Name" },
+    { type: "header", text: "Surname" }
+  ]
+};
+
+const getRows = (people: Person[]): Row[] => [
+  headerRow,
+  ...people.map<Row>((person, idx) => ({
+    rowId: idx,
+    cells: [
+      { type: "text", text: person.name },
+      { type: "text", text: person.surname }
+    ]
+  }))
+];
+
+const highlights: Highlight[] = [
+  { columnId: "name", rowId: 0, borderColor: "#00ff00" },
+  { columnId: "surname", rowId: 1, borderColor: "#0000ff" },
+  { columnId: "name", rowId: 2, borderColor: "#ff0000" }
+];
+
+function App() {
+  const [people] = React.useState<Person[]>(getPeople());
+  const rows = getRows(people);
+  const columns = getColumns();
+
+  return <ReactGrid rows={rows} columns={columns} highlights={highlights} />;
+}
+
+render(<App />, document.getElementById("root"));
+
+`}
+  title='Basic menu context handling live demo'
+  noInline={true}
+/> 

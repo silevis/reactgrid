@@ -1,0 +1,28 @@
+---
+posttype: "docs"
+title: HeaderCell
+metaTitle: "HeaderCell template"
+metaDescription: "ReactGrid docs"
+---
+
+The main purpose of this cell is to mark its content as not focusable and read-only. Usually used to mark header rows 
+and columns. `HeaderCell` also prevents scroll action (it's helpfull on a touch screens to perform row and column selection).
+```HeaderCell``` interface is extended by ```Span```, therefore you can span this cell.
+
+#### Implementation
+
+ - Open `HeaderCell` implementation on <a href="https://github.com/silevis/reactgrid/blob/develop/src/lib/CellTemplates/HeaderCellTemplate.tsx" target="_blank"> github <i className="fas fa-external-link-alt fa-xs pl-1"></i></a>
+
+#### Interface declaration 
+
+```ts
+interface HeaderCell extends Cell, Span {
+    type: 'header';
+    text: string;
+}
+```
+
+| Property name     | Type              | Property description | 
+| ------------      | -------------     | -------------------- |
+| `type`            | `header`          | Type of cell template | 
+| `text`            | `string`          | Content of cell | 

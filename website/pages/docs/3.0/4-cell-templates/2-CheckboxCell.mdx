@@ -1,0 +1,30 @@
+---
+posttype: "docs"
+title: CheckboxCell
+metaTitle: "CheckboxCell template"
+metaDescription: "ReactGrid docs"
+---
+
+This cell type displays checkbox input. This template has disabled edit mode.
+
+#### Implementation
+
+ - Open `CheckboxCell` implementation on <a href="https://github.com/silevis/reactgrid/blob/develop/src/lib/CellTemplates/CheckboxCellTemplate.tsx" target="_blank"> github <i className="fas fa-external-link-alt fa-xs pl-1"></i></a>
+
+#### Interface declaration
+
+```ts
+interface CheckboxCell extends Cell {
+    type: 'checkbox';
+    checked: boolean;
+    checkedText?: string;
+    uncheckedText?: string;
+}
+```
+
+| Property name     | Type              | Property description | 
+| ------------      | -------------     | -------------------- |
+| `type`            | `checkbox`        | Type of cell template | 
+| `checked`         | `boolean`         | Current state of `checked` attribute in `input` element | 
+| `checkedText?`    | `string`          | Text of "checked text input", used while getting compatible cell, by default: `1` | 
+| `uncheckedText?`  | `string`          | Text of "unchecked text input",  used while getting compatible cell, by default: `` (empty string) | 

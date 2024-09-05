@@ -1,0 +1,137 @@
+---
+posttype: "docs"
+title: Handling data changes
+metaTitle: "Handling data changes"
+metaDescription: "ReactGrid docs"
+---
+
+
+#### Idea of handling data changes
+
+1. A user changes the value of a cell. Among others, it could mean that the user has:
+   - typed a new value into a cell by cell editor,
+   - used a fill handle ,
+   - pasted some data into the cell matrix,
+   - interacted with a clickable cell (e. g. expanded group cell).
+2. ReactGrid fires the `onCellsChanged` event
+3. Your handler function processes the event and updates the application state
+4. The `ReactGrid` component receives new data and gets rerendered
+
+By default, the data grid will behave as if it was in a "read-only" mode.
+To support dynamic data editing, you will have to handle the `onCellsChanged` event yourself.
+
+#### When my handler function is called?
+
+1. Changes have been committed after cell editing.
+2. After pasting with the shortcut or the context menu.
+3. After fill handle action.
+
+#### Sample change handler function
+
+We can declare a basic handler function like this:
+
+```ts
+const handleChanges = (changes: CellChange[]) => {
+  setRows((prevRows) => {
+      changes.forEach(change => {
+          const changeRowIdx = prevRows.findIndex(el => el.rowId === change.rowId);
+          const changeColumnIdx = columns.findIndex(el => el.columnId === change.columnId);
+          prevRows[changeRowIdx].cells[changeColumnIdx] = change.newCell;
+      });
+      return [...prevRows];
+  });
+};
+```
+
+The function receives an array describing all of the changes made to the data grid's cells.
+Given that information, we find the row and the column affected by each change,
+and then replace an appropriate cell object with a new one.
+
+Let's pass the handler function to our ReactGrid component:
+
+```tsx
+return (
+  <ReactGrid
+    rows={rows}
+    columns={columns}
+    onCellsChanged={handleChanges} // highlight-line
+  />
+)
+```
+
+#### Live demo
+
+And here's an interactive demo showing the event handler in action.
+Notice how it is now possible to edit the data not only by typing new values into the cells,
+but also by using the fill handle (only PRO) or by pasting data from the clipboard.
+
+<br/>
+
+import { ReactGrid, Column, Row } from "@silevis/reactgrid-3";
+import LiveCode from "@/nextra/components/LiveCode.tsx"
+import "@silevis/reactgrid-3/styles.css";
+
+<LiveCode 
+scope={{ReactGrid, Column, Row}}
+  code={`const App = () => {
+  ${` `}
+  const [columns] = React.useState<Column[]>(() => [
+    { columnId: "Name", width: 100 },
+    { columnId: "Surname", width: 100 }
+  ]);
+  ${` `}
+  const [rows, setRows] = React.useState<Row[]>(() => [
+    {
+      rowId: 0,
+      cells: [
+        { type: "header", text: "Name" },
+        { type: "header", text: "Surname" }
+      ]
+    },
+    {
+      rowId: 1,
+      cells: [
+        { type: "text", text: "Thomas" },
+        { type: "text", text: "Goldman" }
+      ]
+    },
+    {
+      rowId: 2,
+      cells: [
+        { type: "text", text: "Susie" },
+        { type: "text", text: "Spencer" }
+      ]
+    },
+    {
+      rowId: 3,
+      cells: [
+        { type: "text", text: "" },
+        { type: "text", text: "" }
+      ]
+    }
+  ]);
+  ${` `}
+  const handleChanges = (changes: CellChange[]) => {
+    setRows((prevRows) => {
+      changes.forEach(change => {
+        const changeRowIdx = prevRows.findIndex(el => el.rowId === change.rowId);
+        const changeColumnIdx = columns.findIndex(el => el.columnId === change.columnId);
+        prevRows[changeRowIdx].cells[changeColumnIdx] = change.newCell;
+      });
+      return [...prevRows];
+    });
+  };
+  ${` `}
+  return (
+    <ReactGrid
+      rows={rows}
+      columns={columns}
+      onCellsChanged={handleChanges}
+    />
+  );
+}
+${` `}
+render(<App/>)
+`}
+  noInline={true}
+/> 

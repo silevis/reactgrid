@@ -1,0 +1,28 @@
+---
+posttype: "docs"
+title: DateCell
+metaTitle: "DateCell template"
+metaDescription: "ReactGrid docs"
+---
+
+This template formats `Date` object and displays default browser date picker in edit mode. 
+
+#### Implementation
+
+ - Open `DateCell` implementation on <a href="https://github.com/silevis/reactgrid/blob/develop/src/lib/CellTemplates/DateCellTemplate.tsx" target="_blank"> github <i className="fas fa-external-link-alt fa-xs pl-1"></i></a>
+
+#### Interface declaration
+
+```ts
+interface DateCell extends Cell {
+    type: 'date';
+    date?: Date;
+    format?: Intl.DateTimeFormat;
+}
+```
+
+| Property name     | Type                      | Property description | 
+| ------------      | -------------             | -------------------- |
+| `type`            | `date`                    | Type of cell template | 
+| `date?`           | `Date`                    | `Date` object, optional | 
+| `format?`         | `Intl.DateTimeFormat`     | Formats date, if `undefined` formats date according to the currect browser locale | 

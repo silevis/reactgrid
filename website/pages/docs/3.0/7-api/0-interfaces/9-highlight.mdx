@@ -1,0 +1,33 @@
+---
+posttype: "docs"
+title: Highlight
+metaTitle: "Highlight interface"
+metaDescription: "ReactGrid docs"
+--- 
+
+Highlight is an element to mark any cell inside the grid.
+
+Highlight (opposed to *focus*):
+- it can be placed on any cell
+- it must be managed by a developer unlike 'focus'
+
+
+#### Definition
+
+```ts
+interface Highlight {
+    readonly rowId: Id;
+    readonly columnId: Id;
+    readonly borderColor?: string;
+    readonly className?: string;
+}
+```
+
+#### Properties
+
+| Property name     | Type                                      | Property description |
+| -----------       | ------                                    | -------------------- |
+| `rowId`           | [`Id`](/docs/3.0/7-api/1-types/4-id/)     | Row id of the cell to highlight  |
+| `columnId`        | [`Id`](/docs/3.0/7-api/1-types/4-id/)     | Column id of the cell to highlight  |
+| `borderColor`     | `string`                                  | Optional border color |
+| `className`       | `string`                                  | Optional CSS classname of the highlighted element  |

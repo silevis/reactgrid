@@ -1,42 +1,21 @@
 {
-  "name": "@silevis/reactgrid",
-  "version": "5.0.0-alpha.1",
-  "type": "module",
-  "main": "dist/main.js",
-  "types": "dist/main.d.ts",
-  "files": [
-    "dist"
-  ],
-  "scripts": {
-    "dev": "ladle serve --stories=stories/**/*.stories.{js,jsx,ts,tsx}",
-    "prepublishOnly": "npm run build",
-    "build": "tsc && vite build",
-    "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
-    "preview": "vite preview"
-  },
   "dependencies": {
-    "@emotion/react": "^11.11.1",
-    "@types/lodash.isequal": "^4.5.8",
-    "@types/lodash.merge": "^4.6.7",
-    "lodash.isequal": "^4.5.0",
-    "lodash.merge": "^4.6.2",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "zustand": "^4.4.1"
+    "lodash.clonedeep": "^4.5.0",
+    "uuid": "^10.0.0"
   },
+  "scripts": {
+    "lib": "npm run dev --prefix reactgrid",
+    "lib-build": "npm run build --prefix reactgrid",
+    "lib-test": "npm run test --prefix reactgrid",
+    "website": "npm run dev --prefix website"
+  },
+  "name": "reactgrid-monorepo",
+  "version": "5.0.0",
+  "workspaces": [
+    "reactgrid",
+    "website"
+  ],
   "devDependencies": {
-    "@ladle/react": "^2.17.2",
-    "@types/node": "^20.6.2",
-    "@types/react": "^18.2.15",
-    "@types/react-dom": "^18.2.7",
-    "@typescript-eslint/eslint-plugin": "^6.0.0",
-    "@typescript-eslint/parser": "^6.0.0",
-    "@vitejs/plugin-react-swc": "^3.3.2",
-    "eslint": "^8.45.0",
-    "eslint-plugin-react-hooks": "^4.6.0",
-    "eslint-plugin-react-refresh": "^0.4.3",
-    "typescript": "^5.0.2",
-    "vite": "^4.4.5",
-    "vite-plugin-dts": "^3.9.1"
+    "@types/lodash.clonedeep": "^4.5.9"
   }
 }

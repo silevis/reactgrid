@@ -1,0 +1,29 @@
+---
+posttype: "docs"
+title: TimeCell
+metaTitle: "TimeCell interface"
+metaDescription: "ReactGrid docs"
+---
+
+This template formats `Date` object and displays default browser time picker in edit mode.
+Keep in mind: `time` attribute that stores `Date` object instance will be stored with the date of January 1st, 1970 UTC.
+
+#### Implementation
+
+ - Open `TimeCell` implementation on <a href="https://github.com/silevis/reactgrid/blob/develop/src/lib/CellTemplates/TimeCellTemplate.tsx" target="_blank"> github <i className="fas fa-external-link-alt fa-xs pl-1"></i></a>
+
+#### Interface declaration 
+
+```ts
+interface TimeCell extends Cell {
+    type: 'time';
+    time?: Date;
+    format?: Intl.DateTimeFormat;
+}
+```
+
+| Property name     | Type                      | Property description | 
+| ------------      | -------------             | -------------------- |
+| `type`            | `date`                    | Type of cell template | 
+| `time?`           | `Date`                    | `Date` object, optional | 
+| `format?`         | `Intl.DateTimeFormat`     | Formats time, if `undefined` formats it according to current browser locale | 

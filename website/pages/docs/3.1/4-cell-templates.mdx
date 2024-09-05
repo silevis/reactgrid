@@ -1,0 +1,38 @@
+---
+posttype: "docs"
+title: Cell templates
+metaTitle: "Cell templates introduction"
+metaDescription: "ReactGrid docs"
+---
+
+#### Idea of cell templates
+
+In [getting started](/docs/3.1/1-getting-started/) chapter we declared cells array to be part of ReactGrid property.
+
+Each cell template has its own and unique behavior, content formatting and styling.
+
+Nothing stops you from creating your custom cell - read about [creating your own cell template](/docs/3.1/5-create-your-own-cell-template/). 
+
+In the listing below we declared two cells of `header` type, and they are related to the interface of [`HeaderCell`](/docs/3.1/4-cell-templates/6-HeaderCell/) 
+template.
+
+```ts
+cells: [
+    { type: "header", text: "Name" },
+    { type: "header", text: "Surname" }
+]
+```
+
+Every cell object must contain `type` attribute, other keys depend on the exact type of a specific cell.
+
+#### Builtin cell templates
+
+* [`CheckboxCell`](/docs/3.1/4-cell-templates/2-CheckboxCell/)
+* [`DateCell`](/docs/3.1/4-cell-templates/3-DateCell/)
+* [`DropdownCell`](/docs/3.1/4-cell-templates/3a-DropdownCell/)
+* [`EmailCell`](/docs/3.1/4-cell-templates/4-EmailCell/)
+* [`ChevronCell`](/docs/3.1/4-cell-templates/5-ChevronCell/)
+* [`HeaderCell`](/docs/3.1/4-cell-templates/6-HeaderCell/)
+* [`NumberCell`](/docs/3.1/4-cell-templates/7-NumberCell/)
+* [`TextCell`](/docs/3.1/4-cell-templates/8-TextCell/)
+* [`TimeCell`](/docs/3.1/4-cell-templates/9-TimeCell/)

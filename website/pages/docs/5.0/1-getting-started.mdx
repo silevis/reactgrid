@@ -1,0 +1,269 @@
+---
+posttype: "docs"
+title: Getting started
+metaTitle: "Getting started"
+metaDescription: "ReactGrid docs"
+---
+
+#### Introduction
+
+In this guide, we're going to build a very simple React App, which will make use of ReactGrid.
+
+#### NPM Install
+
+```shell
+npm i @silevis/reactgrid
+```
+
+## Integrate ReactGrid into the App
+
+To integrate ReactGrid into your application, you'll need to configure three essential elements: rows, columns, and the data that will populate the grid. Below is a detailed breakdown of how to set these up, including an example configuration file.
+
+### Integration Steps for ReactGrid
+
+#### 1. Setup Configuration File
+
+You can create a configuration file, e.g., `reactgrid.config.ts`, which will hold all the necessary configurations for your grid.
+
+**Note:** Storing grid data in a separate file is optional.
+
+#### 2. Define Data Structures
+
+You need to define the structure of your grid’s data and layout. This involves specifying the columns, rows, and the content that will fill the cells. The following example demonstrates how to configure these elements.
+
+#### Configuration Example
+
+Here is a detailed example of how to set up the `reactgrid.config.ts` file:
+
+
+```tsx
+import { Row, Column } from "@silevis/reactgrid";
+
+export interface CellData {
+  value: string;
+  template: React.ComponentType<any>;
+  style?: React.CSSProperties;
+}
+
+export const initialColumns: Column[] = [
+  { width: "150px", minWidth: 50 },
+  { width: "150px", minWidth: 50 },
+  { width: "150px", minWidth: 50 },
+  { width: "150px", minWidth: 50 },
+];
+
+export const headerRow = ["Name", "Surname", "Email", "City"];
+
+export const initialRows: Row[] = Array.from({ length: 5 }, (_, idx) => {
+  if (idx === 0) return { height: "30px", reorderable: false };
+
+  return { height: "min-content", reorderable: true };
+});
+
+export const dataRows = [
+  ["Jake", "Smith", "j.smith@gmail.com", "New York"],
+  ["Emily", "Jones", "e.jones@hotmail.com", "Paris"],
+  ["Liam", "Brown", "l.brown@yahoo.com", "Tokyo"],
+  ["Sophia", "Taylor", "s.taylor@gmail.com", "Sydney"],
+];
+
+export const initialGridData: CellData[][] = [headerRow, ...dataRows].map(
+  (row, rowIdx) =>
+    row.map((cellValue, index) => {
+      const isHeaderRow = rowIdx === 0;
+
+      if (isHeaderRow) {
+        return {
+          value: cellValue,
+          template: HeaderCell,
+          style: {
+            backgroundColor: "#55bc71",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            fontWeight: "bold",
+          },
+        };
+      }
+
+      return { value: cellValue, template: TextCell };
+    })
+);
+```
+
+#### Pass the data to ReactGrid
+
+Next, you can integrate the above data into the component where ReactGrid will be utilized. The [`cellMatrixBuilder`](https://github.com/silevis/reactgrid/blob/v5-dev/lib/utils/cellMatrixBuilder.ts) provides a type-safe way to construct the cell grid, including support for merged cells.
+
+**Note:** If you prefer not to use [`cellMatrixBuilder`](https://github.com/silevis/reactgrid/blob/v5-dev/lib/utils/cellMatrixBuilder.ts), you can still create the cell matrix in your own way.
+
+```tsx
+function App() {
+  const [columns, setColumns] = useState<Array<Column>>(initialColumns);
+  const [rows, setRows] = useState<Array<Row>>(initialRows);
+  const [gridData, setGridData] =
+    useState<(CellData | null)[][]>(initialGridData);
+
+  const cells = cellMatrixBuilder(({ setCell }) => {
+    gridData.forEach((row, rowIdx) => {
+      row.forEach((cell, colIdx) => {
+        if (cell === null) return;
+
+        setCell(rowIdx, colIdx, cell.template, {
+          value: cell.value,
+          style: cell.style,
+          onValueChanged: (data) => {
+            setGridData((prev) => {
+              const next = [...prev];
+              if (next[rowIdx][colIdx] !== null) {
+                next[rowIdx][colIdx].value = data;
+              }
+              return next;
+            });
+          },
+        });
+      });
+    });
+  });
+
+  return (
+    <div>
+      <ReactGrid
+        id="example"
+        initialFocusLocation={{ rowIndex: 2, colIndex: 1 }}
+        rows={rows}
+        columns={columns}
+        cells={cells}
+      />
+    </div>
+  );
+}
+```
+
+#### Live example
+
+After having followed this guide, your `App.tsx` file should look like this.
+
+
+import LiveCode from "@/nextra/components/LiveCode.tsx";
+import {
+  ReactGrid,
+  Column,
+  Row,
+  TextCell,
+  HeaderCell,
+  cellMatrixBuilder,
+} from "@silevis/reactgrid";
+import { useState } from "react";
+
+<LiveCode
+scope={{
+  useState,
+  ReactGrid,
+  Column,
+  Row,
+  cellMatrixBuilder,
+  TextCell, 
+  HeaderCell
+}}
+code={`
+interface CellData {
+  value: string;
+  template: React.ComponentType<any>;
+  style?: React.CSSProperties;
+}
+
+const initialColumns: Column[] = [
+  { width: "180px", minWidth: 50 },
+  { width: "180px", minWidth: 50 },
+  { width: "180px", minWidth: 50 },
+  { width: "180px", minWidth: 50 },
+];
+
+const headerRow = ["Name", "Surname", "Email", "City"];
+
+const initialRows: Row[] = Array.from({ length: 5 }, (_, idx) => {
+  if (idx === 0) return { height: "30px", reorderable: false };
+  return { height: "min-content", reorderable: true };
+});
+
+const dataRows = [
+  ["Jake", "Smith", "j.smith@gmail.com", "New York"],
+  ["Emily", "Jones", "e.jones@hotmail.com", "Paris"],
+  ["Liam", "Brown", "l.brown@yahoo.com", "Tokyo"],
+  ["Sophia", "Taylor", "s.taylor@gmail.com", "Sydney"],
+];
+
+const initialGridData: CellData[][] = [headerRow, ...dataRows].map(
+  (row, rowIdx) =>
+    row.map((cellValue, index) => {
+      const isHeaderRow = rowIdx === 0;
+
+      if (isHeaderRow) {
+        return {
+          value: cellValue,
+          template: HeaderCell,
+          style: {
+            backgroundColor: "#55bc71",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            fontWeight: "bold",
+          },
+        };
+      }
+
+      return {
+        value: cellValue,
+        template: TextCell,
+      };
+    })
+);
+
+function App() {
+  const [columns, setColumns] = useState<Array<Column>>(initialColumns);
+  const [rows, setRows] = useState<Array<Row>>(initialRows);
+  const [gridData, setGridData] = useState<(CellData | null)[][]>(initialGridData);
+
+  const cells = cellMatrixBuilder(({ setCell }) => {
+    gridData.forEach((row, rowIdx) => {
+      row.forEach((cell, colIdx) => {
+        if (cell === null) return;
+
+        setCell(rowIdx, colIdx, cell.template, {
+          value: cell.value,
+          style: cell.style,
+          onValueChanged: (data) => {
+            setGridData((prev) => {
+              const next = [...prev];
+              if (next[rowIdx][colIdx] !== null) {
+                next[rowIdx][colIdx].value = data;
+              }
+              return next;
+            });
+          },
+        });
+      });
+    });
+  });
+
+  return (
+    <div>
+      <ReactGrid
+        id="example"
+        rows={rows}
+        columns={columns}
+        cells={cells}
+      />
+    </div>
+  );
+}
+
+render(<App />, document.getElementById("root"));
+`}
+/>
+
+#### Summary
+
+You should now have a basic understanding of what ReactGrid is and how it can be used.
+Continue to the next page for more advanced usage examples.
