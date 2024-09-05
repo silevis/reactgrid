@@ -4,6 +4,11 @@
   "type": "module",
   "main": "dist/main.js",
   "types": "dist/main.d.ts",
+  "author": "Silevis Software",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/silevis/reactgrid.git"
+  },
   "files": [
     "dist"
   ],
