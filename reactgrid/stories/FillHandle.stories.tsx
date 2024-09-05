@@ -1,12 +1,39 @@
 import React, { StrictMode, useState } from "react";
-import { ReactGrid, CellData } from "../lib/main";
+import { ReactGrid } from "../lib/main";
 import { StoryDefault } from "@ladle/react";
 import { ErrorBoundary } from "../lib/components/ErrorBoundary";
-import { rgStyles, initialGridData } from "./utils/examplesConfig";
+import { rgStyles, generateCells, gridData } from "./utils/examplesConfig";
 import { handleFill } from "./utils/handleFill";
 
 export const FillHandleExample = () => {
-  const [cells, setCells] = useState<CellData[]>(initialGridData);
+  const [cells, setCells] = useState(
+    generateCells(gridData, {
+      onValueChanged: (cellIndex, newValue) => {
+        setCells((prev) => {
+          const next = [...prev];
+          const cell = next.find(
+            (cell) => cell.rowIndex === cellIndex.rowIndex && cell.colIndex === cellIndex.colIndex
+          );
+          if (cell && cell.props !== undefined) {
+            cell.props.value = newValue;
+          }
+          return next;
+        });
+      },
+      onTextChanged: (cellIndex, newText) => {
+        setCells((prev) => {
+          const next = [...prev];
+          const cell = next.find(
+            (cell) => cell.rowIndex === cellIndex.rowIndex && cell.colIndex === cellIndex.colIndex
+          );
+          if (cell && cell.props !== undefined) {
+            cell.props.text = newText;
+          }
+          return next;
+        });
+      },
+    })
+  );
 
   const [counter, setCounter] = useState(0);
 
@@ -21,18 +48,6 @@ export const FillHandleExample = () => {
         styles={rgStyles}
         onFillHandle={(selectedArea, fillRange) => handleFill(selectedArea, fillRange, setCells)}
         initialFocusLocation={{ rowIndex: 2, colIndex: 1 }}
-        onCellChanged={(cellLocation, newValue) => {
-          setCells((prev) => {
-            const next = [...prev];
-            const cell = next.find(
-              (cell) => cell.rowIndex === cellLocation.rowIndex && cell.colIndex === cellLocation.colIndex
-            );
-            if (cell && cell.props !== undefined) {
-              cell.props.value = newValue;
-            }
-            return next;
-          });
-        }}
         cells={cells}
       />
     </div>

@@ -1,9 +1,9 @@
 import React from "react";
 import { StrictMode, useState } from "react";
-import { ReactGrid, CellData, Column } from "../lib/main";
+import { ReactGrid, CellData, Column, Cell } from "../lib/main";
 import { StoryDefault } from "@ladle/react";
 import { ErrorBoundary } from "../lib/components/ErrorBoundary";
-import { rgStyles, initialGridData } from "./utils/examplesConfig";
+import { rgStyles, initialGridData, generateCells } from "./utils/examplesConfig";
 import { handleColumnReorder } from "./utils/handleColumnReorder";
 
 export const ColumnReorderExample = () => {
@@ -14,7 +14,9 @@ export const ColumnReorderExample = () => {
     { colIndex: 3, width: 50 },
   ]);
 
-  const [cells, setCells] = useState<CellData[]>(initialGridData);
+  const [data, setData] = useState<CellData[]>(initialGridData);
+
+  const [cells] = useState<Cell[]>(generateCells(data));
 
   return (
     <div>
@@ -27,18 +29,6 @@ export const ColumnReorderExample = () => {
         }
         initialFocusLocation={{ rowIndex: 2, colIndex: 1 }}
         columns={columns}
-        onCellChanged={(cellLocation, newValue) => {
-          setCells((prev) => {
-            const next = [...prev];
-            const cell = next.find(
-              (cell) => cell.rowIndex === cellLocation.rowIndex && cell.colIndex === cellLocation.colIndex
-            );
-            if (cell && cell.props !== undefined) {
-              cell.props.value = newValue;
-            }
-            return next;
-          });
-        }}
         cells={cells}
       />
     </div>

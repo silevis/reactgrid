@@ -11,7 +11,7 @@ import { ColumnReorderBehavior } from "./ColumnReorderBehavior.ts";
 import { RowReorderBehavior } from "./RowReorderBehavior.ts";
 import { handlePaneOverlap } from "../utils/handlePaneOverlap.ts";
 import { getHiddenTargetFocusByIdx } from "../utils/getHiddenTargetFocusByIdx.ts";
-import { EMPTY_AREA } from "../types/InternalModel.ts";
+import { EMPTY_AREA, GridLookup, GridLookupCallbacks } from "../types/InternalModel.ts";
 import { selectEntireColumn } from "../utils/selectEntireColumn.ts";
 import { selectEntireRow } from "../utils/selectEntireRow.ts";
 import { canReorder } from "../utils/canReorder.ts";
@@ -19,6 +19,8 @@ import { getHiddenFocusTargetLocation } from "../utils/getHiddenFocusTargetLocat
 import { isReorderBehavior } from "../utils/isReorderBehavior.ts";
 import { getCellIndexesFromPointerLocation } from "../utils/getCellIndexesFromPointerLocation.ts";
 import { getCellContainerByIndexes } from "../utils/getCellContainerByIndexes.ts";
+import { findGridLookupCallbacks } from "../utils/findGridLookupCallbacks.ts";
+import { generateClipboardHtml } from "../utils/generateClipboardHtml.ts";
 
 const devEnvironment = isDevEnvironment();
 
@@ -320,6 +322,8 @@ export const DefaultBehavior = (config: DefaultBehaviorConfig = CONFIG_DEFAULTS)
   handleCopy: function (event, store) {
     devEnvironment && console.log("DB/handleCopy");
 
+    event.preventDefault();
+
     const focusedCell = store.getCellByIndexes(store.focusedLocation.rowIndex, store.focusedLocation.colIndex);
 
     if (!focusedCell) return store;
@@ -332,7 +336,20 @@ export const DefaultBehavior = (config: DefaultBehaviorConfig = CONFIG_DEFAULTS)
       cellsArea = getCellArea(store, focusedCell);
     }
 
-    store.onCopy?.(cellsArea);
+    if (store.onCopy === undefined) {
+      const gridLookup: GridLookup = store.gridLookup;
+
+      const result: GridLookupCallbacks[] = findGridLookupCallbacks(cellsArea, gridLookup);
+
+      const values = result.map((element) => element.onStringValueRequsted());
+
+      const htmlData = generateClipboardHtml(cellsArea, gridLookup);
+
+      event.clipboardData.setData("text/html", htmlData);
+      event.clipboardData.setData("text/plain", values.join("\t"));
+    } else {
+      store.onCopy?.(cellsArea);
+    }
 
     return store;
   },
@@ -340,6 +357,8 @@ export const DefaultBehavior = (config: DefaultBehaviorConfig = CONFIG_DEFAULTS)
   handleCut: function (event, store) {
     devEnvironment && console.log("DB/handleCut");
 
+    event.preventDefault();
+
     const focusedCell = store.getCellByIndexes(store.focusedLocation.rowIndex, store.focusedLocation.colIndex);
 
     if (!focusedCell) return store;
@@ -352,7 +371,22 @@ export const DefaultBehavior = (config: DefaultBehaviorConfig = CONFIG_DEFAULTS)
       cellsArea = getCellArea(store, focusedCell);
     }
 
-    store.onCut?.(cellsArea);
+    if (store.onCut === undefined) {
+      const gridLookup: GridLookup = store.gridLookup;
+
+      const result: GridLookupCallbacks[] = findGridLookupCallbacks(cellsArea, gridLookup);
+
+      result.forEach((element) => element.onStringValueReceived(""));
+
+      const values = result.map((element) => element.onStringValueRequsted());
+
+      const htmlData = generateClipboardHtml(cellsArea, gridLookup);
+
+      event.clipboardData.setData("text/html", htmlData);
+      event.clipboardData.setData("text/plain", values.join("\t"));
+    } else {
+      store.onCut?.(cellsArea);
+    }
 
     return store;
   },
@@ -360,6 +394,8 @@ export const DefaultBehavior = (config: DefaultBehaviorConfig = CONFIG_DEFAULTS)
   handlePaste: function (event, store) {
     devEnvironment && console.log("DB/handlePaste");
 
+    event.preventDefault();
+
     const focusedCell = store.getCellByIndexes(store.focusedLocation.rowIndex, store.focusedLocation.colIndex);
 
     if (!focusedCell) return store;
@@ -372,8 +408,69 @@ export const DefaultBehavior = (config: DefaultBehaviorConfig = CONFIG_DEFAULTS)
       cellsArea = getCellArea(store, focusedCell);
     }
 
-    store.onPaste?.(cellsArea, event.clipboardData.getData("text/html"));
+    if (store.onPaste === undefined) {
+      const gridLookup: GridLookup = store.gridLookup;
 
-    return store;
+      const html = event.clipboardData.getData("text/html");
+
+      if (!html) return store;
+
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(html, "text/html");
+
+      const rows = doc.querySelectorAll("tr");
+      const firstRowCells = rows[0].querySelectorAll("td");
+
+      if (rows.length === 1 && firstRowCells.length === 1) {
+        const singleValue = firstRowCells[0].textContent || "";
+        for (let rowIndex = cellsArea.startRowIdx; rowIndex < cellsArea.endRowIdx; rowIndex++) {
+          for (let colIndex = cellsArea.startColIdx; colIndex < cellsArea.endColIdx; colIndex++) {
+            const gridCell = gridLookup.get(`${rowIndex} ${colIndex}`);
+            gridCell?.onStringValueReceived(singleValue);
+          }
+        }
+      } else {
+        rows.forEach((row, rowIndex) => {
+          const cells = row.querySelectorAll("td");
+          cells.forEach((cell, colIndex) => {
+            const value = cell.textContent || "";
+            const gridCell = gridLookup.get(`${cellsArea.startRowIdx + rowIndex} ${cellsArea.startColIdx + colIndex}`);
+            if (gridCell) {
+              gridCell.onStringValueReceived(value);
+            }
+          });
+        });
+      }
+
+      let newSelectedArea;
+
+      // If only one cell was pasted
+      if (rows.length === 1 && firstRowCells.length === 1) {
+        newSelectedArea = {
+          startRowIdx: cellsArea.startRowIdx,
+          endRowIdx: cellsArea.endRowIdx,
+          startColIdx: cellsArea.startColIdx,
+          endColIdx: cellsArea.startColIdx + rows[0].querySelectorAll("td").length,
+        };
+      }
+      // If multiple cells were pasted
+      else {
+        const endRowIdx = Math.min(cellsArea.startRowIdx + rows.length, store.rows.length);
+        const endColIdx = Math.min(cellsArea.startColIdx + rows[0].querySelectorAll("td").length, store.columns.length);
+
+        newSelectedArea = {
+          startRowIdx: cellsArea.startRowIdx,
+          endRowIdx: endRowIdx,
+          startColIdx: cellsArea.startColIdx,
+          endColIdx: endColIdx,
+        };
+      }
+
+      return { ...store, selectedArea: newSelectedArea };
+    } else {
+      store.onPaste?.(cellsArea, event.clipboardData.getData("text/html"));
+
+      return store;
+    }
   },
 });

@@ -7,5 +7,13 @@ interface NonEditableCellProps {
 }
 
 export const NonEditableCell: FC<NonEditableCellProps> = ({ value }) => {
-  return <CellWrapper style={{ padding: ".2rem", textAlign: "center", outline: "none" }}>{value}</CellWrapper>;
+  return (
+    <CellWrapper
+      onStringValueRequsted={() => value?.toString() || ""}
+      onStringValueReceived={() => {}}
+      style={{ padding: ".5rem", textAlign: "center", outline: "none" }}
+    >
+      {value}
+    </CellWrapper>
+  );
 };
