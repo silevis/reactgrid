@@ -1,6 +1,6 @@
 import React from "react";
 import { StrictMode, useState } from "react";
-import { ReactGrid, CellData, Column } from "../lib/main";
+import { ReactGrid, Cell, Column } from "../lib/main";
 import { StoryDefault } from "@ladle/react";
 import { ErrorBoundary } from "../lib/components/ErrorBoundary";
 import { rgStyles, initialGridData } from "./utils/examplesConfig";
@@ -14,7 +14,7 @@ export const ColumnReorderExample = () => {
     { colIndex: 3, width: 50 },
   ]);
 
-  const [cells, setCells] = useState<CellData[]>(initialGridData);
+  const [cells, setCells] = useState<Cell[]>(initialGridData);
 
   return (
     <div>

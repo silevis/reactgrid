@@ -1,12 +1,12 @@
 import React, { StrictMode, useState } from "react";
-import { ReactGrid, CellData } from "../lib/main";
+import { ReactGrid, Cell } from "../lib/main";
 import { StoryDefault } from "@ladle/react";
 import { ErrorBoundary } from "../lib/components/ErrorBoundary";
 import { rgStyles, initialGridData } from "./utils/examplesConfig";
 import { handleFill } from "./utils/handleFill";
 
 export const FillHandleExample = () => {
-  const [cells, setCells] = useState<CellData[]>(initialGridData);
+  const [cells, setCells] = useState<Cell[]>(initialGridData);
 
   const [counter, setCounter] = useState(0);
 

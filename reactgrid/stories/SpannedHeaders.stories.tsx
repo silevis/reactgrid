@@ -3,7 +3,7 @@ import { StrictMode, useState } from "react";
 import { TextCell } from "../lib/cellTemplates/TextCell";
 import { ReactGrid } from "../lib/components/ReactGrid";
 import { ErrorBoundary } from "../lib/components/ErrorBoundary";
-import { CellData, Column, Row } from "../lib/types/PublicModel";
+import { Cell, Column, Row } from "../lib/types/PublicModel";
 import { handleFill } from "./utils/handleFill";
 import { handleColumnReorder } from "./utils/handleColumnReorder";
 import { handleRowReorder } from "./utils/handleRowReorder";
@@ -15,7 +15,7 @@ const ROW_COUNT = 4;
 const COLUMN_COUNT = 4;
 
 export const SpannedHeaders = () => {
-  const [cells, setCells] = useState<CellData[]>(
+  const [cells, setCells] = useState<Cell[]>(
     Array.from({ length: ROW_COUNT })
       .flatMap((_, i) =>
         Array.from({ length: COLUMN_COUNT }).map((_, j) => {

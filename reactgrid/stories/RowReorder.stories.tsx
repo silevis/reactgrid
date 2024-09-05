@@ -1,5 +1,5 @@
 import React, { StrictMode, useState } from "react";
-import { CellData, ReactGrid, Row } from "../lib/main";
+import { Cell, ReactGrid, Row } from "../lib/main";
 import { StoryDefault } from "@ladle/react";
 import { ErrorBoundary } from "../lib/components/ErrorBoundary";
 import { rgStyles, initialGridData } from "./utils/examplesConfig";
@@ -7,7 +7,7 @@ import { handleRowReorder } from "./utils/handleRowReorder";
 
 export const RowReorderExample = () => {
   const [rows, setRows] = useState<Row[]>([{ rowIndex: 0, height: 40 }]);
-  const [cells, setCells] = useState<CellData[]>(initialGridData);
+  const [cells, setCells] = useState<Cell[]>(initialGridData);
 
   return (
     <div>

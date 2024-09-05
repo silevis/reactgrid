@@ -1,6 +1,6 @@
 import React from "react";
 import { StrictMode, useState } from "react";
-import { ReactGrid, CellData, TextCell, Column, Row } from "../lib/main";
+import { ReactGrid, Cell, TextCell, Column, Row } from "../lib/main";
 import { StoryDefault } from "@ladle/react";
 import { ErrorBoundary } from "../lib/components/ErrorBoundary";
 import { rgStyles } from "./utils/examplesConfig";
@@ -13,7 +13,7 @@ export const TestGridExample = () => {
     { colIndex: 2, width: 100 },
   ]);
 
-  const [cells, setCells] = useState<CellData[]>(() => [
+  const [cells, setCells] = useState<Cell[]>(() => [
     {
       rowIndex: 0,
       colIndex: 0,

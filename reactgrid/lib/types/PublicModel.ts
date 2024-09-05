@@ -49,28 +49,6 @@ export type CellMap<RowIdxType extends number = number, ColIdxType extends numbe
   Cell | SpanMember
 >;
 
-export type CellData = {
-  /** User defined row index, must exist in the `rows` array! */
-  rowIndex: number;
-  /** User defined column index, must exist in the `columns` array! */
-  colIndex: number;
-  /** Cell's template - typically the name of the React component. Should start from an uppercase letter. */
-  // Type `any` is required to use React.ComponentType here
-  Template: React.ComponentType<any>;
-  /** Optional CSS styles to apply to the cell. */
-  style?: React.CSSProperties;
-  /** Represents how many rows the cell should occupy. */
-  rowSpan?: number;
-  /** Represents how many columns the cell should occupy. */
-  colSpan?: number;
-  /** Marks a cell as focusable or not. */
-  isFocusable?: boolean;
-  /** Marks a cell as selectable or not. */
-  isSelectable?: boolean;
-  /** Props passed to the cell's template. Types and structure are inherited from the Template prop, but instead of JSX properties, it's an object. */
-  props?: React.ComponentPropsWithRef<Cell["Template"]>;
-};
-
 export type SpanMember = {
   originRowIndex: number;
   originColIndex: number;
@@ -137,7 +115,7 @@ export interface ReactGridProps {
   rows?: Row[];
   columns?: Column[];
 
-  cells: CellData[];
+  cells: Cell[];
 
   onAreaSelected?: (selectedArea: NumericalRange) => void;
   onCellFocused?: (cellLocation: IndexedLocation) => void;

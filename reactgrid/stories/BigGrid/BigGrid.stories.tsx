@@ -3,7 +3,7 @@ import { StoryDefault } from "@ladle/react";
 import { StrictMode, useState } from "react";
 import { ReactGrid } from "../../lib/components/ReactGrid";
 import { ErrorBoundary } from "../../lib/components/ErrorBoundary";
-import { CellData, Column, Row } from "../../lib/types/PublicModel";
+import { Cell, Column, Row } from "../../lib/types/PublicModel";
 import { handleFill } from "../utils/handleFill";
 import { handleCut } from "../utils/handleCut";
 import { handlePaste } from "../utils/handlePaste";
@@ -15,8 +15,8 @@ import { handleResizeColumn } from "../utils/handleResizeColumn";
 import { GridApi } from "../components/GridApi";
 
 export const BigGrid = () => {
-  const [cells, setCells] = useState<CellData[]>(
-    Array.from({ length: ROW_COUNT * COLUMN_COUNT }).reduce<CellData[]>((acc, _, index) => {
+  const [cells, setCells] = useState<Cell[]>(
+    Array.from({ length: ROW_COUNT * COLUMN_COUNT }).reduce<Cell[]>((acc, _, index) => {
       const i = Math.floor(index / COLUMN_COUNT);
       const j = index % COLUMN_COUNT;
       const cellData = generateCellData(i, j);
