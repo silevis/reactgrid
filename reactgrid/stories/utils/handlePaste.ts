@@ -1,9 +1,33 @@
-import { Cell, NumericalRange } from "../../lib/types/PublicModel";
+import { GridLookup } from "../../lib/types/InternalModel";
+import { NumericalRange } from "../../lib/types/PublicModel";
 
-export const handlePaste = (
-  selectedArea: NumericalRange,
-  pastedData: string,
-  setData: React.Dispatch<React.SetStateAction<Cell[]>>
-) => {
-  // implement handlePaste
+export const handlePaste = (event, cellsArea: NumericalRange, gridLookup: GridLookup) => {
+  const html = event.clipboardData.getData("text/html");
+
+  const parser = new DOMParser();
+  const doc = parser.parseFromString(html, "text/html");
+
+  const rows = doc.querySelectorAll("tr");
+  const firstRowCells = rows[0].querySelectorAll("td");
+
+  if (rows.length === 1 && firstRowCells.length === 1) {
+    const singleValue = firstRowCells[0].textContent || "";
+    for (let rowIndex = cellsArea.startRowIdx; rowIndex < cellsArea.endRowIdx; rowIndex++) {
+      for (let colIndex = cellsArea.startColIdx; colIndex < cellsArea.endColIdx; colIndex++) {
+        const gridCell = gridLookup.get(`${rowIndex} ${colIndex}`);
+        gridCell?.onStringValueReceived(singleValue);
+      }
+    }
+  } else {
+    rows.forEach((row, rowIndex) => {
+      const cells = row.querySelectorAll("td");
+      cells.forEach((cell, colIndex) => {
+        const value = cell.textContent || "";
+        const gridCell = gridLookup.get(`${cellsArea.startRowIdx + rowIndex} ${cellsArea.startColIdx + colIndex}`);
+        if (gridCell) {
+          gridCell.onStringValueReceived(value);
+        }
+      });
+    });
+  }
 };

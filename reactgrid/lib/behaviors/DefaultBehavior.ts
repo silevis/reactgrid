@@ -336,20 +336,7 @@ export const DefaultBehavior = (config: DefaultBehaviorConfig = CONFIG_DEFAULTS)
       cellsArea = getCellArea(store, focusedCell);
     }
 
-    if (store.onCopy === undefined) {
-      const gridLookup: GridLookup = store.gridLookup;
-
-      const result: GridLookupCallbacks[] = findGridLookupCallbacks(cellsArea, gridLookup);
-
-      const values = result.map((element) => element.onStringValueRequsted());
-
-      const htmlData = generateClipboardHtml(cellsArea, gridLookup);
-
-      event.clipboardData.setData("text/html", htmlData);
-      event.clipboardData.setData("text/plain", values.join("\t"));
-    } else {
-      store.onCopy?.(cellsArea);
-    }
+    store.onCopy?.(event, cellsArea, store.gridLookup);
 
     return store;
   },
@@ -371,22 +358,7 @@ export const DefaultBehavior = (config: DefaultBehaviorConfig = CONFIG_DEFAULTS)
       cellsArea = getCellArea(store, focusedCell);
     }
 
-    if (store.onCut === undefined) {
-      const gridLookup: GridLookup = store.gridLookup;
-
-      const result: GridLookupCallbacks[] = findGridLookupCallbacks(cellsArea, gridLookup);
-
-      result.forEach((element) => element.onStringValueReceived(""));
-
-      const values = result.map((element) => element.onStringValueRequsted());
-
-      const htmlData = generateClipboardHtml(cellsArea, gridLookup);
-
-      event.clipboardData.setData("text/html", htmlData);
-      event.clipboardData.setData("text/plain", values.join("\t"));
-    } else {
-      store.onCut?.(cellsArea);
-    }
+    store.onCut?.(event, cellsArea, store.gridLookup);
 
     return store;
   },
@@ -408,69 +380,40 @@ export const DefaultBehavior = (config: DefaultBehaviorConfig = CONFIG_DEFAULTS)
       cellsArea = getCellArea(store, focusedCell);
     }
 
-    if (store.onPaste === undefined) {
-      const gridLookup: GridLookup = store.gridLookup;
+    store.onPaste?.(event, cellsArea, store.gridLookup);
 
-      const html = event.clipboardData.getData("text/html");
+    const html = event.clipboardData.getData("text/html");
 
-      if (!html) return store;
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(html, "text/html");
 
-      const parser = new DOMParser();
-      const doc = parser.parseFromString(html, "text/html");
+    const rows = doc.querySelectorAll("tr");
+    const firstRowCells = rows[0].querySelectorAll("td");
 
-      const rows = doc.querySelectorAll("tr");
-      const firstRowCells = rows[0].querySelectorAll("td");
+    let newSelectedArea;
 
-      if (rows.length === 1 && firstRowCells.length === 1) {
-        const singleValue = firstRowCells[0].textContent || "";
-        for (let rowIndex = cellsArea.startRowIdx; rowIndex < cellsArea.endRowIdx; rowIndex++) {
-          for (let colIndex = cellsArea.startColIdx; colIndex < cellsArea.endColIdx; colIndex++) {
-            const gridCell = gridLookup.get(`${rowIndex} ${colIndex}`);
-            gridCell?.onStringValueReceived(singleValue);
-          }
-        }
-      } else {
-        rows.forEach((row, rowIndex) => {
-          const cells = row.querySelectorAll("td");
-          cells.forEach((cell, colIndex) => {
-            const value = cell.textContent || "";
-            const gridCell = gridLookup.get(`${cellsArea.startRowIdx + rowIndex} ${cellsArea.startColIdx + colIndex}`);
-            if (gridCell) {
-              gridCell.onStringValueReceived(value);
-            }
-          });
-        });
-      }
-
-      let newSelectedArea;
-
-      // If only one cell was pasted
-      if (rows.length === 1 && firstRowCells.length === 1) {
-        newSelectedArea = {
-          startRowIdx: cellsArea.startRowIdx,
-          endRowIdx: cellsArea.endRowIdx,
-          startColIdx: cellsArea.startColIdx,
-          endColIdx: cellsArea.startColIdx + rows[0].querySelectorAll("td").length,
-        };
-      }
-      // If multiple cells were pasted
-      else {
-        const endRowIdx = Math.min(cellsArea.startRowIdx + rows.length, store.rows.length);
-        const endColIdx = Math.min(cellsArea.startColIdx + rows[0].querySelectorAll("td").length, store.columns.length);
-
-        newSelectedArea = {
-          startRowIdx: cellsArea.startRowIdx,
-          endRowIdx: endRowIdx,
-          startColIdx: cellsArea.startColIdx,
-          endColIdx: endColIdx,
-        };
-      }
-
-      return { ...store, selectedArea: newSelectedArea };
-    } else {
-      store.onPaste?.(cellsArea, event.clipboardData.getData("text/html"));
-
-      return store;
+    // If only one cell was pasted
+    if (rows.length === 1 && firstRowCells.length === 1) {
+      newSelectedArea = {
+        startRowIdx: cellsArea.startRowIdx,
+        endRowIdx: cellsArea.endRowIdx,
+        startColIdx: cellsArea.startColIdx,
+        endColIdx: cellsArea.startColIdx + rows[0].querySelectorAll("td").length,
+      };
     }
+    // If multiple cells were pasted
+    else {
+      const endRowIdx = Math.min(cellsArea.startRowIdx + rows.length, store.rows.length);
+      const endColIdx = Math.min(cellsArea.startColIdx + rows[0].querySelectorAll("td").length, store.columns.length);
+
+      newSelectedArea = {
+        startRowIdx: cellsArea.startRowIdx,
+        endRowIdx: endRowIdx,
+        startColIdx: cellsArea.startColIdx,
+        endColIdx: endColIdx,
+      };
+    }
+
+    return { ...store, selectedArea: newSelectedArea };
   },
 });

@@ -23,7 +23,6 @@ export const TextCell: FC<TextCellProps> = ({ text: initialText, onTextChanged }
 
   return (
     <CellWrapper
-      // stringValueForCopy={initialText}
       onStringValueRequsted={() => initialText}
       onStringValueReceived={(v) => onTextChanged(v)}
       onTouchEnd={handleDoubleTouch}

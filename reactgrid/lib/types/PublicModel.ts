@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React from "react";
 import { Behavior, BehaviorId } from "./Behavior";
-import { IndexedLocation, NestedStylesPartial } from "./InternalModel";
+import { GridLookup, IndexedLocation, NestedStylesPartial } from "./InternalModel";
 import { RGTheme } from "./RGTheme";
 
 export type Row = {
@@ -125,8 +125,6 @@ export interface ReactGridProps {
   stickyBottomRows?: number;
   stickyLeftColumns?: number;
 
-  // enableVirtualization?: boolean;
-
   enableColumnSelectionOnFirstRow?: boolean;
 
   enableRowSelectionOnFirstColumn?: boolean;
@@ -138,10 +136,10 @@ export interface ReactGridProps {
 
   onFocusLocationChanging?: ({ location }: { location: IndexedLocation }) => boolean;
   onFocusLocationChanged?: ({ location }: { location: IndexedLocation }) => void;
-  onFillHandle?: (selectedArea: NumericalRange, fillRange: NumericalRange) => void;
-  onCut?: (selectedArea: NumericalRange) => void;
-  onCopy?: (selectedArea: NumericalRange) => void;
-  onPaste?: (selectedArea: NumericalRange, pastedData: string) => void;
+  onFillHandle?: (selectedArea: NumericalRange, fillRange: NumericalRange, gridLookup: GridLookup) => void;
+  onCut?: (event: React.ClipboardEvent<HTMLDivElement>, cellsRange: NumericalRange, gridLookup: GridLookup) => void;
+  onCopy?: (event: React.ClipboardEvent<HTMLDivElement>, cellsRange: NumericalRange, gridLookup: GridLookup) => void;
+  onPaste?: (event: React.ClipboardEvent<HTMLDivElement>, cellsRange: NumericalRange, gridLookup: GridLookup) => void;
   onColumnReorder?: (selectedColIndexes: number[], destinationColIdx: number) => void;
   onRowReorder?: (selectedRowIndexes: number[], destinationRowIdx: number) => void;
   onResizeColumn?: (width: number, columnIdx: number[]) => void;

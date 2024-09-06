@@ -6,24 +6,25 @@ import { generateCells, peopleArr, rgStyles } from "./utils/examplesConfig";
 import { handleResizeColumn } from "./utils/handleResizeColumn";
 import { handleColumnReorder } from "./utils/handleColumnReorder";
 import { handleRowReorder } from "./utils/handleRowReorder";
-// import { handleCut } from "./utils/handleCut";
-// import { handlePaste } from "./utils/handlePaste";
-// import { handleRowReorder } from "./utils/handleRowReorder";
+import { handleFill } from "./utils/handleFill";
+import { handleCopy } from "./utils/handleCopy";
+import { handleCut } from "./utils/handleCut";
+import { handlePaste } from "./utils/handlePaste";
 
 export const CutCopyPasteExample = () => {
   const [rows, setRows] = useState<Row[]>([
-    { rowIndex: 0, initialRowIndex: 0, height: 30, reorderable: false },
-    { rowIndex: 1, initialRowIndex: 1, height: 30 },
-    { rowIndex: 2, initialRowIndex: 2, height: 30 },
-    { rowIndex: 3, initialRowIndex: 3, height: 30 },
-    { rowIndex: 4, initialRowIndex: 4, height: 30 },
+    { initialRowIndex: 0, rowIndex: 0, height: 30, reorderable: false },
+    { initialRowIndex: 1, rowIndex: 1, height: 30 },
+    { initialRowIndex: 2, rowIndex: 2, height: 30 },
+    { initialRowIndex: 3, rowIndex: 3, height: 30 },
+    { initialRowIndex: 4, rowIndex: 4, height: 30 },
   ]);
 
   const [columns, setColumns] = useState<Column[]>([
-    { colIndex: 0, initialColIndex: 0, width: 100 },
-    { colIndex: 1, initialColIndex: 1, width: 50 },
-    { colIndex: 2, initialColIndex: 2, width: 200 },
-    { colIndex: 3, initialColIndex: 3, width: 100 },
+    { initialColIndex: 0, colIndex: 0, width: 100 },
+    { initialColIndex: 1, colIndex: 1, width: 50 },
+    { initialColIndex: 2, colIndex: 2, width: 200 },
+    { initialColIndex: 3, colIndex: 3, width: 100 },
   ]);
 
   const [people, setPeople] = useState(peopleArr);
@@ -34,9 +35,7 @@ export const CutCopyPasteExample = () => {
     });
   };
 
-  const cells = generateCells(people, rows, columns, updatePerson);
-
-  console.log("cells", cells);
+  const cells = generateCells(rows, columns, people, updatePerson);
 
   return (
     <div>
@@ -51,6 +50,10 @@ export const CutCopyPasteExample = () => {
         onColumnReorder={(selectedColIndexes, destinationColIdx) =>
           handleColumnReorder(selectedColIndexes, destinationColIdx, setColumns)
         }
+        onFillHandle={handleFill}
+        onCut={handleCut}
+        onCopy={handleCopy}
+        onPaste={handlePaste}
         onResizeColumn={(width, columnIdx) => handleResizeColumn(width, columnIdx, setColumns)}
         initialFocusLocation={{ rowIndex: 2, colIndex: 1 }}
         rows={rows}

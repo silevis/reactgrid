@@ -3,84 +3,88 @@ import { Cell, Column, NonEditableCell, NumberCell, Row, TextCell } from "../../
 const headers = ["Name", "Age", "Email", "Company"];
 
 export const generateCells = (
-  people: Person[],
   rows: Row[],
   columns: Column[],
+  people: Person[],
   updatePerson: (id, selector, p) => void
 ): Cell[] => {
   const cells: Cell[] = [];
 
-  columns.forEach((col, colIndex) => {
-    cells.push({
-      rowIndex: 0,
-      colIndex,
-      Template: NonEditableCell,
-      props: {
-        value: headers[col.colIndex],
-        style: {
-          backgroundColor: "#55bc71",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          fontWeight: "bold",
-        },
-      },
-    });
-  });
-
-  // Create data cells based on the reordered columns
+  // data cells based on the reordered columns
   rows.forEach((row, rowIndex) => {
     const personRowIndex = row.initialRowIndex ?? rowIndex;
 
-    const personCells = [
-      {
-        Template: TextCell,
-        props: {
-          text: people[personRowIndex].name,
-          onTextChanged: (newName: string) => {
-            updatePerson(people[personRowIndex]._id, "name", newName);
+    // check if the current row is the header row
+    if (rowIndex === 0) {
+      columns.forEach((col, colIndex) => {
+        cells.push({
+          rowIndex,
+          colIndex,
+          Template: NonEditableCell,
+          props: {
+            value: headers[col.initialColIndex ?? colIndex],
+            readOnly: true,
+            style: {
+              backgroundColor: "#55bc71",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              fontWeight: "bold",
+            },
           },
-        },
-      },
-      {
-        Template: NumberCell,
-        props: {
-          onValueChanged: (newAge: number) => {
-            updatePerson(people[personRowIndex]._id, "age", newAge);
-          },
-          value: people[personRowIndex].age,
-          validator: (value) => !isNaN(value),
-          errorMessage: "ERR",
-          hideZero: true,
-        },
-      },
-      {
-        Template: TextCell,
-        props: {
-          text: people[personRowIndex].email,
-          onTextChanged: (email: string) => {
-            updatePerson(people[personRowIndex]._id, "email", email);
-          },
-        },
-      },
-      {
-        Template: TextCell,
-        props: {
-          text: people[personRowIndex].company,
-          onTextChanged: (company: string) => {
-            updatePerson(people[personRowIndex]._id, "company", company);
-          },
-        },
-      },
-    ];
-
-    columns.forEach((col, colIndex) => {
-      cells.push({
-        rowIndex,
-        colIndex,
-        ...personCells[col.initialColIndex ?? colIndex],
+        });
       });
-    });
+    } else {
+      const personCells = [
+        {
+          Template: TextCell,
+          props: {
+            text: people[personRowIndex].name,
+            onTextChanged: (newName: string) => {
+              updatePerson(people[personRowIndex]._id, "name", newName);
+            },
+          },
+        },
+        {
+          Template: NumberCell,
+          props: {
+            onValueChanged: (newAge: number) => {
+              updatePerson(people[personRowIndex]._id, "age", newAge);
+            },
+            value: people[personRowIndex].age,
+            validator: (value) => !isNaN(value),
+            errorMessage: "ERR",
+            hideZero: true,
+          },
+        },
+        {
+          Template: TextCell,
+          props: {
+            text: people[personRowIndex].email,
+            onTextChanged: (email: string) => {
+              updatePerson(people[personRowIndex]._id, "email", email);
+            },
+          },
+        },
+        {
+          Template: TextCell,
+          props: {
+            text: people[personRowIndex].company,
+            onTextChanged: (company: string) => {
+              updatePerson(people[personRowIndex]._id, "company", company);
+            },
+          },
+        },
+      ];
+
+      columns.forEach((col, colIndex) => {
+        cells.push({
+          rowIndex,
+          colIndex,
+          ...personCells[col.initialColIndex ?? colIndex],
+        });
+      });
+    }
   });
 
   return cells;

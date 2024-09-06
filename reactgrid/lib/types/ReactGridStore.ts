@@ -46,12 +46,12 @@ export interface ReactGridStoreProps {
 
   pointerStartIdx: IndexedLocation;
 
-  onFillHandle?: (selectedArea: NumericalRange, fillRange: NumericalRange) => void;
+  onFillHandle?: (selectedArea: NumericalRange, fillRange: NumericalRange, gridLookup: GridLookup) => void;
   onAreaSelected?: (selectedArea: NumericalRange) => void;
   onCellFocused?: (cellLocation: IndexedLocation) => void;
-  onCut?: (selectedArea: NumericalRange) => void;
-  onCopy?: (selectedArea: NumericalRange) => void;
-  onPaste?: (selectedArea: NumericalRange, pastedData: string) => void;
+  onCut?: (event: React.ClipboardEvent<HTMLDivElement>, cellsRange: NumericalRange, gridLookup: GridLookup) => void;
+  onCopy?: (event: React.ClipboardEvent<HTMLDivElement>, cellsRange: NumericalRange, gridLookup: GridLookup) => void;
+  onPaste?: (event: React.ClipboardEvent<HTMLDivElement>, cellsRange: NumericalRange, gridLookup: GridLookup) => void;
   onResizeColumn?: (width: number, columnIdx: number[]) => void;
   onColumnReorder?: (selectedColIndexes: number[], destinationColIdx: number) => void;
   onRowReorder?: (selectedRowIndexes: number[], destinationRowIdx: number) => void;
