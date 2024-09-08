@@ -1,10 +1,11 @@
 import { Cell, CellMap, Column, Range, Row, SpanMember, StyledRange } from "./PublicModel.ts";
 import { RowMeasurement } from "./RowMeasurement.ts";
 import { ColumnMeasurement } from "./ColumnMeasurement.ts";
-import { FocusedCell, GridLookup, IndexedLocation, NestedStylesPartial, PaneName } from "./InternalModel.ts";
+import { FocusedCell, IndexedLocation, NestedStylesPartial, PaneName } from "./InternalModel.ts";
 import { NumericalRange } from "./PublicModel.ts";
 import { Behavior, BehaviorId } from "./Behavior.ts";
 import { RGTheme } from "./RGTheme.ts";
+import { GridLookup } from "./PublicModel.ts";
 
 export interface ReactGridStoreProps {
   rows: Row[];

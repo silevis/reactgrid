@@ -20,16 +20,6 @@ export type GetCellOffsets = (
   left?: number;
 };
 
-export interface GridLookupCallbacks {
-  onStringValueRequsted: () => string;
-  onStringValueReceived: (v: string) => void;
-}
-
-export type GridLookup<RowIdxType extends number = number, ColIdxType extends number = number> = Map<
-  `${RowIdxType} ${ColIdxType}`,
-  GridLookupCallbacks
->;
-
 export type InternalStyledRange = {
   styles: React.CSSProperties;
   range: NumericalRange;

@@ -11,7 +11,7 @@ import { ColumnReorderBehavior } from "./ColumnReorderBehavior.ts";
 import { RowReorderBehavior } from "./RowReorderBehavior.ts";
 import { handlePaneOverlap } from "../utils/handlePaneOverlap.ts";
 import { getHiddenTargetFocusByIdx } from "../utils/getHiddenTargetFocusByIdx.ts";
-import { EMPTY_AREA, GridLookup, GridLookupCallbacks } from "../types/InternalModel.ts";
+import { EMPTY_AREA } from "../types/InternalModel.ts";
 import { selectEntireColumn } from "../utils/selectEntireColumn.ts";
 import { selectEntireRow } from "../utils/selectEntireRow.ts";
 import { canReorder } from "../utils/canReorder.ts";
@@ -19,8 +19,6 @@ import { getHiddenFocusTargetLocation } from "../utils/getHiddenFocusTargetLocat
 import { isReorderBehavior } from "../utils/isReorderBehavior.ts";
 import { getCellIndexesFromPointerLocation } from "../utils/getCellIndexesFromPointerLocation.ts";
 import { getCellContainerByIndexes } from "../utils/getCellContainerByIndexes.ts";
-import { findGridLookupCallbacks } from "../utils/findGridLookupCallbacks.ts";
-import { generateClipboardHtml } from "../utils/generateClipboardHtml.ts";
 
 const devEnvironment = isDevEnvironment();
 

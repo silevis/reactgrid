@@ -30,7 +30,7 @@ export const NumberCell: FC<NumberCellProps> = ({
 
   const isValid = validator ? validator(Number(initialValue)) : true;
 
-  let textToDisplay = initialValue.toString();
+  let textToDisplay = initialValue?.toString();
 
   if (hideZero && initialValue === 0) {
     textToDisplay = "";
@@ -48,7 +48,7 @@ export const NumberCell: FC<NumberCellProps> = ({
     <CellWrapper
       onTouchEnd={handleDoubleTouch}
       onStringValueRequsted={() => initialValue.toString()}
-      onStringValueReceived={(v) => onValueChanged(v)}
+      onStringValueReceived={(v) => onValueChanged(Number(v))}
       onDoubleClick={() => {
         if (ctx.isFocused) {
           setEditMode(true);

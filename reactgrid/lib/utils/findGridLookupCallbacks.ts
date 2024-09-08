@@ -1,5 +1,5 @@
 import { NumericalRange } from "../main";
-import { GridLookup, GridLookupCallbacks } from "../types/InternalModel";
+import { GridLookup, GridLookupCallbacks } from "../types/PublicModel";
 
 export function findGridLookupCallbacks(cellsArea: NumericalRange, gridLookup: GridLookup): GridLookupCallbacks[] {
   const { startRowIdx, endRowIdx, startColIdx, endColIdx } = cellsArea;

@@ -1,4 +1,4 @@
-import { GridLookup, GridLookupCallbacks } from "../../lib/types/InternalModel";
+import { GridLookup, GridLookupCallbacks } from "../../lib/types/PublicModel";
 import { NumericalRange } from "../../lib/types/PublicModel";
 import { findGridLookupCallbacks } from "../../lib/utils/findGridLookupCallbacks";
 

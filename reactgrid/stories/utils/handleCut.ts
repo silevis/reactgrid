@@ -1,7 +1,6 @@
-import { GridLookup, GridLookupCallbacks } from "../../lib/types/InternalModel";
+import { GridLookup, GridLookupCallbacks } from "../../lib/types/PublicModel";
 import { NumericalRange } from "../../lib/types/PublicModel";
 import { findGridLookupCallbacks } from "../../lib/utils/findGridLookupCallbacks";
-import { generateClipboardHtml } from "../../lib/utils/generateClipboardHtml";
 
 export const handleCut = (event, cellsRange: NumericalRange, gridLookup: GridLookup) => {
   const gridLookupCallbacks: GridLookupCallbacks[] = findGridLookupCallbacks(cellsRange, gridLookup);
@@ -10,7 +9,22 @@ export const handleCut = (event, cellsRange: NumericalRange, gridLookup: GridLoo
 
   gridLookupCallbacks.forEach((element) => element.onStringValueReceived(""));
 
-  const htmlData = generateClipboardHtml(cellsRange, gridLookup);
+  const htmlData = `
+      <table>
+        ${Array.from(
+          { length: cellsRange.endRowIdx - cellsRange.startRowIdx },
+          (_, rowIndex) => `
+          <tr>
+            ${Array.from({ length: cellsRange.endColIdx - cellsRange.startColIdx }, (_, colIndex) => {
+              const cell = gridLookup.get(`${cellsRange.startRowIdx + rowIndex} ${cellsRange.startColIdx + colIndex}`);
+              const value = cell?.onStringValueRequsted() || "";
+              return `<td>${value}</td>`;
+            }).join("")}
+          </tr>
+        `
+        ).join("")}
+      </table>
+    `;
 
   event.clipboardData.setData("text/html", htmlData);
   event.clipboardData.setData("text/plain", values.join("\t"));

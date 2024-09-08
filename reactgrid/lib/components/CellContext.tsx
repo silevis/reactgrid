@@ -1,7 +1,7 @@
 import { createContext, memo, useContext } from "react";
 import { Cell, CellContextType } from "../types/PublicModel";
 import { StickyOffsets } from "../types/InternalModel";
-import { useReactGridId } from "./ReactGridIdProvider";
+import { deepCompare } from "../utils/deepCompare";
 
 interface CellContextProviderProps {
   rowIndex: number;
@@ -46,11 +46,7 @@ export const CellContextProvider = memo(
     cell,
     isFocused,
   }: CellContextProviderProps) => {
-    const storeId = useReactGridId();
-
     const { Template, props } = cell;
-
-    const children = <Template {...props} />;
 
     return (
       <CellContext.Provider
@@ -72,8 +68,15 @@ export const CellContextProvider = memo(
           },
         }}
       >
-        {children}
+        <Template {...props} />
       </CellContext.Provider>
+    );
+  },
+  (prev, next) => {
+    return (
+      deepCompare(prev.cell.props, next.cell.props) &&
+      prev.isFocused === next.isFocused &&
+      prev.getCellOffset === next.getCellOffset
     );
   }
 );

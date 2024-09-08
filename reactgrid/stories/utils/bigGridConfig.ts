@@ -1,6 +1,11 @@
 import { Cell, Column, NonEditableCell, NumberCell, Row, TextCell } from "../../lib/main";
 
-export const styledRanges = [];
+export const styledRanges = [
+  {
+    range: { start: { rowIndex: 16, columnIndex: 5 }, end: { rowIndex: 20, columnIndex: 7 } },
+    styles: { background: "red", color: "yellow" },
+  },
+];
 
 export const testStyles = {
   gridWrapper: {
@@ -127,7 +132,6 @@ export const generateCells = (
           Template: NonEditableCell,
           props: {
             value: headers[col.initialColIndex ?? colIndex],
-            readOnly: true,
             style: {
               backgroundColor: "#55bc71",
               display: "flex",

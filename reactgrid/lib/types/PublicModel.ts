@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React from "react";
 import { Behavior, BehaviorId } from "./Behavior";
-import { GridLookup, IndexedLocation, NestedStylesPartial } from "./InternalModel";
+import { IndexedLocation, NestedStylesPartial } from "./InternalModel";
 import { RGTheme } from "./RGTheme";
 
 export type Row = {
@@ -42,6 +42,18 @@ export type Cell = {
   /** Marks a cell as selectable or not */
   isSelectable?: boolean;
 };
+
+export interface GridLookupCallbacks {
+  rowIndex: number;
+  colIndex: number;
+  onStringValueRequsted: () => string;
+  onStringValueReceived: (v: string) => void;
+}
+
+export type GridLookup<RowIdxType extends number = number, ColIdxType extends number = number> = Map<
+  `${RowIdxType} ${ColIdxType}`,
+  GridLookupCallbacks
+>;
 
 /**
  * Represents a map of cells indexed by row and column indices.

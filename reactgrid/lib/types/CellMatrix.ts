@@ -1,4 +1,4 @@
-import { GridLookup } from "./InternalModel";
+import { GridLookup } from "./PublicModel";
 import { CellMap, Column, Row } from "./PublicModel";
 
 export type CellMatrix = {

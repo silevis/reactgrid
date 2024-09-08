@@ -3,10 +3,6 @@ import { Column, ReactGrid, Row } from "../lib/main";
 import { StoryDefault } from "@ladle/react";
 import { ErrorBoundary } from "../lib/components/ErrorBoundary";
 import { generateCells, peopleArr, rgStyles } from "./utils/examplesConfig";
-import { handleResizeColumn } from "./utils/handleResizeColumn";
-import { handleColumnReorder } from "./utils/handleColumnReorder";
-import { handleRowReorder } from "./utils/handleRowReorder";
-import { handleFill } from "./utils/handleFill";
 import { handleCopy } from "./utils/handleCopy";
 import { handleCut } from "./utils/handleCut";
 import { handlePaste } from "./utils/handlePaste";
@@ -42,19 +38,9 @@ export const CutCopyPasteExample = () => {
       <ReactGrid
         id="cut-copy-paste-example"
         styles={rgStyles}
-        enableRowSelectionOnFirstColumn
-        enableColumnSelectionOnFirstRow
-        onRowReorder={(selectedRowIndexes, destinationRowIdx) =>
-          handleRowReorder(selectedRowIndexes, destinationRowIdx, setRows)
-        }
-        onColumnReorder={(selectedColIndexes, destinationColIdx) =>
-          handleColumnReorder(selectedColIndexes, destinationColIdx, setColumns)
-        }
-        onFillHandle={handleFill}
         onCut={handleCut}
         onCopy={handleCopy}
         onPaste={handlePaste}
-        onResizeColumn={(width, columnIdx) => handleResizeColumn(width, columnIdx, setColumns)}
         initialFocusLocation={{ rowIndex: 2, colIndex: 1 }}
         rows={rows}
         columns={columns}

@@ -4,7 +4,7 @@ import HiddenFocusTarget from "./HiddenFocusTarget";
 import { ColumnResizeBadge } from "./ColumnResizeBadge";
 import { useReactGridStore } from "../utils/reactGridStore";
 import { useReactGridId } from "./ReactGridIdProvider";
-import { GridLookup } from "../types/InternalModel";
+import { GridLookup } from "../types/PublicModel";
 
 type CellWrapperProps = React.HTMLAttributes<HTMLDivElement> & {
   targetInputRef?: React.RefObject<HTMLInputElement | HTMLElement>;
@@ -39,6 +39,8 @@ const CellWrapper: FC<CellWrapperProps> = ({
     const newGridLookup: GridLookup = gridLookup;
 
     newGridLookup.set(`${ctx.realRowIndex} ${ctx.realColumnIndex}`, {
+      rowIndex: ctx.realRowIndex,
+      colIndex: ctx.realColumnIndex,
       onStringValueRequsted,
       onStringValueReceived,
     });

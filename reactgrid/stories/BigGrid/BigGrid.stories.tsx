@@ -12,22 +12,23 @@ import { handleRowReorder } from "../utils/handleRowReorder";
 import { testStyles, styledRanges, employeesArr, generateCells, headers } from "../utils/bigGridConfig";
 import { handleResizeColumn } from "../utils/handleResizeColumn";
 import { GridApi } from "../components/GridApi";
+import { handleFill } from "../utils/handleFill";
 
 export const BigGrid = () => {
   const [employees, setEmployees] = useState(employeesArr);
 
   const [rows, setRows] = useState<Row[]>(
     Array.from({ length: employees.length }, (_, index) => ({
-      rowIndex: index,
       initialRowIndex: index,
+      rowIndex: index,
       height: 30,
     }))
   );
 
   const [columns, setColumns] = useState<Column[]>(
     Array.from({ length: headers.length }, (_, index) => ({
-      colIndex: index,
       initialColIndex: index,
+      colIndex: index,
       width: 100,
     }))
   );
@@ -63,13 +64,13 @@ export const BigGrid = () => {
           }
           enableColumnSelectionOnFirstRow
           enableRowSelectionOnFirstColumn
-          onAreaSelected={(selectedArea) => {}}
           rows={rows}
           columns={columns}
-          onFillHandle={(selectedArea, fillRange) => {}}
+          onFillHandle={handleFill}
           onCut={handleCut}
           onPaste={handlePaste}
           onCopy={handleCopy}
+          onAreaSelected={(selectedArea) => {}}
           onCellFocused={(cellLocation) => {}}
         />
         <button onClick={() => setToggleRanges((prev) => !prev)}>toggle ranges</button>

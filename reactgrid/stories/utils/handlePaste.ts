@@ -1,4 +1,4 @@
-import { GridLookup } from "../../lib/types/InternalModel";
+import { GridLookup } from "../../lib/types/PublicModel";
 import { NumericalRange } from "../../lib/types/PublicModel";
 
 export const handlePaste = (event, cellsArea: NumericalRange, gridLookup: GridLookup) => {

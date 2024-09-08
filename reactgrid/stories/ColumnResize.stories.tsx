@@ -35,11 +35,11 @@ export const ColumnResizeExample = () => {
   return (
     <div>
       <ReactGrid
-        id="column-resize-example"
+        id="cut-copy-paste-example"
         styles={rgStyles}
-        enableColumnSelectionOnFirstRow
         onResizeColumn={(width, columnIdx) => handleResizeColumn(width, columnIdx, setColumns)}
         initialFocusLocation={{ rowIndex: 2, colIndex: 1 }}
+        rows={rows}
         columns={columns}
         cells={cells}
       />
