@@ -1,8 +1,7 @@
 import { createContext, memo, useContext } from "react";
 import { Cell, CellContextType } from "../types/PublicModel";
 import { StickyOffsets } from "../types/InternalModel";
-import { useReactGridId } from "./ReactGridIdProvider";
-import { useReactGridStore } from "../utils/reactGridStore";
+import { deepCompare } from "../utils/deepCompare";
 
 interface CellContextProviderProps {
   rowIndex: number;
@@ -22,7 +21,6 @@ export const CellContext = createContext<CellContextType>({
   realRowIndex: -1,
   realColumnIndex: -1,
   isFocused: false,
-  onCellChanged: () => {},
   containerStyle: {},
 });
 
@@ -48,13 +46,7 @@ export const CellContextProvider = memo(
     cell,
     isFocused,
   }: CellContextProviderProps) => {
-    const storeId = useReactGridId();
-
-    const onCellChanged = useReactGridStore(storeId, (state) => state.onCellChanged);
-
     const { Template, props } = cell;
-
-    const children = <Template {...props} />;
 
     return (
       <CellContext.Provider
@@ -62,7 +54,6 @@ export const CellContextProvider = memo(
           realRowIndex,
           realColumnIndex,
           isFocused,
-          onCellChanged,
           containerStyle: {
             ...(rowSpan && {
               gridRowEnd: `span ${rowSpan}`,
@@ -77,8 +68,15 @@ export const CellContextProvider = memo(
           },
         }}
       >
-        {children}
+        <Template {...props} />
       </CellContext.Provider>
+    );
+  },
+  (prev, next) => {
+    return (
+      deepCompare(prev.cell.props, next.cell.props) &&
+      prev.isFocused === next.isFocused &&
+      prev.getCellOffset === next.getCellOffset
     );
   }
 );

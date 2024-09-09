@@ -1,4 +1,4 @@
-import React, { FC, useRef, useState } from "react";
+import React, { FC, useEffect, useRef, useState } from "react";
 import { useCellContext } from "../components/CellContext";
 import CellWrapper from "../components/CellWrapper";
 import { useDoubleTouch } from "../hooks/useDoubleTouch";
@@ -14,7 +14,14 @@ interface NumberCellProps {
   style?: React.CSSProperties;
 }
 
-export const NumberCell: FC<NumberCellProps> = ({ value: initialValue, validator, errorMessage, hideZero, format }) => {
+export const NumberCell: FC<NumberCellProps> = ({
+  value: initialValue,
+  onValueChanged,
+  validator,
+  errorMessage,
+  hideZero,
+  format,
+}) => {
   const ctx = useCellContext();
   const targetInputRef = useRef<HTMLInputElement>(null);
   const [isEditMode, setEditMode] = useState(false);
@@ -23,9 +30,7 @@ export const NumberCell: FC<NumberCellProps> = ({ value: initialValue, validator
 
   const isValid = validator ? validator(Number(initialValue)) : true;
 
-  const cellIndexes = { rowIndex: ctx.realRowIndex, colIndex: ctx.realColumnIndex };
-
-  let textToDisplay = initialValue.toString();
+  let textToDisplay = initialValue?.toString();
 
   if (hideZero && initialValue === 0) {
     textToDisplay = "";
@@ -35,9 +40,15 @@ export const NumberCell: FC<NumberCellProps> = ({ value: initialValue, validator
     textToDisplay = errorMessage;
   }
 
+  useEffect(() => {
+    setCurrentValue(initialValue);
+  }, [initialValue]);
+
   return (
     <CellWrapper
       onTouchEnd={handleDoubleTouch}
+      onStringValueRequsted={() => initialValue.toString()}
+      onStringValueReceived={(v) => onValueChanged(Number(v))}
       onDoubleClick={() => {
         if (ctx.isFocused) {
           setEditMode(true);
@@ -53,7 +64,7 @@ export const NumberCell: FC<NumberCellProps> = ({ value: initialValue, validator
           setCurrentValue(initialValue || 0);
           setEditMode(true);
         } else if (!isEditMode && e.key === "Backspace") {
-          ctx.onCellChanged(cellIndexes, 0);
+          onValueChanged(0);
         }
       }}
     >
@@ -70,7 +81,7 @@ export const NumberCell: FC<NumberCellProps> = ({ value: initialValue, validator
           }}
           onPointerDown={(e) => e.stopPropagation()}
           onBlur={(e) => {
-            ctx.onCellChanged(cellIndexes, Number(e.currentTarget.value));
+            onValueChanged(Number(e.currentTarget.value));
             setEditMode(false);
           }}
           style={inputStyle}
@@ -83,7 +94,7 @@ export const NumberCell: FC<NumberCellProps> = ({ value: initialValue, validator
               setEditMode(false);
             } else if (e.key === "Enter") {
               e.preventDefault();
-              ctx.onCellChanged(cellIndexes, Number(e.currentTarget.value));
+              onValueChanged(Number(e.currentTarget.value));
               setEditMode(false);
             }
           }}

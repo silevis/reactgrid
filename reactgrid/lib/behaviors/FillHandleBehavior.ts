@@ -147,6 +147,8 @@ const handlePointerUp = (store: ReactGridStore) => {
 
   const previouslySelectedArea = store.selectedArea;
 
+  const gridLookup = store.gridLookup;
+
   if (store.fillHandleArea.startRowIdx !== -1) {
     let selectedArea: NumericalRange;
 
@@ -156,7 +158,7 @@ const handlePointerUp = (store: ReactGridStore) => {
       selectedArea = focusedCell ? getCellArea(store, focusedCell) : EMPTY_AREA;
     }
 
-    store.onFillHandle?.(selectedArea, store.fillHandleArea);
+    store.onFillHandle?.(selectedArea, store.fillHandleArea, gridLookup);
   }
 
   const isPreviouslySelectedArea = previouslySelectedArea.startRowIdx !== -1;

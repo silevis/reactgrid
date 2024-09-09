@@ -8,6 +8,7 @@ import { getScrollableParent } from "./scrollHelpers.ts";
 import { getCellContainer } from "./getCellContainer.ts";
 import { handlePaneOverlap } from "./handlePaneOverlap.ts";
 import { getHiddenTargetFocusByIdx } from "./getHiddenTargetFocusByIdx.ts";
+import { getCellArea } from "./getCellArea.ts";
 
 export const moveFocusUp = (store: ReactGridStore, currentFocus: FocusedCell): Partial<ReactGridStore> => {
   if (currentFocus.rowIndex === 0) {
@@ -95,6 +96,13 @@ export const moveFocusRight = (store: ReactGridStore, currentFocus: FocusedCell)
 
 export const moveFocusDown = (store: ReactGridStore, currentFocus: FocusedCell) => {
   if (currentFocus.rowIndex === store.rows.length - 1) {
+    getHiddenTargetFocusByIdx(currentFocus.rowIndex, currentFocus.colIndex)?.focus();
+    return store;
+  }
+
+  const cellArea = getCellArea(store, currentFocus);
+
+  if (cellArea.endRowIdx === store.rows.length) {
     getHiddenTargetFocusByIdx(currentFocus.rowIndex, currentFocus.colIndex)?.focus();
     return store;
   }

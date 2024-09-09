@@ -5,12 +5,14 @@ import { FocusedCell, IndexedLocation, NestedStylesPartial, PaneName } from "./I
 import { NumericalRange } from "./PublicModel.ts";
 import { Behavior, BehaviorId } from "./Behavior.ts";
 import { RGTheme } from "./RGTheme.ts";
+import { GridLookup } from "./PublicModel.ts";
 
 export interface ReactGridStoreProps {
   rows: Row[];
   columns: Column[];
 
   cells: CellMap;
+  gridLookup: GridLookup;
 
   rowMeasurements: RowMeasurement[];
   colMeasurements: ColumnMeasurement[];
@@ -45,14 +47,12 @@ export interface ReactGridStoreProps {
 
   pointerStartIdx: IndexedLocation;
 
-  onCellChanged: <T>(cellIndexes: IndexedLocation, value: T) => void;
-
-  onFillHandle?: (selectedArea: NumericalRange, fillRange: NumericalRange) => void;
+  onFillHandle?: (selectedArea: NumericalRange, fillRange: NumericalRange, gridLookup: GridLookup) => void;
   onAreaSelected?: (selectedArea: NumericalRange) => void;
   onCellFocused?: (cellLocation: IndexedLocation) => void;
-  onCut?: (selectedArea: NumericalRange) => void;
-  onCopy?: (selectedArea: NumericalRange) => void;
-  onPaste?: (selectedArea: NumericalRange, pastedData: string) => void;
+  onCut?: (event: React.ClipboardEvent<HTMLDivElement>, cellsRange: NumericalRange, gridLookup: GridLookup) => void;
+  onCopy?: (event: React.ClipboardEvent<HTMLDivElement>, cellsRange: NumericalRange, gridLookup: GridLookup) => void;
+  onPaste?: (event: React.ClipboardEvent<HTMLDivElement>, cellsRange: NumericalRange, gridLookup: GridLookup) => void;
   onResizeColumn?: (width: number, columnIdx: number[]) => void;
   onColumnReorder?: (selectedColIndexes: number[], destinationColIdx: number) => void;
   onRowReorder?: (selectedRowIndexes: number[], destinationRowIdx: number) => void;
@@ -72,6 +72,8 @@ export interface ReactGridStore extends ReactGridStoreProps {
 
   readonly getCellByIndexes: (rowIndex: number, colIndex: number) => Cell | null;
   readonly getCellOrSpanMemberByIndexes: (rowIndex: number, colIndex: number) => Cell | SpanMember | null;
+
+  readonly setGridLookup: (gridLookup: GridLookup) => void;
 
   readonly setRowMeasurements: (rowMeasurements: RowMeasurement[]) => void;
   readonly setColMeasurements: (colMeasurements: ColumnMeasurement[]) => void;

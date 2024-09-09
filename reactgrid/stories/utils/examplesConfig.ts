@@ -1,55 +1,140 @@
-import { CellData, NonEditableCell, NumberCell, TextCell } from "../../lib/main";
+import { Cell, Column, NonEditableCell, NumberCell, Row, TextCell } from "../../lib/main";
 
-export const headerRow = ["Name", "Surname", "Email", "Phone"];
+const headers = ["Name", "Age", "Email", "Company"];
 
-export const dataRows = [
-  ["Jake", "Smith", "j.smith@gmail.com", "987654321"],
-  ["Emily", "Jones", "e.jones@hotmail.com", "4561237890"],
-  ["Liam", "Brown", "l.brown@yahoo.com", "321456987"],
-  ["Sophia", "Taylor", "s.taylor@gmail.com", "6547891230"],
-  ["Mason", "Lee", "m.lee@outlook.com", "789456123"],
-  ["Isabella", "Wilson", "i.wilson@gmail.com", "123789456"],
-];
+export const generateCells = (
+  rows: Row[],
+  columns: Column[],
+  people: Person[],
+  updatePerson: (id, selector, p) => void
+): Cell[] => {
+  const cells: Cell[] = [];
 
-export const initialGridData: CellData[] = [headerRow, ...dataRows].flatMap((row, rowIdx) =>
-  row.map((cellValue, colIdx) => {
-    if (rowIdx === 0) {
-      return {
-        rowIndex: rowIdx,
-        colIndex: colIdx,
-        Template: NonEditableCell,
-        // isFocusable: false,
-        // isSelectable: false,
-        props: {
-          value: cellValue,
-          style: {
-            backgroundColor: "#55bc71",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            fontWeight: "bold",
+  // data cells based on the reordered columns
+  rows.forEach((row, rowIndex) => {
+    const personRowIndex = row.initialRowIndex ?? rowIndex;
+
+    // check if the current row is the header row
+    if (rowIndex === 0) {
+      columns.forEach((col, colIndex) => {
+        cells.push({
+          rowIndex,
+          colIndex,
+          Template: NonEditableCell,
+          props: {
+            value: headers[col.initialColIndex ?? colIndex],
+            readOnly: true,
+            style: {
+              backgroundColor: "#55bc71",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              fontWeight: "bold",
+            },
+          },
+        });
+      });
+    } else {
+      const personCells = [
+        {
+          Template: TextCell,
+          props: {
+            text: people[personRowIndex].name,
+            onTextChanged: (newName: string) => {
+              updatePerson(people[personRowIndex]._id, "name", newName);
+            },
           },
         },
-      };
-    }
-
-    if (colIdx === row.length - 1 && rowIdx !== 0) {
-      return {
-        rowIndex: rowIdx,
-        colIndex: colIdx,
-        Template: NumberCell,
-        props: {
-          value: cellValue,
-          validator: (value) => !isNaN(value),
-          errorMessage: "ERR",
-          hideZero: true,
+        {
+          Template: NumberCell,
+          props: {
+            onValueChanged: (newAge: number) => {
+              updatePerson(people[personRowIndex]._id, "age", newAge);
+            },
+            value: people[personRowIndex].age,
+            validator: (value) => !isNaN(value),
+            errorMessage: "ERR",
+            hideZero: true,
+          },
         },
-      };
-    }
+        {
+          Template: TextCell,
+          props: {
+            text: people[personRowIndex].email,
+            onTextChanged: (email: string) => {
+              updatePerson(people[personRowIndex]._id, "email", email);
+            },
+          },
+        },
+        {
+          Template: TextCell,
+          props: {
+            text: people[personRowIndex].company,
+            onTextChanged: (company: string) => {
+              updatePerson(people[personRowIndex]._id, "company", company);
+            },
+          },
+        },
+      ];
 
-    return { rowIndex: rowIdx, colIndex: colIdx, Template: TextCell, props: { value: cellValue } };
-  })
-);
+      columns.forEach((col, colIndex) => {
+        cells.push({
+          rowIndex,
+          colIndex,
+          ...personCells[col.initialColIndex ?? colIndex],
+        });
+      });
+    }
+  });
+
+  return cells;
+};
+
+export interface Person {
+  _id: string;
+  name: string;
+  age: number;
+  email: string;
+  company: string;
+}
+
+export const peopleArr: Person[] = [
+  {
+    _id: "66d61077035753f369ddbb16",
+    name: "Jordan Rodriquez",
+    age: 30,
+    email: "jordanrodriquez@cincyr.com",
+    company: "Zaggles",
+  },
+  {
+    _id: "66d61077794e7949ab167fd5",
+    email: "allysonrios@satiance.com",
+    name: "Allyson Rios",
+    age: 30,
+    company: "Zoxy",
+  },
+  {
+    _id: "66d61077dd754e88981ae434",
+    name: "Pickett Lucas",
+    age: 25,
+    email: "pickettlucas@zoxy.com",
+    company: "Techade",
+  },
+  {
+    _id: "66d61077115e2f8748c334d9",
+    name: "Louella David",
+    age: 37,
+    email: "louelladavid@techade.com",
+    company: "Ginkogene",
+  },
+  {
+    _id: "66d61077540d53374b427e4b",
+    name: "Tricia Greene",
+    age: 27,
+    email: "triciagreene@ginkogene.com",
+    company: "Naxdis",
+  },
+];
 
 export const rgStyles = {
   font: {

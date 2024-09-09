@@ -6,12 +6,14 @@ import { RGTheme } from "./RGTheme";
 
 export type Row = {
   rowIndex: number;
+  initialRowIndex?: number;
   height: string | number;
   reorderable?: boolean;
 };
 
 export type Column = {
   colIndex: number;
+  initialColIndex?: number;
   width: string | number;
   minWidth?: string | number;
   resizable?: boolean;
@@ -40,6 +42,18 @@ export type Cell = {
   /** Marks a cell as selectable or not */
   isSelectable?: boolean;
 };
+
+export interface GridLookupCallbacks {
+  rowIndex: number;
+  colIndex: number;
+  onStringValueRequsted: () => string;
+  onStringValueReceived: (v: string) => void;
+}
+
+export type GridLookup<RowIdxType extends number = number, ColIdxType extends number = number> = Map<
+  `${RowIdxType} ${ColIdxType}`,
+  GridLookupCallbacks
+>;
 
 /**
  * Represents a map of cells indexed by row and column indices.
@@ -81,8 +95,6 @@ export type CellContextType = {
   /** Represents how many columns should the cell occupy. */
   colSpan?: number;
 
-  onCellChanged: <T>(cellIndexes: IndexedLocation, value: T) => void;
-
   /** Internal: provides cell container's style  */
   containerStyle: React.CSSProperties;
 
@@ -119,14 +131,11 @@ export interface ReactGridProps {
 
   onAreaSelected?: (selectedArea: NumericalRange) => void;
   onCellFocused?: (cellLocation: IndexedLocation) => void;
-  onCellChanged?: (cellLocation: IndexedLocation, newValue: unknown) => void;
 
   stickyTopRows?: number;
   stickyRightColumns?: number;
   stickyBottomRows?: number;
   stickyLeftColumns?: number;
-
-  // enableVirtualization?: boolean;
 
   enableColumnSelectionOnFirstRow?: boolean;
 
@@ -139,10 +148,10 @@ export interface ReactGridProps {
 
   onFocusLocationChanging?: ({ location }: { location: IndexedLocation }) => boolean;
   onFocusLocationChanged?: ({ location }: { location: IndexedLocation }) => void;
-  onFillHandle?: (selectedArea: NumericalRange, fillRange: NumericalRange) => void;
-  onCut?: (selectedArea: NumericalRange) => void;
-  onCopy?: (selectedArea: NumericalRange) => void;
-  onPaste?: (selectedArea: NumericalRange, pastedData: string) => void;
+  onFillHandle?: (selectedArea: NumericalRange, fillRange: NumericalRange, gridLookup: GridLookup) => void;
+  onCut?: (event: React.ClipboardEvent<HTMLDivElement>, cellsRange: NumericalRange, gridLookup: GridLookup) => void;
+  onCopy?: (event: React.ClipboardEvent<HTMLDivElement>, cellsRange: NumericalRange, gridLookup: GridLookup) => void;
+  onPaste?: (event: React.ClipboardEvent<HTMLDivElement>, cellsRange: NumericalRange, gridLookup: GridLookup) => void;
   onColumnReorder?: (selectedColIndexes: number[], destinationColIdx: number) => void;
   onRowReorder?: (selectedRowIndexes: number[], destinationRowIdx: number) => void;
   onResizeColumn?: (width: number, columnIdx: number[]) => void;

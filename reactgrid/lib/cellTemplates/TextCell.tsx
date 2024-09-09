@@ -1,25 +1,30 @@
-import { FC, useRef, useState } from "react";
+import { FC, useEffect, useRef, useState } from "react";
 import CellWrapper from "../components/CellWrapper";
 import { useCellContext } from "../components/CellContext";
 import { useDoubleTouch } from "../hooks/useDoubleTouch";
 import { isAlphaNumericWithoutModifiers } from "../utils/keyCodeCheckings";
 
 interface TextCellProps {
-  value?: string;
+  text: string;
+  onTextChanged: (newText: string) => void;
   style?: React.CSSProperties;
 }
 
-export const TextCell: FC<TextCellProps> = ({ value: initialValue }) => {
+export const TextCell: FC<TextCellProps> = ({ text: initialText, onTextChanged }) => {
   const ctx = useCellContext();
   const targetInputRef = useRef<HTMLInputElement>(null);
   const [isEditMode, setEditMode] = useState(false);
-  const [currentValue, setCurrentValue] = useState(initialValue || "");
+  const [currentValue, setCurrentValue] = useState(initialText || "");
   const { handleDoubleTouch } = useDoubleTouch(ctx, setEditMode);
 
-  const cellIndexes = { rowIndex: ctx.realRowIndex, colIndex: ctx.realColumnIndex };
+  useEffect(() => {
+    setCurrentValue(initialText);
+  }, [initialText]);
 
   return (
     <CellWrapper
+      onStringValueRequsted={() => initialText}
+      onStringValueReceived={(v) => onTextChanged(v)}
       onTouchEnd={handleDoubleTouch}
       style={{ padding: ".2rem", textAlign: "center", outline: "none", minHeight: 0 }}
       onDoubleClick={() => {
@@ -34,10 +39,10 @@ export const TextCell: FC<TextCellProps> = ({ value: initialValue }) => {
         } else if (!isEditMode && e.key === "Enter") {
           e.preventDefault();
           e.stopPropagation();
-          setCurrentValue(initialValue || "");
+          setCurrentValue(initialText || "");
           setEditMode(true);
         } else if (!isEditMode && e.key === "Backspace") {
-          ctx.onCellChanged(cellIndexes, "");
+          onTextChanged("");
         }
       }}
     >
@@ -47,7 +52,7 @@ export const TextCell: FC<TextCellProps> = ({ value: initialValue }) => {
           style={inputStyle}
           onChange={(e) => setCurrentValue(e.currentTarget.value)}
           onBlur={(e) => {
-            ctx.onCellChanged(cellIndexes, e.currentTarget.value);
+            onTextChanged(e.currentTarget.value);
             setEditMode(false);
           }}
           onPointerDown={(e) => e.stopPropagation()}
@@ -60,7 +65,7 @@ export const TextCell: FC<TextCellProps> = ({ value: initialValue }) => {
               setEditMode(false);
             } else if (e.key === "Enter") {
               e.preventDefault();
-              ctx.onCellChanged(cellIndexes, e.currentTarget.value);
+              onTextChanged(e.currentTarget.value);
               setEditMode(false);
             }
           }}
@@ -68,7 +73,7 @@ export const TextCell: FC<TextCellProps> = ({ value: initialValue }) => {
           ref={targetInputRef}
         />
       ) : (
-        initialValue
+        initialText
       )}
     </CellWrapper>
   );

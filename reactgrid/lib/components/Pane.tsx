@@ -9,6 +9,7 @@ import { CellContextProvider } from "./CellContext";
 import { PartialArea } from "./PartialArea";
 import { useReactGridId } from "./ReactGridIdProvider";
 import { RGTheme } from "../types/RGTheme";
+import isEqual from "lodash.isequal";
 
 interface PaneGridContentProps {
   range: NumericalRange;
@@ -38,10 +39,7 @@ const shouldMemoGridContent = (prevProps: PaneGridContentProps, nextProps: PaneG
     prevEndRowIdx !== nextEndRowIdx ||
     prevStartColIdx !== nextStartColIdx ||
     prevEndColIdx !== nextEndColIdx ||
-    prevProps.style !== nextProps.style ||
-    prevProps.getCellOffset !== nextProps.getCellOffset ||
-    prevProps.stickyOffsets !== nextProps.stickyOffsets ||
-    prevProps.style !== nextProps.style
+    prevProps.getCellOffset !== nextProps.getCellOffset
   ) {
     return false;
   }
@@ -173,7 +171,7 @@ export const Pane: React.FC<PaneProps> = ({
 
   const fillHandleArea = useReactGridStore(id, (store) => store.fillHandleArea);
 
-  const isFillHandleActive = fillHandleArea.endRowIdx !== -1;
+  const isFillHandleActive = !isEqual(fillHandleArea, EMPTY_AREA);
 
   if (!shouldRender) return null;
 

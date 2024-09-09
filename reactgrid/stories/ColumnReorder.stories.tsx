@@ -1,20 +1,36 @@
 import React from "react";
 import { StrictMode, useState } from "react";
-import { ReactGrid, Cell, Column } from "../lib/main";
+import { Column, ReactGrid, Row } from "../lib/main";
 import { StoryDefault } from "@ladle/react";
 import { ErrorBoundary } from "../lib/components/ErrorBoundary";
-import { rgStyles, initialGridData } from "./utils/examplesConfig";
+import { rgStyles, peopleArr, generateCells } from "./utils/examplesConfig";
 import { handleColumnReorder } from "./utils/handleColumnReorder";
 
 export const ColumnReorderExample = () => {
-  const [columns, setColumns] = useState<Column[]>([
-    { colIndex: 0, width: 300 },
-    { colIndex: 1, width: 300 },
-    { colIndex: 2, width: 100 },
-    { colIndex: 3, width: 50 },
+  const [rows, setRows] = useState<Row[]>([
+    { initialRowIndex: 0, rowIndex: 0, height: 30, reorderable: false },
+    { initialRowIndex: 1, rowIndex: 1, height: 30 },
+    { initialRowIndex: 2, rowIndex: 2, height: 30 },
+    { initialRowIndex: 3, rowIndex: 3, height: 30 },
+    { initialRowIndex: 4, rowIndex: 4, height: 30 },
   ]);
 
-  const [cells, setCells] = useState<Cell[]>(initialGridData);
+  const [columns, setColumns] = useState<Column[]>([
+    { initialColIndex: 0, colIndex: 0, width: 100 },
+    { initialColIndex: 1, colIndex: 1, width: 50 },
+    { initialColIndex: 2, colIndex: 2, width: 200 },
+    { initialColIndex: 3, colIndex: 3, width: 100 },
+  ]);
+
+  const [people, setPeople] = useState(peopleArr);
+
+  const updatePerson = (id, key, newValue) => {
+    setPeople((prev) => {
+      return prev.map((p) => (p._id !== id ? p : { ...p, [key]: newValue }));
+    });
+  };
+
+  const cells = generateCells(rows, columns, people, updatePerson);
 
   return (
     <div>
@@ -23,22 +39,11 @@ export const ColumnReorderExample = () => {
         styles={rgStyles}
         enableColumnSelectionOnFirstRow
         onColumnReorder={(selectedColIndexes, destinationColIdx) =>
-          handleColumnReorder(selectedColIndexes, destinationColIdx, setCells, setColumns)
+          handleColumnReorder(selectedColIndexes, destinationColIdx, setColumns)
         }
         initialFocusLocation={{ rowIndex: 2, colIndex: 1 }}
+        rows={rows}
         columns={columns}
-        onCellChanged={(cellLocation, newValue) => {
-          setCells((prev) => {
-            const next = [...prev];
-            const cell = next.find(
-              (cell) => cell.rowIndex === cellLocation.rowIndex && cell.colIndex === cellLocation.colIndex
-            );
-            if (cell && cell.props !== undefined) {
-              cell.props.value = newValue;
-            }
-            return next;
-          });
-        }}
         cells={cells}
       />
     </div>

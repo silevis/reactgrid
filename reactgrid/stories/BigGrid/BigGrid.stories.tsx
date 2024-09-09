@@ -3,41 +3,43 @@ import { StoryDefault } from "@ladle/react";
 import { StrictMode, useState } from "react";
 import { ReactGrid } from "../../lib/components/ReactGrid";
 import { ErrorBoundary } from "../../lib/components/ErrorBoundary";
-import { Cell, Column, Row } from "../../lib/types/PublicModel";
-import { handleFill } from "../utils/handleFill";
+import { Column, Row } from "../../lib/types/PublicModel";
 import { handleCut } from "../utils/handleCut";
 import { handlePaste } from "../utils/handlePaste";
 import { handleCopy } from "../utils/handleCopy";
 import { handleColumnReorder } from "../utils/handleColumnReorder";
 import { handleRowReorder } from "../utils/handleRowReorder";
-import { COLUMN_COUNT, ROW_COUNT, generateCellData, testStyles, styledRanges } from "../utils/bigGridConfig";
+import { testStyles, styledRanges, employeesArr, generateCells, headers } from "../utils/bigGridConfig";
 import { handleResizeColumn } from "../utils/handleResizeColumn";
 import { GridApi } from "../components/GridApi";
+import { handleFill } from "../utils/handleFill";
 
 export const BigGrid = () => {
-  const [cells, setCells] = useState<Cell[]>(
-    Array.from({ length: ROW_COUNT * COLUMN_COUNT }).reduce<Cell[]>((acc, _, index) => {
-      const i = Math.floor(index / COLUMN_COUNT);
-      const j = index % COLUMN_COUNT;
-      const cellData = generateCellData(i, j);
-      if (cellData !== null) acc.push(cellData);
-      return acc;
-    }, [])
-  );
+  const [employees, setEmployees] = useState(employeesArr);
 
   const [rows, setRows] = useState<Row[]>(
-    Array.from({ length: ROW_COUNT }, (_, index) => ({
+    Array.from({ length: employees.length }, (_, index) => ({
+      initialRowIndex: index,
       rowIndex: index,
-      height: 80,
+      height: 30,
     }))
   );
 
   const [columns, setColumns] = useState<Column[]>(
-    Array.from({ length: COLUMN_COUNT }, (_, index) => ({
+    Array.from({ length: headers.length }, (_, index) => ({
+      initialColIndex: index,
       colIndex: index,
-      width: index % 2 === 0 ? 100 : 200,
+      width: 100,
     }))
   );
+
+  const updatePerson = (id, key, newValue) => {
+    setEmployees((prev) => {
+      return prev.map((p) => (p._id !== id ? p : { ...p, [key]: newValue }));
+    });
+  };
+
+  const cells = generateCells(employees, updatePerson, rows, columns);
 
   const [toggleRanges, setToggleRanges] = useState(false);
 
@@ -46,20 +48,8 @@ export const BigGrid = () => {
       <div className="rgScrollableContainer" style={{ height: "100%", width: "100%", overflow: "auto" }}>
         <ReactGrid
           id="big-grid"
-          onCellChanged={(cellLocation, newValue) => {
-            setCells((prev) => {
-              const next = [...prev];
-              const cell = next.find(
-                (cell) => cell.rowIndex === cellLocation.rowIndex && cell.colIndex === cellLocation.colIndex
-              );
-              if (cell && cell.props !== undefined) {
-                cell.props.value = newValue;
-              }
-              return next;
-            });
-          }}
           cells={cells}
-          stickyTopRows={2}
+          stickyTopRows={1}
           stickyLeftColumns={2}
           stickyRightColumns={2}
           stickyBottomRows={2}
@@ -67,20 +57,20 @@ export const BigGrid = () => {
           styledRanges={toggleRanges ? styledRanges : []}
           onResizeColumn={(width, columnIdx) => handleResizeColumn(width, columnIdx, setColumns)}
           onRowReorder={(selectedRowIndexes, destinationRowIdx) =>
-            handleRowReorder(selectedRowIndexes, destinationRowIdx, setCells, setRows)
+            handleRowReorder(selectedRowIndexes, destinationRowIdx, setRows)
           }
           onColumnReorder={(selectedColIndexes, destinationColIdx) =>
-            handleColumnReorder(selectedColIndexes, destinationColIdx, setCells, setColumns)
+            handleColumnReorder(selectedColIndexes, destinationColIdx, setColumns)
           }
           enableColumnSelectionOnFirstRow
           enableRowSelectionOnFirstColumn
-          onAreaSelected={(selectedArea) => {}}
           rows={rows}
           columns={columns}
-          onFillHandle={(selectedArea, fillRange) => handleFill(selectedArea, fillRange, setCells)}
-          onCut={(selectedArea) => handleCut(cells, selectedArea, setCells)}
-          onPaste={(selectedArea, pastedData) => handlePaste(selectedArea, pastedData, setCells)}
-          onCopy={(selectedArea) => handleCopy(cells, selectedArea)}
+          onFillHandle={handleFill}
+          onCut={handleCut}
+          onPaste={handlePaste}
+          onCopy={handleCopy}
+          onAreaSelected={(selectedArea) => {}}
           onCellFocused={(cellLocation) => {}}
         />
         <button onClick={() => setToggleRanges((prev) => !prev)}>toggle ranges</button>

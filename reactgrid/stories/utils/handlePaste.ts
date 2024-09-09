@@ -1,48 +1,33 @@
-import { CellData, NumericalRange } from "../../lib/types/PublicModel";
+import { GridLookup } from "../../lib/types/PublicModel";
+import { NumericalRange } from "../../lib/types/PublicModel";
 
-export const handlePaste = (
-  selectedArea: NumericalRange,
-  pastedData: string,
-  setData: React.Dispatch<React.SetStateAction<CellData[]>>
-) => {
-  // Parse the pasted HTML string
+export const handlePaste = (event, cellsArea: NumericalRange, gridLookup: GridLookup) => {
+  const html = event.clipboardData.getData("text/html");
+
   const parser = new DOMParser();
-  const doc = parser.parseFromString(pastedData, "text/html");
+  const doc = parser.parseFromString(html, "text/html");
 
-  // Extract table rows from the parsed HTML
   const rows = doc.querySelectorAll("tr");
+  const firstRowCells = rows[0].querySelectorAll("td");
 
-  // Initialize a 2D array with empty strings
-  const numRows = rows.length;
-  const numCols = Math.max(...Array.from(rows).map((row) => row.querySelectorAll("td").length));
-  const newValues: string[][] = Array.from({ length: numRows }, () => Array(numCols).fill(""));
-
-  // Populate the 2D array with the parsed cell values
-  rows.forEach((row, rowIndex) => {
-    const cells = row.querySelectorAll("td");
-    cells.forEach((cell, colIndex) => {
-      const value = cell.textContent || "";
-      newValues[rowIndex][colIndex] = value;
-    });
-  });
-
-  // Update the cells data in the state
-  setData((prevCells) => {
-    // Map over the previous cells and replace values within the selected area with newValues
-    const updatedCells = prevCells.map((cell) => {
-      const relativeRow = cell.rowIndex - selectedArea.startRowIdx;
-      const relativeCol = cell.colIndex - selectedArea.startColIdx;
-
-      if (relativeRow >= 0 && relativeRow < numRows && relativeCol >= 0 && relativeCol < numCols) {
-        return {
-          ...cell,
-          props: { ...cell.props, value: newValues[relativeRow][relativeCol] },
-        };
+  if (rows.length === 1 && firstRowCells.length === 1) {
+    const singleValue = firstRowCells[0].textContent || "";
+    for (let rowIndex = cellsArea.startRowIdx; rowIndex < cellsArea.endRowIdx; rowIndex++) {
+      for (let colIndex = cellsArea.startColIdx; colIndex < cellsArea.endColIdx; colIndex++) {
+        const gridCell = gridLookup.get(`${rowIndex} ${colIndex}`);
+        gridCell?.onStringValueReceived(singleValue);
       }
-
-      return cell;
+    }
+  } else {
+    rows.forEach((row, rowIndex) => {
+      const cells = row.querySelectorAll("td");
+      cells.forEach((cell, colIndex) => {
+        const value = cell.textContent || "";
+        const gridCell = gridLookup.get(`${cellsArea.startRowIdx + rowIndex} ${cellsArea.startColIdx + colIndex}`);
+        if (gridCell) {
+          gridCell.onStringValueReceived(value);
+        }
+      });
     });
-
-    return updatedCells;
-  });
+  }
 };

@@ -33,6 +33,7 @@ export const cellMatrixBuilder = (
   builder: ({ ...tools }: CellMatrixBuilderTools) => void
 ): CellMatrix => {
   const cells = new Map();
+  const gridLookup = new Map();
 
   const setCell: SetCellFn = (rowIndex, colIndex, Template, props, { ...args }) => {
     if (rowIndex === -1) throw new Error(`Row with id "${rowIndex}" isn't defined in rows array`);
@@ -67,10 +68,12 @@ export const cellMatrixBuilder = (
           originColIndex: colIndex,
         };
 
+        gridLookup.set(`${currentRowIndex} ${currentColIndex}`, {});
         cells.set(`${currentRowIndex} ${currentColIndex}`, spanMember);
       }
     }
 
+    gridLookup.set(`${rowIndex} ${colIndex}`, {});
     cells.set(`${rowIndex} ${colIndex}`, cell);
   };
 
@@ -96,7 +99,12 @@ export const cellMatrixBuilder = (
     }
   }
 
-  return { cells, rows: initGridRows(cells || new Map(), rows), columns: initGridColumns(cells || new Map(), columns) };
+  return {
+    gridLookup,
+    cells,
+    rows: initGridRows(cells || new Map(), rows),
+    columns: initGridColumns(cells || new Map(), columns),
+  };
 };
 
 const initGridRows = (cellMap: CellMap, rows?: Row[]): Row[] => {

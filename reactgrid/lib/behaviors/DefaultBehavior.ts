@@ -320,6 +320,8 @@ export const DefaultBehavior = (config: DefaultBehaviorConfig = CONFIG_DEFAULTS)
   handleCopy: function (event, store) {
     devEnvironment && console.log("DB/handleCopy");
 
+    event.preventDefault();
+
     const focusedCell = store.getCellByIndexes(store.focusedLocation.rowIndex, store.focusedLocation.colIndex);
 
     if (!focusedCell) return store;
@@ -332,7 +334,7 @@ export const DefaultBehavior = (config: DefaultBehaviorConfig = CONFIG_DEFAULTS)
       cellsArea = getCellArea(store, focusedCell);
     }
 
-    store.onCopy?.(cellsArea);
+    store.onCopy?.(event, cellsArea, store.gridLookup);
 
     return store;
   },
@@ -340,6 +342,8 @@ export const DefaultBehavior = (config: DefaultBehaviorConfig = CONFIG_DEFAULTS)
   handleCut: function (event, store) {
     devEnvironment && console.log("DB/handleCut");
 
+    event.preventDefault();
+
     const focusedCell = store.getCellByIndexes(store.focusedLocation.rowIndex, store.focusedLocation.colIndex);
 
     if (!focusedCell) return store;
@@ -352,7 +356,7 @@ export const DefaultBehavior = (config: DefaultBehaviorConfig = CONFIG_DEFAULTS)
       cellsArea = getCellArea(store, focusedCell);
     }
 
-    store.onCut?.(cellsArea);
+    store.onCut?.(event, cellsArea, store.gridLookup);
 
     return store;
   },
@@ -360,6 +364,8 @@ export const DefaultBehavior = (config: DefaultBehaviorConfig = CONFIG_DEFAULTS)
   handlePaste: function (event, store) {
     devEnvironment && console.log("DB/handlePaste");
 
+    event.preventDefault();
+
     const focusedCell = store.getCellByIndexes(store.focusedLocation.rowIndex, store.focusedLocation.colIndex);
 
     if (!focusedCell) return store;
@@ -372,8 +378,40 @@ export const DefaultBehavior = (config: DefaultBehaviorConfig = CONFIG_DEFAULTS)
       cellsArea = getCellArea(store, focusedCell);
     }
 
-    store.onPaste?.(cellsArea, event.clipboardData.getData("text/html"));
+    store.onPaste?.(event, cellsArea, store.gridLookup);
 
-    return store;
+    const html = event.clipboardData.getData("text/html");
+
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(html, "text/html");
+
+    const rows = doc.querySelectorAll("tr");
+    const firstRowCells = rows[0].querySelectorAll("td");
+
+    let newSelectedArea;
+
+    // If only one cell was pasted
+    if (rows.length === 1 && firstRowCells.length === 1) {
+      newSelectedArea = {
+        startRowIdx: cellsArea.startRowIdx,
+        endRowIdx: cellsArea.endRowIdx,
+        startColIdx: cellsArea.startColIdx,
+        endColIdx: cellsArea.startColIdx + rows[0].querySelectorAll("td").length,
+      };
+    }
+    // If multiple cells were pasted
+    else {
+      const endRowIdx = Math.min(cellsArea.startRowIdx + rows.length, store.rows.length);
+      const endColIdx = Math.min(cellsArea.startColIdx + rows[0].querySelectorAll("td").length, store.columns.length);
+
+      newSelectedArea = {
+        startRowIdx: cellsArea.startRowIdx,
+        endRowIdx: endRowIdx,
+        startColIdx: cellsArea.startColIdx,
+        endColIdx: endColIdx,
+      };
+    }
+
+    return { ...store, selectedArea: newSelectedArea };
   },
 });

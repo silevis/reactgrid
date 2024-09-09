@@ -11,8 +11,8 @@ export function getNumericalRange(store: ReactGridStore, range: Range): Numerica
   const startCell = store.getCellByIndexes(start.rowIndex, start.columnIndex);
   const endCell = store.getCellByIndexes(end.rowIndex, end.columnIndex);
 
-  if (!startCell) throw new Error("Could not find a startCell with provided id's");
-  else if (!endCell) throw new Error("Could not find a endCell with provided id's");
+  if (!startCell) throw new Error("Could not find a startCell with provided indexes");
+  else if (!endCell) throw new Error("Could not find a endCell with provided indexes");
 
   const numericalRange: NumericalRange = {
     startRowIdx: start.rowIndex,
