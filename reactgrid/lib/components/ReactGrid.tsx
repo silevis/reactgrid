@@ -1,4 +1,4 @@
-import { FC, useEffect, useRef, useState } from "react";
+import { FC, useRef, useState } from "react";
 import { ErrorBoundary } from "./ErrorBoundary";
 import GridWrapper from "./GridWrapper";
 import PanesRenderer from "./PanesRenderer";
@@ -14,7 +14,7 @@ import { useDeepCompareMemo } from "../hooks/useDeepCompareMemo";
 import { useInitialFocusLocation } from "../hooks/useInitialFocusLocation";
 import { useInitialSelectedRange } from "../hooks/useInitialSelectedRange";
 import { v4 as uuidv4 } from "uuid";
-import { deepCompare } from "../utils/deepCompare";
+import { useReactGridSync } from "../hooks/useReactGridSync";
 
 const devEnvironment = isDevEnvironment();
 
@@ -30,7 +30,6 @@ export const ReactGrid: FC<ReactGridProps> = ({
   ...rgProps
 }) => {
   const reactGridId = useRef(id ?? `rg-${uuidv4()}`);
-  const previousGridProps = useRef<Partial<ReactGridProps> | null>(null);
 
   const cellMatrix = useDeepCompareMemo(() => {
     return cellMatrixBuilder(rows, columns, ({ setCell }) => {
@@ -52,19 +51,7 @@ export const ReactGrid: FC<ReactGridProps> = ({
   // access store in non-reactive way
   const store = reactGridStores()[reactGridId.current].getState();
 
-  // sync props with store in case of one of them changes
-  useEffect(() => {
-    if (!deepCompare(previousGridProps.current, rgProps)) {
-      store.setExternalData({ ...rgProps });
-      previousGridProps.current = rgProps;
-    }
-  }, [rgProps]);
-
-  // sync cellMatrix with store
-  useEffect(() => {
-    //  no need to deep compare cellMatrix, because cellMatrix is already compared in useDeepCompareMemo
-    store.setExternalData({ ...cellMatrix });
-  }, [cellMatrix]);
+  useReactGridSync(store, cellMatrix, rgProps);
 
   useInitialSelectedRange(store, rgProps, devEnvironment);
   useInitialFocusLocation(store, rgProps, devEnvironment);
