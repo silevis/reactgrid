@@ -4,7 +4,6 @@ import { Column, ReactGrid, Row } from "../lib/main";
 import { StoryDefault } from "@ladle/react";
 import { ErrorBoundary } from "../lib/components/ErrorBoundary";
 import { rgStyles, peopleArr, generateCells } from "./utils/examplesConfig";
-import { handleFill } from "./utils/handleFill";
 import { handleRowReorder } from "./utils/handleRowReorder";
 
 export const FillHandleExample = () => {
