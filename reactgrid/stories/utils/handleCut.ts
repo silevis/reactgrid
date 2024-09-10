@@ -1,13 +1,22 @@
-import { GridLookup, GridLookupCallbacks } from "../../lib/types/PublicModel";
+import { CellsLookup, CellsLookupCallbacks } from "../../lib/types/PublicModel";
 import { NumericalRange } from "../../lib/types/PublicModel";
-import { findGridLookupCallbacks } from "../../lib/utils/findGridLookupCallbacks";
 
-export const handleCut = (event, cellsRange: NumericalRange, gridLookup: GridLookup) => {
-  const gridLookupCallbacks: GridLookupCallbacks[] = findGridLookupCallbacks(cellsRange, gridLookup);
+export const handleCut = (event, cellsRange: NumericalRange, cellsLookup: CellsLookup) => {
+  const { startRowIdx, endRowIdx, startColIdx, endColIdx } = cellsRange;
+  const cellsLookupCallbacks: CellsLookupCallbacks[] = [];
 
-  const values = gridLookupCallbacks.map((element) => element.onStringValueRequsted());
+  for (let rowIdx = startRowIdx; rowIdx < endRowIdx; rowIdx++) {
+    for (let colIdx = startColIdx; colIdx < endColIdx; colIdx++) {
+      const element = cellsLookup.get(`${rowIdx} ${colIdx}`);
+      if (element) {
+        cellsLookupCallbacks.push(element);
+      }
+    }
+  }
 
-  gridLookupCallbacks.forEach((element) => element.onStringValueReceived(""));
+  const values = cellsLookupCallbacks.map((element) => element.onStringValueRequsted());
+
+  cellsLookupCallbacks.forEach((element) => element.onStringValueReceived(""));
 
   const htmlData = `
       <table>
@@ -16,7 +25,7 @@ export const handleCut = (event, cellsRange: NumericalRange, gridLookup: GridLoo
           (_, rowIndex) => `
           <tr>
             ${Array.from({ length: cellsRange.endColIdx - cellsRange.startColIdx }, (_, colIndex) => {
-              const cell = gridLookup.get(`${cellsRange.startRowIdx + rowIndex} ${cellsRange.startColIdx + colIndex}`);
+              const cell = cellsLookup.get(`${cellsRange.startRowIdx + rowIndex} ${cellsRange.startColIdx + colIndex}`);
               const value = cell?.onStringValueRequsted() || "";
               return `<td>${value}</td>`;
             }).join("")}

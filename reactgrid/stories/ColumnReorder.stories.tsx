@@ -8,18 +8,18 @@ import { handleColumnReorder } from "./utils/handleColumnReorder";
 
 export const ColumnReorderExample = () => {
   const [rows, setRows] = useState<Row[]>([
-    { initialRowIndex: 0, rowIndex: 0, height: 30, reorderable: false },
-    { initialRowIndex: 1, rowIndex: 1, height: 30 },
-    { initialRowIndex: 2, rowIndex: 2, height: 30 },
-    { initialRowIndex: 3, rowIndex: 3, height: 30 },
-    { initialRowIndex: 4, rowIndex: 4, height: 30 },
+    { rowIndex: 0, height: 30, reorderable: false },
+    { rowIndex: 1, height: 30 },
+    { rowIndex: 2, height: 30 },
+    { rowIndex: 3, height: 30 },
+    { rowIndex: 4, height: 30 },
   ]);
 
   const [columns, setColumns] = useState<Column[]>([
-    { initialColIndex: 0, colIndex: 0, width: 100 },
-    { initialColIndex: 1, colIndex: 1, width: 50 },
-    { initialColIndex: 2, colIndex: 2, width: 200 },
-    { initialColIndex: 3, colIndex: 3, width: 100 },
+    { colIndex: 0, width: 100 },
+    { colIndex: 1, width: 50 },
+    { colIndex: 2, width: 200 },
+    { colIndex: 3, width: 100 },
   ]);
 
   const [people, setPeople] = useState(peopleArr);

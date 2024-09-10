@@ -103,6 +103,12 @@ export function useReactGridAPI(id: string): ReactGridAPI {
       getPaneRanges: store.getPaneRanges,
 
       /**
+       * Get the cells lookup in the ReactGrid.
+       * @returns The cells lookup.
+       */
+      getCellsLookup: store.getCellsLookup,
+
+      /**
        * Get the selected area in the ReactGrid.
        * @returns The selected area.
        */

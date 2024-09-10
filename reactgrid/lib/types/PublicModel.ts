@@ -6,14 +6,12 @@ import { RGTheme } from "./RGTheme";
 
 export type Row = {
   rowIndex: number;
-  initialRowIndex?: number;
   height: string | number;
   reorderable?: boolean;
 };
 
 export type Column = {
   colIndex: number;
-  initialColIndex?: number;
   width: string | number;
   minWidth?: string | number;
   resizable?: boolean;
@@ -43,16 +41,16 @@ export type Cell = {
   isSelectable?: boolean;
 };
 
-export interface GridLookupCallbacks {
+export interface CellsLookupCallbacks {
   rowIndex: number;
   colIndex: number;
   onStringValueRequsted: () => string;
   onStringValueReceived: (v: string) => void;
 }
 
-export type GridLookup<RowIdxType extends number = number, ColIdxType extends number = number> = Map<
+export type CellsLookup<RowIdxType extends number = number, ColIdxType extends number = number> = Map<
   `${RowIdxType} ${ColIdxType}`,
-  GridLookupCallbacks
+  CellsLookupCallbacks
 >;
 
 /**
@@ -148,10 +146,10 @@ export interface ReactGridProps {
 
   onFocusLocationChanging?: ({ location }: { location: IndexedLocation }) => boolean;
   onFocusLocationChanged?: ({ location }: { location: IndexedLocation }) => void;
-  onFillHandle?: (selectedArea: NumericalRange, fillRange: NumericalRange, gridLookup: GridLookup) => void;
-  onCut?: (event: React.ClipboardEvent<HTMLDivElement>, cellsRange: NumericalRange, gridLookup: GridLookup) => void;
-  onCopy?: (event: React.ClipboardEvent<HTMLDivElement>, cellsRange: NumericalRange, gridLookup: GridLookup) => void;
-  onPaste?: (event: React.ClipboardEvent<HTMLDivElement>, cellsRange: NumericalRange, gridLookup: GridLookup) => void;
+  onFillHandle?: (selectedArea: NumericalRange, fillRange: NumericalRange, cellsLookup: CellsLookup) => void;
+  onCut?: (event: React.ClipboardEvent<HTMLDivElement>, cellsRange: NumericalRange, cellsLookup: CellsLookup) => void;
+  onCopy?: (event: React.ClipboardEvent<HTMLDivElement>, cellsRange: NumericalRange, cellsLookup: CellsLookup) => void;
+  onPaste?: (event: React.ClipboardEvent<HTMLDivElement>, cellsRange: NumericalRange, cellsLookup: CellsLookup) => void;
   onColumnReorder?: (selectedColIndexes: number[], destinationColIdx: number) => void;
   onRowReorder?: (selectedRowIndexes: number[], destinationRowIdx: number) => void;
   onResizeColumn?: (width: number, columnIdx: number[]) => void;

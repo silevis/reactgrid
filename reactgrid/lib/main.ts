@@ -12,5 +12,3 @@ export { default as CellWrapper } from "./components/CellWrapper";
 export { useCellContext } from "./components/CellContext";
 
 export * from "./hooks/useReactGridAPI";
-
-export { findGridLookupCallbacks } from "./utils/findGridLookupCallbacks";

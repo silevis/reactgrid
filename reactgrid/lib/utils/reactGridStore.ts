@@ -19,7 +19,7 @@ const DEFAULT_STORE_PROPS: ReactGridStoreProps = {
   rows: [],
   columns: [],
   cells: new Map(),
-  gridLookup: new Map(),
+  cellsLookup: new Map(),
   paneRanges: {
     TopLeft: { startRowIdx: 0, endRowIdx: 0, startColIdx: 0, endColIdx: 0 },
     TopCenter: { startRowIdx: 0, endRowIdx: 0, startColIdx: 0, endColIdx: 0 },
@@ -84,7 +84,8 @@ export function initReactGridStore(id: string, initialProps: Partial<ReactGridSt
         setExternalData: (externalData) => {
           return set(() => ({ ...externalData, behaviors: { ...get().behaviors, ...externalData.behaviors } }));
         },
-        setGridLookup: (gridLookup) => set(() => ({ gridLookup })),
+        setCellsLookup: (cellsLookup) => set(() => ({ cellsLookup })),
+        getCellsLookup: () => get().cellsLookup,
         getColumnAmount: () => get().columns.length,
         getColumnCells: (columnIdx: number) => {
           const { cells } = get();

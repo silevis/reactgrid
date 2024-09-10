@@ -10,11 +10,9 @@ export const generateCells = (
 ): Cell[] => {
   const cells: Cell[] = [];
 
-  // data cells based on the reordered columns
   rows.forEach((row, rowIndex) => {
-    const personRowIndex = row.initialRowIndex ?? rowIndex;
+    const personRowIndex = row.rowIndex;
 
-    // check if the current row is the header row
     if (rowIndex === 0) {
       columns.forEach((col, colIndex) => {
         cells.push({
@@ -22,8 +20,7 @@ export const generateCells = (
           colIndex,
           Template: NonEditableCell,
           props: {
-            value: headers[col.initialColIndex ?? colIndex],
-            readOnly: true,
+            value: headers[col.colIndex],
             style: {
               backgroundColor: "#55bc71",
               display: "flex",
@@ -81,7 +78,7 @@ export const generateCells = (
         cells.push({
           rowIndex,
           colIndex,
-          ...personCells[col.initialColIndex ?? colIndex],
+          ...personCells[col.colIndex],
         });
       });
     }

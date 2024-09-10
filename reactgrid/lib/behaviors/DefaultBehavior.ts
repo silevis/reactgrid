@@ -334,7 +334,7 @@ export const DefaultBehavior = (config: DefaultBehaviorConfig = CONFIG_DEFAULTS)
       cellsArea = getCellArea(store, focusedCell);
     }
 
-    store.onCopy?.(event, cellsArea, store.gridLookup);
+    store.onCopy?.(event, cellsArea, store.cellsLookup);
 
     return store;
   },
@@ -356,7 +356,7 @@ export const DefaultBehavior = (config: DefaultBehaviorConfig = CONFIG_DEFAULTS)
       cellsArea = getCellArea(store, focusedCell);
     }
 
-    store.onCut?.(event, cellsArea, store.gridLookup);
+    store.onCut?.(event, cellsArea, store.cellsLookup);
 
     return store;
   },
@@ -378,7 +378,7 @@ export const DefaultBehavior = (config: DefaultBehaviorConfig = CONFIG_DEFAULTS)
       cellsArea = getCellArea(store, focusedCell);
     }
 
-    store.onPaste?.(event, cellsArea, store.gridLookup);
+    store.onPaste?.(event, cellsArea, store.cellsLookup);
 
     const html = event.clipboardData.getData("text/html");
 
