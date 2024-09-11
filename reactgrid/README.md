@@ -30,7 +30,7 @@ npm install @silevis/reactgrid@5.0.0-alpha.1
 
 # Examples
 
-Examples can be found in the .stories files.
+Examples can be found in the [.stories](https://github.com/silevis/reactgrid/tree/v5-dev/reactgrid/stories) files.
 
 # Licensing
 
