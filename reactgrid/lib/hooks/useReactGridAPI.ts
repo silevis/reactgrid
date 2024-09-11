@@ -1,8 +1,8 @@
 import { FocusedCell, IndexedLocation, PaneName } from "../types/InternalModel.ts";
-import { Cell, NumericalRange, SpanMember } from "../types/PublicModel.ts";
+import { Cell, CellsLookup, NumericalRange, SpanMember } from "../types/PublicModel.ts";
 import isDevEnvironment from "../utils/isDevEnvironment.ts";
 import { ReactGridStore } from "../types/ReactGridStore.ts";
-import { useReactGridStore } from "../utils/reactGridStore.ts";
+import { useReactGridStoreApi } from "../utils/reactGridStore.ts";
 
 /**
  * Interface for the ReactGrid API.
@@ -16,6 +16,7 @@ export interface ReactGridAPI {
   getCellByIndexes: (rowIndex: number, colIndex: number) => Cell | null;
   getCellOrSpanMemberByIndexes: (rowIndex: number, colIndex: number) => Cell | SpanMember | null;
   getPaneRanges: () => Record<PaneName, NumericalRange>;
+  getCellsLookup: () => CellsLookup;
   getSelectedArea: () => NumericalRange | null;
 }
 
@@ -27,8 +28,8 @@ export interface ReactGridAPI {
 
 const devEnvironment = isDevEnvironment();
 
-export function useReactGridAPI(id: string): ReactGridAPI {
-  return useReactGridStore(id, (store: ReactGridStore) => {
+export function useReactGridAPI(id: string): ReactGridAPI | undefined {
+  return useReactGridStoreApi(id, (store: ReactGridStore) => {
     return {
       // Setters
 
