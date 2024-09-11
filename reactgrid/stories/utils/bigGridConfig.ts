@@ -121,7 +121,7 @@ export const generateCells = (
   const cells: Cell[] = [];
 
   rows.forEach((row, rowIndex) => {
-    const personRowIndex = row.initialRowIndex ?? rowIndex;
+    const personRowIndex = rowIndex;
 
     if (rowIndex === 0) {
       // Header row creation
@@ -131,7 +131,7 @@ export const generateCells = (
           colIndex,
           Template: NonEditableCell,
           props: {
-            value: headers[col.initialColIndex ?? colIndex],
+            value: headers[colIndex],
             style: {
               backgroundColor: "#55bc71",
               display: "flex",
@@ -151,7 +151,7 @@ export const generateCells = (
         cells.push({
           rowIndex,
           colIndex,
-          ...employeeCells[col.initialColIndex ?? colIndex],
+          ...employeeCells[colIndex],
         });
       });
     }

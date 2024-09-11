@@ -1,7 +1,7 @@
-import { GridLookup } from "../../lib/types/PublicModel";
+import { CellsLookup } from "../../lib/types/PublicModel";
 import { NumericalRange } from "../../lib/types/PublicModel";
 
-export const handlePaste = (event, cellsArea: NumericalRange, gridLookup: GridLookup) => {
+export const handlePaste = (event, cellsArea: NumericalRange, cellsLookup: CellsLookup) => {
   const html = event.clipboardData.getData("text/html");
 
   const parser = new DOMParser();
@@ -14,7 +14,7 @@ export const handlePaste = (event, cellsArea: NumericalRange, gridLookup: GridLo
     const singleValue = firstRowCells[0].textContent || "";
     for (let rowIndex = cellsArea.startRowIdx; rowIndex < cellsArea.endRowIdx; rowIndex++) {
       for (let colIndex = cellsArea.startColIdx; colIndex < cellsArea.endColIdx; colIndex++) {
-        const gridCell = gridLookup.get(`${rowIndex} ${colIndex}`);
+        const gridCell = cellsLookup.get(`${rowIndex} ${colIndex}`);
         gridCell?.onStringValueReceived(singleValue);
       }
     }
@@ -23,7 +23,7 @@ export const handlePaste = (event, cellsArea: NumericalRange, gridLookup: GridLo
       const cells = row.querySelectorAll("td");
       cells.forEach((cell, colIndex) => {
         const value = cell.textContent || "";
-        const gridCell = gridLookup.get(`${cellsArea.startRowIdx + rowIndex} ${cellsArea.startColIdx + colIndex}`);
+        const gridCell = cellsLookup.get(`${cellsArea.startRowIdx + rowIndex} ${cellsArea.startColIdx + colIndex}`);
         if (gridCell) {
           gridCell.onStringValueReceived(value);
         }

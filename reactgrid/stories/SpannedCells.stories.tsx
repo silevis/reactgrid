@@ -10,7 +10,7 @@ import { NonEditableCell, NumberCell } from "../lib/main";
 const styledRanges = [
   {
     range: { start: { rowIndex: 2, columnIndex: 1 }, end: { rowIndex: 4, columnIndex: 3 } },
-    styles: { background: "#4eac68", color: "yellow" },
+    styles: { background: "#e9efdf", color: "black" },
   },
 ];
 
@@ -51,7 +51,7 @@ export const SpannedCellsExample = () => {
     const cells: Cell[] = [];
 
     rows.forEach((row, rowIndex) => {
-      const categoryRowIndex = row.initialRowIndex ?? rowIndex;
+      const categoryRowIndex = rowIndex;
 
       if (rowIndex === 0) {
         // Header Row
@@ -61,7 +61,7 @@ export const SpannedCellsExample = () => {
             colIndex,
             Template: NonEditableCell,
             props: {
-              value: headers[col.initialColIndex ?? colIndex],
+              value: headers[colIndex],
               readOnly: true,
               style: {
                 backgroundColor: "#55bc71",
@@ -118,7 +118,7 @@ export const SpannedCellsExample = () => {
           const cell: Cell = {
             rowIndex,
             colIndex,
-            ...categoryCells[col.initialColIndex ?? colIndex],
+            ...categoryCells[colIndex],
           };
 
           if (colIndex === 1 || colIndex === 2) {

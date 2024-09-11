@@ -4,7 +4,7 @@ import HiddenFocusTarget from "./HiddenFocusTarget";
 import { ColumnResizeBadge } from "./ColumnResizeBadge";
 import { useReactGridStore } from "../utils/reactGridStore";
 import { useReactGridId } from "./ReactGridIdProvider";
-import { GridLookup } from "../types/PublicModel";
+import { CellsLookup } from "../types/PublicModel";
 
 type CellWrapperProps = React.HTMLAttributes<HTMLDivElement> & {
   targetInputRef?: React.RefObject<HTMLInputElement | HTMLElement>;
@@ -32,20 +32,20 @@ const CellWrapper: FC<CellWrapperProps> = ({
     (ctx.realRowIndex === 0 && enableColumnSelectionOnFirstRow) || // if column selection is enabled on first row
     (ctx.realColumnIndex === 0 && enableRowSelectionOnFirstColumn); // if row selection is enabled on first column
 
-  const gridLookup = useReactGridStore(id, (store) => store.gridLookup);
-  const setGridLookup = useReactGridStore(id, (store) => store.setGridLookup);
+  const cellsLookup = useReactGridStore(id, (store) => store.cellsLookup);
+  const setCellsLookup = useReactGridStore(id, (store) => store.setCellsLookup);
 
   useEffect(() => {
-    const newGridLookup: GridLookup = gridLookup;
+    const newCellsLookup: CellsLookup = cellsLookup;
 
-    newGridLookup.set(`${ctx.realRowIndex} ${ctx.realColumnIndex}`, {
+    newCellsLookup.set(`${ctx.realRowIndex} ${ctx.realColumnIndex}`, {
       rowIndex: ctx.realRowIndex,
       colIndex: ctx.realColumnIndex,
       onStringValueRequsted,
       onStringValueReceived,
     });
 
-    setGridLookup(newGridLookup);
+    setCellsLookup(newCellsLookup);
   });
 
   return (

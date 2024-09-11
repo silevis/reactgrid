@@ -1,7 +1,7 @@
-import { GridLookup } from "../../lib/types/PublicModel";
+import { CellsLookup } from "../../lib/types/PublicModel";
 import { NumericalRange } from "../../lib/types/PublicModel";
 
-export const handleFill = (selectedArea: NumericalRange, fillRange: NumericalRange, gridLookup: GridLookup) => {
+export const handleFill = (selectedArea: NumericalRange, fillRange: NumericalRange, cellsLookup: CellsLookup) => {
   // Check if the fill handle is being dragged upwards
   const isFillingUpwards = fillRange.startRowIdx < selectedArea.startRowIdx;
   // Calculate the number of rows and columns in the selected area
@@ -11,7 +11,7 @@ export const handleFill = (selectedArea: NumericalRange, fillRange: NumericalRan
   // Iterate over the rows and columns in the fill range
   for (let i = fillRange.startRowIdx; i < fillRange.endRowIdx; i++) {
     for (let j = fillRange.startColIdx; j < fillRange.endColIdx; j++) {
-      const currentCellCallbacks = gridLookup.get(`${i} ${j}`);
+      const currentCellCallbacks = cellsLookup.get(`${i} ${j}`);
 
       if (!currentCellCallbacks) continue;
 
@@ -25,7 +25,7 @@ export const handleFill = (selectedArea: NumericalRange, fillRange: NumericalRan
       const relativeColIdx = (j - fillRange.startColIdx) % relativeColSize;
 
       // Get the value from the cell in the selected area that corresponds to the relative row and column indices
-      const sourceCellCallbacks = gridLookup.get(
+      const sourceCellCallbacks = cellsLookup.get(
         `${selectedArea.startRowIdx + relativeRowIdx} ${selectedArea.startColIdx + relativeColIdx}`
       );
 
