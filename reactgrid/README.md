@@ -2,6 +2,11 @@
 
 #### ReactGrid is an open-source React component designed to give your application a spreadsheet-like experience. Whether you're displaying or editing data, ReactGrid offers a seamless, intuitive interface that feels just like working with Excel 🚀
 
+&nbsp;
+&nbsp;
+
+Version 5 simplify and provides complete flexibility in implementing individual functionalities. This means you can customize and extend the grid's behavior to fit your specific needs, ensuring a tailored experience for your application.
+
 <h3>Quick Features:</h3>
 <ul>
    <li>Handling data changes</li>
@@ -15,11 +20,8 @@
    <li>Styled ranges</li>
    <li>Custom styling</li>
    <li>Custom cells</li>
-   <li>Ability to override behaviors</li>
    <li>API hook that allows you to interact with a ReactGrid</li>
 </ul>
-
-&nbsp;
 
 We've put a lot of hard work into making this the best data grid for React. If you appreciate what we've built, consider giving the project a star ⭐ on GitHub!
 
