@@ -19,7 +19,6 @@ export const BigGrid = () => {
 
   const [rows, setRows] = useState<Row[]>(
     Array.from({ length: employees.length }, (_, index) => ({
-      initialRowIndex: index,
       rowIndex: index,
       height: 30,
     }))
@@ -27,7 +26,6 @@ export const BigGrid = () => {
 
   const [columns, setColumns] = useState<Column[]>(
     Array.from({ length: headers.length }, (_, index) => ({
-      initialColIndex: index,
       colIndex: index,
       width: 100,
     }))
