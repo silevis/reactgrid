@@ -131,7 +131,7 @@ export const generateCells = (
           colIndex,
           Template: NonEditableCell,
           props: {
-            value: headers[colIndex],
+            value: headers[col.colIndex],
             style: {
               backgroundColor: "#55bc71",
               display: "flex",
@@ -151,7 +151,7 @@ export const generateCells = (
         cells.push({
           rowIndex,
           colIndex,
-          ...employeeCells[colIndex],
+          ...employeeCells[col.colIndex],
         });
       });
     }

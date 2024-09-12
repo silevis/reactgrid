@@ -2,7 +2,7 @@
 
 #### ReactGrid is an open-source React component designed to give your application a spreadsheet-like experience. Whether you're displaying or editing data, ReactGrid offers a seamless, intuitive interface that feels just like working with Excel 🚀
 
-<h3>Quick Features:</h3>
+<h3>Feutures:</h3>
 <ul>
    <li>Handling data changes</li>
    <li>Column resizing</li>

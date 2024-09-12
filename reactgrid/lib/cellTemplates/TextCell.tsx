@@ -24,7 +24,7 @@ export const TextCell: FC<TextCellProps> = ({ text: initialText, onTextChanged }
   return (
     <CellWrapper
       onStringValueRequsted={() => initialText}
-      onStringValueReceived={(v) => onTextChanged(v)}
+      onStringValueReceived={(v) => onTextChanged?.(v)}
       onTouchEnd={handleDoubleTouch}
       style={{ padding: ".2rem", textAlign: "center", outline: "none", minHeight: 0 }}
       onDoubleClick={() => {
@@ -42,7 +42,7 @@ export const TextCell: FC<TextCellProps> = ({ text: initialText, onTextChanged }
           setCurrentValue(initialText || "");
           setEditMode(true);
         } else if (!isEditMode && e.key === "Backspace") {
-          onTextChanged("");
+          onTextChanged?.("");
         }
       }}
     >
@@ -52,7 +52,7 @@ export const TextCell: FC<TextCellProps> = ({ text: initialText, onTextChanged }
           style={inputStyle}
           onChange={(e) => setCurrentValue(e.currentTarget.value)}
           onBlur={(e) => {
-            onTextChanged(e.currentTarget.value);
+            onTextChanged?.(e.currentTarget.value);
             setEditMode(false);
           }}
           onPointerDown={(e) => e.stopPropagation()}
@@ -65,7 +65,7 @@ export const TextCell: FC<TextCellProps> = ({ text: initialText, onTextChanged }
               setEditMode(false);
             } else if (e.key === "Enter") {
               e.preventDefault();
-              onTextChanged(e.currentTarget.value);
+              onTextChanged?.(e.currentTarget.value);
               setEditMode(false);
             }
           }}

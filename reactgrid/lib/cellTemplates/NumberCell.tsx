@@ -48,7 +48,7 @@ export const NumberCell: FC<NumberCellProps> = ({
     <CellWrapper
       onTouchEnd={handleDoubleTouch}
       onStringValueRequsted={() => initialValue.toString()}
-      onStringValueReceived={(v) => onValueChanged(Number(v))}
+      onStringValueReceived={(v) => onValueChanged?.(Number(v))}
       onDoubleClick={() => {
         if (ctx.isFocused) {
           setEditMode(true);
@@ -64,7 +64,7 @@ export const NumberCell: FC<NumberCellProps> = ({
           setCurrentValue(initialValue || 0);
           setEditMode(true);
         } else if (!isEditMode && e.key === "Backspace") {
-          onValueChanged(0);
+          onValueChanged?.(0);
         }
       }}
     >
@@ -81,7 +81,7 @@ export const NumberCell: FC<NumberCellProps> = ({
           }}
           onPointerDown={(e) => e.stopPropagation()}
           onBlur={(e) => {
-            onValueChanged(Number(e.currentTarget.value));
+            onValueChanged?.(Number(e.currentTarget.value));
             setEditMode(false);
           }}
           style={inputStyle}
@@ -94,7 +94,7 @@ export const NumberCell: FC<NumberCellProps> = ({
               setEditMode(false);
             } else if (e.key === "Enter") {
               e.preventDefault();
-              onValueChanged(Number(e.currentTarget.value));
+              onValueChanged?.(Number(e.currentTarget.value));
               setEditMode(false);
             }
           }}

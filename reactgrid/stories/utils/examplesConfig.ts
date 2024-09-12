@@ -1,26 +1,46 @@
-import { Cell, Column, NonEditableCell, NumberCell, Row, TextCell } from "../../lib/main";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { Cell, Column, NonEditableCell, Row } from "../../lib/main";
 
-const headers = ["Name", "Age", "Email", "Company"];
+export interface RowDef {
+  id: string;
+  rowIndex: number;
+  height: number;
+  reorderable?: boolean;
+}
 
-export const generateCells = (
-  rows: Row[],
-  columns: Column[],
+export interface ColumnDef {
+  title: string;
+  width: number;
+  position: number;
+  cellTemplate: React.ComponentType<any>;
+  props?: React.ComponentPropsWithRef<Cell["Template"]>;
+}
+
+interface CellMatrixDef {
+  cells: Cell[];
+  rows: Row[];
+  columns: Column[];
+}
+
+export const generateDataTable = (
   people: Person[],
-  updatePerson: (id, selector, p) => void
-): Cell[] => {
+  updatePerson: (id, selector, p) => void,
+  rowDefs: any,
+  columnDefs: ColumnDef[]
+): CellMatrixDef => {
   const cells: Cell[] = [];
 
-  rows.forEach((row, rowIndex) => {
+  rowDefs.forEach((row, rowIndex) => {
     const personRowIndex = row.rowIndex;
 
     if (rowIndex === 0) {
-      columns.forEach((col, colIndex) => {
+      columnDefs.forEach((col, colIndex) => {
         cells.push({
           rowIndex,
           colIndex,
           Template: NonEditableCell,
           props: {
-            value: headers[col.colIndex],
+            value: col.title,
             style: {
               backgroundColor: "#55bc71",
               display: "flex",
@@ -32,59 +52,48 @@ export const generateCells = (
         });
       });
     } else {
-      const personCells = [
-        {
-          Template: TextCell,
-          props: {
-            text: people[personRowIndex].name,
-            onTextChanged: (newName: string) => {
-              updatePerson(people[personRowIndex]._id, "name", newName);
-            },
+      const personCells = columnDefs.map((col) => {
+        const numberCellProps = {
+          onValueChanged: (newValue) => {
+            updatePerson(people[personRowIndex - 1]._id, col.title, newValue);
           },
-        },
-        {
-          Template: NumberCell,
-          props: {
-            onValueChanged: (newAge: number) => {
-              updatePerson(people[personRowIndex]._id, "age", newAge);
-            },
-            value: people[personRowIndex].age,
-            validator: (value) => !isNaN(value),
-            errorMessage: "ERR",
-            hideZero: true,
-          },
-        },
-        {
-          Template: TextCell,
-          props: {
-            text: people[personRowIndex].email,
-            onTextChanged: (email: string) => {
-              updatePerson(people[personRowIndex]._id, "email", email);
-            },
-          },
-        },
-        {
-          Template: TextCell,
-          props: {
-            text: people[personRowIndex].company,
-            onTextChanged: (company: string) => {
-              updatePerson(people[personRowIndex]._id, "company", company);
-            },
-          },
-        },
-      ];
+          value: people[personRowIndex - 1][col.title.toLowerCase()],
+        };
 
-      columns.forEach((col, colIndex) => {
+        const textCellProps = {
+          text: people[personRowIndex - 1][col.title.toLowerCase()],
+          onTextChanged: (newText: string) => {
+            updatePerson(people[personRowIndex - 1]._id, col.title, newText);
+          },
+        };
+
+        return {
+          Template: col.cellTemplate,
+          props: col.title === "age" ? { ...numberCellProps, ...col.props } : { ...textCellProps, ...col.props },
+        };
+      });
+
+      columnDefs.forEach((_, colIndex) => {
         cells.push({
           rowIndex,
           colIndex,
-          ...personCells[col.colIndex],
+          ...personCells[colIndex],
         });
       });
     }
   });
 
-  return cells;
+  const rows = rowDefs.map((rowDef, index) => ({
+    rowIndex: index,
+    height: rowDef.height,
+  }));
+
+  const columns = columnDefs.map((col, index) => ({
+    colIndex: index,
+    width: col.width,
+  }));
+
+  return { rows, columns, cells };
 };
 
 export interface Person {

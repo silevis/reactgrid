@@ -1,29 +1,23 @@
 import React, { StrictMode, useState } from "react";
-import { Column, ReactGrid, Row } from "../lib/main";
+import { Cell, NonEditableCell, NumberCell, ReactGrid, Row, TextCell } from "../lib/main";
 import { StoryDefault } from "@ladle/react";
 import { ErrorBoundary } from "../lib/components/ErrorBoundary";
-import { generateCells, peopleArr, rgStyles } from "./utils/examplesConfig";
+import { ColumnDef, peopleArr, rgStyles } from "./utils/examplesConfig";
 import { handleCopy } from "./utils/handleCopy";
 import { handleCut } from "./utils/handleCut";
 import { handlePaste } from "./utils/handlePaste";
 
 export const CutCopyPasteExample = () => {
-  const [rows, setRows] = useState<Row[]>([
-    { rowIndex: 0, height: 30, reorderable: false },
-    { rowIndex: 1, height: 30 },
-    { rowIndex: 2, height: 30 },
-    { rowIndex: 3, height: 30 },
-    { rowIndex: 4, height: 30 },
-  ]);
-
-  const [columns, setColumns] = useState<Column[]>([
-    { colIndex: 0, width: 100 },
-    { colIndex: 1, width: 50 },
-    { colIndex: 2, width: 200 },
-    { colIndex: 3, width: 100 },
-  ]);
-
   const [people, setPeople] = useState(peopleArr);
+
+  const columnDefs: ColumnDef[] = Object.keys(peopleArr[0]).reduce(
+    (acc: ColumnDef[], peopleKey: string, idx: number) => {
+      if (peopleKey === "_id" || peopleKey === "position") return acc;
+      const cellTemplate = peopleKey === "age" ? NumberCell : TextCell;
+      return [...acc, { title: peopleKey, width: 100 * idx, position: idx, cellTemplate }];
+    },
+    []
+  );
 
   const updatePerson = (id, key, newValue) => {
     setPeople((prev) => {
@@ -31,7 +25,70 @@ export const CutCopyPasteExample = () => {
     });
   };
 
-  const cells = generateCells(rows, columns, people, updatePerson);
+  const gridRows: Row[] = people.map((person, index) => ({
+    rowIndex: index,
+    height: 40 + index * 10,
+  }));
+
+  const gridColumns = columnDefs.map((col, index) => ({
+    colIndex: index,
+    width: col.width,
+  }));
+
+  const gridCells: Cell[] = [];
+
+  gridRows.forEach((row, rowIndex) => {
+    const personRowIndex = row.rowIndex;
+
+    if (rowIndex === 0) {
+      columnDefs.forEach((col, colIndex) => {
+        gridCells.push({
+          rowIndex,
+          colIndex,
+          Template: NonEditableCell,
+          props: {
+            value: col.title,
+            style: {
+              backgroundColor: "#55bc71",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              fontWeight: "bold",
+            },
+          },
+        });
+      });
+    } else {
+      const personCells = columnDefs.map((col) => {
+        const numberCellProps = {
+          onValueChanged: (newValue) => {
+            updatePerson(people[personRowIndex - 1]._id, col.title, newValue);
+          },
+          value: people[personRowIndex - 1][col.title.toLowerCase()],
+        };
+
+        const textCellProps = {
+          text: people[personRowIndex - 1][col.title.toLowerCase()],
+          onTextChanged: (newText: string) => {
+            updatePerson(people[personRowIndex - 1]._id, col.title, newText);
+          },
+        };
+
+        return {
+          Template: col.cellTemplate,
+          props: col.title === "age" ? { ...numberCellProps, ...col.props } : { ...textCellProps, ...col.props },
+        };
+      });
+
+      columnDefs.forEach((_, colIndex) => {
+        gridCells.push({
+          rowIndex,
+          colIndex,
+          ...personCells[colIndex],
+        });
+      });
+    }
+  });
 
   return (
     <div>
@@ -42,9 +99,9 @@ export const CutCopyPasteExample = () => {
         onCopy={handleCopy}
         onPaste={handlePaste}
         initialFocusLocation={{ rowIndex: 2, colIndex: 1 }}
-        rows={rows}
-        columns={columns}
-        cells={cells}
+        rows={gridRows}
+        columns={gridColumns}
+        cells={gridCells}
       />
     </div>
   );
