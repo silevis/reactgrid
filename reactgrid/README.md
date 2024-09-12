@@ -25,7 +25,7 @@ We've put a lot of hard work into making this the best data grid for React. If y
 # Installation
 
 ```bash
-npm install @silevis/reactgrid@5.0.0-alpha.1
+npm i @silevis/reactgrid@5.0.0-alpha.1
 ```
 
 # Examples
