@@ -74,7 +74,7 @@ export const ColumnResizeExample = () => {
 
         return {
           Template: col.cellTemplate,
-          props: col.title === "age" ? { ...numberCellProps, ...col.props } : { ...textCellProps, ...col.props },
+          props: col.title === "age" ? numberCellProps : textCellProps,
         };
       });
 

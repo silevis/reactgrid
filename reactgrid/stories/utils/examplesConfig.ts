@@ -13,7 +13,6 @@ export interface ColumnDef {
   width: number;
   position: number;
   cellTemplate: React.ComponentType<any>;
-  props?: React.ComponentPropsWithRef<Cell["Template"]>;
 }
 
 interface CellMatrixDef {
@@ -25,7 +24,7 @@ interface CellMatrixDef {
 export const generateDataTable = (
   people: Person[],
   updatePerson: (id, selector, p) => void,
-  rowDefs: any,
+  rowDefs: RowDef[],
   columnDefs: ColumnDef[]
 ): CellMatrixDef => {
   const cells: Cell[] = [];
@@ -69,7 +68,7 @@ export const generateDataTable = (
 
         return {
           Template: col.cellTemplate,
-          props: col.title === "age" ? { ...numberCellProps, ...col.props } : { ...textCellProps, ...col.props },
+          props: col.title === "age" ? { ...numberCellProps } : { ...textCellProps },
         };
       });
 

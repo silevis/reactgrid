@@ -84,6 +84,9 @@ export const NumberCell: FC<NumberCellProps> = ({
             onValueChanged?.(Number(e.currentTarget.value));
             setEditMode(false);
           }}
+          onCut={(e) => e.stopPropagation()}
+          onCopy={(e) => e.stopPropagation()}
+          onPaste={(e) => e.stopPropagation()}
           style={inputStyle}
           onKeyDown={(e) => {
             const controlKeys = ["Escape", "Enter", "Tab"];

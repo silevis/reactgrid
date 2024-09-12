@@ -55,6 +55,9 @@ export const TextCell: FC<TextCellProps> = ({ text: initialText, onTextChanged }
             onTextChanged?.(e.currentTarget.value);
             setEditMode(false);
           }}
+          onCut={(e) => e.stopPropagation()}
+          onCopy={(e) => e.stopPropagation()}
+          onPaste={(e) => e.stopPropagation()}
           onPointerDown={(e) => e.stopPropagation()}
           onKeyDown={(e) => {
             const controlKeys = ["Escape", "Enter", "Tab"];
