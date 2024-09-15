@@ -2,7 +2,6 @@
 import { Cell, Column, NonEditableCell, Row } from "../../lib/main";
 
 export interface RowDef {
-  id: string;
   rowIndex: number;
   height: number;
   reorderable?: boolean;
@@ -11,7 +10,6 @@ export interface RowDef {
 export interface ColumnDef {
   title: string;
   width: number;
-  position: number;
   cellTemplate: React.ComponentType<any>;
 }
 
@@ -85,6 +83,7 @@ export const generateDataTable = (
   const rows = rowDefs.map((rowDef, index) => ({
     rowIndex: index,
     height: rowDef.height,
+    ...(rowDef.reorderable === false && { reorderable: false }),
   }));
 
   const columns = columnDefs.map((col, index) => ({

@@ -29,7 +29,7 @@ export const BigGrid = () => {
     Object.keys(employees[0]).reduce((acc: ColumnDef[], peopleKey: string, idx: number) => {
       if (peopleKey === "_id") return acc;
       const cellTemplate = peopleKey === "age" || peopleKey === "balance" ? NumberCell : TextCell;
-      return [...acc, { title: peopleKey, width: 100, position: idx, cellTemplate }];
+      return [...acc, { title: peopleKey, width: 100, cellTemplate }];
     }, [])
   );
 

@@ -12,9 +12,9 @@ export const CutCopyPasteExample = () => {
 
   const columnDefs: ColumnDef[] = Object.keys(peopleArr[0]).reduce(
     (acc: ColumnDef[], peopleKey: string, idx: number) => {
-      if (peopleKey === "_id" || peopleKey === "position") return acc;
+      if (peopleKey === "_id") return acc;
       const cellTemplate = peopleKey === "age" ? NumberCell : TextCell;
-      return [...acc, { title: peopleKey, width: 100 * idx, position: idx, cellTemplate }];
+      return [...acc, { title: peopleKey, width: 100 * idx, cellTemplate }];
     },
     []
   );
@@ -27,7 +27,7 @@ export const CutCopyPasteExample = () => {
 
   const gridRows: Row[] = people.map((person, index) => ({
     rowIndex: index,
-    height: 40 + index * 10,
+    height: 40,
   }));
 
   const gridColumns = columnDefs.map((col, index) => ({

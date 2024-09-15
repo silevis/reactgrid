@@ -6,23 +6,22 @@ import { ErrorBoundary } from "../lib/components/ErrorBoundary";
 import { rgStyles, peopleArr, generateDataTable, RowDef, ColumnDef } from "./utils/examplesConfig";
 import { handleRowReorder } from "./utils/handleRowReorder";
 
-export const FillHandleExample = () => {
+export const RowReorderExample = () => {
   const [people, setPeople] = useState(peopleArr);
 
   const [rowDefs, setRowDefs] = useState<RowDef[]>(
-    people.map((person, index) => ({
-      id: person._id,
-      rowIndex: index,
-      height: 40 + index * 10,
-      ...(index === 0 && { reorderable: false }), // make header row non-reorderable
+    Array.from({ length: people.length + 1 }, (_, i) => ({
+      rowIndex: i,
+      height: 40,
+      ...(i === 0 && { reorderable: false }), // make header row non-reorderable
     }))
   );
 
   const columnDefs: ColumnDef[] = Object.keys(peopleArr[0]).reduce(
     (acc: ColumnDef[], peopleKey: string, idx: number) => {
-      if (peopleKey === "_id" || peopleKey === "position") return acc;
+      if (peopleKey === "_id") return acc;
       const cellTemplate = peopleKey === "age" ? NumberCell : TextCell;
-      return [...acc, { title: peopleKey, width: 100 * idx, position: idx, cellTemplate }];
+      return [...acc, { title: peopleKey, width: 100 * idx, cellTemplate }];
     },
     []
   );

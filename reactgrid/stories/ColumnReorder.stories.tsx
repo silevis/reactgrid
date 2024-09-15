@@ -10,16 +10,11 @@ import { handleResizeColumn } from "./utils/handleResizeColumn";
 export const ColumnReorderExample = () => {
   const [people, setPeople] = useState(peopleArr);
 
-  const gridRows: Row[] = people.map((person, index) => ({
-    rowIndex: index,
-    height: 40 + index * 10,
-  }));
-
   const [columnDefs, setColumnDefs] = useState<ColumnDef[]>(
     Object.keys(peopleArr[0]).reduce((acc: ColumnDef[], peopleKey: string, idx: number) => {
-      if (peopleKey === "_id" || peopleKey === "position") return acc;
+      if (peopleKey === "_id") return acc;
       const cellTemplate = peopleKey === "age" ? NumberCell : TextCell;
-      return [...acc, { title: peopleKey, width: 100 * idx, position: idx, cellTemplate }];
+      return [...acc, { title: peopleKey, width: 100 * idx, cellTemplate }];
     }, [])
   );
 
@@ -30,6 +25,11 @@ export const ColumnReorderExample = () => {
   };
 
   const cells: Cell[] = [];
+
+  const gridRows: Row[] = Array.from({ length: people.length + 1 }, (_, i) => ({
+    rowIndex: i,
+    height: 40,
+  }));
 
   const gridColumns = columnDefs.map((col, index) => ({
     colIndex: index,

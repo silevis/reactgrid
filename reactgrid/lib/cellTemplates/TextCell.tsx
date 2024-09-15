@@ -1,4 +1,4 @@
-import { FC, useEffect, useRef, useState } from "react";
+import { FC, useRef, useState } from "react";
 import CellWrapper from "../components/CellWrapper";
 import { useCellContext } from "../components/CellContext";
 import { useDoubleTouch } from "../hooks/useDoubleTouch";
@@ -14,12 +14,7 @@ export const TextCell: FC<TextCellProps> = ({ text: initialText, onTextChanged }
   const ctx = useCellContext();
   const targetInputRef = useRef<HTMLInputElement>(null);
   const [isEditMode, setEditMode] = useState(false);
-  const [currentValue, setCurrentValue] = useState(initialText || "");
   const { handleDoubleTouch } = useDoubleTouch(ctx, setEditMode);
-
-  useEffect(() => {
-    setCurrentValue(initialText);
-  }, [initialText]);
 
   return (
     <CellWrapper
@@ -34,12 +29,10 @@ export const TextCell: FC<TextCellProps> = ({ text: initialText, onTextChanged }
       }}
       onKeyDown={(e) => {
         if (!isEditMode && isAlphaNumericWithoutModifiers(e)) {
-          setCurrentValue("");
           setEditMode(true);
         } else if (!isEditMode && e.key === "Enter") {
           e.preventDefault();
           e.stopPropagation();
-          setCurrentValue(initialText || "");
           setEditMode(true);
         } else if (!isEditMode && e.key === "Backspace") {
           onTextChanged?.("");
@@ -48,9 +41,7 @@ export const TextCell: FC<TextCellProps> = ({ text: initialText, onTextChanged }
     >
       {isEditMode ? (
         <input
-          value={currentValue}
           style={inputStyle}
-          onChange={(e) => setCurrentValue(e.currentTarget.value)}
           onBlur={(e) => {
             onTextChanged?.(e.currentTarget.value);
             setEditMode(false);

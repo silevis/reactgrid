@@ -125,7 +125,6 @@ export interface RowDef {
 export interface ColumnDef {
   title: string;
   width: number;
-  position: number;
   cellTemplate: React.ComponentType<any>;
 }
 
