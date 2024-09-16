@@ -25,8 +25,8 @@ export const CutCopyPasteExample = () => {
     });
   };
 
-  const gridRows: Row[] = people.map((person, index) => ({
-    rowIndex: index,
+  const gridRows: Row[] = Array.from({ length: people.length + 1 }, (_, i) => ({
+    rowIndex: i,
     height: 40,
   }));
 

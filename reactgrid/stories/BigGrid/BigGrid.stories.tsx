@@ -17,17 +17,9 @@ import { handleResizeColumn } from "../utils/handleResizeColumn";
 export const BigGrid = () => {
   const [employees, setEmployees] = useState(employeesArr);
 
-  const [rowDefs, setRowDefs] = useState<RowDef[]>(
-    employees.map((person, index) => ({
-      id: person._id,
-      rowIndex: index,
-      height: 40,
-    }))
-  );
-
   const [columnDefs, setColumnDefs] = useState<ColumnDef[]>(
-    Object.keys(employees[0]).reduce((acc: ColumnDef[], peopleKey: string, idx: number) => {
-      if (peopleKey === "_id") return acc;
+    Object.keys(employees[0]).reduce((acc: ColumnDef[], peopleKey: string) => {
+      if (["_id", "position"].includes(peopleKey)) return acc;
       const cellTemplate = peopleKey === "age" || peopleKey === "balance" ? NumberCell : TextCell;
       return [...acc, { title: peopleKey, width: 100, cellTemplate }];
     }, [])
@@ -39,7 +31,7 @@ export const BigGrid = () => {
     });
   };
 
-  const { rows, columns, cells } = generateCells(employees, updatePerson, rowDefs, columnDefs);
+  const { rows, columns, cells } = generateCells(employees, updatePerson, columnDefs);
 
   const [toggleRanges, setToggleRanges] = useState(false);
 
@@ -56,7 +48,7 @@ export const BigGrid = () => {
           styledRanges={toggleRanges ? styledRanges : []}
           onResizeColumn={(width, columnIdx) => handleResizeColumn(width, columnIdx, setColumnDefs)}
           onRowReorder={(selectedRowIndexes, destinationRowIdx) => {
-            handleRowReorder(selectedRowIndexes, destinationRowIdx, setRowDefs);
+            handleRowReorder(employees, selectedRowIndexes, destinationRowIdx, updatePerson);
           }}
           onColumnReorder={(selectedColIndexes, destinationColIdx) =>
             handleColumnReorder(selectedColIndexes, destinationColIdx, setColumnDefs)

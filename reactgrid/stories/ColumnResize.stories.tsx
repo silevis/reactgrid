@@ -23,8 +23,8 @@ export const ColumnResizeExample = () => {
     });
   };
 
-  const gridRows: Row[] = people.map((_, index) => ({
-    rowIndex: index,
+  const gridRows: Row[] = Array.from({ length: people.length + 1 }, (_, i) => ({
+    rowIndex: i,
     height: 40,
   }));
 

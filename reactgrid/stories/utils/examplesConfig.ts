@@ -22,14 +22,32 @@ interface CellMatrixDef {
 export const generateDataTable = (
   people: Person[],
   updatePerson: (id, selector, p) => void,
-  rowDefs: RowDef[],
   columnDefs: ColumnDef[]
 ): CellMatrixDef => {
   const cells: Cell[] = [];
 
-  rowDefs.forEach((row, rowIndex) => {
-    const personRowIndex = row.rowIndex;
+  const rowsWithAssignedHeights = people.map((person, i) => ({
+    id: person._id,
+    height: 40,
+    position: person.position,
+  }));
 
+  const headerRow = [{ id: "header", position: 0, height: 40 }];
+
+  const orderedRows: RowDef[] = [...headerRow, ...rowsWithAssignedHeights]
+    .sort((a, b) => a.position - b.position)
+    .map((row) => {
+      const idx = rowsWithAssignedHeights.findIndex((r) => r.id === row.id);
+      const adjustedIdx = idx === -1 ? 0 : idx + 1;
+
+      if (adjustedIdx === 0) {
+        return { rowIndex: adjustedIdx, height: row.height, reorderable: false };
+      }
+
+      return { rowIndex: adjustedIdx, height: row.height };
+    });
+
+  orderedRows.forEach((row, rowIndex) => {
     if (rowIndex === 0) {
       columnDefs.forEach((col, colIndex) => {
         cells.push({
@@ -49,24 +67,26 @@ export const generateDataTable = (
         });
       });
     } else {
+      const personRowIndex = row.rowIndex - 1;
+
       const personCells = columnDefs.map((col) => {
         const numberCellProps = {
           onValueChanged: (newValue) => {
-            updatePerson(people[personRowIndex - 1]._id, col.title, newValue);
+            updatePerson(people[personRowIndex]._id, col.title, newValue);
           },
-          value: people[personRowIndex - 1][col.title.toLowerCase()],
+          value: people[personRowIndex][col.title],
         };
 
         const textCellProps = {
-          text: people[personRowIndex - 1][col.title.toLowerCase()],
+          text: people[personRowIndex][col.title],
           onTextChanged: (newText: string) => {
-            updatePerson(people[personRowIndex - 1]._id, col.title, newText);
+            updatePerson(people[personRowIndex]._id, col.title, newText);
           },
         };
 
         return {
           Template: col.cellTemplate,
-          props: col.title === "age" ? { ...numberCellProps } : { ...textCellProps },
+          props: col.title === "age" ? numberCellProps : textCellProps,
         };
       });
 
@@ -80,18 +100,20 @@ export const generateDataTable = (
     }
   });
 
-  const rows = rowDefs.map((rowDef, index) => ({
-    rowIndex: index,
-    height: rowDef.height,
-    ...(rowDef.reorderable === false && { reorderable: false }),
-  }));
+  // Rows that are actually used in the grid
+  const displayRows = orderedRows.map((rowDef, index) => {
+    if (index === 0) {
+      return { rowIndex: index, height: rowDef.height, ...(rowDef.reorderable === false && { reorderable: false }) };
+    }
+    return { rowIndex: index, height: rowDef.height };
+  });
 
   const columns = columnDefs.map((col, index) => ({
     colIndex: index,
     width: col.width,
   }));
 
-  return { rows, columns, cells };
+  return { rows: displayRows, columns, cells };
 };
 
 export interface Person {
@@ -100,6 +122,7 @@ export interface Person {
   age: number;
   email: string;
   company: string;
+  position: number;
 }
 
 export const peopleArr: Person[] = [
@@ -109,6 +132,7 @@ export const peopleArr: Person[] = [
     age: 30,
     email: "jordanrodriquez@cincyr.com",
     company: "Zaggles",
+    position: 1,
   },
   {
     _id: "66d61077794e7949ab167fd5",
@@ -116,6 +140,7 @@ export const peopleArr: Person[] = [
     name: "Allyson Rios",
     age: 30,
     company: "Zoxy",
+    position: 2,
   },
   {
     _id: "66d61077dd754e88981ae434",
@@ -123,6 +148,7 @@ export const peopleArr: Person[] = [
     age: 25,
     email: "pickettlucas@zoxy.com",
     company: "Techade",
+    position: 3,
   },
   {
     _id: "66d61077115e2f8748c334d9",
@@ -130,6 +156,7 @@ export const peopleArr: Person[] = [
     age: 37,
     email: "louelladavid@techade.com",
     company: "Ginkogene",
+    position: 4,
   },
   {
     _id: "66d61077540d53374b427e4b",
@@ -137,6 +164,7 @@ export const peopleArr: Person[] = [
     age: 27,
     email: "triciagreene@ginkogene.com",
     company: "Naxdis",
+    position: 5,
   },
 ];
 

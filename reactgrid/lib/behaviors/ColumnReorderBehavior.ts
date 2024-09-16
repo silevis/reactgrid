@@ -422,7 +422,11 @@ const handlePointerUp = (
   // CASE 1
   // If the mouse pointer is beyond the last column, move the selected columns to the last column
   if (event.clientX > lastColumnClientOffsetLeft + lastColumnCellWidth) {
-    store.onColumnReorder?.(selectedColIndexes, store.columns.length - 1);
+    try {
+      store.onColumnReorder?.(selectedColIndexes, store.columns.length - 1);
+    } catch (e) {
+      console.error(e);
+    }
 
     return {
       currentBehavior: store.getBehavior("Default"),
@@ -446,7 +450,11 @@ const handlePointerUp = (
   // CASE 2
   // If the mouse pointer is beyond the first column, move the selected columns to the first column
   if (event.clientX < gridWrapper.getBoundingClientRect().left) {
-    store.onColumnReorder?.(selectedColIndexes, 0);
+    try {
+      store.onColumnReorder?.(selectedColIndexes, 0);
+    } catch (e) {
+      console.error(e);
+    }
 
     return {
       currentBehavior: store.getBehavior("Default"),
@@ -474,7 +482,11 @@ const handlePointerUp = (
   // CASE 3
   // If the mouse pointer is within the first and last column, move the selected columns to the destination column
 
-  store.onColumnReorder?.(selectedColIndexes, destinationColIdx);
+  try {
+    store.onColumnReorder?.(selectedColIndexes, destinationColIdx);
+  } catch (e) {
+    console.error(e);
+  }
 
   return {
     currentBehavior: store.getBehavior("Default"),
