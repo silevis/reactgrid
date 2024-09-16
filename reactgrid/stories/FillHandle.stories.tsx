@@ -11,7 +11,7 @@ export const FillHandleExample = () => {
 
   const columnDefs: ColumnDef[] = Object.keys(peopleArr[0]).reduce(
     (acc: ColumnDef[], peopleKey: string, idx: number) => {
-      if (peopleKey === "_id") return acc;
+      if (["_id", "position"].includes(peopleKey)) return acc;
       const cellTemplate = peopleKey === "age" ? NumberCell : TextCell;
       return [...acc, { title: peopleKey, width: 100 * idx, cellTemplate }];
     },
