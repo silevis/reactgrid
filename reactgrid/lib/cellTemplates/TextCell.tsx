@@ -1,4 +1,4 @@
-import { FC, useRef, useState } from "react";
+import { FC, useEffect, useRef, useState } from "react";
 import CellWrapper from "../components/CellWrapper";
 import { useCellContext } from "../components/CellContext";
 import { useDoubleTouch } from "../hooks/useDoubleTouch";
@@ -14,12 +14,17 @@ export const TextCell: FC<TextCellProps> = ({ text: initialText, onTextChanged }
   const ctx = useCellContext();
   const targetInputRef = useRef<HTMLInputElement>(null);
   const [isEditMode, setEditMode] = useState(false);
+  const [currentValue, setCurrentValue] = useState(initialText || "");
   const { handleDoubleTouch } = useDoubleTouch(ctx, setEditMode);
+
+  useEffect(() => {
+    setCurrentValue(initialText);
+  }, [initialText]);
 
   return (
     <CellWrapper
       onStringValueRequsted={() => initialText}
-      onStringValueReceived={(v) => onTextChanged?.(v)}
+      onStringValueReceived={(v) => onTextChanged(v)}
       onTouchEnd={handleDoubleTouch}
       style={{ padding: ".2rem", textAlign: "center", outline: "none", minHeight: 0 }}
       onDoubleClick={() => {
@@ -29,26 +34,27 @@ export const TextCell: FC<TextCellProps> = ({ text: initialText, onTextChanged }
       }}
       onKeyDown={(e) => {
         if (!isEditMode && isAlphaNumericWithoutModifiers(e)) {
+          setCurrentValue("");
           setEditMode(true);
         } else if (!isEditMode && e.key === "Enter") {
           e.preventDefault();
           e.stopPropagation();
+          setCurrentValue(initialText || "");
           setEditMode(true);
         } else if (!isEditMode && e.key === "Backspace") {
-          onTextChanged?.("");
+          onTextChanged("");
         }
       }}
     >
       {isEditMode ? (
         <input
+          value={currentValue}
           style={inputStyle}
+          onChange={(e) => setCurrentValue(e.currentTarget.value)}
           onBlur={(e) => {
-            onTextChanged?.(e.currentTarget.value);
+            onTextChanged(e.currentTarget.value);
             setEditMode(false);
           }}
-          onCut={(e) => e.stopPropagation()}
-          onCopy={(e) => e.stopPropagation()}
-          onPaste={(e) => e.stopPropagation()}
           onPointerDown={(e) => e.stopPropagation()}
           onKeyDown={(e) => {
             const controlKeys = ["Escape", "Enter", "Tab"];
@@ -59,7 +65,7 @@ export const TextCell: FC<TextCellProps> = ({ text: initialText, onTextChanged }
               setEditMode(false);
             } else if (e.key === "Enter") {
               e.preventDefault();
-              onTextChanged?.(e.currentTarget.value);
+              onTextChanged(e.currentTarget.value);
               setEditMode(false);
             }
           }}

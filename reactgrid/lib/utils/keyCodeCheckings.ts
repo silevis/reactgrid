@@ -34,6 +34,14 @@ export const inNumericKey = (keyCode: number): boolean =>
   (keyCode >= keyCodes.KEY_0 && keyCode <= keyCodes.KEY_9) || isNumpadNumericKey(keyCode);
 
 /**
+ *
+ * @param keyCode `keyCode` field from `KeyboardEvent` interface
+ * @returns Returns `true` if `keyCode` is one of number separator keys
+ */
+export const isNumberSeparator = (keyCode: number): boolean =>
+  keyCode === keyCodes.PERIOD || keyCode === keyCodes.COMMA;
+
+/**
  * Checks that the pressed key's `keyCode` is one of numpad keys
  *
  * @param {number} keyCode `keyCode` field from `KeyboardEvent` interface
