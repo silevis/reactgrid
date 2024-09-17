@@ -25,7 +25,7 @@ export const NumberCell: FC<NumberCellProps> = ({
   const ctx = useCellContext();
   const targetInputRef = useRef<HTMLInputElement>(null);
   const [isEditMode, setEditMode] = useState(false);
-  const [currentValue, setCurrentValue] = useState(initialValue.toString() || "0");
+  const [currentValue, setCurrentValue] = useState(initialValue?.toString() || "0");
   const { handleDoubleTouch } = useDoubleTouch(ctx, setEditMode);
 
   const isValid = validator ? validator(Number(initialValue)) : true;
@@ -38,7 +38,7 @@ export const NumberCell: FC<NumberCellProps> = ({
   };
 
   useEffect(() => {
-    setCurrentValue(initialValue.toString());
+    setCurrentValue(initialValue?.toString());
   }, [initialValue]);
 
   return (

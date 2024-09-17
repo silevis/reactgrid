@@ -6,7 +6,7 @@ import { ErrorBoundary } from "../../lib/components/ErrorBoundary";
 import { handleCut } from "../utils/handleCut";
 import { handlePaste } from "../utils/handlePaste";
 import { handleCopy } from "../utils/handleCopy";
-import { testStyles, styledRanges, employeesArr, generateCells, ColumnDef, RowDef } from "../utils/bigGridConfig";
+import { testStyles, styledRanges, employeesArr, generateCells, ColumnDef } from "../utils/bigGridConfig";
 import { GridApi } from "../components/GridApi";
 import { handleFill } from "../utils/handleFill";
 import { NumberCell, TextCell } from "../../lib/main";

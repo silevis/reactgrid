@@ -15,7 +15,6 @@ type CellWrapperProps = React.HTMLAttributes<HTMLDivElement> & {
 
 const CellWrapper: FC<CellWrapperProps> = ({
   children,
-  targetInputRef,
   onStringValueRequsted,
   onStringValueReceived,
   ...wrapperDivAttributes
