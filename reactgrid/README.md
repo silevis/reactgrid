@@ -1,27 +1,37 @@
-# React + TypeScript + Vite
+# ReactGrid - Spreadsheet experience for your React app
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+#### ReactGrid is an open-source React component designed to give your application a spreadsheet-like experience. Whether you're displaying or editing data, ReactGrid offers a seamless, intuitive interface that feels just like working with Excel.
 
-Currently, two official plugins are available:
+Version 5 provides complete flexibility in implementing individual functionalities. This means you can customize and extend the grid's behavior to fit your specific needs, ensuring a tailored experience for your application.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+We've put a lot of hard work into making this the best data grid for React. If you appreciate what we've built, consider giving the project a star ⭐ on GitHub!
 
-## Expanding the ESLint configuration
+### Features
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+- Handling data changes
+- Column resizing
+- Column and row reordering
+- Sticky rows and columns
+- Keyboard shortcuts
+- Spanned cells
+- Range selection
+- Fill handle
+- Styled ranges
+- Custom styling
+- Custom cell types
+- Customizable behaviors
+- API hook that allows you to interact with a ReactGrid
 
-- Configure the top-level `parserOptions` property like this:
+# Installation
 
-```js
-   parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json'],
-    tsconfigRootDir: __dirname,
-   },
+```bash
+npm i @silevis/reactgrid@5.0.0-alpha.1
 ```
 
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
+# Examples
+
+Examples can be found in the [.stories](https://github.com/silevis/reactgrid/tree/v5-dev/reactgrid/stories) files.
+
+# Licensing
+
+ReactGrid is published under the [MIT License](./LICENSE).

@@ -24,11 +24,12 @@ export const TextCell: FC<TextCellProps> = ({ text: initialText, onTextChanged }
   return (
     <CellWrapper
       onStringValueRequsted={() => initialText}
-      onStringValueReceived={(v) => onTextChanged(v)}
+      onStringValueReceived={(v) => onTextChanged?.(v)}
       onTouchEnd={handleDoubleTouch}
       style={{ padding: ".2rem", textAlign: "center", outline: "none", minHeight: 0 }}
       onDoubleClick={() => {
         if (ctx.isFocused) {
+          setCurrentValue(initialText || "");
           setEditMode(true);
         }
       }}
@@ -37,12 +38,11 @@ export const TextCell: FC<TextCellProps> = ({ text: initialText, onTextChanged }
           setCurrentValue("");
           setEditMode(true);
         } else if (!isEditMode && e.key === "Enter") {
-          e.preventDefault();
           e.stopPropagation();
           setCurrentValue(initialText || "");
           setEditMode(true);
         } else if (!isEditMode && e.key === "Backspace") {
-          onTextChanged("");
+          onTextChanged?.("");
         }
       }}
     >
@@ -52,9 +52,12 @@ export const TextCell: FC<TextCellProps> = ({ text: initialText, onTextChanged }
           style={inputStyle}
           onChange={(e) => setCurrentValue(e.currentTarget.value)}
           onBlur={(e) => {
-            onTextChanged(e.currentTarget.value);
+            onTextChanged?.(e.currentTarget.value);
             setEditMode(false);
           }}
+          onCut={(e) => e.stopPropagation()}
+          onCopy={(e) => e.stopPropagation()}
+          onPaste={(e) => e.stopPropagation()}
           onPointerDown={(e) => e.stopPropagation()}
           onKeyDown={(e) => {
             const controlKeys = ["Escape", "Enter", "Tab"];
@@ -64,8 +67,7 @@ export const TextCell: FC<TextCellProps> = ({ text: initialText, onTextChanged }
             if (e.key === "Escape") {
               setEditMode(false);
             } else if (e.key === "Enter") {
-              e.preventDefault();
-              onTextChanged(e.currentTarget.value);
+              onTextChanged?.(e.currentTarget.value);
               setEditMode(false);
             }
           }}

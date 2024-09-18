@@ -2,7 +2,7 @@ import React, { FC, useEffect, useRef, useState } from "react";
 import { useCellContext } from "../components/CellContext";
 import CellWrapper from "../components/CellWrapper";
 import { useDoubleTouch } from "../hooks/useDoubleTouch";
-import { inNumericKey } from "../utils/keyCodeCheckings";
+import { inNumericKey, isNumberSeparator } from "../utils/keyCodeCheckings";
 
 interface NumberCellProps {
   value: number;
@@ -22,49 +22,47 @@ export const NumberCell: FC<NumberCellProps> = ({
   hideZero,
   format,
 }) => {
+  const initialValueStr = initialValue?.toString();
   const ctx = useCellContext();
   const targetInputRef = useRef<HTMLInputElement>(null);
   const [isEditMode, setEditMode] = useState(false);
-  const [currentValue, setCurrentValue] = useState(initialValue || 0);
+  const [currentValue, setCurrentValue] = useState(initialValueStr || "0");
   const { handleDoubleTouch } = useDoubleTouch(ctx, setEditMode);
 
   const isValid = validator ? validator(Number(initialValue)) : true;
 
-  let textToDisplay = initialValue?.toString();
-
-  if (hideZero && initialValue === 0) {
-    textToDisplay = "";
-  } else if (format) {
-    textToDisplay = format.format(initialValue);
-  } else if (!isValid && errorMessage) {
-    textToDisplay = errorMessage;
-  }
+  const getFormattedValue = () => {
+    if (hideZero && initialValue === 0) return "";
+    if (format) return format.format(initialValue);
+    if (!isValid && errorMessage) return errorMessage;
+    return initialValueStr;
+  };
 
   useEffect(() => {
-    setCurrentValue(initialValue);
+    setCurrentValue(initialValueStr);
   }, [initialValue]);
 
   return (
     <CellWrapper
       onTouchEnd={handleDoubleTouch}
-      onStringValueRequsted={() => initialValue.toString()}
-      onStringValueReceived={(v) => onValueChanged(Number(v))}
+      onStringValueRequsted={() => initialValueStr}
+      onStringValueReceived={(v) => onValueChanged?.(Number(v))}
       onDoubleClick={() => {
         if (ctx.isFocused) {
+          setCurrentValue(initialValueStr || "0");
           setEditMode(true);
         }
       }}
       onKeyDown={(e) => {
-        if (!isEditMode && inNumericKey(e.keyCode)) {
-          setCurrentValue(0);
+        if ((!isEditMode && inNumericKey(e.keyCode)) || isNumberSeparator(e.keyCode)) {
+          setCurrentValue("");
           setEditMode(true);
         } else if (!isEditMode && e.key === "Enter") {
-          e.preventDefault();
           e.stopPropagation();
-          setCurrentValue(initialValue || 0);
+          setCurrentValue(initialValueStr || "0");
           setEditMode(true);
         } else if (!isEditMode && e.key === "Backspace") {
-          onValueChanged(0);
+          onValueChanged?.(0);
         }
       }}
     >
@@ -72,18 +70,21 @@ export const NumberCell: FC<NumberCellProps> = ({
         <input
           value={currentValue}
           onChange={(e) => {
-            const value = Number(e.currentTarget.value);
-            if (!isNaN(value)) {
-              setCurrentValue(value);
-            } else {
-              setCurrentValue(0);
+            let newValue = e.currentTarget.value.replace(/[^0-9,.]/g, "");
+            if (isNumberSeparator(newValue.charCodeAt(0))) {
+              newValue = "0" + newValue;
             }
+            setCurrentValue(newValue);
           }}
           onPointerDown={(e) => e.stopPropagation()}
           onBlur={(e) => {
-            onValueChanged(Number(e.currentTarget.value));
+            const value = e.currentTarget.value.replace(/,/g, ".");
+            onValueChanged?.(Number(value));
             setEditMode(false);
           }}
+          onCut={(e) => e.stopPropagation()}
+          onCopy={(e) => e.stopPropagation()}
+          onPaste={(e) => e.stopPropagation()}
           style={inputStyle}
           onKeyDown={(e) => {
             const controlKeys = ["Escape", "Enter", "Tab"];
@@ -93,8 +94,8 @@ export const NumberCell: FC<NumberCellProps> = ({
             if (e.key === "Escape") {
               setEditMode(false);
             } else if (e.key === "Enter") {
-              e.preventDefault();
-              onValueChanged(Number(e.currentTarget.value));
+              const value = e.currentTarget.value.replace(/,/g, ".");
+              onValueChanged?.(Number(value));
               setEditMode(false);
             }
           }}
@@ -102,7 +103,7 @@ export const NumberCell: FC<NumberCellProps> = ({
           ref={targetInputRef}
         />
       ) : (
-        textToDisplay
+        getFormattedValue()
       )}
     </CellWrapper>
   );

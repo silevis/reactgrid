@@ -134,22 +134,16 @@ export const SpannedCellsExample = () => {
 
     return cells;
   };
-  const [columns] = useState<Column[]>([
-    { colIndex: 0, width: 200 },
-    { colIndex: 1, width: 100 },
-    { colIndex: 2, width: 200 },
-    { colIndex: 3, width: 200 },
-  ]);
 
-  const [rows] = useState<Row[]>([
-    { rowIndex: 0, height: 50 },
-    { rowIndex: 1, height: 50 },
-    { rowIndex: 2, height: 50 },
-    { rowIndex: 3, height: 50 },
-    { rowIndex: 4, height: 50 },
-    { rowIndex: 5, height: 50 },
-    { rowIndex: 6, height: 50 },
-  ]);
+  const rows: Row[] = Array.from({ length: categories.length + 1 }, (_, i) => ({
+    rowIndex: i,
+    height: 40,
+  }));
+
+  const columns: Column[] = headers.map((_, index) => ({
+    colIndex: index,
+    width: 200,
+  }));
 
   const cells = generateCells(rows, columns, categories, updateCategories);
 
@@ -158,7 +152,6 @@ export const SpannedCellsExample = () => {
       <ReactGrid
         id="spanned-cells-example"
         enableColumnSelectionOnFirstRow
-        enableRowSelectionOnFirstColumn
         styledRanges={styledRanges}
         columns={columns}
         rows={rows}

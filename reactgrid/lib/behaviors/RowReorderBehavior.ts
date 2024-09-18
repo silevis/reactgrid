@@ -419,7 +419,11 @@ const handlePointerUp = (
   // CASE 1
   // If the mouse pointer is beyond the last row, move the selected rows to the last row
   if (event.clientY > lastRowClientOffsetTop + lastRowHeight) {
-    store.onRowReorder?.(selectedRowIndexes, store.rows.length - 1);
+    try {
+      store.onRowReorder?.(selectedRowIndexes, store.rows.length - 1);
+    } catch (e) {
+      console.error(e);
+    }
 
     return {
       currentBehavior: store.getBehavior("Default"),
@@ -443,7 +447,11 @@ const handlePointerUp = (
   // CASE 2
   // If the mouse pointer is beyond the first row, move the selected rows to the first row
   if (event.clientY < gridWrapper.getBoundingClientRect().top) {
-    store.onRowReorder?.(selectedRowIndexes, 0);
+    try {
+      store.onRowReorder?.(selectedRowIndexes, 0);
+    } catch (e) {
+      console.error(e);
+    }
 
     return {
       currentBehavior: store.getBehavior("Default"),
@@ -470,7 +478,11 @@ const handlePointerUp = (
   // CASE 3
   // If the mouse pointer is within the first and last row, move the selected rows to the destination row
 
-  store.onRowReorder?.(selectedRowIndexes, destinationRowIdx);
+  try {
+    store.onRowReorder?.(selectedRowIndexes, destinationRowIdx);
+  } catch (e) {
+    console.error(e);
+  }
 
   return {
     currentBehavior: store.getBehavior("Default"),

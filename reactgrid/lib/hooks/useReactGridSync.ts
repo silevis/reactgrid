@@ -2,6 +2,7 @@ import { useEffect, useRef } from "react";
 import { deepCompare } from "../utils/deepCompare";
 import { CellMatrix } from "../types/CellMatrix";
 import { ReactGridStore, ReactGridStoreProps } from "../types/ReactGridStore";
+import isEqual from "lodash.isequal";
 
 export const useReactGridSync = (
   store: ReactGridStore,
@@ -12,7 +13,7 @@ export const useReactGridSync = (
 
   // sync props with store in case of one of them changes
   useEffect(() => {
-    // deep compare to avoid unnecessary updates
+    // perform a deep comparison of props to avoid unnecessary updates
     if (!deepCompare(previousGridProps.current, rgProps)) {
       store.setExternalData({ ...rgProps });
       previousGridProps.current = rgProps;
@@ -21,16 +22,22 @@ export const useReactGridSync = (
 
   // sync rows with store
   useEffect(() => {
-    store.setExternalData({ rows: cellMatrix.rows });
+    if (!isEqual(cellMatrix.rows, store.rows)) {
+      store.setExternalData({ rows: cellMatrix.rows });
+    }
   }, [cellMatrix.rows]);
 
   // sync columns with store
   useEffect(() => {
-    store.setExternalData({ columns: cellMatrix.columns });
+    if (!isEqual(cellMatrix.columns, store.columns)) {
+      store.setExternalData({ columns: cellMatrix.columns });
+    }
   }, [cellMatrix.columns]);
 
   // sync cells with store
   useEffect(() => {
-    store.setExternalData({ cells: cellMatrix.cells });
+    if (!isEqual(cellMatrix.cells, store.cells)) {
+      store.setExternalData({ cells: cellMatrix.cells });
+    }
   }, [cellMatrix.cells]);
 };

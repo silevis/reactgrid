@@ -74,7 +74,7 @@ export const CellContextProvider = memo(
   },
   (prev, next) => {
     return (
-      deepCompare(prev.cell.props, next.cell.props) &&
+      deepCompare(prev.cell, next.cell) &&
       prev.isFocused === next.isFocused &&
       prev.getCellOffset === next.getCellOffset
     );

@@ -3,34 +3,26 @@ import { StoryDefault } from "@ladle/react";
 import { StrictMode, useState } from "react";
 import { ReactGrid } from "../../lib/components/ReactGrid";
 import { ErrorBoundary } from "../../lib/components/ErrorBoundary";
-import { Column, Row } from "../../lib/types/PublicModel";
 import { handleCut } from "../utils/handleCut";
 import { handlePaste } from "../utils/handlePaste";
 import { handleCopy } from "../utils/handleCopy";
-import { handleColumnReorder } from "../utils/handleColumnReorder";
-import { handleRowReorder } from "../utils/handleRowReorder";
-import { testStyles, styledRanges, employeesArr, generateCells, headers } from "../utils/bigGridConfig";
-import { handleResizeColumn } from "../utils/handleResizeColumn";
+import { testStyles, styledRanges, employeesArr, generateCells, ColumnDef } from "../utils/bigGridConfig";
 import { GridApi } from "../components/GridApi";
 import { handleFill } from "../utils/handleFill";
+import { NumberCell, TextCell } from "../../lib/main";
+import { handleColumnReorder } from "../utils/handleColumnReorder";
+import { handleRowReorder } from "../utils/handleRowReorder";
+import { handleResizeColumn } from "../utils/handleResizeColumn";
 
 export const BigGrid = () => {
   const [employees, setEmployees] = useState(employeesArr);
 
-  const [rows, setRows] = useState<Row[]>(
-    Array.from({ length: employees.length }, (_, index) => ({
-      initialRowIndex: index,
-      rowIndex: index,
-      height: 30,
-    }))
-  );
-
-  const [columns, setColumns] = useState<Column[]>(
-    Array.from({ length: headers.length }, (_, index) => ({
-      initialColIndex: index,
-      colIndex: index,
-      width: 100,
-    }))
+  const [columnDefs, setColumnDefs] = useState<ColumnDef[]>(
+    Object.keys(employees[0]).reduce((acc: ColumnDef[], peopleKey: string) => {
+      if (["_id", "position"].includes(peopleKey)) return acc;
+      const cellTemplate = peopleKey === "age" || peopleKey === "balance" ? NumberCell : TextCell;
+      return [...acc, { title: peopleKey, width: 100, cellTemplate }];
+    }, [])
   );
 
   const updatePerson = (id, key, newValue) => {
@@ -39,7 +31,7 @@ export const BigGrid = () => {
     });
   };
 
-  const cells = generateCells(employees, updatePerson, rows, columns);
+  const { rows, columns, cells } = generateCells(employees, updatePerson, columnDefs);
 
   const [toggleRanges, setToggleRanges] = useState(false);
 
@@ -48,24 +40,24 @@ export const BigGrid = () => {
       <div className="rgScrollableContainer" style={{ height: "100%", width: "100%", overflow: "auto" }}>
         <ReactGrid
           id="big-grid"
-          cells={cells}
           stickyTopRows={1}
           stickyLeftColumns={2}
           stickyRightColumns={2}
           stickyBottomRows={2}
           styles={testStyles}
           styledRanges={toggleRanges ? styledRanges : []}
-          onResizeColumn={(width, columnIdx) => handleResizeColumn(width, columnIdx, setColumns)}
-          onRowReorder={(selectedRowIndexes, destinationRowIdx) =>
-            handleRowReorder(selectedRowIndexes, destinationRowIdx, setRows)
-          }
+          onResizeColumn={(width, columnIdx) => handleResizeColumn(width, columnIdx, setColumnDefs)}
+          onRowReorder={(selectedRowIndexes, destinationRowIdx) => {
+            handleRowReorder(employees, selectedRowIndexes, destinationRowIdx, updatePerson);
+          }}
           onColumnReorder={(selectedColIndexes, destinationColIdx) =>
-            handleColumnReorder(selectedColIndexes, destinationColIdx, setColumns)
+            handleColumnReorder(selectedColIndexes, destinationColIdx, setColumnDefs)
           }
           enableColumnSelectionOnFirstRow
           enableRowSelectionOnFirstColumn
           rows={rows}
           columns={columns}
+          cells={cells}
           onFillHandle={handleFill}
           onCut={handleCut}
           onPaste={handlePaste}

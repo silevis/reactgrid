@@ -1,28 +1,22 @@
 import React from "react";
 import { StrictMode, useState } from "react";
-import { Column, ReactGrid, Row } from "../lib/main";
+import { NumberCell, ReactGrid, TextCell } from "../lib/main";
 import { StoryDefault } from "@ladle/react";
 import { ErrorBoundary } from "../lib/components/ErrorBoundary";
-import { rgStyles, peopleArr, generateCells } from "./utils/examplesConfig";
+import { rgStyles, peopleArr, generateDataTable, ColumnDef } from "./utils/examplesConfig";
 import { handleRowReorder } from "./utils/handleRowReorder";
 
-export const FillHandleExample = () => {
-  const [rows, setRows] = useState<Row[]>([
-    { rowIndex: 0, height: 30, reorderable: false },
-    { rowIndex: 1, height: 30 },
-    { rowIndex: 2, height: 30 },
-    { rowIndex: 3, height: 30 },
-    { rowIndex: 4, height: 30 },
-  ]);
-
-  const [columns, setColumns] = useState<Column[]>([
-    { colIndex: 0, width: 100 },
-    { colIndex: 1, width: 50 },
-    { colIndex: 2, width: 200 },
-    { colIndex: 3, width: 100 },
-  ]);
-
+export const RowReorderExample = () => {
   const [people, setPeople] = useState(peopleArr);
+
+  const columnDefs: ColumnDef[] = Object.keys(peopleArr[0]).reduce(
+    (acc: ColumnDef[], peopleKey: string, idx: number) => {
+      if (["_id", "position"].includes(peopleKey)) return acc;
+      const cellTemplate = peopleKey === "age" ? NumberCell : TextCell;
+      return [...acc, { title: peopleKey, width: 100 * idx, cellTemplate }];
+    },
+    []
+  );
 
   const updatePerson = (id, key, newValue) => {
     setPeople((prev) => {
@@ -30,7 +24,7 @@ export const FillHandleExample = () => {
     });
   };
 
-  const cells = generateCells(rows, columns, people, updatePerson);
+  const { rows, columns, cells } = generateDataTable(people, updatePerson, columnDefs);
 
   return (
     <div>
@@ -38,9 +32,9 @@ export const FillHandleExample = () => {
         id="row-reorder-example"
         styles={rgStyles}
         enableRowSelectionOnFirstColumn
-        onRowReorder={(selectedRowIndexes, destinationRowIdx) =>
-          handleRowReorder(selectedRowIndexes, destinationRowIdx, setRows)
-        }
+        onRowReorder={(selectedRowIndexes, destinationRowIdx) => {
+          handleRowReorder(people, selectedRowIndexes, destinationRowIdx, updatePerson);
+        }}
         initialFocusLocation={{ rowIndex: 2, colIndex: 1 }}
         rows={rows}
         columns={columns}

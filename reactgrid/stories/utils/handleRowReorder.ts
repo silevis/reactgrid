@@ -1,27 +1,36 @@
-import { Row } from "../../lib/types/PublicModel";
+import { Person } from "./examplesConfig";
 
 export const handleRowReorder = (
+  peopleArr: Person[],
   selectedRowIndexes: number[],
   destinationRowIdx: number,
-  setRows: React.Dispatch<React.SetStateAction<Row[]>>
+  updatePerson: (id: string, key: string, newValue: number) => void
 ) => {
-  setRows((prevRows) => {
-    // create arrays of selected and unselected rows
-    const selectedRows = prevRows.filter((_, index) => selectedRowIndexes.includes(index));
-    const unselectedRows = prevRows.filter((_, index) => !selectedRowIndexes.includes(index));
+  const prevPeopleArr = [...peopleArr].sort((a, b) => a.position - b.position);
 
-    // calculate the adjusted destination index
-    const adjustedDestinationRowIdx =
-      selectedRowIndexes[0] > destinationRowIdx ? destinationRowIdx : destinationRowIdx - selectedRows.length + 1;
+  // Adjust the destination index to account for the header row
+  const adjustedDestinationIdx = destinationRowIdx - 1;
+  const adjustedSelectedRowIdxs = selectedRowIndexes.map((rowIdx) => rowIdx - 1);
 
-    // create the new array of rows
-    const newRows = [
-      ...unselectedRows.slice(0, adjustedDestinationRowIdx),
-      ...selectedRows,
-      ...unselectedRows.slice(adjustedDestinationRowIdx),
-    ];
+  const isReorderingUpwards = adjustedSelectedRowIdxs.some((rowIdx) => rowIdx > adjustedDestinationIdx);
 
-    // update rowIndex for each row
-    return newRows.map((row, index) => ({ ...row, rowIndex: index }));
+  adjustedSelectedRowIdxs.forEach((rowIdx, index) => {
+    if (adjustedDestinationIdx === 0) {
+      prevPeopleArr[rowIdx].position = prevPeopleArr[adjustedDestinationIdx].position / 2 + index * 0.01;
+    } else if (adjustedDestinationIdx === peopleArr.length - 1) {
+      prevPeopleArr[rowIdx].position = prevPeopleArr[adjustedDestinationIdx].position + 1 + index * 0.01;
+    } else if (isReorderingUpwards) {
+      prevPeopleArr[rowIdx].position =
+        (prevPeopleArr[adjustedDestinationIdx].position + prevPeopleArr[adjustedDestinationIdx - 1].position) / 2 +
+        index * 0.01;
+    } else {
+      prevPeopleArr[rowIdx].position =
+        (prevPeopleArr[adjustedDestinationIdx].position + prevPeopleArr[adjustedDestinationIdx + 1].position) / 2 +
+        index * 0.01;
+    }
+  });
+
+  prevPeopleArr.forEach((row) => {
+    updatePerson(row._id, "position", row.position);
   });
 };

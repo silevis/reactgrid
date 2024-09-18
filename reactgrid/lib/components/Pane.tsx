@@ -57,7 +57,7 @@ export const PaneGridContent: React.FC<PaneGridContentProps> = React.memo(
     const cells = useReactGridStore(id, (store) => store.cells);
     const focusedCell = useReactGridStore(id, (store) => store.focusedLocation);
 
-    const getCellOffset_ = useCallback(getCellOffset, [stickyOffsets]);
+    const memoizedGetCellOffset = useCallback(getCellOffset, [stickyOffsets]);
 
     return rows.map((_, rowIndex) => {
       return columns.map((_, colIndex) => {
@@ -79,7 +79,7 @@ export const PaneGridContent: React.FC<PaneGridContentProps> = React.memo(
             colSpan={cell.colSpan}
             realRowIndex={realRowIndex}
             realColumnIndex={realColumnIndex}
-            getCellOffset={getCellOffset_}
+            getCellOffset={memoizedGetCellOffset}
             cell={cell}
             isFocused={isFocused}
           />

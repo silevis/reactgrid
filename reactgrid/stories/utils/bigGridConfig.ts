@@ -1,4 +1,5 @@
-import { Cell, Column, NonEditableCell, NumberCell, Row, TextCell } from "../../lib/main";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { Cell, Column, NonEditableCell, Row } from "../../lib/main";
 
 export const styledRanges = [
   {
@@ -14,124 +15,50 @@ export const testStyles = {
   },
 };
 
-const myNumberFormat = new Intl.NumberFormat("pl", {
+const myNumberFormat = new Intl.NumberFormat("en-US", {
   style: "currency",
   minimumFractionDigits: 2,
   maximumFractionDigits: 2,
-  currency: "PLN",
+  currency: "USD",
 });
-
-export const headers = [
-  "Name",
-  "Age",
-  "Balance",
-  "Eye Color",
-  "Gender",
-  "Company",
-  "Email",
-  "Phone",
-  "Address",
-  "Job Title",
-];
-
-const createEmployeeCells = (employee: Employee, updateEmployee: (id: string, key: string, newValue) => void) => {
-  return [
-    {
-      Template: TextCell,
-      props: {
-        text: employee.name,
-        onTextChanged: (newName: string) => updateEmployee(employee._id, "name", newName),
-      },
-    },
-    {
-      Template: NumberCell,
-      props: {
-        value: employee.age,
-        onValueChanged: (newAge: number) => updateEmployee(employee._id, "age", newAge),
-        validator: (value: number) => !isNaN(value),
-        errorMessage: "ERR",
-        hideZero: true,
-      },
-    },
-    {
-      Template: TextCell,
-      props: {
-        text: myNumberFormat.format(Number(employee.balance.replace(/[^0-9.-]+/g, ""))),
-        onTextChanged: (newBalance: string) => updateEmployee(employee._id, "balance", newBalance),
-      },
-    },
-    {
-      Template: TextCell,
-      props: {
-        text: employee.eyeColor,
-        onTextChanged: (newEyeColor: string) => updateEmployee(employee._id, "eyeColor", newEyeColor),
-      },
-    },
-    {
-      Template: TextCell,
-      props: {
-        text: employee.gender,
-        onTextChanged: (newGender: string) => updateEmployee(employee._id, "gender", newGender),
-      },
-    },
-    {
-      Template: TextCell,
-      props: {
-        text: employee.company,
-        onTextChanged: (newCompany: string) => updateEmployee(employee._id, "company", newCompany),
-      },
-    },
-    {
-      Template: TextCell,
-      props: {
-        text: employee.email,
-        onTextChanged: (newEmail: string) => updateEmployee(employee._id, "email", newEmail),
-      },
-    },
-    {
-      Template: TextCell,
-      props: {
-        text: employee.phone,
-        onTextChanged: (newPhone: string) => updateEmployee(employee._id, "phone", newPhone),
-      },
-    },
-    {
-      Template: TextCell,
-      props: {
-        text: employee.address,
-        onTextChanged: (newAddress: string) => updateEmployee(employee._id, "address", newAddress),
-      },
-    },
-    {
-      Template: TextCell,
-      props: {
-        text: employee.jobTitle,
-        onTextChanged: (newJobTitle: string) => updateEmployee(employee._id, "jobTitle", newJobTitle),
-      },
-    },
-  ];
-};
 
 export const generateCells = (
   employees: Employee[],
-  updateEmployee: (id: string, key: string, newValue) => void,
-  rows: Row[],
-  columns: Column[]
-): Cell[] => {
+  updatePerson: (id, selector, p) => void,
+  columnDefs: ColumnDef[]
+): CellMatrixDef => {
   const cells: Cell[] = [];
 
-  rows.forEach((row, rowIndex) => {
-    const personRowIndex = rowIndex;
+  const rowsWithAssignedHeights = employees.map((person, i) => ({
+    id: person._id,
+    height: 40,
+    position: person.position,
+  }));
 
+  const headerRow = [{ id: "header", position: 0, height: 40 }];
+
+  const orderedRows: RowDef[] = [...headerRow, ...rowsWithAssignedHeights]
+    .sort((a, b) => a.position - b.position)
+    .map((row) => {
+      const idx = rowsWithAssignedHeights.findIndex((r) => r.id === row.id);
+      const adjustedIdx = idx === -1 ? 0 : idx + 1;
+
+      if (adjustedIdx === 0) {
+        return { rowIndex: adjustedIdx, height: row.height, reorderable: false };
+      }
+
+      return { rowIndex: adjustedIdx, height: row.height };
+    });
+
+  orderedRows.forEach((row, rowIndex) => {
     if (rowIndex === 0) {
-      // Header row creation
-      columns.forEach((col, colIndex) => {
+      columnDefs.forEach((col, colIndex) => {
         cells.push({
           rowIndex,
           colIndex,
           Template: NonEditableCell,
           props: {
-            value: headers[colIndex],
+            value: col.title,
             style: {
               backgroundColor: "#55bc71",
               display: "flex",
@@ -143,27 +70,91 @@ export const generateCells = (
         });
       });
     } else {
-      // Employee data rows
-      const employee = employees[personRowIndex];
-      const employeeCells = createEmployeeCells(employee, updateEmployee);
+      const personRowIndex = row.rowIndex - 1;
 
-      columns.forEach((col, colIndex) => {
+      const personCells = columnDefs.map((col) => {
+        const ageCellProps = {
+          onValueChanged: (newValue) => {
+            updatePerson(employees[personRowIndex]._id, col.title, newValue);
+          },
+          value: employees[personRowIndex][col.title],
+        };
+
+        const balanceCellProps = {
+          onValueChanged: (newValue) => {
+            updatePerson(employees[personRowIndex]._id, col.title, newValue);
+          },
+          value: employees[personRowIndex][col.title],
+          format: myNumberFormat,
+        };
+
+        const textCellProps = {
+          text: employees[personRowIndex][col.title],
+          onTextChanged: (newText: string) => {
+            updatePerson(employees[personRowIndex]._id, col.title, newText);
+          },
+        };
+
+        return {
+          Template: col.cellTemplate,
+          props:
+            col.title === "balance"
+              ? { ...balanceCellProps }
+              : col.title === "age"
+              ? { ...ageCellProps }
+              : { ...textCellProps },
+        };
+      });
+
+      columnDefs.forEach((_, colIndex) => {
         cells.push({
+          id: `${employees[personRowIndex]._id}-${colIndex}`,
           rowIndex,
           colIndex,
-          ...employeeCells[colIndex],
+          ...personCells[colIndex],
         });
       });
     }
   });
 
-  return cells;
+  // Rows that are actually used in the grid
+  const gridRows = orderedRows.map((rowDef, index) => {
+    if (index === 0) {
+      return { rowIndex: index, height: rowDef.height, ...(rowDef.reorderable === false && { reorderable: false }) };
+    }
+    return { rowIndex: index, height: rowDef.height };
+  });
+
+  // Columns that are actually used in the grid
+  const gridColumns = columnDefs.map((col, index) => ({
+    colIndex: index,
+    width: col.width,
+  }));
+
+  return { rows: gridRows, columns: gridColumns, cells };
 };
+
+interface CellMatrixDef {
+  cells: Cell[];
+  rows: Row[];
+  columns: Column[];
+}
+
+export interface RowDef {
+  rowIndex: number;
+  height: number;
+  reorderable?: boolean;
+}
+
+export interface ColumnDef {
+  title: string;
+  width: number;
+  cellTemplate: React.ComponentType<any>;
+}
 
 export interface Employee {
   _id: string;
-  isActive: boolean;
-  balance: string;
+  balance: number;
   age: number;
   eyeColor: string;
   name: string;
@@ -177,13 +168,13 @@ export interface Employee {
   jobTitle: string;
   latitude: number;
   longitude: number;
+  position: number;
 }
 
 export const employeesArr: Employee[] = [
   {
     _id: "66da250eabb087dce9e861cd",
-    isActive: true,
-    balance: "$3,421.16",
+    balance: 3421.16,
     age: 28,
     eyeColor: "brown",
     name: "Marla Harrison",
@@ -198,11 +189,11 @@ export const employeesArr: Employee[] = [
     jobTitle: "Consultant",
     latitude: -34.045056,
     longitude: 55.619581,
+    position: 1,
   },
   {
     _id: "66da250e18739224e798c688",
-    isActive: false,
-    balance: "$3,662.54",
+    balance: 3662.54,
     age: 25,
     eyeColor: "brown",
     name: "Carrillo Tate",
@@ -217,11 +208,11 @@ export const employeesArr: Employee[] = [
     jobTitle: "Developer",
     latitude: 11.512423,
     longitude: 11.690788,
+    position: 2,
   },
   {
     _id: "66da250e018504c7c7d0730e",
-    isActive: false,
-    balance: "$1,849.94",
+    balance: 1849.94,
     age: 29,
     eyeColor: "green",
     name: "French Pope",
@@ -236,11 +227,11 @@ export const employeesArr: Employee[] = [
     jobTitle: "Manager",
     latitude: -41.279247,
     longitude: 21.158582,
+    position: 3,
   },
   {
     _id: "66da250ed21958595a827970",
-    isActive: true,
-    balance: "$2,975.62",
+    balance: 2975.62,
     age: 31,
     eyeColor: "blue",
     name: "Dickson Dillard",
@@ -255,11 +246,11 @@ export const employeesArr: Employee[] = [
     jobTitle: "Analyst",
     latitude: 0.237355,
     longitude: -109.988574,
+    position: 4,
   },
   {
     _id: "66da250e28fadc10013e4faf",
-    isActive: true,
-    balance: "$1,145.17",
+    balance: 1145.17,
     age: 27,
     eyeColor: "blue",
     name: "Fields Burgess",
@@ -274,11 +265,11 @@ export const employeesArr: Employee[] = [
     jobTitle: "Consultant",
     latitude: -54.680972,
     longitude: 20.912822,
+    position: 5,
   },
   {
     _id: "66da250e36b233967054d2fa",
-    isActive: true,
-    balance: "$1,174.00",
+    balance: 1174.0,
     age: 21,
     eyeColor: "green",
     name: "Kerri Mckinney",
@@ -293,11 +284,11 @@ export const employeesArr: Employee[] = [
     jobTitle: "Designer",
     latitude: 77.585763,
     longitude: -71.326252,
+    position: 6,
   },
   {
     _id: "66da250e74da564bc2a89229",
-    isActive: true,
-    balance: "$2,057.99",
+    balance: 2057.99,
     age: 20,
     eyeColor: "green",
     name: "Adele Foster",
@@ -312,11 +303,11 @@ export const employeesArr: Employee[] = [
     jobTitle: "Consultant",
     latitude: -69.342751,
     longitude: -122.209488,
+    position: 7,
   },
   {
     _id: "66da250ec18faf5e9de48a5a",
-    isActive: true,
-    balance: "$1,324.62",
+    balance: 1324.62,
     age: 35,
     eyeColor: "brown",
     name: "Young Crawford",
@@ -331,11 +322,11 @@ export const employeesArr: Employee[] = [
     jobTitle: "Developer",
     latitude: 0.00756,
     longitude: -24.90914,
+    position: 8,
   },
   {
     _id: "66da250ef44a1ba8b2a88f97",
-    isActive: true,
-    balance: "$3,743.62",
+    balance: 3743.62,
     age: 32,
     eyeColor: "brown",
     name: "Daphne Black",
@@ -350,11 +341,11 @@ export const employeesArr: Employee[] = [
     jobTitle: "Manager",
     latitude: -66.717116,
     longitude: 35.091482,
+    position: 9,
   },
   {
     _id: "66da250efce2ad5222b77e0d",
-    isActive: false,
-    balance: "$2,623.22",
+    balance: 2623.22,
     age: 37,
     eyeColor: "green",
     name: "Summers Kent",
@@ -369,11 +360,11 @@ export const employeesArr: Employee[] = [
     jobTitle: "Developer",
     latitude: 54.116028,
     longitude: -151.807716,
+    position: 10,
   },
   {
     _id: "66da250ee11a7be44d7b300d",
-    isActive: true,
-    balance: "$3,443.45",
+    balance: 3443.45,
     age: 37,
     eyeColor: "brown",
     name: "Lilia Bailey",
@@ -388,11 +379,11 @@ export const employeesArr: Employee[] = [
     jobTitle: "Designer",
     latitude: -52.874379,
     longitude: -161.478409,
+    position: 11,
   },
   {
     _id: "66da250e0ac8921c1607eb13",
-    isActive: false,
-    balance: "$1,672.67",
+    balance: 1672.67,
     age: 21,
     eyeColor: "brown",
     name: "Nelda Hernandez",
@@ -407,11 +398,11 @@ export const employeesArr: Employee[] = [
     jobTitle: "Analyst",
     latitude: 24.127192,
     longitude: -21.925787,
+    position: 12,
   },
   {
     _id: "66da250e543c1bedd94a1a7a",
-    isActive: false,
-    balance: "$1,610.78",
+    balance: 1610.78,
     age: 29,
     eyeColor: "brown",
     name: "Sonja Mcclain",
@@ -426,11 +417,11 @@ export const employeesArr: Employee[] = [
     jobTitle: "Consultant",
     latitude: -58.78795,
     longitude: -48.974701,
+    position: 13,
   },
   {
     _id: "66da250e9fe8e5402db3fa03",
-    isActive: true,
-    balance: "$3,820.77",
+    balance: 3820.77,
     age: 27,
     eyeColor: "blue",
     name: "Janet Kim",
@@ -445,11 +436,11 @@ export const employeesArr: Employee[] = [
     jobTitle: "Developer",
     latitude: 33.972836,
     longitude: 113.582895,
+    position: 14,
   },
   {
     _id: "66da250ebb3685e4859c7a20",
-    isActive: false,
-    balance: "$1,616.46",
+    balance: 1616.46,
     age: 38,
     eyeColor: "brown",
     name: "Tyson Hart",
@@ -464,11 +455,11 @@ export const employeesArr: Employee[] = [
     jobTitle: "Manager",
     latitude: -46.831499,
     longitude: -93.884079,
+    position: 15,
   },
   {
     _id: "66da250ec335e7fa1236cbd7",
-    isActive: false,
-    balance: "$3,761.54",
+    balance: 3761.54,
     age: 28,
     eyeColor: "brown",
     name: "Nelson Mckay",
@@ -483,11 +474,11 @@ export const employeesArr: Employee[] = [
     jobTitle: "Developer",
     latitude: 89.601119,
     longitude: 172.975192,
+    position: 16,
   },
   {
     _id: "66da250ef157a1cd31db0841",
-    isActive: false,
-    balance: "$2,230.60",
+    balance: 2230.6,
     age: 37,
     eyeColor: "blue",
     name: "Sheri Meadows",
@@ -502,11 +493,11 @@ export const employeesArr: Employee[] = [
     jobTitle: "Consultant",
     latitude: -7.332961,
     longitude: 28.819386,
+    position: 17,
   },
   {
     _id: "66da250e920163c59510cc8d",
-    isActive: false,
-    balance: "$1,204.52",
+    balance: 1204.52,
     age: 30,
     eyeColor: "green",
     name: "Karin Goff",
@@ -521,11 +512,11 @@ export const employeesArr: Employee[] = [
     jobTitle: "Designer",
     latitude: 36.811411,
     longitude: 105.384089,
+    position: 18,
   },
   {
     _id: "66da250eb01d1346270ce7fa",
-    isActive: false,
-    balance: "$3,140.93",
+    balance: 3140.93,
     age: 24,
     eyeColor: "blue",
     name: "Peterson Joyce",
@@ -540,11 +531,11 @@ export const employeesArr: Employee[] = [
     jobTitle: "Developer",
     latitude: 78.251002,
     longitude: 14.07384,
+    position: 19,
   },
   {
     _id: "66da250e32cbef0719e9cd8f",
-    isActive: false,
-    balance: "$1,631.80",
+    balance: 1631.8,
     age: 37,
     eyeColor: "brown",
     name: "Elena Randolph",
@@ -559,11 +550,11 @@ export const employeesArr: Employee[] = [
     jobTitle: "Consultant",
     latitude: -0.01168,
     longitude: -126.808239,
+    position: 20,
   },
   {
     _id: "66da250e99abfde0a708ad72",
-    isActive: true,
-    balance: "$1,839.21",
+    balance: 1839.21,
     age: 20,
     eyeColor: "brown",
     name: "Frances Bonner",
@@ -578,11 +569,11 @@ export const employeesArr: Employee[] = [
     jobTitle: "Consultant",
     latitude: -47.486436,
     longitude: -39.033227,
+    position: 21,
   },
   {
     _id: "66da250e28a5aad7b5a5eef5",
-    isActive: false,
-    balance: "$2,504.84",
+    balance: 2504.84,
     age: 33,
     eyeColor: "blue",
     name: "Petersen Jefferson",
@@ -597,11 +588,11 @@ export const employeesArr: Employee[] = [
     jobTitle: "Manager",
     latitude: 40.878232,
     longitude: -39.972612,
+    position: 22,
   },
   {
     _id: "66da250ef441dd4a0e9bfa95",
-    isActive: false,
-    balance: "$2,167.76",
+    balance: 2167.76,
     age: 32,
     eyeColor: "blue",
     name: "Callahan Mckenzie",
@@ -616,11 +607,11 @@ export const employeesArr: Employee[] = [
     jobTitle: "Designer",
     latitude: 73.323966,
     longitude: -120.401079,
+    position: 23,
   },
   {
     _id: "66da250e43bd152b55f6fa70",
-    isActive: false,
-    balance: "$1,537.89",
+    balance: 1537.89,
     age: 32,
     eyeColor: "brown",
     name: "Cabrera Byers",
@@ -635,11 +626,11 @@ export const employeesArr: Employee[] = [
     jobTitle: "Designer",
     latitude: -51.376404,
     longitude: 45.373534,
+    position: 24,
   },
   {
     _id: "66da250eef2ca1c109687a87",
-    isActive: true,
-    balance: "$2,336.86",
+    balance: 2336.86,
     age: 29,
     eyeColor: "green",
     name: "Anita Knapp",
@@ -654,11 +645,11 @@ export const employeesArr: Employee[] = [
     jobTitle: "Designer",
     latitude: -38.495956,
     longitude: 12.995904,
+    position: 25,
   },
   {
     _id: "66da250e79ee14e2e5765e83",
-    isActive: true,
-    balance: "$3,965.84",
+    balance: 3965.84,
     age: 24,
     eyeColor: "brown",
     name: "Zelma Bruce",
@@ -673,11 +664,11 @@ export const employeesArr: Employee[] = [
     jobTitle: "Consultant",
     latitude: 17.129034,
     longitude: 32.619042,
+    position: 26,
   },
   {
     _id: "66da250e70b49752cd658108",
-    isActive: false,
-    balance: "$3,163.17",
+    balance: 3163.17,
     age: 20,
     eyeColor: "blue",
     name: "Hobbs Moore",
@@ -692,11 +683,11 @@ export const employeesArr: Employee[] = [
     jobTitle: "Consultant",
     latitude: -2.419036,
     longitude: 28.161877,
+    position: 27,
   },
   {
     _id: "66da250ec29a1c68101b49ab",
-    isActive: false,
-    balance: "$1,539.08",
+    balance: 1539.08,
     age: 40,
     eyeColor: "blue",
     name: "Kinney Carney",
@@ -711,11 +702,11 @@ export const employeesArr: Employee[] = [
     jobTitle: "Designer",
     latitude: 46.33502,
     longitude: -38.550214,
+    position: 28,
   },
   {
     _id: "66da250e5d4a3881bd7f860d",
-    isActive: true,
-    balance: "$3,892.61",
+    balance: 3892.61,
     age: 24,
     eyeColor: "green",
     name: "Ericka Hogan",
@@ -730,11 +721,11 @@ export const employeesArr: Employee[] = [
     jobTitle: "Developer",
     latitude: 82.331155,
     longitude: -48.296168,
+    position: 29,
   },
   {
     _id: "66da250edac9bf5ce6716e8c",
-    isActive: false,
-    balance: "$1,319.62",
+    balance: 1319.62,
     age: 27,
     eyeColor: "green",
     name: "Jacobs Morin",
@@ -749,11 +740,11 @@ export const employeesArr: Employee[] = [
     jobTitle: "Designer",
     latitude: -40.007763,
     longitude: -18.836647,
+    position: 30,
   },
   {
     _id: "66da250e0562e617425a8634",
-    isActive: true,
-    balance: "$3,406.99",
+    balance: 3406.99,
     age: 24,
     eyeColor: "brown",
     name: "Witt Hickman",
@@ -768,11 +759,11 @@ export const employeesArr: Employee[] = [
     jobTitle: "Designer",
     latitude: -46.538974,
     longitude: 118.51127,
+    position: 31,
   },
   {
     _id: "66da250eddf590a0f9750967",
-    isActive: true,
-    balance: "$3,293.76",
+    balance: 3293.76,
     age: 22,
     eyeColor: "green",
     name: "Cole Meyers",
@@ -787,11 +778,11 @@ export const employeesArr: Employee[] = [
     jobTitle: "Consultant",
     latitude: -16.374003,
     longitude: -4.558862,
+    position: 32,
   },
   {
     _id: "66da250ed11aedfd0b5fc607",
-    isActive: false,
-    balance: "$3,938.56",
+    balance: 3938.56,
     age: 26,
     eyeColor: "green",
     name: "Myra Cervantes",
@@ -806,11 +797,11 @@ export const employeesArr: Employee[] = [
     jobTitle: "Developer",
     latitude: 62.869523,
     longitude: 97.954661,
+    position: 33,
   },
   {
     _id: "66da250e10b52327d94cf64e",
-    isActive: true,
-    balance: "$3,029.96",
+    balance: 3029.96,
     age: 26,
     eyeColor: "blue",
     name: "Jeannette Frank",
@@ -825,11 +816,11 @@ export const employeesArr: Employee[] = [
     jobTitle: "Designer",
     latitude: 36.677611,
     longitude: -104.098044,
+    position: 34,
   },
   {
     _id: "66da250e06e4b5ac7fa9e63d",
-    isActive: true,
-    balance: "$3,369.22",
+    balance: 3369.22,
     age: 40,
     eyeColor: "blue",
     name: "Naomi Perry",
@@ -844,11 +835,11 @@ export const employeesArr: Employee[] = [
     jobTitle: "Manager",
     latitude: 53.755985,
     longitude: 122.63165,
+    position: 35,
   },
   {
     _id: "66da250ec6d0a1741168a9fe",
-    isActive: true,
-    balance: "$1,593.50",
+    balance: 1593.5,
     age: 27,
     eyeColor: "brown",
     name: "England Petersen",
@@ -863,11 +854,11 @@ export const employeesArr: Employee[] = [
     jobTitle: "Manager",
     latitude: -37.536996,
     longitude: 161.494911,
+    position: 36,
   },
   {
     _id: "66da250ee4cf0ea4214230e4",
-    isActive: false,
-    balance: "$2,648.01",
+    balance: 2648.01,
     age: 32,
     eyeColor: "brown",
     name: "Janelle Joseph",
@@ -882,11 +873,11 @@ export const employeesArr: Employee[] = [
     jobTitle: "Developer",
     latitude: -69.930162,
     longitude: 62.058618,
+    position: 37,
   },
   {
     _id: "66da250e305c1d1973dc30a2",
-    isActive: false,
-    balance: "$2,036.68",
+    balance: 2036.68,
     age: 28,
     eyeColor: "green",
     name: "Dillard Mullen",
@@ -901,11 +892,11 @@ export const employeesArr: Employee[] = [
     jobTitle: "Developer",
     latitude: -35.185681,
     longitude: -72.168455,
+    position: 38,
   },
   {
     _id: "66da250e8ac871f51f3cedf1",
-    isActive: true,
-    balance: "$1,287.36",
+    balance: 1287.36,
     age: 30,
     eyeColor: "blue",
     name: "Kelly Blevins",
@@ -920,5 +911,6 @@ export const employeesArr: Employee[] = [
     jobTitle: "Manager",
     latitude: 53.344281,
     longitude: 138.083497,
+    position: 39,
   },
 ];
