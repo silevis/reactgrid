@@ -48,6 +48,7 @@ export const NumberCell: FC<NumberCellProps> = ({
       onStringValueReceived={(v) => onValueChanged?.(Number(v))}
       onDoubleClick={() => {
         if (ctx.isFocused) {
+          setCurrentValue(initialValue.toString() || "0");
           setEditMode(true);
         }
       }}
@@ -56,7 +57,6 @@ export const NumberCell: FC<NumberCellProps> = ({
           setCurrentValue("");
           setEditMode(true);
         } else if (!isEditMode && e.key === "Enter") {
-          e.preventDefault();
           e.stopPropagation();
           setCurrentValue(initialValue.toString() || "0");
           setEditMode(true);
@@ -93,7 +93,6 @@ export const NumberCell: FC<NumberCellProps> = ({
             if (e.key === "Escape") {
               setEditMode(false);
             } else if (e.key === "Enter") {
-              e.preventDefault();
               const value = e.currentTarget.value.replace(/,/g, ".");
               onValueChanged?.(Number(value));
               setEditMode(false);

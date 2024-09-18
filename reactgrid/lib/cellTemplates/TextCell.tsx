@@ -29,6 +29,7 @@ export const TextCell: FC<TextCellProps> = ({ text: initialText, onTextChanged }
       style={{ padding: ".2rem", textAlign: "center", outline: "none", minHeight: 0 }}
       onDoubleClick={() => {
         if (ctx.isFocused) {
+          setCurrentValue(initialText || "");
           setEditMode(true);
         }
       }}
@@ -37,7 +38,6 @@ export const TextCell: FC<TextCellProps> = ({ text: initialText, onTextChanged }
           setCurrentValue("");
           setEditMode(true);
         } else if (!isEditMode && e.key === "Enter") {
-          e.preventDefault();
           e.stopPropagation();
           setCurrentValue(initialText || "");
           setEditMode(true);
@@ -67,7 +67,6 @@ export const TextCell: FC<TextCellProps> = ({ text: initialText, onTextChanged }
             if (e.key === "Escape") {
               setEditMode(false);
             } else if (e.key === "Enter") {
-              e.preventDefault();
               onTextChanged?.(e.currentTarget.value);
               setEditMode(false);
             }
