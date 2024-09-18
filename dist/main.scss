@@ -64,15 +64,15 @@
                 pointer-events: auto;
 
                 .rg-resize-handle {
-                    &:hover {
-                        cursor: col-resize;
-                        background-color: $resize-handle-gb-color;
-                    }
-
                     position: absolute;
                     right: 0;
                     width: $resize-handle-line-width;
                     height: 100%;
+                    
+                    &:hover {
+                        cursor: col-resize;
+                        background-color: $resize-handle-gb-color;
+                    }
                 }
             }
 
