@@ -22,10 +22,11 @@ export const NumberCell: FC<NumberCellProps> = ({
   hideZero,
   format,
 }) => {
+  const initialValueStr = initialValue?.toString();
   const ctx = useCellContext();
   const targetInputRef = useRef<HTMLInputElement>(null);
   const [isEditMode, setEditMode] = useState(false);
-  const [currentValue, setCurrentValue] = useState(initialValue?.toString() || "0");
+  const [currentValue, setCurrentValue] = useState(initialValueStr || "0");
   const { handleDoubleTouch } = useDoubleTouch(ctx, setEditMode);
 
   const isValid = validator ? validator(Number(initialValue)) : true;
@@ -34,21 +35,21 @@ export const NumberCell: FC<NumberCellProps> = ({
     if (hideZero && initialValue === 0) return "";
     if (format) return format.format(initialValue);
     if (!isValid && errorMessage) return errorMessage;
-    return initialValue?.toString();
+    return initialValueStr;
   };
 
   useEffect(() => {
-    setCurrentValue(initialValue?.toString());
+    setCurrentValue(initialValueStr);
   }, [initialValue]);
 
   return (
     <CellWrapper
       onTouchEnd={handleDoubleTouch}
-      onStringValueRequsted={() => initialValue.toString()}
+      onStringValueRequsted={() => initialValueStr}
       onStringValueReceived={(v) => onValueChanged?.(Number(v))}
       onDoubleClick={() => {
         if (ctx.isFocused) {
-          setCurrentValue(initialValue.toString() || "0");
+          setCurrentValue(initialValueStr || "0");
           setEditMode(true);
         }
       }}
@@ -58,7 +59,7 @@ export const NumberCell: FC<NumberCellProps> = ({
           setEditMode(true);
         } else if (!isEditMode && e.key === "Enter") {
           e.stopPropagation();
-          setCurrentValue(initialValue.toString() || "0");
+          setCurrentValue(initialValueStr || "0");
           setEditMode(true);
         } else if (!isEditMode && e.key === "Backspace") {
           onValueChanged?.(0);
