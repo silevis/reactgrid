@@ -1,6 +1,6 @@
 import { NonEditableCell } from "../cellTemplates/NonEditableCell";
 import { CellMatrix } from "../types/CellMatrix";
-import { Cell, CellMap, Column, Row, SpanMember } from "../types/PublicModel";
+import { Cell, Column, Row, SpanMember } from "../types/PublicModel";
 
 // Type `any` is required to use React.ComponentType here
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -79,9 +79,8 @@ export const cellMatrixBuilder = (
 
   builder({ setCell });
 
-  // fill empty areas with NonEditableCell template
-  const maxRowIndex = Math.max(...Array.from(cells.values()).map((cell) => cell.rowIndex));
-  const maxColIndex = Math.max(...Array.from(cells.values()).map((cell) => cell.colIndex));
+  const maxRowIndex = Math.max(...Array.from(cells.values()).map((cell) => cell.rowIndex ?? -1));
+  const maxColIndex = Math.max(...Array.from(cells.values()).map((cell) => cell.colIndex ?? -1));
 
   for (let rowIndex = 0; rowIndex <= maxRowIndex; rowIndex++) {
     for (let colIndex = 0; colIndex <= maxColIndex; colIndex++) {
@@ -102,27 +101,17 @@ export const cellMatrixBuilder = (
   return {
     cellsLookup,
     cells,
-    rows: initGridRows(cells || new Map(), rows),
-    columns: initGridColumns(cells || new Map(), columns),
+    rows: initGridRows(maxRowIndex, rows),
+    columns: initGridColumns(maxColIndex, columns),
   };
 };
 
-const initGridRows = (cellMap: CellMap, rows?: Row[]): Row[] => {
-  let maxRowIndex = 0;
-
+const initGridRows = (maxRowIndex: number, rows?: Row[]): Row[] => {
   const customRowMap = new Map<number, Row>();
   if (rows) {
     rows.forEach((row) => {
       customRowMap.set(row.rowIndex, row);
     });
-  }
-
-  for (const key of cellMap.keys()) {
-    const [rowIndexStr] = key.split(" ");
-    const rowIndex = parseInt(rowIndexStr, 10);
-    if (rowIndex > maxRowIndex) {
-      maxRowIndex = rowIndex;
-    }
   }
 
   return Array.from({ length: maxRowIndex + 1 }).map((_, idx) => {
@@ -135,22 +124,12 @@ const initGridRows = (cellMap: CellMap, rows?: Row[]): Row[] => {
   });
 };
 
-const initGridColumns = (cellMap: CellMap, columns?: Column[]): Column[] => {
-  let maxColIndex = 0;
-
+const initGridColumns = (maxColIndex: number, columns?: Column[]): Column[] => {
   const customColumnMap = new Map<number, Column>();
   if (columns) {
     columns.forEach((col) => {
       customColumnMap.set(col.colIndex, col);
     });
-  }
-
-  for (const key of cellMap.keys()) {
-    const [, colIndexStr] = key.split(" ");
-    const colIndex = parseInt(colIndexStr, 10);
-    if (colIndex > maxColIndex) {
-      maxColIndex = colIndex;
-    }
   }
 
   return Array.from({ length: maxColIndex + 1 }).map((_, idx) => {

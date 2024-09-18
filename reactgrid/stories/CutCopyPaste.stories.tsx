@@ -35,14 +35,14 @@ export const CutCopyPasteExample = () => {
     width: col.width,
   }));
 
-  const gridCells: Cell[] = [];
+  const cells: Cell[] = [];
 
   gridRows.forEach((row, rowIndex) => {
     const personRowIndex = row.rowIndex;
 
     if (rowIndex === 0) {
       columnDefs.forEach((col, colIndex) => {
-        gridCells.push({
+        cells.push({
           rowIndex,
           colIndex,
           Template: NonEditableCell,
@@ -81,7 +81,7 @@ export const CutCopyPasteExample = () => {
       });
 
       columnDefs.forEach((_, colIndex) => {
-        gridCells.push({
+        cells.push({
           rowIndex,
           colIndex,
           ...personCells[colIndex],
@@ -101,7 +101,7 @@ export const CutCopyPasteExample = () => {
         initialFocusLocation={{ rowIndex: 2, colIndex: 1 }}
         rows={gridRows}
         columns={gridColumns}
-        cells={gridCells}
+        cells={cells}
       />
     </div>
   );

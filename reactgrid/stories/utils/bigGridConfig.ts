@@ -108,6 +108,7 @@ export const generateCells = (
 
       columnDefs.forEach((_, colIndex) => {
         cells.push({
+          id: `${employees[personRowIndex]._id}-${colIndex}`,
           rowIndex,
           colIndex,
           ...personCells[colIndex],
@@ -117,19 +118,20 @@ export const generateCells = (
   });
 
   // Rows that are actually used in the grid
-  const displayRows = orderedRows.map((rowDef, index) => {
+  const gridRows = orderedRows.map((rowDef, index) => {
     if (index === 0) {
       return { rowIndex: index, height: rowDef.height, ...(rowDef.reorderable === false && { reorderable: false }) };
     }
     return { rowIndex: index, height: rowDef.height };
   });
 
-  const columns = columnDefs.map((col, index) => ({
+  // Columns that are actually used in the grid
+  const gridColumns = columnDefs.map((col, index) => ({
     colIndex: index,
     width: col.width,
   }));
 
-  return { rows: displayRows, columns, cells };
+  return { rows: gridRows, columns: gridColumns, cells };
 };
 
 interface CellMatrixDef {

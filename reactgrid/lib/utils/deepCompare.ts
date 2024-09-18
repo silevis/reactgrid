@@ -1,8 +1,11 @@
 /**
- * Deeply compares two objects, including functions.
- * @param obj1 - The first object to compare.
- * @param obj2 - The second object to compare.
- * @returns `true` if the objects are deeply equal, `false` otherwise.
+ * Recursively performs a deep comparison between two objects, including functions.
+ * This function checks if both objects have identical structure and values,
+ * comparing properties, including nested objects, arrays, and even function bodies.
+ *
+ * @param obj1 - The first object to compare, can be of any type.
+ * @param obj2 - The second object to compare, can be of any type.
+ * @returns `true` if both objects are deeply equal, including their functions and nested properties; `false` otherwise.
  */
 export const deepCompare = (obj1: unknown, obj2: unknown): boolean => {
   if (obj1 === obj2) return true;
