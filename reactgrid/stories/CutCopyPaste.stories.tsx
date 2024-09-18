@@ -56,6 +56,7 @@ export const CutCopyPasteExample = () => {
               fontWeight: "bold",
             },
           },
+          isSelectable: false,
         });
       });
     } else {

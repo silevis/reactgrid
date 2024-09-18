@@ -55,6 +55,7 @@ export const FillHandleExample = () => {
               fontWeight: "bold",
             },
           },
+          isSelectable: false,
         });
       });
     } else {

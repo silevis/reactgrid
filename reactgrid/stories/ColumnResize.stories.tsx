@@ -54,6 +54,7 @@ export const ColumnResizeExample = () => {
               fontWeight: "bold",
             },
           },
+          isSelectable: false,
         });
       });
     } else {

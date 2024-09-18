@@ -64,6 +64,7 @@ export const generateDataTable = (
               fontWeight: "bold",
             },
           },
+          isSelectable: false,
         });
       });
     } else {

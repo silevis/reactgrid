@@ -143,6 +143,10 @@ export const DefaultBehavior = (config: DefaultBehaviorConfig = CONFIG_DEFAULTS)
   handlePointerMove: (event, store) => {
     devEnvironment && console.log("DB/handlePointerMove");
 
+    const cell = store.getCellByIndexes(store.pointerStartIdx.rowIndex, store.pointerStartIdx.colIndex);
+
+    if (cell?.isSelectable === false) return store;
+
     return { currentBehavior: store.getBehavior("CellSelection") };
   },
 
@@ -179,7 +183,6 @@ export const DefaultBehavior = (config: DefaultBehaviorConfig = CONFIG_DEFAULTS)
   handlePointerDownTouch: function (event, store) {
     devEnvironment && console.log("DB/handlePointerDownTouch");
 
-    const focusedCell = store.getFocusedCell();
     const { rowIndex, colIndex } = getCellIndexesFromPointerLocation(event.clientX, event.clientY);
 
     const shouldSelectEntireColumn = rowIndex === 0 && store.enableColumnSelectionOnFirstRow;
@@ -191,19 +194,6 @@ export const DefaultBehavior = (config: DefaultBehaviorConfig = CONFIG_DEFAULTS)
     let newBehavior: Behavior = store.currentBehavior;
     const cellArea = getCellArea(store, touchedCell);
     let newSelectedArea: NumericalRange = EMPTY_AREA;
-
-    if (focusedCell) {
-      const { rowIndex: touchRowIndex, colIndex: touchColIndex } = getCellIndexesFromPointerLocation(
-        rowIndex,
-        colIndex
-      );
-
-      const focusedCellWasTouched = touchRowIndex === focusedCell.rowIndex && touchColIndex === focusedCell.colIndex;
-
-      if (focusedCellWasTouched) {
-        newBehavior = store.getBehavior("CellSelection");
-      }
-    }
 
     let shouldChangeFocusLocation: boolean = true;
 
@@ -269,9 +259,12 @@ export const DefaultBehavior = (config: DefaultBehaviorConfig = CONFIG_DEFAULTS)
       return { ...store, currentBehavior: store.getBehavior("CellSelection") };
     }
 
+    const cell = store.getCellByIndexes(store.pointerStartIdx.rowIndex, store.pointerStartIdx.colIndex);
+
     if (
       store.pointerStartIdx.rowIndex !== store.focusedLocation.rowIndex ||
-      store.pointerStartIdx.colIndex !== store.focusedLocation.colIndex
+      store.pointerStartIdx.colIndex !== store.focusedLocation.colIndex ||
+      cell?.isSelectable === false
     ) {
       return store;
     }
