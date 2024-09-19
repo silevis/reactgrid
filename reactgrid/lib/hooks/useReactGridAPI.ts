@@ -1,5 +1,5 @@
-import { FocusedCell, IndexedLocation, PaneName } from "../types/InternalModel.ts";
-import { Cell, CellsLookup, NumericalRange, SpanMember } from "../types/PublicModel.ts";
+import { FocusedCell, IndexedLocation, PaneName, SpanMember } from "../types/InternalModel.ts";
+import { Cell, CellsLookup, NumericalRange } from "../types/PublicModel.ts";
 import isDevEnvironment from "../utils/isDevEnvironment.ts";
 import { ReactGridStore } from "../types/ReactGridStore.ts";
 import { useReactGridStoreApi } from "../utils/reactGridStore.ts";

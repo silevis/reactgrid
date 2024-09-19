@@ -1,5 +1,5 @@
-import { PaneName } from "../types/InternalModel";
-import { Cell, SpanMember } from "../types/PublicModel";
+import { PaneName, SpanMember } from "../types/InternalModel";
+import { Cell } from "../types/PublicModel";
 import { ReactGridStore } from "../types/ReactGridStore";
 import { isCellInRange } from "./isCellInRange";
 import { isSpanMember } from "./isSpanMember";

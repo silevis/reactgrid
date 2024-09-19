@@ -1,4 +1,5 @@
-import { Cell, SpanMember } from "../types/PublicModel.ts";
+import { SpanMember } from "../types/InternalModel.ts";
+import { Cell } from "../types/PublicModel.ts";
 import { ReactGridStore } from "../types/ReactGridStore.ts";
 import { isSpanMember } from "./isSpanMember.ts";
 

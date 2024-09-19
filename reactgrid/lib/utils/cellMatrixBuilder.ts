@@ -1,6 +1,7 @@
 import { NonEditableCell } from "../cellTemplates/NonEditableCell";
 import { CellMatrix } from "../types/CellMatrix";
-import { Cell, Column, Row, SpanMember } from "../types/PublicModel";
+import { SpanMember } from "../types/InternalModel";
+import { Cell, Column, Row } from "../types/PublicModel";
 
 // Type `any` is required to use React.ComponentType here
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

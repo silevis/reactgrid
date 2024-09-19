@@ -1,4 +1,4 @@
-import { SpanMember } from "../types/PublicModel";
+import { SpanMember } from "../types/InternalModel";
 import { ReactGridStore } from "../types/ReactGridStore";
 import { getCellArea } from "./getCellArea";
 

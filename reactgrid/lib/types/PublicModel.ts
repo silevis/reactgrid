@@ -19,7 +19,7 @@ export type Column = {
 };
 
 /**
- * Represents a single cell in the grid created by the cellMatrixBuilder.
+ * Represents a single cell in the grid.
  */
 export type Cell = {
   /** User defined row IDx, must exist in the `rows` array! */
@@ -53,35 +53,6 @@ export type CellsLookup<RowIdxType extends number = number, ColIdxType extends n
   CellsLookupCallbacks
 >;
 
-/**
- * Represents a map of cells indexed by row and column indices.
- */
-export type CellMap<RowIdxType extends number = number, ColIdxType extends number = number> = Map<
-  `${RowIdxType} ${ColIdxType}`,
-  Cell | SpanMember
->;
-
-export type SpanMember = {
-  originRowIndex: number;
-  originColIndex: number;
-};
-
-export type Position = {
-  x: number;
-  y: number;
-};
-
-export type Range = {
-  start: {
-    rowIndex: number;
-    columnIndex: number;
-  };
-  end: {
-    rowIndex: number;
-    columnIndex: number;
-  };
-};
-
 export type CellContextType = {
   /** Numerical cell's row index representation in relation to whole grid (incl. sticky). */
   realRowIndex: number;
@@ -106,14 +77,21 @@ export type NumericalRange = {
   endColIdx: number;
 };
 
+export type Range = {
+  start: {
+    rowIndex: number;
+    columnIndex: number;
+  };
+  end: {
+    rowIndex: number;
+    columnIndex: number;
+  };
+};
+
 export type StyledRange = {
   styles: React.CSSProperties;
   range: Range;
 };
-
-export type StyledRangesCSS = {
-  [selector: string]: React.CSSProperties;
-}[];
 
 export interface ReactGridProps {
   id?: string;

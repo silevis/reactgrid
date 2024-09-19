@@ -1,6 +1,28 @@
 import { NumericalRange } from "./PublicModel";
 import { Cell } from "./PublicModel";
 
+/**
+ * Represents a map of cells indexed by row and column indices.
+ */
+export type CellMap<RowIdxType extends number = number, ColIdxType extends number = number> = Map<
+  `${RowIdxType} ${ColIdxType}`,
+  Cell | SpanMember
+>;
+
+export type SpanMember = {
+  originRowIndex: number;
+  originColIndex: number;
+};
+
+export type Position = {
+  x: number;
+  y: number;
+};
+
+export type StyledRangesCSS = {
+  [selector: string]: React.CSSProperties;
+}[];
+
 export interface StickyOffsets {
   topRows: number[];
   bottomRows: number[];
