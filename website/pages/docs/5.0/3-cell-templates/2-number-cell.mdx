@@ -1,0 +1,36 @@
+---
+posttype: "docs"
+title: NumberCell
+metaTitle: "Number cell template"
+metaDescription: "ReactGrid docs"
+---
+
+The `NumberCell` template is used to display and manipulate numeric values within a cell.
+
+#### Implementation
+
+ - Open `NumberCell` implementation on <a href="https://github.com/silevis/reactgrid/blob/v5-dev/reactgrid/lib/cellTemplates/NumberCell.tsx" target="_blank"> github <i className="fas fa-external-link-alt fa-xs pl-1"></i></a>
+
+#### Interface declaration 
+
+```ts
+interface NumberCellProps {
+  value: number;
+  onValueChanged: (newValue: number) => void;
+  validator?: (value: number) => boolean;
+  errorMessage?: string;
+  hideZero?: boolean;
+  format?: Intl.NumberFormat;
+  style?: React.CSSProperties;
+}
+```
+
+| **Property name** | **Type**                          | **Description**                                                            |
+|-------------------|-----------------------------------|----------------------------------------------------------------------------|
+| `value`           | `number`                          | The numeric value of the cell.                                              |
+| `onValueChanged`  | `(newValue: number) => void`      | Callback function that is called when the user commits text changes.                    |
+| `validator?`      | `(value: number) => boolean`      | Function to validate the value.                                    |
+| `errorMessage?`   | `string`                          | Error message to display when validation fails.                    |
+| `hideZero?`       | `boolean`                         | Flag to hide the zero value.                                       |
+| `format?`         | `Intl.NumberFormat`               | Number format to apply to the value.                               |
+| `style?`          | `React.CSSProperties`             | CSS properties to apply to the cell.                               |

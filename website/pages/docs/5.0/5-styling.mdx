@@ -1,31 +1,15 @@
 ---
 posttype: "docs"
-title: Sticky rows and columns
-metaTitle: "Sticky rows and columns"
+title: Styling
+metaTitle: "Styling"
 metaDescription: "ReactGrid docs"
 ---
 
+#### Styling ReactGrid
 
-#### Sticky cells
+In version 5, ReactGrid introduces the `RGTheme` interface, allowing you to apply a theme directly to the grid. You can also customize styles by passing them through individual cell properties or using standard CSS, offering flexibility in how your grid looks and feels.
 
-ReactGrid allows you to stick chosen rows and columns at the top or left side and additionally on the right and at the bottom 
-of the ReactGrid viewport. Sticky rows or columns will be visible at all times, no matter what the scroll position is.
-
-Sticky rows and columns can be enabled by adding dedicated `ReactGrid` component properties:
-- `stickyTopRows`
-- `stickyBottomRows`
-- `stickyLeftColumns`
-- `stickyRightColumns`
-
-All of these properties are numeric and determine the number of columns or rows sticky next to the grid's edges.
-
-#### How to make columns and rows sticky?
-
-1. Use the properties mentioned in the introduction to set the number of sticky ranges at each edge.
-
----
-
-### Live Demo
+#### Live example
 
 import LiveCode from "@/nextra/components/LiveCode.tsx";
 import React, { useState } from "react";
@@ -34,19 +18,17 @@ import {
   NumberCell,
   TextCell,
   NonEditableCell,
-  Row,
   Cell,
 } from "@silevis/reactgrid";
 
 <LiveCode
 scope={{
-  useState,
   ReactGrid,
   NumberCell,
   TextCell,
   NonEditableCell,
-  Row,
   Cell,
+  useState
 }}
 code={`
 const peopleArr = [
@@ -92,21 +74,16 @@ const peopleArr = [
   },
 ];
 
-interface ColumnDef {
-  title: string;
-  width: number;
-  cellTemplate: React.ComponentType<any>;
-}
-
-const ColumnResizeExample = () => {
+const ReactGridExample = () => {
   const [people, setPeople] = useState(peopleArr);
 
-  const [columnDefs, setColumnDefs] = useState<ColumnDef[]>(
-    Object.keys(peopleArr[0]).reduce((acc: ColumnDef[], peopleKey: string, idx: number) => {
+  const columnDefs: ColumnDef[] = Object.keys(peopleArr[0]).reduce(
+    (acc: ColumnDef[], peopleKey: string, idx: number) => {
       if (["_id", "position"].includes(peopleKey)) return acc;
       const cellTemplate = peopleKey === "age" ? NumberCell : TextCell;
-      return [...acc, { title: peopleKey, width: 100 * idx, cellTemplate }];
-    }, [])
+      return [...acc, { title: peopleKey, width: 250, cellTemplate }];
+    },
+    []
   );
 
   const updatePerson = (id, key, newValue) => {
@@ -115,7 +92,7 @@ const ColumnResizeExample = () => {
     });
   };
 
-  const gridRows: Row[] = Array.from({ length: people.length + 1 }, (_, i) => ({
+  const gridRows = Array.from({ length: people.length + 1 }, (_, i) => ({
     rowIndex: i,
     height: 40,
   }));
@@ -130,6 +107,7 @@ const ColumnResizeExample = () => {
   gridRows.forEach((row, rowIndex) => {
     const personRowIndex = row.rowIndex;
 
+    // header cells
     if (rowIndex === 0) {
       columnDefs.forEach((col, colIndex) => {
         cells.push({
@@ -181,18 +159,41 @@ const ColumnResizeExample = () => {
     }
   });
 
-  return ( 
-    <div style={{maxWidth: 700, maxHeight: 300, overflow: 'auto'}}>
-      <ReactGrid
-        rows={gridRows}
-        columns={gridColumns}
-        stickyLeftColumns={1}
-        cells={cells}
-      />
-    </div>
-  );
+  return <ReactGrid rows={gridRows} columns={gridColumns} cells={cells} styles={rgStyles} />;
 };
 
-render(<ColumnResizeExample />, document.getElementById("root"));
+const rgStyles = {
+  focusIndicator: {
+    border: {
+      color: "#32a852",
+      width: "2px",
+      style: "solid",
+    },
+  },
+  selectionIndicator: {
+    background: "rgba(144, 238, 144, 0.1)",
+    border: {
+      color: "#81df9b",
+      style: "solid",
+    },
+  },
+  fillHandle: {
+    background: "transparent",
+    border: {
+      color: "#32a852",
+      style: "dashed",
+    },
+  },
+  line: {
+    backgroundColor: "#81df9b",
+  },
+  gridWrapper: {
+    fontSize: 16,
+    fontFamily: "Roboto, sans-serif",
+  },
+};
+
+
+render(<ReactGridExample />, document.getElementById("root"));
 `}
 />

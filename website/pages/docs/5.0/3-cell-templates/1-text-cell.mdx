@@ -1,0 +1,28 @@
+---
+posttype: "docs"
+title: TextCell
+metaTitle: "Text cell template"
+metaDescription: "ReactGrid docs"
+---
+
+The `TextCell` template is used to display and manipulate text values within a cell.
+
+#### Implementation
+
+ - Open `TextCell` implementation on <a href="https://github.com/silevis/reactgrid/blob/v5-dev/reactgrid/lib/cellTemplates/TextCell.tsx" target="_blank"> github <i className="fas fa-external-link-alt fa-xs pl-1"></i></a>
+
+#### Interface declaration 
+
+```ts
+interface TextCellProps {
+  text: string;
+  onTextChanged: (newText: string) => void;
+  style?: React.CSSProperties;
+}
+```
+
+| Property name | Type                                  | Description                                                                                       |
+|---------------|---------------------------------------|---------------------------------------------------------------------------------------------------|
+| `text`        | `string`                              | The text content of the cell.                                                              |
+| `onTextChanged`        | `(newText: string) => void`                              | Callback function that is called when the user commits text changes.                                                                     |
+| `style?`| `React.CSSProperties`                              | CSS properties to apply to the cell.        |

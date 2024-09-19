@@ -171,10 +171,6 @@ export const peopleArr: Person[] = [
 ];
 
 export const rgStyles = {
-  font: {
-    size: "24px",
-    family: "Roboto",
-  },
   focusIndicator: {
     border: {
       color: "#32a852",

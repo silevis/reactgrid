@@ -10,28 +10,16 @@ metaDescription: "ReactGrid docs"
 Fill handle can be enabled be setting `onFillHandle` prop of the ReactGrid component.
 
 ```ts
-/**
- * Callback function that is triggered when the fill handle is used.
- * 
- * @param selectedArea - The range of cells that were initially selected.
- * @param fillRange - The range of cells that the fill handle is dragged over.
- * @param cellsLookup - A lookup Map to get and set cell values.
- * @returns void
- */
 onFillHandle?: (selectedArea: NumericalRange, fillRange: NumericalRange, cellsLookup: CellsLookup) => void;
-
-interface CellsLookupCallbacks {
-  rowIndex: number;
-  colIndex: number;
-  onStringValueRequsted: () => string;  // <-- getting cell value
-  onStringValueReceived: (v: string) => void; // <-- setting cell value
-}
-
-type CellsLookup<RowIdxType extends number = number, ColIdxType extends number = number> = Map<
-  `${RowIdxType} ${ColIdxType}`,
-  CellsLookupCallbacks
->;
 ```
+
+#### Parameters
+
+Name         | Type                                      | Description |
+-------------|-------------------------------------------|-------------|
+`selectedArea`      | `NumericalRange`    | The range of cells that were initially selected. |
+`fillRange` | `NumericalRange`                          | The range of cells that the fill handle is dragged over. |
+`cellsLookup`| `CellsLookup`                             | A map object that provides callbacks to get and set cell values. Each key is a string combining row and column indices, and the value is an object with `rowIndex`, `colIndex`, `onStringValueRequested` (callback to get the cell value), and `onStringValueReceived` (callback to set the cell value). |
 
 ---
 
@@ -222,7 +210,6 @@ import {
       return (
         <ReactGrid
           onFillHandle={handleFill}
-          initialFocusLocation={{ rowIndex: 2, colIndex: 1 }}
           rows={gridRows}
           columns={gridColumns}
           cells={cells}

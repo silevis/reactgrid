@@ -24,7 +24,7 @@ const featuresList = [
   },
   {
     title: "Area selection",
-    desc: "Choose multiple areas of choice in any way you like",
+    desc: "Choose any area you like",
     icon: feature3,
     docs: false,
   },
