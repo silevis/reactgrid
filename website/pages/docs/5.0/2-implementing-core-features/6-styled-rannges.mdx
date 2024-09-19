@@ -1,13 +1,115 @@
-import React from "react";
-import { StrictMode, useState } from "react";
-import { Cell, NonEditableCell, NumberCell, ReactGrid, Row, TextCell } from "../lib/main";
-import { StoryDefault } from "@ladle/react";
-import { ErrorBoundary } from "../lib/components/ErrorBoundary";
-import { rgStyles, peopleArr, ColumnDef } from "./utils/examplesConfig";
-import { handleColumnReorder } from "./utils/handleColumnReorder";
-import { handleResizeColumn } from "./utils/handleResizeColumn";
+---
+posttype: "docs"
+title: Styles ranges
+metaTitle: "Styles ranges"
+metaDescription: "ReactGrid docs"
+---
 
-export const ColumnReorderExample = () => {
+#### About styled ranges in ReactGrid
+
+In addition to directly passing styles to individual cells, you can also use the `styleRanges` prop, which allows you to ostilise a specific area of cells in a table.
+
+```ts
+styledRanges?: StyledRange[];
+
+type StyledRange = {
+  styles: React.CSSProperties;
+  range: Range;
+};
+
+type Range = {
+  start: {
+    rowIndex: number;
+    columnIndex: number;
+  };
+  end: {
+    rowIndex: number;
+    columnIndex: number;
+  };
+};
+```
+
+### Live Demo
+
+import LiveCode from "@/nextra/components/LiveCode.tsx";
+import React, { useState } from "react";
+import {
+  ReactGrid,
+  NumberCell,
+  TextCell,
+  NonEditableCell,
+  Row,
+  Cell,
+} from "@silevis/reactgrid";
+
+<LiveCode
+scope={{
+  useState,
+  ReactGrid,
+  NumberCell,
+  TextCell,
+  NonEditableCell,
+  Row,
+  Cell,
+}}
+code={`
+const peopleArr = [
+  {
+    _id: "66d61077035753f369ddbb16",
+    name: "Jordan Rodriquez",
+    age: 30,
+    email: "jordanrodriquez@cincyr.com",
+    company: "Zaggles",
+    position: 1,
+  },
+  {
+    _id: "66d61077794e7949ab167fd5",
+    email: "allysonrios@satiance.com",
+    name: "Allyson Rios",
+    age: 30,
+    company: "Zoxy",
+    position: 2,
+  },
+  {
+    _id: "66d61077dd754e88981ae434",
+    name: "Pickett Lucas",
+    age: 25,
+    email: "pickettlucas@zoxy.com",
+    company: "Techade",
+    position: 3,
+  },
+  {
+    _id: "66d61077115e2f8748c334d9",
+    name: "Louella David",
+    age: 37,
+    email: "louelladavid@techade.com",
+    company: "Ginkogene",
+    position: 4,
+  },
+  {
+    _id: "66d61077540d53374b427e4b",
+    name: "Tricia Greene",
+    age: 27,
+    email: "triciagreene@ginkogene.com",
+    company: "Naxdis",
+    position: 5,
+  },
+];
+
+interface ColumnDef {
+  title: string;
+  width: number;
+  cellTemplate: React.ComponentType<any>;
+}
+
+const styledRanges = [
+  {
+    range: { start: { rowIndex: 3, columnIndex: 2 }, end: { rowIndex: 5, columnIndex: 3 } },
+    styles: { background: "red", color: "white" },
+  },
+];
+
+const ColumnResizeExample = () => {
   const [people, setPeople] = useState(peopleArr);
 
   const [columnDefs, setColumnDefs] = useState<ColumnDef[]>(
@@ -24,8 +126,6 @@ export const ColumnReorderExample = () => {
     });
   };
 
-  const cells: Cell[] = [];
-
   const gridRows: Row[] = Array.from({ length: people.length + 1 }, (_, i) => ({
     rowIndex: i,
     height: 40,
@@ -35,6 +135,8 @@ export const ColumnReorderExample = () => {
     colIndex: index,
     width: col.width,
   }));
+
+  const cells: Cell[] = [];
 
   gridRows.forEach((row, rowIndex) => {
     const personRowIndex = row.rowIndex;
@@ -55,6 +157,7 @@ export const ColumnReorderExample = () => {
               fontWeight: "bold",
             },
           },
+          isSelectable: false,
         });
       });
     } else {
@@ -89,33 +192,16 @@ export const ColumnReorderExample = () => {
     }
   });
 
-  return (
-    <div>
+  return ( 
       <ReactGrid
-        id="column-reorder-example"
-        styles={rgStyles}
-        enableColumnSelectionOnFirstRow
-        onColumnReorder={(selectedColIndexes, destinationColIdx) =>
-          handleColumnReorder(selectedColIndexes, destinationColIdx, setColumnDefs)
-        }
-        onResizeColumn={(width, columnIdx) => handleResizeColumn(width, columnIdx, setColumnDefs)}
-        initialFocusLocation={{ rowIndex: 2, colIndex: 1 }}
         rows={gridRows}
         columns={gridColumns}
         cells={cells}
+        styledRanges={styledRanges}
       />
-    </div>
   );
 };
 
-export default {
-  decorators: [
-    (Component) => (
-      <StrictMode>
-        <ErrorBoundary>
-          <Component />
-        </ErrorBoundary>
-      </StrictMode>
-    ),
-  ],
-} satisfies StoryDefault;
+render(<ColumnResizeExample />, document.getElementById("root"));
+`}
+/>

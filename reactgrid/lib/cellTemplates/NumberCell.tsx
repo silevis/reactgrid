@@ -61,8 +61,6 @@ export const NumberCell: FC<NumberCellProps> = ({
           e.stopPropagation();
           setCurrentValue(initialValueStr || "0");
           setEditMode(true);
-        } else if (!isEditMode && e.key === "Backspace") {
-          onValueChanged?.(0);
         }
       }}
     >

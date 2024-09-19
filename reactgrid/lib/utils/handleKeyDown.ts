@@ -1,4 +1,4 @@
-import { NumericalRange } from "../types/PublicModel.ts";
+import { CellsLookupCallbacks, NumericalRange } from "../types/PublicModel.ts";
 import { getCellArea } from "./getCellArea.ts";
 import { areAreasEqual } from "./areAreasEqual.ts";
 import { findMinimalSelectedArea } from "./findMinimalSelectedArea.ts";
@@ -46,6 +46,36 @@ export const handleKeyDown = (
   // * SHIFT + CTRL/COMMAND (⌘) + <Key>
   if (event.shiftKey && (event.ctrlKey || event.metaKey)) {
     switch (event.key) {
+      case "Home": {
+        event.preventDefault();
+
+        const cellArea = getCellArea(store, focusedCell);
+
+        return {
+          ...store,
+          selectedArea: {
+            startRowIdx: 0,
+            endRowIdx: cellArea.endRowIdx,
+            startColIdx: cellArea.startColIdx,
+            endColIdx: cellArea.endColIdx,
+          },
+        };
+      }
+      case "End": {
+        event.preventDefault();
+
+        const cellArea = getCellArea(store, focusedCell);
+
+        return {
+          ...store,
+          selectedArea: {
+            startRowIdx: cellArea.startRowIdx,
+            endRowIdx: store.rows.length,
+            startColIdx: cellArea.startColIdx,
+            endColIdx: cellArea.endColIdx,
+          },
+        };
+      }
       // Select all rows according to columns in currently selected area OR focused cell area.
       case "ArrowUp": {
         event.preventDefault();
@@ -527,6 +557,29 @@ export const handleKeyDown = (
       getHiddenTargetFocusByIdx(focusedCell.rowIndex, focusedCell.colIndex)?.focus({
         preventScroll: true,
       });
+
+      return store;
+    }
+    case "Backspace":
+    case "Delete": {
+      let range: NumericalRange = store.selectedArea;
+
+      if (areAreasEqual(range, EMPTY_AREA)) {
+        range = getCellArea(store, focusedCell);
+      }
+
+      const cellsLookupCallbacks: CellsLookupCallbacks[] = [];
+
+      for (let rowIdx = range.startRowIdx; rowIdx < range.endRowIdx; rowIdx++) {
+        for (let colIdx = range.startColIdx; colIdx < range.endColIdx; colIdx++) {
+          const element = store.cellsLookup.get(`${rowIdx} ${colIdx}`);
+          if (element) {
+            cellsLookupCallbacks.push(element);
+          }
+        }
+      }
+
+      cellsLookupCallbacks.forEach((element) => element.onStringValueReceived(""));
 
       return store;
     }

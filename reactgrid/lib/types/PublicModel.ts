@@ -22,11 +22,6 @@ export type Column = {
  * Represents a single cell in the grid created by the cellMatrixBuilder.
  */
 export type Cell = {
-  /**
-   * Cells are memoized by their props to improve performance.
-   * Identical content may not trigger changes when cells are reordered; a unique ID helps track them.
-   */
-  id?: string | number;
   /** User defined row IDx, must exist in the `rows` array! */
   rowIndex: number;
   /** User defined column IDx, must exist in the `columns` array! */

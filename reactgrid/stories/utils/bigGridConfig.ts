@@ -108,7 +108,6 @@ export const generateCells = (
 
       columnDefs.forEach((_, colIndex) => {
         cells.push({
-          id: `${employees[personRowIndex]._id}-${colIndex}`,
           rowIndex,
           colIndex,
           ...personCells[colIndex],

@@ -7,35 +7,103 @@ metaDescription: "ReactGrid docs"
 
 ## Handling data changes
 
-1. A user changes the value of a cell. Among others, it could mean that the user has:
-   - committed a new value into a cell using the cell editor.\
-      When the user types something in a cell and then commits it, the `onValueChanged` function is invoked, which contains the logic for updating the grid data.
+1. By default, ReactGrid provides two built-in cell templates: `TextCell` and `NumberCell`:
 
-      ```tsx
-        const [gridData, setGridData] = useState<(CellData | null)[][]>(initialGridData);
+```tsx
+// TextCell
+interface TextCellProps {
+  text: string;
+  onTextChanged: (newText: string) => void;
+  style?: React.CSSProperties;
+}
 
-        const cells = cellMatrixBuilder(({ setCell }) => {
-          gridData.forEach((row, rowIdx) => {
-            row.forEach((cell, colIdx) => {
-              if (cell === null) return;
+// NumberCell
+interface NumberCellProps {
+  value: number;
+  onValueChanged: (newValue: number) => void;
+  validator?: (value: number) => boolean;
+  errorMessage?: string;
+  hideZero?: boolean;
+  format?: Intl.NumberFormat;
+  style?: React.CSSProperties;
+}
+```
 
-              setCell(rowIdx, colIdx, cell.template, {
-                value: cell.value,
-                onValueChanged: (data) => {
-                  setGridData((prev) => {
-                    const next = [...prev];
-                    if (next[rowIdx][colIdx] !== null) {
-                      next[rowIdx][colIdx].value = data;
-                    }
-                    return next;
-                  });
-                },
-              });
-            });
-          });
-        });
-      ```
-   
-   - used a fill handle,
-   - pasted some data into the cell matrix
+**Note:** You can easily create custom cell templates to suit your needs.
 
+Each cell template includes a handler to manage data changes. For the `TextCell`, this is the `onTextChanged` handler, and for the `NumberCell`, it’s `onValueChanged`. These handlers allow you to update your source data and re-render ReactGrid with the new values.
+
+```tsx
+const peopleArr = [
+  {
+    _id: "66d61077035753f369ddbb16",
+    name: "Jordan Rodriquez",
+    age: 30,
+    email: "jordanrodriquez@cincyr.com",
+    company: "Zaggles",
+    position: 1,
+  },
+  {
+    _id: "66d61077794e7949ab167fd5",
+    email: "allysonrios@satiance.com",
+    name: "Allyson Rios",
+    age: 30,
+    company: "Zoxy",
+    position: 2,
+  },
+  {
+    _id: "66d61077dd754e88981ae434",
+    name: "Pickett Lucas",
+    age: 25,
+    email: "pickettlucas@zoxy.com",
+    company: "Techade",
+    position: 3,
+  },
+  {
+    _id: "66d61077115e2f8748c334d9",
+    name: "Louella David",
+    age: 37,
+    email: "louelladavid@techade.com",
+    company: "Ginkogene",
+    position: 4,
+  },
+  {
+    _id: "66d61077540d53374b427e4b",
+    name: "Tricia Greene",
+    age: 27,
+    email: "triciagreene@ginkogene.com",
+    company: "Naxdis",
+    position: 5,
+  },
+];
+
+const ReactGridExample = () => {
+  const [people, setPeople] = useState(peopleArr);
+
+  const updatePerson = (id, key, newValue) => {
+    setPeople((prev) => {
+      return prev.map((p) => (p._id !== id ? p : { ...p, [key]: newValue }));
+    });
+  };
+
+
+  const cells = [
+    {
+      rowIndex: 0,
+      colIndex: 0,
+      Template: TextCell;
+      props?: {
+        text: people[0].name,
+        onTextChanged: (newText) => {
+          updatePerson(people[0]._id, "name", newText);
+        },
+      }
+    },
+    //...
+  ];
+
+
+
+  return <ReactGrid cells={cells} />;
+};
+```

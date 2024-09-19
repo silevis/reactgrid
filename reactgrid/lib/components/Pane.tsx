@@ -3,13 +3,14 @@ import { NumericalRange } from "../types/PublicModel";
 import { EMPTY_AREA, GetCellOffsets, PaneName, StickyOffsets } from "../types/InternalModel";
 import { isSpanMember } from "../utils/isSpanMember";
 import { areAreasEqual } from "../utils/areAreasEqual";
-import { useReactGridStore } from "../utils/reactGridStore";
+import { reactGridStores, useReactGridStore } from "../utils/reactGridStore";
 import { useTheme } from "../hooks/useTheme";
 import { CellContextProvider } from "./CellContext";
 import { PartialArea } from "./PartialArea";
 import { useReactGridId } from "./ReactGridIdProvider";
 import { RGTheme } from "../types/RGTheme";
 import isEqual from "lodash.isequal";
+import { isCellInRange } from "../utils/isCellInRange";
 
 interface PaneGridContentProps {
   range: NumericalRange;
@@ -52,16 +53,23 @@ export const PaneGridContent: React.FC<PaneGridContentProps> = React.memo(
     const { startRowIdx, endRowIdx, startColIdx, endColIdx } = range;
 
     const id = useReactGridId();
+    const store = reactGridStores()[id].getState();
+
     const rows = useReactGridStore(id, (store) => store.rows).slice(startRowIdx, endRowIdx);
     const columns = useReactGridStore(id, (store) => store.columns).slice(startColIdx, endColIdx);
     const cells = useReactGridStore(id, (store) => store.cells);
     const focusedCell = useReactGridStore(id, (store) => store.focusedLocation);
+    const selectedArea = useReactGridStore(id, (store) => store.selectedArea);
+    const fillHandleArea = useReactGridStore(id, (store) => store.fillHandleArea);
 
     const memoizedGetCellOffset = useCallback(getCellOffset, [stickyOffsets]);
 
     return rows.map((_, rowIndex) => {
       return columns.map((_, colIndex) => {
         const cell = cells.get(`${startRowIdx + rowIndex} ${startColIdx + colIndex}`);
+
+        const isCellInFillArea = isCellInRange(store, cell, fillHandleArea);
+        const isCellInSelectedArea = isCellInRange(store, cell, selectedArea);
 
         if (!cell || isSpanMember(cell)) return null;
 
@@ -80,6 +88,8 @@ export const PaneGridContent: React.FC<PaneGridContentProps> = React.memo(
             realRowIndex={realRowIndex}
             realColumnIndex={realColumnIndex}
             getCellOffset={memoizedGetCellOffset}
+            isCellInFillArea={isCellInFillArea}
+            isCellInSelectedArea={isCellInSelectedArea}
             cell={cell}
             isFocused={isFocused}
           />

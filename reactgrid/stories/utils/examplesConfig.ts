@@ -93,7 +93,6 @@ export const generateDataTable = (
 
       columnDefs.forEach((_, colIndex) => {
         cells.push({
-          id: `${people[personRowIndex]._id}-${colIndex}`,
           rowIndex,
           colIndex,
           ...personCells[colIndex],

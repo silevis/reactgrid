@@ -7,192 +7,206 @@ metaDescription: "ReactGrid docs"
 
 ## Column Resizing
 
-To enable column resizing, you need to set the `onResizeColumn` prop of the ReactGrid component.
+To enable column resizing, simply define your `columns` within the your component and set the `onResizeColumn` prop on the ReactGrid component.
 
-### Important Note
-The `onResizeColumn` will only be triggered if the `resizable` property of the column is set to `true`. 
+```tsx
+/**
+  * Callback function that is triggered when a column is resized.
+  * 
+  * @param width - The new width of the column.
+  * @param columnIdx - An array of column indexes that were resized. There may be more than one index in the case of spanned headers.
+  * @returns void
+*/
+onResizeColumn?: (width: number, columnIdx: number[]) => void;
+```
 
 ---
-
-You can copy/paste the following function to your project to handle the column resizing. If you want to implement a custom resizing logic, you can modify the function as needed.
-
-```tsx 
-import { Dispatch, SetStateAction } from "react";
-import { Column, CellMatrix } from "@silevis/reactgrid";
-
-export const handleResizeColumn = (
-  width: number,
-  columnIdx: number,
-  cells: CellMatrix,
-  setColumns: Dispatch<SetStateAction<Column[]>>
-) => {
-  setColumns((prevColumns) =>
-    prevColumns.map((column, idx) => {
-      if (idx !== columnIdx) return column;
-
-      const cell = cells[0][columnIdx];
-      let newWidth = width;
-
-      if ("colSpan" in cell && cell.colSpan) {
-        for (let i = columnIdx + 1; i < columnIdx + cell.colSpan; i++) {
-          const columnWidth = prevColumns[i].width;
-          const columnWidthNumber = columnWidth;
-          newWidth -= columnWidthNumber;
-        }
-      }
-
-      return { ...column, width: newWidth };
-    })
-  );
-};
-
-```
 
 ### Live Demo
 
 import LiveCode from "@/nextra/components/LiveCode.tsx";
+import React, { useState } from "react";
 import {
   ReactGrid,
-  Column,
-  Row,
+  NumberCell,
   TextCell,
-  HeaderCell,
-  cellMatrixBuilder,
+  NonEditableCell,
+  Row,
+  Cell,
 } from "@silevis/reactgrid";
-import { useState } from "react";
 
 <LiveCode
 scope={{
   useState,
   ReactGrid,
-  Column,
+  NumberCell,
+  TextCell,
+  NonEditableCell,
   Row,
-  cellMatrixBuilder,
-  TextCell, 
-  HeaderCell
+  Cell,
 }}
 code={`
-const handleResizeColumn = (
-  width: number,
-  columnIdx: number,
-  cells: CellMatrix,
-  setColumns: Dispatch<SetStateAction<Column[]>>
-) => {
-  setColumns((prevColumns) =>
-    prevColumns.map((column, idx) => {
-      if (idx !== columnIdx) return column;
+const peopleArr = [
+  {
+    _id: "66d61077035753f369ddbb16",
+    name: "Jordan Rodriquez",
+    age: 30,
+    email: "jordanrodriquez@cincyr.com",
+    company: "Zaggles",
+    position: 1,
+  },
+  {
+    _id: "66d61077794e7949ab167fd5",
+    email: "allysonrios@satiance.com",
+    name: "Allyson Rios",
+    age: 30,
+    company: "Zoxy",
+    position: 2,
+  },
+  {
+    _id: "66d61077dd754e88981ae434",
+    name: "Pickett Lucas",
+    age: 25,
+    email: "pickettlucas@zoxy.com",
+    company: "Techade",
+    position: 3,
+  },
+  {
+    _id: "66d61077115e2f8748c334d9",
+    name: "Louella David",
+    age: 37,
+    email: "louelladavid@techade.com",
+    company: "Ginkogene",
+    position: 4,
+  },
+  {
+    _id: "66d61077540d53374b427e4b",
+    name: "Tricia Greene",
+    age: 27,
+    email: "triciagreene@ginkogene.com",
+    company: "Naxdis",
+    position: 5,
+  },
+];
 
-      const cell = cells[0][columnIdx];
-      let newWidth = width;
-
-      if ("colSpan" in cell && cell.colSpan) {
-        for (let i = columnIdx + 1; i < columnIdx + cell.colSpan; i++) {
-          const columnWidth = prevColumns[i].width;
-          const columnWidthNumber = columnWidth;
-          newWidth -= columnWidthNumber;
-        }
-      }
-
-      return { ...column, width: newWidth };
-    })
-  );
-};
-
-interface CellData {
-  value: string;
-  template: React.ComponentType<any>;
-  style?: React.CSSProperties;
+interface ColumnDef {
+  title: string;
+  width: number;
+  cellTemplate: React.ComponentType<any>;
 }
 
-const initialColumns: Column[] = [
-  { width: 180, resizable: true, minWidth: 80 },
-  { width: 180, resizable: true, minWidth: 80 },
-  { width: 180, resizable: true, minWidth: 80 },
-  { width: 180, resizable: true, minWidth: 80 },
-];
+const handleResizeColumn = (
+  newWidth: number,
+  columnIndexes: number[],
+  setColumns: Dispatch<SetStateAction<ColumnDef[]>>
+) => {
+  setColumns((prevColumns) => {
+    const widthPerColumn = columnIndexes.length > 1 ? newWidth / columnIndexes.length : newWidth;
 
-const headerRow = ["Name", "Surname", "Email", "City"];
-
-const initialRows: Row[] = Array.from({ length: 5 }, (_, idx) => {
-  if (idx === 0) return { height: "30px", reorderable: false };
-  return { height: "min-content", reorderable: true };
-});
-
-const dataRows = [
-  ["Jake", "Smith", "j.smith@gmail.com", "New York"],
-  ["Emily", "Jones", "e.jones@hotmail.com", "Paris"],
-  ["Liam", "Brown", "l.brown@yahoo.com", "Tokyo"],
-  ["Sophia", "Taylor", "s.taylor@gmail.com", "Sydney"],
-];
-
-const initialGridData: CellData[][] = [headerRow, ...dataRows].map(
-  (row, rowIdx) =>
-    row.map((cellValue, index) => {
-      const isHeaderRow = rowIdx === 0;
-
-      if (isHeaderRow) {
-        return {
-          value: cellValue,
-          template: HeaderCell,
-          style: {
-            backgroundColor: "#55bc71",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            fontWeight: "bold",
-          },
-        };
+    return prevColumns.map((column, idx) => {
+      if (columnIndexes.includes(idx)) {
+        return { ...column, width: widthPerColumn };
       }
 
-      return {
-        value: cellValue,
-        template: TextCell,
-      };
-    })
-);
+      return column;
+    });
+  });
+};
 
-function App() {
-  const [columns, setColumns] = useState<Array<Column>>(initialColumns);
-  const [rows, setRows] = useState<Array<Row>>(initialRows);
-  const [gridData, setGridData] = useState<(CellData | null)[][]>(initialGridData);
 
-  const cells = cellMatrixBuilder(({ setCell }) => {
-    gridData.forEach((row, rowIdx) => {
-      row.forEach((cell, colIdx) => {
-        if (cell === null) return;
+const ColumnResizeExample = () => {
+  const [people, setPeople] = useState(peopleArr);
 
-        setCell(rowIdx, colIdx, cell.template, {
-          value: cell.value,
-          style: cell.style,
-          onValueChanged: (data) => {
-            setGridData((prev) => {
-              const next = [...prev];
-              if (next[rowIdx][colIdx] !== null) {
-                next[rowIdx][colIdx].value = data;
-              }
-              return next;
-            });
+  const [columnDefs, setColumnDefs] = useState<ColumnDef[]>(
+    Object.keys(peopleArr[0]).reduce((acc: ColumnDef[], peopleKey: string, idx: number) => {
+      if (["_id", "position"].includes(peopleKey)) return acc;
+      const cellTemplate = peopleKey === "age" ? NumberCell : TextCell;
+      return [...acc, { title: peopleKey, width: 100 * idx, cellTemplate }];
+    }, [])
+  );
+
+  const updatePerson = (id, key, newValue) => {
+    setPeople((prev) => {
+      return prev.map((p) => (p._id !== id ? p : { ...p, [key]: newValue }));
+    });
+  };
+
+  const gridRows: Row[] = Array.from({ length: people.length + 1 }, (_, i) => ({
+    rowIndex: i,
+    height: 40,
+  }));
+
+  const gridColumns = columnDefs.map((col, index) => ({
+    colIndex: index,
+    width: col.width,
+  }));
+
+  const cells: Cell[] = [];
+
+  gridRows.forEach((row, rowIndex) => {
+    const personRowIndex = row.rowIndex;
+
+    if (rowIndex === 0) {
+      columnDefs.forEach((col, colIndex) => {
+        cells.push({
+          rowIndex,
+          colIndex,
+          Template: NonEditableCell,
+          props: {
+            value: col.title,
+            style: {
+              backgroundColor: "#55bc71",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              fontWeight: "bold",
+            },
           },
+          isSelectable: false,
         });
       });
-    });
+    } else {
+      const personCells = columnDefs.map((col) => {
+        const numberCellProps = {
+          onValueChanged: (newValue) => {
+            updatePerson(people[personRowIndex - 1]._id, col.title, newValue);
+          },
+          value: people[personRowIndex - 1][col.title.toLowerCase()],
+        };
+
+        const textCellProps = {
+          text: people[personRowIndex - 1][col.title.toLowerCase()],
+          onTextChanged: (newText: string) => {
+            updatePerson(people[personRowIndex - 1]._id, col.title, newText);
+          },
+        };
+
+        return {
+          Template: col.cellTemplate,
+          props: col.title === "age" ? numberCellProps : textCellProps,
+        };
+      });
+
+      columnDefs.forEach((_, colIndex) => {
+        cells.push({
+          rowIndex,
+          colIndex,
+          ...personCells[colIndex],
+        });
+      });
+    }
   });
 
   return (
-    <div>
       <ReactGrid
-        id="example"
-        initialFocusLocation={{ rowIndex: 2, colIndex: 1 }}
-        onResizeColumn={(width, columnIdx) => 
-          handleResizeColumn(width, columnIdx, cells, setColumns)}
-        rows={rows}
-        columns={columns}
+        onResizeColumn={(width, columnIdx) => handleResizeColumn(width, columnIdx, setColumnDefs)}
+        rows={gridRows}
+        columns={gridColumns}
         cells={cells}
       />
-    </div>
   );
-}
+};
 
-render(<App />, document.getElementById("root"));
+render(<ColumnResizeExample />, document.getElementById("root"));
 `}
 />
