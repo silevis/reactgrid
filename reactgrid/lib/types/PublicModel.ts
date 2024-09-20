@@ -41,12 +41,12 @@ export type Cell = {
   isSelectable?: boolean;
 };
 
-export interface CellsLookupCallbacks {
+export type CellsLookupCallbacks = {
   rowIndex: number;
   colIndex: number;
   onStringValueRequsted: () => string;
   onStringValueReceived: (v: string) => void;
-}
+};
 
 export type CellsLookup<RowIdxType extends number = number, ColIdxType extends number = number> = Map<
   `${RowIdxType} ${ColIdxType}`,

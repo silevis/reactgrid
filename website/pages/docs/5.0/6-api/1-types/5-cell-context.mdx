@@ -1,0 +1,30 @@
+---
+posttype: "docs"
+title: CellContext
+metaTitle: "CellContext type"
+metaDescription: "ReactGrid docs"
+---
+
+#### Definition
+
+```ts
+type CellContextType = {
+  realRowIndex: number;
+  realColumnIndex: number;
+  rowSpan?: number;
+  colSpan?: number;
+  containerStyle: React.CSSProperties;
+  isFocused: boolean;
+};
+```
+
+#### Properties
+
+| Name              | Type                  | Description                                                                                            |
+| ----------------- | --------------------- | ------------------------------------------------------------------------------------------------------ |
+| `realRowIndex`    | `number`              | Numerical cell's row index representation in relation to the whole grid (including sticky rows).       |
+| `realColumnIndex` | `number`              | Numerical cell's column index representation in relation to the whole grid (including sticky columns). |
+| `rowSpan`         | `number` (optional)   | Represents how many rows the cell should occupy.                                                       |
+| `colSpan`         | `number` (optional)   | Represents how many columns the cell should occupy.                                                    |
+| `containerStyle`  | `React.CSSProperties` | Internal: provides the cell container's style.                                                         |
+| `isFocused`       | `boolean`             | Indicates if the cell is focused.                                                                      |

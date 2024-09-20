@@ -17,13 +17,13 @@ npm i @silevis/reactgrid
 
 ## Integrate ReactGrid into the App
 
-To integrate ReactGrid into your application, you can configure the grid using `rows`, `columns`, and `cells`. However, if you provide only cells with specified `rowIndex` and `colIndex`, the rows and columns will be automatically generated. If you want to define specific row heights or column widths, you should pass them explicitly to the ReactGrid component. Below is a detailed breakdown of how to set this up, including an example configuration file.
+To integrate ReactGrid into your application, you can configure the grid using [rows](), [columns](), and [cells](). However, if you provide only cells with specified `rowIndex` and `colIndex`, the rows and columns will be automatically generated. If you want to define specific row heights or column widths, you should pass them explicitly to the ReactGrid component. Below is a detailed breakdown of how to set this up, including an example configuration file.
 
 ### Integration Steps for ReactGrid
 
 #### 1. Prepare the data that will be used within ReactGrid
 
-For this example, let's create a configuration file, such as `reactgrid.config.ts`, to store the data that will be used by ReactGrid. In many cases, however, the data is often fetched from a server.
+For this example, let's create a configuration file, such as `reactgrid.config.ts`, to store the data that will be used by ReactGrid. However, in many cases, the data is fetched from a server.
 
 #### Data Example
 
@@ -79,7 +79,7 @@ Now you can generate rows, columns, and cells using the prepared data.
 ```tsx
 import React, { useState } from "react";
 import { ReactGrid, NumberCell, TextCell, NonEditableCell, Cell } from "@silevis/reactgrid";
-import { peopleArr } from "./utils/examplesConfig";
+import { peopleArr } from "./utils/reactgrid.config";
 
 interface ColumnDef {
   title: string;
