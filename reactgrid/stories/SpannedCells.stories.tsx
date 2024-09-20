@@ -62,7 +62,6 @@ export const SpannedCellsExample = () => {
             Template: NonEditableCell,
             props: {
               value: headers[colIndex],
-              readOnly: true,
               style: {
                 backgroundColor: "#55bc71",
                 display: "flex",

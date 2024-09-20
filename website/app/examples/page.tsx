@@ -4,7 +4,7 @@ import logo from "@/public/static/logo-green.svg";
 import checkIcon from "@/public/static/check-icon.svg";
 import dotIcon from "@/public/static/dot-icon.svg";
 import Image from "next/image";
-import { CellData, Column, ReactGrid, TextCell } from "@silevis/reactgrid";
+import { Cell, Column, ReactGrid, TextCell } from "@silevis/reactgrid";
 import { useState } from "react";
 
 const capabilities = [
@@ -62,7 +62,7 @@ export default function ExamplesPage() {
     { colIndex: 2, width: 100 },
   ]);
 
-  const [cells, setCells] = useState<CellData[]>(() => [
+  const [cells, setCells] = useState<Cell[]>(() => [
     {
       rowIndex: 0,
       colIndex: 0,

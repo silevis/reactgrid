@@ -7,7 +7,7 @@ metaDescription: "ReactGrid docs"
 
 ## Handling data changes
 
-1. By default, ReactGrid provides two built-in editable cell templates: `TextCell` and `NumberCell`:
+1. By default, ReactGrid provides two built-in editable cell templates: [TextCell](/docs/5.0/3-cell-templates/1-text-cell) and [NumberCell](/docs/5.0/3-cell-templates/2-number-cell):
 
 ```tsx
 // TextCell
@@ -31,7 +31,7 @@ interface NumberCellProps {
 
 **Note:** You can easily create custom cell templates to suit your needs.
 
-Each cell template includes a handler to manage data changes. For the `TextCell`, this is the `onTextChanged` handler, and for the `NumberCell`, it’s `onValueChanged`. These handlers allow you to update your source data and re-render ReactGrid with the new values.
+Each cell template includes a handler to manage data changes. For the [TextCell](/docs/5.0/3-cell-templates/1-text-cell), this is the `onTextChanged` handler, and for the [NumberCell](/docs/5.0/3-cell-templates/2-number-cell), it’s `onValueChanged`. These handlers allow you to update your source data and re-render ReactGrid with the new values.
 
 ```tsx
 const peopleArr = [
