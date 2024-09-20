@@ -1,0 +1,262 @@
+---
+posttype: "docs"
+title: Column and row reordering
+metaTitle: "Columns and row reordering"
+metaDescription: "ReactGrid docs"
+---
+
+#### Introduction
+
+To enable [row](/docs/5.0/6-api/1-types/1-row) or [column](/docs/5.0/6-api/1-types/2-column) reordering in ReactGrid, the following props need to be passed to the component:
+
+1. For row reordering:
+```ts
+enableRowSelectionOnFirstColumn?: boolean;
+onRowReorder?: (selectedRowIndexes: number[], destinationRowIdx: number) => void;
+```
+
+2. For column reordering:
+```ts
+enableColumnSelectionOnFirstRow?: boolean;
+onColumnReorder?: (selectedColIndexes: number[], destinationColIdx: number) => void;
+```
+
+#### Live example
+
+import LiveCode from "@/nextra/components/LiveCode.tsx";
+import React, { useState } from "react";
+import {
+  ReactGrid,
+  NumberCell,
+  TextCell,
+  NonEditableCell,
+  Cell,
+} from "@silevis/reactgrid";
+
+<LiveCode
+scope={{
+  ReactGrid,
+  NumberCell,
+  TextCell,
+  NonEditableCell,
+  Cell,
+  useState
+}}
+code={`
+interface Person {
+  _id: string;
+  name: string;
+  age: number;
+  email: string;
+  company: string;
+  position: number;
+}
+
+const peopleArr: Person[] = [
+  { _id: "66d61077035753f369ddbb16", name: "Jordan Rodriquez", age: 30, email: "jordanrodriquez@cincyr.com", company: "Zaggles", position: 1 },
+  { _id: "66d61077794e7949ab167fd5", email: "allysonrios@satiance.com", name: "Allyson Rios", age: 30, company: "Zoxy", position: 2 },
+  { _id: "66d61077dd754e88981ae434", name: "Pickett Lucas", age: 25, email: "pickettlucas@zoxy.com", company: "Techade", position: 3 },
+  { _id: "66d61077115e2f8748c334d9", name: "Louella David", age: 37, email: "louelladavid@techade.com", company: "Ginkogene", position: 4 },
+  { _id: "66d61077540d53374b427e4b", name: "Tricia Greene", age: 27, email: "triciagreene@ginkogene.com", company: "Naxdis", position: 5 }
+];
+
+interface ColumnDef {
+  title: string;
+  width: number;
+  cellTemplate: React.ComponentType<any>;
+}
+
+const generateCells = (
+  people: Person[],
+  updatePerson: (id: string, selector: string, newValue: any) => void,
+  columnDefs: ColumnDef[]
+): CellMatrixDef => {
+  const cells: Cell[] = [];
+
+  const rowsWithAssignedHeights = people.map((person, i) => ({
+    id: person._id,
+    height: 40,
+    position: person.position,
+  }));
+
+  const headerRow = [{ id: "header", position: 0, height: 40 }];
+
+  const orderedRows: RowDef[] = [...headerRow, ...rowsWithAssignedHeights]
+    .sort((a, b) => a.position - b.position)
+    .map((row) => {
+      const idx = rowsWithAssignedHeights.findIndex((r) => r.id === row.id);
+      const adjustedIdx = idx === -1 ? 0 : idx + 1;
+
+      if (adjustedIdx === 0) {
+        return { rowIndex: adjustedIdx, height: row.height, reorderable: false };
+      }
+
+      return { rowIndex: adjustedIdx, height: row.height };
+    });
+
+  orderedRows.forEach((row, rowIndex) => {
+    if (rowIndex === 0) {
+      columnDefs.forEach((col, colIndex) => {
+        cells.push({
+          rowIndex,
+          colIndex,
+          Template: NonEditableCell,
+          props: {
+            value: col.title,
+            style: {
+              backgroundColor: "#55bc71",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              fontWeight: "bold",
+            },
+          },
+        });
+      });
+    } else {
+      const personRowIndex = row.rowIndex - 1;
+
+      const personCells = columnDefs.map((col) => {
+        const numberCellProps = {
+          onValueChanged: (newValue) => {
+            updatePerson(people[personRowIndex]._id, col.title, newValue);
+          },
+          value: people[personRowIndex][col.title],
+        };
+
+        const textCellProps = {
+          text: people[personRowIndex][col.title],
+          onTextChanged: (newText: string) => {
+            updatePerson(people[personRowIndex]._id, col.title, newText);
+          },
+        };
+
+        return {
+          Template: col.cellTemplate,
+          props: col.title === "age" ? numberCellProps : textCellProps,
+        };
+      });
+
+      columnDefs.forEach((_, colIndex) => {
+        cells.push({
+          rowIndex,
+          colIndex,
+          ...personCells[colIndex],
+        });
+      });
+    }
+  });
+
+  // Rows that are actually used in the grid
+  const gridRows = orderedRows.map((rowDef, index) => {
+    if (index === 0) {
+      return { rowIndex: index, height: rowDef.height, ...(rowDef.reorderable === false && { reorderable: false }) };
+    }
+    return { rowIndex: index, height: rowDef.height };
+  });
+
+  // Columns that are actually used in the grid
+  const gridColumns = columnDefs.map((col, index) => ({
+    colIndex: index,
+    width: col.width,
+  }));
+
+  return { rows: gridRows, columns: gridColumns, cells };
+};
+
+const handleRowReorder = (
+  peopleArr: Person[],
+  selectedRowIndexes: number[],
+  destinationRowIdx: number,
+  updatePerson: (id: string, key: string, newValue: number) => void
+) => {
+  const prevPeopleArr = [...peopleArr].sort((a, b) => a.position - b.position);
+
+  // Adjust the destination index to account for the header row
+  const adjustedDestinationIdx = destinationRowIdx - 1;
+  const adjustedSelectedRowIdxs = selectedRowIndexes.map((rowIdx) => rowIdx - 1);
+
+  const isReorderingUpwards = adjustedSelectedRowIdxs.some((rowIdx) => rowIdx > adjustedDestinationIdx);
+
+  adjustedSelectedRowIdxs.forEach((rowIdx, index) => {
+    if (adjustedDestinationIdx === 0) {
+      prevPeopleArr[rowIdx].position = prevPeopleArr[adjustedDestinationIdx].position / 2 + index * 0.01;
+    } else if (adjustedDestinationIdx === peopleArr.length - 1) {
+      prevPeopleArr[rowIdx].position = prevPeopleArr[adjustedDestinationIdx].position + 1 + index * 0.01;
+    } else if (isReorderingUpwards) {
+      prevPeopleArr[rowIdx].position =
+        (prevPeopleArr[adjustedDestinationIdx].position + prevPeopleArr[adjustedDestinationIdx - 1].position) / 2 +
+        index * 0.01;
+    } else {
+      prevPeopleArr[rowIdx].position =
+        (prevPeopleArr[adjustedDestinationIdx].position + prevPeopleArr[adjustedDestinationIdx + 1].position) / 2 +
+        index * 0.01;
+    }
+  });
+
+  prevPeopleArr.forEach((row) => {
+    updatePerson(row._id, "position", row.position);
+  });
+};
+
+const handleColumnReorder = (
+  selectedColIndexes: number[],
+  destinationColIdx: number,
+  setColumns: React.Dispatch<React.SetStateAction<ColumnDef[]>>
+) => {
+  setColumns((prevColumns) => {
+    const selectedColumns = prevColumns.filter((_, index) => selectedColIndexes.includes(index));
+    const unselectedColumns = prevColumns.filter((_, index) => !selectedColIndexes.includes(index));
+
+    const adjustedDestinationColIdx =
+      selectedColIndexes[0] > destinationColIdx ? destinationColIdx : destinationColIdx - selectedColumns.length + 1;
+
+    const newColumns = [
+      ...unselectedColumns.slice(0, adjustedDestinationColIdx),
+      ...selectedColumns,
+      ...unselectedColumns.slice(adjustedDestinationColIdx),
+    ];
+
+    return newColumns;
+  });
+};
+
+const ReactGridExample = () => {
+  const [people, setPeople] = useState(peopleArr);
+
+  const [columnDefs, setColumnDefs] = useState<ColumnDef[]>(
+    Object.keys(peopleArr[0]).reduce((acc: ColumnDef[], peopleKey: string, idx: number) => {
+      if (["_id", "position"].includes(peopleKey)) return acc;
+      const cellTemplate = peopleKey === "age" ? NumberCell : TextCell;
+      return [...acc, { title: peopleKey, width: 220, cellTemplate }];
+    }, [])
+  );
+
+  const updatePerson = (id, key, newValue) => {
+    setPeople((prev) => {
+      return prev.map((p) => (p._id !== id ? p : { ...p, [key]: newValue }));
+    });
+  };
+
+  const { rows, columns, cells } = generateCells(people, updatePerson, columnDefs);
+
+  return (
+    <ReactGrid
+      enableRowSelectionOnFirstColumn
+      enableColumnSelectionOnFirstRow
+      rows={rows}
+      onColumnReorder={(selectedColIndexes, destinationColIdx) =>
+        handleColumnReorder(selectedColIndexes, destinationColIdx, setColumnDefs)
+      }
+      onRowReorder={(selectedRowIndexes, destinationRowIdx) => {
+        handleRowReorder(people, selectedRowIndexes, destinationRowIdx, updatePerson);
+      }}
+      columns={columns}
+      cells={cells}
+    />
+  );
+};
+
+render(<ReactGridExample />, document.getElementById("root"));
+`}
+/>

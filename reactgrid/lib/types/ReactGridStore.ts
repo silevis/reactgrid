@@ -1,7 +1,7 @@
-import { Cell, CellMap, Column, Range, Row, SpanMember, StyledRange } from "./PublicModel.ts";
+import { Cell, Column, Range, Row, StyledRange } from "./PublicModel.ts";
 import { RowMeasurement } from "./RowMeasurement.ts";
 import { ColumnMeasurement } from "./ColumnMeasurement.ts";
-import { FocusedCell, IndexedLocation, NestedStylesPartial, PaneName } from "./InternalModel.ts";
+import { CellMap, FocusedCell, IndexedLocation, NestedStylesPartial, PaneName, SpanMember } from "./InternalModel.ts";
 import { NumericalRange } from "./PublicModel.ts";
 import { Behavior, BehaviorId } from "./Behavior.ts";
 import { RGTheme } from "./RGTheme.ts";

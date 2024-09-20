@@ -1,28 +1,39 @@
-import { StoryDefault } from "@ladle/react";
-import { StrictMode, useState } from "react";
-import { TextCell } from "../lib/cellTemplates/TextCell";
-import { ReactGrid } from "../lib/components/ReactGrid";
-import { ErrorBoundary } from "../lib/components/ErrorBoundary";
-import { Cell, Column, Row } from "../lib/types/PublicModel";
-import React from "react";
-import { NonEditableCell, NumberCell } from "../lib/main";
+---
+posttype: "docs"
+title: Cell span
+metaTitle: "Cell span"
+metaDescription: "ReactGrid docs"
+---
 
-const styledRanges = [
-  {
-    range: { start: { rowIndex: 2, columnIndex: 1 }, end: { rowIndex: 4, columnIndex: 3 } },
-    styles: { background: "#e9efdf", color: "black" },
-  },
-];
+#### About spanned cells in ReactGrid
 
-interface Category {
-  id: number;
-  range: string;
-  category: string;
-  categoryPercentage: number;
-  records: number;
-}
+You can specify the number of rows or columns a cell spans by using the `rowSpan` and `colSpan` properties when creating cells for ReactGrid.
 
-const categoryArr: Category[] = [
+### Live Demo
+
+import LiveCode from "@/nextra/components/LiveCode.tsx";
+import React, { useState } from "react";
+import {
+  ReactGrid,
+  NumberCell,
+  TextCell,
+  NonEditableCell,
+  Row,
+  Cell,
+} from "@silevis/reactgrid";
+
+<LiveCode
+scope={{
+  useState,
+  ReactGrid,
+  NumberCell,
+  TextCell,
+  NonEditableCell,
+  Row,
+  Cell,
+}}
+code={`
+const categoryArr = [
   { id: 1, range: "1-5", category: "cat1", categoryPercentage: 50, records: 10 },
   { id: 2, range: "6-10", category: "cat2", categoryPercentage: 10, records: 20 },
   { id: 3, range: "11-15", category: "cat2", categoryPercentage: 10, records: 30 },
@@ -33,7 +44,7 @@ const categoryArr: Category[] = [
 
 const headers = ["Range", "Category", "Category %", "Records"];
 
-export const SpannedCellsExample = () => {
+const SpannedCellsExample = () => {
   const [categories, setCategories] = useState<Category[]>(categoryArr);
 
   const updateCategories = (id: number, key: string, newValue) => {
@@ -149,27 +160,15 @@ export const SpannedCellsExample = () => {
   return (
     <div style={{ height: "100%", overflow: "auto" }}>
       <ReactGrid
-        id="spanned-cells-example"
-        enableColumnSelectionOnFirstRow
-        styledRanges={styledRanges}
-        columns={columns}
         rows={rows}
-        stickyTopRows={1}
-        initialFocusLocation={{ rowIndex: 1, colIndex: 0 }}
+        columns={columns}
         cells={cells}
+        stickyTopRows={1}
       />
     </div>
   );
 };
 
-export default {
-  decorators: [
-    (Component) => (
-      <StrictMode>
-        <ErrorBoundary>
-          <Component />
-        </ErrorBoundary>
-      </StrictMode>
-    ),
-  ],
-} satisfies StoryDefault;
+render(<SpannedCellsExample />, document.getElementById("root"));
+`}
+/>

@@ -1,0 +1,79 @@
+---
+posttype: "docs"
+title: ReactGridProps
+metaTitle: "ReactGridProps interface"
+metaDescription: "ReactGrid docs"
+---
+
+## Introduction
+
+The `ReactGridProps` interface defines the properties and callbacks that can be used to configure the `ReactGrid` component. This interface allows to customize the grid's appearance, behavior, and interactions.
+
+#### Definition
+
+```ts
+interface ReactGridProps {
+  id?: string;
+  styles?: NestedStylesPartial<RGTheme>;
+  styledRanges?: StyledRange[];
+  rows?: Row[];
+  columns?: Column[];
+  cells: Cell[];
+  onAreaSelected?: (selectedArea: NumericalRange) => void;
+  onCellFocused?: (cellLocation: IndexedLocation) => void;
+  stickyTopRows?: number;
+  stickyRightColumns?: number;
+  stickyBottomRows?: number;
+  stickyLeftColumns?: number;
+  enableColumnSelectionOnFirstRow?: boolean;
+  enableRowSelectionOnFirstColumn?: boolean;
+  behaviors?: Partial<Record<BehaviorId, Behavior>>;
+  initialFocusLocation?: IndexedLocation;
+  initialSelectedRange?: Range;
+  onFocusLocationChanging?: ({ location }: { location: IndexedLocation }) => boolean;
+  onFocusLocationChanged?: ({ location }: { location: IndexedLocation }) => void;
+  onFillHandle?: (selectedArea: NumericalRange, fillRange: NumericalRange, cellsLookup: CellsLookup) => void;
+  onCut?: (event: React.ClipboardEvent<HTMLDivElement>, cellsRange: NumericalRange, cellsLookup: CellsLookup) => void;
+  onCopy?: (event: React.ClipboardEvent<HTMLDivElement>, cellsRange: NumericalRange, cellsLookup: CellsLookup) => void;
+  onPaste?: (event: React.ClipboardEvent<HTMLDivElement>, cellsRange: NumericalRange, cellsLookup: CellsLookup) => void;
+  onColumnReorder?: (selectedColIndexes: number[], destinationColIdx: number) => void;
+  onRowReorder?: (selectedRowIndexes: number[], destinationRowIdx: number) => void;
+  onResizeColumn?: (width: number, columnIdx: number[]) => void;
+}
+```
+
+#### Properties
+
+| Name                             | Type                                    | Description                                      |
+|----------------------------------|-----------------------------------------|--------------------------------------------------|
+| `id`                             | `string`                                | Optional unique identifier for the grid.         |
+| `styles`                         | `NestedStylesPartial<RGTheme>`          | Optional styles for the grid.                    |
+| `styledRanges`                   | `StyledRange[]`                         | Optional styled ranges within the grid.          |
+| `rows`                           | `Row[]`                                 | Optional array of rows.                          |
+| `columns`                        | `Column[]`                              | Optional array of columns.                       |
+| `cells`                          | `Cell[]`                                | Array of cells.                                  |
+| `stickyTopRows`                  | `number`                                | Number of sticky rows at the top.                |
+| `stickyRightColumns`             | `number`                                | Number of sticky columns on the right.           |
+| `stickyBottomRows`               | `number`                                | Number of sticky rows at the bottom.             |
+| `stickyLeftColumns`              | `number`                                | Number of sticky columns on the left.            |
+| `enableColumnSelectionOnFirstRow`| `boolean`                               | Enable column selection on the first row.        |
+| `enableRowSelectionOnFirstColumn`| `boolean`                               | Enable row selection on the first column.        |
+| `behaviors`                      | `Partial<Record<BehaviorId, Behavior>>`  | Optional behaviors for the grid.                 |
+| `initialFocusLocation`           | `IndexedLocation`                       | Initial focus location in the grid.              |
+| `initialSelectedRange`           | `Range`                                 | Initial selected range in the grid.              |
+
+#### Callbacks
+
+| Name                        | Type                                                                                          | Description                                      |
+|-----------------------------|-----------------------------------------------------------------------------------------------|--------------------------------------------------|
+| `onAreaSelected`             | `(selectedArea: NumericalRange) => void`                                                      | Callback when an area is selected.               |
+| `onCellFocused`              | `(cellLocation: IndexedLocation) => void`                                                     | Callback when a cell is focused.                 |
+| `onFocusLocationChanging`    | `({ location }: { location: IndexedLocation }) => boolean`                                    | Callback before focus location changes.          |
+| `onFocusLocationChanged`     | `({ location }: { location: IndexedLocation }) => void`                                       | Callback after focus location changes.           |
+| `onFillHandle`               | `(selectedArea: NumericalRange, fillRange: NumericalRange, cellsLookup: CellsLookup) => void` | Callback for fill handle action.                 |
+| `onCut`                      | `(event: React.ClipboardEvent<HTMLDivElement>, cellsRange: NumericalRange, cellsLookup: CellsLookup) => void` | Callback for cut action.                         |
+| `onCopy`                     | `(event: React.ClipboardEvent<HTMLDivElement>, cellsRange: NumericalRange, cellsLookup: CellsLookup) => void` | Callback for copy action.                        |
+| `onPaste`                    | `(event: React.ClipboardEvent<HTMLDivElement>, cellsRange: NumericalRange, cellsLookup: CellsLookup) => void` | Callback for paste action.                       |
+| `onColumnReorder`            | `(selectedColIndexes: number[], destinationColIdx: number) => void`                          | Callback for column reorder action.              |
+| `onRowReorder`               | `(selectedRowIndexes: number[], destinationRowIdx: number) => void`                          | Callback for row reorder action.                 |
+| `onResizeColumn`             | `(width: number, columnIdx: number[]) => void`                                                | Callback for column resize action.               |

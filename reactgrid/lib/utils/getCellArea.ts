@@ -1,8 +1,8 @@
-import { Cell, SpanMember, NumericalRange } from "../types/PublicModel.ts";
+import { Cell, NumericalRange } from "../types/PublicModel.ts";
 import { isCellSpanned } from "./isCellSpanned.ts";
 import { getOriginCell } from "./getOriginCell.ts";
 import { ReactGridStore } from "../types/ReactGridStore.ts";
-import { EMPTY_AREA } from "../types/InternalModel.ts";
+import { EMPTY_AREA, SpanMember } from "../types/InternalModel.ts";
 
 export const getCellArea = (store: ReactGridStore, cell: Cell | SpanMember): NumericalRange => {
   if (!cell) return EMPTY_AREA;

@@ -1,0 +1,31 @@
+---
+posttype: "docs"
+title: CellsLookup
+metaTitle: "CellsLookup type"
+metaDescription: "ReactGrid docs"
+---
+
+#### Definition
+
+```ts
+type CellsLookup<RowIdxType extends number = number, ColIdxType extends number = number> = Map<
+  `${RowIdxType} ${ColIdxType}`,
+  CellsLookupCallbacks
+>;
+
+type CellsLookupCallbacks = {
+  rowIndex: number;
+  colIndex: number;
+  onStringValueRequsted: () => string;
+  onStringValueReceived: (v: string) => void;
+};
+```
+
+#### Properties
+
+| Name                   | Type                       | Description                            |
+|------------------------|----------------------------|----------------------------------------|
+| `rowIndex`             | `number`                   | The index of the row.                  |
+| `colIndex`             | `number`                   | The index of the column.               |
+| `onStringValueRequsted`| `() => string`             | Callback to get the cell value.        |
+| `onStringValueReceived`| `(v: string) => void`      | Callback to set the cell value.        |

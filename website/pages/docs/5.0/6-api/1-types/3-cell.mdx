@@ -1,0 +1,34 @@
+---
+posttype: "docs"
+title: Cell
+metaTitle: "Cell type"
+metaDescription: "ReactGrid docs"
+---
+
+#### Definition
+
+```ts
+type Cell = {
+  rowIndex: number;
+  colIndex: number;
+  Template: React.ComponentType<any>;
+  props?: React.ComponentPropsWithRef<Cell["Template"]>;
+  rowSpan?: number;
+  colSpan?: number;
+  isFocusable?: boolean;
+  isSelectable?: boolean;
+};
+```
+
+#### Properties
+
+| Name           | Type                                            | Description                                                                                        |
+| -------------- | ----------------------------------------------- | -------------------------------------------------------------------------------------------------- |
+| `rowIndex`     | `number`                                        | User-defined row index, must exist in the `rows` array.                                            |
+| `colIndex`     | `number`                                        | User-defined column index, must exist in the `columns` array.                                      |
+| `Template`     | `React.ComponentType<any>`                      | Cell's template, typically the name of the React component. Should start with an uppercase letter. |
+| `props`        | `React.ComponentPropsWithRef<Cell["Template"]>` | Props passed to the cell's template. It's an object inherited from the `Template` prop.            |
+| `rowSpan`      | `number` (optional)                             | Represents how many rows the cell should occupy.                                                   |
+| `colSpan`      | `number` (optional)                             | Represents how many columns the cell should occupy.                                                |
+| `isFocusable`  | `boolean` (optional)                            | Marks a cell as focusable or not.                                                                  |
+| `isSelectable` | `boolean` (optional)                            | Marks a cell as selectable or not.                                                                 |

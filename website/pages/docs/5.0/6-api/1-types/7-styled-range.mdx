@@ -1,0 +1,37 @@
+---
+posttype: "docs"
+title: StyledRange
+metaTitle: "StyledRange type"
+metaDescription: "ReactGrid docs"
+---
+
+#### Definition
+
+```ts
+type StyledRange = {
+  styles: React.CSSProperties;
+  range: Range;
+};
+
+type Range = {
+  start: {
+    rowIndex: number;
+    columnIndex: number;
+  };
+  end: {
+    rowIndex: number;
+    columnIndex: number;
+  };
+};
+```
+
+#### Properties
+
+| Name                  | Type                     | Description                                        |
+|-----------------------|--------------------------|----------------------------------------------------|
+| `styles`              | `React.CSSProperties`    | The CSS properties to apply to the range.          |
+| `range`               | `Range`                  | The range of cells to which the styles apply.      |
+| `range.start.rowIndex`| `number`                 | The starting row index of the range.               |
+| `range.start.columnIndex` | `number`             | The starting column index of the range.            |
+| `range.end.rowIndex`  | `number`                 | The ending row index of the range.                 |
+| `range.end.columnIndex`| `number`                | The ending column index of the range.              |

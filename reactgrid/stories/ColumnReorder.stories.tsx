@@ -81,7 +81,6 @@ export const ColumnReorderExample = () => {
 
       columnDefs.forEach((_, colIndex) => {
         cells.push({
-          id: `${people[personRowIndex - 1]._id}-${colIndex}`,
           rowIndex,
           colIndex,
           ...personCells[colIndex],

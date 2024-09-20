@@ -13,6 +13,8 @@ interface CellContextProviderProps {
   rowSpan?: number;
   colSpan?: number;
   getCellOffset: (rowIdx: number, colIdx: number, rowSpan: number, colSpan: number) => React.CSSProperties;
+  isCellInSelectedArea: boolean;
+  isCellInFillArea: boolean;
   stickyOffsets?: StickyOffsets;
   cellStyles?: React.CSSProperties;
 }
@@ -74,6 +76,8 @@ export const CellContextProvider = memo(
   },
   (prev, next) => {
     return (
+      !next.isCellInSelectedArea &&
+      !next.isCellInFillArea &&
       deepCompare(prev.cell, next.cell) &&
       prev.isFocused === next.isFocused &&
       prev.getCellOffset === next.getCellOffset

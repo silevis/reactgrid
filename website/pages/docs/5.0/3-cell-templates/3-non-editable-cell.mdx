@@ -1,0 +1,26 @@
+---
+posttype: "docs"
+title: NonEditableCell
+metaTitle: "Non editable cell template"
+metaDescription: "ReactGrid docs"
+---
+
+The `NonEditableCell` template is used to display non-editable text values within a cell.
+
+#### Implementation
+
+ - Open `NonEditableCell` implementation on <a href="https://github.com/silevis/reactgrid/blob/v5-dev/reactgrid/lib/cellTemplates/NonEditableCell.tsx" target="_blank"> github <i className="fas fa-external-link-alt fa-xs pl-1"></i></a>
+
+#### Interface declaration 
+
+```ts
+interface NonEditableCellProps {
+  value?: string;
+  style?: React.CSSProperties;
+}
+```
+
+| Property name  | Type                    | Description                                |
+| -------------- | ----------------------- | ------------------------------------------ |
+| `value?`       | `string`                | The text value of the cell.                |
+| `style?`       | `React.CSSProperties`   | CSS properties to apply to the cell. |

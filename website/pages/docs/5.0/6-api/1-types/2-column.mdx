@@ -1,0 +1,28 @@
+---
+posttype: "docs"
+title: Column
+metaTitle: "Column type"
+metaDescription: "ReactGrid docs"
+---
+
+#### Definition
+
+```ts
+type Column = {
+  colIndex: number;
+  width: string | number;
+  minWidth?: string | number;
+  resizable?: boolean;
+  reorderable?: boolean;
+};
+```
+
+#### Properties
+
+| Name          | Type                 | Description                               |
+| ------------- | -------------------- | ----------------------------------------- |
+| `colIndex`    | `number`             | The index of the column.                  |
+| `width`       | `string \| number`   | The width of the column.                  |
+| `minWidth`    | `string \| number`   | The minimum width of the column.          |
+| `resizable`   | `boolean` (optional) | Indicates if the column is resizable.     |
+| `reorderable` | `boolean` (optional) | Indicates if the column can be reordered. |

@@ -17,253 +17,328 @@ npm i @silevis/reactgrid
 
 ## Integrate ReactGrid into the App
 
-To integrate ReactGrid into your application, you'll need to configure three essential elements: rows, columns, and the data that will populate the grid. Below is a detailed breakdown of how to set these up, including an example configuration file.
+To integrate ReactGrid into your application, configure the grid using [rows](/docs/5.0/6-api/1-types/1-row), [columns](/docs/5.0/6-api/1-types/2-column), and [cells](/docs/5.0/6-api/1-types/3-cell). However, if you provide only cells with specified `rowIndex` and `colIndex`, the rows and columns will be automatically generated. If you want to define specific row heights or column widths, you should pass them explicitly to the ReactGrid component. Below is a detailed breakdown of how to set this up, including an example configuration file.
 
 ### Integration Steps for ReactGrid
 
-#### 1. Setup Configuration File
+#### 1. Prepare the data that will be used within ReactGrid
 
-You can create a configuration file, e.g., `reactgrid.config.ts`, which will hold all the necessary configurations for your grid.
+For this example, let's create a configuration file, such as `reactgrid.config.ts`, to store the data that will be used by ReactGrid. However, in many cases, the data is fetched from a server.
 
-**Note:** Storing grid data in a separate file is optional.
-
-#### 2. Define Data Structures
-
-You need to define the structure of your grid’s data and layout. This involves specifying the columns, rows, and the content that will fill the cells. The following example demonstrates how to configure these elements.
-
-#### Configuration Example
-
-Here is a detailed example of how to set up the `reactgrid.config.ts` file:
-
+#### Data Example
 
 ```tsx
-import { Row, Column } from "@silevis/reactgrid";
-
-export interface CellData {
-  value: string;
-  template: React.ComponentType<any>;
-  style?: React.CSSProperties;
-}
-
-export const initialColumns: Column[] = [
-  { width: "150px", minWidth: 50 },
-  { width: "150px", minWidth: 50 },
-  { width: "150px", minWidth: 50 },
-  { width: "150px", minWidth: 50 },
+export const peopleArr: Person[] = [
+  {
+    _id: "66d61077035753f369ddbb16",
+    name: "Jordan Rodriquez",
+    age: 30,
+    email: "jordanrodriquez@cincyr.com",
+    company: "Zaggles",
+    position: 1,
+  },
+  {
+    _id: "66d61077794e7949ab167fd5",
+    email: "allysonrios@satiance.com",
+    name: "Allyson Rios",
+    age: 30,
+    company: "Zoxy",
+    position: 2,
+  },
+  {
+    _id: "66d61077dd754e88981ae434",
+    name: "Pickett Lucas",
+    age: 25,
+    email: "pickettlucas@zoxy.com",
+    company: "Techade",
+    position: 3,
+  },
+  {
+    _id: "66d61077115e2f8748c334d9",
+    name: "Louella David",
+    age: 37,
+    email: "louelladavid@techade.com",
+    company: "Ginkogene",
+    position: 4,
+  },
+  {
+    _id: "66d61077540d53374b427e4b",
+    name: "Tricia Greene",
+    age: 27,
+    email: "triciagreene@ginkogene.com",
+    company: "Naxdis",
+    position: 5,
+  },
 ];
-
-export const headerRow = ["Name", "Surname", "Email", "City"];
-
-export const initialRows: Row[] = Array.from({ length: 5 }, (_, idx) => {
-  if (idx === 0) return { height: "30px", reorderable: false };
-
-  return { height: "min-content", reorderable: true };
-});
-
-export const dataRows = [
-  ["Jake", "Smith", "j.smith@gmail.com", "New York"],
-  ["Emily", "Jones", "e.jones@hotmail.com", "Paris"],
-  ["Liam", "Brown", "l.brown@yahoo.com", "Tokyo"],
-  ["Sophia", "Taylor", "s.taylor@gmail.com", "Sydney"],
-];
-
-export const initialGridData: CellData[][] = [headerRow, ...dataRows].map(
-  (row, rowIdx) =>
-    row.map((cellValue, index) => {
-      const isHeaderRow = rowIdx === 0;
-
-      if (isHeaderRow) {
-        return {
-          value: cellValue,
-          template: HeaderCell,
-          style: {
-            backgroundColor: "#55bc71",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            fontWeight: "bold",
-          },
-        };
-      }
-
-      return { value: cellValue, template: TextCell };
-    })
-);
 ```
 
-#### Pass the data to ReactGrid
+#### 2. Configure ReactGrid inside your application
 
-Next, you can integrate the above data into the component where ReactGrid will be utilized. The [`cellMatrixBuilder`](https://github.com/silevis/reactgrid/blob/v5-dev/lib/utils/cellMatrixBuilder.ts) provides a type-safe way to construct the cell grid, including support for merged cells.
-
-**Note:** If you prefer not to use [`cellMatrixBuilder`](https://github.com/silevis/reactgrid/blob/v5-dev/lib/utils/cellMatrixBuilder.ts), you can still create the cell matrix in your own way.
+Now you can generate rows, columns, and cells using the prepared data.
 
 ```tsx
-function App() {
-  const [columns, setColumns] = useState<Array<Column>>(initialColumns);
-  const [rows, setRows] = useState<Array<Row>>(initialRows);
-  const [gridData, setGridData] =
-    useState<(CellData | null)[][]>(initialGridData);
+import React, { useState } from "react";
+import { ReactGrid, NumberCell, TextCell, NonEditableCell, Cell } from "@silevis/reactgrid";
+import { peopleArr } from "./utils/reactgrid.config";
 
-  const cells = cellMatrixBuilder(({ setCell }) => {
-    gridData.forEach((row, rowIdx) => {
-      row.forEach((cell, colIdx) => {
-        if (cell === null) return;
+interface ColumnDef {
+  title: string;
+  width: number;
+  cellTemplate: React.ComponentType<any>;
+}
 
-        setCell(rowIdx, colIdx, cell.template, {
-          value: cell.value,
-          style: cell.style,
-          onValueChanged: (data) => {
-            setGridData((prev) => {
-              const next = [...prev];
-              if (next[rowIdx][colIdx] !== null) {
-                next[rowIdx][colIdx].value = data;
-              }
-              return next;
-            });
+export const ReactGridExample = () => {
+  const [people, setPeople] = useState(peopleArr);
+
+  const columnDefs: ColumnDef[] = Object.keys(peopleArr[0]).reduce(
+    (acc: ColumnDef[], peopleKey: string, idx: number) => {
+      if (["_id", "position"].includes(peopleKey)) return acc;
+      const cellTemplate = peopleKey === "age" ? NumberCell : TextCell;
+      return [...acc, { title: peopleKey, width: 100, cellTemplate }];
+    },
+    []
+  );
+
+  const updatePerson = (id, key, newValue) => {
+    setPeople((prev) => {
+      return prev.map((p) => (p._id !== id ? p : { ...p, [key]: newValue }));
+    });
+  };
+
+  const gridRows = Array.from({ length: people.length + 1 }, (_, i) => ({
+    rowIndex: i,
+    height: 40,
+  }));
+
+  const gridColumns = columnDefs.map((col, index) => ({
+    colIndex: index,
+    width: col.width,
+  }));
+
+  const cells: Cell[] = [];
+
+  gridRows.forEach((row, rowIndex) => {
+    const personRowIndex = row.rowIndex;
+
+    // header cells
+    if (rowIndex === 0) {
+      columnDefs.forEach((col, colIndex) => {
+        cells.push({
+          rowIndex,
+          colIndex,
+          Template: NonEditableCell,
+          props: {
+            value: col.title,
+            style: {
+              backgroundColor: "#55bc71",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              fontWeight: "bold",
+            },
           },
+          isSelectable: false,
         });
       });
-    });
+    } else {
+      const personCells = columnDefs.map((col) => {
+        const numberCellProps = {
+          onValueChanged: (newValue) => {
+            updatePerson(people[personRowIndex - 1]._id, col.title, newValue);
+          },
+          value: people[personRowIndex - 1][col.title.toLowerCase()],
+        };
+
+        const textCellProps = {
+          text: people[personRowIndex - 1][col.title.toLowerCase()],
+          onTextChanged: (newText: string) => {
+            updatePerson(people[personRowIndex - 1]._id, col.title, newText);
+          },
+        };
+
+        return {
+          Template: col.cellTemplate,
+          props: col.title === "age" ? numberCellProps : textCellProps,
+        };
+      });
+
+      columnDefs.forEach((_, colIndex) => {
+        cells.push({
+          rowIndex,
+          colIndex,
+          ...personCells[colIndex],
+        });
+      });
+    }
   });
 
-  return (
-    <div>
-      <ReactGrid
-        id="example"
-        initialFocusLocation={{ rowIndex: 2, colIndex: 1 }}
-        rows={rows}
-        columns={columns}
-        cells={cells}
-      />
-    </div>
-  );
-}
+  return <ReactGrid rows={gridRows} columns={gridColumns} cells={cells} />;
+};
 ```
 
 #### Live example
 
-After having followed this guide, your `App.tsx` file should look like this.
-
-
 import LiveCode from "@/nextra/components/LiveCode.tsx";
+import React, { useState } from "react";
 import {
   ReactGrid,
-  Column,
-  Row,
+  NumberCell,
   TextCell,
-  HeaderCell,
-  cellMatrixBuilder,
+  NonEditableCell,
+  Cell,
 } from "@silevis/reactgrid";
-import { useState } from "react";
 
 <LiveCode
 scope={{
-  useState,
   ReactGrid,
-  Column,
-  Row,
-  cellMatrixBuilder,
-  TextCell, 
-  HeaderCell
+  NumberCell,
+  TextCell,
+  NonEditableCell,
+  Cell,
+  useState
 }}
 code={`
-interface CellData {
-  value: string;
-  template: React.ComponentType<any>;
-  style?: React.CSSProperties;
+const peopleArr = [
+  {
+    _id: "66d61077035753f369ddbb16",
+    name: "Jordan Rodriquez",
+    age: 30,
+    email: "jordanrodriquez@cincyr.com",
+    company: "Zaggles",
+    position: 1,
+  },
+  {
+    _id: "66d61077794e7949ab167fd5",
+    email: "allysonrios@satiance.com",
+    name: "Allyson Rios",
+    age: 30,
+    company: "Zoxy",
+    position: 2,
+  },
+  {
+    _id: "66d61077dd754e88981ae434",
+    name: "Pickett Lucas",
+    age: 25,
+    email: "pickettlucas@zoxy.com",
+    company: "Techade",
+    position: 3,
+  },
+  {
+    _id: "66d61077115e2f8748c334d9",
+    name: "Louella David",
+    age: 37,
+    email: "louelladavid@techade.com",
+    company: "Ginkogene",
+    position: 4,
+  },
+  {
+    _id: "66d61077540d53374b427e4b",
+    name: "Tricia Greene",
+    age: 27,
+    email: "triciagreene@ginkogene.com",
+    company: "Naxdis",
+    position: 5,
+  },
+];
+
+interface ColumnDef {
+  title: string;
+  width: number;
+  cellTemplate: React.ComponentType<any>;
 }
 
-const initialColumns: Column[] = [
-  { width: "180px", minWidth: 50 },
-  { width: "180px", minWidth: 50 },
-  { width: "180px", minWidth: 50 },
-  { width: "180px", minWidth: 50 },
-];
+const ReactGridExample = () => {
+  const [people, setPeople] = useState(peopleArr);
 
-const headerRow = ["Name", "Surname", "Email", "City"];
+  const columnDefs: ColumnDef[] = Object.keys(peopleArr[0]).reduce(
+    (acc: ColumnDef[], peopleKey: string, idx: number) => {
+      if (["_id", "position"].includes(peopleKey)) return acc;
+      const cellTemplate = peopleKey === "age" ? NumberCell : TextCell;
+      return [...acc, { title: peopleKey, width: 250, cellTemplate }];
+    },
+    []
+  );
 
-const initialRows: Row[] = Array.from({ length: 5 }, (_, idx) => {
-  if (idx === 0) return { height: "30px", reorderable: false };
-  return { height: "min-content", reorderable: true };
-});
+  const updatePerson = (id, key, newValue) => {
+    setPeople((prev) => {
+      return prev.map((p) => (p._id !== id ? p : { ...p, [key]: newValue }));
+    });
+  };
 
-const dataRows = [
-  ["Jake", "Smith", "j.smith@gmail.com", "New York"],
-  ["Emily", "Jones", "e.jones@hotmail.com", "Paris"],
-  ["Liam", "Brown", "l.brown@yahoo.com", "Tokyo"],
-  ["Sophia", "Taylor", "s.taylor@gmail.com", "Sydney"],
-];
+  const gridRows = Array.from({ length: people.length + 1 }, (_, i) => ({
+    rowIndex: i,
+    height: 40,
+  }));
 
-const initialGridData: CellData[][] = [headerRow, ...dataRows].map(
-  (row, rowIdx) =>
-    row.map((cellValue, index) => {
-      const isHeaderRow = rowIdx === 0;
+  const gridColumns = columnDefs.map((col, index) => ({
+    colIndex: index,
+    width: col.width,
+  }));
 
-      if (isHeaderRow) {
-        return {
-          value: cellValue,
-          template: HeaderCell,
-          style: {
-            backgroundColor: "#55bc71",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            fontWeight: "bold",
+  const cells: Cell[] = [];
+
+  gridRows.forEach((row, rowIndex) => {
+    const personRowIndex = row.rowIndex;
+
+    // header cells
+    if (rowIndex === 0) {
+      columnDefs.forEach((col, colIndex) => {
+        cells.push({
+          rowIndex,
+          colIndex,
+          Template: NonEditableCell,
+          props: {
+            value: col.title,
+            style: {
+              backgroundColor: "#55bc71",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              fontWeight: "bold",
+            },
           },
-        };
-      }
-
-      return {
-        value: cellValue,
-        template: TextCell,
-      };
-    })
-);
-
-function App() {
-  const [columns, setColumns] = useState<Array<Column>>(initialColumns);
-  const [rows, setRows] = useState<Array<Row>>(initialRows);
-  const [gridData, setGridData] = useState<(CellData | null)[][]>(initialGridData);
-
-  const cells = cellMatrixBuilder(({ setCell }) => {
-    gridData.forEach((row, rowIdx) => {
-      row.forEach((cell, colIdx) => {
-        if (cell === null) return;
-
-        setCell(rowIdx, colIdx, cell.template, {
-          value: cell.value,
-          style: cell.style,
-          onValueChanged: (data) => {
-            setGridData((prev) => {
-              const next = [...prev];
-              if (next[rowIdx][colIdx] !== null) {
-                next[rowIdx][colIdx].value = data;
-              }
-              return next;
-            });
-          },
+          isSelectable: false,
         });
       });
-    });
+    } else {
+      const personCells = columnDefs.map((col) => {
+        const numberCellProps = {
+          onValueChanged: (newValue) => {
+            updatePerson(people[personRowIndex - 1]._id, col.title, newValue);
+          },
+          value: people[personRowIndex - 1][col.title.toLowerCase()],
+        };
+
+        const textCellProps = {
+          text: people[personRowIndex - 1][col.title.toLowerCase()],
+          onTextChanged: (newText: string) => {
+            updatePerson(people[personRowIndex - 1]._id, col.title, newText);
+          },
+        };
+
+        return {
+          Template: col.cellTemplate,
+          props: col.title === "age" ? numberCellProps : textCellProps,
+        };
+      });
+
+      columnDefs.forEach((_, colIndex) => {
+        cells.push({
+          rowIndex,
+          colIndex,
+          ...personCells[colIndex],
+        });
+      });
+    }
   });
 
-  return (
-    <div>
-      <ReactGrid
-        id="example"
-        rows={rows}
-        columns={columns}
-        cells={cells}
-      />
-    </div>
-  );
-}
+  return <ReactGrid rows={gridRows} columns={gridColumns} cells={cells} />;
+};
 
-render(<App />, document.getElementById("root"));
+render(<ReactGridExample />, document.getElementById("root"));
 `}
 />
 
 #### Summary
 
 You should now have a basic understanding of what ReactGrid is and how it can be used.
-Continue to the next page for more advanced usage examples.

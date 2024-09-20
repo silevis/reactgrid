@@ -1,26 +1,33 @@
 ---
 posttype: "docs"
-title: Column resizing
-metaTitle: "Column resizing"
+title: Styles ranges
+metaTitle: "Styles ranges"
 metaDescription: "ReactGrid docs"
 ---
 
-## Column Resizing
+#### About styled ranges in ReactGrid
 
-To enable column resizing, simply define your [columns](/docs/5.0/6-api/1-types/2-column) within the your component and set the `onResizeColumn` prop on the ReactGrid component.
+In addition to directly passing styles to individual cells, you can also use the `styleRanges` prop, which allows you to ostilise a specific area of cells in a table.
 
-```tsx
-/**
-  * Callback function that is triggered when a column is resized.
-  * 
-  * @param width - The new width of the column.
-  * @param columnIdx - An array of column indexes that were resized. There may be more than one index in the case of spanned headers.
-  * @returns void
-*/
-onResizeColumn?: (width: number, columnIdx: number[]) => void;
+```ts
+styledRanges?: StyledRange[];
+
+type StyledRange = {
+  styles: React.CSSProperties;
+  range: Range;
+};
+
+type Range = {
+  start: {
+    rowIndex: number;
+    columnIndex: number;
+  };
+  end: {
+    rowIndex: number;
+    columnIndex: number;
+  };
+};
 ```
-
----
 
 ### Live Demo
 
@@ -95,24 +102,12 @@ interface ColumnDef {
   cellTemplate: React.ComponentType<any>;
 }
 
-const handleResizeColumn = (
-  newWidth: number,
-  columnIndexes: number[],
-  setColumns: Dispatch<SetStateAction<ColumnDef[]>>
-) => {
-  setColumns((prevColumns) => {
-    const widthPerColumn = columnIndexes.length > 1 ? newWidth / columnIndexes.length : newWidth;
-
-    return prevColumns.map((column, idx) => {
-      if (columnIndexes.includes(idx)) {
-        return { ...column, width: widthPerColumn };
-      }
-
-      return column;
-    });
-  });
-};
-
+const styledRanges = [
+  {
+    range: { start: { rowIndex: 3, columnIndex: 2 }, end: { rowIndex: 5, columnIndex: 3 } },
+    styles: { background: "red", color: "white" },
+  },
+];
 
 const ColumnResizeExample = () => {
   const [people, setPeople] = useState(peopleArr);
@@ -197,12 +192,12 @@ const ColumnResizeExample = () => {
     }
   });
 
-  return (
+  return ( 
       <ReactGrid
-        onResizeColumn={(width, columnIdx) => handleResizeColumn(width, columnIdx, setColumnDefs)}
         rows={gridRows}
         columns={gridColumns}
         cells={cells}
+        styledRanges={styledRanges}
       />
   );
 };

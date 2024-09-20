@@ -1,5 +1,6 @@
+import { SpanMember } from "../types/InternalModel.ts";
 import { NumericalRange } from "../types/PublicModel.ts";
-import { Cell, SpanMember } from "../types/PublicModel.ts";
+import { Cell } from "../types/PublicModel.ts";
 import { ReactGridStore } from "../types/ReactGridStore.ts";
 import { getCellArea } from "./getCellArea.ts";
 

@@ -41,8 +41,6 @@ export const TextCell: FC<TextCellProps> = ({ text: initialText, onTextChanged }
           e.stopPropagation();
           setCurrentValue(initialText || "");
           setEditMode(true);
-        } else if (!isEditMode && e.key === "Backspace") {
-          onTextChanged?.("");
         }
       }}
     >

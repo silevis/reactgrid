@@ -1,28 +1,15 @@
 ---
 posttype: "docs"
-title: Column resizing
-metaTitle: "Column resizing"
+title: Styling
+metaTitle: "Styling"
 metaDescription: "ReactGrid docs"
 ---
 
-## Column Resizing
+#### Styling ReactGrid
 
-To enable column resizing, simply define your [columns](/docs/5.0/6-api/1-types/2-column) within the your component and set the `onResizeColumn` prop on the ReactGrid component.
+In version 5, ReactGrid introduces the `RGTheme` interface, allowing you to apply a theme directly to the grid. You can also customize styles by passing them through individual cell properties or using standard CSS, offering flexibility in how your grid looks and feels.
 
-```tsx
-/**
-  * Callback function that is triggered when a column is resized.
-  * 
-  * @param width - The new width of the column.
-  * @param columnIdx - An array of column indexes that were resized. There may be more than one index in the case of spanned headers.
-  * @returns void
-*/
-onResizeColumn?: (width: number, columnIdx: number[]) => void;
-```
-
----
-
-### Live Demo
+#### Live example
 
 import LiveCode from "@/nextra/components/LiveCode.tsx";
 import React, { useState } from "react";
@@ -31,19 +18,17 @@ import {
   NumberCell,
   TextCell,
   NonEditableCell,
-  Row,
   Cell,
 } from "@silevis/reactgrid";
 
 <LiveCode
 scope={{
-  useState,
   ReactGrid,
   NumberCell,
   TextCell,
   NonEditableCell,
-  Row,
   Cell,
+  useState
 }}
 code={`
 const peopleArr = [
@@ -89,40 +74,16 @@ const peopleArr = [
   },
 ];
 
-interface ColumnDef {
-  title: string;
-  width: number;
-  cellTemplate: React.ComponentType<any>;
-}
-
-const handleResizeColumn = (
-  newWidth: number,
-  columnIndexes: number[],
-  setColumns: Dispatch<SetStateAction<ColumnDef[]>>
-) => {
-  setColumns((prevColumns) => {
-    const widthPerColumn = columnIndexes.length > 1 ? newWidth / columnIndexes.length : newWidth;
-
-    return prevColumns.map((column, idx) => {
-      if (columnIndexes.includes(idx)) {
-        return { ...column, width: widthPerColumn };
-      }
-
-      return column;
-    });
-  });
-};
-
-
-const ColumnResizeExample = () => {
+const ReactGridExample = () => {
   const [people, setPeople] = useState(peopleArr);
 
-  const [columnDefs, setColumnDefs] = useState<ColumnDef[]>(
-    Object.keys(peopleArr[0]).reduce((acc: ColumnDef[], peopleKey: string, idx: number) => {
+  const columnDefs: ColumnDef[] = Object.keys(peopleArr[0]).reduce(
+    (acc: ColumnDef[], peopleKey: string, idx: number) => {
       if (["_id", "position"].includes(peopleKey)) return acc;
       const cellTemplate = peopleKey === "age" ? NumberCell : TextCell;
-      return [...acc, { title: peopleKey, width: 100 * idx, cellTemplate }];
-    }, [])
+      return [...acc, { title: peopleKey, width: 250, cellTemplate }];
+    },
+    []
   );
 
   const updatePerson = (id, key, newValue) => {
@@ -131,7 +92,7 @@ const ColumnResizeExample = () => {
     });
   };
 
-  const gridRows: Row[] = Array.from({ length: people.length + 1 }, (_, i) => ({
+  const gridRows = Array.from({ length: people.length + 1 }, (_, i) => ({
     rowIndex: i,
     height: 40,
   }));
@@ -146,6 +107,7 @@ const ColumnResizeExample = () => {
   gridRows.forEach((row, rowIndex) => {
     const personRowIndex = row.rowIndex;
 
+    // header cells
     if (rowIndex === 0) {
       columnDefs.forEach((col, colIndex) => {
         cells.push({
@@ -197,16 +159,41 @@ const ColumnResizeExample = () => {
     }
   });
 
-  return (
-      <ReactGrid
-        onResizeColumn={(width, columnIdx) => handleResizeColumn(width, columnIdx, setColumnDefs)}
-        rows={gridRows}
-        columns={gridColumns}
-        cells={cells}
-      />
-  );
+  return <ReactGrid rows={gridRows} columns={gridColumns} cells={cells} styles={rgStyles} />;
 };
 
-render(<ColumnResizeExample />, document.getElementById("root"));
+const rgStyles = {
+  focusIndicator: {
+    border: {
+      color: "#32a852",
+      width: "2px",
+      style: "solid",
+    },
+  },
+  selectionIndicator: {
+    background: "rgba(144, 238, 144, 0.1)",
+    border: {
+      color: "#81df9b",
+      style: "solid",
+    },
+  },
+  fillHandle: {
+    background: "transparent",
+    border: {
+      color: "#32a852",
+      style: "dashed",
+    },
+  },
+  line: {
+    backgroundColor: "#81df9b",
+  },
+  gridWrapper: {
+    fontSize: 16,
+    fontFamily: "Roboto, sans-serif",
+  },
+};
+
+
+render(<ReactGridExample />, document.getElementById("root"));
 `}
 />

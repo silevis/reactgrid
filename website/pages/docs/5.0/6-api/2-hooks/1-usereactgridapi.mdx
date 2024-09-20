@@ -1,0 +1,64 @@
+---
+posttype: "docs"
+title: useReactGridAPI
+metaTitle: "useReactGridAPI hook"
+metaDescription: "ReactGrid docs"
+---
+
+## Introduction
+
+The `useReactGridAPI` hook provides a set of methods to interact with the ReactGrid component. It allows you to set and get various states of the grid, such as the selected area, focused cell, and selected rows or columns. This hook is essential for managing the grid's state programmatically.
+
+#### Definition
+
+```ts
+function useReactGridAPI(id: string): ReactGridAPI | undefined {
+  return useReactGridStoreApi(id, (store: ReactGridStore) => {
+    return {
+      // Setters
+      setSelectedArea: (range: NumericalRange) => {
+        return store.setSelectedArea(range);
+      },
+      setFocusedCell: ({ rowIndex, colIndex }: IndexedLocation) => {
+        const cell = store.getCellByIndexes(rowIndex, colIndex);
+
+        if (devEnvironment && !cell) {
+          console.warn(`Cell with rowIdx "${rowIndex}" and colIdx "${colIndex}" does not exist.`);
+        }
+
+        return store.setFocusedLocation(rowIndex, colIndex);
+      },
+      setSelectedColumns: (startColIdx: number, endColIdx: number) => {
+        return store.setSelectedColumns(startColIdx, endColIdx);
+      },
+      setSelectedRows: (startRowIdx: number, endRowIdx: number) => {
+        return store.setSelectedRows(startRowIdx, endRowIdx);
+      },
+
+      // Getters
+      getFocusedCell: store.getFocusedCell,
+      getCellByIndexes: store.getCellByIndexes,
+      getCellOrSpanMemberByIndexes: store.getCellOrSpanMemberByIndexes,
+      getPaneRanges: store.getPaneRanges,
+      getCellsLookup: store.getCellsLookup,
+      getSelectedArea: store.getSelectedArea,
+    };
+  });
+}
+
+```
+
+#### API Methods
+
+| Name                       | Type                                                                                          | Description                                                                                             |
+|----------------------------|-----------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------|
+| `setSelectedArea`          | `(range: NumericalRange) => void`                                                              | Set the selected area in the ReactGrid.                                                                 |
+| `setFocusedCell`           | `({ rowIndex, colIndex }: IndexedLocation) => void`                                            | Set the focused cell in the ReactGrid.                                                                   |
+| `setSelectedColumns`       | `(startColIdx: number, endColIdx: number) => void`                                             | Set the selected columns in the ReactGrid.                                                               |
+| `setSelectedRows`          | `(startRowIdx: number, endRowIdx: number) => void`                                            | Set the selected rows in the ReactGrid.                                                                  |
+| `getFocusedCell`           | `() => IndexedLocation \| undefined`                                                            | Get the currently focused cell in the ReactGrid.                                                         |
+| `getCellByIndexes`         | `(rowIndex: number, colIndex: number) => Cell \| undefined`                                    | Get the cell at the specified indexes in the ReactGrid.                                                   |
+| `getCellOrSpanMemberByIndexes` | `(rowIndex: number, colIndex: number) => Cell \| SpanMember \| undefined`                      | Get the cell or span member at the specified indexes in the ReactGrid.                                  |
+| `getPaneRanges`            | `() => PaneRange[]`                                                                          | Get the pane ranges in the ReactGrid.                                                                    |
+| `getCellsLookup`           | `() => CellsLookup`                                                                         | Get the cells lookup in the ReactGrid.                                                                   |
+| `getSelectedArea`          | `() => NumericalRange \| undefined`                                                             | Get the selected area in the ReactGrid.                                                                  |

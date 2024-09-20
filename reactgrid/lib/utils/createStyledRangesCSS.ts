@@ -1,5 +1,4 @@
-import { InternalStyledRange } from "../types/InternalModel";
-import { StyledRangesCSS } from "../types/PublicModel";
+import { InternalStyledRange, StyledRangesCSS } from "../types/InternalModel";
 
 export function createStyledRangesCSS(styledRanges: InternalStyledRange[]): StyledRangesCSS {
   const selectorsWithStyles = styledRanges.map((styledRange) => {

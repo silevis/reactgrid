@@ -1,5 +1,6 @@
+import { CellMap } from "./InternalModel";
 import { CellsLookup } from "./PublicModel";
-import { CellMap, Column, Row } from "./PublicModel";
+import { Column, Row } from "./PublicModel";
 
 export type CellMatrix = {
   rows: Row[];

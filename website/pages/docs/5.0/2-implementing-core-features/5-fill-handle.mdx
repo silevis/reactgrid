@@ -9,215 +9,214 @@ metaDescription: "ReactGrid docs"
 
 Fill handle can be enabled be setting `onFillHandle` prop of the ReactGrid component.
 
-You can copy/paste the following function to your project. If you want to implement a custom fill handle logic, you can modify the function as needed.
-
-```tsx
-const handleFill = <T extends CellData | null>(
-  selectedArea: NumericalRange,
-  fillRange: NumericalRange,
-  setData: React.Dispatch<React.SetStateAction<T[][]>>
-) => {
-  setData((prev) => {
-    const next = [...prev];
-    // Check if the fill handle is being dragged upwards
-    const isFillingUpwards = fillRange.startRowIdx < selectedArea.startRowIdx;
-    // Calculate the number of rows and columns in the selected area
-    const relativeRowSize = selectedArea.endRowIdx - selectedArea.startRowIdx;
-    const relativeColSize = selectedArea.endColIdx - selectedArea.startColIdx;
-
-    // Iterate over the rows and columns in the fill range
-    for (let i = fillRange.startRowIdx; i < fillRange.endRowIdx; i++) {
-      for (let j = fillRange.startColIdx; j < fillRange.endColIdx; j++) {
-        // Skip null cells.
-        if (next[i][j] === null) continue;
-
-        const currentCellData = next[i][j] as T;
-
-        // Skip cells of type 'header'
-        if (i === 0) continue;
-
-        // Calculate the relative row and column indices within the selected area
-        const relativeRowIdx = isFillingUpwards
-          ? (selectedArea.endRowIdx - i - 1) % relativeRowSize
-          : (i - fillRange.startRowIdx) % relativeRowSize;
-        const relativeColIdx = (j - fillRange.startColIdx) % relativeColSize;
-
-        // Get the value from the cell in the selected area that corresponds to the relative row and column indices
-        const newValue = prev[selectedArea.startRowIdx + relativeRowIdx][selectedArea.startColIdx + relativeColIdx];
-
-        // Set the value of the cell in the fill range to the value from the selected area
-        next[i][j] = {
-          ...currentCellData,
-          value: newValue ? newValue.value : "",
-        };
-      }
-    }
-    return next;
-  });
-};
+```ts
+onFillHandle?: (selectedArea: NumericalRange, fillRange: NumericalRange, cellsLookup: CellsLookup) => void;
 ```
+
+#### Parameters
+
+Name         | Type                                      | Description |
+-------------|-------------------------------------------|-------------|
+`selectedArea`      | `NumericalRange`    | The range of cells that were initially selected. |
+`fillRange` | `NumericalRange`                          | The range of cells that the fill handle is dragged over. |
+`cellsLookup`| `CellsLookup`                             | A map object that provides callbacks to get and set cell values. Each key is a string combining row and column indices, and the value is an object with `rowIndex`, `colIndex`, `onStringValueRequested` (callback to get the cell value), and `onStringValueReceived` (callback to set the cell value). |
+
+---
 
 ### Live Demo
 
 import LiveCode from "@/nextra/components/LiveCode.tsx";
-
+import React, { useState } from "react";
 import {
   ReactGrid,
+  NumberCell,
   TextCell,
-  HeaderCell,
-  cellMatrixBuilder,
+  NonEditableCell,
+  Row,
+  Cell,
 } from "@silevis/reactgrid";
-import {  useState } from "react";
+
 
 <LiveCode
-scope={{
-  useState,
-  ReactGrid,
-  cellMatrixBuilder,
-  TextCell, 
-  HeaderCell
-}}
-code={`
-const handleFill = <T extends CellData | null>(
-  selectedArea: NumericalRange,
-  fillRange: NumericalRange,
-  setData: React.Dispatch<React.SetStateAction<T[][]>>
-) => {
-  setData((prev) => {
-    const next = [...prev];
-    // Check if the fill handle is being dragged upwards
-    const isFillingUpwards = fillRange.startRowIdx < selectedArea.startRowIdx;
-    // Calculate the number of rows and columns in the selected area
-    const relativeRowSize = selectedArea.endRowIdx - selectedArea.startRowIdx;
-    const relativeColSize = selectedArea.endColIdx - selectedArea.startColIdx;
+  scope={{
+    useState,
+    ReactGrid,
+    NumberCell,
+    TextCell,
+    NonEditableCell,
+    Row,
+    Cell,
+  }}
+  code={`
+    const peopleArr = [
+      {
+        _id: "66d61077035753f369ddbb16",
+        name: "Jordan Rodriquez",
+        age: 30,
+        email: "jordanrodriquez@cincyr.com",
+        company: "Zaggles",
+        position: 1,
+      },
+      {
+        _id: "66d61077794e7949ab167fd5",
+        email: "allysonrios@satiance.com",
+        name: "Allyson Rios",
+        age: 30,
+        company: "Zoxy",
+        position: 2,
+      },
+      {
+        _id: "66d61077dd754e88981ae434",
+        name: "Pickett Lucas",
+        age: 25,
+        email: "pickettlucas@zoxy.com",
+        company: "Techade",
+        position: 3,
+      },
+      {
+        _id: "66d61077115e2f8748c334d9",
+        name: "Louella David",
+        age: 37,
+        email: "louelladavid@techade.com",
+        company: "Ginkogene",
+        position: 4,
+      },
+      {
+        _id: "66d61077540d53374b427e4b",
+        name: "Tricia Greene",
+        age: 27,
+        email: "triciagreene@ginkogene.com",
+        company: "Naxdis",
+        position: 5,
+      },
+    ];
 
-    // Iterate over the rows and columns in the fill range
-    for (let i = fillRange.startRowIdx; i < fillRange.endRowIdx; i++) {
-      for (let j = fillRange.startColIdx; j < fillRange.endColIdx; j++) {
-        // Skip null cells.
-        if (next[i][j] === null) continue;
-
-        const currentCellData = next[i][j] as T;
-
-        // Skip cells of type 'header'
-        if (i === 0) continue;
-
-        // Calculate the relative row and column indices within the selected area
-        const relativeRowIdx = isFillingUpwards
-          ? (selectedArea.endRowIdx - i - 1) % relativeRowSize
-          : (i - fillRange.startRowIdx) % relativeRowSize;
-        const relativeColIdx = (j - fillRange.startColIdx) % relativeColSize;
-
-        // Get the value from the cell in the selected area that corresponds to the relative row and column indices
-        const newValue = prev[selectedArea.startRowIdx + relativeRowIdx][selectedArea.startColIdx + relativeColIdx];
-
-        // Set the value of the cell in the fill range to the value from the selected area
-        next[i][j] = {
-          ...currentCellData,
-          value: newValue ? newValue.value : "",
-        };
-      }
+    interface ColumnDef {
+      title: string;
+      width: number;
+      cellTemplate: React.ComponentType<any>;
     }
-    return next;
-  });
-};
 
+    const handleFill = (selectedArea, fillRange, cellsLookup) => {
+      const isFillingUpwards = fillRange.startRowIdx < selectedArea.startRowIdx;
+      const relativeRowSize = selectedArea.endRowIdx - selectedArea.startRowIdx;
+      const relativeColSize = selectedArea.endColIdx - selectedArea.startColIdx;
 
-interface CellData {
-  value: string;
-  template: React.ComponentType<any>;
-  style?: React.CSSProperties;
-}
+      for (let i = fillRange.startRowIdx; i < fillRange.endRowIdx; i++) {
+        for (let j = fillRange.startColIdx; j < fillRange.endColIdx; j++) {
+          const currentCellCallbacks = cellsLookup.get(\`\${i} \${j}\`);
 
-const initialColumns: Column[] = [
-  { width: 180, resizable: true, minWidth: 80 },
-  { width: 180, resizable: true, minWidth: 80 },
-  { width: 180, resizable: true, minWidth: 80 },
-  { width: 180, resizable: true, minWidth: 80 },
-];
+          if (!currentCellCallbacks) continue;
+          if (i === 0) continue;
 
-const headerRow = ["Name", "Surname", "Email", "City"];
+          const relativeRowIdx = isFillingUpwards
+            ? (selectedArea.endRowIdx - i - 1) % relativeRowSize
+            : (i - fillRange.startRowIdx) % relativeRowSize;
+          const relativeColIdx = (j - fillRange.startColIdx) % relativeColSize;
 
-const initialRows: Row[] = Array.from({ length: 5 }, (_, idx) => {
-  if (idx === 0) return { height: "30px", reorderable: false };
-  return { height: "min-content", reorderable: true };
-});
+          const sourceCellCallbacks = cellsLookup.get(
+            \`\${selectedArea.startRowIdx + relativeRowIdx} \${selectedArea.startColIdx + relativeColIdx}\`
+          );
 
-const dataRows = [
-  ["Jake", "Smith", "j.smith@gmail.com", "New York"],
-  ["Emily", "Jones", "e.jones@hotmail.com", "Paris"],
-  ["Liam", "Brown", "l.brown@yahoo.com", "Tokyo"],
-  ["Sophia", "Taylor", "s.taylor@gmail.com", "Sydney"],
-];
-
-const initialGridData: CellData[][] = [headerRow, ...dataRows].map(
-  (row, rowIdx) =>
-    row.map((cellValue, index) => {
-      const isHeaderRow = rowIdx === 0;
-
-      if (isHeaderRow) {
-        return {
-          value: cellValue,
-          template: HeaderCell,
-          style: {
-            backgroundColor: "#55bc71",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            fontWeight: "bold",
-          },
-        };
+          if (sourceCellCallbacks) {
+            const newValue = sourceCellCallbacks.onStringValueRequsted();
+            currentCellCallbacks.onStringValueReceived(newValue);
+          }
+        }
       }
+    };
 
-      return {
-        value: cellValue,
-        template: TextCell,
-      };
-    })
-);
+    const FillHandleExample = () => {
+      const [people, setPeople] = useState(peopleArr);
 
-function App() {
-  const [columns, setColumns] = useState<Array<Column>>(initialColumns);
-  const [rows, setRows] = useState<Array<Row>>(initialRows);
-  const [gridData, setGridData] = useState<(CellData | null)[][]>(initialGridData);
+      const columnDefs = Object.keys(peopleArr[0]).reduce((acc, peopleKey, idx) => {
+        if (["_id", "position"].includes(peopleKey)) return acc;
+        const cellTemplate = peopleKey === "age" ? NumberCell : TextCell;
+        return [...acc, { title: peopleKey, width: 100 * idx, cellTemplate }];
+      }, []);
 
-  const cells = cellMatrixBuilder(({ setCell }) => {
-    gridData.forEach((row, rowIdx) => {
-      row.forEach((cell, colIdx) => {
-        if (cell === null) return;
-
-        setCell(rowIdx, colIdx, cell.template, {
-          value: cell.value,
-          style: cell.style,
-          onValueChanged: (data) => {
-            setGridData((prev) => {
-              const next = [...prev];
-              if (next[rowIdx][colIdx] !== null) {
-                next[rowIdx][colIdx].value = data;
-              }
-              return next;
-            });
-          },
+      const updatePerson = (id, key, newValue) => {
+        setPeople((prev) => {
+          return prev.map((p) => (p._id !== id ? p : { ...p, [key]: newValue }));
         });
+      };
+
+      const gridRows = Array.from({ length: people.length + 1 }, (_, i) => ({
+        rowIndex: i,
+        height: 40,
+      }));
+
+      const gridColumns = columnDefs.map((col, index) => ({
+        colIndex: index,
+        width: col.width,
+      }));
+
+      const cells = [];
+
+      gridRows.forEach((row, rowIndex) => {
+        const personRowIndex = row.rowIndex;
+
+        if (rowIndex === 0) {
+          columnDefs.forEach((col, colIndex) => {
+            cells.push({
+              rowIndex,
+              colIndex,
+              Template: NonEditableCell,
+              props: {
+                value: col.title,
+                style: {
+                  backgroundColor: "#55bc71",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  fontWeight: "bold",
+                },
+              },
+              isSelectable: false,
+            });
+          });
+        } else {
+          const personCells = columnDefs.map((col) => {
+            const numberCellProps = {
+              onValueChanged: (newValue) => {
+                updatePerson(people[personRowIndex - 1]._id, col.title, newValue);
+              },
+              value: people[personRowIndex - 1][col.title.toLowerCase()],
+            };
+
+            const textCellProps = {
+              text: people[personRowIndex - 1][col.title.toLowerCase()],
+              onTextChanged: (newText) => {
+                updatePerson(people[personRowIndex - 1]._id, col.title, newText);
+              },
+            };
+
+            return {
+              Template: col.cellTemplate,
+              props: col.title === "age" ? numberCellProps : textCellProps,
+            };
+          });
+
+          columnDefs.forEach((_, colIndex) => {
+            cells.push({
+              rowIndex,
+              colIndex,
+              ...personCells[colIndex],
+            });
+          });
+        }
       });
-    });
-  });
 
-  return (
-    <div>
-      <ReactGrid
-        id="example"
-        initialFocusLocation={{ rowIndex: 2, colIndex: 1 }}
-        onFillHandle={(selectedArea, fillRange) => 
-          handleFill(selectedArea, fillRange, setGridData)}
-        rows={rows}
-        columns={columns}
-        cells={cells}
-      />
-    </div>
-  );
-}
+      return (
+        <ReactGrid
+          onFillHandle={handleFill}
+          rows={gridRows}
+          columns={gridColumns}
+          cells={cells}
+        />
+      );
+    };
 
-render(<App />, document.getElementById("root"));
-`}
+    render(<FillHandleExample />, document.getElementById("root"));
+  `}
 />

@@ -1,8 +1,10 @@
-import { FocusedCell, IndexedLocation, PaneName } from "../types/InternalModel.ts";
-import { Cell, CellsLookup, NumericalRange, SpanMember } from "../types/PublicModel.ts";
+import { FocusedCell, IndexedLocation, PaneName, SpanMember } from "../types/InternalModel.ts";
+import { Cell, CellsLookup, NumericalRange } from "../types/PublicModel.ts";
 import isDevEnvironment from "../utils/isDevEnvironment.ts";
 import { ReactGridStore } from "../types/ReactGridStore.ts";
 import { useReactGridStoreApi } from "../utils/reactGridStore.ts";
+
+const devEnvironment = isDevEnvironment();
 
 /**
  * Interface for the ReactGrid API.
@@ -25,9 +27,6 @@ export interface ReactGridAPI {
  * @param id - The ID of the ReactGrid instance.
  * @returns An object containing setters and getters for interacting with the ReactGrid.
  */
-
-const devEnvironment = isDevEnvironment();
-
 export function useReactGridAPI(id: string): ReactGridAPI | undefined {
   return useReactGridStoreApi(id, (store: ReactGridStore) => {
     return {
