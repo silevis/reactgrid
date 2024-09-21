@@ -44,6 +44,15 @@ body {
   outline-offset: 2px;
 }
 
+.chevron-icon {
+  cursor: pointer;
+  transition: transform 0.3s ease;
+}
+
+.chevron-icon.expanded {
+  transform: rotate(180deg);
+}
+
 @media (min-width: 780px) {
   .flex-none {
     display: none;
