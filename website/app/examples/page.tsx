@@ -13,7 +13,12 @@ import {
   TextCell,
 } from "@silevis/reactgrid";
 import { useState } from "react";
-import { BudgetData, budgetsData, generateEntityData } from "./utils/BP";
+import {
+  BudgetData,
+  budgetsData,
+  generateEntityData,
+  MonthlyData,
+} from "./utils/BP";
 import { ChevronCell } from "./cellTemplates/ChevronCell";
 
 const capabilities = [
@@ -77,6 +82,11 @@ interface ColumnDef {
   width: number;
 }
 
+const numberFormat = new Intl.NumberFormat("en-US", {
+  minimumFractionDigits: 2,
+  maximumFractionDigits: 2,
+});
+
 export default function ExamplesPage() {
   const [BPData, setBPData] = useState(
     budgetsData.reduce<BudgetData[]>((acc, curr) => {
@@ -105,7 +115,7 @@ export default function ExamplesPage() {
 
   const [columnDefs] = useState<ColumnDef[]>(() => {
     const budgetObj = Object.keys(BPData[0]).filter(
-      (el) => el !== "id" && el !== "position" && el !== "name"
+      (el) => !["id", "position", "name", "isExpandable"].includes(el)
     );
 
     const getQuarter = (month: string) => {
@@ -127,7 +137,6 @@ export default function ExamplesPage() {
       );
       let lastQuarter = "";
 
-      // Add the year as the first element
       acc.push(curr);
 
       months.forEach((month) => {
@@ -138,10 +147,10 @@ export default function ExamplesPage() {
           }
           lastQuarter = currentQuarter || ""; // Update the lastQuarter tracker
         }
-        acc.push(month); // Add the month itself
+        acc.push(month);
       });
 
-      return acc; // Append the processed data
+      return acc;
     }, []);
 
     return ["Organization / Period", ...columnTitles].map((col, index) => {
@@ -212,27 +221,35 @@ export default function ExamplesPage() {
             },
           },
           isSelectable: false,
+          isFocusable: false,
         });
       });
     } else {
-      const tableCells = columnDefs.map((col) => {
-        const month = col.title;
+      const gridCells = columnDefs.map((col) => {
+        const colTitle = col.title;
         let year = null;
 
-        // Determine the year for the current month
-        if (/\d{2}/.test(month)) {
-          // Check if the title is a month (e.g., "01")
-          // Find the last year title before this month
-          for (let i = col.colIndex - 1; i >= 0; i--) {
-            if (/^\d{4}$/.test(columnDefs[i].title)) {
-              // Check if it's a year (e.g., "2023")
-              year = columnDefs[i].title;
-              break;
-            }
+        // Determine if the title is a year, quarter, or month
+        const isYear = /^\d{4}$/.test(colTitle);
+        const isQuarter = /^Q[1-4]$/.test(colTitle);
+        const isMonth = /^\d{2}$/.test(colTitle);
+
+        // Find the last year title before this month
+        for (let i = col.colIndex - 1; i >= 0; i--) {
+          const prevTitle = columnDefs[i].title;
+          const prevIsYear = /^\d{4}$/.test(prevTitle);
+          const prevIsQuarter = /^Q[1-4]$/.test(prevTitle);
+
+          if (isYear) {
+            year = colTitle;
+            break;
+          } else if (prevIsYear) {
+            year = prevTitle;
+            break;
+          } else if (prevIsQuarter) {
+            continue;
           }
         }
-
-        console.log({ year, month });
 
         if (row.rowIndex > 0 && col.colIndex === 0) {
           return {
@@ -251,11 +268,117 @@ export default function ExamplesPage() {
                 });
               },
               style: {
-                WebkitBoxShadow:
-                  "inset -9px 0px 20px -20px rgba(66, 68, 90, 1)",
-                MozBoxShadow: "inset -9px 0px 20px -20px rgba(66, 68, 90, 1)",
                 boxShadow: "inset -9px 0px 20px -20px rgba(66, 68, 90, 1)",
               },
+            },
+            isSelectable: false,
+          };
+        }
+
+        if (isQuarter) {
+          const quarterColIdx = columnDefs.findIndex(
+            (c) => c.title === colTitle
+          );
+
+          const yearData = BPData[row.rowIndex - 1][
+            year as keyof BudgetData
+          ] as MonthlyData;
+
+          const quarterValue =
+            (yearData[
+              columnDefs[quarterColIdx + 1].title as keyof MonthlyData
+            ] || 0) +
+            (yearData[
+              columnDefs[quarterColIdx + 2].title as keyof MonthlyData
+            ] || 0) +
+            (yearData[
+              columnDefs[quarterColIdx + 3].title as keyof MonthlyData
+            ] || 0);
+
+          return {
+            rowIndex: row.rowIndex,
+            colIndex: col.colIndex,
+            Template: row.isExpandable ? NonEditableCell : NumberCell,
+            props: {
+              value: quarterValue,
+              style: {
+                backgroundColor:
+                  isYear || row.isExpandable ? "#e1e1e1" : "#fff",
+              },
+              onValueChanged: (newValue: number) => {
+                const dividedValue = newValue / 3;
+                setBPData((prev) => {
+                  const updatedData = [...prev];
+                  const yearData = updatedData[row.rowIndex - 1][
+                    year as keyof BudgetData
+                  ] as MonthlyData;
+                  yearData[
+                    columnDefs[quarterColIdx + 1].title as keyof MonthlyData
+                  ] = dividedValue;
+                  yearData[
+                    columnDefs[quarterColIdx + 2].title as keyof MonthlyData
+                  ] = dividedValue;
+                  yearData[
+                    columnDefs[quarterColIdx + 3].title as keyof MonthlyData
+                  ] = dividedValue;
+                  return updatedData;
+                });
+              },
+              format: numberFormat,
+            },
+          };
+        }
+
+        if (isYear) {
+          const yearData = BPData[row.rowIndex - 1][
+            year as keyof BudgetData
+          ] as MonthlyData;
+
+          return {
+            rowIndex: row.rowIndex,
+            colIndex: col.colIndex,
+            Template: NonEditableCell,
+            props: {
+              value: numberFormat.format(
+                Object.values(yearData).reduce((acc, curr) => acc + curr, 0)
+              ),
+              style: {
+                backgroundColor:
+                  isYear || row.isExpandable ? "#e1e1e1" : "#fff",
+              },
+            },
+          };
+        }
+
+        if (isMonth) {
+          const yearData = BPData[row.rowIndex - 1][
+            year as keyof BudgetData
+          ] as MonthlyData;
+
+          const monthValue = yearData[colTitle as keyof MonthlyData];
+
+          return {
+            rowIndex: row.rowIndex,
+            colIndex: col.colIndex,
+            Template: isYear || row.isExpandable ? NonEditableCell : NumberCell,
+            props: {
+              value: monthValue,
+              style: {
+                backgroundColor:
+                  isYear || row.isExpandable ? "#e1e1e1" : "#fff",
+              },
+              onValueChanged: (newValue: number) => {
+                setBPData((prev) => {
+                  const updatedData = [...prev];
+                  (
+                    updatedData[row.rowIndex - 1][
+                      year as keyof BudgetData
+                    ] as MonthlyData
+                  )[colTitle as keyof MonthlyData] = newValue;
+                  return updatedData;
+                });
+              },
+              format: numberFormat,
             },
           };
         }
@@ -263,17 +386,18 @@ export default function ExamplesPage() {
         return {
           rowIndex: row.rowIndex,
           colIndex: col.colIndex,
-          Template: NumberCell,
+          Template: isYear || row.isExpandable ? NonEditableCell : NumberCell,
           props: {
             value: 0,
             style: {
-              backgroundColor: row.isExpandable ? "#e2e2e2" : "#fff",
+              backgroundColor: isYear || row.isExpandable ? "#e1e1e1" : "#fff",
             },
+            format: numberFormat,
           },
         };
       });
 
-      cells.push(...tableCells);
+      cells.push(...gridCells);
     }
   });
 
@@ -312,13 +436,14 @@ export default function ExamplesPage() {
               cells={cells}
               rows={gridRows}
               stickyLeftColumns={1}
+              enableRowSelectionOnFirstColumn
               columns={gridColumns}
               styles={{
                 gridWrapper: {
                   fontSize: "16px",
                   color: "#000",
-                  fontWeight: "normal",
-                  fontFamily: "Arial",
+                  fontWeight: "light",
+                  fontFamily: "Poppins",
                 },
                 paneContainer: {
                   left: {

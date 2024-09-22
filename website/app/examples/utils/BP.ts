@@ -1,45 +1,25 @@
-import {
-  Cell,
-  Column,
-  NonEditableCell,
-  NumberCell,
-  Row,
-  TextCell,
-} from "@silevis/reactgrid";
+export interface MonthlyData {
+  "01": number | null;
+  "02": number | null;
+  "03": number | null;
+  "04": number | null;
+  "05": number | null;
+  "06": number | null;
+  "07": number | null;
+  "08": number | null;
+  "09": number | null;
+  "10": number | null;
+  "11": number | null;
+  "12": number | null;
+}
 
 export interface BudgetData {
   id: number;
   isExpandable: boolean;
   position: number;
   name: string;
-  "2023": {
-    "01": number | null;
-    "02": number | null;
-    "03": number | null;
-    "04": number | null;
-    "05": number | null;
-    "06": number | null;
-    "07": number | null;
-    "08": number | null;
-    "09": number | null;
-    "10": number | null;
-    "11": number | null;
-    "12": number | null;
-  };
-  "2024": {
-    "01": number | null;
-    "02": number | null;
-    "03": number | null;
-    "04": number | null;
-    "05": number | null;
-    "06": number | null;
-    "07": number | null;
-    "08": number | null;
-    "09": number | null;
-    "10": number | null;
-    "11": number | null;
-    "12": number | null;
-  };
+  "2023": { [key in keyof MonthlyData]: number | null };
+  "2024": { [key in keyof MonthlyData]: number | null };
 }
 
 const getRandomValue = (min: number, max: number) =>
@@ -99,41 +79,3 @@ export const budgetsData: BudgetData[] = [
   generateEntityData(14, "Vehicle"),
   generateEntityData(15, "Computer"),
 ];
-
-// export const headers = [
-//   "Organization / Period",
-//   "2023",
-//   "Q1",
-//   "01",
-//   "02",
-//   "03",
-//   "Q2",
-//   "04",
-//   "05",
-//   "06",
-//   "Q3",
-//   "07",
-//   "08",
-//   "09",
-//   "Q4",
-//   "10",
-//   "11",
-//   "12",
-//   "2024",
-//   "Q1",
-//   "01",
-//   "02",
-//   "03",
-//   "Q2",
-//   "04",
-//   "05",
-//   "06",
-//   "Q3",
-//   "07",
-//   "08",
-//   "09",
-//   "Q4",
-//   "10",
-//   "11",
-//   "12",
-// ];
