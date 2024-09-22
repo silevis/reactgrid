@@ -9,6 +9,7 @@ import {
 
 export interface BudgetData {
   id: number;
+  isExpandable: boolean;
   position: number;
   name: string;
   "2023": {
@@ -83,6 +84,7 @@ export const generateEntityData = (
   id,
   position: id,
   name,
+  isExpandable: empty,
   ...generateYearData(5000, 15000, empty),
 });
 

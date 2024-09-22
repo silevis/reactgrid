@@ -67,14 +67,14 @@ const coreFeatures = [
 export interface RowDef {
   rowIndex: number;
   height: number;
+  isExpandable: boolean;
   reorderable?: boolean;
 }
 
 interface ColumnDef {
-  id: number;
+  colIndex: number;
   title: string;
   width: number;
-  cellTemplate: React.ComponentType<any>;
 }
 
 export default function ExamplesPage() {
@@ -108,17 +108,43 @@ export default function ExamplesPage() {
       (el) => el !== "id" && el !== "position" && el !== "name"
     );
 
-    const columnTitles = budgetObj.reduce((acc, curr) => {
-      const data = BPData[0][curr]
-        ? [curr, ...Object.keys(BPData[0][curr])]
-        : curr;
+    const getQuarter = (month: string) => {
+      if (["01", "02", "03"].includes(month)) return "Q1";
+      if (["04", "05", "06"].includes(month)) return "Q2";
+      if (["07", "08", "09"].includes(month)) return "Q3";
+      if (["10", "11", "12"].includes(month)) return "Q4";
+    };
 
-      return [...acc, ...data];
+    const sortMonths = (months: string[]) => {
+      // Sort months in chronological order
+      return months.sort((a, b) => parseInt(a) - parseInt(b));
+    };
+
+    // Reduce the budget data to create the desired column structure
+    const columnTitles = budgetObj.reduce<string[]>((acc, curr) => {
+      const months = sortMonths(
+        Object.keys(BPData[0][curr as keyof BudgetData])
+      );
+      let lastQuarter = "";
+
+      // Add the year as the first element
+      acc.push(curr);
+
+      months.forEach((month) => {
+        const currentQuarter = getQuarter(month);
+        if (currentQuarter !== lastQuarter) {
+          if (currentQuarter) {
+            acc.push(currentQuarter); // Add the quarter label
+          }
+          lastQuarter = currentQuarter || ""; // Update the lastQuarter tracker
+        }
+        acc.push(month); // Add the month itself
+      });
+
+      return acc; // Append the processed data
     }, []);
 
-    console.log(columnTitles);
-
-    return columnTitles.map((col, index) => {
+    return ["Organization / Period", ...columnTitles].map((col, index) => {
       return {
         width: 220,
         colIndex: index,
@@ -129,12 +155,12 @@ export default function ExamplesPage() {
 
   const rowsWithAssignedHeights = BPData.map((budget, i) => ({
     id: budget.id,
-    height: 40,
+    height: 45,
+    isExpandable: budget.isExpandable,
     position: budget.position,
   }));
 
-  const headerRow = [{ id: 0, position: 0, height: 40 }];
-
+  const headerRow = [{ id: 0, position: 0, height: 40, isExpandable: false }];
   const orderedRows: RowDef[] = [...headerRow, ...rowsWithAssignedHeights]
     .sort((a, b) => a.position - b.position)
     .map((row) => {
@@ -145,12 +171,17 @@ export default function ExamplesPage() {
         return {
           id: row.id,
           rowIndex: adjustedIdx,
+          isExpandable: false,
           height: row.height,
           reorderable: false,
         };
       }
 
-      return { rowIndex: adjustedIdx, height: row.height };
+      return {
+        rowIndex: adjustedIdx,
+        height: row.height,
+        isExpandable: row.isExpandable,
+      };
     });
 
   const gridColumns = columnDefs.map((col, index) => ({
@@ -163,13 +194,11 @@ export default function ExamplesPage() {
   console.log("orderedRows", orderedRows);
   console.log("columnDefs", columnDefs);
 
-  orderedRows.forEach((row, rowIndex) => {
-    const budgetRowIndex = row.rowIndex;
-
-    if (rowIndex === 0) {
+  orderedRows.forEach((row) => {
+    if (row.rowIndex === 0) {
       columnDefs.forEach((col, colIndex) => {
         cells.push({
-          rowIndex,
+          rowIndex: row.rowIndex,
           colIndex,
           Template: NonEditableCell,
           props: {
@@ -186,46 +215,65 @@ export default function ExamplesPage() {
         });
       });
     } else {
-      const budgetCells = columnDefs.map((col) => {
-        // console.log("col", col);
+      const tableCells = columnDefs.map((col) => {
+        const month = col.title;
+        let year = null;
 
-        const [year, month] = col.title.split("-");
+        // Determine the year for the current month
+        if (/\d{2}/.test(month)) {
+          // Check if the title is a month (e.g., "01")
+          // Find the last year title before this month
+          for (let i = col.colIndex - 1; i >= 0; i--) {
+            if (/^\d{4}$/.test(columnDefs[i].title)) {
+              // Check if it's a year (e.g., "2023")
+              year = columnDefs[i].title;
+              break;
+            }
+          }
+        }
 
-        // console.log("BPData[budgetRowIndex - 1]", BPData[budgetRowIndex - 1]);
+        console.log({ year, month });
 
-        const nameCellProps = {
-          text: BPData[budgetRowIndex - 1].name,
-          onTextChanged: (newText: string) => {
-            setBPData((prevData) => {
-              const newData = [...prevData];
-              newData[rowIndex - 1].name = newText;
-              return newData;
-            });
-          },
-        };
-
-        const numberCellProps = {
-          onValueChanged: (newValue: number) => {
-            setBPData((prevData) => {
-              const newData = [...prevData];
-              if (month) {
-                newData[rowIndex - 1][year][month] = newValue;
-              }
-              return newData;
-            });
-          },
-          value: 0,
-        };
+        if (row.rowIndex > 0 && col.colIndex === 0) {
+          return {
+            rowIndex: row.rowIndex,
+            colIndex: col.colIndex,
+            Template: BPData[row.rowIndex - 1].isExpandable
+              ? ChevronCell
+              : TextCell,
+            props: {
+              text: BPData[row.rowIndex - 1].name,
+              onTextChanged: (v: string) => {
+                setBPData((prev) => {
+                  const updatedData = [...prev];
+                  updatedData[row.rowIndex - 1].name = v;
+                  return updatedData;
+                });
+              },
+              style: {
+                WebkitBoxShadow:
+                  "inset -9px 0px 20px -20px rgba(66, 68, 90, 1)",
+                MozBoxShadow: "inset -9px 0px 20px -20px rgba(66, 68, 90, 1)",
+                boxShadow: "inset -9px 0px 20px -20px rgba(66, 68, 90, 1)",
+              },
+            },
+          };
+        }
 
         return {
-          rowIndex,
-          colIndex: columnDefs.findIndex((c) => c.title === col.title),
-          Template: col.cellTemplate,
-          props: col.title === "name" ? nameCellProps : numberCellProps,
+          rowIndex: row.rowIndex,
+          colIndex: col.colIndex,
+          Template: NumberCell,
+          props: {
+            value: 0,
+            style: {
+              backgroundColor: row.isExpandable ? "#e2e2e2" : "#fff",
+            },
+          },
         };
       });
 
-      cells.push(...budgetCells);
+      cells.push(...tableCells);
     }
   });
 
@@ -241,7 +289,7 @@ export default function ExamplesPage() {
     return { rowIndex: index, height: rowDef.height };
   });
 
-  // console.log(cells);
+  console.log(JSON.stringify(cells));
 
   return (
     <section>
@@ -260,9 +308,10 @@ export default function ExamplesPage() {
             <Image src={logo} alt="ReactGrid" />
           </div>
           <div className="flex" style={{ width: "100%", overflow: "auto" }}>
-            {/* <ReactGrid
+            <ReactGrid
               cells={cells}
               rows={gridRows}
+              stickyLeftColumns={1}
               columns={gridColumns}
               styles={{
                 gridWrapper: {
@@ -271,8 +320,13 @@ export default function ExamplesPage() {
                   fontWeight: "normal",
                   fontFamily: "Arial",
                 },
+                paneContainer: {
+                  left: {
+                    background: "#fff",
+                  },
+                },
               }}
-            /> */}
+            />
           </div>
         </div>
       </div>
