@@ -36,8 +36,11 @@ export interface ReactGridStoreProps {
   resizingColIdx?: number;
 
   enableColumnSelectionOnFirstRow?: boolean;
-
   enableRowSelectionOnFirstColumn?: boolean;
+
+  disableCut?: boolean;
+  disableCopy?: boolean;
+  disablePaste?: boolean;
 
   linePosition?: number;
   lineOrientation: "vertical" | "horizontal";

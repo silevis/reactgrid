@@ -1,4 +1,4 @@
-import React, { CSSProperties, useCallback } from "react";
+import React, { CSSProperties, useCallback, useEffect, useRef } from "react";
 import { NumericalRange } from "../types/PublicModel";
 import { EMPTY_AREA, GetCellOffsets, PaneName, StickyOffsets } from "../types/InternalModel";
 import { isSpanMember } from "../utils/isSpanMember";
@@ -11,6 +11,9 @@ import { useReactGridId } from "./ReactGridIdProvider";
 import { RGTheme } from "../types/RGTheme";
 import isEqual from "lodash.isequal";
 import { isCellInRange } from "../utils/isCellInRange";
+import { RowReorderBehavior } from "../behaviors/RowReorderBehavior";
+import { DefaultBehavior } from "../behaviors/DefaultBehavior";
+import { ColumnReorderBehavior } from "../behaviors/ColumnReorderBehavior";
 
 interface PaneGridContentProps {
   range: NumericalRange;
@@ -60,7 +63,17 @@ export const PaneGridContent: React.FC<PaneGridContentProps> = React.memo(
     const cells = useReactGridStore(id, (store) => store.cells);
     const focusedCell = useReactGridStore(id, (store) => store.focusedLocation);
     const selectedArea = useReactGridStore(id, (store) => store.selectedArea);
-    const fillHandleArea = useReactGridStore(id, (store) => store.fillHandleArea);
+
+    const currentBehavior = useReactGridStore(id, (store) => store.currentBehavior);
+    const prevBehaviorId = useRef(currentBehavior.id);
+    const prevSelectedArea = useRef(selectedArea);
+
+    useEffect(() => {
+      return () => {
+        prevBehaviorId.current = currentBehavior.id;
+        prevSelectedArea.current = selectedArea;
+      };
+    }, [currentBehavior.id, selectedArea]);
 
     const memoizedGetCellOffset = useCallback(getCellOffset, [stickyOffsets]);
 
@@ -68,13 +81,27 @@ export const PaneGridContent: React.FC<PaneGridContentProps> = React.memo(
       return columns.map((_, colIndex) => {
         const cell = cells.get(`${startRowIdx + rowIndex} ${startColIdx + colIndex}`);
 
-        const isCellInFillArea = isCellInRange(store, cell, fillHandleArea);
-        const isCellInSelectedArea = isCellInRange(store, cell, selectedArea);
-
         if (!cell || isSpanMember(cell)) return null;
 
         const realRowIndex = startRowIdx + rowIndex;
         const realColumnIndex = startColIdx + colIndex;
+
+        let shouldRenderReorderedCells = false;
+
+        if (
+          (prevBehaviorId.current === RowReorderBehavior.id || prevBehaviorId.current === ColumnReorderBehavior.id) &&
+          currentBehavior.id === DefaultBehavior().id
+        ) {
+          const prevSelection = prevSelectedArea.current;
+          const currentSelection = selectedArea;
+
+          shouldRenderReorderedCells = isCellInRange(store, cell, {
+            startRowIdx: Math.min(prevSelection.startRowIdx, currentSelection.startRowIdx),
+            endRowIdx: Math.max(prevSelection.endRowIdx, currentSelection.endRowIdx),
+            startColIdx: Math.min(prevSelection.startColIdx, currentSelection.startColIdx),
+            endColIdx: Math.max(prevSelection.endColIdx, currentSelection.endColIdx),
+          });
+        }
 
         const isFocused = focusedCell.rowIndex === realRowIndex && focusedCell.colIndex === realColumnIndex;
 
@@ -88,8 +115,7 @@ export const PaneGridContent: React.FC<PaneGridContentProps> = React.memo(
             realRowIndex={realRowIndex}
             realColumnIndex={realColumnIndex}
             getCellOffset={memoizedGetCellOffset}
-            isCellInFillArea={isCellInFillArea}
-            isCellInSelectedArea={isCellInSelectedArea}
+            shouldRenderReorderedCells={shouldRenderReorderedCells}
             cell={cell}
             isFocused={isFocused}
           />

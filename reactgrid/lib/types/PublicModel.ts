@@ -114,8 +114,11 @@ export interface ReactGridProps {
   stickyLeftColumns?: number;
 
   enableColumnSelectionOnFirstRow?: boolean;
-
   enableRowSelectionOnFirstColumn?: boolean;
+
+  disableCut?: boolean;
+  disableCopy?: boolean;
+  disablePaste?: boolean;
 
   behaviors?: Partial<Record<BehaviorId, Behavior>>;
 

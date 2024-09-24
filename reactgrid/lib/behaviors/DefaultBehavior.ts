@@ -1,5 +1,5 @@
 import { Behavior } from "../types/Behavior.ts";
-import { NumericalRange } from "../types/PublicModel.ts";
+import { CellsLookupCallbacks, NumericalRange } from "../types/PublicModel.ts";
 import { getCellArea } from "../utils/getCellArea.ts";
 import { getCellContainerFromPoint } from "../utils/getCellContainerFromPoint.ts";
 import { getCellContainerLocation } from "../utils/getCellContainerLocation.ts";
@@ -320,16 +320,55 @@ export const DefaultBehavior = (config: DefaultBehaviorConfig = CONFIG_DEFAULTS)
 
     if (!focusedCell) return store;
 
-    let cellsArea: NumericalRange;
+    let cellsRange: NumericalRange;
 
-    if (store.selectedArea.startRowIdx !== -1) {
-      cellsArea = store.selectedArea;
+    // If there is a selected area, paste into that area
+    if (!areAreasEqual(store.selectedArea, EMPTY_AREA)) {
+      cellsRange = store.selectedArea;
     } else {
-      cellsArea = getCellArea(store, focusedCell);
+      // If there is no selected area, paste into the focused cell
+      cellsRange = getCellArea(store, focusedCell);
     }
 
-    store.onCopy?.(event, cellsArea, store.cellsLookup);
+    if (store.onCopy) {
+      store.onCopy?.(event, cellsRange, store.cellsLookup);
+    } else if (!store.disableCopy) {
+      const { startRowIdx, endRowIdx, startColIdx, endColIdx } = cellsRange;
+      const cellsLookupCallbacks: CellsLookupCallbacks[] = [];
 
+      for (let rowIdx = startRowIdx; rowIdx < endRowIdx; rowIdx++) {
+        for (let colIdx = startColIdx; colIdx < endColIdx; colIdx++) {
+          const element = store.cellsLookup.get(`${rowIdx} ${colIdx}`);
+          if (element) {
+            cellsLookupCallbacks.push(element);
+          }
+        }
+      }
+
+      const values = cellsLookupCallbacks.map((element) => element.onStringValueRequsted());
+
+      const htmlData = `
+      <table>
+        ${Array.from(
+          { length: cellsRange.endRowIdx - cellsRange.startRowIdx },
+          (_, rowIndex) => `
+          <tr>
+            ${Array.from({ length: cellsRange.endColIdx - cellsRange.startColIdx }, (_, colIndex) => {
+              const cell = store.cellsLookup.get(
+                `${cellsRange.startRowIdx + rowIndex} ${cellsRange.startColIdx + colIndex}`
+              );
+              const value = cell?.onStringValueRequsted() || "";
+              return `<td>${value}</td>`;
+            }).join("")}
+          </tr>
+        `
+        ).join("")}
+      </table>
+    `;
+
+      event.clipboardData.setData("text/html", htmlData);
+      event.clipboardData.setData("text/plain", values.join("\t"));
+    }
     return store;
   },
 
@@ -339,18 +378,59 @@ export const DefaultBehavior = (config: DefaultBehaviorConfig = CONFIG_DEFAULTS)
     event.preventDefault();
 
     const focusedCell = store.getCellByIndexes(store.focusedLocation.rowIndex, store.focusedLocation.colIndex);
-
     if (!focusedCell) return store;
 
-    let cellsArea: NumericalRange;
+    let cellsRange: NumericalRange;
 
-    if (store.selectedArea.startRowIdx !== -1) {
-      cellsArea = store.selectedArea;
+    // If there is a selected area, paste into that area
+    if (!areAreasEqual(store.selectedArea, EMPTY_AREA)) {
+      cellsRange = store.selectedArea;
     } else {
-      cellsArea = getCellArea(store, focusedCell);
+      // If there is no selected area, paste into the focused cell
+      cellsRange = getCellArea(store, focusedCell);
     }
 
-    store.onCut?.(event, cellsArea, store.cellsLookup);
+    if (store.onCut) {
+      store.onCut?.(event, cellsRange, store.cellsLookup);
+    } else if (!store.disableCut) {
+      const { startRowIdx, endRowIdx, startColIdx, endColIdx } = cellsRange;
+      const cellsLookupCallbacks: CellsLookupCallbacks[] = [];
+
+      for (let rowIdx = startRowIdx; rowIdx < endRowIdx; rowIdx++) {
+        for (let colIdx = startColIdx; colIdx < endColIdx; colIdx++) {
+          const element = store.cellsLookup.get(`${rowIdx} ${colIdx}`);
+          if (element) {
+            cellsLookupCallbacks.push(element);
+          }
+        }
+      }
+
+      const values = cellsLookupCallbacks.map((element) => element.onStringValueRequsted());
+
+      cellsLookupCallbacks.forEach((element) => element.onStringValueReceived(""));
+
+      const htmlData = `
+      <table>
+        ${Array.from(
+          { length: cellsRange.endRowIdx - cellsRange.startRowIdx },
+          (_, rowIndex) => `
+          <tr>
+            ${Array.from({ length: cellsRange.endColIdx - cellsRange.startColIdx }, (_, colIndex) => {
+              const cell = store.cellsLookup.get(
+                `${cellsRange.startRowIdx + rowIndex} ${cellsRange.startColIdx + colIndex}`
+              );
+              const value = cell?.onStringValueRequsted() || "";
+              return `<td>${value}</td>`;
+            }).join("")}
+          </tr>
+        `
+        ).join("")}
+      </table>
+    `;
+
+      event.clipboardData.setData("text/html", htmlData);
+      event.clipboardData.setData("text/plain", values.join("\t"));
+    }
 
     return store;
   },
@@ -362,19 +442,19 @@ export const DefaultBehavior = (config: DefaultBehaviorConfig = CONFIG_DEFAULTS)
     const focusedCell = store.getCellByIndexes(store.focusedLocation.rowIndex, store.focusedLocation.colIndex);
     if (!focusedCell) return store;
 
-    let cellsArea: NumericalRange;
+    let cellsRange: NumericalRange;
 
     // If there is a selected area, paste into that area
     if (!areAreasEqual(store.selectedArea, EMPTY_AREA)) {
-      cellsArea = store.selectedArea;
+      cellsRange = store.selectedArea;
       // If there is no selected area, paste into the focused cell
     } else {
-      cellsArea = getCellArea(store, focusedCell);
+      cellsRange = getCellArea(store, focusedCell);
     }
 
     if (store.onPaste) {
-      store.onPaste?.(event, cellsArea, store.cellsLookup);
-    } else {
+      store.onPaste?.(event, cellsRange, store.cellsLookup);
+    } else if (!store.disablePaste) {
       const html = event.clipboardData.getData("text/html");
 
       const parser = new DOMParser();
@@ -383,26 +463,52 @@ export const DefaultBehavior = (config: DefaultBehaviorConfig = CONFIG_DEFAULTS)
       const rows = doc.querySelectorAll("tr");
       const firstRowCells = rows[0].querySelectorAll("td");
 
+      if (rows.length === 1 && firstRowCells.length === 1) {
+        const singleValue = firstRowCells[0].textContent || "";
+        for (let rowIndex = cellsRange.startRowIdx; rowIndex < cellsRange.endRowIdx; rowIndex++) {
+          for (let colIndex = cellsRange.startColIdx; colIndex < cellsRange.endColIdx; colIndex++) {
+            const gridCell = store.cellsLookup.get(`${rowIndex} ${colIndex}`);
+            gridCell?.onStringValueReceived(singleValue);
+          }
+        }
+      } else {
+        rows.forEach((row, rowIndex) => {
+          const cells = row.querySelectorAll("td");
+          cells.forEach((cell, colIndex) => {
+            const value = cell.textContent || "";
+            const gridCell = store.cellsLookup.get(
+              `${cellsRange.startRowIdx + rowIndex} ${cellsRange.startColIdx + colIndex}`
+            );
+            if (gridCell) {
+              gridCell.onStringValueReceived(value);
+            }
+          });
+        });
+      }
+
       let newSelectedArea;
 
       // If only one cell was pasted
       if (rows.length === 1 && firstRowCells.length === 1) {
         newSelectedArea = {
-          startRowIdx: cellsArea.startRowIdx,
-          endRowIdx: cellsArea.endRowIdx,
-          startColIdx: cellsArea.startColIdx,
-          endColIdx: cellsArea.startColIdx + rows[0].querySelectorAll("td").length,
+          startRowIdx: cellsRange.startRowIdx,
+          endRowIdx: cellsRange.endRowIdx,
+          startColIdx: cellsRange.startColIdx,
+          endColIdx: cellsRange.startColIdx + rows[0].querySelectorAll("td").length,
         };
       }
       // If multiple cells were pasted
       else {
-        const endRowIdx = Math.min(cellsArea.startRowIdx + rows.length, store.rows.length);
-        const endColIdx = Math.min(cellsArea.startColIdx + rows[0].querySelectorAll("td").length, store.columns.length);
+        const endRowIdx = Math.min(cellsRange.startRowIdx + rows.length, store.rows.length);
+        const endColIdx = Math.min(
+          cellsRange.startColIdx + rows[0].querySelectorAll("td").length,
+          store.columns.length
+        );
 
         newSelectedArea = {
-          startRowIdx: cellsArea.startRowIdx,
+          startRowIdx: cellsRange.startRowIdx,
           endRowIdx: endRowIdx,
-          startColIdx: cellsArea.startColIdx,
+          startColIdx: cellsRange.startColIdx,
           endColIdx: endColIdx,
         };
       }

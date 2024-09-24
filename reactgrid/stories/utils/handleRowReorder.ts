@@ -16,17 +16,17 @@ export const handleRowReorder = (
 
   adjustedSelectedRowIdxs.forEach((rowIdx, index) => {
     if (adjustedDestinationIdx === 0) {
-      prevPeopleArr[rowIdx].position = prevPeopleArr[adjustedDestinationIdx].position / 2 + index * 0.01;
+      prevPeopleArr[rowIdx].position = prevPeopleArr[adjustedDestinationIdx].position / 2 + index * 0.0001;
     } else if (adjustedDestinationIdx === peopleArr.length - 1) {
-      prevPeopleArr[rowIdx].position = prevPeopleArr[adjustedDestinationIdx].position + 1 + index * 0.01;
+      prevPeopleArr[rowIdx].position = prevPeopleArr[adjustedDestinationIdx].position + 1 + index * 0.0001;
     } else if (isReorderingUpwards) {
       prevPeopleArr[rowIdx].position =
         (prevPeopleArr[adjustedDestinationIdx].position + prevPeopleArr[adjustedDestinationIdx - 1].position) / 2 +
-        index * 0.01;
+        index * 0.0001;
     } else {
       prevPeopleArr[rowIdx].position =
         (prevPeopleArr[adjustedDestinationIdx].position + prevPeopleArr[adjustedDestinationIdx + 1].position) / 2 +
-        index * 0.01;
+        index * 0.0001;
     }
   });
 
