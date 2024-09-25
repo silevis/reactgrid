@@ -1,11 +1,13 @@
 import {
   calculateOutputVariables,
+  getCells,
   getColumns,
   inflows,
   InputVariables,
   outflows,
   OutputVariables,
 } from "@/app/examples/utils";
+import { ReactGrid } from "@silevis/reactgrid";
 import { useState } from "react";
 
 export interface RowDef {
@@ -21,13 +23,8 @@ interface ColumnDef {
   width: number;
 }
 
-const numberFormat = new Intl.NumberFormat("en-US", {
-  minimumFractionDigits: 2,
-  maximumFractionDigits: 2,
-});
-
 export const LiquidityPlanner = () => {
-  const [openingBalance, setOpeningBalance] = useState(0);
+  const [openingBalance, setOpeningBalance] = useState(10000);
   const [creditLine, setCreditLine] = useState(3000);
   const [cashInflow, setCashInflow] = useState(inflows);
   const [cashOutflow, setCashOutflow] = useState(outflows);
@@ -47,11 +44,38 @@ export const LiquidityPlanner = () => {
 
   const columns = getColumns();
 
-  //   const cells = getCells();
+  const cells = getCells(plannerData, {
+    setOpeningBalance,
+    setCreditLine,
+    setCashInflow,
+    setCashOutflow,
+  });
+
+  console.log("cells: ", cells);
 
   console.log({ inputVariables, outputVariables });
 
   console.log({ plannerData });
 
-  return <div></div>;
+  return (
+    <ReactGrid
+      cells={cells}
+      stickyLeftColumns={1}
+      stickyRightColumns={1}
+      enableRowSelectionOnFirstColumn
+      styles={{
+        gridWrapper: {
+          fontSize: "14px",
+          color: "#000",
+          fontWeight: "300",
+          fontFamily: "Arial",
+        },
+        paneContainer: {
+          left: {
+            background: "#fff",
+          },
+        },
+      }}
+    />
+  );
 };

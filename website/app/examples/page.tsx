@@ -71,7 +71,7 @@ export default function ExamplesPage() {
           <div className="h-[60px] border-b-1 border-white-secondary3 flex items-center ps-5">
             <Image src={logo} alt="ReactGrid" />
           </div>
-          <div className="flex h-full">
+          <div className="flex" style={{ width: "100%", overflow: "auto" }}>
             <LiquidityPlanner />
           </div>
         </div>

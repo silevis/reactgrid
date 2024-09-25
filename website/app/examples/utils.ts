@@ -1,8 +1,51 @@
 import { Cell, Column, NonEditableCell, NumberCell } from "@silevis/reactgrid";
+import { Dispatch, SetStateAction } from "react";
 
 export type MonthlyValues = number[];
 
+const numberFormat = new Intl.NumberFormat("en-US", {
+  minimumFractionDigits: 2,
+  maximumFractionDigits: 2,
+});
+
 const COL_WIDTH = 110;
+
+export type Inflow =
+  | "Sales"
+  | "Other income"
+  | "Loan disbursement"
+  | "Private deposits/equity"
+  | "Other incoming payments";
+
+export type Outflow =
+  | "Use of goods/materials"
+  | "Personnel costs"
+  | "Room costs / rent"
+  | "Heating, electricity, water, gas"
+  | "Marketing and advertisement"
+  | "Vehicle costs (operational)"
+  | "Traveling expenses"
+  | "Telephone, Fax, Internet"
+  | "Office supplies, packaging"
+  | "Repairs, maintenance"
+  | "Insurance (company)"
+  | "Contributions and fees"
+  | "Leasing"
+  | "Advice and bookkeeping"
+  | "Cost of capital / interest"
+  | "Repayment (loan)";
+
+export type Group<T> = {
+  title: T;
+  values: MonthlyValues;
+};
+
+export type CashInflow = Group<Inflow>;
+export type CashOutflow = Group<Outflow>;
+
+export function months(): number[] {
+  return new Array(12).fill(0);
+}
 
 export function getColumns(): Column[] {
   return [
@@ -50,7 +93,8 @@ export interface OutputVariables {
 const getCashboxBankCells = (
   rowIndex: number,
   title: string,
-  cashboxBank: MonthlyValues
+  cashboxBank: MonthlyValues,
+  setOpeningBalance: Dispatch<SetStateAction<number>>
 ) => {
   const getCashboxBankCell = (
     rowIndex: number,
@@ -67,71 +111,361 @@ const getCashboxBankCells = (
 
   return [
     getCashboxBankCell(rowIndex, 0, NonEditableCell, { value: title }),
-    ...emptyMonthsValues.map((values, idx) =>
+    ...months().map((values, idx) =>
       idx === 0
         ? getCashboxBankCell(rowIndex, idx + 1, NumberCell, {
             value: cashboxBank[idx],
+            onValueChanged: (value: number) => setOpeningBalance(value),
+            format: numberFormat,
           })
         : getCashboxBankCell(rowIndex, idx + 1, NonEditableCell, {
-            value: cashboxBank[idx],
+            value: numberFormat.format(cashboxBank[idx]),
           })
     ),
     getCashboxBankCell(rowIndex, 13, NonEditableCell, {}),
   ];
 };
 
-export const getCells = ({
-  cashInflow,
-  cashOutflow,
-  cashboxBank,
-  monthlyInflowTotals,
-  monthlyOutflowTotals,
-  yearlyInflowOuflowDiff,
-  yearlyInflowTotal,
-  yearlyOutflowTotal,
-  monthlyInflowOuflowDiffs,
-  cumulativeTotals,
-  creditLine,
-}: InputVariables & OutputVariables) => {
+const getGroupCells = (
+  startRowIdx: number,
+  grouptitle: "Inflow" | "Outflow",
+  summaryTitle: string,
+  groups: (CashInflow | CashOutflow)[],
+  monthlyGroupTotals: MonthlyValues,
+  yearlyGroupTotal: number,
+  updateData: Dispatch<SetStateAction<any>>
+): Cell[] => {
+  const createGroupHeaderCells = (
+    template: any,
+    value: any,
+    rowIdx: number
+  ): Cell[] => {
+    return [
+      {
+        rowIndex: rowIdx,
+        colIndex: 0,
+        Template: template,
+        props: { value: value },
+      },
+      ...months().map((_, idx) => ({
+        rowIndex: rowIdx,
+        colIndex: idx + 1,
+        Template: template,
+        props: { value: "" },
+      })),
+      {
+        rowIndex: rowIdx,
+        colIndex: 13,
+        Template: template,
+        props: { value: "" },
+      },
+    ];
+  };
+
+  const createGroupSummaryCells = (template: any, rowIdx: number): Cell[] => {
+    return [
+      {
+        rowIndex: rowIdx,
+        colIndex: 0,
+        Template: template,
+        props: { value: summaryTitle },
+      },
+      ...months().map((_, idx) => ({
+        rowIndex: rowIdx,
+        colIndex: idx + 1,
+        Template: template,
+        props: { value: numberFormat.format(monthlyGroupTotals[idx]) },
+      })),
+      {
+        rowIndex: rowIdx,
+        colIndex: 13,
+        Template: template,
+        props: { value: numberFormat.format(yearlyGroupTotal) },
+      },
+    ];
+  };
+
+  const groupCells = groups.flatMap((group, idx) => [
+    {
+      rowIndex: startRowIdx + idx + 1,
+      colIndex: 0,
+      Template: NonEditableCell,
+      props: { value: group.title },
+    },
+    ...group.values.map((value, colIdx) => {
+      if (group.title === "Other income") {
+        return {
+          rowIndex: startRowIdx + idx + 1,
+          colIndex: colIdx + 1,
+          Template: NumberCell,
+          props: {
+            value: group.values[colIdx] || 0,
+            onValueChanged: (value: number) => {
+              updateData((prev: (CashInflow | CashOutflow)[]) => {
+                const newCashInflow = [...prev];
+                newCashInflow[idx].values[colIdx] = value;
+                return newCashInflow;
+              });
+            },
+            hideZero: true,
+            format: numberFormat,
+          },
+        };
+      }
+
+      return {
+        rowIndex: startRowIdx + idx + 1,
+        colIndex: colIdx + 1,
+        Template: NumberCell,
+        props: {
+          value: group.values[colIdx] || "",
+          onValueChanged: (value: number) => {
+            updateData((prev: (CashInflow | CashOutflow)[]) => {
+              const newCashInflow = [...prev];
+              newCashInflow[idx].values[colIdx] = value;
+              return newCashInflow;
+            });
+          },
+          format: numberFormat,
+        },
+      };
+    }),
+    {
+      rowIndex: startRowIdx + idx + 1,
+      colIndex: 13,
+      Template: NonEditableCell,
+      props: { value: numberFormat.format(sumGroupValues(group.values)) },
+    },
+  ]);
+
+  return [
+    ...createGroupHeaderCells(NonEditableCell, grouptitle, startRowIdx),
+    ...groupCells,
+    ...createGroupSummaryCells(
+      NonEditableCell,
+      startRowIdx + groups.length + 1
+    ),
+  ];
+};
+
+function sumGroupValues(values: MonthlyValues): number {
+  return values.reduce(
+    (prev, curr) => (isNaN(prev) ? 0 : prev) + (isNaN(curr) ? 0 : curr)
+  );
+}
+
+export const getCells = (
+  plannerData: InputVariables & OutputVariables,
+  handlers: {
+    setOpeningBalance: Dispatch<SetStateAction<number>>;
+    setCreditLine: Dispatch<SetStateAction<number>>;
+    setCashInflow: Dispatch<SetStateAction<CashInflow[]>>;
+    setCashOutflow: Dispatch<SetStateAction<CashOutflow[]>>;
+  }
+) => {
+  const cashboxBankStartRowIdx = 2;
+  const inflowStartRowIdx = cashboxBankStartRowIdx + 1;
+  const outflowStartRowIdx =
+    inflowStartRowIdx + plannerData.cashInflow.length + 2;
+  const totalStartRowIdx =
+    outflowStartRowIdx + plannerData.cashOutflow.length + 2;
+  const cumulativeStartRowIdx = totalStartRowIdx + 1;
+  const creditLineStartRowIdx = cumulativeStartRowIdx + 1;
+
   const cells = [
     ...headerCells,
-    liquidFundsCells,
-    getCashboxBankRow("Cashbox/bank", cashboxBank),
-    ...getGroupRows(
+    ...liquidFundsCells,
+    ...getCashboxBankCells(
+      cashboxBankStartRowIdx,
+      "Cashbox/bank",
+      plannerData.cashboxBank,
+      handlers.setOpeningBalance
+    ),
+    ...getGroupCells(
+      inflowStartRowIdx,
       "Inflow",
       "Cash in (total)",
-      cashInflow,
-      monthlyInflowTotals,
-      yearlyInflowTotal
+      plannerData.cashInflow,
+      plannerData.monthlyInflowTotals,
+      plannerData.yearlyInflowTotal,
+      handlers.setCashInflow
     ),
-    ...getGroupRows(
+    ...getGroupCells(
+      outflowStartRowIdx,
       "Outflow",
       "Cash out (total)",
-      cashOutflow,
-      monthlyOutflowTotals,
-      yearlyOutflowTotal
+      plannerData.cashOutflow,
+      plannerData.monthlyOutflowTotals,
+      plannerData.yearlyOutflowTotal,
+      handlers.setCashOutflow
     ),
-    getMonthsTotalRow(
+    ...getMonthsTotalCells(
+      totalStartRowIdx,
       "Total",
-      monthlyInflowOuflowDiffs,
-      yearlyInflowOuflowDiff
+      plannerData.monthlyInflowOuflowDiffs,
+      plannerData.yearlyInflowOuflowDiff
     ),
-    getCumulativeRow("Cumulative", cumulativeTotals, yearlyInflowOuflowDiff),
-    ...getCreditLineRows(cumulativeTotals, yearlyInflowOuflowDiff, creditLine),
+    ...getCumulativeCells(
+      cumulativeStartRowIdx,
+      "Cumulative",
+      plannerData.cumulativeTotals,
+      plannerData.yearlyInflowOuflowDiff
+    ),
+    ...getCreditLineCells(
+      creditLineStartRowIdx,
+      plannerData.cumulativeTotals,
+      plannerData.yearlyInflowOuflowDiff,
+      plannerData.creditLine
+    ),
+  ];
+
+  return cells;
+};
+
+const getCreditLineCells = (
+  startRowIdx: number,
+  cumulativeTotals: MonthlyValues,
+  yearlyInflowOuflowDiff: number,
+  creditLine: number
+) => {
+  const yearlyOverdraft =
+    -yearlyInflowOuflowDiff - (isNaN(creditLine) ? 0 : creditLine);
+
+  const getCreditLineCell = (
+    rowIndex: number,
+    colIndex: number,
+    value: string,
+    style?: React.CSSProperties
+  ) => ({
+    rowIndex,
+    colIndex,
+    Template: NonEditableCell,
+    props: {
+      value,
+      style,
+    },
+  });
+
+  const creditLineCells = [
+    getCreditLineCell(startRowIdx, 0, "Credit line"),
+    ...months().map((_, idx) =>
+      idx === 0
+        ? getCreditLineCell(startRowIdx, idx + 1, creditLine.toString())
+        : getCreditLineCell(startRowIdx, idx + 1, creditLine.toString())
+    ),
+    getCreditLineCell(startRowIdx, 13, creditLine.toString()),
+  ];
+
+  const creditLineOverdraftCells = [
+    getCreditLineCell(startRowIdx + 1, 0, "Credit line overdraft"),
+    ...months().map((_, idx) => {
+      const overdraft =
+        -cumulativeTotals[idx] - (isNaN(creditLine) ? 0 : creditLine);
+      return getCreditLineCell(
+        startRowIdx + 1,
+        idx + 1,
+        overdraft > 0 ? overdraft.toString() : NaN.toString()
+      );
+    }),
+    getCreditLineCell(
+      startRowIdx + 1,
+      13,
+      yearlyOverdraft > 0 ? yearlyOverdraft.toString() : NaN.toString()
+    ),
+  ];
+
+  return [...creditLineCells, ...creditLineOverdraftCells];
+};
+
+const getCumulativeCells = (
+  startRowIdx: number,
+  title: string,
+  cumulativeTotals: MonthlyValues,
+  yearlyInflowOuflowDiff: number
+) => {
+  const getCumulativeCell = (
+    rowIndex: number,
+    colIndex: number,
+    value: string,
+    style?: React.CSSProperties
+  ) => ({
+    rowIndex,
+    colIndex,
+    Template: NonEditableCell,
+    props: {
+      value,
+      style,
+    },
+  });
+
+  return [
+    getCumulativeCell(startRowIdx, 0, title),
+    ...months().map((_, idx) => ({
+      rowIndex: startRowIdx,
+      colIndex: idx + 1,
+      Template: NonEditableCell,
+      props: {
+        value: numberFormat.format(cumulativeTotals[idx]),
+      },
+    })),
+    getCumulativeCell(
+      startRowIdx,
+      13,
+      numberFormat.format(yearlyInflowOuflowDiff)
+    ),
+  ];
+};
+
+const getMonthsTotalCells = (
+  startRowIdx: number,
+  title: string,
+  monthlyInflowOuflowDiffs: MonthlyValues,
+  yearlyInflowOuflowDiff: number
+) => {
+  const getMonthsTotalCell = (
+    rowIndex: number,
+    colIndex: number,
+    value: string,
+    style?: React.CSSProperties
+  ) => ({
+    rowIndex,
+    colIndex,
+    Template: NonEditableCell,
+    props: {
+      value,
+      style,
+    },
+  });
+
+  return [
+    getMonthsTotalCell(startRowIdx, 0, title),
+    ...months().map((_, idx) => ({
+      rowIndex: startRowIdx,
+      colIndex: idx + 1,
+      Template: NonEditableCell,
+      props: {
+        value: numberFormat.format(monthlyInflowOuflowDiffs[idx]),
+      },
+    })),
+    getMonthsTotalCell(
+      startRowIdx,
+      13,
+      numberFormat.format(yearlyInflowOuflowDiff)
+    ),
   ];
 };
 
 const getMonthHeaderCell = (
   rowIndex: number,
   colIndex: number,
-  text: string,
+  value: string,
   style?: React.CSSProperties
 ) => ({
   rowIndex,
   colIndex,
   Template: NonEditableCell,
   props: {
-    text,
+    value,
     style,
   },
 });
@@ -139,14 +473,14 @@ const getMonthHeaderCell = (
 const getLiquidFundsCell = (
   rowIndex: number,
   colIndex: number,
-  text: string,
+  value: string,
   style?: React.CSSProperties
 ) => ({
   rowIndex,
   colIndex,
   Template: NonEditableCell,
   props: {
-    text,
+    value,
     style,
   },
 });
@@ -169,7 +503,7 @@ export const headerCells = [
 ];
 
 export const liquidFundsCells = [
-  getLiquidFundsCell(1, 0, "Opening balance"),
+  getLiquidFundsCell(1, 0, "Liquid funds"),
   getLiquidFundsCell(1, 1, ""),
   getLiquidFundsCell(1, 2, ""),
   getLiquidFundsCell(1, 3, ""),
@@ -190,48 +524,11 @@ const emptyMonthsValues: MonthlyValues = Array(12).fill(NaN);
 const toFixed = (n: number, fixed: number) =>
   ~~(Math.pow(10, fixed) * n) / Math.pow(10, fixed);
 
-export function months(): number[] {
-  return new Array(12).fill(0);
-}
-
 function generateRandomValues(value: number, variation: number) {
   const min = value - variation;
   const max = value + variation;
   return months().map(() => toFixed(Math.random() * (max - min + 1) + min, 2));
 }
-
-export type Inflow =
-  | "Sales"
-  | "Other income"
-  | "Loan disbursement"
-  | "Private deposits/equity"
-  | "Other incoming payments";
-
-export type Outflow =
-  | "Use of goods/materials"
-  | "Personnel costs"
-  | "Room costs / rent"
-  | "Heating, electricity, water, gas"
-  | "Marketing and advertisement"
-  | "Vehicle costs (operational)"
-  | "Traveling expenses"
-  | "Telephone, Fax, Internet"
-  | "Office supplies, packaging"
-  | "Repairs, maintenance"
-  | "Insurance (company)"
-  | "Contributions and fees"
-  | "Leasing"
-  | "Advice and bookkeeping"
-  | "Cost of capital / interest"
-  | "Repayment (loan)";
-
-export type Group<T> = {
-  title: T;
-  values: MonthlyValues;
-};
-
-export type CashInflow = Group<Inflow>;
-export type CashOutflow = Group<Outflow>;
 
 export interface InputVariables {
   cashInflow: CashInflow[];
