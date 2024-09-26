@@ -66,6 +66,7 @@ export const NumberCell: FC<NumberCellProps> = ({
     >
       {isEditMode ? (
         <input
+          className="rg-input"
           value={currentValue}
           onChange={(e) => {
             let newValue = e.currentTarget.value.replace(/[^0-9,.]/g, "");
@@ -83,7 +84,6 @@ export const NumberCell: FC<NumberCellProps> = ({
           onCut={(e) => e.stopPropagation()}
           onCopy={(e) => e.stopPropagation()}
           onPaste={(e) => e.stopPropagation()}
-          style={inputStyle}
           onKeyDown={(e) => {
             const controlKeys = ["Escape", "Enter", "Tab"];
             if (!controlKeys.includes(e.key)) {
@@ -105,20 +105,4 @@ export const NumberCell: FC<NumberCellProps> = ({
       )}
     </CellWrapper>
   );
-};
-
-const inputStyle: React.CSSProperties = {
-  resize: "none",
-  overflowY: "hidden",
-  boxSizing: "border-box",
-  textAlign: "center",
-  width: "100%",
-  height: "100%",
-  background: "transparent",
-  border: "none",
-  padding: 0,
-  outline: "none",
-  color: "inherit",
-  fontSize: "inherit",
-  fontFamily: "inherit",
 };

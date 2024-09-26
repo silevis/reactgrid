@@ -292,7 +292,7 @@ const PanesRenderer: FC<PanesRendererProps> = ({
           paddingLeft: theme.cellContainer.padding.left,
           paddingBottom: theme.cellContainer.padding.bottom,
           paddingRight: theme.cellContainer.padding.right,
-          backgroundColor: "white",
+          backgroundColor: theme.cellContainer.background,
         },
       }}
     >

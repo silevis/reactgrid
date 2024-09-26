@@ -44,6 +44,11 @@ body {
   outline-offset: 2px;
 }
 
+input.rg-input {
+  text-align: right;
+  padding-right: 15px;
+}
+
 @media (min-width: 780px) {
   .flex-none {
     display: none;

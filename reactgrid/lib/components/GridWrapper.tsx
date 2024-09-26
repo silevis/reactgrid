@@ -1,3 +1,5 @@
+import "../reactGridStyles.css";
+
 import React, { FC, PropsWithChildren, useEffect, useRef, useState } from "react";
 import { HandlerFn } from "../types/Behavior";
 import { getStyledRangesCSS } from "../utils/getStyledRangesCSS";

@@ -17,15 +17,7 @@ const capabilities = [
 
 const coreFeatures = [
   {
-    name: "Vertical and horizontal grouping",
-    docs: true,
-  },
-  {
-    name: "Custom cell templates (e.g. non editable number cell)",
-    docs: true,
-  },
-  {
-    name: "Context menu (adding and removing row)",
+    name: "Multiple cell templates",
     docs: true,
   },
   {
@@ -33,11 +25,7 @@ const coreFeatures = [
     docs: true,
   },
   {
-    name: "Row reordering",
-    docs: true,
-  },
-  {
-    name: "Range, column and row selection (+ multi selection)",
+    name: "Range, column and row selection",
     docs: true,
   },
   {
@@ -71,7 +59,10 @@ export default function ExamplesPage() {
           <div className="h-[60px] border-b-1 border-white-secondary3 flex items-center ps-5">
             <Image src={logo} alt="ReactGrid" />
           </div>
-          <div className="flex" style={{ width: "100%", overflow: "auto" }}>
+          <div
+            className="flex"
+            style={{ maxHeight: 750, width: "100%", overflow: "auto" }}
+          >
             <LiquidityPlanner />
           </div>
         </div>

@@ -46,8 +46,8 @@ export const TextCell: FC<TextCellProps> = ({ text: initialText, onTextChanged }
     >
       {isEditMode ? (
         <input
+          className="rg-input"
           value={currentValue}
-          style={inputStyle}
           onChange={(e) => setCurrentValue(e.currentTarget.value)}
           onBlur={(e) => {
             onTextChanged?.(e.currentTarget.value);
@@ -77,20 +77,4 @@ export const TextCell: FC<TextCellProps> = ({ text: initialText, onTextChanged }
       )}
     </CellWrapper>
   );
-};
-
-const inputStyle: React.CSSProperties = {
-  resize: "none",
-  overflowY: "hidden",
-  boxSizing: "border-box",
-  textAlign: "center",
-  width: "100%",
-  height: "100%",
-  background: "transparent",
-  border: "none",
-  padding: 0,
-  outline: "none",
-  color: "inherit",
-  fontSize: "inherit",
-  fontFamily: "inherit",
 };

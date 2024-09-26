@@ -1,5 +1,15 @@
 import { Cell, Column, NonEditableCell, NumberCell } from "@silevis/reactgrid";
 import { Dispatch, SetStateAction } from "react";
+import {
+  cashboxBankCellEditableStyle,
+  cashboxBankCellStyle,
+  groupHeaderCellStyle,
+  groupMonthSummaryCellStyle,
+  groupMonthValueCellStyle,
+  groupRowNameCellStyle,
+  headerCellsStyle,
+  summaryTitleCellStyle,
+} from "./gridStyles";
 
 export type MonthlyValues = number[];
 
@@ -51,7 +61,7 @@ export function getColumns(): Column[] {
   return [
     {
       colIndex: 0,
-      width: 200,
+      width: 250,
     },
     { colIndex: 1, width: COL_WIDTH },
     { colIndex: 2, width: COL_WIDTH },
@@ -100,8 +110,7 @@ const getCashboxBankCells = (
     rowIndex: number,
     colIndex: number,
     Template: React.ComponentType<any>,
-    props: React.ComponentPropsWithRef<Cell["Template"]>,
-    style?: React.CSSProperties
+    props: React.ComponentPropsWithRef<Cell["Template"]>
   ) => ({
     rowIndex,
     colIndex,
@@ -117,9 +126,11 @@ const getCashboxBankCells = (
             value: cashboxBank[idx],
             onValueChanged: (value: number) => setOpeningBalance(value),
             format: numberFormat,
+            style: cashboxBankCellEditableStyle,
           })
         : getCashboxBankCell(rowIndex, idx + 1, NonEditableCell, {
             value: numberFormat.format(cashboxBank[idx]),
+            style: cashboxBankCellStyle,
           })
     ),
     getCashboxBankCell(rowIndex, 13, NonEditableCell, {}),
@@ -145,7 +156,7 @@ const getGroupCells = (
         rowIndex: rowIdx,
         colIndex: 0,
         Template: template,
-        props: { value: value },
+        props: { value: value, style: groupHeaderCellStyle },
       },
       ...months().map((_, idx) => ({
         rowIndex: rowIdx,
@@ -168,19 +179,25 @@ const getGroupCells = (
         rowIndex: rowIdx,
         colIndex: 0,
         Template: template,
-        props: { value: summaryTitle },
+        props: { value: summaryTitle, style: summaryTitleCellStyle },
       },
       ...months().map((_, idx) => ({
         rowIndex: rowIdx,
         colIndex: idx + 1,
         Template: template,
-        props: { value: numberFormat.format(monthlyGroupTotals[idx]) },
+        props: {
+          value: numberFormat.format(monthlyGroupTotals[idx]),
+          style: groupMonthSummaryCellStyle,
+        },
       })),
       {
         rowIndex: rowIdx,
         colIndex: 13,
         Template: template,
-        props: { value: numberFormat.format(yearlyGroupTotal) },
+        props: {
+          value: numberFormat.format(yearlyGroupTotal),
+          style: groupMonthSummaryCellStyle,
+        },
       },
     ];
   };
@@ -190,7 +207,7 @@ const getGroupCells = (
       rowIndex: startRowIdx + idx + 1,
       colIndex: 0,
       Template: NonEditableCell,
-      props: { value: group.title },
+      props: { value: group.title, style: groupRowNameCellStyle },
     },
     ...group.values.map((value, colIdx) => {
       if (group.title === "Other income") {
@@ -209,6 +226,7 @@ const getGroupCells = (
             },
             hideZero: true,
             format: numberFormat,
+            style: groupMonthValueCellStyle,
           },
         };
       }
@@ -227,6 +245,7 @@ const getGroupCells = (
             });
           },
           format: numberFormat,
+          style: groupMonthValueCellStyle,
         },
       };
     }),
@@ -234,7 +253,12 @@ const getGroupCells = (
       rowIndex: startRowIdx + idx + 1,
       colIndex: 13,
       Template: NonEditableCell,
-      props: { value: numberFormat.format(sumGroupValues(group.values)) },
+      props: {
+        value: sumGroupValues(group.values)
+          ? numberFormat.format(sumGroupValues(group.values))
+          : "",
+        style: groupMonthSummaryCellStyle,
+      },
     },
   ]);
 
@@ -364,13 +388,13 @@ const getCreditLineCells = (
       return getCreditLineCell(
         startRowIdx + 1,
         idx + 1,
-        overdraft > 0 ? overdraft.toString() : NaN.toString()
+        overdraft > 0 ? numberFormat.format(overdraft) : ""
       );
     }),
     getCreditLineCell(
       startRowIdx + 1,
       13,
-      yearlyOverdraft > 0 ? yearlyOverdraft.toString() : NaN.toString()
+      yearlyOverdraft > 0 ? numberFormat.format(yearlyOverdraft) : ""
     ),
   ];
 
@@ -487,23 +511,23 @@ const getLiquidFundsCell = (
 
 export const headerCells = [
   getMonthHeaderCell(0, 0, ""),
-  getMonthHeaderCell(0, 1, "Jan"),
-  getMonthHeaderCell(0, 2, "Feb"),
-  getMonthHeaderCell(0, 3, "Mar"),
-  getMonthHeaderCell(0, 4, "Apr"),
-  getMonthHeaderCell(0, 5, "May"),
-  getMonthHeaderCell(0, 6, "Jun"),
-  getMonthHeaderCell(0, 7, "Jul"),
-  getMonthHeaderCell(0, 8, "Aug"),
-  getMonthHeaderCell(0, 9, "Sep"),
-  getMonthHeaderCell(0, 10, "Oct"),
-  getMonthHeaderCell(0, 11, "Nov"),
-  getMonthHeaderCell(0, 12, "Dec"),
-  getMonthHeaderCell(0, 13, "Totals"),
+  getMonthHeaderCell(0, 1, "Jan", headerCellsStyle),
+  getMonthHeaderCell(0, 2, "Feb", headerCellsStyle),
+  getMonthHeaderCell(0, 3, "Mar", headerCellsStyle),
+  getMonthHeaderCell(0, 4, "Apr", headerCellsStyle),
+  getMonthHeaderCell(0, 5, "May", headerCellsStyle),
+  getMonthHeaderCell(0, 6, "Jun", headerCellsStyle),
+  getMonthHeaderCell(0, 7, "Jul", headerCellsStyle),
+  getMonthHeaderCell(0, 8, "Aug", headerCellsStyle),
+  getMonthHeaderCell(0, 9, "Sep", headerCellsStyle),
+  getMonthHeaderCell(0, 10, "Oct", headerCellsStyle),
+  getMonthHeaderCell(0, 11, "Nov", headerCellsStyle),
+  getMonthHeaderCell(0, 12, "Dec", headerCellsStyle),
+  getMonthHeaderCell(0, 13, "Totals", headerCellsStyle),
 ];
 
 export const liquidFundsCells = [
-  getLiquidFundsCell(1, 0, "Liquid funds"),
+  getLiquidFundsCell(1, 0, "Liquid funds", groupHeaderCellStyle),
   getLiquidFundsCell(1, 1, ""),
   getLiquidFundsCell(1, 2, ""),
   getLiquidFundsCell(1, 3, ""),

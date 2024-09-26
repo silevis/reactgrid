@@ -95,6 +95,7 @@ export const FillHandleExample = () => {
       <ReactGrid
         id="fill-handle-example"
         styles={rgStyles}
+        stickyLeftColumns={1}
         enableColumnSelectionOnFirstRow
         onFillHandle={handleFill}
         initialFocusLocation={{ rowIndex: 2, colIndex: 1 }}
