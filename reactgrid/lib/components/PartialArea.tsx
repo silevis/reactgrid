@@ -96,7 +96,7 @@ export const PartialArea: FC<PartialAreaProps> = React.memo(
     const selectedArea = useReactGridStore(id, (store) => store.selectedArea);
     const paneRanges = useReactGridStore(id, (store) => store.paneRanges);
     const fillHandleArea = useReactGridStore(id, (store) => store.fillHandleArea);
-    const onFillHandle = useReactGridStore(id, (store) => store.onFillHandle);
+    const disableFillHandle = useReactGridStore(id, (store) => store.disableFillHandle);
     const focusedCell =
       store.getCellByIndexes(store.focusedLocation.rowIndex, store.focusedLocation.colIndex) ?? undefined;
 
@@ -250,7 +250,7 @@ export const PartialArea: FC<PartialAreaProps> = React.memo(
 
     let shouldEnableFillHandle = false;
 
-    if (onFillHandle) {
+    if (!disableFillHandle) {
       const isTopPane = ["TopLeft", "TopCenter", "TopRight"].includes(parentPaneName);
       const isCenterPane = ["Left", "Center", "Right"].includes(parentPaneName);
 
@@ -266,7 +266,7 @@ export const PartialArea: FC<PartialAreaProps> = React.memo(
         (parentPaneName === "BottomLeft" && selectedArea.endColIdx > paneRanges.BottomLeft.endColIdx) ||
         (parentPaneName === "BottomCenter" && selectedArea.endColIdx > paneRanges.BottomCenter.endColIdx);
 
-      // `exceedsRowLimit` and `exceedsColLimit` are used to prevent showing multiple fill handle button when selected area exceeds the pane limits
+      // `exceedsRowLimit` and `exceedsColLimit` are used to prevent showing multiple fill handle buttons when selected area exceeds the pane limits
 
       if (!isEqual(selectedArea, EMPTY_AREA)) {
         if (isFocusedCellPartial && areAreasEqual(selectedArea, focusedCellArea)) {

@@ -1,7 +1,7 @@
 import { CellsLookup, CellsLookupCallbacks } from "../../lib/types/PublicModel";
 import { NumericalRange } from "../../lib/types/PublicModel";
 
-export const handleCut = (event, cellsRange: NumericalRange, cellsLookup: CellsLookup) => {
+export const handleCut = (event, cellsRange: NumericalRange, cellsLookup: CellsLookup): boolean => {
   const { startRowIdx, endRowIdx, startColIdx, endColIdx } = cellsRange;
   const cellsLookupCallbacks: CellsLookupCallbacks[] = [];
 
@@ -37,4 +37,6 @@ export const handleCut = (event, cellsRange: NumericalRange, cellsLookup: CellsL
 
   event.clipboardData.setData("text/html", htmlData);
   event.clipboardData.setData("text/plain", values.join("\t"));
+
+  return true;
 };

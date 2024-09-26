@@ -119,6 +119,7 @@ export interface ReactGridProps {
   disableCut?: boolean;
   disableCopy?: boolean;
   disablePaste?: boolean;
+  disableFillHandle?: boolean;
 
   behaviors?: Partial<Record<BehaviorId, Behavior>>;
 
@@ -127,10 +128,22 @@ export interface ReactGridProps {
 
   onFocusLocationChanging?: ({ location }: { location: IndexedLocation }) => boolean;
   onFocusLocationChanged?: ({ location }: { location: IndexedLocation }) => void;
-  onFillHandle?: (selectedArea: NumericalRange, fillRange: NumericalRange, cellsLookup: CellsLookup) => void;
-  onCut?: (event: React.ClipboardEvent<HTMLDivElement>, cellsRange: NumericalRange, cellsLookup: CellsLookup) => void;
-  onCopy?: (event: React.ClipboardEvent<HTMLDivElement>, cellsRange: NumericalRange, cellsLookup: CellsLookup) => void;
-  onPaste?: (event: React.ClipboardEvent<HTMLDivElement>, cellsRange: NumericalRange, cellsLookup: CellsLookup) => void;
+  onFillHandle?: (selectedArea: NumericalRange, fillRange: NumericalRange, cellsLookup: CellsLookup) => boolean;
+  onCut?: (
+    event: React.ClipboardEvent<HTMLDivElement>,
+    cellsRange: NumericalRange,
+    cellsLookup: CellsLookup
+  ) => boolean;
+  onCopy?: (
+    event: React.ClipboardEvent<HTMLDivElement>,
+    cellsRange: NumericalRange,
+    cellsLookup: CellsLookup
+  ) => boolean;
+  onPaste?: (
+    event: React.ClipboardEvent<HTMLDivElement>,
+    cellsRange: NumericalRange,
+    cellsLookup: CellsLookup
+  ) => boolean;
   onColumnReorder?: (selectedColIndexes: number[], destinationColIdx: number) => void;
   onRowReorder?: (selectedRowIndexes: number[], destinationRowIdx: number) => void;
   onResizeColumn?: (width: number, columnIdx: number[]) => void;

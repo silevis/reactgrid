@@ -1,6 +1,6 @@
 import isEqual from "lodash.isequal";
 import { Behavior } from "../types/Behavior";
-import { NumericalRange } from "../types/PublicModel";
+import { CellsLookup, NumericalRange } from "../types/PublicModel";
 import { EMPTY_AREA } from "../types/InternalModel";
 import { ReactGridStore } from "../types/ReactGridStore";
 import { getCellArea } from "../utils/getCellArea";
@@ -158,7 +158,15 @@ const handlePointerUp = (store: ReactGridStore) => {
       selectedArea = focusedCell ? getCellArea(store, focusedCell) : EMPTY_AREA;
     }
 
-    store.onFillHandle?.(selectedArea, store.fillHandleArea, cellsLookup);
+    if (store.onFillHandle) {
+      const isCustomFillHandleUsed = store.onFillHandle(selectedArea, store.fillHandleArea, cellsLookup);
+
+      if (!isCustomFillHandleUsed) {
+        defaultFillHandle(selectedArea, store.fillHandleArea, cellsLookup);
+      }
+    } else {
+      defaultFillHandle(selectedArea, store.fillHandleArea, cellsLookup);
+    }
   }
 
   const isPreviouslySelectedArea = previouslySelectedArea.startRowIdx !== -1;
@@ -205,4 +213,40 @@ const handlePointerUp = (store: ReactGridStore) => {
     fillHandleArea: EMPTY_AREA,
     currentBehavior: store.getBehavior("Default"),
   };
+};
+
+const defaultFillHandle = (selectedArea: NumericalRange, fillRange: NumericalRange, cellsLookup: CellsLookup) => {
+  // Check if the fill handle is being dragged upwards
+  const isFillingUpwards = fillRange.startRowIdx < selectedArea.startRowIdx;
+  // Calculate the number of rows and columns in the selected area
+  const relativeRowSize = selectedArea.endRowIdx - selectedArea.startRowIdx;
+  const relativeColSize = selectedArea.endColIdx - selectedArea.startColIdx;
+
+  // Iterate over the rows and columns in the fill range
+  for (let i = fillRange.startRowIdx; i < fillRange.endRowIdx; i++) {
+    for (let j = fillRange.startColIdx; j < fillRange.endColIdx; j++) {
+      const currentCellCallbacks = cellsLookup.get(`${i} ${j}`);
+
+      if (!currentCellCallbacks) continue;
+
+      // Skip cells of type 'header'
+      if (i === 0) continue;
+
+      // Calculate the relative row and column indices within the selected area
+      const relativeRowIdx = isFillingUpwards
+        ? (selectedArea.endRowIdx - i - 1) % relativeRowSize
+        : (i - fillRange.startRowIdx) % relativeRowSize;
+      const relativeColIdx = (j - fillRange.startColIdx) % relativeColSize;
+
+      // Get the value from the cell in the selected area that corresponds to the relative row and column indices
+      const sourceCellCallbacks = cellsLookup.get(
+        `${selectedArea.startRowIdx + relativeRowIdx} ${selectedArea.startColIdx + relativeColIdx}`
+      );
+
+      if (sourceCellCallbacks) {
+        const newValue = sourceCellCallbacks.onStringValueRequsted();
+        currentCellCallbacks.onStringValueReceived(newValue);
+      }
+    }
+  }
 };

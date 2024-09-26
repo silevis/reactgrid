@@ -50,8 +50,6 @@ export const LiquidityPlanner = () => {
 
   const columns = getColumns();
 
-  console.log("cells: ", cells);
-
   return (
     <ReactGrid
       cells={cells}

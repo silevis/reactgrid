@@ -20,6 +20,7 @@ import { isReorderBehavior } from "../utils/isReorderBehavior.ts";
 import { getCellIndexesFromPointerLocation } from "../utils/getCellIndexesFromPointerLocation.ts";
 import { getCellContainerByIndexes } from "../utils/getCellContainerByIndexes.ts";
 import { areAreasEqual } from "../utils/areAreasEqual.ts";
+import { ReactGridStore } from "../types/ReactGridStore.ts";
 
 const devEnvironment = isDevEnvironment();
 
@@ -331,44 +332,15 @@ export const DefaultBehavior = (config: DefaultBehaviorConfig = CONFIG_DEFAULTS)
     }
 
     if (store.onCopy) {
-      store.onCopy?.(event, cellsRange, store.cellsLookup);
-    } else if (!store.disableCopy) {
-      const { startRowIdx, endRowIdx, startColIdx, endColIdx } = cellsRange;
-      const cellsLookupCallbacks: CellsLookupCallbacks[] = [];
+      const isCustomCopyLogicUsed = store.onCopy?.(event, cellsRange, store.cellsLookup);
 
-      for (let rowIdx = startRowIdx; rowIdx < endRowIdx; rowIdx++) {
-        for (let colIdx = startColIdx; colIdx < endColIdx; colIdx++) {
-          const element = store.cellsLookup.get(`${rowIdx} ${colIdx}`);
-          if (element) {
-            cellsLookupCallbacks.push(element);
-          }
-        }
+      if (!isCustomCopyLogicUsed) {
+        defaultCopyHandler(event, store, cellsRange);
       }
-
-      const values = cellsLookupCallbacks.map((element) => element.onStringValueRequsted());
-
-      const htmlData = `
-      <table>
-        ${Array.from(
-          { length: cellsRange.endRowIdx - cellsRange.startRowIdx },
-          (_, rowIndex) => `
-          <tr>
-            ${Array.from({ length: cellsRange.endColIdx - cellsRange.startColIdx }, (_, colIndex) => {
-              const cell = store.cellsLookup.get(
-                `${cellsRange.startRowIdx + rowIndex} ${cellsRange.startColIdx + colIndex}`
-              );
-              const value = cell?.onStringValueRequsted() || "";
-              return `<td>${value}</td>`;
-            }).join("")}
-          </tr>
-        `
-        ).join("")}
-      </table>
-    `;
-
-      event.clipboardData.setData("text/html", htmlData);
-      event.clipboardData.setData("text/plain", values.join("\t"));
+    } else {
+      defaultCopyHandler(event, store, cellsRange);
     }
+
     return store;
   },
 
@@ -391,45 +363,13 @@ export const DefaultBehavior = (config: DefaultBehaviorConfig = CONFIG_DEFAULTS)
     }
 
     if (store.onCut) {
-      store.onCut?.(event, cellsRange, store.cellsLookup);
-    } else if (!store.disableCut) {
-      const { startRowIdx, endRowIdx, startColIdx, endColIdx } = cellsRange;
-      const cellsLookupCallbacks: CellsLookupCallbacks[] = [];
+      const isCustomCutLogicUsed = store.onCut?.(event, cellsRange, store.cellsLookup);
 
-      for (let rowIdx = startRowIdx; rowIdx < endRowIdx; rowIdx++) {
-        for (let colIdx = startColIdx; colIdx < endColIdx; colIdx++) {
-          const element = store.cellsLookup.get(`${rowIdx} ${colIdx}`);
-          if (element) {
-            cellsLookupCallbacks.push(element);
-          }
-        }
+      if (!isCustomCutLogicUsed) {
+        defaultCutHandler(event, store, cellsRange);
       }
-
-      const values = cellsLookupCallbacks.map((element) => element.onStringValueRequsted());
-
-      cellsLookupCallbacks.forEach((element) => element.onStringValueReceived(""));
-
-      const htmlData = `
-      <table>
-        ${Array.from(
-          { length: cellsRange.endRowIdx - cellsRange.startRowIdx },
-          (_, rowIndex) => `
-          <tr>
-            ${Array.from({ length: cellsRange.endColIdx - cellsRange.startColIdx }, (_, colIndex) => {
-              const cell = store.cellsLookup.get(
-                `${cellsRange.startRowIdx + rowIndex} ${cellsRange.startColIdx + colIndex}`
-              );
-              const value = cell?.onStringValueRequsted() || "";
-              return `<td>${value}</td>`;
-            }).join("")}
-          </tr>
-        `
-        ).join("")}
-      </table>
-    `;
-
-      event.clipboardData.setData("text/html", htmlData);
-      event.clipboardData.setData("text/plain", values.join("\t"));
+    } else {
+      defaultCutHandler(event, store, cellsRange);
     }
 
     return store;
@@ -453,69 +393,166 @@ export const DefaultBehavior = (config: DefaultBehaviorConfig = CONFIG_DEFAULTS)
     }
 
     if (store.onPaste) {
-      store.onPaste?.(event, cellsRange, store.cellsLookup);
-    } else if (!store.disablePaste) {
-      const html = event.clipboardData.getData("text/html");
+      const isCustomPasteLogicUsed = store.onPaste?.(event, cellsRange, store.cellsLookup);
 
-      const parser = new DOMParser();
-      const doc = parser.parseFromString(html, "text/html");
-
-      const rows = doc.querySelectorAll("tr");
-      const firstRowCells = rows[0].querySelectorAll("td");
-
-      if (rows.length === 1 && firstRowCells.length === 1) {
-        const singleValue = firstRowCells[0].textContent || "";
-        for (let rowIndex = cellsRange.startRowIdx; rowIndex < cellsRange.endRowIdx; rowIndex++) {
-          for (let colIndex = cellsRange.startColIdx; colIndex < cellsRange.endColIdx; colIndex++) {
-            const gridCell = store.cellsLookup.get(`${rowIndex} ${colIndex}`);
-            gridCell?.onStringValueReceived(singleValue);
-          }
-        }
-      } else {
-        rows.forEach((row, rowIndex) => {
-          const cells = row.querySelectorAll("td");
-          cells.forEach((cell, colIndex) => {
-            const value = cell.textContent || "";
-            const gridCell = store.cellsLookup.get(
-              `${cellsRange.startRowIdx + rowIndex} ${cellsRange.startColIdx + colIndex}`
-            );
-            if (gridCell) {
-              gridCell.onStringValueReceived(value);
-            }
-          });
-        });
+      if (!isCustomPasteLogicUsed) {
+        // return store with updated selected area
+        return defaultPasteHandler(event, store, cellsRange);
       }
-
-      let newSelectedArea;
-
-      // If only one cell was pasted
-      if (rows.length === 1 && firstRowCells.length === 1) {
-        newSelectedArea = {
-          startRowIdx: cellsRange.startRowIdx,
-          endRowIdx: cellsRange.endRowIdx,
-          startColIdx: cellsRange.startColIdx,
-          endColIdx: cellsRange.startColIdx + rows[0].querySelectorAll("td").length,
-        };
-      }
-      // If multiple cells were pasted
-      else {
-        const endRowIdx = Math.min(cellsRange.startRowIdx + rows.length, store.rows.length);
-        const endColIdx = Math.min(
-          cellsRange.startColIdx + rows[0].querySelectorAll("td").length,
-          store.columns.length
-        );
-
-        newSelectedArea = {
-          startRowIdx: cellsRange.startRowIdx,
-          endRowIdx: endRowIdx,
-          startColIdx: cellsRange.startColIdx,
-          endColIdx: endColIdx,
-        };
-      }
-
-      return { ...store, selectedArea: newSelectedArea };
+    } else {
+      // return store with updated selected area
+      return defaultPasteHandler(event, store, cellsRange);
     }
 
     return store;
   },
 });
+
+const defaultCopyHandler = (
+  event: React.ClipboardEvent<HTMLDivElement>,
+  store: ReactGridStore,
+  cellsRange: NumericalRange
+) => {
+  const { startRowIdx, endRowIdx, startColIdx, endColIdx } = cellsRange;
+  const cellsLookupCallbacks: CellsLookupCallbacks[] = [];
+
+  for (let rowIdx = startRowIdx; rowIdx < endRowIdx; rowIdx++) {
+    for (let colIdx = startColIdx; colIdx < endColIdx; colIdx++) {
+      const element = store.cellsLookup.get(`${rowIdx} ${colIdx}`);
+      if (element) {
+        cellsLookupCallbacks.push(element);
+      }
+    }
+  }
+
+  const values = cellsLookupCallbacks.map((element) => element.onStringValueRequsted());
+
+  const htmlData = `
+  <table>
+    ${Array.from(
+      { length: cellsRange.endRowIdx - cellsRange.startRowIdx },
+      (_, rowIndex) => `
+      <tr>
+        ${Array.from({ length: cellsRange.endColIdx - cellsRange.startColIdx }, (_, colIndex) => {
+          const cell = store.cellsLookup.get(
+            `${cellsRange.startRowIdx + rowIndex} ${cellsRange.startColIdx + colIndex}`
+          );
+          const value = cell?.onStringValueRequsted() || "";
+          return `<td>${value}</td>`;
+        }).join("")}
+      </tr>
+    `
+    ).join("")}
+  </table>
+`;
+
+  event.clipboardData.setData("text/html", htmlData);
+  event.clipboardData.setData("text/plain", values.join("\t"));
+};
+
+const defaultCutHandler = (
+  event: React.ClipboardEvent<HTMLDivElement>,
+  store: ReactGridStore,
+  cellsRange: NumericalRange
+) => {
+  const { startRowIdx, endRowIdx, startColIdx, endColIdx } = cellsRange;
+  const cellsLookupCallbacks: CellsLookupCallbacks[] = [];
+
+  for (let rowIdx = startRowIdx; rowIdx < endRowIdx; rowIdx++) {
+    for (let colIdx = startColIdx; colIdx < endColIdx; colIdx++) {
+      const element = store.cellsLookup.get(`${rowIdx} ${colIdx}`);
+      if (element) {
+        cellsLookupCallbacks.push(element);
+      }
+    }
+  }
+
+  const values = cellsLookupCallbacks.map((element) => element.onStringValueRequsted());
+
+  cellsLookupCallbacks.forEach((element) => element.onStringValueReceived(""));
+
+  const htmlData = `
+  <table>
+    ${Array.from(
+      { length: cellsRange.endRowIdx - cellsRange.startRowIdx },
+      (_, rowIndex) => `
+      <tr>
+        ${Array.from({ length: cellsRange.endColIdx - cellsRange.startColIdx }, (_, colIndex) => {
+          const cell = store.cellsLookup.get(
+            `${cellsRange.startRowIdx + rowIndex} ${cellsRange.startColIdx + colIndex}`
+          );
+          const value = cell?.onStringValueRequsted() || "";
+          return `<td>${value}</td>`;
+        }).join("")}
+      </tr>
+    `
+    ).join("")}
+  </table>
+`;
+
+  event.clipboardData.setData("text/html", htmlData);
+  event.clipboardData.setData("text/plain", values.join("\t"));
+};
+
+const defaultPasteHandler = (
+  event: React.ClipboardEvent<HTMLDivElement>,
+  store: ReactGridStore,
+  cellsRange: NumericalRange
+): ReactGridStore => {
+  const html = event.clipboardData.getData("text/html");
+
+  const parser = new DOMParser();
+  const doc = parser.parseFromString(html, "text/html");
+
+  const rows = doc.querySelectorAll("tr");
+  const firstRowCells = rows[0].querySelectorAll("td");
+
+  if (rows.length === 1 && firstRowCells.length === 1) {
+    const singleValue = firstRowCells[0].textContent || "";
+    for (let rowIndex = cellsRange.startRowIdx; rowIndex < cellsRange.endRowIdx; rowIndex++) {
+      for (let colIndex = cellsRange.startColIdx; colIndex < cellsRange.endColIdx; colIndex++) {
+        const gridCell = store.cellsLookup.get(`${rowIndex} ${colIndex}`);
+        gridCell?.onStringValueReceived(singleValue);
+      }
+    }
+  } else {
+    rows.forEach((row, rowIndex) => {
+      const cells = row.querySelectorAll("td");
+      cells.forEach((cell, colIndex) => {
+        const value = cell.textContent || "";
+        const gridCell = store.cellsLookup.get(
+          `${cellsRange.startRowIdx + rowIndex} ${cellsRange.startColIdx + colIndex}`
+        );
+        if (gridCell) {
+          gridCell.onStringValueReceived(value);
+        }
+      });
+    });
+  }
+
+  let newSelectedArea;
+
+  // If only one cell was pasted
+  if (rows.length === 1 && firstRowCells.length === 1) {
+    newSelectedArea = {
+      startRowIdx: cellsRange.startRowIdx,
+      endRowIdx: cellsRange.endRowIdx,
+      startColIdx: cellsRange.startColIdx,
+      endColIdx: cellsRange.endColIdx,
+    };
+  }
+  // If multiple cells were pasted
+  else {
+    const endRowIdx = Math.min(cellsRange.startRowIdx + rows.length, store.rows.length);
+    const endColIdx = Math.min(cellsRange.startColIdx + rows[0].querySelectorAll("td").length, store.columns.length);
+
+    newSelectedArea = {
+      startRowIdx: cellsRange.startRowIdx,
+      endRowIdx: endRowIdx,
+      startColIdx: cellsRange.startColIdx,
+      endColIdx: endColIdx,
+    };
+  }
+
+  return { ...store, selectedArea: newSelectedArea };
+};

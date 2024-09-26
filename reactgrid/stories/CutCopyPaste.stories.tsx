@@ -1,11 +1,8 @@
 import React, { StrictMode, useState } from "react";
-import { Cell, NonEditableCell, NumberCell, ReactGrid, Row, TextCell } from "../lib/main";
+import { Cell, NonEditableCell, NumberCell, ReactGrid, Row, TextCell, useReactGridAPI } from "../lib/main";
 import { StoryDefault } from "@ladle/react";
 import { ErrorBoundary } from "../lib/components/ErrorBoundary";
 import { ColumnDef, peopleArr, rgStyles } from "./utils/examplesConfig";
-import { handleCopy } from "./utils/handleCopy";
-import { handleCut } from "./utils/handleCut";
-import { handlePaste } from "./utils/handlePaste";
 
 export const CutCopyPasteExample = () => {
   const [people, setPeople] = useState(peopleArr);
@@ -96,9 +93,6 @@ export const CutCopyPasteExample = () => {
       <ReactGrid
         id="cut-copy-paste-example"
         styles={rgStyles}
-        onCut={handleCut}
-        onCopy={handleCopy}
-        onPaste={handlePaste}
         initialFocusLocation={{ rowIndex: 2, colIndex: 1 }}
         rows={gridRows}
         columns={gridColumns}
