@@ -65,7 +65,6 @@ export const CellContextProvider = memo(
             ...getCellOffset?.(rowIndex, colIndex, rowSpan ?? 1, colSpan ?? 1),
             gridRowStart: realRowIndex + 1,
             gridColumnStart: realColumnIndex + 1,
-            ...props.style,
           },
         }}
       >

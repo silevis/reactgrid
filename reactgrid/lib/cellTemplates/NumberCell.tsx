@@ -16,6 +16,7 @@ interface NumberCellProps {
 
 export const NumberCell: FC<NumberCellProps> = ({
   value: initialValue,
+  style,
   onValueChanged,
   validator,
   errorMessage,
@@ -47,6 +48,7 @@ export const NumberCell: FC<NumberCellProps> = ({
       onTouchEnd={handleDoubleTouch}
       onStringValueRequsted={() => initialValueStr}
       onStringValueReceived={(v) => onValueChanged?.(Number(v))}
+      style={style}
       onDoubleClick={() => {
         if (ctx.isFocused) {
           setCurrentValue(initialValueStr || "0");

@@ -6,9 +6,9 @@ interface NonEditableCellProps {
   style?: React.CSSProperties;
 }
 
-export const NonEditableCell: FC<NonEditableCellProps> = ({ value }) => {
+export const NonEditableCell: FC<NonEditableCellProps> = ({ value, style }) => {
   return (
-    <CellWrapper onStringValueRequsted={() => value?.toString() || ""} onStringValueReceived={() => {}}>
+    <CellWrapper onStringValueRequsted={() => value?.toString() || ""} onStringValueReceived={() => {}} style={style}>
       {value}
     </CellWrapper>
   );

@@ -54,6 +54,7 @@ const CellWrapper: FC<CellWrapperProps> = ({
         customClassName ?? ""
       }`}
       style={{
+        minHeight: 0,
         padding: ".2rem",
         textAlign: "center",
         position: "relative",

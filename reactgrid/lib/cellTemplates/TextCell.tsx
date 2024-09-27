@@ -10,7 +10,7 @@ interface TextCellProps {
   style?: React.CSSProperties;
 }
 
-export const TextCell: FC<TextCellProps> = ({ text: initialText, onTextChanged }) => {
+export const TextCell: FC<TextCellProps> = ({ text: initialText, onTextChanged, style }) => {
   const ctx = useCellContext();
   const targetInputRef = useRef<HTMLInputElement>(null);
   const [isEditMode, setEditMode] = useState(false);
@@ -26,7 +26,7 @@ export const TextCell: FC<TextCellProps> = ({ text: initialText, onTextChanged }
       onStringValueRequsted={() => initialText}
       onStringValueReceived={(v) => onTextChanged?.(v)}
       onTouchEnd={handleDoubleTouch}
-      style={{ padding: ".2rem", textAlign: "center", outline: "none", minHeight: 0 }}
+      style={style}
       onDoubleClick={() => {
         if (ctx.isFocused) {
           setCurrentValue(initialText || "");
