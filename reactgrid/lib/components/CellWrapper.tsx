@@ -63,6 +63,7 @@ const CellWrapper: FC<CellWrapperProps> = ({
         touchAction: disableTouchAction ? "none" : "auto",
         ...customStyle,
         ...ctx.containerStyle,
+        ...(customStyle?.backgroundColor && { backgroundColor: customStyle.backgroundColor }),
       }}
     >
       {ctx.realRowIndex === 0 && <ColumnResizeBadge />}
