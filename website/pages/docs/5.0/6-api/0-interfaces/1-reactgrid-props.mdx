@@ -30,12 +30,16 @@ interface ReactGridProps {
   behaviors?: Partial<Record<BehaviorId, Behavior>>;
   initialFocusLocation?: IndexedLocation;
   initialSelectedRange?: Range;
+  disableCut?: boolean;
+  disableCopy?: boolean;
+  disablePaste?: boolean;
+  disableFillHandle?: boolean;
   onFocusLocationChanging?: ({ location }: { location: IndexedLocation }) => boolean;
   onFocusLocationChanged?: ({ location }: { location: IndexedLocation }) => void;
-  onFillHandle?: (selectedArea: NumericalRange, fillRange: NumericalRange, cellsLookup: CellsLookup) => void;
-  onCut?: (event: React.ClipboardEvent<HTMLDivElement>, cellsRange: NumericalRange, cellsLookup: CellsLookup) => void;
-  onCopy?: (event: React.ClipboardEvent<HTMLDivElement>, cellsRange: NumericalRange, cellsLookup: CellsLookup) => void;
-  onPaste?: (event: React.ClipboardEvent<HTMLDivElement>, cellsRange: NumericalRange, cellsLookup: CellsLookup) => void;
+  onFillHandle?: (selectedArea: NumericalRange, fillRange: NumericalRange, cellsLookup: CellsLookup) => boolean;
+  onCut?: (event: React.ClipboardEvent<HTMLDivElement>, cellsRange: NumericalRange, cellsLookup: CellsLookup) => boolean;
+  onCopy?: (event: React.ClipboardEvent<HTMLDivElement>, cellsRange: NumericalRange, cellsLookup: CellsLookup) => boolean;
+  onPaste?: (event: React.ClipboardEvent<HTMLDivElement>, cellsRange: NumericalRange, cellsLookup: CellsLookup) => boolean;
   onColumnReorder?: (selectedColIndexes: number[], destinationColIdx: number) => void;
   onRowReorder?: (selectedRowIndexes: number[], destinationRowIdx: number) => void;
   onResizeColumn?: (width: number, columnIdx: number[]) => void;
@@ -61,6 +65,10 @@ interface ReactGridProps {
 | `behaviors`                      | `Partial<Record<BehaviorId, Behavior>>`  | Optional behaviors for the grid.                 |
 | `initialFocusLocation`           | `IndexedLocation`                       | Initial focus location in the grid.              |
 | `initialSelectedRange`           | `Range`                                 | Initial selected range in the grid.              |
+| `disableCut`           | `boolean`                                 | Disables the cut functionality in the grid.              |
+| `disableCopy`           | `boolean`                                 | Disables the copy functionality in the grid.              |
+| `disablePaste`           | `boolean`                                 | Disables the paste functionality in the grid.              |
+| `disableFillHandle`           | `boolean`                                 | Disables the fill handle functionality in the grid.              |
 
 #### Callbacks
 
@@ -70,10 +78,10 @@ interface ReactGridProps {
 | `onCellFocused`              | `(cellLocation: IndexedLocation) => void`                                                     | Callback when a cell is focused.                 |
 | `onFocusLocationChanging`    | `({ location }: { location: IndexedLocation }) => boolean`                                    | Callback before focus location changes.          |
 | `onFocusLocationChanged`     | `({ location }: { location: IndexedLocation }) => void`                                       | Callback after focus location changes.           |
-| `onFillHandle`               | `(selectedArea: NumericalRange, fillRange: NumericalRange, cellsLookup: CellsLookup) => void` | Callback for fill handle action.                 |
-| `onCut`                      | `(event: React.ClipboardEvent<HTMLDivElement>, cellsRange: NumericalRange, cellsLookup: CellsLookup) => void` | Callback for cut action.                         |
-| `onCopy`                     | `(event: React.ClipboardEvent<HTMLDivElement>, cellsRange: NumericalRange, cellsLookup: CellsLookup) => void` | Callback for copy action.                        |
-| `onPaste`                    | `(event: React.ClipboardEvent<HTMLDivElement>, cellsRange: NumericalRange, cellsLookup: CellsLookup) => void` | Callback for paste action.                       |
+| `onFillHandle`               | `(selectedArea: NumericalRange, fillRange: NumericalRange, cellsLookup: CellsLookup) => boolean` | Callback for fill handle action.                 |
+| `onCut`                      | `(event: React.ClipboardEvent<HTMLDivElement>, cellsRange: NumericalRange, cellsLookup: CellsLookup) => boolean` | Callback for cut action.                         |
+| `onCopy`                     | `(event: React.ClipboardEvent<HTMLDivElement>, cellsRange: NumericalRange, cellsLookup: CellsLookup) => boolean` | Callback for copy action.                        |
+| `onPaste`                    | `(event: React.ClipboardEvent<HTMLDivElement>, cellsRange: NumericalRange, cellsLookup: CellsLookup) => boolean` | Callback for paste action.                       |
 | `onColumnReorder`            | `(selectedColIndexes: number[], destinationColIdx: number) => void`                          | Callback for column reorder action.              |
 | `onRowReorder`               | `(selectedRowIndexes: number[], destinationRowIdx: number) => void`                          | Callback for row reorder action.                 |
 | `onResizeColumn`             | `(width: number, columnIdx: number[]) => void`                                                | Callback for column resize action.               |

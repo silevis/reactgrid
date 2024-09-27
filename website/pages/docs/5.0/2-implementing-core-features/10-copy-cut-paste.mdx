@@ -7,12 +7,12 @@ metaDescription: "ReactGrid docs"
 
 #### Introduction
 
-To enable cut, copy and paste you need to pass following handlers into ReactGrid component
+Support for cut, copy, and paste is enabled by default. You can disable these features by passing `disableCut`, `disableCopy`, and `disablePaste` props to the `ReactGrid` component, respectively. If you'd like to implement your own logic, the following props are available:
 
 ```ts
-onCut?: (event: React.ClipboardEvent<HTMLDivElement>, cellsRange: NumericalRange, cellsLookup: CellsLookup) => void;
-onCopy?: (event: React.ClipboardEvent<HTMLDivElement>, cellsRange: NumericalRange, cellsLookup: CellsLookup) => void;
-onPaste?: (event: React.ClipboardEvent<HTMLDivElement>, cellsRange: NumericalRange, cellsLookup: CellsLookup) => void;
+onCut?: (event: React.ClipboardEvent<HTMLDivElement>, cellsRange: NumericalRange, cellsLookup: CellsLookup) => boolean;
+onCopy?: (event: React.ClipboardEvent<HTMLDivElement>, cellsRange: NumericalRange, cellsLookup: CellsLookup) => boolean;
+onPaste?: (event: React.ClipboardEvent<HTMLDivElement>, cellsRange: NumericalRange, cellsLookup: CellsLookup) => boolean;
 ```
 
 #### Parameters
@@ -23,9 +23,23 @@ Name         | Type                                      | Description |
 `cellsRange` | `NumericalRange`                          | The range of cells involved in the cut, copy, or paste action. |
 `cellsLookup`| `CellsLookup`                             | A map object that provides callbacks to get and set cell values. Each key is a string combining row and column indices, and the value is an object with `rowIndex`, `colIndex`, `onStringValueRequested` (callback to get the cell value), and `onStringValueReceived` (callback to set the cell value). |
 
+#### Return Value
+
+The return value of these handlers determines whether the custom logic should override the default cut, copy, or paste behavior.
+
+| Return Value | Type      | Description                                                                 |
+|--------------|-----------|-----------------------------------------------------------------------------|
+| `true`       | `boolean` | Custom logic should override the default behavior.                          |
+| `false`      | `boolean` | Default behavior should proceed without being overridden by custom logic. It is used in case you want to perform additional actions before allowing the default behavior.   |
+
+
 ---
 
 ### Live Demo
+
+Below is an example with overridden logic for cut, copy, and paste. Additionally, `handlePaste` utilizes the `setSelectedArea` method from the gridAPI to highlight the new cell area after pasting the data.
+
+---
 
 import LiveCode from "@/nextra/components/LiveCode.tsx";
 import React, { useState } from "react";
@@ -34,6 +48,7 @@ import {
   NumberCell,
   TextCell,
   NonEditableCell,
+  useReactGridAPI,
   Row,
   Cell,
 } from "@silevis/reactgrid";
@@ -45,6 +60,7 @@ import {
     NumberCell,
     TextCell,
     NonEditableCell,
+    useReactGridAPI,
     Row,
     Cell,
   }}
@@ -91,108 +107,7 @@ import {
         position: 5,
       },
     ];
-
-    const handleCut = (event, cellsRange: NumericalRange, cellsLookup: CellsLookup) => {
-      const { startRowIdx, endRowIdx, startColIdx, endColIdx } = cellsRange;
-      const cellsLookupCallbacks: CellsLookupCallbacks[] = [];
     
-      for (let rowIdx = startRowIdx; rowIdx < endRowIdx; rowIdx++) {
-        for (let colIdx = startColIdx; colIdx < endColIdx; colIdx++) {
-          const element = cellsLookup.get(rowIdx + " " + colIdx);
-          if (element) {
-            cellsLookupCallbacks.push(element);
-          }
-        }
-      }
-    
-      const values = cellsLookupCallbacks.map((element) => element.onStringValueRequsted());
-    
-      cellsLookupCallbacks.forEach((element) => element.onStringValueReceived(""));
-    
-      let htmlData = "<table>";
-      for (let rowIndex = 0; rowIndex < cellsRange.endRowIdx - cellsRange.startRowIdx; rowIndex++) {
-        htmlData += "<tr>";
-        for (let colIndex = 0; colIndex < cellsRange.endColIdx - cellsRange.startColIdx; colIndex++) {
-          const cell = cellsLookup.get(
-            (cellsRange.startRowIdx + rowIndex) + " " + (cellsRange.startColIdx + colIndex)
-          );
-          const value = cell?.onStringValueRequsted() || "";
-          htmlData += "<td>" + value + "</td>";
-        }
-        htmlData += "</tr>";
-      }
-      htmlData += "</table>";
-    
-      event.clipboardData.setData("text/html", htmlData);
-      event.clipboardData.setData("text/plain", values.join("\t"));
-    };
-    
-    const handleCopy = (event, cellsRange: NumericalRange, cellsLookup: CellsLookup) => {
-      const { startRowIdx, endRowIdx, startColIdx, endColIdx } = cellsRange;
-      const cellsLookupCallbacks: CellsLookupCallbacks[] = [];
-    
-      for (let rowIdx = startRowIdx; rowIdx < endRowIdx; rowIdx++) {
-        for (let colIdx = startColIdx; colIdx < endColIdx; colIdx++) {
-          const element = cellsLookup.get(rowIdx + " " + colIdx);
-          if (element) {
-            cellsLookupCallbacks.push(element);
-          }
-        }
-      }
-    
-      const values = cellsLookupCallbacks.map((element) => element.onStringValueRequsted());
-    
-      let htmlData = "<table>";
-      for (let rowIndex = 0; rowIndex < cellsRange.endRowIdx - cellsRange.startRowIdx; rowIndex++) {
-        htmlData += "<tr>";
-        for (let colIndex = 0; colIndex < cellsRange.endColIdx - cellsRange.startColIdx; colIndex++) {
-          const cell = cellsLookup.get(
-            (cellsRange.startRowIdx + rowIndex) + " " + (cellsRange.startColIdx + colIndex)
-          );
-          const value = cell?.onStringValueRequsted() || "";
-          htmlData += "<td>" + value + "</td>";
-        }
-        htmlData += "</tr>";
-      }
-      htmlData += "</table>";
-    
-      event.clipboardData.setData("text/html", htmlData);
-      event.clipboardData.setData("text/plain", values.join("\t"));
-    };
-    
-    const handlePaste = (event, cellsArea: NumericalRange, cellsLookup: CellsLookup) => {
-      const html = event.clipboardData.getData("text/html");
-    
-      const parser = new DOMParser();
-      const doc = parser.parseFromString(html, "text/html");
-    
-      const rows = doc.querySelectorAll("tr");
-      const firstRowCells = rows[0].querySelectorAll("td");
-    
-      if (rows.length === 1 && firstRowCells.length === 1) {
-        const singleValue = firstRowCells[0].textContent || "";
-        for (let rowIndex = cellsArea.startRowIdx; rowIndex < cellsArea.endRowIdx; rowIndex++) {
-          for (let colIndex = cellsArea.startColIdx; colIndex < cellsArea.endColIdx; colIndex++) {
-            const gridCell = cellsLookup.get(rowIndex + " " + colIndex);
-            gridCell?.onStringValueReceived(singleValue);
-          }
-        }
-      } else {
-        rows.forEach((row, rowIndex) => {
-          const cells = row.querySelectorAll("td");
-          cells.forEach((cell, colIndex) => {
-            const value = cell.textContent || "";
-            const gridCell = cellsLookup.get(
-              (cellsArea.startRowIdx + rowIndex) + " " + (cellsArea.startColIdx + colIndex)
-            );
-            if (gridCell) {
-              gridCell.onStringValueReceived(value);
-            }
-          });
-        });
-      }
-    };
-
     const FillHandleExample = () => {
       const [people, setPeople] = useState(peopleArr);
 
@@ -274,16 +189,180 @@ import {
         }
       });
 
+      const gridAPI = useReactGridAPI("cut-copy-paste-example");
+
       return (
         <ReactGrid
+          id="cut-copy-paste-example"
           rows={gridRows}
           columns={gridColumns}
           cells={cells}
-          onCut={handleCut}
-          onCopy={handleCopy}
-          onPaste={handlePaste}
+          onCut={(event, cellsRange, cellsLookup) => handleCut(event, cellsRange, cellsLookup)}
+          onCopy={(event, cellsRange, cellsLookup) => handleCopy(event, cellsRange, cellsLookup)}
+          onPaste={(event, cellsRange, cellsLookup) => handlePaste(event, cellsRange, cellsLookup, gridAPI)}
         />
       );
+    };
+
+    
+    const handleCut = (
+      event: React.ClipboardEvent<HTMLDivElement>,
+      cellsRange: NumericalRange,
+      cellsLookup: CellsLookup
+    ) => {
+      const { startRowIdx, endRowIdx, startColIdx, endColIdx } = cellsRange;
+      const cellsLookupCallbacks: CellsLookupCallbacks[] = [];
+
+      for (let rowIdx = startRowIdx; rowIdx < endRowIdx; rowIdx++) {
+        for (let colIdx = startColIdx; colIdx < endColIdx; colIdx++) {
+          const element = cellsLookup.get(rowIdx + ' ' + colIdx);
+          if (element) {
+            cellsLookupCallbacks.push(element);
+          }
+        }
+      }
+
+      const values = cellsLookupCallbacks
+        .filter((element) => element && Object.keys(element).length > 0)
+        .map((element) => element.onStringValueRequsted());
+
+      cellsLookupCallbacks.forEach((element) => element && element.onStringValueReceived?.(""));
+
+      const htmlData = 
+      "<table>" +
+        Array.from(
+          { length: cellsRange.endRowIdx - cellsRange.startRowIdx },
+          function(_, rowIndex) {
+            return "<tr>" +
+              Array.from({ length: cellsRange.endColIdx - cellsRange.startColIdx }, function(_, colIndex) {
+                const cell = cellsLookup.get((cellsRange.startRowIdx + rowIndex) + " " + (cellsRange.startColIdx + colIndex));
+                const value = cell?.onStringValueRequsted?.() || "";
+                return "<td>" + value + "</td>";
+              }).join("") +
+            "</tr>";
+          }
+        ).join("") +
+      "</table>";
+
+      event.clipboardData.setData("text/html", htmlData);
+      event.clipboardData.setData("text/plain", values.join("\t"));
+
+      // Override the default cut behavior
+      return true;
+    };
+
+    const handleCopy = (
+      event: React.ClipboardEvent<HTMLDivElement>,
+      cellsRange: NumericalRange,
+      cellsLookup: CellsLookup
+    ) => {
+      const { startRowIdx, endRowIdx, startColIdx, endColIdx } = cellsRange;
+      const cellsLookupCallbacks: CellsLookupCallbacks[] = [];
+
+      for (let rowIdx = startRowIdx; rowIdx < endRowIdx; rowIdx++) {
+        for (let colIdx = startColIdx; colIdx < endColIdx; colIdx++) {
+          const element = cellsLookup.get(rowIdx + " " + colIdx);
+          if (element) {
+            cellsLookupCallbacks.push(element);
+          }
+        }
+      }
+
+      const values = cellsLookupCallbacks
+        .filter((element) => element && Object.keys(element).length > 0)
+        .map((element) => element.onStringValueRequsted());
+
+      const htmlData = 
+      "<table>" +
+        Array.from(
+          { length: cellsRange.endRowIdx - cellsRange.startRowIdx },
+          function(_, rowIndex) {
+            return "<tr>" +
+              Array.from({ length: cellsRange.endColIdx - cellsRange.startColIdx }, function(_, colIndex) {
+                const cell = cellsLookup.get((cellsRange.startRowIdx + rowIndex) + " " + (cellsRange.startColIdx + colIndex));
+                const value = cell?.onStringValueRequsted?.() || "";
+                return "<td>" + value + "</td>";
+              }).join("") +
+            "</tr>";
+          }
+        ).join("") +
+      "</table>";
+
+      event.clipboardData.setData("text/html", htmlData);
+      event.clipboardData.setData("text/plain", values.join("\t"));
+
+      // Override the default copy behavior
+      return true;
+    };
+
+    const handlePaste = (
+      event: React.ClipboardEvent<HTMLDivElement>,
+      cellsRange: NumericalRange,
+      cellsLookup: CellsLookup,
+      gridAPI?: ReactGridAPI
+    ) => {
+      const html = event.clipboardData.getData("text/html");
+
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(html, "text/html");
+
+      const rows = doc.querySelectorAll("tr");
+      const firstRowCells = rows[0].querySelectorAll("td");
+
+      if (rows.length === 1 && firstRowCells.length === 1) {
+        const singleValue = firstRowCells[0].textContent || "";
+        for (let rowIndex = cellsRange.startRowIdx; rowIndex < cellsRange.endRowIdx; rowIndex++) {
+          for (let colIndex = cellsRange.startColIdx; colIndex < cellsRange.endColIdx; colIndex++) {
+            const gridCell = cellsLookup.get(rowIndex + " " + colIndex);
+            gridCell?.onStringValueReceived(singleValue);
+          }
+        }
+      } else {
+        rows.forEach((row, rowIndex) => {
+          const cells = row.querySelectorAll("td");
+          cells.forEach((cell, colIndex) => {
+            const value = cell.textContent || "";
+            const gridCell = cellsLookup.get((cellsRange.startRowIdx + rowIndex) + " " + (cellsRange.startColIdx + colIndex));
+            if (gridCell) {
+              gridCell.onStringValueReceived?.(value);
+            }
+          });
+        });
+      }
+
+      if (gridAPI) {
+        let newSelectedArea;
+
+        // If only one cell was pasted
+        if (rows.length === 1 && firstRowCells.length === 1) {
+          newSelectedArea = {
+            startRowIdx: cellsRange.startRowIdx,
+            endRowIdx: cellsRange.endRowIdx,
+            startColIdx: cellsRange.startColIdx,
+            endColIdx: cellsRange.endColIdx,
+          };
+        }
+        // If multiple cells were pasted
+        else {
+          const endRowIdx = Math.min(cellsRange.startRowIdx + rows.length, gridAPI.getRows().length);
+          const endColIdx = Math.min(
+            cellsRange.startColIdx + rows[0].querySelectorAll("td").length,
+            gridAPI.getColumns().length
+          );
+
+          newSelectedArea = {
+            startRowIdx: cellsRange.startRowIdx,
+            endRowIdx: endRowIdx,
+            startColIdx: cellsRange.startColIdx,
+            endColIdx: endColIdx,
+          };
+        }
+
+        gridAPI.setSelectedArea(newSelectedArea);
+      }
+
+      // Override the default paste behavior
+      return true;
     };
 
     render(<FillHandleExample />, document.getElementById("root"));

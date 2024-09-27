@@ -40,5 +40,6 @@ export const handleFill = (
     }
   }
 
+  // Override the default fill handle behavior
   return true;
 };

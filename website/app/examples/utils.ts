@@ -128,7 +128,10 @@ const getCashboxBankCells = (
   });
 
   return [
-    getCashboxBankCell(rowIndex, 0, NonEditableCell, { value: title }),
+    getCashboxBankCell(rowIndex, 0, NonEditableCell, {
+      value: title,
+      style: groupRowNameCellStyle,
+    }),
     ...months().map((values, idx) =>
       idx === 0
         ? getCashboxBankCell(rowIndex, idx + 1, NumberCell, {

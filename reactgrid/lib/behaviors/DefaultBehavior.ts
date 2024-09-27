@@ -425,7 +425,9 @@ const defaultCopyHandler = (
     }
   }
 
-  const values = cellsLookupCallbacks.map((element) => element.onStringValueRequsted());
+  const values = cellsLookupCallbacks
+    .filter((element) => element && Object.keys(element).length > 0)
+    .map((element) => element.onStringValueRequsted());
 
   const htmlData = `
   <table>
@@ -437,7 +439,7 @@ const defaultCopyHandler = (
           const cell = store.cellsLookup.get(
             `${cellsRange.startRowIdx + rowIndex} ${cellsRange.startColIdx + colIndex}`
           );
-          const value = cell?.onStringValueRequsted() || "";
+          const value = cell?.onStringValueRequsted?.() || "";
           return `<td>${value}</td>`;
         }).join("")}
       </tr>
@@ -467,9 +469,11 @@ const defaultCutHandler = (
     }
   }
 
-  const values = cellsLookupCallbacks.map((element) => element.onStringValueRequsted());
+  const values = cellsLookupCallbacks
+    .filter((element) => element && Object.keys(element).length > 0)
+    .map((element) => element.onStringValueRequsted());
 
-  cellsLookupCallbacks.forEach((element) => element.onStringValueReceived(""));
+  cellsLookupCallbacks.forEach((element) => element && element.onStringValueReceived?.(""));
 
   const htmlData = `
   <table>
@@ -481,7 +485,7 @@ const defaultCutHandler = (
           const cell = store.cellsLookup.get(
             `${cellsRange.startRowIdx + rowIndex} ${cellsRange.startColIdx + colIndex}`
           );
-          const value = cell?.onStringValueRequsted() || "";
+          const value = cell?.onStringValueRequsted?.() || "";
           return `<td>${value}</td>`;
         }).join("")}
       </tr>
@@ -524,7 +528,7 @@ const defaultPasteHandler = (
           `${cellsRange.startRowIdx + rowIndex} ${cellsRange.startColIdx + colIndex}`
         );
         if (gridCell) {
-          gridCell.onStringValueReceived(value);
+          gridCell.onStringValueReceived?.(value);
         }
       });
     });

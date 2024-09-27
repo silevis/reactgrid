@@ -1,6 +1,6 @@
 import isEqual from "lodash.isequal";
 import { Behavior } from "../types/Behavior";
-import { CellsLookup, NumericalRange } from "../types/PublicModel";
+import { CellsLookup, CellsLookupCallbacks, NumericalRange } from "../types/PublicModel";
 import { EMPTY_AREA } from "../types/InternalModel";
 import { ReactGridStore } from "../types/ReactGridStore";
 import { getCellArea } from "../utils/getCellArea";
@@ -243,7 +243,11 @@ const defaultFillHandle = (selectedArea: NumericalRange, fillRange: NumericalRan
         `${selectedArea.startRowIdx + relativeRowIdx} ${selectedArea.startColIdx + relativeColIdx}`
       );
 
-      if (sourceCellCallbacks) {
+      //  If cell is a span member, skip it
+      const isNotEmpty = (obj: CellsLookupCallbacks | undefined): obj is CellsLookupCallbacks =>
+        !!obj && Object.keys(obj).length > 0;
+
+      if (isNotEmpty(sourceCellCallbacks) && isNotEmpty(currentCellCallbacks)) {
         const newValue = sourceCellCallbacks.onStringValueRequsted();
         currentCellCallbacks.onStringValueReceived(newValue);
       }

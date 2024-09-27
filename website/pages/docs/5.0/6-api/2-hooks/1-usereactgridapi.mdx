@@ -42,6 +42,8 @@ function useReactGridAPI(id: string): ReactGridAPI | undefined {
       getPaneRanges: store.getPaneRanges,
       getCellsLookup: store.getCellsLookup,
       getSelectedArea: store.getSelectedArea,
+      getRows: () => store.rows,
+      getColumns: () => store.columns,
     };
   });
 }
@@ -62,3 +64,5 @@ function useReactGridAPI(id: string): ReactGridAPI | undefined {
 | `getPaneRanges`            | `() => PaneRange[]`                                                                          | Get the pane ranges in the ReactGrid.                                                                    |
 | `getCellsLookup`           | `() => CellsLookup`                                                                         | Get the cells lookup in the ReactGrid.                                                                   |
 | `getSelectedArea`          | `() => NumericalRange \| undefined`                                                             | Get the selected area in the ReactGrid.                                                                  |
+| `getRows`          | `Column[]`                                                             | Get the rows in the ReactGrid.                                                                  |
+| `getColumns`          | `Row[]`                                                             | Get the columns in the ReactGrid.                                                                  |
