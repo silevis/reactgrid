@@ -14,10 +14,22 @@ export const testStyles = {
     fontFamily: "Arial",
   },
   paneContainer: {
-    top: {},
-    right: {},
-    bottom: {},
-    left: {},
+    top: {
+      background: "lightyellow",
+      boxShadow: "rgba(0, 0, 0, 0.2) 0px 4px 10px 0px",
+    },
+    right: {
+      background: "lightgray",
+      boxShadow: "rgba(0, 0, 0, 0.2) -8px 0px 10px 0px",
+    },
+    bottom: {
+      background: "lightyellow",
+      boxShadow: "rgba(0, 0, 0, 0.2) -8px -6px 10px 0px",
+    },
+    left: {
+      background: "lightgray",
+      boxShadow: "rgba(0, 0, 0, 0.2) 4px 0px 10px 0px",
+    },
   },
 };
 
@@ -66,7 +78,6 @@ export const generateCells = (
           props: {
             value: col.title,
             style: {
-              backgroundColor: "#55bc71",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",

@@ -283,6 +283,11 @@ const PanesRenderer: FC<PanesRendererProps> = ({
     return colMeasurements;
   };
 
+  const topPaneBackground = theme.paneContainer.top.background;
+  const bottomPaneBackground = theme.paneContainer.bottom.background;
+  const leftPaneBackground = theme.paneContainer.left.background;
+  const rightPaneBackground = theme.paneContainer.right.background;
+
   return (
     <div
       css={{
@@ -328,7 +333,7 @@ const PanesRenderer: FC<PanesRendererProps> = ({
           stickyOffsets={stickyOffsets}
           getCellOffset={(rowIndex, _colIndex, rowSpan) => ({
             position: "sticky",
-            backgroundColor: theme.paneContainer.bottom.background,
+            ...(bottomPaneBackground && { backgroundColor: bottomPaneBackground }),
             bottom: stickyOffsets.bottomRows.at(-rowIndex - rowSpan),
           })}
           shouldRender={stickyBottomRows > 0}
@@ -344,7 +349,7 @@ const PanesRenderer: FC<PanesRendererProps> = ({
           stickyOffsets={stickyOffsets}
           getCellOffset={(rowIndex) => ({
             position: "sticky",
-            backgroundColor: theme.paneContainer.top.background,
+            ...(topPaneBackground && { backgroundColor: topPaneBackground }),
             top: stickyOffsets.topRows[rowIndex],
           })}
           shouldRender={stickyTopRows > 0}
@@ -360,7 +365,7 @@ const PanesRenderer: FC<PanesRendererProps> = ({
           stickyOffsets={stickyOffsets}
           getCellOffset={(_rowIndex, colIndex, _rowSpan, colSpan) => ({
             position: "sticky",
-            backgroundColor: theme.paneContainer.right.background,
+            ...(rightPaneBackground && { backgroundColor: rightPaneBackground }),
             right: stickyOffsets.rightColumns.at(-colIndex - colSpan),
           })}
           shouldRender={stickyRightColumns > 0}
@@ -376,7 +381,7 @@ const PanesRenderer: FC<PanesRendererProps> = ({
           stickyOffsets={stickyOffsets}
           getCellOffset={(_rowIndex, colIndex) => ({
             position: "sticky",
-            backgroundColor: theme.paneContainer.left.background,
+            ...(leftPaneBackground && { backgroundColor: leftPaneBackground }),
             left: stickyOffsets.leftColumns[colIndex],
           })}
           shouldRender={stickyLeftColumns > 0}
@@ -387,7 +392,7 @@ const PanesRenderer: FC<PanesRendererProps> = ({
           stickyOffsets={stickyOffsets}
           getCellOffset={(rowIndex, colIndex, rowSpan, colSpan) => ({
             position: "sticky",
-            backgroundColor: theme.paneContainer.bottom.background,
+            ...(bottomPaneBackground && { backgroundColor: bottomPaneBackground }),
             bottom: stickyOffsets.bottomRows.at(-rowIndex - rowSpan),
             right: stickyOffsets.rightColumns.at(-colIndex - colSpan),
           })}
@@ -399,7 +404,7 @@ const PanesRenderer: FC<PanesRendererProps> = ({
           stickyOffsets={stickyOffsets}
           getCellOffset={(rowIndex, colIndex, rowSpan) => ({
             position: "sticky",
-            backgroundColor: theme.paneContainer.bottom.background,
+            ...(bottomPaneBackground && { backgroundColor: bottomPaneBackground }),
             bottom: stickyOffsets.bottomRows.at(-rowIndex - rowSpan),
             left: stickyOffsets.leftColumns[colIndex],
           })}
@@ -411,7 +416,7 @@ const PanesRenderer: FC<PanesRendererProps> = ({
           stickyOffsets={stickyOffsets}
           getCellOffset={(rowIndex, colIndex, _rowSpan, colSpan) => ({
             position: "sticky",
-            backgroundColor: theme.paneContainer.top.background,
+            ...(topPaneBackground && { backgroundColor: topPaneBackground }),
             top: stickyOffsets.topRows[rowIndex],
             right: stickyOffsets.rightColumns.at(-colIndex - colSpan),
           })}
@@ -423,7 +428,7 @@ const PanesRenderer: FC<PanesRendererProps> = ({
           stickyOffsets={stickyOffsets}
           getCellOffset={(rowIndex, colIndex) => ({
             position: "sticky",
-            backgroundColor: theme.paneContainer.top.background,
+            ...(topPaneBackground && { backgroundColor: topPaneBackground }),
             top: stickyOffsets.topRows[rowIndex],
             left: stickyOffsets.leftColumns[colIndex],
           })}
