@@ -198,4 +198,10 @@ export const rgStyles = {
   gridWrapper: {
     fontFamily: "Roboto, sans-serif",
   },
+  paneContainer: {
+    top: {},
+    bottom: {},
+    left: {},
+    right: {},
+  },
 };

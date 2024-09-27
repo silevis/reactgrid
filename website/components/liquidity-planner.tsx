@@ -82,9 +82,11 @@ const gridStyles = {
     },
     left: {
       background: "#fff",
+      boxShadow: "0 0 10px 0 rgba(0, 0, 0, 0.1)",
     },
     right: {
       background: "#fff",
+      boxShadow: "0 0 10px 0 rgba(0, 0, 0, 0.1)",
     },
   },
   cellContainer: {

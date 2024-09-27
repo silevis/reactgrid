@@ -13,9 +13,15 @@ export const testStyles = {
     fontSize: "16px",
     fontFamily: "Arial",
   },
+  paneContainer: {
+    top: {},
+    right: {},
+    bottom: {},
+    left: {},
+  },
 };
 
-const myNumberFormat = new Intl.NumberFormat("en-US", {
+const numberFormat = new Intl.NumberFormat("en-US", {
   style: "currency",
   minimumFractionDigits: 2,
   maximumFractionDigits: 2,
@@ -85,7 +91,7 @@ export const generateCells = (
             updatePerson(employees[personRowIndex]._id, col.title, newValue);
           },
           value: employees[personRowIndex][col.title],
-          format: myNumberFormat,
+          format: numberFormat,
         };
 
         const textCellProps = {

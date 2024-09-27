@@ -350,6 +350,7 @@ export const PartialArea: FC<PartialAreaProps> = React.memo(
                   height: 6.5,
                   backgroundColor: isFillHandlePartial ? areaBorder.color : theme.focusIndicator.border.color,
                   cursor: "crosshair",
+                  boxSizing: "content-box",
                   pointerEvents: "auto",
                   border: "2px solid #fff",
                   borderRadius: "50%",

@@ -8,18 +8,10 @@ const lightTheme: RGTheme = {
     },
   },
   paneContainer: {
-    top: {
-      background: "#feffde",
-    },
-    right: {
-      background: "#fcfceb",
-    },
-    bottom: {
-      background: "#feffde",
-    },
-    left: {
-      background: "#fcfceb",
-    },
+    top: {},
+    right: {},
+    bottom: {},
+    left: {},
   },
   cellContainer: {
     padding: {

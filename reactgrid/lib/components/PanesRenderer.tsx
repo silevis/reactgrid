@@ -13,6 +13,7 @@ import { ColumnMeasurement } from "../types/ColumnMeasurement";
 import { getCellArea } from "../utils/getCellArea";
 import { isSpanMember } from "../utils/isSpanMember";
 import { getNumberFromPixelString } from "../utils/getNumberFromPixelValueString";
+import { PaneShadow } from "./PaneShadow";
 
 interface PanesRendererProps {
   rowAmount: number;
@@ -316,6 +317,11 @@ const PanesRenderer: FC<PanesRendererProps> = ({
         ref={gridContainerRef}
       >
         <Pane paneName="Center" gridContentRange={ranges.Center} />
+        <PaneShadow
+          paneShadowName="Bottom"
+          gridContentRange={{ ...ranges.BottomCenter, startColIdx: 0, endColIdx: columnAmount }}
+          shouldRender={stickyBottomRows > 0}
+        />
         <Pane
           paneName="BottomCenter"
           gridContentRange={ranges.BottomCenter}
@@ -326,6 +332,11 @@ const PanesRenderer: FC<PanesRendererProps> = ({
             bottom: stickyOffsets.bottomRows.at(-rowIndex - rowSpan),
           })}
           shouldRender={stickyBottomRows > 0}
+        />
+        <PaneShadow
+          paneShadowName="Top"
+          gridContentRange={{ ...ranges.TopCenter, startColIdx: 0, endColIdx: columnAmount }}
+          shouldRender={stickyTopRows > 0}
         />
         <Pane
           paneName="TopCenter"
@@ -338,6 +349,11 @@ const PanesRenderer: FC<PanesRendererProps> = ({
           })}
           shouldRender={stickyTopRows > 0}
         />
+        <PaneShadow
+          paneShadowName="Right"
+          gridContentRange={{ ...ranges.Right, startRowIdx: 0, endRowIdx: rowAmount }}
+          shouldRender={stickyRightColumns > 0}
+        />
         <Pane
           paneName="Right"
           gridContentRange={ranges.Right}
@@ -348,6 +364,11 @@ const PanesRenderer: FC<PanesRendererProps> = ({
             right: stickyOffsets.rightColumns.at(-colIndex - colSpan),
           })}
           shouldRender={stickyRightColumns > 0}
+        />
+        <PaneShadow
+          paneShadowName="Left"
+          gridContentRange={{ ...ranges.Left, startRowIdx: 0, endRowIdx: rowAmount }}
+          shouldRender={stickyLeftColumns > 0}
         />
         <Pane
           paneName="Left"

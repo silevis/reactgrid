@@ -3,12 +3,21 @@ import { Dispatch, SetStateAction } from "react";
 import {
   cashboxBankCellEditableStyle,
   cashboxBankCellStyle,
+  creditCellStyle,
+  creditEditableCellStyle,
+  creditLineOverdraftCellStyle,
+  creditLineOverdraftNameCellStyle,
+  cumulativeCellStyle,
+  cumulativeNameCellStyle,
+  emptyHeaderCellStyle,
   groupHeaderCellStyle,
   groupMonthSummaryCellStyle,
   groupMonthValueCellStyle,
   groupRowNameCellStyle,
   headerCellsStyle,
   summaryTitleCellStyle,
+  totalCellStyle,
+  totalNameCellStyle,
 } from "./gridStyles";
 
 export type MonthlyValues = number[];
@@ -18,7 +27,7 @@ const numberFormat = new Intl.NumberFormat("en-US", {
   maximumFractionDigits: 2,
 });
 
-const COL_WIDTH = 110;
+const COL_WIDTH = 150;
 
 export type Inflow =
   | "Sales"
@@ -162,29 +171,29 @@ const getGroupCells = (
         rowIndex: rowIdx,
         colIndex: idx + 1,
         Template: template,
-        props: { value: "" },
+        props: { value: "", style: emptyHeaderCellStyle },
       })),
       {
         rowIndex: rowIdx,
         colIndex: 13,
         Template: template,
-        props: { value: "" },
+        props: { value: "", style: emptyHeaderCellStyle },
       },
     ];
   };
 
-  const createGroupSummaryCells = (template: any, rowIdx: number): Cell[] => {
+  const createGroupSummaryCells = (rowIdx: number): Cell[] => {
     return [
       {
         rowIndex: rowIdx,
         colIndex: 0,
-        Template: template,
+        Template: NonEditableCell,
         props: { value: summaryTitle, style: summaryTitleCellStyle },
       },
       ...months().map((_, idx) => ({
         rowIndex: rowIdx,
         colIndex: idx + 1,
-        Template: template,
+        Template: NonEditableCell,
         props: {
           value: numberFormat.format(monthlyGroupTotals[idx]),
           style: groupMonthSummaryCellStyle,
@@ -193,7 +202,7 @@ const getGroupCells = (
       {
         rowIndex: rowIdx,
         colIndex: 13,
-        Template: template,
+        Template: NonEditableCell,
         props: {
           value: numberFormat.format(yearlyGroupTotal),
           style: groupMonthSummaryCellStyle,
@@ -254,9 +263,7 @@ const getGroupCells = (
       colIndex: 13,
       Template: NonEditableCell,
       props: {
-        value: sumGroupValues(group.values)
-          ? numberFormat.format(sumGroupValues(group.values))
-          : "",
+        value: numberFormat.format(sumGroupValues(group.values)),
         style: groupMonthSummaryCellStyle,
       },
     },
@@ -265,10 +272,7 @@ const getGroupCells = (
   return [
     ...createGroupHeaderCells(NonEditableCell, grouptitle, startRowIdx),
     ...groupCells,
-    ...createGroupSummaryCells(
-      NonEditableCell,
-      startRowIdx + groups.length + 1
-    ),
+    ...createGroupSummaryCells(startRowIdx + groups.length + 1),
   ];
 };
 
@@ -339,7 +343,8 @@ export const getCells = (
       creditLineStartRowIdx,
       plannerData.cumulativeTotals,
       plannerData.yearlyInflowOuflowDiff,
-      plannerData.creditLine
+      plannerData.creditLine,
+      handlers.setCreditLine
     ),
   ];
 
@@ -350,7 +355,8 @@ const getCreditLineCells = (
   startRowIdx: number,
   cumulativeTotals: MonthlyValues,
   yearlyInflowOuflowDiff: number,
-  creditLine: number
+  creditLine: number,
+  setCreditLine: Dispatch<SetStateAction<number>>
 ) => {
   const yearlyOverdraft =
     -yearlyInflowOuflowDiff - (isNaN(creditLine) ? 0 : creditLine);
@@ -371,30 +377,56 @@ const getCreditLineCells = (
   });
 
   const creditLineCells = [
-    getCreditLineCell(startRowIdx, 0, "Credit line"),
+    getCreditLineCell(startRowIdx, 0, "Credit line", groupRowNameCellStyle),
     ...months().map((_, idx) =>
       idx === 0
-        ? getCreditLineCell(startRowIdx, idx + 1, creditLine.toString())
-        : getCreditLineCell(startRowIdx, idx + 1, creditLine.toString())
+        ? {
+            rowIndex: startRowIdx,
+            colIndex: idx + 1,
+            Template: NumberCell,
+            props: {
+              onValueChanged: (value: number) => setCreditLine(value),
+              value: creditLine,
+              style: creditEditableCellStyle,
+            },
+          }
+        : getCreditLineCell(
+            startRowIdx,
+            idx + 1,
+            creditLine.toString(),
+            creditCellStyle
+          )
     ),
-    getCreditLineCell(startRowIdx, 13, creditLine.toString()),
+    getCreditLineCell(
+      startRowIdx,
+      13,
+      creditLine.toString(),
+      groupMonthSummaryCellStyle
+    ),
   ];
 
   const creditLineOverdraftCells = [
-    getCreditLineCell(startRowIdx + 1, 0, "Credit line overdraft"),
+    getCreditLineCell(
+      startRowIdx + 1,
+      0,
+      "Credit line overdraft",
+      creditLineOverdraftNameCellStyle
+    ),
     ...months().map((_, idx) => {
       const overdraft =
         -cumulativeTotals[idx] - (isNaN(creditLine) ? 0 : creditLine);
       return getCreditLineCell(
         startRowIdx + 1,
         idx + 1,
-        overdraft > 0 ? numberFormat.format(overdraft) : ""
+        overdraft > 0 ? numberFormat.format(overdraft) : "",
+        creditLineOverdraftCellStyle
       );
     }),
     getCreditLineCell(
       startRowIdx + 1,
       13,
-      yearlyOverdraft > 0 ? numberFormat.format(yearlyOverdraft) : ""
+      yearlyOverdraft > 0 ? numberFormat.format(yearlyOverdraft) : "",
+      creditLineOverdraftCellStyle
     ),
   ];
 
@@ -423,19 +455,21 @@ const getCumulativeCells = (
   });
 
   return [
-    getCumulativeCell(startRowIdx, 0, title),
+    getCumulativeCell(startRowIdx, 0, title, cumulativeNameCellStyle),
     ...months().map((_, idx) => ({
       rowIndex: startRowIdx,
       colIndex: idx + 1,
       Template: NonEditableCell,
       props: {
         value: numberFormat.format(cumulativeTotals[idx]),
+        style: cumulativeCellStyle,
       },
     })),
     getCumulativeCell(
       startRowIdx,
       13,
-      numberFormat.format(yearlyInflowOuflowDiff)
+      numberFormat.format(yearlyInflowOuflowDiff),
+      cumulativeCellStyle
     ),
   ];
 };
@@ -462,19 +496,21 @@ const getMonthsTotalCells = (
   });
 
   return [
-    getMonthsTotalCell(startRowIdx, 0, title),
+    getMonthsTotalCell(startRowIdx, 0, title, totalNameCellStyle),
     ...months().map((_, idx) => ({
       rowIndex: startRowIdx,
       colIndex: idx + 1,
       Template: NonEditableCell,
       props: {
         value: numberFormat.format(monthlyInflowOuflowDiffs[idx]),
+        style: totalCellStyle,
       },
     })),
     getMonthsTotalCell(
       startRowIdx,
       13,
-      numberFormat.format(yearlyInflowOuflowDiff)
+      numberFormat.format(yearlyInflowOuflowDiff),
+      totalCellStyle
     ),
   ];
 };
@@ -523,24 +559,31 @@ export const headerCells = [
   getMonthHeaderCell(0, 10, "Oct", headerCellsStyle),
   getMonthHeaderCell(0, 11, "Nov", headerCellsStyle),
   getMonthHeaderCell(0, 12, "Dec", headerCellsStyle),
-  getMonthHeaderCell(0, 13, "Totals", headerCellsStyle),
+  getMonthHeaderCell(0, 13, "Totals", {
+    ...headerCellsStyle,
+    justifyContent: "flex-end",
+    paddingRight: 15,
+  }),
 ];
 
 export const liquidFundsCells = [
-  getLiquidFundsCell(1, 0, "Liquid funds", groupHeaderCellStyle),
-  getLiquidFundsCell(1, 1, ""),
-  getLiquidFundsCell(1, 2, ""),
-  getLiquidFundsCell(1, 3, ""),
-  getLiquidFundsCell(1, 4, ""),
-  getLiquidFundsCell(1, 5, ""),
-  getLiquidFundsCell(1, 6, ""),
-  getLiquidFundsCell(1, 7, ""),
-  getLiquidFundsCell(1, 8, ""),
-  getLiquidFundsCell(1, 9, ""),
-  getLiquidFundsCell(1, 10, ""),
-  getLiquidFundsCell(1, 11, ""),
-  getLiquidFundsCell(1, 12, ""),
-  getLiquidFundsCell(1, 13, ""),
+  getLiquidFundsCell(1, 0, "Liquid funds", {
+    ...groupHeaderCellStyle,
+    ...emptyHeaderCellStyle,
+  }),
+  getLiquidFundsCell(1, 1, "", emptyHeaderCellStyle),
+  getLiquidFundsCell(1, 2, "", emptyHeaderCellStyle),
+  getLiquidFundsCell(1, 3, "", emptyHeaderCellStyle),
+  getLiquidFundsCell(1, 4, "", emptyHeaderCellStyle),
+  getLiquidFundsCell(1, 5, "", emptyHeaderCellStyle),
+  getLiquidFundsCell(1, 6, "", emptyHeaderCellStyle),
+  getLiquidFundsCell(1, 7, "", emptyHeaderCellStyle),
+  getLiquidFundsCell(1, 8, "", emptyHeaderCellStyle),
+  getLiquidFundsCell(1, 9, "", emptyHeaderCellStyle),
+  getLiquidFundsCell(1, 10, "", emptyHeaderCellStyle),
+  getLiquidFundsCell(1, 11, "", emptyHeaderCellStyle),
+  getLiquidFundsCell(1, 12, "", emptyHeaderCellStyle),
+  getLiquidFundsCell(1, 13, "", emptyHeaderCellStyle),
 ];
 
 const emptyMonthsValues: MonthlyValues = Array(12).fill(NaN);

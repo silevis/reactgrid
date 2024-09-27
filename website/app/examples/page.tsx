@@ -56,7 +56,7 @@ export default function ExamplesPage() {
       </div>
       <div className="relative h-[600px] md:h-[800px] grid grid-cols-main react-grid-sample2">
         <div className="col-start-1 col-end-13 sm:col-start-2 sm:col-end-12 xl:col-start-3 xl:col-end-11 h-full shadow-reactgrid-sample rounded-t-[16px] text-[#a5a5a5] font-bold text-xl bg-white-primary">
-          <div className="h-[60px] border-b-1 border-white-secondary3 flex items-center ps-5">
+          <div className="h-[60px] flex items-center ps-5">
             <Image src={logo} alt="ReactGrid" />
           </div>
           <div

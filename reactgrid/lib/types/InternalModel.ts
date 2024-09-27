@@ -68,6 +68,8 @@ export type PaneName =
   | "BottomCenter"
   | "BottomRight";
 
+export type PaneShadowName = "Top" | "Right" | "Bottom" | "Left";
+
 export type Direction = "Bottom" | "Right" | "Top" | "Left";
 
 export const EMPTY_AREA = {
