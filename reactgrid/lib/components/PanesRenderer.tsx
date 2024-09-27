@@ -320,7 +320,7 @@ const PanesRenderer: FC<PanesRendererProps> = ({
         <PaneShadow
           paneShadowName="Bottom"
           gridContentRange={{ ...ranges.BottomCenter, startColIdx: 0, endColIdx: columnAmount }}
-          shouldRender={stickyBottomRows > 0}
+          shouldRender={stickyBottomRows > 0 && !!theme.paneContainer.bottom.boxShadow}
         />
         <Pane
           paneName="BottomCenter"
@@ -336,7 +336,7 @@ const PanesRenderer: FC<PanesRendererProps> = ({
         <PaneShadow
           paneShadowName="Top"
           gridContentRange={{ ...ranges.TopCenter, startColIdx: 0, endColIdx: columnAmount }}
-          shouldRender={stickyTopRows > 0}
+          shouldRender={stickyTopRows > 0 && !!theme.paneContainer.top.boxShadow}
         />
         <Pane
           paneName="TopCenter"
@@ -352,7 +352,7 @@ const PanesRenderer: FC<PanesRendererProps> = ({
         <PaneShadow
           paneShadowName="Right"
           gridContentRange={{ ...ranges.Right, startRowIdx: 0, endRowIdx: rowAmount }}
-          shouldRender={stickyRightColumns > 0}
+          shouldRender={stickyRightColumns > 0 && !!theme.paneContainer.right.boxShadow}
         />
         <Pane
           paneName="Right"
@@ -368,7 +368,7 @@ const PanesRenderer: FC<PanesRendererProps> = ({
         <PaneShadow
           paneShadowName="Left"
           gridContentRange={{ ...ranges.Left, startRowIdx: 0, endRowIdx: rowAmount }}
-          shouldRender={stickyLeftColumns > 0}
+          shouldRender={stickyLeftColumns > 0 && !!theme.paneContainer.left.boxShadow}
         />
         <Pane
           paneName="Left"

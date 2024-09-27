@@ -80,7 +80,7 @@ export const PaneShadow: React.FC<PaneShadowProps> = ({
   return (
     <div className={`rgPaneShadow rgPaneShadow-${paneShadowName}`} style={{ ...style, display: "contents" }}>
       <div
-        className={`rgPaneBackground rgPaneBackground-${paneShadowName}`}
+        className={`rgPaneShadowOverlay rgPaneShadowOverlay-${paneShadowName}`}
         style={{
           ...getPaneShadowStyle(paneShadowName, gridContentRange, theme.grid.gap),
           boxShadow,
