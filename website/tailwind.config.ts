@@ -56,7 +56,7 @@ const config: Config = {
       },
       gridTemplateColumns: {
         main: "repeat(12, 0.5fr)",
-        navLinks: "repeat(4, 1fr)",
+        navLinks: "repeat(3, 1fr)",
       },
       gridTemplateRows: {
         "header-xs": "repeat(7, 70px)",

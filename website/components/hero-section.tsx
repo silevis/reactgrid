@@ -40,10 +40,10 @@ export const HeroSection = () => {
       <div className="border-b-1 border-green-light col-start-9 col-end-11 font-bold hidden 2xl:flex justify-center items-center text-green-secondary">
         3.14
       </div>
-      <div className="inline-block border-l-1 border-b-1 border-r-1 border-green-light md:border-r-0 col-start-1 2xl:col-start-3 col-end-13 sm:col-end-9 md:col-end-7 row-start-5 sm:row-start-7 row-span-2 text-xs sm:text-sm md:text-md flex justify-center items-center p-[20px] sm:p-[40px]">
+      <div className="inline-block border-l-1 border-b-1 border-r-1 border-green-light md:border-r-0 col-start-1 2xl:col-start-3 col-end-13 sm:col-end-9 md:col-end-7 row-start-5 sm:row-start-7 row-span-2 text-xs sm:text-sm lg:text-md flex justify-center items-center p-[20px] sm:p-[40px]">
         <h2>
-          ReactGrid is a component for displaying and entering data in a
-          spreadsheet-like way.
+          ReactGrid is an open-source React component for displaying and editing
+          data in a spreadsheet-like way.
         </h2>
       </div>
       <div className="inline-block border-l-1 border-b-1 border-green-light col-start-7 col-end-9 row-start-7 row-span-2 font-bold hidden md:flex justify-center items-center text-green-secondary">
@@ -57,14 +57,14 @@ export const HeroSection = () => {
       </div>
       <Link
         href="/"
-        className="inline-block border-l-1 border-b-1 border-green-light col-start-1 2xl:col-start-3 col-end-7 md:col-end-4 2xl:col-end-5 row-start-8 sm:row-start-9 flex justify-center gap-2 text-xs sm:text-sm font-bold items-center  bg-green-secondary"
+        className="inline-block border-l-1 border-b-1 border-green-light col-start-1 2xl:col-start-3 col-end-7 md:col-end-4 2xl:col-end-5 row-start-7 sm:row-start-9 flex justify-center gap-2 text-xs sm:text-sm font-bold items-center  bg-green-secondary"
       >
         Get Started <BsFillRocketTakeoffFill />
       </Link>
       <Link
         href="https://github.com/silevis/reactgrid"
         target="_blank"
-        className="inline-block border-l-1 border-b-1 border-r-1 md:border-r-0 border-green-light col-start-7 md:col-start-4 2xl:col-start-5 col-end-13 md:col-end-7 row-start-8 sm:row-start-9 flex justify-center items-center text-xs sm:text-sm font-bold gap-2  bg-green-secondary"
+        className="inline-block border-l-1 border-b-1 border-r-1 md:border-r-0 border-green-light col-start-7 md:col-start-4 2xl:col-start-5 col-end-13 md:col-end-7 row-start-7 sm:row-start-9 flex justify-center items-center text-xs sm:text-sm font-bold gap-2  bg-green-secondary"
       >
         <BsGithub /> Github
       </Link>

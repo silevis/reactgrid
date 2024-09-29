@@ -8,7 +8,7 @@ import {
   OutputVariables,
 } from "@/app/examples/utils";
 import { ReactGrid, RGTheme } from "@silevis/reactgrid";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 export interface RowDef {
   rowIndex: number;
@@ -22,6 +22,20 @@ export const LiquidityPlanner = () => {
   const [creditLine, setCreditLine] = useState(3000);
   const [cashInflow, setCashInflow] = useState(inflows);
   const [cashOutflow, setCashOutflow] = useState(outflows);
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+
+    window.addEventListener("resize", handleResize);
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+
+  console.log("isMobile", isMobile);
 
   const inputVariables: InputVariables = {
     cashInflow,
@@ -56,8 +70,8 @@ export const LiquidityPlanner = () => {
       rows={rows}
       columns={columns}
       stickyTopRows={1}
-      stickyLeftColumns={1}
-      stickyRightColumns={1}
+      stickyLeftColumns={!isMobile ? 1 : 0}
+      stickyRightColumns={!isMobile ? 1 : 0}
       enableRowSelectionOnFirstColumn
       styles={gridStyles}
     />

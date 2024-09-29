@@ -30,6 +30,7 @@ export const creditCellStyle: React.CSSProperties = {
 
 export const creditLineOverdraftNameCellStyle: React.CSSProperties = {
   display: "flex",
+  alignItems: "center",
   paddingLeft: 25,
   fontSize: 16,
   fontWeight: "bold",
@@ -47,6 +48,7 @@ export const creditLineOverdraftCellStyle: React.CSSProperties = {
 
 export const totalNameCellStyle: React.CSSProperties = {
   display: "flex",
+  alignItems: "center",
   paddingLeft: 25,
   fontSize: 16,
   fontWeight: "bold",
@@ -66,6 +68,7 @@ export const totalCellStyle: React.CSSProperties = {
 
 export const cumulativeNameCellStyle: React.CSSProperties = {
   display: "flex",
+  alignItems: "center",
   paddingLeft: 25,
   fontSize: 16,
   fontWeight: "bold",
@@ -110,11 +113,13 @@ export const groupHeaderCellStyle: React.CSSProperties = {
 
 export const groupRowNameCellStyle: React.CSSProperties = {
   display: "flex",
+  alignItems: "center",
   paddingLeft: 25,
 };
 
 export const summaryTitleCellStyle: React.CSSProperties = {
   display: "flex",
+  alignItems: "center",
   paddingLeft: 25,
   fontWeight: "bold",
 };

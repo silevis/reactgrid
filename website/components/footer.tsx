@@ -63,7 +63,7 @@ export const Footer = () => {
         </div>
       </div>
       <div className="col-start-3 col-end-11 text-center text-white-secondary2">
-        Copyright © 2019-2020 Silevis Software Sp. z o.o. All rights reserved.
+        Copyright © 2019-2024 Silevis Software Sp. z o.o. All rights reserved.
       </div>
     </footer>
   );

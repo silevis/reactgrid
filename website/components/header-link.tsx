@@ -3,12 +3,12 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-export interface Props {
+export interface HeaderLinkProps {
   href: string;
   children: React.ReactNode;
 }
 
-export const HeaderLink = ({ href, children }: Props) => {
+export const HeaderLink = ({ href, children }: HeaderLinkProps) => {
   const pathname = usePathname();
   const isActive = pathname === href;
 

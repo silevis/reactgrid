@@ -14,10 +14,15 @@ export default function Header({ children }: { children: any }) {
 
   const isHomePage = pathname === "/";
 
+  const handleLinkClick = () => {
+    // Close the drawer when a link is clicked
+    (document.getElementById("rg-drawer") as HTMLInputElement).checked = false;
+  };
+
   return (
     <>
       <div className="drawer">
-        <input id="my-drawer-3" type="checkbox" className="drawer-toggle" />
+        <input id="rg-drawer" type="checkbox" className="drawer-toggle" />
         <div className="drawer-content flex flex-col">
           <nav
             className={`relative w-full ${
@@ -26,7 +31,7 @@ export default function Header({ children }: { children: any }) {
           >
             <div className="flex-none lg:hidden flex items-center ps-2">
               <label
-                htmlFor="my-drawer-3"
+                htmlFor="rg-drawer"
                 aria-label="open sidebar"
                 className="btn btn-square btn-ghost"
               >
@@ -46,7 +51,7 @@ export default function Header({ children }: { children: any }) {
                 </svg>
               </label>
             </div>
-            <div className="col-start-2 md:col-start-1 2xl:col-start-3 col-end-13 md:col-end-5 2xl:col-end-7 xl:border-l-1 border-green-light flex items-center justify-start ps-0.5 md:ps-4">
+            <div className="col-start-2 md:col-start-1 2xl:col-start-3 col-end-13 md:col-end-5 2xl:col-end-8 xl:border-l-1 border-green-light flex items-center justify-start ps-0.5 md:ps-4">
               <Link href="/">
                 <Image
                   src={isHomePage ? logoIcon : nightLogoIcon}
@@ -56,10 +61,9 @@ export default function Header({ children }: { children: any }) {
               </Link>
             </div>
             <div
-              className={`grid hidden md:grid text-black-primary md:text-white-primary col-start-5 col-end-13 2xl:col-start-7 2xl:col-end-11 grid-cols-1 md:grid-cols-navLinks justify-items-start md:justify-items-stretch content-start md:content-stretch md:top-auto gap-y-4 md:gap-y-0 menu-horizontal`}
+              className={`grid hidden md:grid text-black-primary md:text-white-primary col-start-5 col-end-13 2xl:col-start-8 2xl:col-end-11 grid-cols-1 md:grid-cols-navLinks justify-items-start md:justify-items-stretch content-start md:content-stretch md:top-auto gap-y-4 md:gap-y-0 menu-horizontal`}
             >
               <HeaderLink href="/examples">Demo</HeaderLink>
-              <HeaderLink href="/features">Features</HeaderLink>
               <HeaderLink href="/docs">Docs</HeaderLink>
               <HeaderLink href="/support">Support</HeaderLink>
             </div>
@@ -71,27 +75,30 @@ export default function Header({ children }: { children: any }) {
         </div>
         <div className="drawer-side">
           <label
-            htmlFor="my-drawer-3"
+            htmlFor="rg-drawer"
             aria-label="close sidebar"
             className="drawer-overlay"
           ></label>
           <ul className="menu p-4 w-80 min-h-full bg-base-200">
             <li>
-              <Link href="/">
+              <Link href="/" onClick={handleLinkClick}>
                 <Image src={logoGreen} alt="ReactGrid" width={30} />
               </Link>
             </li>
             <li>
-              <DrawerLink href="/examples">Demo</DrawerLink>
+              <DrawerLink handleLinkClick={handleLinkClick} href="/examples">
+                Demo
+              </DrawerLink>
             </li>
             <li>
-              <DrawerLink href="/features">Features</DrawerLink>
+              <DrawerLink handleLinkClick={handleLinkClick} href="/docs">
+                Docs
+              </DrawerLink>
             </li>
             <li>
-              <DrawerLink href="/docs">Docs</DrawerLink>
-            </li>
-            <li>
-              <DrawerLink href="/support">Support</DrawerLink>
+              <DrawerLink handleLinkClick={handleLinkClick} href="/support">
+                Support
+              </DrawerLink>
             </li>
           </ul>
         </div>
