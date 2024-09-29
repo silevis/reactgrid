@@ -16,6 +16,10 @@
   --black-secondary2: #797979;
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 body {
   background: var(--white-primary);
   font-family: "DM Sans", sans-serif;

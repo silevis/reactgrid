@@ -6,7 +6,7 @@ import {
   InputVariables,
   outflows,
   OutputVariables,
-} from "@/app/examples/utils";
+} from "@/app/demo/utils";
 import { ReactGrid, RGTheme } from "@silevis/reactgrid";
 import React, { useEffect, useState } from "react";
 

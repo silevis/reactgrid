@@ -28,5 +28,17 @@
     "type": "separator",
     "title": "More"
   },
-  "FAQ": "FAQ"
+  "FAQ": "FAQ",
+  "demo": {
+    "title": "Demo",
+    "type": "page",
+    "href": "/demo",
+    "newWindow": false
+  },
+  "support": {
+    "title": "Support",
+    "type": "page",
+    "href": "/support",
+    "newWindow": false
+  }
 }

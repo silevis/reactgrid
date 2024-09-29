@@ -1,5 +1,5 @@
 "use client";
-
+import React from "react";
 import Link from "next/link";
 import logoIcon from "@/public/static/logo-light.svg";
 import nightLogoIcon from "@/public/static/logo-night.svg";
@@ -63,7 +63,7 @@ export default function Header({ children }: { children: any }) {
             <div
               className={`grid hidden md:grid text-black-primary md:text-white-primary col-start-5 col-end-13 2xl:col-start-8 2xl:col-end-11 grid-cols-1 md:grid-cols-navLinks justify-items-start md:justify-items-stretch content-start md:content-stretch md:top-auto gap-y-4 md:gap-y-0 menu-horizontal`}
             >
-              <HeaderLink href="/examples">Demo</HeaderLink>
+              <HeaderLink href="/demo">Demo</HeaderLink>
               <HeaderLink href="/docs">Docs</HeaderLink>
               <HeaderLink href="/support">Support</HeaderLink>
             </div>
@@ -86,7 +86,7 @@ export default function Header({ children }: { children: any }) {
               </Link>
             </li>
             <li>
-              <DrawerLink handleLinkClick={handleLinkClick} href="/examples">
+              <DrawerLink handleLinkClick={handleLinkClick} href="/demo">
                 Demo
               </DrawerLink>
             </li>

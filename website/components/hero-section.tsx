@@ -56,7 +56,7 @@ export const HeroSection = () => {
         256
       </div>
       <Link
-        href="/"
+        href="/docs"
         className="inline-block border-l-1 border-b-1 border-green-light col-start-1 2xl:col-start-3 col-end-7 md:col-end-4 2xl:col-end-5 row-start-7 sm:row-start-9 flex justify-center gap-2 text-xs sm:text-sm font-bold items-center  bg-green-secondary"
       >
         Get Started <BsFillRocketTakeoffFill />

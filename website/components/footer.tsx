@@ -18,16 +18,13 @@ export const Footer = () => {
           <h2 className="font-bold text-sm mb-[32px]">Explore</h2>
           <ul className="text-white-secondary3 flex flex-col gap-y-2">
             <li>
-              <Link href="/features">Features</Link>
+              <Link href="/demo">Demo</Link>
             </li>
             <li>
-              <Link href="/examples">Examples</Link>
+              <Link href="/docs">Documentation</Link>
             </li>
             <li>
-              <Link href="/docs">Docs</Link>
-            </li>
-            <li>
-              <Link href="/contact-us">Contact us</Link>
+              <Link href="/support">Support</Link>
             </li>
           </ul>
         </div>
