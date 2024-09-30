@@ -8,6 +8,7 @@ import feature6 from "@/public/static/feature6.svg";
 import feature7 from "@/public/static/feature7.svg";
 import feature8 from "@/public/static/feature8.svg";
 import feature9 from "@/public/static/feature9.svg";
+import BlurFade from "./ui/blur-fade";
 
 const featuresList = [
   {
@@ -70,37 +71,54 @@ export const WhyUsSection = () => {
   return (
     <section>
       <div className="grid grid-cols-main pt-[128px] pb-[32px]">
-        <h1 className="col-start-1 col-end-13 sm:col-start-2 sm:col-end-12 xl:col-start-3 xl:col-end-11 text-md sm:text-xl md:text-2xl px-4 font-bold text-center text-green-primary">
-          Why is ReactGrid unique?
-        </h1>
-        <p className="col-start-1 col-end-13 sm:col-start-2 sm:col-end-12 xl:col-start-3 xl:col-end-11 text-center text-xs md:text-sm text-black-secondary px-4 py-4 md:pb-12">
-          Discover the advanced capabilities of ReactGrid. Leverage its
-          exceptional flexibility, intuitive interface, and comprehensive
-          features to enhance your productivity and streamline your workflow.
-        </p>
+        <BlurFade
+          className="col-start-1 col-end-13 sm:col-start-2 sm:col-end-12 xl:col-start-3 xl:col-end-11"
+          delay={0.1}
+          inView
+        >
+          <h1 className="text-md sm:text-xl md:text-2xl px-4 font-bold text-center text-green-primary">
+            Why is ReactGrid unique?
+          </h1>
+        </BlurFade>
+        <BlurFade
+          className="col-start-1 col-end-13 sm:col-start-2 sm:col-end-12 xl:col-start-3 xl:col-end-11"
+          delay={0.25}
+          inView
+        >
+          <p className="text-center text-xs md:text-sm text-black-secondary px-4 py-4 md:pb-12">
+            Discover the advanced capabilities of ReactGrid. Leverage its
+            exceptional flexibility, intuitive interface, and comprehensive
+            features to enhance your productivity and streamline your workflow.
+          </p>
+        </BlurFade>
       </div>
       <div className="grid grid-cols-main mb-[250px]">
         <div className="col-start-2 col-end-12 grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-x-16 gap-y-16 xl:gap-y-32">
           {featuresList.map((feature, index) => {
             return (
-              <div
+              <BlurFade
                 key={index}
                 className="col-span-1 flex flex-col items-center gap-y-4 border-2 border-white-primary"
+                delay={0.25}
+                inView
               >
-                <Image
-                  src={feature.icon}
-                  alt="ReactGrid"
-                  priority
-                  width={300}
-                  className="w-[150px] md:w-auto"
-                />
+                <div className="transform transition-transform duration-200 hover:scale-95">
+                  <Image
+                    src={feature.icon}
+                    alt="ReactGrid"
+                    priority
+                    width={300}
+                    className="w-[150px] md:w-auto"
+                  />
+                </div>
+
                 <h2 className="text-black-primary font-bold text-sm">
                   {feature.title}
                 </h2>
                 <p className="text-black-secondary text-center px-4 md:px-16">
                   {feature.desc}
                 </p>
-              </div>
+              </BlurFade>
             );
           })}
         </div>

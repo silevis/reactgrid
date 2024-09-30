@@ -8,14 +8,16 @@ export const Footer = () => {
     <footer className="grid grid-cols-main bg-black-primary py-[40px] gap-y-32">
       <div className="flex justify-between gap-y-16 col-start-3 col-end-11 flex-wrap lg:flex-nowrap">
         <div className="w-[100%] sm:w-[50%] lg:w-auto">
-          <h2 className="font-bold text-sm mb-[32px]">Info</h2>
+          <h2 className="font-bold text-green-light text-sm mb-[32px]">Info</h2>
           <ul className="text-white-secondary3 flex flex-col gap-y-2">
             <Link href="/cookies">Cookies</Link>
             <Link href="/privacy-policy">Privacy Policy</Link>
           </ul>
         </div>
         <div className="w-[100%] sm:w-[50%] lg:w-auto">
-          <h2 className="font-bold text-sm mb-[32px]">Explore</h2>
+          <h2 className="font-bold text-green-light text-sm mb-[32px]">
+            Explore
+          </h2>
           <ul className="text-white-secondary3 flex flex-col gap-y-2">
             <li>
               <Link href="/demo">Demo</Link>
@@ -29,7 +31,9 @@ export const Footer = () => {
           </ul>
         </div>
         <div className="w-[100%] sm:w-[50%] lg:w-auto">
-          <h2 className="font-bold text-sm mb-[32px]">Social</h2>
+          <h2 className="font-bold text-green-light text-sm mb-[32px]">
+            Social
+          </h2>
           <ul className="text-white-secondary3 flex gap-x-8">
             <li>
               <Link
@@ -51,7 +55,9 @@ export const Footer = () => {
           </ul>
         </div>
         <div className="w-[100%] sm:w-[50%] lg:w-auto">
-          <h2 className="font-bold text-sm mb-[32px]">Contact</h2>
+          <h2 className="font-bold text-green-light text-sm mb-[32px]">
+            Contact
+          </h2>
           <ul className="text-white-secondary3 flex flex-col gap-y-2">
             <li>Silevis Software Sp. z o.o.</li>
             <li>Sienkiewicza Street 17/3</li>

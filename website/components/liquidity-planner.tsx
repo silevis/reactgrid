@@ -7,6 +7,7 @@ import {
   outflows,
   OutputVariables,
 } from "@/app/demo/utils";
+import { useIsMobile } from "@/hooks/useIsMobile";
 import { ReactGrid, RGTheme } from "@silevis/reactgrid";
 import React, { useEffect, useState } from "react";
 
@@ -22,20 +23,7 @@ export const LiquidityPlanner = () => {
   const [creditLine, setCreditLine] = useState(3000);
   const [cashInflow, setCashInflow] = useState(inflows);
   const [cashOutflow, setCashOutflow] = useState(outflows);
-  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
-
-  useEffect(() => {
-    const handleResize = () => {
-      setIsMobile(window.innerWidth <= 768);
-    };
-
-    window.addEventListener("resize", handleResize);
-    return () => {
-      window.removeEventListener("resize", handleResize);
-    };
-  }, []);
-
-  console.log("isMobile", isMobile);
+  const isMobile = useIsMobile();
 
   const inputVariables: InputVariables = {
     cashInflow,
