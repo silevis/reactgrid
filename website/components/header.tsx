@@ -73,7 +73,7 @@ export default function Header({ children }: { children: any }) {
 
           {children}
         </div>
-        <div className="drawer-side">
+        <div className="drawer-side z-50">
           <label
             htmlFor="rg-drawer"
             aria-label="close sidebar"

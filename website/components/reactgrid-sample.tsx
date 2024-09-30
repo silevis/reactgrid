@@ -1,13 +1,15 @@
 import logo from "@/public/static/logo-green.svg";
 import Image from "next/image";
 import BlurFade from "./ui/blur-fade";
+import { cn } from "@/lib/utils";
+import GridPattern from "./ui/grid-pattern";
 
 export default function ReactGridMainExample() {
   return (
     <div className="text-white-primary font-dm-sans">
-      <div className="grid grid-cols-main  bg-green-primary pt-12 pb-12 md:pt-32 md:pb-24">
+      <div className="relative grid grid-cols-main  bg-green-primary pt-12 pb-12 md:pt-32 md:pb-24">
         <BlurFade
-          className="col-start-1 col-end-13 sm:col-start-2 sm:col-end-12 xl:col-start-3 xl:col-end-11"
+          className="col-start-1 col-end-13 sm:col-start-2 sm:col-end-12 xl:col-start-3 xl:col-end-11 z-10"
           delay={0.1}
           inView
         >
@@ -16,7 +18,7 @@ export default function ReactGridMainExample() {
           </h1>
         </BlurFade>
         <BlurFade
-          className="col-start-1 col-end-13 sm:col-start-2 sm:col-end-12 xl:col-start-3 xl:col-end-11"
+          className="col-start-1 col-end-13 sm:col-start-2 sm:col-end-12 xl:col-start-3 xl:col-end-11 z-10"
           delay={0.25}
           inView
         >
@@ -28,6 +30,16 @@ export default function ReactGridMainExample() {
             perfect solution for your project.
           </p>
         </BlurFade>
+        <GridPattern
+          width={30}
+          height={30}
+          x={-1}
+          y={-1}
+          strokeDasharray={"4 2"}
+          className={cn(
+            "[mask-image:radial-gradient(450px_circle_at_center,white,transparent)]"
+          )}
+        />
       </div>
       <div className="react-grid-sample relative bg-green-secondary grid grid-cols-main">
         <div className="col-start-1 col-end-13 sm:col-start-2 sm:col-end-12 xl:col-start-3 xl:col-end-11 bg-white-primary shadow-reactgrid-sample rounded-t-[16px] text-[#a5a5a5] font-bold text-xl">

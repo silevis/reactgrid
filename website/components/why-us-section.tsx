@@ -9,6 +9,8 @@ import feature7 from "@/public/static/feature7.svg";
 import feature8 from "@/public/static/feature8.svg";
 import feature9 from "@/public/static/feature9.svg";
 import BlurFade from "./ui/blur-fade";
+import GridPattern from "./ui/grid-pattern";
+import { cn } from "@/lib/utils";
 
 const featuresList = [
   {
@@ -70,13 +72,13 @@ const featuresList = [
 export const WhyUsSection = () => {
   return (
     <section>
-      <div className="grid grid-cols-main pt-[128px] pb-[32px]">
+      <div className="relative grid grid-cols-main pt-24 md:pt-48 pb-24">
         <BlurFade
           className="col-start-1 col-end-13 sm:col-start-2 sm:col-end-12 xl:col-start-3 xl:col-end-11"
           delay={0.1}
           inView
         >
-          <h1 className="text-md sm:text-xl md:text-2xl px-4 font-bold text-center text-green-primary">
+          <h1 className="text-md sm:text-xl md:text-2xl px-4 font-bold text-center text-green-primary z-10">
             Why is ReactGrid unique?
           </h1>
         </BlurFade>
@@ -85,12 +87,22 @@ export const WhyUsSection = () => {
           delay={0.25}
           inView
         >
-          <p className="text-center text-xs md:text-sm text-black-secondary px-4 py-4 md:pb-12">
+          <p className="text-center text-xs md:text-sm text-black-secondary px-4 py-4 md:pb-12 z-10">
             Discover the advanced capabilities of ReactGrid. Leverage its
             exceptional flexibility, intuitive interface, and comprehensive
             features to enhance your productivity and streamline your workflow.
           </p>
         </BlurFade>
+        <GridPattern
+          width={30}
+          height={30}
+          x={-1}
+          y={-1}
+          strokeDasharray={"4 2"}
+          className={cn(
+            "[mask-image:radial-gradient(300px_circle_at_center,white,transparent)]"
+          )}
+        />
       </div>
       <div className="grid grid-cols-main mb-[250px]">
         <div className="col-start-2 col-end-12 grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-x-16 gap-y-16 xl:gap-y-32">
