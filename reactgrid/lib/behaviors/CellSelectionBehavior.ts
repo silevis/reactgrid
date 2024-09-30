@@ -15,6 +15,7 @@ import isDevEnvironment from "../utils/isDevEnvironment.ts";
 import { getScrollableParent } from "../utils/scrollHelpers.ts";
 import { scrollToElementEdge } from "../utils/scrollToElementEdge.ts";
 import { scrollTowardsSticky } from "../utils/scrollTowardsSticky.ts";
+import { isSpanMember } from "../utils/isSpanMember.ts";
 
 const devEnvironment = isDevEnvironment();
 
@@ -64,6 +65,24 @@ const tryExpandingTowardsCell = (
       selectedArea.startColIdx = startingPointerIdx.colIndex;
       selectedArea.endColIdx = currentPointerIdx.colIndex + (currentDragOverCell?.colSpan || 1);
     }
+
+    // Check if the first row cell is selectable and focusable
+    for (let colIdx = selectedArea.startColIdx; colIdx < selectedArea.endColIdx; colIdx++) {
+      const firstCell = store.cells.get(`0 ${colIdx}`);
+
+      if (!firstCell) return store;
+
+      if (isSpanMember(firstCell)) {
+        const originCell = store.getCellByIndexes(firstCell.originRowIndex, firstCell.originColIndex);
+        if (originCell && (originCell.isSelectable === false || originCell.isFocusable === false)) {
+          return store;
+        }
+      } else {
+        if (firstCell.isSelectable === false || firstCell.isFocusable === false) {
+          return store; // Do not select this column
+        }
+      }
+    }
   } else if (shouldEnableRowSelection) {
     selectedArea.startColIdx = 0;
     selectedArea.endColIdx = store.columns.length;
@@ -76,6 +95,24 @@ const tryExpandingTowardsCell = (
       // Moving down
       selectedArea.startRowIdx = startingPointerIdx.rowIndex;
       selectedArea.endRowIdx = currentPointerIdx.rowIndex + (currentDragOverCell?.rowSpan || 1);
+    }
+
+    // Check if the first column cell is selectable and focusable
+    for (let rowIdx = selectedArea.startRowIdx; rowIdx < selectedArea.endRowIdx; rowIdx++) {
+      const firstCell = store.cells.get(`${rowIdx} 0`);
+
+      if (!firstCell) return store;
+
+      if (isSpanMember(firstCell)) {
+        const originCell = store.getCellByIndexes(firstCell.originRowIndex, firstCell.originColIndex);
+        if (originCell && (originCell.isSelectable === false || originCell.isFocusable === false)) {
+          return store;
+        }
+      } else {
+        if (firstCell.isSelectable === false || firstCell.isFocusable === false) {
+          return store; // Do not select this row
+        }
+      }
     }
   } else {
     if (currentPointerIdx.rowIndex < focusedLocation.rowIndex) {

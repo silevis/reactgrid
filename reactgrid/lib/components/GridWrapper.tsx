@@ -1,4 +1,4 @@
-import "../reactGridStyles.css";
+import "../rg-styles.css";
 
 import React, { FC, PropsWithChildren, useEffect, useRef, useState } from "react";
 import { HandlerFn } from "../types/Behavior";

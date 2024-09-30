@@ -56,8 +56,10 @@ const CellWrapper: FC<CellWrapperProps> = ({
       style={{
         minHeight: 0,
         padding: ".2rem",
-        textAlign: "center",
         position: "relative",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
         outline: "none",
         overflow: "hidden",
         touchAction: disableTouchAction ? "none" : "auto",

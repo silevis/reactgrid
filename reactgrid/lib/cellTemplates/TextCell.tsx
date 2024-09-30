@@ -2,7 +2,7 @@ import { FC, useEffect, useRef, useState } from "react";
 import CellWrapper from "../components/CellWrapper";
 import { useCellContext } from "../components/CellContext";
 import { useDoubleTouch } from "../hooks/useDoubleTouch";
-import { isAlphaNumericWithoutModifiers } from "../utils/keyCodeCheckings";
+import { isValidKey } from "../utils/keyCodeCheckings";
 
 interface TextCellProps {
   text: string;
@@ -34,7 +34,8 @@ export const TextCell: FC<TextCellProps> = ({ text: initialText, onTextChanged, 
         }
       }}
       onKeyDown={(e) => {
-        if (!isEditMode && isAlphaNumericWithoutModifiers(e)) {
+        if (!isEditMode && isValidKey(e, [])) {
+          e.stopPropagation();
           setCurrentValue("");
           setEditMode(true);
         } else if (!isEditMode && e.key === "Enter") {

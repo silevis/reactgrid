@@ -1,7 +1,10 @@
 import merge from "lodash.merge";
 import theme from "../assets/theme";
 import { ReactGridStore } from "../types/ReactGridStore";
+import cloneDeep from "lodash.clonedeep";
 
 export const getTheme = (store: ReactGridStore) => {
-  return merge(theme, store.styles);
+  const clonedTheme = cloneDeep(theme);
+
+  return merge(clonedTheme, store.styles);
 };

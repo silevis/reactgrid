@@ -76,6 +76,7 @@ export const generateDataTable = (
             updatePerson(people[personRowIndex]._id, col.title, newValue);
           },
           value: people[personRowIndex][col.title],
+          allowSeparators: false,
         };
 
         const textCellProps = {

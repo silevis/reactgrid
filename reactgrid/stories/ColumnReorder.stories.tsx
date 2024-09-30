@@ -64,6 +64,7 @@ export const ColumnReorderExample = () => {
             updatePerson(people[personRowIndex - 1]._id, col.title, newValue);
           },
           value: people[personRowIndex - 1][col.title.toLowerCase()],
+          allowSeparators: false,
         };
 
         const textCellProps = {

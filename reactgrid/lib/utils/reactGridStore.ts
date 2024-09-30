@@ -74,9 +74,7 @@ export function initReactGridStore(id: string, initialProps: Partial<ReactGridSt
         ...DEFAULT_STORE_PROPS,
         ...initialProps,
         behaviors: { ...DEFAULT_STORE_PROPS.behaviors, ...initialProps?.behaviors },
-        setRows: (rows) => set(() => ({ rows })),
         getRowAmount: () => get().rows.length,
-        setColumns: (columns) => set(() => ({ columns })),
         getColumnByIdx: (columnIdx) => {
           const column = get().columns[columnIdx];
           return column;

@@ -95,6 +95,7 @@ export const generateCells = (
             updatePerson(employees[personRowIndex]._id, col.title, newValue);
           },
           value: employees[personRowIndex][col.title],
+          allowSeparators: false,
         };
 
         const balanceCellProps = {

@@ -2,7 +2,6 @@ import React, { FC, useEffect, useRef, useState } from "react";
 import { useCellContext } from "../components/CellContext";
 import CellWrapper from "../components/CellWrapper";
 import { useDoubleTouch } from "../hooks/useDoubleTouch";
-import { inNumericKey, isNumberSeparator } from "../utils/keyCodeCheckings";
 
 interface NumberCellProps {
   value: number;
@@ -10,6 +9,7 @@ interface NumberCellProps {
   validator?: (value: number) => boolean;
   errorMessage?: string;
   hideZero?: boolean;
+  allowSeparators?: boolean;
   format?: Intl.NumberFormat;
   style?: React.CSSProperties;
 }
@@ -21,6 +21,7 @@ export const NumberCell: FC<NumberCellProps> = ({
   validator,
   errorMessage,
   hideZero,
+  allowSeparators = true,
   format,
 }) => {
   const initialValueStr = initialValue?.toString();
@@ -43,6 +44,9 @@ export const NumberCell: FC<NumberCellProps> = ({
     setCurrentValue(initialValueStr);
   }, [initialValue]);
 
+  const numberKeys = "0123456789";
+  const numberSeparators = [".", ","];
+
   return (
     <CellWrapper
       onTouchEnd={handleDoubleTouch}
@@ -56,7 +60,7 @@ export const NumberCell: FC<NumberCellProps> = ({
         }
       }}
       onKeyDown={(e) => {
-        if ((!isEditMode && inNumericKey(e.keyCode)) || isNumberSeparator(e.keyCode)) {
+        if ((!isEditMode && numberKeys.includes(e.key)) || (allowSeparators && numberSeparators.includes(e.key))) {
           setCurrentValue("");
           setEditMode(true);
         } else if (!isEditMode && e.key === "Enter") {
@@ -71,8 +75,8 @@ export const NumberCell: FC<NumberCellProps> = ({
           className="rg-input"
           value={currentValue}
           onChange={(e) => {
-            let newValue = e.currentTarget.value.replace(/[^0-9,.]/g, "");
-            if (isNumberSeparator(newValue.charCodeAt(0))) {
+            let newValue = e.currentTarget.value.replace(allowSeparators ? /[^0-9,.]/g : /[^0-9]/g, "");
+            if (numberSeparators.includes(newValue)) {
               newValue = "0" + newValue;
             }
             setCurrentValue(newValue);
