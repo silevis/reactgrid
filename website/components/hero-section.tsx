@@ -2,28 +2,12 @@
 import { BsFillRocketTakeoffFill, BsGithub } from "react-icons/bs";
 import Link from "next/link";
 import NumberTicker from "./ui/number-ticker";
-import { useEffect, useState } from "react";
-import { useIsMobile } from "@/hooks/useIsMobile";
+import { useIsScreenWidthLessThan } from "@/hooks/useIsScreenWidthLessThan";
 
 export const HeroSection = () => {
   const getRandomDecimalPlaces = () => Math.floor(Math.random() * 3);
   const getRandomValue = () => Math.floor(Math.random() * 95) + 5;
-  const [shouldHideNumbers, setShouldHideNumbers] = useState(
-    window.innerWidth <= 640
-  );
-
-  useEffect(() => {
-    const handleResize = () => {
-      setShouldHideNumbers(window.innerWidth <= 640);
-    };
-
-    window.addEventListener("resize", handleResize);
-    return () => {
-      window.removeEventListener("resize", handleResize);
-    };
-  }, []);
-
-  const isMobile = useIsMobile();
+  const shouldHideNumbers = useIsScreenWidthLessThan(640);
 
   return (
     <div className="pb-4 box-border font-dm-sans bg-green-primary text-md 2xl:text-xl text-white-primary hero-section grid grid-cols-main grid-rows-header-xs sm:grid-rows-header">

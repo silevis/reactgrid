@@ -7,7 +7,7 @@ import {
   outflows,
   OutputVariables,
 } from "@/app/demo/utils";
-import { useIsMobile } from "@/hooks/useIsMobile";
+import { useIsScreenWidthLessThan } from "@/hooks/useIsScreenWidthLessThan";
 import { ReactGrid, RGTheme } from "@silevis/reactgrid";
 import React, { useEffect, useState } from "react";
 
@@ -23,7 +23,7 @@ export const LiquidityPlanner = () => {
   const [creditLine, setCreditLine] = useState(3000);
   const [cashInflow, setCashInflow] = useState(inflows);
   const [cashOutflow, setCashOutflow] = useState(outflows);
-  const isMobile = useIsMobile();
+  const isMobile = useIsScreenWidthLessThan(768);
 
   const inputVariables: InputVariables = {
     cashInflow,
