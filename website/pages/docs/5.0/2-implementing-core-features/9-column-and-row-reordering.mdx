@@ -23,6 +23,8 @@ onColumnReorder?: (selectedColIndexes: number[], destinationColIdx: number) => v
 
 #### Live example
 
+---
+
 import LiveCode from "@/nextra/components/LiveCode.tsx";
 import React, { useState } from "react";
 import {
@@ -122,6 +124,7 @@ const generateCells = (
             updatePerson(people[personRowIndex]._id, col.title, newValue);
           },
           value: people[personRowIndex][col.title],
+          allowSeparators: false,
         };
 
         const textCellProps = {

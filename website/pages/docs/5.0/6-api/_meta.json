@@ -1,5 +1,6 @@
 {
   "0-interfaces": "Interfaces",
   "1-types": "Types",
-  "2-hooks": "Hooks"
+  "2-hooks": "Hooks",
+  "3-functions": "Functions"
 }

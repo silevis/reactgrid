@@ -19,164 +19,11 @@ npm i @silevis/reactgrid
 
 To integrate ReactGrid into your application, configure the grid using [rows](/docs/5.0/6-api/1-types/1-row), [columns](/docs/5.0/6-api/1-types/2-column), and [cells](/docs/5.0/6-api/1-types/3-cell). However, if you provide only cells with specified `rowIndex` and `colIndex`, the rows and columns will be automatically generated. If you want to define specific row heights or column widths, you should pass them explicitly to the ReactGrid component. Below is a detailed breakdown of how to set this up, including an example configuration file.
 
-### Integration Steps for ReactGrid
+### Configure ReactGrid inside your application
 
-#### 1. Prepare the data that will be used within ReactGrid
+Let's generate rows, columns, and cells using the prepared data:
 
-For this example, let's create a configuration file, such as `reactgrid.config.ts`, to store the data that will be used by ReactGrid. However, in many cases, the data is fetched from a server.
-
-#### Data Example
-
-```tsx
-export const peopleArr: Person[] = [
-  {
-    _id: "66d61077035753f369ddbb16",
-    name: "Jordan Rodriquez",
-    age: 30,
-    email: "jordanrodriquez@cincyr.com",
-    company: "Zaggles",
-    position: 1,
-  },
-  {
-    _id: "66d61077794e7949ab167fd5",
-    email: "allysonrios@satiance.com",
-    name: "Allyson Rios",
-    age: 30,
-    company: "Zoxy",
-    position: 2,
-  },
-  {
-    _id: "66d61077dd754e88981ae434",
-    name: "Pickett Lucas",
-    age: 25,
-    email: "pickettlucas@zoxy.com",
-    company: "Techade",
-    position: 3,
-  },
-  {
-    _id: "66d61077115e2f8748c334d9",
-    name: "Louella David",
-    age: 37,
-    email: "louelladavid@techade.com",
-    company: "Ginkogene",
-    position: 4,
-  },
-  {
-    _id: "66d61077540d53374b427e4b",
-    name: "Tricia Greene",
-    age: 27,
-    email: "triciagreene@ginkogene.com",
-    company: "Naxdis",
-    position: 5,
-  },
-];
-```
-
-#### 2. Configure ReactGrid inside your application
-
-Now you can generate rows, columns, and cells using the prepared data.
-
-```tsx
-import React, { useState } from "react";
-import { ReactGrid, NumberCell, TextCell, NonEditableCell, Cell } from "@silevis/reactgrid";
-import { peopleArr } from "./utils/reactgrid.config";
-
-interface ColumnDef {
-  title: string;
-  width: number;
-  cellTemplate: React.ComponentType<any>;
-}
-
-export const ReactGridExample = () => {
-  const [people, setPeople] = useState(peopleArr);
-
-  const columnDefs: ColumnDef[] = Object.keys(peopleArr[0]).reduce(
-    (acc: ColumnDef[], peopleKey: string, idx: number) => {
-      if (["_id", "position"].includes(peopleKey)) return acc;
-      const cellTemplate = peopleKey === "age" ? NumberCell : TextCell;
-      return [...acc, { title: peopleKey, width: 100, cellTemplate }];
-    },
-    []
-  );
-
-  const updatePerson = (id, key, newValue) => {
-    setPeople((prev) => {
-      return prev.map((p) => (p._id !== id ? p : { ...p, [key]: newValue }));
-    });
-  };
-
-  const gridRows = Array.from({ length: people.length + 1 }, (_, i) => ({
-    rowIndex: i,
-    height: 40,
-  }));
-
-  const gridColumns = columnDefs.map((col, index) => ({
-    colIndex: index,
-    width: col.width,
-  }));
-
-  const cells: Cell[] = [];
-
-  gridRows.forEach((row, rowIndex) => {
-    const personRowIndex = row.rowIndex;
-
-    // header cells
-    if (rowIndex === 0) {
-      columnDefs.forEach((col, colIndex) => {
-        cells.push({
-          rowIndex,
-          colIndex,
-          Template: NonEditableCell,
-          props: {
-            value: col.title,
-            style: {
-              backgroundColor: "#55bc71",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              fontWeight: "bold",
-            },
-          },
-          isSelectable: false,
-        });
-      });
-    } else {
-      const personCells = columnDefs.map((col) => {
-        const numberCellProps = {
-          onValueChanged: (newValue) => {
-            updatePerson(people[personRowIndex - 1]._id, col.title, newValue);
-          },
-          value: people[personRowIndex - 1][col.title.toLowerCase()],
-        };
-
-        const textCellProps = {
-          text: people[personRowIndex - 1][col.title.toLowerCase()],
-          onTextChanged: (newText: string) => {
-            updatePerson(people[personRowIndex - 1]._id, col.title, newText);
-          },
-        };
-
-        return {
-          Template: col.cellTemplate,
-          props: col.title === "age" ? numberCellProps : textCellProps,
-        };
-      });
-
-      columnDefs.forEach((_, colIndex) => {
-        cells.push({
-          rowIndex,
-          colIndex,
-          ...personCells[colIndex],
-        });
-      });
-    }
-  });
-
-  return <ReactGrid rows={gridRows} columns={gridColumns} cells={cells} />;
-};
-```
-
-#### Live example
+---
 
 import LiveCode from "@/nextra/components/LiveCode.tsx";
 import React, { useState } from "react";
@@ -307,6 +154,7 @@ const ReactGridExample = () => {
             updatePerson(people[personRowIndex - 1]._id, col.title, newValue);
           },
           value: people[personRowIndex - 1][col.title.toLowerCase()],
+          allowSeparators: false,
         };
 
         const textCellProps = {
