@@ -66,8 +66,8 @@ export default function ExamplesPage() {
           planned cash flows.
         </p>
       </div>
-      <div className="relative grid grid-cols-main react-grid-sample2">
-        <div className="col-start-1 col-end-13 sm:col-start-2 sm:col-end-12 xl:col-start-3 xl:col-end-11 h-full shadow-reactgrid-sample rounded-t-[16px] text-[#a5a5a5] font-bold text-xl bg-white-primary">
+      <div className="relative grid grid-cols-main react-grid-sample2 xl:justify-items-center">
+        <div className="col-start-1 col-end-13 sm:col-start-2 sm:col-end-12 xl:col-start-3 xl:col-end-11 h-full shadow-reactgrid-sample rounded-t-[16px] text-[#a5a5a5] font-bold text-xl bg-white-primary max-w-[1280px]">
           <div className="h-[60px] flex items-center ps-5">
             <Image src={logo} alt="ReactGrid" />
           </div>

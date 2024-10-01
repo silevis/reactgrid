@@ -8,8 +8,8 @@ import {
   OutputVariables,
 } from "@/app/demo/utils";
 import { useIsScreenWidthLessThan } from "@/hooks/useIsScreenWidthLessThan";
-import { ReactGrid, RGTheme } from "@silevis/reactgrid";
-import React, { useEffect, useState } from "react";
+import { ReactGrid } from "@silevis/reactgrid";
+import React, { useState } from "react";
 
 export interface RowDef {
   rowIndex: number;

@@ -531,6 +531,7 @@ const getMonthHeaderCell = (
     value,
     style,
   },
+  isSelectable: false,
 });
 
 const getLiquidFundsCell = (

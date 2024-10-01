@@ -42,7 +42,7 @@ export default function ReactGridMainExample() {
         />
       </div>
       <div className="react-grid-sample relative bg-green-secondary grid grid-cols-main">
-        <div className="col-start-1 col-end-13 sm:col-start-2 sm:col-end-12 xl:col-start-3 xl:col-end-11 bg-white-primary shadow-reactgrid-sample rounded-t-[16px] text-[#a5a5a5] font-bold text-xl">
+        <div className="col-start-1 col-end-13 sm:col-start-2 sm:col-end-12 xl:col-start-4 xl:col-end-10 bg-white-primary shadow-reactgrid-sample rounded-t-[16px] text-[#a5a5a5] font-bold text-xl">
           <div className="h-[60px] flex items-center ps-5">
             <Image src={logo} alt="ReactGrid" />
           </div>
