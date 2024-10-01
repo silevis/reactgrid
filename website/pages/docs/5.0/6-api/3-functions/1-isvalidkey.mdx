@@ -11,14 +11,14 @@ The `isValidKey` function checks if a keyboard event is triggered by a valid key
 
 
 ```ts
-type isValidKey = (e: React.KeyboardEvent, invalidKeys?: string[]) => boolean;
+type isValidKey = (event: React.KeyboardEvent, invalidKeys?: string[]) => boolean;
 ```
 
 ### Parameters
 
 | Parameter   | Type                   | Description                                                                 |
 |-------------|------------------------|-----------------------------------------------------------------------------|
-| `e`         | `React.KeyboardEvent`  | The keyboard event to check.                                                |
+| `event`         | `React.KeyboardEvent`  | The keyboard event to check.                                                |
 | `invalidKeys` | `string[]` (optional) | An optional array of additional keys that should be considered invalid.     |
 
 ### Returns

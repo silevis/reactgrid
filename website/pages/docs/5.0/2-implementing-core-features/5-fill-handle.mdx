@@ -7,7 +7,7 @@ metaDescription: "ReactGrid docs"
 
 #### About fill handling in ReactGrid
 
-The fill handle is enabled by default in ReactGrid. You can disable it by passing the `disableFillHandle` prop to the `ReactGrid` component. If you want to implement custom logic for the fill handle behavior, you can use the onFillHandle prop.
+The fill handle is enabled by default in ReactGrid. You can disable it by passing the `disableFillHandle` prop to the `ReactGrid` component. If you want to implement custom logic for the fill handle behavior, you can use the `onFillHandle` prop.
 
 ```ts
 onFillHandle?: (selectedArea: NumericalRange, fillRange: NumericalRange, cellsLookup: CellsLookup) => boolean;
@@ -34,9 +34,9 @@ The return value of these handlers determines whether the custom logic should ov
 
 ---
 
-### Live Demo
+### Live example
 
-Below is an example of logic that overrides the fill handle.
+Below is an example of logic that overrides the fill handle:
 
 ---
 
