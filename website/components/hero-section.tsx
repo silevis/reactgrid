@@ -3,6 +3,8 @@ import { BsFillRocketTakeoffFill, BsGithub } from "react-icons/bs";
 import Link from "next/link";
 import NumberTicker from "./ui/number-ticker";
 import { useIsScreenWidthLessThan } from "@/hooks/useIsScreenWidthLessThan";
+import { cn } from "@/lib/utils";
+import AnimatedGridPattern from "./ui/animated-grid-pattern";
 
 export const HeroSection = () => {
   const getRandomDecimalPlaces = () => Math.floor(Math.random() * 3);
@@ -12,10 +14,20 @@ export const HeroSection = () => {
   return (
     <div className="pb-4 box-border font-dm-sans bg-green-primary text-md 2xl:text-xl text-white-primary hero-section grid grid-cols-main grid-rows-header-xs sm:grid-rows-header">
       <div className="hidden 2xl:block border-b-1 border-l-1 border-green-light col-start-1 col-end-3 row-start-1 row-end-7"></div>
-      <div className="relative title-text border-2 md:border-3 border-green-light col-start-1 2xl:col-start-3 col-end-13 md:col-end-11 2xl:col-end-9 row-start-1 row-span-3 sm:row-span-6 t flex justify-items-center items-center p-[20px] sm:p-[40px]">
-        <h1 className="text-xl sm:text-2xl xl:text-3xl font-bold">
+      <div className="relative title-text border-2 md:border-3 border-green-light col-start-1 2xl:col-start-3 col-end-13 md:col-end-11 2xl:col-end-9 row-start-1 row-span-3 sm:row-span-6 t flex justify-items-center items-center p-[20px] sm:p-[40px] overflow-hidden">
+        <h1 className="relative text-xl sm:text-2xl xl:text-3xl font-bold z-10">
           Spreadsheet experience for your React app
         </h1>
+        <AnimatedGridPattern
+          numSquares={30}
+          maxOpacity={0.1}
+          duration={3}
+          repeatDelay={1}
+          className={cn(
+            "[mask-image:radial-gradient(650px_circle_at_center,white,transparent)]",
+            "inset-x-0 inset-y-[-30%] h-[200%] skew-y-12"
+          )}
+        />
       </div>
       <div className="col-start-9 col-end-11 font-bold hidden 2xl:flex justify-center items-center text-green-secondary">
         {!shouldHideNumbers && (

@@ -125,50 +125,58 @@ import moment from "moment";
     CellWrapper, 
     useCellContext,
     moment,
+    peopleArr: [
+      {
+        _id: "66d61077035753f369ddbb16",
+        name: "Jordan Rodriquez",
+        birth: moment("1991-01-01"),
+        email: "jordanrodriquez@cincyr.com",
+        company: "Zaggles",
+        position: 1,
+      },
+      {
+        _id: "66d61077794e7949ab167fd5",
+        email: "allysonrios@satiance.com",
+        name: "Allyson Rios",
+        birth: moment("1991-01-01"),
+        company: "Zoxy",
+        position: 2,
+      },
+      {
+        _id: "66d61077dd754e88981ae434",
+        name: "Pickett Lucas",
+        birth: moment("1996-01-01"),
+        email: "pickettlucas@zoxy.com",
+        company: "Techade",
+        position: 3,
+      },
+      {
+        _id: "66d61077115e2f8748c334d9",
+        name: "Louella David",
+        birth: moment("1984-01-01"),
+        email: "louelladavid@techade.com",
+        company: "Ginkogene",
+        position: 4,
+      },
+      {
+        _id: "66d61077540d53374b427e4b",
+        name: "Tricia Greene",
+        birth: moment("1994-01-01"),
+        email: "triciagreene@ginkogene.com",
+        company: "Naxdis",
+        position: 5,
+      },
+    ],
   }}
   code={`
-const peopleArr = [
-  {
-    _id: "66d61077035753f369ddbb16",
-    name: "Jordan Rodriquez",
-    birth: moment("1991-01-01"),
-    email: "jordanrodriquez@cincyr.com",
-    company: "Zaggles",
-    position: 1,
-  },
-  {
-    _id: "66d61077794e7949ab167fd5",
-    email: "allysonrios@satiance.com",
-    name: "Allyson Rios",
-    birth: moment("1991-01-01"),
-    company: "Zoxy",
-    position: 2,
-  },
-  {
-    _id: "66d61077dd754e88981ae434",
-    name: "Pickett Lucas",
-    birth: moment("1996-01-01"),
-    email: "pickettlucas@zoxy.com",
-    company: "Techade",
-    position: 3,
-  },
-  {
-    _id: "66d61077115e2f8748c334d9",
-    name: "Louella David",
-    birth: moment("1984-01-01"),
-    email: "louelladavid@techade.com",
-    company: "Ginkogene",
-    position: 4,
-  },
-  {
-    _id: "66d61077540d53374b427e4b",
-    name: "Tricia Greene",
-    birth: moment("1994-01-01"),
-    email: "triciagreene@ginkogene.com",
-    company: "Naxdis",
-    position: 5,
-  },
-];
+interface Person {
+  _id: string;
+  name: string;
+  birth: Moment;
+  email: string;
+  company: string;
+  position: number;
+}
 
 const inputStyle: CSSProperties = {
   boxSizing: "border-box",
@@ -247,7 +255,7 @@ const DateCell: FC<DateCellProps> = ({ value, onValueChanged }) => {
 };
 
 const CustomCellExample = () => {
-  const [people, setPeople] = useState(peopleArr);
+  const [people, setPeople] = useState<Person>(peopleArr);
 
   const columnDefs = Object.keys(peopleArr[0]).reduce((acc, peopleKey, idx) => {
     if (["_id", "position"].includes(peopleKey)) return acc;

@@ -44,9 +44,7 @@ scope={{
   NonEditableCell,
   Row,
   Cell,
-}}
-code={`
-const peopleArr = [
+  peopleArr: [
   {
     _id: "66d61077035753f369ddbb16",
     name: "Jordan Rodriquez",
@@ -87,7 +85,17 @@ const peopleArr = [
     company: "Naxdis",
     position: 5,
   },
-];
+]
+}}
+code={`
+interface Person {
+  _id: string;
+  name: string;
+  birth: Moment;
+  email: string;
+  company: string;
+  position: number;
+}
 
 interface ColumnDef {
   title: string;
@@ -115,7 +123,7 @@ const handleResizeColumn = (
 
 
 const ColumnResizeExample = () => {
-  const [people, setPeople] = useState(peopleArr);
+  const [people, setPeople] = useState<Person[]>(peopleArr);
 
   const [columnDefs, setColumnDefs] = useState<ColumnDef[]>(
     Object.keys(peopleArr[0]).reduce((acc: ColumnDef[], peopleKey: string, idx: number) => {

@@ -61,9 +61,7 @@ import {
     NonEditableCell,
     Row,
     Cell,
-  }}
-  code={`
-    const peopleArr = [
+    peopleArr: [
       {
         _id: "66d61077035753f369ddbb16",
         name: "Jordan Rodriquez",
@@ -104,150 +102,160 @@ import {
         company: "Naxdis",
         position: 5,
       },
-    ];
+    ]
+  }}
+  code={`
+interface Person {
+  _id: string;
+  name: string;
+  birth: Moment;
+  email: string;
+  company: string;
+  position: number;
+}
 
-    interface ColumnDef {
-      title: string;
-      width: number;
-      cellTemplate: React.ComponentType<any>;
-    }
+interface ColumnDef {
+  title: string;
+  width: number;
+  cellTemplate: React.ComponentType<any>;
+}
 
-    const handleFill = (
-      selectedArea: NumericalRange,
-      fillRange: NumericalRange,
-      cellsLookup: CellsLookup
-    ): boolean => {
-      // Check if the fill handle is being dragged upwards
-      const isFillingUpwards = fillRange.startRowIdx < selectedArea.startRowIdx;
-      // Calculate the number of rows and columns in the selected area
-      const relativeRowSize = selectedArea.endRowIdx - selectedArea.startRowIdx;
-      const relativeColSize = selectedArea.endColIdx - selectedArea.startColIdx;
+const handleFill = (
+  selectedArea: NumericalRange,
+  fillRange: NumericalRange,
+  cellsLookup: CellsLookup
+): boolean => {
+  // Check if the fill handle is being dragged upwards
+  const isFillingUpwards = fillRange.startRowIdx < selectedArea.startRowIdx;
+  // Calculate the number of rows and columns in the selected area
+  const relativeRowSize = selectedArea.endRowIdx - selectedArea.startRowIdx;
+  const relativeColSize = selectedArea.endColIdx - selectedArea.startColIdx;
 
-      // Iterate over the rows and columns in the fill range
-      for (let i = fillRange.startRowIdx; i < fillRange.endRowIdx; i++) {
-        for (let j = fillRange.startColIdx; j < fillRange.endColIdx; j++) {
-          const currentCellCallbacks = cellsLookup.get(i + " " + j);
+  // Iterate over the rows and columns in the fill range
+  for (let i = fillRange.startRowIdx; i < fillRange.endRowIdx; i++) {
+    for (let j = fillRange.startColIdx; j < fillRange.endColIdx; j++) {
+      const currentCellCallbacks = cellsLookup.get(i + " " + j);
 
-          if (!currentCellCallbacks) continue;
+      if (!currentCellCallbacks) continue;
 
-          // Skip cells of type 'header'
-          if (i === 0) continue;
+      // Skip cells of type 'header'
+      if (i === 0) continue;
 
-          // Calculate the relative row and column indices within the selected area
-          const relativeRowIdx = isFillingUpwards
-            ? (selectedArea.endRowIdx - i - 1) % relativeRowSize
-            : (i - fillRange.startRowIdx) % relativeRowSize;
-          const relativeColIdx = (j - fillRange.startColIdx) % relativeColSize;
+      // Calculate the relative row and column indices within the selected area
+      const relativeRowIdx = isFillingUpwards
+        ? (selectedArea.endRowIdx - i - 1) % relativeRowSize
+        : (i - fillRange.startRowIdx) % relativeRowSize;
+      const relativeColIdx = (j - fillRange.startColIdx) % relativeColSize;
 
-          // Get the value from the cell in the selected area that corresponds to the relative row and column indices
-          const sourceCellCallbacks = cellsLookup.get(
-              (selectedArea.startRowIdx + relativeRowIdx) + " " + (selectedArea.startColIdx + relativeColIdx)
-          );
+      // Get the value from the cell in the selected area that corresponds to the relative row and column indices
+      const sourceCellCallbacks = cellsLookup.get(
+          (selectedArea.startRowIdx + relativeRowIdx) + " " + (selectedArea.startColIdx + relativeColIdx)
+      );
 
-          if (sourceCellCallbacks) {
-            const newValue = sourceCellCallbacks.onStringValueRequsted();
-            currentCellCallbacks.onStringValueReceived(newValue);
-          }
-        }
+      if (sourceCellCallbacks) {
+        const newValue = sourceCellCallbacks.onStringValueRequsted();
+        currentCellCallbacks.onStringValueReceived(newValue);
       }
+    }
+  }
 
-      // Override the default fill handle behavior
-      return true;
-    };
+  // Override the default fill handle behavior
+  return true;
+};
 
 
-    const FillHandleExample = () => {
-      const [people, setPeople] = useState(peopleArr);
+const FillHandleExample = () => {
+  const [people, setPeople] = useState<Person[]>(peopleArr);
 
-      const columnDefs = Object.keys(peopleArr[0]).reduce((acc, peopleKey, idx) => {
-        if (["_id", "position"].includes(peopleKey)) return acc;
-        const cellTemplate = peopleKey === "age" ? NumberCell : TextCell;
-        return [...acc, { title: peopleKey, width: 100 * idx, cellTemplate }];
-      }, []);
+  const columnDefs = Object.keys(peopleArr[0]).reduce((acc, peopleKey, idx) => {
+    if (["_id", "position"].includes(peopleKey)) return acc;
+    const cellTemplate = peopleKey === "age" ? NumberCell : TextCell;
+    return [...acc, { title: peopleKey, width: 100 * idx, cellTemplate }];
+  }, []);
 
-      const updatePerson = (id, key, newValue) => {
-        setPeople((prev) => {
-          return prev.map((p) => (p._id !== id ? p : { ...p, [key]: newValue }));
+  const updatePerson = (id, key, newValue) => {
+    setPeople((prev) => {
+      return prev.map((p) => (p._id !== id ? p : { ...p, [key]: newValue }));
+    });
+  };
+
+  const gridRows = Array.from({ length: people.length + 1 }, (_, i) => ({
+    rowIndex: i,
+    height: 40,
+  }));
+
+  const gridColumns = columnDefs.map((col, index) => ({
+    colIndex: index,
+    width: col.width,
+  }));
+
+  const cells = [];
+
+  gridRows.forEach((row, rowIndex) => {
+    const personRowIndex = row.rowIndex;
+
+    if (rowIndex === 0) {
+      columnDefs.forEach((col, colIndex) => {
+        cells.push({
+          rowIndex,
+          colIndex,
+          Template: NonEditableCell,
+          props: {
+            value: col.title,
+            style: {
+              backgroundColor: "#55bc71",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              fontWeight: "bold",
+            },
+          },
+          isSelectable: false,
         });
-      };
+      });
+    } else {
+      const personCells = columnDefs.map((col) => {
+        const numberCellProps = {
+          onValueChanged: (newValue) => {
+            updatePerson(people[personRowIndex - 1]._id, col.title, newValue);
+          },
+          value: people[personRowIndex - 1][col.title.toLowerCase()],
+          allowSeparators: false,
+        };
 
-      const gridRows = Array.from({ length: people.length + 1 }, (_, i) => ({
-        rowIndex: i,
-        height: 40,
-      }));
+        const textCellProps = {
+          text: people[personRowIndex - 1][col.title.toLowerCase()],
+          onTextChanged: (newText) => {
+            updatePerson(people[personRowIndex - 1]._id, col.title, newText);
+          },
+        };
 
-      const gridColumns = columnDefs.map((col, index) => ({
-        colIndex: index,
-        width: col.width,
-      }));
-
-      const cells = [];
-
-      gridRows.forEach((row, rowIndex) => {
-        const personRowIndex = row.rowIndex;
-
-        if (rowIndex === 0) {
-          columnDefs.forEach((col, colIndex) => {
-            cells.push({
-              rowIndex,
-              colIndex,
-              Template: NonEditableCell,
-              props: {
-                value: col.title,
-                style: {
-                  backgroundColor: "#55bc71",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  fontWeight: "bold",
-                },
-              },
-              isSelectable: false,
-            });
-          });
-        } else {
-          const personCells = columnDefs.map((col) => {
-            const numberCellProps = {
-              onValueChanged: (newValue) => {
-                updatePerson(people[personRowIndex - 1]._id, col.title, newValue);
-              },
-              value: people[personRowIndex - 1][col.title.toLowerCase()],
-              allowSeparators: false,
-            };
-
-            const textCellProps = {
-              text: people[personRowIndex - 1][col.title.toLowerCase()],
-              onTextChanged: (newText) => {
-                updatePerson(people[personRowIndex - 1]._id, col.title, newText);
-              },
-            };
-
-            return {
-              Template: col.cellTemplate,
-              props: col.title === "age" ? numberCellProps : textCellProps,
-            };
-          });
-
-          columnDefs.forEach((_, colIndex) => {
-            cells.push({
-              rowIndex,
-              colIndex,
-              ...personCells[colIndex],
-            });
-          });
-        }
+        return {
+          Template: col.cellTemplate,
+          props: col.title === "age" ? numberCellProps : textCellProps,
+        };
       });
 
-      return (
-        <ReactGrid
-          onFillHandle={handleFill}
-          rows={gridRows}
-          columns={gridColumns}
-          cells={cells}
-        />
-      );
-    };
+      columnDefs.forEach((_, colIndex) => {
+        cells.push({
+          rowIndex,
+          colIndex,
+          ...personCells[colIndex],
+        });
+      });
+    }
+  });
 
-    render(<FillHandleExample />, document.getElementById("root"));
+  return (
+    <ReactGrid
+      onFillHandle={handleFill}
+      rows={gridRows}
+      columns={gridColumns}
+      cells={cells}
+    />
+  );
+};
+
+render(<FillHandleExample />, document.getElementById("root"));
   `}
 />

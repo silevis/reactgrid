@@ -31,6 +31,8 @@ type Range = {
 
 ### Live Demo
 
+---
+
 import LiveCode from "@/nextra/components/LiveCode.tsx";
 import React, { useState } from "react";
 import {
@@ -51,50 +53,58 @@ scope={{
   NonEditableCell,
   Row,
   Cell,
+  peopleArr: [
+    {
+      _id: "66d61077035753f369ddbb16",
+      name: "Jordan Rodriquez",
+      age: 30,
+      email: "jordanrodriquez@cincyr.com",
+      company: "Zaggles",
+      position: 1,
+    },
+    {
+      _id: "66d61077794e7949ab167fd5",
+      email: "allysonrios@satiance.com",
+      name: "Allyson Rios",
+      age: 30,
+      company: "Zoxy",
+      position: 2,
+    },
+    {
+      _id: "66d61077dd754e88981ae434",
+      name: "Pickett Lucas",
+      age: 25,
+      email: "pickettlucas@zoxy.com",
+      company: "Techade",
+      position: 3,
+    },
+    {
+      _id: "66d61077115e2f8748c334d9",
+      name: "Louella David",
+      age: 37,
+      email: "louelladavid@techade.com",
+      company: "Ginkogene",
+      position: 4,
+    },
+    {
+      _id: "66d61077540d53374b427e4b",
+      name: "Tricia Greene",
+      age: 27,
+      email: "triciagreene@ginkogene.com",
+      company: "Naxdis",
+      position: 5,
+    },
+  ]
 }}
 code={`
-const peopleArr = [
-  {
-    _id: "66d61077035753f369ddbb16",
-    name: "Jordan Rodriquez",
-    age: 30,
-    email: "jordanrodriquez@cincyr.com",
-    company: "Zaggles",
-    position: 1,
-  },
-  {
-    _id: "66d61077794e7949ab167fd5",
-    email: "allysonrios@satiance.com",
-    name: "Allyson Rios",
-    age: 30,
-    company: "Zoxy",
-    position: 2,
-  },
-  {
-    _id: "66d61077dd754e88981ae434",
-    name: "Pickett Lucas",
-    age: 25,
-    email: "pickettlucas@zoxy.com",
-    company: "Techade",
-    position: 3,
-  },
-  {
-    _id: "66d61077115e2f8748c334d9",
-    name: "Louella David",
-    age: 37,
-    email: "louelladavid@techade.com",
-    company: "Ginkogene",
-    position: 4,
-  },
-  {
-    _id: "66d61077540d53374b427e4b",
-    name: "Tricia Greene",
-    age: 27,
-    email: "triciagreene@ginkogene.com",
-    company: "Naxdis",
-    position: 5,
-  },
-];
+interface Person {
+  _id: string;
+  name: string;
+  birth: Moment;
+  email: string;
+  company: string;
+  position: number;
+}
 
 interface ColumnDef {
   title: string;
@@ -110,7 +120,7 @@ const styledRanges = [
 ];
 
 const ColumnResizeExample = () => {
-  const [people, setPeople] = useState(peopleArr);
+  const [people, setPeople] = useState<Person[]>(peopleArr);
 
   const [columnDefs, setColumnDefs] = useState<ColumnDef[]>(
     Object.keys(peopleArr[0]).reduce((acc: ColumnDef[], peopleKey: string, idx: number) => {

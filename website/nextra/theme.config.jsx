@@ -7,7 +7,7 @@ const config = {
   logo: (
     <>
       <svg width="21" height="24" viewBox="0 0 21 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <g clip-path="url(#clip0_401_14556)">
+        <g clipPath="url(#clip0_401_14556)">
         <path d="M4.5 4.5H0V6H4.5V4.5Z" fill="#107C41"/>
         <path d="M21 4.5H10.5V6H21V4.5Z" fill="#107C41"/>
         <path d="M10.5 4.5H6V6H10.5V4.5Z" fill="#107C41"/>

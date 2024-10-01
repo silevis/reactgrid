@@ -72,6 +72,7 @@ export default function ExamplesPage() {
             <Image src={logo} alt="ReactGrid" />
           </div>
           <div
+            id="liquidity-planner-container"
             className="flex"
             style={{ maxHeight: 750, width: "100%", overflow: "auto" }}
           >
