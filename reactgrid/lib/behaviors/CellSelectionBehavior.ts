@@ -254,8 +254,31 @@ export const CellSelectionBehavior: Behavior = {
 
     const currentDragOverCell = store.getCellByIndexes(currentPointerIdx.rowIndex, currentPointerIdx.colIndex);
 
+    let PreviousPane;
+
+    if (!isEqual(store.selectedArea, EMPTY_AREA)) {
+      // Get the previous pane based on the last cell of the selected area (where the fill handle button is located)
+      PreviousPane = getPaneNameByCell(
+        store,
+        store.getCellByIndexes(store.pointerStartIdx.rowIndex, store.pointerStartIdx.colIndex)
+      );
+    } else {
+      // Get the previous pane based on the focused cell
+      PreviousPane = getPaneNameByCell(store, store.getFocusedCell());
+    }
+
     if (!currentDragOverCell) {
       return store;
+    }
+
+    if (PreviousPane === "Center") {
+      scrollTowardsSticky(store, currentDragOverCell, currentPointerIdx);
+    }
+    if (PreviousPane === "Left" || PreviousPane === "Right") {
+      scrollTowardsSticky(store, currentDragOverCell, currentPointerIdx, false, true);
+    }
+    if (PreviousPane === "TopCenter" || PreviousPane === "BottomCenter") {
+      scrollTowardsSticky(store, currentDragOverCell, currentPointerIdx, true);
     }
 
     const isStickyCell = isCellSticky(store, currentDragOverCell);
@@ -269,14 +292,6 @@ export const CellSelectionBehavior: Behavior = {
     const shouldEnableRowSelection = store.pointerStartIdx.colIndex === 0 && !!store.enableRowSelectionOnFirstColumn;
 
     if (cellContainer) {
-      const scrollableParent = getScrollableParent(cellContainer as HTMLElement, true);
-      const scrollableParentIsNotAWindow =
-        scrollableParent && "clientWidth" in scrollableParent && "clientHeight" in scrollableParent;
-
-      scrollableParentIsNotAWindow ? scrollToElementEdge({ x: clientX, y: clientY }, scrollableParent) : () => {};
-      // TODO: scrollToWindowEdge({ x: clientX, y: clientY }); - function not implemented yet!
-      // * scrollToWindowEdge - not possible to test in Ladle environment, due to clientX/Y acting like pageX/Y
-
       if (isStickyCell) {
         const nonStickyRowsAndColumns = getCellIndexesFromContainerElement(cellContainer);
         const currentPointerIdx = nonStickyRowsAndColumns || NO_CELL_LOCATION;
