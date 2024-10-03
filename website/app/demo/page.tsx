@@ -60,7 +60,7 @@ export default function ExamplesPage() {
           ReactGrid allows you to compose your view with an arbitrary cell
           order. In many components and tools in React ecosystem you have to
           keep the same data schema in all rows. Our component breaks out from
-          the frame. For example, we will demonstrate how to build a liquidity
+          the frame. As an example, we will demonstrate how to build a liquidity
           planner—an app that provides a strategy for long-term financial
           planning. Our app will enable entering, aggregating, and evaluating
           planned cash flows.

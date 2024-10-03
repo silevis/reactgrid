@@ -93,10 +93,12 @@ export type StyledRange = {
   range: Range;
 };
 
+export type RGThemeType = NestedStylesPartial<RGTheme>;
+
 export interface ReactGridProps {
   id?: string;
 
-  styles?: NestedStylesPartial<RGTheme>;
+  styles?: RGThemeType;
 
   styledRanges?: StyledRange[];
 

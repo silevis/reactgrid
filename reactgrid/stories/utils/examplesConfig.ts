@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Cell, Column, NonEditableCell, Row } from "../../lib/main";
+import { Cell, Column, NonEditableCell, RGThemeType, Row } from "../../lib/main";
 
 export interface RowDef {
   rowIndex: number;
@@ -171,7 +171,7 @@ export const peopleArr: Person[] = [
   },
 ];
 
-export const rgStyles = {
+export const rgStyles: RGThemeType = {
   focusIndicator: {
     border: {
       color: "#32a852",

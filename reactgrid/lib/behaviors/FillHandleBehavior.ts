@@ -159,9 +159,9 @@ const handlePointerUp = (store: ReactGridStore) => {
     }
 
     if (store.onFillHandle) {
-      const isCustomFillHandleUsed = store.onFillHandle(selectedArea, store.fillHandleArea, cellsLookup);
+      const preventDefaultFillHandleBehavior = store.onFillHandle(selectedArea, store.fillHandleArea, cellsLookup);
 
-      if (!isCustomFillHandleUsed) {
+      if (!preventDefaultFillHandleBehavior) {
         defaultFillHandle(selectedArea, store.fillHandleArea, cellsLookup);
       }
     } else {

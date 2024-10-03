@@ -93,6 +93,12 @@ export type SpannedCell = Cell & {
   colSpan: number;
 };
 
+// Generic type that creates a new type based on T.
+// It makes all properties optional, excludes the "gap" property, and recursively applies the same transformation to nested objects.
 export type NestedStylesPartial<T> = {
-  [P in keyof T]?: T[P] extends object ? NestedStylesPartial<T[P]> : T[P];
+  // Iterate over each property P in T
+  [P in keyof T as P extends "gap" ? never : P]?: T[P] extends object // If the property is an object, recursively apply NestedStylesPartial // Exclude the "gap" property
+    ? NestedStylesPartial<T[P]>
+    : // Otherwise, keep the property type as is
+      T[P];
 };

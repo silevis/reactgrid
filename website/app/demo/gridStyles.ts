@@ -19,7 +19,7 @@ export const creditEditableCellStyle: React.CSSProperties = {
 export const creditCellStyle: React.CSSProperties = {
   justifyContent: "flex-end",
   paddingRight: 15,
-  backgroundColor: "#8181810e",
+  backgroundColor: "rgb(245, 245, 245)",
 };
 
 export const creditLineOverdraftNameCellStyle: React.CSSProperties = {
@@ -34,7 +34,7 @@ export const creditLineOverdraftCellStyle: React.CSSProperties = {
   paddingRight: 15,
   fontSize: 16,
   fontWeight: "bold",
-  backgroundColor: "#8181810e",
+  backgroundColor: "rgb(245, 245, 245)",
 };
 
 export const totalNameCellStyle: React.CSSProperties = {
@@ -51,7 +51,7 @@ export const totalCellStyle: React.CSSProperties = {
   fontSize: 16,
   fontWeight: "bold",
   borderBottom: "1px solid #c9c9c9",
-  backgroundColor: "#8181810e",
+  backgroundColor: "rgb(245, 245, 245)",
 };
 
 export const cumulativeNameCellStyle: React.CSSProperties = {
@@ -68,8 +68,20 @@ export const cumulativeCellStyle: React.CSSProperties = {
   fontSize: 16,
   fontWeight: "bold",
   borderBottom: "1px solid #c9c9c9",
-  backgroundColor: "#8181810e",
+  backgroundColor: "rgb(245, 245, 245)",
 };
+
+export const getTotalsColumnCellStyle = (
+  showBottomBorder?: boolean,
+  fontSize: number = 14
+): React.CSSProperties => ({
+  justifyContent: "flex-end",
+  paddingRight: 15,
+  fontSize: fontSize,
+  fontWeight: "bold",
+  borderBottom: showBottomBorder ? "1px solid #c9c9c9" : "none",
+  backgroundColor: "rgb(245, 245, 245)",
+});
 
 export const cashboxBankCellEditableStyle: React.CSSProperties = {
   backgroundColor: "#e7f2ec",
@@ -78,7 +90,7 @@ export const cashboxBankCellEditableStyle: React.CSSProperties = {
 };
 
 export const cashboxBankCellStyle: React.CSSProperties = {
-  backgroundColor: "#8181810e",
+  backgroundColor: "rgb(245, 245, 245)",
   justifyContent: "flex-end",
   paddingRight: 15,
 };
@@ -111,5 +123,5 @@ export const groupMonthSummaryCellStyle: React.CSSProperties = {
   justifyContent: "flex-end",
   paddingRight: 15,
   fontWeight: "bold",
-  backgroundColor: "#8181810e",
+  backgroundColor: "rgb(245, 245, 245)",
 };

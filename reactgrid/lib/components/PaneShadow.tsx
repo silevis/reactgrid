@@ -1,9 +1,10 @@
 import React, { CSSProperties } from "react";
 import { PaneShadowName } from "../types/InternalModel";
 import { useTheme } from "../hooks/useTheme";
-import { NumericalRange, RGTheme } from "../main";
+import { NumericalRange } from "../main";
+import { RGTheme } from "../types/RGTheme";
 
-const getPaneShadowStyle = (paneShadowName: PaneShadowName, range: NumericalRange, gap: RGTheme["grid"]["gap"]) => {
+const getPaneShadowStyle = (paneShadowName: PaneShadowName, range: NumericalRange, gap: RGTheme["gap"]) => {
   let style: CSSProperties = {
     position: "sticky",
     gridRowStart: range.startRowIdx + 1,
@@ -82,7 +83,7 @@ export const PaneShadow: React.FC<PaneShadowProps> = ({
       <div
         className={`rgPaneShadowOverlay rgPaneShadowOverlay-${paneShadowName}`}
         style={{
-          ...getPaneShadowStyle(paneShadowName, gridContentRange, theme.grid.gap),
+          ...getPaneShadowStyle(paneShadowName, gridContentRange, theme.gap),
           boxShadow,
         }}
       />

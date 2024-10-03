@@ -217,7 +217,7 @@ export const PartialArea: FC<PartialAreaProps> = React.memo(
 
       // If the area part is on the sticky pane and renders only one border,
       // we need to adjust the height/width such that the border sticks out a bit (at a length of gap width)
-      if (!shouldRenderBottomBorder) height = `calc(100% - (${areaBorder.width} - ${theme.grid.gap.width}))`;
+      if (!shouldRenderBottomBorder) height = `calc(100% - (${areaBorder.width} - ${theme.gap.width}))`;
     }
     if (parentPaneName === "TopRight" || parentPaneName === "Right" || parentPaneName === "BottomRight") {
       baseStyle.position = "sticky";
@@ -228,7 +228,7 @@ export const PartialArea: FC<PartialAreaProps> = React.memo(
         1
       ).right;
 
-      if (!shouldRenderLeftBorder) width = `calc(100% - (${areaBorder.width} - ${theme.grid.gap.width}))`;
+      if (!shouldRenderLeftBorder) width = `calc(100% - (${areaBorder.width} - ${theme.gap.width}))`;
     }
     if (parentPaneName === "BottomLeft" || parentPaneName === "BottomCenter" || parentPaneName === "BottomRight") {
       baseStyle.position = "sticky";
@@ -239,13 +239,13 @@ export const PartialArea: FC<PartialAreaProps> = React.memo(
         1
       ).bottom;
 
-      if (!shouldRenderTopBorder) height = `calc(100% - (${areaBorder.width} - ${theme.grid.gap.width}))`;
+      if (!shouldRenderTopBorder) height = `calc(100% - (${areaBorder.width} - ${theme.gap.width}))`;
     }
     if (parentPaneName === "TopLeft" || parentPaneName === "Left" || parentPaneName === "BottomLeft") {
       baseStyle.position = "sticky";
       offset.left = getCellOffset?.(areaRange.startRowIdx, areaRange.startColIdx, 1, 1).left;
 
-      if (!shouldRenderRightBorder) width = `calc(100% - (${areaBorder.width} - ${theme.grid.gap.width}))`;
+      if (!shouldRenderRightBorder) width = `calc(100% - (${areaBorder.width} - ${theme.gap.width}))`;
     }
 
     let shouldEnableFillHandle = false;
@@ -301,10 +301,10 @@ export const PartialArea: FC<PartialAreaProps> = React.memo(
           <div
             style={{
               position: "absolute",
-              top: `-${theme.grid.gap.width}`,
-              right: `-${theme.grid.gap.width}`,
-              bottom: `-${theme.grid.gap.width}`,
-              left: `-${theme.grid.gap.width}`,
+              top: `-${theme.gap.width}`,
+              right: `-${theme.gap.width}`,
+              bottom: `-${theme.gap.width}`,
+              left: `-${theme.gap.width}`,
 
               ...(shouldRenderTopBorder && {
                 borderTop: `${areaBorder.width} ${areaBorder.style} ${areaBorder.color}`,

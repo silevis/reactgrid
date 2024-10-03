@@ -332,9 +332,9 @@ export const DefaultBehavior = (config: DefaultBehaviorConfig = CONFIG_DEFAULTS)
     }
 
     if (store.onCopy) {
-      const isCustomCopyLogicUsed = store.onCopy?.(event, cellsRange, store.cellsLookup);
+      const preventDefaultCopyBehavior = store.onCopy?.(event, cellsRange, store.cellsLookup);
 
-      if (!isCustomCopyLogicUsed) {
+      if (!preventDefaultCopyBehavior) {
         defaultCopyHandler(event, store, cellsRange);
       }
     } else {
@@ -363,9 +363,9 @@ export const DefaultBehavior = (config: DefaultBehaviorConfig = CONFIG_DEFAULTS)
     }
 
     if (store.onCut) {
-      const isCustomCutLogicUsed = store.onCut?.(event, cellsRange, store.cellsLookup);
+      const preventDefaultCutBehavior = store.onCut?.(event, cellsRange, store.cellsLookup);
 
-      if (!isCustomCutLogicUsed) {
+      if (!preventDefaultCutBehavior) {
         defaultCutHandler(event, store, cellsRange);
       }
     } else {
@@ -393,9 +393,9 @@ export const DefaultBehavior = (config: DefaultBehaviorConfig = CONFIG_DEFAULTS)
     }
 
     if (store.onPaste) {
-      const isCustomPasteLogicUsed = store.onPaste?.(event, cellsRange, store.cellsLookup);
+      const preventDefaultPasteBehavior = store.onPaste?.(event, cellsRange, store.cellsLookup);
 
-      if (!isCustomPasteLogicUsed) {
+      if (!preventDefaultPasteBehavior) {
         // return store with updated selected area
         return defaultPasteHandler(event, store, cellsRange);
       }

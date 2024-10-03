@@ -126,7 +126,7 @@ export const PaneGridContent: React.FC<PaneGridContentProps> = React.memo(
   shouldMemoGridContent
 );
 
-const getPaneBackgroundStyle = (paneName: PaneName, range: NumericalRange, gap: RGTheme["grid"]["gap"]) => {
+const getPaneBackgroundStyle = (paneName: PaneName, range: NumericalRange, gap: RGTheme["gap"]) => {
   let style: CSSProperties = {
     position: "sticky",
     gridRowStart: range.startRowIdx + 1,
@@ -216,7 +216,7 @@ export const Pane: React.FC<PaneProps> = ({
       {paneName !== "Center" && (
         <div
           className={`rgPaneBackground rgPaneBackground-${paneName}`}
-          style={getPaneBackgroundStyle(paneName, gridContentRange, theme.grid.gap)}
+          style={getPaneBackgroundStyle(paneName, gridContentRange, theme.gap)}
         />
       )}
       <PaneGridContent range={gridContentRange} getCellOffset={getCellOffset} stickyOffsets={stickyOffsets} />

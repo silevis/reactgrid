@@ -1,11 +1,9 @@
 import { RGTheme } from "../types/RGTheme";
 
 const lightTheme: RGTheme = {
-  grid: {
-    gap: {
-      width: "1px",
-      color: "#efefef",
-    },
+  gap: {
+    width: "1px",
+    color: "rgb(234 234 234)",
   },
   paneContainer: {
     top: {},

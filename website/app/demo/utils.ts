@@ -10,6 +10,7 @@ import {
   cumulativeCellStyle,
   cumulativeNameCellStyle,
   emptyHeaderCellStyle,
+  getTotalsColumnCellStyle,
   groupHeaderCellStyle,
   groupMonthSummaryCellStyle,
   groupMonthValueCellStyle,
@@ -208,7 +209,7 @@ const getGroupCells = (
         Template: NonEditableCell,
         props: {
           value: numberFormat.format(yearlyGroupTotal),
-          style: groupMonthSummaryCellStyle,
+          style: getTotalsColumnCellStyle(),
         },
       },
     ];
@@ -267,7 +268,7 @@ const getGroupCells = (
       Template: NonEditableCell,
       props: {
         value: numberFormat.format(sumGroupValues(group.values)),
-        style: groupMonthSummaryCellStyle,
+        style: getTotalsColumnCellStyle(),
       },
     },
   ]);
@@ -404,7 +405,7 @@ const getCreditLineCells = (
       startRowIdx,
       13,
       creditLine.toString(),
-      groupMonthSummaryCellStyle
+      getTotalsColumnCellStyle()
     ),
   ];
 
@@ -429,7 +430,7 @@ const getCreditLineCells = (
       startRowIdx + 1,
       13,
       yearlyOverdraft > 0 ? numberFormat.format(yearlyOverdraft) : "",
-      creditLineOverdraftCellStyle
+      getTotalsColumnCellStyle(false, 16)
     ),
   ];
 
@@ -472,7 +473,7 @@ const getCumulativeCells = (
       startRowIdx,
       13,
       numberFormat.format(yearlyInflowOuflowDiff),
-      cumulativeCellStyle
+      getTotalsColumnCellStyle(true, 16)
     ),
   ];
 };
@@ -513,7 +514,7 @@ const getMonthsTotalCells = (
       startRowIdx,
       13,
       numberFormat.format(yearlyInflowOuflowDiff),
-      totalCellStyle
+      getTotalsColumnCellStyle(true, 16)
     ),
   ];
 };

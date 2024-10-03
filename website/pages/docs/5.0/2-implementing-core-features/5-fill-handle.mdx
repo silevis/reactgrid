@@ -28,8 +28,8 @@ The return value of these handlers determines whether the custom logic should ov
 
 | Return Value | Type      | Description                                                                                           |
 |--------------|-----------|-------------------------------------------------------------------------------------------------------|
-| `true`       | `boolean` | Custom logic should override the default fill handle behavior.                                         |
-| `false`      | `boolean` | Default behavior should proceed without being overridden by custom logic. This allows for additional actions to be performed before allowing the default behavior. |
+| `true`       | `boolean` | Prevent the default fill handle behavior.                                         |
+| `false`      | `boolean` | Default behavior should proceed without being prevented. It is used in case you want to perform additional actions before allowing the default fill handle behavior. |
 
 
 ---

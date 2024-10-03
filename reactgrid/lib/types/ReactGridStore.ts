@@ -1,7 +1,7 @@
-import { Cell, Column, Range, Row, StyledRange } from "./PublicModel.ts";
+import { Cell, Column, Range, RGThemeType, Row, StyledRange } from "./PublicModel.ts";
 import { RowMeasurement } from "./RowMeasurement.ts";
 import { ColumnMeasurement } from "./ColumnMeasurement.ts";
-import { CellMap, FocusedCell, IndexedLocation, NestedStylesPartial, PaneName, SpanMember } from "./InternalModel.ts";
+import { CellMap, FocusedCell, IndexedLocation, PaneName, SpanMember } from "./InternalModel.ts";
 import { NumericalRange } from "./PublicModel.ts";
 import { Behavior, BehaviorId } from "./Behavior.ts";
 import { RGTheme } from "./RGTheme.ts";
@@ -20,7 +20,7 @@ export interface ReactGridStoreProps {
   paneRanges: Record<PaneName, NumericalRange>;
   styledRanges: StyledRange[];
 
-  styles?: NestedStylesPartial<RGTheme>;
+  styles?: RGThemeType;
 
   focusedLocation: IndexedLocation;
   changedFocusedLocation?: IndexedLocation;

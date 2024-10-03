@@ -9,9 +9,9 @@ export const handlePaneOverlap = (
   colIndex: number,
   scrollableParent: Element
 ) => {
-  const styles = getTheme(store);
+  const themeStyles = getTheme(store);
 
-  const gridGap = getNumberFromPixelString(styles.grid.gap.width || 0);
+  const gapWidth = getNumberFromPixelString(themeStyles.gap.width || 0);
 
   const bottomCenterOverlapValue = getCellPaneOverlap(store, { rowIndex, colIndex }, "BottomCenter");
   const topCenterPaneOverlapValue = getCellPaneOverlap(store, { rowIndex, colIndex }, "TopCenter");
@@ -20,25 +20,25 @@ export const handlePaneOverlap = (
 
   if (topCenterPaneOverlapValue) {
     scrollableParent?.scrollBy({
-      top: -topCenterPaneOverlapValue - gridGap,
+      top: -topCenterPaneOverlapValue - gapWidth,
     });
   }
 
   if (rightPaneOverlapValue) {
     scrollableParent?.scrollBy({
-      left: rightPaneOverlapValue + gridGap,
+      left: rightPaneOverlapValue + gapWidth,
     });
   }
 
   if (bottomCenterOverlapValue) {
     scrollableParent?.scrollBy({
-      top: bottomCenterOverlapValue + gridGap,
+      top: bottomCenterOverlapValue + gapWidth,
     });
   }
 
   if (leftPaneOverlapValue) {
     scrollableParent?.scrollBy({
-      left: -leftPaneOverlapValue - gridGap,
+      left: -leftPaneOverlapValue - gapWidth,
     });
   }
 };

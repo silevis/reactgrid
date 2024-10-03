@@ -81,14 +81,14 @@ const gridStyles = {
   paneContainer: {
     top: {
       background: "#fff",
+      boxShadow: "0px 2px 10px 0px rgba(0, 0, 0, 0.3)",
     },
     left: {
       background: "#fff",
-      boxShadow: "0 0 10px 0 rgba(0, 0, 0, 0.1)",
+      boxShadow: "5px 0 3px -2px rgba(0, 0, 0, .06)",
     },
     right: {
-      background: "#fff",
-      boxShadow: "0 0 10px 0 rgba(0, 0, 0, 0.1)",
+      boxShadow: "-5px 0 3px -2px rgba(0, 0, 0, .06)",
     },
   },
   cellContainer: {

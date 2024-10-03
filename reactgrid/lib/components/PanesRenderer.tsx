@@ -315,9 +315,9 @@ const PanesRenderer: FC<PanesRendererProps> = ({
             })
             .join(" "),
           gridTemplateRows: rows.map(({ height }) => (typeof height === "number" ? `${height}px` : height)).join(" "),
-          gap: theme.grid.gap.width,
-          backgroundColor: theme.grid.gap.color,
-          padding: theme.grid.gap.width,
+          gap: theme.gap.width,
+          backgroundColor: theme.gap.color,
+          padding: theme.gap.width,
         }}
         ref={gridContainerRef}
       >
