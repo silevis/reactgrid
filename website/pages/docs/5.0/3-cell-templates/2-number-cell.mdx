@@ -20,6 +20,7 @@ interface NumberCellProps {
   validator?: (value: number) => boolean;
   errorMessage?: string;
   hideZero?: boolean;
+  allowSeparators?: boolean;
   format?: Intl.NumberFormat;
   style?: React.CSSProperties;
 }
@@ -32,5 +33,6 @@ interface NumberCellProps {
 | `validator?`      | `(value: number) => boolean`      | Function to validate the value.                                    |
 | `errorMessage?`   | `string`                          | Error message to display when validation fails.                    |
 | `hideZero?`       | `boolean`                         | Flag to hide the zero value.                                       |
+| `allowSeparators?`       | `boolean`                  | Flag to allow or disallow the use of separators in the cell.     |
 | `format?`         | `Intl.NumberFormat`               | Number format to apply to the value.                               |
 | `style?`          | `React.CSSProperties`             | CSS properties to apply to the cell.                               |
