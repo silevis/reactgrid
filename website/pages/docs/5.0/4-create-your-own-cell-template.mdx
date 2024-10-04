@@ -14,7 +14,7 @@ The key to implementing a custom cell is integrating it with the `CellWrapper`, 
 
 ```tsx
 <CellWrapper 
-  onStringValueRequsted={() => value?.toString() || ""} 
+  onStringValueRequested={() => value?.toString() || ""} 
   onStringValueReceived={() => {
     // cell value update logic
   }} 
@@ -27,7 +27,7 @@ Both `onStringValueRequested` and `onStringValueReceived` are required props for
 
 ```tsx
 type CellWrapperProps = React.HTMLAttributes<HTMLDivElement> & {
-  onStringValueRequsted: () => string;
+  onStringValueRequested: () => string;
   onStringValueReceived: (v: string) => void;
   children?: React.ReactNode;
 };
@@ -157,7 +157,7 @@ const DateCell: FC<DateCellProps> = ({ value, onValueChanged }) => {
 
   return (
     <CellWrapper
-      onStringValueRequsted={() => value.toDate().toDateString()}
+      onStringValueRequested={() => value.toDate().toDateString()}
       onStringValueReceived={(v) => onValueChanged?.(moment(v))}
       style={{ padding: ".2rem", textAlign: "center", outline: "none" }}
       onDoubleClick={() => {

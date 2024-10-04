@@ -7,14 +7,14 @@ import { useReactGridId } from "./ReactGridIdProvider";
 import { CellsLookup } from "../types/PublicModel";
 
 type CellWrapperProps = React.HTMLAttributes<HTMLDivElement> & {
-  onStringValueRequsted: () => string;
+  onStringValueRequested: () => string;
   onStringValueReceived: (v: string) => void;
   children?: React.ReactNode;
 };
 
 const CellWrapper: FC<CellWrapperProps> = ({
   children,
-  onStringValueRequsted,
+  onStringValueRequested,
   onStringValueReceived,
   ...wrapperDivAttributes
 }) => {
@@ -39,7 +39,7 @@ const CellWrapper: FC<CellWrapperProps> = ({
     newCellsLookup.set(`${ctx.realRowIndex} ${ctx.realColumnIndex}`, {
       rowIndex: ctx.realRowIndex,
       colIndex: ctx.realColumnIndex,
-      onStringValueRequsted,
+      onStringValueRequested,
       onStringValueReceived,
     });
 

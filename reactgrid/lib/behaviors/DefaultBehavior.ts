@@ -427,7 +427,7 @@ const defaultCopyHandler = (
 
   const values = cellsLookupCallbacks
     .filter((element) => element && Object.keys(element).length > 0)
-    .map((element) => element.onStringValueRequsted());
+    .map((element) => element.onStringValueRequested());
 
   const htmlData = `
   <table>
@@ -439,7 +439,7 @@ const defaultCopyHandler = (
           const cell = store.cellsLookup.get(
             `${cellsRange.startRowIdx + rowIndex} ${cellsRange.startColIdx + colIndex}`
           );
-          const value = cell?.onStringValueRequsted?.() || "";
+          const value = cell?.onStringValueRequested?.() || "";
           return `<td>${value}</td>`;
         }).join("")}
       </tr>
@@ -471,7 +471,7 @@ const defaultCutHandler = (
 
   const values = cellsLookupCallbacks
     .filter((element) => element && Object.keys(element).length > 0)
-    .map((element) => element.onStringValueRequsted());
+    .map((element) => element.onStringValueRequested());
 
   cellsLookupCallbacks.forEach((element) => element && element.onStringValueReceived?.(""));
 
@@ -485,7 +485,7 @@ const defaultCutHandler = (
           const cell = store.cellsLookup.get(
             `${cellsRange.startRowIdx + rowIndex} ${cellsRange.startColIdx + colIndex}`
           );
-          const value = cell?.onStringValueRequsted?.() || "";
+          const value = cell?.onStringValueRequested?.() || "";
           return `<td>${value}</td>`;
         }).join("")}
       </tr>

@@ -248,7 +248,7 @@ const defaultFillHandle = (selectedArea: NumericalRange, fillRange: NumericalRan
         !!obj && Object.keys(obj).length > 0;
 
       if (isNotEmpty(sourceCellCallbacks) && isNotEmpty(currentCellCallbacks)) {
-        const newValue = sourceCellCallbacks.onStringValueRequsted();
+        const newValue = sourceCellCallbacks.onStringValueRequested();
         currentCellCallbacks.onStringValueReceived(newValue);
       }
     }

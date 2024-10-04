@@ -34,7 +34,7 @@ export const handleFill = (
       );
 
       if (sourceCellCallbacks) {
-        const newValue = sourceCellCallbacks.onStringValueRequsted();
+        const newValue = sourceCellCallbacks.onStringValueRequested();
         currentCellCallbacks.onStringValueReceived(newValue);
       }
     }

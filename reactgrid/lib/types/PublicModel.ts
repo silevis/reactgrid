@@ -44,7 +44,7 @@ export type Cell = {
 export type CellsLookupCallbacks = {
   rowIndex: number;
   colIndex: number;
-  onStringValueRequsted: () => string;
+  onStringValueRequested: () => string;
   onStringValueReceived: (v: string) => void;
 };
 

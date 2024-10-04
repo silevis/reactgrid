@@ -50,7 +50,7 @@ export const NumberCell: FC<NumberCellProps> = ({
   return (
     <CellWrapper
       onTouchEnd={handleDoubleTouch}
-      onStringValueRequsted={() => initialValueStr}
+      onStringValueRequested={() => initialValueStr}
       onStringValueReceived={(v) => onValueChanged?.(Number(v))}
       style={style}
       onDoubleClick={() => {

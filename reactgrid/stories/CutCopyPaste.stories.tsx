@@ -139,7 +139,7 @@ const handleCut = (
 
   const values = cellsLookupCallbacks
     .filter((element) => element && Object.keys(element).length > 0)
-    .map((element) => element.onStringValueRequsted());
+    .map((element) => element.onStringValueRequested());
 
   cellsLookupCallbacks.forEach((element) => element && element.onStringValueReceived?.(""));
 
@@ -151,7 +151,7 @@ const handleCut = (
       <tr>
         ${Array.from({ length: cellsRange.endColIdx - cellsRange.startColIdx }, (_, colIndex) => {
           const cell = cellsLookup.get(`${cellsRange.startRowIdx + rowIndex} ${cellsRange.startColIdx + colIndex}`);
-          const value = cell?.onStringValueRequsted?.() || "";
+          const value = cell?.onStringValueRequested?.() || "";
           return `<td>${value}</td>`;
         }).join("")}
       </tr>
@@ -186,7 +186,7 @@ const handleCopy = (
 
   const values = cellsLookupCallbacks
     .filter((element) => element && Object.keys(element).length > 0)
-    .map((element) => element.onStringValueRequsted());
+    .map((element) => element.onStringValueRequested());
 
   const htmlData = `
   <table>
@@ -196,7 +196,7 @@ const handleCopy = (
       <tr>
         ${Array.from({ length: cellsRange.endColIdx - cellsRange.startColIdx }, (_, colIndex) => {
           const cell = cellsLookup.get(`${cellsRange.startRowIdx + rowIndex} ${cellsRange.startColIdx + colIndex}`);
-          const value = cell?.onStringValueRequsted?.() || "";
+          const value = cell?.onStringValueRequested?.() || "";
           return `<td>${value}</td>`;
         }).join("")}
       </tr>

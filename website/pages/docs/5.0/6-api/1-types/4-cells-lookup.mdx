@@ -16,7 +16,7 @@ type CellsLookup<RowIdxType extends number = number, ColIdxType extends number =
 type CellsLookupCallbacks = {
   rowIndex: number;
   colIndex: number;
-  onStringValueRequsted: () => string;
+  onStringValueRequested: () => string;
   onStringValueReceived: (v: string) => void;
 };
 ```
@@ -27,5 +27,5 @@ type CellsLookupCallbacks = {
 |------------------------|----------------------------|----------------------------------------|
 | `rowIndex`             | `number`                   | The index of the row.                  |
 | `colIndex`             | `number`                   | The index of the column.               |
-| `onStringValueRequsted`| `() => string`             | Callback to get the cell value.        |
+| `onStringValueRequested`| `() => string`             | Callback to get the cell value.        |
 | `onStringValueReceived`| `(v: string) => void`      | Callback to set the cell value.        |
