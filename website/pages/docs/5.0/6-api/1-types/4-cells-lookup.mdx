@@ -5,13 +5,17 @@ metaTitle: "CellsLookup type"
 metaDescription: "ReactGrid docs"
 ---
 
+#### Introduction
+
+The `CellsLookup` is designed to work specifically with `string` values, allowing you to retrieve and update cells data. The primary use case for `CellsLookup` is within operations like [cut](/docs/5.0/2-implementing-core-features/10-copy-cut-paste), [copy](/docs/5.0/2-implementing-core-features/10-copy-cut-paste), [paste](/docs/5.0/2-implementing-core-features/10-copy-cut-paste), and [fill](/docs/5.0/2-implementing-core-features/5-fill-handle), where you need to access or modify cell content based on [row](/docs/5.0/6-api/1-types/1-row) and [column](/docs/5.0/6-api/1-types/2-column) indices. This type functions as a mapping of cell coordinates, identified by row and column indices, to callback functions. These callbacks— `onStringValueRequested` and `onStringValueReceived—enable` interaction with the grid's cell values, helping facilitate tasks such as data editing, copying, and filling, all while ensuring the values remain in a `string` format for consistency and simplicity.
+
 #### Definition
 
 ```ts
-type CellsLookup<RowIdxType extends number = number, ColIdxType extends number = number> = Map<
-  `${RowIdxType} ${ColIdxType}`,
-  CellsLookupCallbacks
->;
+type CellsLookup<
+  RowIdxType extends number = number,
+  ColIdxType extends number = number
+> = Map<`${RowIdxType} ${ColIdxType}`, CellsLookupCallbacks>;
 
 type CellsLookupCallbacks = {
   rowIndex: number;
@@ -23,9 +27,9 @@ type CellsLookupCallbacks = {
 
 #### Properties
 
-| Name                   | Type                       | Description                            |
-|------------------------|----------------------------|----------------------------------------|
-| `rowIndex`             | `number`                   | The index of the row.                  |
-| `colIndex`             | `number`                   | The index of the column.               |
-| `onStringValueRequested`| `() => string`             | Callback to get the cell value.        |
-| `onStringValueReceived`| `(v: string) => void`      | Callback to set the cell value.        |
+| Name                     | Type                  | Description                     |
+| ------------------------ | --------------------- | ------------------------------- |
+| `rowIndex`               | `number`              | The index of the row.           |
+| `colIndex`               | `number`              | The index of the column.        |
+| `onStringValueRequested` | `() => string`        | Callback to get the cell value. |
+| `onStringValueReceived`  | `(v: string) => void` | Callback to set the cell value. |

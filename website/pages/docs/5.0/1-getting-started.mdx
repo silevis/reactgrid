@@ -5,7 +5,7 @@ metaTitle: "Getting started"
 metaDescription: "ReactGrid docs"
 ---
 
-#### Introduction
+## Introduction to version 5
 
 In this guide, we're going to build a very simple React App, which will make use of ReactGrid.
 
@@ -15,9 +15,11 @@ In this guide, we're going to build a very simple React App, which will make use
 npm i @silevis/reactgrid
 ```
 
-## Integrate ReactGrid into the App
+Unlike previous versions, there's no longer a need to import the CSS file separately.
 
-To integrate ReactGrid into your application, configure the grid using [rows](/docs/5.0/6-api/1-types/1-row), [columns](/docs/5.0/6-api/1-types/2-column), and [cells](/docs/5.0/6-api/1-types/3-cell). However, if you provide only [cells](/docs/5.0/6-api/1-types/3-cell) with specified `rowIndex` and `colIndex`, the rows and columns will be automatically generated. If you want to define specific row heights or column widths, you should pass them explicitly to the ReactGrid component. Below is a detailed breakdown of how to set this up, including an example configuration file.
+### Integrate ReactGrid into the App
+
+To integrate ReactGrid into your application, configure the grid using [rows](/docs/5.0/6-api/1-types/1-row), [columns](/docs/5.0/6-api/1-types/2-column), and [cells](/docs/5.0/6-api/1-types/3-cell). However, if you provide only [cells](/docs/5.0/6-api/1-types/3-cell) with specified `rowIndex` and `colIndex`, the rows and columns will be automatically generated. If you want to define specific row heights, column widths or row and column reordering, you should pass them explicitly to the ReactGrid component. Below is a detailed breakdown of how to set this up, including an example configuration file.
 
 ### Configure ReactGrid inside your application
 

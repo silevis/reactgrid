@@ -3,7 +3,7 @@ import { RGTheme } from "../types/RGTheme";
 const lightTheme: RGTheme = {
   gap: {
     width: "1px",
-    color: "rgb(234 234 234)",
+    color: "rgb(230 230 230)",
   },
   paneContainer: {
     top: {},
