@@ -165,7 +165,7 @@ export const HeroSection = () => {
         )}
       </div>
       <MagicCard
-        className="inline-block border-l-1 border-b-1 border-green-light col-start-1 2xl:col-start-3 col-end-7 md:col-end-4 2xl:col-end-5 row-start-6 sm:row-start-9 bg-green-secondary cursor-pointer flex items-center justify-center"
+        className="inline-block border-l-1 border-b-1 border-green-light col-start-1 2xl:col-start-3 col-end-7 md:col-end-4 2xl:col-end-5 row-start-6 sm:row-start-9 bg-green-secondary flex items-center justify-center"
         gradientColor={"#D9D9D955"}
       >
         <Link
@@ -176,7 +176,7 @@ export const HeroSection = () => {
         </Link>
       </MagicCard>
       <MagicCard
-        className="group inline-block border-l-1 border-b-1 border-r-1 md:border-r-0 border-green-light col-start-7 md:col-start-4 2xl:col-start-5 col-end-13 md:col-end-7 row-start-6 sm:row-start-9 bg-green-secondary cursor-pointer flex items-center justify-center sm:justify-start"
+        className="group inline-block border-l-1 border-b-1 border-r-1 md:border-r-0 border-green-light col-start-7 md:col-start-4 2xl:col-start-5 col-end-13 md:col-end-7 row-start-6 sm:row-start-9 bg-green-secondary flex items-center justify-center sm:justify-start"
         gradientColor={"#D9D9D955"}
       >
         <Link
