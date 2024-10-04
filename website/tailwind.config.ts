@@ -88,6 +88,7 @@ const config: Config = {
         DEFAULT: "1px",
       },
       fontSize: {
+        "2xs": "12px",
         xs: "16px",
         sm: "20px",
         md: "24px",

@@ -5,11 +5,23 @@ import NumberTicker from "./ui/number-ticker";
 import { useIsScreenWidthLessThan } from "@/hooks/useIsScreenWidthLessThan";
 import { cn } from "@/lib/utils";
 import AnimatedGridPattern from "./ui/animated-grid-pattern";
+import { FaStar } from "react-icons/fa";
+import { useEffect, useState } from "react";
+import { MagicCard } from "./ui/magic-card";
 
 export const HeroSection = () => {
   const getRandomDecimalPlaces = () => Math.floor(Math.random() * 3);
   const getRandomValue = () => Math.floor(Math.random() * 95) + 5;
   const shouldHideNumbers = useIsScreenWidthLessThan(640);
+  const [starsCount, setStarsCount] = useState(0);
+
+  useEffect(() => {
+    fetch("https://api.github.com/repos/silevis/reactgrid")
+      .then((response) => response.json())
+      .then((data) => {
+        setStarsCount(data.stargazers_count);
+      });
+  }, []);
 
   return (
     <div className="pb-4 box-border font-dm-sans bg-green-primary text-md 2xl:text-xl text-white-primary hero-section grid grid-cols-main grid-rows-header-xs sm:grid-rows-header">
@@ -152,19 +164,39 @@ export const HeroSection = () => {
           />
         )}
       </div>
-      <Link
-        href="/docs"
-        className="inline-block border-l-1 border-b-1 border-green-light col-start-1 2xl:col-start-3 col-end-7 md:col-end-4 2xl:col-end-5 row-start-6 sm:row-start-9 flex justify-center gap-2 text-xs sm:text-sm font-bold items-center  bg-green-secondary"
+      <MagicCard
+        className="inline-block border-l-1 border-b-1 border-green-light col-start-1 2xl:col-start-3 col-end-7 md:col-end-4 2xl:col-end-5 row-start-6 sm:row-start-9 bg-green-secondary cursor-pointer flex items-center justify-center"
+        gradientColor={"#D9D9D955"}
       >
-        Get Started <BsFillRocketTakeoffFill />
-      </Link>
-      <Link
-        href="https://github.com/silevis/reactgrid"
-        target="_blank"
-        className="inline-block border-l-1 border-b-1 border-r-1 md:border-r-0 border-green-light col-start-7 md:col-start-4 2xl:col-start-5 col-end-13 md:col-end-7 row-start-6 sm:row-start-9 flex justify-center items-center text-xs sm:text-sm font-bold gap-2  bg-green-secondary"
+        <Link
+          href="/docs"
+          className="w-full h-full flex sm:flex-row flex-wrap justify-center items-center text-2xs sm:text-xs gap-2 bg-green-secondary p-2 md:pl-4"
+        >
+          Get Started <BsFillRocketTakeoffFill />
+        </Link>
+      </MagicCard>
+      <MagicCard
+        className="group inline-block border-l-1 border-b-1 border-r-1 md:border-r-0 border-green-light col-start-7 md:col-start-4 2xl:col-start-5 col-end-13 md:col-end-7 row-start-6 sm:row-start-9 bg-green-secondary cursor-pointer flex items-center justify-center sm:justify-start"
+        gradientColor={"#D9D9D955"}
       >
-        <BsGithub /> Github
-      </Link>
+        <Link
+          href="https://github.com/silevis/reactgrid"
+          target="_blank"
+          className="w-full h-full flex flex-col sm:flex-row flex-wrap justify-center sm:justify-start items-center content-center text-2xs sm:text-xs gap-2 bg-green-secondary p-2 sm:pl-4"
+        >
+          <div className="relative z-10 flex items-center gap-x-1">
+            <BsGithub /> Stars on Github
+          </div>
+          <div className="relative z-10 flex items-center gap-x-1 md:min-w-[70px] h-[18px] sm:h-[24px]">
+            <FaStar className="text-[#f4df50] md:text-white-primary group-hover:text-[#f4df50] transition-colors duration-200" />
+            <NumberTicker
+              value={starsCount}
+              delay={0.65}
+              decimalPlaces={getRandomDecimalPlaces()}
+            />
+          </div>
+        </Link>
+      </MagicCard>
       <div className="inline-block border-l-1 border-b-1 border-green-light col-start-7 col-end-9 xl:col-end-8 row-start-9 font-bold hidden md:flex justify-center items-center text-green-secondary">
         {!shouldHideNumbers && (
           <NumberTicker

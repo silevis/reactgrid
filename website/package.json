@@ -16,7 +16,7 @@
     "@silevis/reactgrid-4": "npm:@silevis/reactgrid@^4.1.2",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
-    "framer-motion": "^11.9.0",
+    "framer-motion": "^11.11.1",
     "hamburger-react": "^2.5.0",
     "lucide-react": "^0.446.0",
     "moment": "^2.30.1",

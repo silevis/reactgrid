@@ -49,6 +49,11 @@ body {
   outline-offset: 2px;
 }
 
+/* override nextra banner background on dark mode */
+:is(html[class~=dark] .dark\:nx-bg-\[linear-gradient\(1deg\,\#383838\,\#212121\)\]) {
+  background-image: none !important;
+}
+
 .nextra-banner-container {
   background-color: var(--green-primary) !important;
 }
