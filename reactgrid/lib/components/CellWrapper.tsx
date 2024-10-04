@@ -7,7 +7,6 @@ import { useReactGridId } from "./ReactGridIdProvider";
 import { CellsLookup } from "../types/PublicModel";
 
 type CellWrapperProps = React.HTMLAttributes<HTMLDivElement> & {
-  targetInputRef?: React.RefObject<HTMLInputElement | HTMLElement>;
   onStringValueRequsted: () => string;
   onStringValueReceived: (v: string) => void;
   children?: React.ReactNode;

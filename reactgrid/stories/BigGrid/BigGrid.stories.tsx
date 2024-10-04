@@ -20,7 +20,7 @@ export const BigGrid = () => {
   const [columnDefs, setColumnDefs] = useState<ColumnDef[]>(
     Object.keys(employees[0]).reduce((acc: ColumnDef[], peopleKey: string) => {
       if (["_id", "position"].includes(peopleKey)) return acc;
-      const cellTemplate = peopleKey === "age" || peopleKey === "balance" ? NumberCell : TextCell;
+      const cellTemplate = ["age", "balance", "latitude", "longitude"].includes(peopleKey) ? NumberCell : TextCell;
       return [...acc, { title: peopleKey, width: 100, cellTemplate }];
     }, [])
   );

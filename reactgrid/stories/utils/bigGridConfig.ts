@@ -106,6 +106,13 @@ export const generateCells = (
           format: numberFormat,
         };
 
+        const coordinatesCellProps = {
+          onValueChanged: (newValue) => {
+            updatePerson(employees[personRowIndex]._id, col.title, newValue);
+          },
+          value: employees[personRowIndex][col.title],
+        };
+
         const textCellProps = {
           text: employees[personRowIndex][col.title],
           onTextChanged: (newText: string) => {
@@ -120,6 +127,8 @@ export const generateCells = (
               ? { ...balanceCellProps }
               : col.title === "age"
               ? { ...ageCellProps }
+              : col.title === "latitude" || col.title === "longitude"
+              ? { ...coordinatesCellProps }
               : { ...textCellProps },
         };
       });

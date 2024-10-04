@@ -12,8 +12,6 @@ import { getNonStickyCellContainer } from "../utils/getNonStickyCellContainer.ts
 import { getPaneNameByCell } from "../utils/getPaneNameByCell.ts";
 import { isCellSticky } from "../utils/isCellSticky.ts";
 import isDevEnvironment from "../utils/isDevEnvironment.ts";
-import { getScrollableParent } from "../utils/scrollHelpers.ts";
-import { scrollToElementEdge } from "../utils/scrollToElementEdge.ts";
 import { scrollTowardsSticky } from "../utils/scrollTowardsSticky.ts";
 import { isSpanMember } from "../utils/isSpanMember.ts";
 

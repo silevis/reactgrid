@@ -7,94 +7,35 @@ metaDescription: "ReactGrid docs"
 
 #### Custom cell templates
 
-Creating a cell template is the best way to customize data visualization and behaviour in **ReactGrid**.
-You can define your own one and then use it as other built-in cell types.
+Creating a cell template is the best way to customize data visualization and behaviour in ReactGrid.
+You can define your own one and then use it as other built-in cell types. For example if you want use custom text cell you can copy default [TextCell](/docs/5.0/3-cell-templates/1-text-cell) component and modify it as you want.
 
 The key to implementing a custom cell is integrating it with the `CellWrapper`, which handles communication between the cell and ReactGrid.
 
-In this example, we will create a custom `DateCell` template:
+```tsx
+<CellWrapper 
+  onStringValueRequsted={() => value?.toString() || ""} 
+  onStringValueReceived={() => {
+    // cell value update logic
+  }} 
+>
+  {/* cell content */}
+</CellWrapper>
+```
+
+Both `onStringValueRequested` and `onStringValueReceived` are required props for `CellWrapper` and are used to get and set the cell value using [CellsLookup](/docs/5.0/6-api/1-types/4-cells-lookup) inside handlers like cut, copy, paste, or fill.
 
 ```tsx
-import React, { FC, useRef, useState, CSSProperties } from "react";
-import { CellWrapper, useCellContext } from "@silevis/reactgrid";
-import moment, { Moment } from "moment";
-
-const inputStyle: CSSProperties = {
-  boxSizing: "border-box",
-  textAlign: "center",
-  width: "100%",
-  height: "100%",
-  background: "transparent",
-  border: "none",
-  padding: 0,
-  outline: "none",
-  color: "inherit",
-  fontSize: "inherit",
-  fontFamily: "inherit",
-};
-
-interface DateCellProps {
-  value: Moment;
-  onValueChanged: (data: Moment) => void;
-}
-
-export const DateCell: FC<DateCellProps> = ({ value, onValueChanged }) => {
-  const ctx = useCellContext();
-  const targetInputRef = useRef<HTMLInputElement>(null);
-  const [isEditMode, setEditMode] = useState(false);
-
-  let formattedDate: string | undefined;
-
-  if (!value) {
-    formattedDate = "";
-  } else {
-    formattedDate = value.format("DD-MM-YYYY");
-  }
-
-  return (
-    <CellWrapper
-      onStringValueRequsted={() => value.toDate().toDateString()}
-      onStringValueReceived={(v) => onValueChanged?.(moment(v))}
-      style={{ padding: ".2rem", textAlign: "center", outline: "none" }}
-      onDoubleClick={() => {
-        ctx.isFocused && setEditMode(true);
-      }}
-      onKeyDown={(e) => {
-        if (!isEditMode && e.key === "Enter") {
-          e.stopPropagation();
-          setEditMode(true);
-        }
-      }}
-    >
-      {isEditMode ? (
-        <input
-          type="date"
-          defaultValue={value.format("YYYY-MM-DD")}
-          style={inputStyle}
-          onBlur={(e) => {
-            const changedDate = e.currentTarget.value;
-            changedDate && onValueChanged(moment(e.currentTarget.value));
-            setEditMode(false);
-          }}
-          onPointerDown={(e) => e.stopPropagation()}
-          onKeyDown={(e) => {
-            if (e.key === "Escape") {
-              setEditMode(false);
-            } else if (e.key === "Enter") {
-              onValueChanged(moment(e.currentTarget.value));
-              setEditMode(false);
-            }
-          }}
-          autoFocus
-          ref={targetInputRef}
-        />
-      ) : (
-        formattedDate
-      )}
-    </CellWrapper>
-  );
+type CellWrapperProps = React.HTMLAttributes<HTMLDivElement> & {
+  onStringValueRequsted: () => string;
+  onStringValueReceived: (v: string) => void;
+  children?: React.ReactNode;
 };
 ```
+
+#### Example
+Let's create a custom `DateCell` template:
+
 
 ### Live example
 
@@ -190,6 +131,10 @@ const inputStyle: CSSProperties = {
   color: "inherit",
   fontSize: "inherit",
   fontFamily: "inherit",
+  // TODO
+  WebkitCalendarPickerIndicator: {
+   backgroundColor: "yellow",
+  },
 };
 
 interface DateCellProps {
@@ -228,8 +173,8 @@ const DateCell: FC<DateCellProps> = ({ value, onValueChanged }) => {
       {isEditMode ? (
         <input
           type="date"
-          defaultValue={value.format("YYYY-MM-DD")}
           style={inputStyle}
+          defaultValue={value.format("YYYY-MM-DD")}
           onBlur={(e) => {
             const changedDate = e.currentTarget.value;
             changedDate && onValueChanged(moment(e.currentTarget.value));
