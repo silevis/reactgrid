@@ -63,7 +63,7 @@ export const NumberCell: FC<NumberCellProps> = ({
         if ((!isEditMode && numberKeys.includes(e.key)) || (allowSeparators && numberSeparators.includes(e.key))) {
           setCurrentValue("");
           setEditMode(true);
-        } else if (!isEditMode && e.key === "Enter") {
+        } else if (!isEditMode && (e.key === "Enter" || e.key === "F2")) {
           e.stopPropagation();
           setCurrentValue(initialValueStr || "0");
           setEditMode(true);
