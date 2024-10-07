@@ -1,7 +1,7 @@
 import * as React from "react";
 
 // NOTE: all modules imported below may be imported from '@silevis/reactgrid'
-import { isAlphaNumericKey, isNavigationKey } from "./keyCodeCheckings";
+import { isAlphaNumericKey, isFunctionKey, isNavigationKey } from "./keyCodeCheckings";
 import { getCellProperty } from "../Functions/getCellProperty";
 import { keyCodes } from "../Functions/keyCodes";
 import { Cell, CellTemplate, Compatible, Uncertain, UncertainCompatible } from "../Model/PublicModel";
@@ -33,11 +33,20 @@ export class EmailCellTemplate implements CellTemplate<EmailCell> {
     key: string,
     capsLock: boolean
   ): { cell: Compatible<EmailCell>; enableEditMode: boolean } {
+    if (isFunctionKey(keyCode)) {
+      if (keyCode === keyCodes.F2) return { cell, enableEditMode: true };
+      return { cell, enableEditMode: false };
+    }
+
     const char = getCharFromKey(key, shift, capsLock);
 
     if (!ctrl && !alt && isAlphaNumericKey(keyCode) && !(shift && keyCode === keyCodes.SPACE))
       return { cell: { ...cell, text: char }, enableEditMode: true };
-    return { cell, enableEditMode: keyCode === keyCodes.POINTER || keyCode === keyCodes.ENTER };
+
+    return {
+      cell,
+      enableEditMode: keyCode === keyCodes.POINTER || keyCode === keyCodes.ENTER,
+    };
   }
 
   handleCompositionEnd(

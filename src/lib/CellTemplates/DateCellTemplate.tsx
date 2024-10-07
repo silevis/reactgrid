@@ -4,7 +4,7 @@ import * as React from "react";
 import { getCellProperty } from "../Functions/getCellProperty";
 import { Cell, CellTemplate, Compatible, Uncertain, UncertainCompatible } from "../Model/PublicModel";
 import { keyCodes } from "../Functions/keyCodes";
-import { inNumericKey, isNavigationKey, isAlphaNumericKey, isCharAlphaNumeric } from "./keyCodeCheckings";
+import { inNumericKey, isNavigationKey, isCharAlphaNumeric, isFunctionKey } from "./keyCodeCheckings";
 import { getFormattedTimeUnit } from "./timeUtils";
 import { getCharFromKey } from "./getCharFromKeyCode";
 
@@ -34,6 +34,11 @@ export class DateCellTemplate implements CellTemplate<DateCell> {
     key: string,
     capsLock: boolean
   ): { cell: Compatible<DateCell>; enableEditMode: boolean } {
+    if (isFunctionKey(keyCode)) {
+      if (keyCode === keyCodes.F2) return { cell, enableEditMode: true };
+      return { cell, enableEditMode: false };
+    }
+
     if (!ctrl && isCharAlphaNumeric(getCharFromKey(key)))
       return { cell: this.getCompatibleCell({ ...cell }), enableEditMode: true };
     return { cell, enableEditMode: keyCode === keyCodes.POINTER || keyCode === keyCodes.ENTER };
