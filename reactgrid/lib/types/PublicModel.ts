@@ -132,6 +132,8 @@ export interface ReactGridProps {
   initialFocusLocation?: IndexedLocation;
   initialSelectedRange?: Range;
 
+  moveRightOnEnter?: boolean;
+
   onFocusLocationChanging?: ({ location }: { location: IndexedLocation }) => boolean;
   onFocusLocationChanged?: ({ location }: { location: IndexedLocation }) => void;
   onFillHandle?: (selectedArea: NumericalRange, fillRange: NumericalRange, cellsLookup: CellsLookup) => boolean;

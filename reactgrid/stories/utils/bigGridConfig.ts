@@ -15,19 +15,19 @@ export const testStyles = {
   },
   paneContainer: {
     top: {
-      background: "lightyellow",
+      background: "#55bc71",
       boxShadow: "rgba(0, 0, 0, 0.2) -8px 4px 10px 0px",
     },
     right: {
-      background: "lightgray",
+      background: "#e8ffee",
       boxShadow: "rgba(0, 0, 0, 0.2) -3px 0px 10px 0px",
     },
     bottom: {
-      background: "lightyellow",
+      background: "#55bc71",
       boxShadow: "rgba(0, 0, 0, 0.2) -8px -4px 10px 0px",
     },
     left: {
-      background: "lightgray",
+      background: "#e8ffee",
       boxShadow: "rgba(0, 0, 0, 0.2) 3px 0px 10px 0px",
     },
   },

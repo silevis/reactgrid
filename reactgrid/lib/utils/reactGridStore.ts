@@ -46,6 +46,8 @@ const DEFAULT_STORE_PROPS: ReactGridStoreProps = {
   onCut: undefined,
   onPaste: undefined,
 
+  moveRightOnEnter: false,
+
   // internal state
   rowMeasurements: [],
   colMeasurements: [],

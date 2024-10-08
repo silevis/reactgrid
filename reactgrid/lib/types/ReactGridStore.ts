@@ -46,6 +46,8 @@ export interface ReactGridStoreProps {
   linePosition?: number;
   lineOrientation: "vertical" | "horizontal";
 
+  moveRightOnEnter: boolean;
+
   shadowPosition?: number;
   shadowSize?: number;
 

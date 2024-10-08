@@ -26,15 +26,7 @@ const devEnvironment = isDevEnvironment();
 
 let isShiftPressed = false;
 
-type DefaultBehaviorConfig = {
-  moveHorizontallyOnEnter: boolean;
-};
-
-const CONFIG_DEFAULTS: DefaultBehaviorConfig = {
-  moveHorizontallyOnEnter: false,
-} as const;
-
-export const DefaultBehavior = (config: DefaultBehaviorConfig = CONFIG_DEFAULTS): Behavior => ({
+export const DefaultBehavior = (): Behavior => ({
   id: "Default",
   handlePointerDown: function (event, store) {
     devEnvironment && console.log("DB/handlePointerDown");
@@ -171,7 +163,7 @@ export const DefaultBehavior = (config: DefaultBehaviorConfig = CONFIG_DEFAULTS)
 
     if (event.key === "Shift") isShiftPressed = true;
 
-    return handleKeyDown(event, store, { moveHorizontallyOnEnter: config.moveHorizontallyOnEnter });
+    return handleKeyDown(event, store, { moveHorizontallyOnEnter: store.moveRightOnEnter });
   },
 
   handleKeyUp: function (event, store) {

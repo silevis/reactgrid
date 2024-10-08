@@ -17,18 +17,18 @@ const styledRanges = [
 interface Category {
   id: number;
   range: string;
-  category: string;
-  categoryPercentage: number;
+  categoryName: string;
+  percentage: number;
   records: number;
 }
 
 const categoryArr: Category[] = [
-  { id: 1, range: "1-5", category: "cat1", categoryPercentage: 50, records: 10 },
-  { id: 2, range: "6-10", category: "cat2", categoryPercentage: 10, records: 20 },
-  { id: 3, range: "11-15", category: "cat2", categoryPercentage: 10, records: 30 },
-  { id: 4, range: "16-20", category: "cat3", categoryPercentage: 40, records: 40 },
-  { id: 5, range: "21-25", category: "cat3", categoryPercentage: 40, records: 50 },
-  { id: 6, range: "26-30", category: "cat3", categoryPercentage: 40, records: 60 },
+  { id: 1, range: "1-5", categoryName: "cat1", percentage: 0.5, records: 10 },
+  { id: 2, range: "6-10", categoryName: "cat2", percentage: 0.1, records: 20 },
+  { id: 3, range: "11-15", categoryName: "cat2", percentage: 0.1, records: 30 },
+  { id: 4, range: "16-20", categoryName: "cat3", percentage: 0.4, records: 40 },
+  { id: 5, range: "21-25", categoryName: "cat3", percentage: 0.4, records: 50 },
+  { id: 6, range: "26-30", categoryName: "cat3", percentage: 0.4, records: 60 },
 ];
 
 const headers = ["Range", "Category", "Category %", "Records"];
@@ -86,18 +86,18 @@ export const SpannedCellsExample = () => {
           {
             Template: TextCell,
             props: {
-              text: categories[categoryRowIndex - 1].category,
+              text: categories[categoryRowIndex - 1].categoryName,
               onTextChanged: (newCategory: string) => {
-                updateCategories(categories[categoryRowIndex - 1].id, "category", newCategory);
+                updateCategories(categories[categoryRowIndex - 1].id, "categoryName", newCategory);
               },
             },
           },
           {
             Template: NumberCell,
             props: {
-              value: categories[categoryRowIndex - 1].categoryPercentage / 100,
+              value: categories[categoryRowIndex - 1].percentage,
               onValueChanged: (newCategoryPercentage: number) => {
-                updateCategories(categories[categoryRowIndex - 1].id, "categoryPercentage", newCategoryPercentage);
+                updateCategories(categories[categoryRowIndex - 1].id, "percentage", newCategoryPercentage);
               },
               format: new Intl.NumberFormat("en-US", { style: "percent", minimumFractionDigits: 0 }),
             },
@@ -151,6 +151,7 @@ export const SpannedCellsExample = () => {
       <ReactGrid
         id="spanned-cells-example"
         enableColumnSelectionOnFirstRow
+        moveRightOnEnter={true}
         styledRanges={styledRanges}
         columns={columns}
         rows={rows}
