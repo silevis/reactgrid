@@ -10,6 +10,7 @@ import {
   isNumpadNumericKey,
   isAllowedOnNumberTypingKey,
   isCharAllowedOnNumberInput,
+  isFunctionKey,
 } from "./keyCodeCheckings";
 import { getCharFromKey } from "./getCharFromKeyCode";
 import { parseLocaleNumber } from "../Functions/parseLocaleNumber";
@@ -53,7 +54,13 @@ export class NumberCellTemplate implements CellTemplate<NumberCell> {
     capsLock: boolean
   ): { cell: Compatible<NumberCell>; enableEditMode: boolean } {
     if (isNumpadNumericKey(keyCode)) keyCode -= 48;
+    if (isFunctionKey(keyCode)) {
+      if (keyCode === keyCodes.F2) return { cell, enableEditMode: true };
+      return { cell, enableEditMode: false };
+    }
+
     const char = getCharFromKey(key);
+
     if (!ctrl && isCharAllowedOnNumberInput(char)) {
       const value = Number(char);
 
@@ -61,7 +68,11 @@ export class NumberCellTemplate implements CellTemplate<NumberCell> {
         return { cell: { ...this.getCompatibleCell({ ...cell, value }), text: char }, enableEditMode: true };
       return { cell: this.getCompatibleCell({ ...cell, value }), enableEditMode: true };
     }
-    return { cell, enableEditMode: keyCode === keyCodes.POINTER || keyCode === keyCodes.ENTER };
+
+    return {
+      cell,
+      enableEditMode: keyCode === keyCodes.POINTER || keyCode === keyCodes.ENTER,
+    };
   }
 
   update(cell: Compatible<NumberCell>, cellToMerge: UncertainCompatible<NumberCell>): Compatible<NumberCell> {
