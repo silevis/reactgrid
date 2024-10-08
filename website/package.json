@@ -11,7 +11,7 @@
   "dependencies": {
     "@radix-ui/react-dialog": "^1.0.5",
     "@silevis/reactgrid": "*",
-    "@silevis/reactgrid-3": "npm:@silevis/reactgrid@^4.1.2",
+    "@silevis/reactgrid-3": "npm:@silevis/reactgrid@^3.0.29",
     "@silevis/reactgrid-3.1": "npm:@silevis/reactgrid@^3.1.21",
     "@silevis/reactgrid-4": "npm:@silevis/reactgrid@^4.1.2",
     "class-variance-authority": "^0.7.0",

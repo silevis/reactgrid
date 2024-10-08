@@ -1,6 +1,5 @@
-import type { NextraThemeLayoutProps } from "nextra";
 
-export default function Layout({ children }: NextraThemeLayoutProps) {
+export default function Layout({ children }: any) {
   return (
     <div>
       <h1>My Theme</h1>

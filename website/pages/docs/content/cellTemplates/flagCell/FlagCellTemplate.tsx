@@ -89,3 +89,7 @@ export class FlagCellTemplate implements CellTemplate<FlagCell> {
     );
   }
 }
+
+export default function Def() {
+  return <></>;
+}

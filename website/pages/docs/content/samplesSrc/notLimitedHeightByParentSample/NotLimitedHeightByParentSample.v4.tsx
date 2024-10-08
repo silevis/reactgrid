@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { ReactGrid, Column, Row, DefaultCellTypes } from '@silevis/reactgrid-3';
+import { ReactGrid, Column, Row, DefaultCellTypes } from '@silevis/reactgrid-4';
 import { RateCellTemplate, RateCell } from '../../cellTemplates/rateCell/RateCellTemplate';
 import { FlagCellTemplate, FlagCell } from '../../cellTemplates/flagCell/FlagCellTemplate';
 import { columns as dataColumns } from '../../data/columns';
@@ -32,3 +32,8 @@ export const NotLimitedHeightByParentSample: React.FunctionComponent = () => {
         />
     )
 }
+
+export default function Def() {
+    return null;
+  }
+  
