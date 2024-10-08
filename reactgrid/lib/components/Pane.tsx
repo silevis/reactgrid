@@ -103,6 +103,8 @@ export const PaneGridContent: React.FC<PaneGridContentProps> = React.memo(
           });
         }
 
+        const isCellSelected = isCellInRange(store, cell, selectedArea);
+
         const isFocused = focusedCell.rowIndex === realRowIndex && focusedCell.colIndex === realColumnIndex;
 
         return (
@@ -110,13 +112,14 @@ export const PaneGridContent: React.FC<PaneGridContentProps> = React.memo(
             key={`${realRowIndex}-${realColumnIndex}`}
             rowIndex={rowIndex}
             colIndex={colIndex}
+            cell={cell}
             rowSpan={cell.rowSpan}
             colSpan={cell.colSpan}
             realRowIndex={realRowIndex}
             realColumnIndex={realColumnIndex}
             getCellOffset={memoizedGetCellOffset}
             shouldRenderReorderedCells={shouldRenderReorderedCells}
-            cell={cell}
+            isCellSelected={isCellSelected}
             isFocused={isFocused}
           />
         );

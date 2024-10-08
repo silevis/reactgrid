@@ -59,9 +59,6 @@ export const BigGrid = () => {
           columns={columns}
           cells={cells}
           onFillHandle={handleFill}
-          onCut={handleCut}
-          onPaste={handlePaste}
-          onCopy={handleCopy}
           onAreaSelected={(selectedArea) => {}}
           onCellFocused={(cellLocation) => {}}
         />

@@ -163,7 +163,7 @@ const handleCut = (
   event.clipboardData.setData("text/html", htmlData);
   event.clipboardData.setData("text/plain", values.join("\t"));
 
-  // Override the default cut behavior
+  // Prevent the default cut behavior
   return true;
 };
 
@@ -208,7 +208,7 @@ const handleCopy = (
   event.clipboardData.setData("text/html", htmlData);
   event.clipboardData.setData("text/plain", values.join("\t"));
 
-  // Override the default copy behavior
+  // Prevent the default copy behavior
   return true;
 };
 
@@ -278,7 +278,7 @@ const handlePaste = (
     gridAPI.setSelectedArea(newSelectedArea);
   }
 
-  // Override the default paste behavior
+  // Prevent the default paste behavior
   return true;
 };
 

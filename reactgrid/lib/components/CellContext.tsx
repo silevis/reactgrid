@@ -9,6 +9,7 @@ interface CellContextProviderProps {
   realRowIndex: number;
   realColumnIndex: number;
   cell: Cell;
+  isCellSelected: boolean;
   isFocused: boolean;
   rowSpan?: number;
   colSpan?: number;
@@ -21,6 +22,7 @@ interface CellContextProviderProps {
 export const CellContext = createContext<CellContextType>({
   realRowIndex: -1,
   realColumnIndex: -1,
+  isCellSelected: false,
   isFocused: false,
   containerStyle: {},
 });
@@ -45,6 +47,7 @@ export const CellContextProvider = memo(
     colSpan,
     getCellOffset = () => ({}),
     cell,
+    isCellSelected,
     isFocused,
   }: CellContextProviderProps) => {
     const { Template, props } = cell;
@@ -54,6 +57,7 @@ export const CellContextProvider = memo(
         value={{
           realRowIndex,
           realColumnIndex,
+          isCellSelected,
           isFocused,
           containerStyle: {
             ...(rowSpan && {
@@ -76,6 +80,7 @@ export const CellContextProvider = memo(
     return (
       !next.shouldRenderReorderedCells &&
       deepCompare(prev.cell, next.cell) &&
+      prev.isCellSelected === next.isCellSelected &&
       prev.isFocused === next.isFocused &&
       prev.getCellOffset === next.getCellOffset
     );

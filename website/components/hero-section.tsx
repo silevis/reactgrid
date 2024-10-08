@@ -182,12 +182,12 @@ export const HeroSection = () => {
         <Link
           href="https://github.com/silevis/reactgrid"
           target="_blank"
-          className="w-full h-full flex flex-col sm:flex-row flex-wrap justify-center sm:justify-start items-center content-center text-2xs sm:text-xs gap-2 bg-green-secondary p-2 sm:pl-4"
+          className="w-full h-full flex flex-col sm:flex-row flex-wrap justify-center sm:justify-start 2xl:justify-center items-center content-center text-2xs sm:text-xs gap-2 bg-green-secondary p-2 sm:pl-4"
         >
           <div className="relative z-10 flex items-center gap-x-1">
             <BsGithub /> Stars on Github
           </div>
-          <div className="relative z-10 flex items-center gap-x-1 md:min-w-[70px] h-[18px] sm:h-[24px]">
+          <div className="relative z-10 flex items-center gap-x-1 md:min-w-[90px] h-[18px] sm:h-[24px]">
             <FaStar className="text-[#f4df50] md:text-white-primary group-hover:text-[#f4df50] transition-colors duration-200" />
             <NumberTicker
               value={starsCount}

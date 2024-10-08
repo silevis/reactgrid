@@ -14,6 +14,7 @@ import { isCellSticky } from "../utils/isCellSticky.ts";
 import isDevEnvironment from "../utils/isDevEnvironment.ts";
 import { scrollTowardsSticky } from "../utils/scrollTowardsSticky.ts";
 import { isSpanMember } from "../utils/isSpanMember.ts";
+import { getCellArea } from "../utils/getCellArea.ts";
 
 const devEnvironment = isDevEnvironment();
 
@@ -135,6 +136,12 @@ const tryExpandingTowardsCell = (
   }
 
   const newSelectedArea = findMinimalSelectedArea(store, selectedArea);
+
+  const cellArea = getCellArea(store, currentDragOverCell);
+
+  if (isEqual(newSelectedArea, cellArea)) {
+    return store;
+  }
 
   return {
     ...store,

@@ -12,7 +12,7 @@ export const Footer = () => {
             Info
           </h2>
           <ul className="text-white-secondary3 flex flex-col gap-y-2">
-            <Link href="/cookies">Cookies</Link>
+            {/* <Link href="/cookies">Cookies</Link> */}
             <Link href="/privacy-policy">Privacy Policy</Link>
           </ul>
         </div>

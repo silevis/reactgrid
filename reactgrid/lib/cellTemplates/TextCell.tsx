@@ -38,7 +38,7 @@ export const TextCell: FC<TextCellProps> = ({ text: initialText, onTextChanged, 
           e.stopPropagation();
           setCurrentValue("");
           setEditMode(true);
-        } else if (!isEditMode && (e.key === "Enter" || e.key === "F2")) {
+        } else if (!isEditMode && !ctx.isCellSelected && (e.key === "Enter" || e.key === "F2")) {
           e.stopPropagation();
           setCurrentValue(initialText || "");
           setEditMode(true);

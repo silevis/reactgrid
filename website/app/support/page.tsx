@@ -31,21 +31,6 @@ export default function FeaturesPage() {
             </p>
           </div>
           <div className="flex-1 flex flex-col items-center justify-start pt-8 md:pt-0">
-            <MdOutlineBugReport size={120} color="#107c41" />
-            <h3 className="text-center font-bold">Technical issues?</h3>
-            <p className="mt-4 text-center">
-              Please create an issue on our{" "}
-              <Link
-                className="text-green-primary"
-                href="https://github.com/silevis/reactgrid/issues"
-                target="_blank"
-              >
-                GitHub Issues
-              </Link>{" "}
-              page
-            </p>
-          </div>
-          <div className="flex-1 flex flex-col items-center justify-start pt-8 md:pt-0">
             <MdPerson size={120} color="#107c41" />
             <h3 className="text-center font-bold">Need talented developers?</h3>
             <p className="mt-4 text-center">
@@ -58,6 +43,21 @@ export default function FeaturesPage() {
               >
                 Schedule a meeting with our CTO
               </Link>
+            </p>
+          </div>
+          <div className="flex-1 flex flex-col items-center justify-start pt-8 md:pt-0">
+            <MdOutlineBugReport size={120} color="#107c41" />
+            <h3 className="text-center font-bold">Technical issues?</h3>
+            <p className="mt-4 text-center">
+              Please create an issue on our{" "}
+              <Link
+                className="text-green-primary"
+                href="https://github.com/silevis/reactgrid/issues"
+                target="_blank"
+              >
+                GitHub Issues
+              </Link>{" "}
+              page
             </p>
           </div>
         </div>

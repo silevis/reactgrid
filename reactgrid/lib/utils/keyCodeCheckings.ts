@@ -25,6 +25,7 @@ export const isValidKey = (e: React.KeyboardEvent, invalidKeys: string[] = []): 
     "Delete",
     "Backspace",
     "Escape",
+    "CapsLock",
     "Enter", // Other keys
     "F1",
     "F2",

@@ -216,7 +216,7 @@ export const moveFocusInsideSelectedRange = (
 
       getHiddenTargetFocusByIdx(rowIdx, colIdx)?.focus();
 
-      return { selectedArea: store.selectedArea };
+      return store;
     }
 
     case "left": {
@@ -288,6 +288,11 @@ export const moveFocusInsideSelectedRange = (
       let colIdx = currentFocus.colIndex;
       let rowIdx = currentFocus.rowIndex;
       let nextPossibleLocation = store.getCellOrSpanMemberByIndexes(rowIdx, colIdx);
+
+      if (rowIdx === 0) {
+        getHiddenTargetFocusByIdx(rowIdx, colIdx)?.focus();
+        return store;
+      }
 
       do {
         rowIdx--;

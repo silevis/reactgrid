@@ -535,15 +535,14 @@ export const handleKeyDown = (
         // Select all cells in obtained area, including spanned cells.
         return { ...store, selectedArea: { ...areaWithSpannedCells } };
       }
+
       case "Enter": {
         event.preventDefault();
 
         if (config.moveHorizontallyOnEnter) {
-          if (event.shiftKey) return moveFocusInsideSelectedRange(store, focusedCell, "left");
-          return moveFocusInsideSelectedRange(store, focusedCell, "right");
+          return moveFocusInsideSelectedRange(store, focusedCell, "left");
         } else {
-          if (event.shiftKey) return moveFocusInsideSelectedRange(store, focusedCell, "up");
-          else return moveFocusInsideSelectedRange(store, focusedCell, "down");
+          return moveFocusInsideSelectedRange(store, focusedCell, "up");
         }
       }
     }
@@ -611,15 +610,18 @@ export const handleKeyDown = (
     case "Enter": {
       event.preventDefault();
 
+      const isCellInSelectedArea = isCellInRange(store, focusedCell, store.selectedArea);
+
       if (config.moveHorizontallyOnEnter) {
-        if (event.shiftKey) return moveFocusInsideSelectedRange(store, focusedCell, "left");
-        return moveFocusInsideSelectedRange(store, focusedCell, "right");
-      } else {
-        if (event.shiftKey) {
-          return moveFocusUp(store, focusedCell); // If shift is pressed, move focus up (row up).
+        if (isCellInSelectedArea) {
+          return moveFocusInsideSelectedRange(store, focusedCell, "right");
         } else {
-          return moveFocusDown(store, focusedCell); // Otherwise, move focus down (row down).
+          return moveFocusRight(store, focusedCell);
         }
+      } else if (isCellInSelectedArea) {
+        return moveFocusInsideSelectedRange(store, focusedCell, "down");
+      } else {
+        return moveFocusDown(store, focusedCell);
       }
     }
 
