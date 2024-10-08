@@ -265,6 +265,15 @@ declare const isCharAllowedOnNumberInput: (char: string) => boolean;
  * @see https://reactgrid.com/docs/3.1/7-api/2-functions/
  */
 declare const isNavigationKey: (keyCode: number) => boolean;
+/**
+ * Checks that the pressed key's `keyCode` is one of function keys
+ *
+ * @param {number} keyCode `keyCode` field from `KeyboardEvent` interface
+ * @returns {boolean} Returns `true` if `keyCode` is one of function keys
+ *
+ * @see https://reactgrid.com/docs/3.1/7-api/2-functions/
+ * */
+declare const isFunctionKey: (keyCode: number) => boolean;
 
 declare const getCharFromKeyCode: (keyCode: number, isShiftKey?: boolean) => string;
 declare const getCharFromKey: (key: string, isShiftKey?: boolean, isCapsLock?: boolean) => string;
@@ -1108,4 +1117,4 @@ declare class ReactGrid extends React$1.Component<ReactGridProps, State> {
     render(): React$1.ReactNode;
 }
 
-export { BorderProps, Cell, CellChange, CellLocation, CellStyle, CellTemplate, CellTemplates, CheckboxCell, CheckboxCellTemplate, ChevronCell, ChevronCellTemplate, Column, Compatible, DateCell, DateCellTemplate, DefaultCellTypes, DropPosition, DropdownCell, DropdownCellTemplate, EmailCell, EmailCellTemplate, HeaderCell, HeaderCellTemplate, Highlight, Id, MenuOption, NumberCell, NumberCellTemplate, OptionType, Range, ReactGrid, ReactGridInstance, ReactGridProps, Row, SelectionMode, Span, TextCell, TextCellTemplate, TextLabels, TimeCell, TimeCellTemplate, Uncertain, UncertainCompatible, getCellProperty, getCharFromKey, getCharFromKeyCode, inNumericKey, isAllowedOnNumberTypingKey, isAlphaNumericKey, isCharAllowedOnNumberInput, isCharAlphaNumeric, isKeyPrintable, isNavigationKey, isNumpadNumericKey, keyCodes };
+export { BorderProps, Cell, CellChange, CellLocation, CellStyle, CellTemplate, CellTemplates, CheckboxCell, CheckboxCellTemplate, ChevronCell, ChevronCellTemplate, Column, Compatible, DateCell, DateCellTemplate, DefaultCellTypes, DropPosition, DropdownCell, DropdownCellTemplate, EmailCell, EmailCellTemplate, HeaderCell, HeaderCellTemplate, Highlight, Id, MenuOption, NumberCell, NumberCellTemplate, OptionType, Range, ReactGrid, ReactGridInstance, ReactGridProps, Row, SelectionMode, Span, TextCell, TextCellTemplate, TextLabels, TimeCell, TimeCellTemplate, Uncertain, UncertainCompatible, getCellProperty, getCharFromKey, getCharFromKeyCode, inNumericKey, isAllowedOnNumberTypingKey, isAlphaNumericKey, isCharAllowedOnNumberInput, isCharAlphaNumeric, isFunctionKey, isKeyPrintable, isNavigationKey, isNumpadNumericKey, keyCodes };

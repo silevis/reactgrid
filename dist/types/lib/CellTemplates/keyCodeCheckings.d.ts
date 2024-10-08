@@ -63,3 +63,12 @@ export declare const isCharAllowedOnNumberInput: (char: string) => boolean;
  * @see https://reactgrid.com/docs/3.1/7-api/2-functions/
  */
 export declare const isNavigationKey: (keyCode: number) => boolean;
+/**
+ * Checks that the pressed key's `keyCode` is one of function keys
+ *
+ * @param {number} keyCode `keyCode` field from `KeyboardEvent` interface
+ * @returns {boolean} Returns `true` if `keyCode` is one of function keys
+ *
+ * @see https://reactgrid.com/docs/3.1/7-api/2-functions/
+ * */
+export declare const isFunctionKey: (keyCode: number) => boolean;
