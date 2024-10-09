@@ -4,7 +4,18 @@ import logo from "@/public/static/logo-green.svg";
 import checkIcon from "@/public/static/check-icon.svg";
 import dotIcon from "@/public/static/dot-icon.svg";
 import Image from "next/image";
-import { LiquidityPlanner } from "@/components/liquidity-planner";
+import dynamic from "next/dynamic";
+
+const DynamicLiquidityPlanner = dynamic(
+  () =>
+    import("../../components/liquidity-planner").then(
+      (mod) => mod.LiquidityPlanner
+    ),
+  {
+    loading: () => <div className="flex min-h-[750px] w-full max-w-[1280px]" />,
+    ssr: false,
+  }
+);
 
 const capabilities = [
   "This liquidity planner example shows the possibility of calculating values of all aggregation fields in a reactive way.",
@@ -66,7 +77,7 @@ export default function ExamplesPage() {
           planned cash flows.
         </p>
       </div>
-      <div className="relative grid grid-cols-main react-grid-sample2 xl:justify-items-center">
+      <div className="relative grid grid-cols-main react-grid-sample2">
         <div className="col-start-1 col-end-13 sm:col-start-2 sm:col-end-12 xl:col-start-3 xl:col-end-11 h-full shadow-reactgrid-sample rounded-t-[16px] text-[#a5a5a5] font-bold text-xl bg-white-primary max-w-[1280px]">
           <div className="h-[60px] flex items-center ps-5">
             <Image src={logo} alt="ReactGrid" />
@@ -76,7 +87,7 @@ export default function ExamplesPage() {
             className="flex"
             style={{ maxHeight: 750, width: "100%", overflow: "auto" }}
           >
-            <LiquidityPlanner />
+            <DynamicLiquidityPlanner />
           </div>
         </div>
       </div>
