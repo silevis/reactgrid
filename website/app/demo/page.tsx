@@ -71,7 +71,7 @@ export default function ExamplesPage() {
           ReactGrid enables you to create custom layouts with flexible cell
           ordering. Unlike many React components and tools that require
           consistent data structures across all rows, our component offers
-          greater flexibility. As an example, we'll show you how to build a
+          greater flexibility. As an example, we&apos;ll show you how to build a
           liquidity planner—an app that helps you plan for your long-term
           financial goals. Our app allows you to input, aggregate, and analyze
           projected cash flows
