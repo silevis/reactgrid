@@ -12,7 +12,7 @@ const DynamicLiquidityPlanner = dynamic(
       (mod) => mod.LiquidityPlanner
     ),
   {
-    loading: () => <div className="flex min-h-[750px] w-full max-w-[1280px]" />,
+    loading: () => <div className="flex min-h-[750px] w-full 2xl:w-[1280px]" />,
     ssr: false,
   }
 );
@@ -65,19 +65,19 @@ export default function ExamplesPage() {
     <section>
       <div className="grid grid-cols-main pt-12 md:pt-32 pb-[40px]">
         <h1 className="col-start-1 col-end-13 sm:col-start-2 sm:col-end-12 xl:col-start-3 xl:col-end-11 text-xl md:text-2xl font-bold text-center text-green-primary p-4">
-          Configurable example
+          ReactGrid Demo
         </h1>
         <p className="col-start-1 col-end-13 sm:col-start-2 sm:col-end-12 xl:col-start-3 xl:col-end-11 text-black-secondary text-center text-xs md:text-sm px-4">
-          ReactGrid allows you to compose your view with an arbitrary cell
-          order. In many components and tools in React ecosystem you have to
-          keep the same data schema in all rows. Our component breaks out from
-          the frame. As an example, we will demonstrate how to build a liquidity
-          planner—an app that provides a strategy for long-term financial
-          planning. Our app will enable entering, aggregating, and evaluating
-          planned cash flows.
+          ReactGrid enables you to create custom layouts with flexible cell
+          ordering. Unlike many React components and tools that require
+          consistent data structures across all rows, our component offers
+          greater flexibility. As an example, we'll show you how to build a
+          liquidity planner—an app that helps you plan for your long-term
+          financial goals. Our app allows you to input, aggregate, and analyze
+          projected cash flows
         </p>
       </div>
-      <div className="relative grid grid-cols-main react-grid-sample2">
+      <div className="relative grid grid-cols-main react-grid-sample2 2xl:justify-items-center">
         <div className="col-start-1 col-end-13 sm:col-start-2 sm:col-end-12 xl:col-start-3 xl:col-end-11 h-full shadow-reactgrid-sample rounded-t-[16px] text-[#a5a5a5] font-bold text-xl bg-white-primary max-w-[1280px]">
           <div className="h-[60px] flex items-center ps-5">
             <Image src={logo} alt="ReactGrid" />

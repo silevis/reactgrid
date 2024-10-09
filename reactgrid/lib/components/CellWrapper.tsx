@@ -1,10 +1,9 @@
-import React, { FC, useEffect } from "react";
+import React, { FC } from "react";
 import { useCellContext } from "./CellContext";
 import HiddenFocusTarget from "./HiddenFocusTarget";
 import { ColumnResizeBadge } from "./ColumnResizeBadge";
 import { useReactGridStore } from "../utils/reactGridStore";
 import { useReactGridId } from "./ReactGridIdProvider";
-import { CellsLookup } from "../types/PublicModel";
 
 type CellWrapperProps = React.HTMLAttributes<HTMLDivElement> & {
   onStringValueRequested: () => string;
@@ -31,19 +30,12 @@ const CellWrapper: FC<CellWrapperProps> = ({
     (ctx.realColumnIndex === 0 && enableRowSelectionOnFirstColumn); // if row selection is enabled on first column
 
   const cellsLookup = useReactGridStore(id, (store) => store.cellsLookup);
-  const setCellsLookup = useReactGridStore(id, (store) => store.setCellsLookup);
 
-  useEffect(() => {
-    const newCellsLookup: CellsLookup = cellsLookup;
-
-    newCellsLookup.set(`${ctx.realRowIndex} ${ctx.realColumnIndex}`, {
-      rowIndex: ctx.realRowIndex,
-      colIndex: ctx.realColumnIndex,
-      onStringValueRequested,
-      onStringValueReceived,
-    });
-
-    setCellsLookup(newCellsLookup);
+  cellsLookup.set(`${ctx.realRowIndex} ${ctx.realColumnIndex}`, {
+    rowIndex: ctx.realRowIndex,
+    colIndex: ctx.realColumnIndex,
+    onStringValueRequested,
+    onStringValueReceived,
   });
 
   return (

@@ -68,6 +68,7 @@ export const PaneGridContent: React.FC<PaneGridContentProps> = React.memo(
     const prevBehaviorId = useRef(currentBehavior.id);
     const prevSelectedArea = useRef(selectedArea);
 
+    // store previous behavior id and selected area. Necessary for proper memoization of cells
     useEffect(() => {
       return () => {
         prevBehaviorId.current = currentBehavior.id;
