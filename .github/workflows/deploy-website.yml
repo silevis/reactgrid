@@ -1,3 +1,6 @@
+# This GitHub Actions workflow deploys the website to GitHub Pages
+# It triggers on pushes to the v5/build-next-proj branch
+
 name: Deploy Website to GitHub Pages
 
 on:
