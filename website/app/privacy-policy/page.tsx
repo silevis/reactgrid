@@ -67,6 +67,7 @@ export default function PrivacyPolicy() {
               information, feel free to contact us.
             </p>
           </div>
+
           <div>
             <p className="mb-4">
               This policy is effective as of 16 December 2019.

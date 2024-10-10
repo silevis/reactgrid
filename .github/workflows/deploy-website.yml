@@ -8,6 +8,10 @@ on:
       - "reactgrid/**"
       - "website/**"
 
+permissions:
+  id-token: write
+  pages: write
+
 jobs:
   # Build job
   build:
