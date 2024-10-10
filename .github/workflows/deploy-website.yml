@@ -1,6 +1,3 @@
-# This GitHub Actions workflow deploys the website to GitHub Pages
-# It triggers on pushes to the v5/build-next-proj branch
-
 name: Deploy Website to GitHub Pages
 
 on:
@@ -17,14 +14,12 @@ jobs:
 
     steps:
       - name: Checkout code
-        run: |
-          git clone ${{ github.repository_url }} .
-          git checkout ${{ github.sha }}
+        uses: actions/checkout@v3
 
       - name: Setup Node.js
-        run: |
-          curl -sL https://deb.nodesource.com/setup_18.x | sudo -E bash -
-          sudo apt-get install -y nodejs
+        uses: actions/setup-node@v3
+        with:
+          node-version: "18"
 
       - name: Install dependencies for the whole workspace
         run: |
@@ -35,8 +30,8 @@ jobs:
           npm run build --workspaces
 
       - name: Deploy to GitHub Pages
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          npm install -g gh-pages
-          gh-pages -d website/out -b gh-pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          personal_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: website/out
+          publish_branch: gh-pages
