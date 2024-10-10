@@ -14,12 +14,14 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        run: |
+          git clone ${{ github.repository_url }} .
+          git checkout ${{ github.sha }}
 
       - name: Setup Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: "18"
+        run: |
+          curl -sL https://deb.nodesource.com/setup_18.x | sudo -E bash -
+          sudo apt-get install -y nodejs
 
       - name: Install dependencies for the whole workspace
         run: |
@@ -30,8 +32,8 @@ jobs:
           npm run build --workspaces
 
       - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v3
-        with:
-          personal_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: website/out
-          publish_branch: gh-pages
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          npm install -g gh-pages
+          gh-pages -d website/out -b gh-pages
