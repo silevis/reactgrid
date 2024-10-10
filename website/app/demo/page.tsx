@@ -95,7 +95,7 @@ export default function ExamplesPage() {
         <div className="col-start-1 col-end-13 sm:col-start-2 sm:col-end-12 xl:col-start-3 xl:col-end-11 text-black-secondary flex gap-x-16 mb-[128px] flex-col md:flex-row px-4">
           <div className="flex-1">
             <h2 className="text-green-primary font-bold text-sm">
-              Capabilities
+              What does the above example illustrate?
             </h2>
             <ul>
               {capabilities.map((name, index) => (

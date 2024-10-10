@@ -28,7 +28,6 @@ export interface ReactGridStoreProps {
   fillHandleArea: NumericalRange;
 
   reactGridRef?: HTMLDivElement;
-  hiddenFocusTargetRef?: HTMLDivElement;
 
   behaviors?: Partial<Record<BehaviorId, Behavior>>;
   currentBehavior: Behavior;
@@ -116,8 +115,6 @@ export interface ReactGridStore extends ReactGridStoreProps {
   readonly setLinePosition: (linePosition: number) => void;
 
   readonly assignReactGridRef: (reactGridRef?: HTMLDivElement) => void;
-
-  readonly assignHiddenFocusTargetRef: (hiddenFocusTargetRef?: HTMLDivElement) => void;
 
   readonly getStyledRanges: (range?: Range) => StyledRange[] | [];
 

@@ -140,7 +140,10 @@ const tryExpandingTowardsCell = (
   const cellArea = getCellArea(store, currentDragOverCell);
 
   if (isEqual(newSelectedArea, cellArea)) {
-    return store;
+    return {
+      ...store,
+      selectedArea: EMPTY_AREA,
+    };
   }
 
   return {

@@ -56,7 +56,6 @@ const DEFAULT_STORE_PROPS: ReactGridStoreProps = {
   selectedArea: { startRowIdx: -1, endRowIdx: -1, startColIdx: -1, endColIdx: -1 },
   fillHandleArea: { startRowIdx: -1, endRowIdx: -1, startColIdx: -1, endColIdx: -1 },
   reactGridRef: undefined,
-  hiddenFocusTargetRef: undefined,
   resizingColIdx: undefined,
   lineOrientation: "vertical",
   linePosition: undefined,
@@ -187,7 +186,6 @@ export function initReactGridStore(id: string, initialProps: Partial<ReactGridSt
         setLinePosition: (linePosition) => set(() => ({ linePosition })),
 
         assignReactGridRef: (reactGridRef) => set(() => ({ reactGridRef })),
-        assignHiddenFocusTargetRef: (hiddenFocusTargetRef) => set(() => ({ hiddenFocusTargetRef })),
 
         getBehavior: (behaviorId) => {
           const behavior = get().behaviors?.[behaviorId];
