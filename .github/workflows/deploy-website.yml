@@ -9,9 +9,9 @@ on:
       - "website/**"
 
 jobs:
-  deploy:
+  # Build job
+  build:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -19,7 +19,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: "20"
+          node-version: "18"
 
       - name: Install dependencies for the whole workspace
         run: |
@@ -29,9 +29,19 @@ jobs:
         run: |
           npm run build --workspaces
 
-      - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v3
+      - name: Upload build artifact
+        uses: actions/upload-pages-artifact@v1
         with:
-          personal_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: website/out
-          publish_branch: gh-pages
+          path: website/out
+
+  # Deployment job
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v1
