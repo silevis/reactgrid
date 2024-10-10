@@ -13,7 +13,7 @@
   "version": "5.0.0",
   "workspaces": [
     "reactgrid",
-    "website"
+    "reactgrid-website"
   ],
   "devDependencies": {
     "@types/lodash.clonedeep": "^4.5.9"
