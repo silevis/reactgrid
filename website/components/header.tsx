@@ -64,7 +64,7 @@ export default function Header({ children }: { children: any }) {
               className={`grid hidden md:grid text-black-primary md:text-white-primary col-start-5 col-end-13 2xl:col-start-8 2xl:col-end-11 grid-cols-1 md:grid-cols-navLinks justify-items-start md:justify-items-stretch content-start md:content-stretch md:top-auto gap-y-4 md:gap-y-0 menu-horizontal`}
             >
               <HeaderLink href="/demo">Demo</HeaderLink>
-              <HeaderLink href="/docs">Docs</HeaderLink>
+              <HeaderLink href="/docs/5.0/1-getting-started">Docs</HeaderLink>
               <HeaderLink href="/support">Support</HeaderLink>
             </div>
             <span className="border-l-1 hidden 2xl:flex border-l-1 border-green-light"></span>

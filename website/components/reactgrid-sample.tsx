@@ -54,7 +54,12 @@ export default function ReactGridMainExample() {
           </div>
           <div className="flex justify-center items-center">
             <video autoPlay loop muted className="w-full h-auto">
-              <source src="/static/liquidity-planner.webm" type="video/webm" />
+              <source
+                src={`${
+                  process.env.NEXT_PUBLIC_BASE_PATH || ""
+                }/static/liquidity-planner.webm`}
+                type="video/webm"
+              />
               Your browser does not support the video tag.
             </video>
           </div>

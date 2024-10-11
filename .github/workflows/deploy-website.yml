@@ -19,6 +19,8 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
+        with:
+          lfs: true
 
       - name: Setup Node.js
         uses: actions/setup-node@v3
@@ -30,6 +32,8 @@ jobs:
           npm install
 
       - name: Build all packages (reactgrid and website)
+        env:
+          NEXT_PUBLIC_BASE_PATH: "/reactgrid"
         run: |
           npm run build --workspaces
 
@@ -46,6 +50,11 @@ jobs:
     runs-on: ubuntu-latest
     needs: build
     steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          lfs: true
+
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v1
