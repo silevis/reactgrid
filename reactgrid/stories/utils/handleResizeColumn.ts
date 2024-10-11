@@ -1,11 +1,10 @@
 import { Dispatch, SetStateAction } from "react";
 import { Column } from "../../lib/main";
-import { ColumnDef } from "./examplesConfig";
 
 export const handleResizeColumn = (
   newWidth: number,
   columnIndexes: number[],
-  setColumns: Dispatch<SetStateAction<ColumnDef[]>>
+  setColumns: Dispatch<SetStateAction<Column[]>>
 ) => {
   setColumns((prevColumns) => {
     const widthPerColumn = columnIndexes.length > 1 ? newWidth / columnIndexes.length : newWidth;

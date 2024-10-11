@@ -33,10 +33,13 @@ export const NumberCell: FC<NumberCellProps> = ({
 
   const isValid = validator ? validator(Number(initialValue)) : true;
 
-  const getFormattedValue = () => {
-    if (hideZero && initialValue === 0) return "";
+  // display the formatted value or error message
+  const getFormattedValue = (): string => {
+    if (Number.isNaN(Number(initialValue)) || (hideZero && initialValue === 0)) return "";
     if (format) return format.format(initialValue);
     if (!isValid && errorMessage) return errorMessage;
+
+    // show the value as a string without any formatting
     return initialValueStr;
   };
 
@@ -51,7 +54,10 @@ export const NumberCell: FC<NumberCellProps> = ({
     <CellWrapper
       onTouchEnd={handleDoubleTouch}
       onStringValueRequested={() => initialValueStr}
-      onStringValueReceived={(v) => onValueChanged?.(Number(v))}
+      onStringValueReceived={(v) => {
+        const numValue = Number(v);
+        onValueChanged?.(isNaN(numValue) ? 0 : numValue);
+      }}
       style={style}
       onDoubleClick={() => {
         if (ctx.isFocused) {
