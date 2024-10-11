@@ -169,7 +169,7 @@ export const HeroSection = () => {
         gradientColor={"#D9D9D955"}
       >
         <Link
-          href="/docs"
+          href="/docs/5.0/1-getting-started"
           className="w-full h-full flex sm:flex-row flex-wrap justify-center items-center text-2xs sm:text-xs gap-2 bg-green-secondary p-2 md:pl-4"
         >
           Get Started <BsFillRocketTakeoffFill />

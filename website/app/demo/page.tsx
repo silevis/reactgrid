@@ -5,6 +5,7 @@ import checkIcon from "@/public/static/check-icon.svg";
 import dotIcon from "@/public/static/dot-icon.svg";
 import Image from "next/image";
 import dynamic from "next/dynamic";
+import Link from "next/link";
 
 const DynamicLiquidityPlanner = dynamic(
   () =>
@@ -30,13 +31,11 @@ const capabilities = [
 const coreFeatures = [
   {
     name: "Multiple cell templates",
-    docs: process.env.NEXT_PUBLIC_BASE_URL + "/docs/5.0/3-cell-templates",
+    docs: "/docs/5.0/3-cell-templates",
   },
   {
     name: "Sticky row and column",
-    docs:
-      process.env.NEXT_PUBLIC_BASE_URL +
-      "/docs/5.0/2-implementing-core-features/4-sticky",
+    docs: "/docs/5.0/2-implementing-core-features/4-sticky",
   },
   {
     name: "Range and row selection",
@@ -44,15 +43,11 @@ const coreFeatures = [
   },
   {
     name: "Fill handle",
-    docs:
-      process.env.NEXT_PUBLIC_BASE_URL +
-      "/docs/5.0/2-implementing-core-features/5-fill-handle",
+    docs: "/docs/5.0/2-implementing-core-features/5-fill-handle",
   },
   {
     name: "Copy/cut/paste",
-    docs:
-      process.env.NEXT_PUBLIC_BASE_URL +
-      "/docs/5.0/2-implementing-core-features/10-copy-cut-paste",
+    docs: "/docs/5.0/2-implementing-core-features/10-copy-cut-paste",
   },
   {
     name: "Touch capability",
@@ -116,14 +111,14 @@ export default function ExamplesPage() {
                   <Image src={checkIcon} alt="ReactGrid" />
                   {cf.name}
                   {cf.docs && (
-                    <a
+                    <Link
                       href={cf.docs}
                       target="_blank"
                       rel="noreferrer"
                       className="text-green-primary underline ml-2"
                     >
                       (check docs)
-                    </a>
+                    </Link>
                   )}
                 </li>
               ))}
