@@ -47,7 +47,7 @@ export const RowReorderBehavior: Behavior = {
     const hiddenFocusTarget = document.activeElement;
     if (!hiddenFocusTarget) return store;
 
-    const { rowIndex, colIndex } = getHiddenFocusTargetLocation(hiddenFocusTarget);
+    const { rowIndex, colIndex } = getHiddenFocusTargetLocation(store.id, hiddenFocusTarget);
     if (rowIndex === -1 || colIndex === -1) return store;
 
     return {

@@ -13,6 +13,8 @@ import { scrollTowardsSticky } from "../utils/scrollTowardsSticky.ts";
 import { getHiddenFocusTargetLocation } from "../utils/getHiddenFocusTargetLocation.ts";
 import { isCellInPane } from "../utils/isCellInPane.ts";
 import { checkColumnHasSpannedCell } from "../utils/checkColumnHasSpannedCell.ts";
+import { getTheme } from "../utils/getTheme.ts";
+import { getNumberFromPixelString } from "../utils/getNumberFromPixelValueString.ts";
 
 const devEnvironment = isDevEnvironment();
 
@@ -51,7 +53,7 @@ export const ColumnReorderBehavior: Behavior = {
     const hiddenFocusTarget = document.activeElement;
     if (!hiddenFocusTarget) return store;
 
-    const { rowIndex, colIndex } = getHiddenFocusTargetLocation(hiddenFocusTarget);
+    const { rowIndex, colIndex } = getHiddenFocusTargetLocation(store.id, hiddenFocusTarget);
     if (rowIndex === -1 || colIndex === -1) return store;
 
     return {
@@ -121,6 +123,8 @@ const handlePointerMove = (
   }
 
   let shadowPosition = event.clientX - gridWrapperRectLeft - mouseToCellLeftBorderDistanceX;
+
+  const gapWidth = getNumberFromPixelString(getTheme(store).gap.width || 0);
 
   // Use client rect instead of event.clientY to determine shadow position,
   // This allows for accurate positioning even when the cursor is not hovering directly over the cell container.
@@ -260,7 +264,7 @@ const handlePointerMove = (
 
       if (isCellInPane(store, leftCell, "TopLeft")) {
         if (store.selectedArea.endColIdx <= store.paneRanges.Left.endColIdx) {
-          linePosition = leftCellContainer.offsetLeft;
+          linePosition = leftCellContainer.offsetLeft - gapWidth;
         } else if (destinationEndColIdx <= store.paneRanges.Left.endColIdx) {
           let colSpannedCellRight;
 
@@ -280,7 +284,7 @@ const handlePointerMove = (
             (!colSpannedCellLeft && !colSpannedCellRight) ||
             (colSpannedCellLeft && destinationEndColIdx === store.paneRanges.Left.endColIdx)
           ) {
-            linePosition = leftCellContainer.offsetLeft;
+            linePosition = leftCellContainer.offsetLeft - gapWidth;
           }
         } else {
           let colSpannedCellRight;
@@ -298,12 +302,12 @@ const handlePointerMove = (
           );
 
           if (!colSpannedCellLeft && !colSpannedCellRight) {
-            linePosition = leftCellContainer.offsetLeft;
+            linePosition = leftCellContainer.offsetLeft - gapWidth;
           }
         }
       } else if (store.selectedArea.endColIdx > store.paneRanges.TopRight.startColIdx) {
         if (destinationColIdx >= store.paneRanges.TopRight.startColIdx) {
-          linePosition = leftCellContainer.offsetLeft;
+          linePosition = leftCellContainer.offsetLeft - gapWidth;
         } else if (destinationEndColIdx > store.paneRanges.TopRight.startColIdx) {
           const colSpannedCell = checkColumnHasSpannedCell(
             store,
@@ -311,7 +315,7 @@ const handlePointerMove = (
           );
 
           if (!colSpannedCell) {
-            linePosition = leftCellContainer.offsetLeft;
+            linePosition = leftCellContainer.offsetLeft - gapWidth;
           }
         } else {
           const colSpannedCell = checkColumnHasSpannedCell(
@@ -324,14 +328,16 @@ const handlePointerMove = (
             ("originColIndex" in colSpannedCell &&
               colSpannedCell.originColIndex - selectedAreaColQuantity === store.paneRanges.TopRight.startColIdx)
           ) {
-            linePosition = leftCellContainer.offsetLeft;
+            linePosition = leftCellContainer.offsetLeft - gapWidth;
           }
         }
       } else {
-        linePosition = leftCellContainer.offsetLeft;
+        linePosition = leftCellContainer.offsetLeft - gapWidth;
       }
     }
   }
+
+  console.log("linePosition", linePosition);
 
   // Ensure the shadow doesn't go beyond the first column
   if (shadowPosition < 0) {
@@ -362,7 +368,7 @@ const handlePointerUp = (
   // Prevent triggering the resize behavior when a column is selected twice without moving the pointer
   if (!initialMouseXPos) return { ...store, currentBehavior: store.getBehavior("Default") };
 
-  if (!store.linePosition) {
+  if (!store.linePosition === undefined) {
     initialMouseXPos = 0;
 
     if (!initialMouseXPos)
