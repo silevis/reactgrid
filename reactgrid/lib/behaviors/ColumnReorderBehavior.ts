@@ -337,8 +337,6 @@ const handlePointerMove = (
     }
   }
 
-  console.log("linePosition", linePosition);
-
   // Ensure the shadow doesn't go beyond the first column
   if (shadowPosition < 0) {
     shadowPosition = 0;
