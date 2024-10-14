@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Cell, Column, NonEditableCell, NumberCell, RGThemeType, Row, TextCell } from "../../lib/main";
 
-const cellsStyles = {
+export const cellsStyles = {
   header: {
     backgroundColor: "#55bc71",
     display: "flex",
@@ -92,6 +92,9 @@ export const generateCells = (people: Person[], updatePerson: UpdatePersonFn): C
   };
 
   const headerCells = generateHeaderCells();
+
+  people.sort((a, b) => a.position - b.position);
+
   const rowCells = people.flatMap((person, idx) => generateRowCells(idx + 1, person));
 
   return [...headerCells, ...rowCells];

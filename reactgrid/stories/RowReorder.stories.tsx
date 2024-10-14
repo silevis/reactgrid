@@ -15,7 +15,7 @@ export const RowReorderExample = () => {
     });
   };
 
-  const [rows, setRows] = useState(getRows(people));
+  const rows = getRows(people);
   const columns = getColumns();
   const cells = generateCells(people, updatePerson);
 
@@ -26,7 +26,7 @@ export const RowReorderExample = () => {
         styles={rgStyles}
         enableRowSelectionOnFirstColumn
         onRowReorder={(selectedRowIndexes, destinationRowIdx) =>
-          handleRowReorder(people, selectedRowIndexes, destinationRowIdx, updatePerson, setRows)
+          handleRowReorder(people, selectedRowIndexes, destinationRowIdx, updatePerson)
         }
         initialFocusLocation={{ rowIndex: 2, colIndex: 1 }}
         rows={rows}

@@ -100,7 +100,7 @@ export const DefaultBehavior = (): Behavior => ({
 
     if (shouldChangeFocusLocation) {
       if (focusingCell?.isFocusable !== false) {
-        getHiddenTargetFocusByIdx(rowIndex, colIndex)?.focus({ preventScroll: true });
+        getHiddenTargetFocusByIdx(store.id, rowIndex, colIndex)?.focus({ preventScroll: true });
       }
 
       return {
@@ -126,7 +126,7 @@ export const DefaultBehavior = (): Behavior => ({
     const hiddenFocusTarget = document.activeElement;
     if (!hiddenFocusTarget) return store;
 
-    const { rowIndex, colIndex } = getHiddenFocusTargetLocation(hiddenFocusTarget);
+    const { rowIndex, colIndex } = getHiddenFocusTargetLocation(store.id, hiddenFocusTarget);
     if (rowIndex === -1 || colIndex === -1) return store;
 
     return {
@@ -222,7 +222,7 @@ export const DefaultBehavior = (): Behavior => ({
     if (shouldChangeFocusLocation) {
       if (shouldSelectEntireColumn || shouldSelectEntireRow) {
         if (touchedCell?.isFocusable !== false) {
-          getHiddenTargetFocusByIdx(rowIndex, colIndex)?.focus({ preventScroll: true });
+          getHiddenTargetFocusByIdx(store.id, rowIndex, colIndex)?.focus({ preventScroll: true });
         }
 
         return {
@@ -292,7 +292,7 @@ export const DefaultBehavior = (): Behavior => ({
 
       if (prevCell.rowIndex === currCell.rowIndex && prevCell.colIndex === currCell.colIndex) {
         if (!shouldSelectEntireColumn && focusedCell?.isFocusable !== false) {
-          getHiddenTargetFocusByIdx(rowIndex, colIndex)?.focus({ preventScroll: true });
+          getHiddenTargetFocusByIdx(store.id, rowIndex, colIndex)?.focus({ preventScroll: true });
         }
 
         if (!shouldSelectEntireColumn && !shouldSelectEntireRow) {

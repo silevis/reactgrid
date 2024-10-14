@@ -22,7 +22,7 @@ export const ColumnResizeExample = () => {
   return (
     <div>
       <ReactGrid
-        id="cut-copy-paste-example"
+        id="column-resize-example"
         styles={rgStyles}
         onResizeColumn={(width, columnIdx) => handleResizeColumn(width, columnIdx, setColumns)}
         initialFocusLocation={{ rowIndex: 2, colIndex: 1 }}

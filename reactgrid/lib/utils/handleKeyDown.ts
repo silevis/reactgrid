@@ -203,7 +203,7 @@ export const handleKeyDown = (
       case "Home": {
         event.preventDefault();
 
-        getHiddenTargetFocusByIdx(0, 0)?.focus({ preventScroll: true });
+        getHiddenTargetFocusByIdx(store.id, 0, 0)?.focus({ preventScroll: true });
 
         return store;
       }
@@ -211,7 +211,9 @@ export const handleKeyDown = (
       case "End": {
         event.preventDefault();
 
-        getHiddenTargetFocusByIdx(store.rows.length - 1, store.columns.length - 1)?.focus({ preventScroll: true });
+        getHiddenTargetFocusByIdx(store.id, store.rows.length - 1, store.columns.length - 1)?.focus({
+          preventScroll: true,
+        });
 
         return store;
       }
@@ -221,7 +223,7 @@ export const handleKeyDown = (
         event.preventDefault();
         if (!focusedCell) return store;
 
-        getHiddenTargetFocusByIdx(0, store.focusedLocation.colIndex)?.focus({ preventScroll: true });
+        getHiddenTargetFocusByIdx(store.id, 0, store.focusedLocation.colIndex)?.focus({ preventScroll: true });
 
         return { selectedArea: EMPTY_AREA };
       }
@@ -230,7 +232,7 @@ export const handleKeyDown = (
         event.preventDefault();
         if (!focusedCell) return store;
 
-        getHiddenTargetFocusByIdx(store.rows.length - 1, store.focusedLocation.colIndex)?.focus({
+        getHiddenTargetFocusByIdx(store.id, store.rows.length - 1, store.focusedLocation.colIndex)?.focus({
           preventScroll: true,
         });
 
@@ -243,7 +245,7 @@ export const handleKeyDown = (
         event.preventDefault();
         if (!focusedCell) return store;
 
-        getHiddenTargetFocusByIdx(store.focusedLocation.rowIndex, 0)?.focus({
+        getHiddenTargetFocusByIdx(store.id, store.focusedLocation.rowIndex, 0)?.focus({
           preventScroll: true,
         });
 
@@ -254,7 +256,7 @@ export const handleKeyDown = (
         event.preventDefault();
         if (!focusedCell) return store;
 
-        getHiddenTargetFocusByIdx(store.focusedLocation.rowIndex, store.columns.length - 1)?.focus({
+        getHiddenTargetFocusByIdx(store.id, store.focusedLocation.rowIndex, store.columns.length - 1)?.focus({
           preventScroll: true,
         });
 
@@ -553,7 +555,7 @@ export const handleKeyDown = (
   switch (event.key) {
     // Move focus to next cell.
     case "Escape": {
-      getHiddenTargetFocusByIdx(focusedCell.rowIndex, focusedCell.colIndex)?.focus({
+      getHiddenTargetFocusByIdx(store.id, focusedCell.rowIndex, focusedCell.colIndex)?.focus({
         preventScroll: true,
       });
 
@@ -643,7 +645,7 @@ export const handleKeyDown = (
     case "Home": {
       event.preventDefault();
 
-      getHiddenTargetFocusByIdx(focusedCell.rowIndex, 0)?.focus({
+      getHiddenTargetFocusByIdx(store.id, focusedCell.rowIndex, 0)?.focus({
         preventScroll: true,
       });
 
@@ -655,7 +657,7 @@ export const handleKeyDown = (
     case "End": {
       event.preventDefault();
 
-      getHiddenTargetFocusByIdx(focusedCell.rowIndex, store.columns.length - 1)?.focus({
+      getHiddenTargetFocusByIdx(store.id, focusedCell.rowIndex, store.columns.length - 1)?.focus({
         preventScroll: true,
       });
 

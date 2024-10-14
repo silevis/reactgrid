@@ -15,6 +15,7 @@ type ReactGridStores = Record<string, StoreApi<ReactGridStore>>;
 export const reactGridStores = create<ReactGridStores>(() => ({}));
 
 const DEFAULT_STORE_PROPS: ReactGridStoreProps = {
+  id: "",
   // fields passed by the user
   rows: [],
   columns: [],
@@ -74,6 +75,7 @@ export function initReactGridStore(id: string, initialProps: Partial<ReactGridSt
       [id]: createStore<ReactGridStore>()((set, get) => ({
         ...DEFAULT_STORE_PROPS,
         ...initialProps,
+        id,
         behaviors: { ...DEFAULT_STORE_PROPS.behaviors, ...initialProps?.behaviors },
         getRowAmount: () => get().rows.length,
         getColumnByIdx: (columnIdx) => {
@@ -142,7 +144,7 @@ export function initReactGridStore(id: string, initialProps: Partial<ReactGridSt
         },
 
         setFocusedLocation: (rowIndex, colIndex) => {
-          getHiddenTargetFocusByIdx(rowIndex, colIndex)?.focus();
+          getHiddenTargetFocusByIdx(id, rowIndex, colIndex)?.focus();
           set(() => {
             return { focusedLocation: { rowIndex, colIndex } };
           });
