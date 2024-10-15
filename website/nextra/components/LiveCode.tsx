@@ -42,7 +42,6 @@ export default function LiveCode({
       // TODO: Change theme based on color-theme
       noInline={noInline}
       scope={scope}
-      theme={themes.vsDark}
       code={code}
       language={language || "javascript"}
       disabled={disabled}
