@@ -34,10 +34,23 @@ const pluginConfig: CookieConsentConfig = {
       enabled: true,
     },
     analytics: {
+      enabled: true,
       autoClear: {
         cookies: [
           {
-            name: /^(_ga|_gid|color_mode|preferred_color_mode|disabled_global_site_banners|fileTreeExpanded)$/,
+            name: /^(_ga|_gid)$/,
+          },
+        ],
+      },
+    },
+    preferences: {
+      enabled: true,
+      autoClear: {
+        cookies: [
+          {
+            name: /^(color_mode|preferred_color_mode|disabled_global_site_banners|fileTreeExpanded)$/,
+            domain: ".github.com",
+            path: "/",
           },
         ],
       },
@@ -85,27 +98,27 @@ const pluginConfig: CookieConsentConfig = {
                 body: [
                   {
                     name: "_octo",
-                    domain: ".github.com",
+                    domain: "Github",
                     description: "Session management",
                   },
                   {
                     name: "logged_in",
-                    domain: ".github.com",
+                    domain: "Github",
                     description: "Maintains login status",
                   },
                   {
                     name: "GHCC",
-                    domain: ".github.com",
+                    domain: "Github",
                     description: "Content customization",
                   },
                   {
                     name: "dotcom_user",
-                    domain: ".github.com",
+                    domain: "Github",
                     description: "Identifies the logged-in user",
                   },
                   {
                     name: "tz",
-                    domain: ".github.com",
+                    domain: "Github",
                     description: "Stores timezone setting",
                   },
                 ],
@@ -118,44 +131,54 @@ const pluginConfig: CookieConsentConfig = {
                 headers: {
                   name: "Name",
                   domain: "Service",
+                  description: "Description",
                 },
                 body: [
                   {
                     name: "_ga",
                     domain: "Google Analytics",
+                    description: "Used to distinguish users",
                   },
                   {
                     name: "_gid",
                     domain: "Google Analytics",
-                  },
-                  {
-                    name: "color_mode",
-                    domain: ".github.com",
-                    description: "Saves your preferred color scheme",
-                  },
-                  {
-                    name: "preferred_color_mode",
-                    domain: ".github.com",
-                    description: "Remembers your display preferences",
-                  },
-                  {
-                    name: "disabled_global_site_banners",
-                    domain: ".github.com",
-                    description: "Keeps track of your banner preferences",
-                  },
-
-                  {
-                    name: "fileTreeExpanded",
-                    domain: ".github.com",
-                    description: "Remembers your file tree preferences",
+                    description: "Used to distinguish users",
                   },
                 ],
               },
             },
             {
-              title: "More information",
-              description:
-                'For any queries in relation to our policy on cookies and your choices, please <a class="cc__link" href="mailto:hello@silevis.com">contact us</a>.',
+              title: "Preferences cookies",
+              linkedCategory: "preferences",
+              cookieTable: {
+                headers: {
+                  name: "Name",
+                  domain: "Service",
+                  description: "Description",
+                },
+                body: [
+                  {
+                    name: "color_mode",
+                    domain: "Github",
+                    description: "Saves your preferred color scheme",
+                  },
+                  {
+                    name: "preferred_color_mode",
+                    domain: "Github",
+                    description: "Remembers your display preferences",
+                  },
+                  {
+                    name: "disabled_global_site_banners",
+                    domain: "Github",
+                    description: "Keeps track of your banner preferences",
+                  },
+                  {
+                    name: "fileTreeExpanded",
+                    domain: "Github",
+                    description: "Remembers your file tree preferences",
+                  },
+                ],
+              },
             },
           ],
         },

@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import { Metadata } from "next";
 import { DM_Mono, DM_Sans } from "next/font/google";
 import "./globals.css";
 import Header from "../components/header";
@@ -20,8 +20,19 @@ const dm_mono = DM_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "ReactGrid Website",
-  description: "Spreadsheet experience for your React app",
+  title: "ReactGrid | Spreadsheet experience for your React app",
+  description:
+    "ReactGrid is a component for displaying and editing data in a spreadsheet-like way.",
+  icons: [
+    {
+      url: `${process.env.NEXT_PUBLIC_BASE_PATH}/static/favicon.svg`,
+    },
+  ],
+  openGraph: {
+    title: "ReactGrid | Spreadsheet experience for your React app",
+    description:
+      "ReactGrid is a component for displaying and editing data in a spreadsheet-like way.",
+  },
 };
 
 export default function RootLayout({
