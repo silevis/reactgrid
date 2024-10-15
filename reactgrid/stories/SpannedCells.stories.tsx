@@ -7,7 +7,7 @@ import { Cell, Column, Row } from "../lib/types/PublicModel";
 import React from "react";
 import { NonEditableCell, NumberCell } from "../lib/main";
 
-const cellsStyles = {
+const cellStyles = {
   header: {
     backgroundColor: "#55bc71",
     display: "flex",
@@ -73,7 +73,7 @@ const generateCells = (categories: Category[], updateCategories: UpdateCategoryF
       Template: NonEditableCell,
       props: {
         value: title,
-        style: cellsStyles.header,
+        style: cellStyles.header,
       },
     }));
   };

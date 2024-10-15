@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Cell, Column, NonEditableCell, NumberCell, RGThemeType, Row, TextCell } from "../../lib/main";
 
-export const cellsStyles = {
+export const cellStyles = {
   header: {
     backgroundColor: "#55bc71",
     display: "flex",
@@ -43,7 +43,7 @@ export const generateCells = (people: Person[], updatePerson: UpdatePersonFn): C
       Template: NonEditableCell,
       props: {
         value: title,
-        style: cellsStyles.header,
+        style: cellStyles.header,
       },
     }));
   };

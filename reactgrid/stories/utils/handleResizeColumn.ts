@@ -7,11 +7,12 @@ export const handleResizeColumn = (
   setColumns: Dispatch<SetStateAction<Column[]>>
 ) => {
   setColumns((prevColumns) => {
-    const widthPerColumn = columnIndexes.length > 1 ? newWidth / columnIndexes.length : newWidth;
+    // if resizing multiple columns, divide the new width by the number of columns
+    const newWidthPerColumn = columnIndexes.length > 1 ? newWidth / columnIndexes.length : newWidth;
 
     return prevColumns.map((column, idx) => {
       if (columnIndexes.includes(idx)) {
-        return { ...column, width: widthPerColumn };
+        return { ...column, width: newWidthPerColumn };
       }
 
       return column;

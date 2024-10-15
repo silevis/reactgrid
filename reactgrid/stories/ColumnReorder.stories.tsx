@@ -3,7 +3,7 @@ import { StrictMode, useState } from "react";
 import { Cell, Column, NonEditableCell, NumberCell, ReactGrid, TextCell } from "../lib/main";
 import { StoryDefault } from "@ladle/react";
 import { ErrorBoundary } from "../lib/components/ErrorBoundary";
-import { rgStyles, peopleArr, getRows, cellsStyles, Person } from "./utils/examplesConfig";
+import { rgStyles, peopleArr, getRows, cellStyles, Person } from "./utils/examplesConfig";
 import { handleColumnReorder } from "./utils/handleColumnReorder";
 
 type ColumnDef = {
@@ -33,7 +33,7 @@ export const generateCells = (people: Person[], columns: ColumnDef[], updatePers
       Template: NonEditableCell,
       props: {
         value: column.title,
-        style: cellsStyles.header,
+        style: cellStyles.header,
       },
     }));
   };
