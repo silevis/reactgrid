@@ -29,7 +29,8 @@
     "react-icons": "^4.12.0",
     "react-live": "^4.1.5",
     "tailwind-merge": "^2.5.2",
-    "tailwindcss-animate": "^1.0.7"
+    "tailwindcss-animate": "^1.0.7",
+    "vanilla-cookieconsent": "^3.0.1"
   },
   "devDependencies": {
     "@types/node": "^20",

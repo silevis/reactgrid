@@ -3,6 +3,8 @@ import { DM_Mono, DM_Sans } from "next/font/google";
 import "./globals.css";
 import Header from "../components/header";
 import { Footer } from "@/components/footer";
+import "vanilla-cookieconsent/dist/cookieconsent.css";
+import CookieConsentComponent from "../components/cookie-consent";
 
 const dm_sans = DM_Sans({
   subsets: ["latin"],
@@ -34,6 +36,7 @@ export default function RootLayout({
           {children}
           <Footer />
         </Header>
+        <CookieConsentComponent />
       </body>
     </html>
   );

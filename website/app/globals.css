@@ -67,6 +67,23 @@ body {
   filter: invert(1);
 }
 
+#cc-main {
+  /** Change font **/
+  --cc-font-family: Roboto;
+
+  /** Change button primary color to black **/
+  --cc-btn-primary-bg: var(--green-primary);
+  --cc-btn-primary-border-color: transparent;
+  --cc-btn-primary-hover-bg: #444444;
+  --cc-btn-primary-hover-border-color: #444444;
+
+  /** Also make toggles the same color as the button **/
+  --cc-toggle-on-bg: var(--cc-btn-primary-bg);
+
+  /** Make the buttons a bit rounder **/
+  --cc-btn-border-radius: 10px;
+}
+
 @media (min-width: 780px) {
   .flex-none {
     display: none;
