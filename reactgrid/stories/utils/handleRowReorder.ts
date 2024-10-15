@@ -31,6 +31,6 @@ export const handleRowReorder = (
   });
 
   prevPeopleArr.forEach((row) => {
-    updatePerson(row._id, "position", row.position);
+    updatePerson(row.id, "position", row.position);
   });
 };

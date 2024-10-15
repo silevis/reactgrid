@@ -92,7 +92,7 @@ const ReactGridExample = () => {
       rowIndex: 0,
       colIndex: 0,
       Template: TextCell;
-      props?: {
+      props: {
         text: people[0].name,
         onTextChanged: (newText) => {
           updatePerson(people[0]._id, "name", newText);

@@ -48,162 +48,167 @@ scope={{
   TextCell,
   NonEditableCell,
   Row,
-  Cell,
-  peopleArr: [
-    {
-      _id: "66d61077035753f369ddbb16",
-      name: "Jordan Rodriquez",
-      age: 30,
-      email: "jordanrodriquez@cincyr.com",
-      company: "Zaggles",
-      position: 1,
-    },
-    {
-      _id: "66d61077794e7949ab167fd5",
-      email: "allysonrios@satiance.com",
-      name: "Allyson Rios",
-      age: 30,
-      company: "Zoxy",
-      position: 2,
-    },
-    {
-      _id: "66d61077dd754e88981ae434",
-      name: "Pickett Lucas",
-      age: 25,
-      email: "pickettlucas@zoxy.com",
-      company: "Techade",
-      position: 3,
-    },
-    {
-      _id: "66d61077115e2f8748c334d9",
-      name: "Louella David",
-      age: 37,
-      email: "louelladavid@techade.com",
-      company: "Ginkogene",
-      position: 4,
-    },
-    {
-      _id: "66d61077540d53374b427e4b",
-      name: "Tricia Greene",
-      age: 27,
-      email: "triciagreene@ginkogene.com",
-      company: "Naxdis",
-      position: 5,
-    },
-  ]
+  Cell
 }}
 code={`
-interface Person {
-  _id: string;
-  name: string;
-  birth: Moment;
-  email: string;
-  company: string;
-  position: number;
-}
+const peopleArr = [
+  {
+    id: "66d61077035753f369ddbb16",
+    name: "Jordan Rodriquez",
+    age: 30,
+    email: "jordanrodriquez@cincyr.com",
+    company: "Zaggles",
+  },
+  {
+    id: "66d61077794e7949ab167fd5",
+    email: "allysonrios@satiance.com",
+    name: "Allyson Rios",
+    age: 30,
+    company: "Zoxy",
+  },
+  {
+    id: "66d61077dd754e88981ae434",
+    name: "Pickett Lucas",
+    age: 25,
+    email: "pickettlucas@zoxy.com",
+    company: "Techade",
+  },
+  {
+    id: "66d61077115e2f8748c334d9",
+    name: "Louella David",
+    age: 37,
+    email: "louelladavid@techade.com",
+    company: "Ginkogene",
+  },
+  {
+    id: "66d61077540d53374b427e4b",
+    name: "Tricia Greene",
+    age: 27,
+    email: "triciagreene@ginkogene.com",
+    company: "Naxdis",
+  },
+];
 
-interface ColumnDef {
-  title: string;
-  width: number;
-  cellTemplate: React.ComponentType<any>;
-}
+const cellStyles = {
+  header: {
+    backgroundColor: "#55bc71",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    fontWeight: "bold",
+  },
+};
 
-const ColumnResizeExample = () => {
-  const [people, setPeople] = useState<Person[]>(peopleArr);
+const getRows = (people: Person[]): Row[] => [
+  // header row
+  {
+    rowIndex: 0,
+    height: 40,
+  },
+  // data rows
+  ...people.map((_, i) => ({
+    rowIndex: i + 1,
+    height: 40,
+  })),
+];
 
-  const [columnDefs, setColumnDefs] = useState<ColumnDef[]>(
-    Object.keys(peopleArr[0]).reduce((acc: ColumnDef[], peopleKey: string, idx: number) => {
-      if (["_id", "position"].includes(peopleKey)) return acc;
-      const cellTemplate = peopleKey === "age" ? NumberCell : TextCell;
-      return [...acc, { title: peopleKey, width: 100 * idx, cellTemplate }];
-    }, [])
-  );
+const getColumns = (): Column[] => [
+  { colIndex: 0, width: 220 },
+  { colIndex: 1, width: 220 },
+  { colIndex: 2, width: 220 },
+  { colIndex: 3, width: 220 },
+];
+
+type UpdatePersonFn = <T>(id: string, key: string, newValue: T) => void;
+
+const generateCells = (people: Person[], updatePerson: UpdatePersonFn): Cell[] => {
+  const generateHeaderCells = () => {
+    const titles = ["Name", "Age", "Email", "Company"];
+
+    return titles.map((title, colIndex) => ({
+      rowIndex: 0,
+      colIndex,
+      Template: NonEditableCell,
+      props: {
+        value: title,
+        style: cellStyles.header,
+      },
+    }));
+  };
+
+  const generateRowCells = (rowIndex: number, person: Person): Cell[] => {
+    const { id, name, age, email, company } = person;
+
+    return [
+      {
+        rowIndex,
+        colIndex: 0,
+        Template: TextCell,
+        props: {
+          text: name,
+          onTextChanged: (newText: string) => updatePerson(id, "name", newText),
+        },
+      },
+      {
+        rowIndex,
+        colIndex: 1,
+        Template: NumberCell,
+        props: {
+          value: age,
+          onValueChanged: (newValue: number) => updatePerson(id, "age", newValue),
+        },
+      },
+      {
+        rowIndex,
+        colIndex: 2,
+        Template: TextCell,
+        props: {
+          text: email,
+          onTextChanged: (newText: string) => updatePerson(id, "email", newText),
+        },
+      },
+      {
+        rowIndex,
+        colIndex: 3,
+        Template: TextCell,
+        props: {
+          text: company,
+          onTextChanged: (newText: string) => updatePerson(id, "company", newText),
+        },
+      },
+    ];
+  };
+
+  const headerCells = generateHeaderCells();
+  const rowCells = people.flatMap((person, idx) => generateRowCells(idx + 1, person));
+  return [...headerCells, ...rowCells];
+};
+
+const ReactGridExample = () => {
+  const [people, setPeople] = useState(peopleArr);
 
   const updatePerson = (id, key, newValue) => {
     setPeople((prev) => {
-      return prev.map((p) => (p._id !== id ? p : { ...p, [key]: newValue }));
+      return prev.map((p) => (p.id !== id ? p : { ...p, [key]: newValue }));
     });
   };
 
-  const gridRows: Row[] = Array.from({ length: people.length + 1 }, (_, i) => ({
-    rowIndex: i,
-    height: 40,
-  }));
+  const rows = getRows(people);
+  const [columns, setColumns] = useState(getColumns());
+  const cells = generateCells(people, updatePerson);
 
-  const gridColumns = columnDefs.map((col, index) => ({
-    colIndex: index,
-    width: col.width,
-  }));
-
-  const cells: Cell[] = [];
-
-  gridRows.forEach((row, rowIndex) => {
-    const personRowIndex = row.rowIndex;
-
-    if (rowIndex === 0) {
-      columnDefs.forEach((col, colIndex) => {
-        cells.push({
-          rowIndex,
-          colIndex,
-          Template: NonEditableCell,
-          props: {
-            value: col.title,
-            style: {
-              backgroundColor: "#55bc71",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              fontWeight: "bold",
-            },
-          },
-          isSelectable: false,
-        });
-      });
-    } else {
-      const personCells = columnDefs.map((col) => {
-        const numberCellProps = {
-          onValueChanged: (newValue) => {
-            updatePerson(people[personRowIndex - 1]._id, col.title, newValue);
-          },
-          value: people[personRowIndex - 1][col.title.toLowerCase()],
-          allowSeparators: false,
-        };
-
-        const textCellProps = {
-          text: people[personRowIndex - 1][col.title.toLowerCase()],
-          onTextChanged: (newText: string) => {
-            updatePerson(people[personRowIndex - 1]._id, col.title, newText);
-          },
-        };
-
-        return {
-          Template: col.cellTemplate,
-          props: col.title === "age" ? numberCellProps : textCellProps,
-        };
-      });
-
-      columnDefs.forEach((_, colIndex) => {
-        cells.push({
-          rowIndex,
-          colIndex,
-          ...personCells[colIndex],
-        });
-      });
-    }
-  });
-
-  return ( 
-    <div style={{maxWidth: 700, maxHeight: 300, overflow: 'auto'}}>
+  return (
+    <div>
       <ReactGrid
-        rows={gridRows}
-        columns={gridColumns}
-        stickyLeftColumns={1}
+        rows={rows}
+        columns={columns}
         cells={cells}
+        stickyLeftColumns={1}
       />
     </div>
   );
 };
 
-render(<ColumnResizeExample />, document.getElementById("root"));
+render(<ReactGridExample />, document.getElementById("root"));
 `}
 />

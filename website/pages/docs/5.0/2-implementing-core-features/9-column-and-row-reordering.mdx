@@ -45,126 +45,189 @@ scope={{
   useState
 }}
 code={`
-interface Person {
-  _id: string;
-  name: string;
-  age: number;
-  email: string;
-  company: string;
-  position: number;
-}
-
-const peopleArr: Person[] = [
-  { _id: "66d61077035753f369ddbb16", name: "Jordan Rodriquez", age: 30, email: "jordanrodriquez@cincyr.com", company: "Zaggles", position: 1 },
-  { _id: "66d61077794e7949ab167fd5", email: "allysonrios@satiance.com", name: "Allyson Rios", age: 30, company: "Zoxy", position: 2 },
-  { _id: "66d61077dd754e88981ae434", name: "Pickett Lucas", age: 25, email: "pickettlucas@zoxy.com", company: "Techade", position: 3 },
-  { _id: "66d61077115e2f8748c334d9", name: "Louella David", age: 37, email: "louelladavid@techade.com", company: "Ginkogene", position: 4 },
-  { _id: "66d61077540d53374b427e4b", name: "Tricia Greene", age: 27, email: "triciagreene@ginkogene.com", company: "Naxdis", position: 5 }
+const peopleArr = [
+  {
+    id: "66d61077035753f369ddbb16",
+    name: "Jordan Rodriquez",
+    age: 30,
+    email: "jordanrodriquez@cincyr.com",
+    company: "Zaggles",
+    position: 1,
+  },
+  {
+    id: "66d61077794e7949ab167fd5",
+    email: "allysonrios@satiance.com",
+    name: "Allyson Rios",
+    age: 30,
+    company: "Zoxy",
+    position: 2,
+  },
+  {
+    id: "66d61077dd754e88981ae434",
+    name: "Pickett Lucas",
+    age: 25,
+    email: "pickettlucas@zoxy.com",
+    company: "Techade",
+    position: 3,
+  },
+  {
+    id: "66d61077115e2f8748c334d9",
+    name: "Louella David",
+    age: 37,
+    email: "louelladavid@techade.com",
+    company: "Ginkogene",
+    position: 4,
+  },
+  {
+    id: "66d61077540d53374b427e4b",
+    name: "Tricia Greene",
+    age: 27,
+    email: "triciagreene@ginkogene.com",
+    company: "Naxdis",
+    position: 5,
+  },
 ];
 
-interface ColumnDef {
-  title: string;
-  width: number;
-  cellTemplate: React.ComponentType<any>;
-}
+const cellStyles = {
+  header: {
+    backgroundColor: "#55bc71",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    fontWeight: "bold",
+  },
+};
 
-const generateCells = (
-  people: Person[],
-  updatePerson: (id: string, selector: string, newValue: any) => void,
-  columnDefs: ColumnDef[]
-): CellMatrixDef => {
-  const cells: Cell[] = [];
-
-  const rowsWithAssignedHeights = people.map((person, i) => ({
-    id: person._id,
+const getRows = (people: Person[]): Row[] => [
+  // header row
+  {
+    rowIndex: 0,
     height: 40,
-    position: person.position,
-  }));
+  },
+  // data rows
+  ...people.map((_, i) => ({
+    rowIndex: i + 1,
+    height: 40,
+  })),
+];
 
-  const headerRow = [{ id: "header", position: 0, height: 40 }];
+type ColumnDef = {
+  colIndex: number;
+  width: string | number;
+  title: string;
+  minWidth?: string | number;
+  resizable?: boolean;
+  reorderable?: boolean;
+};
 
-  const orderedRows: RowDef[] = [...headerRow, ...rowsWithAssignedHeights]
-    .sort((a, b) => a.position - b.position)
-    .map((row) => {
-      const idx = rowsWithAssignedHeights.findIndex((r) => r.id === row.id);
-      const adjustedIdx = idx === -1 ? 0 : idx + 1;
+// Columns with fields 'title' will be used for column reordering
+const getColumns = (): ColumnDef[] => [
+  { colIndex: 0, width: 220, title: "Name" },
+  { colIndex: 1, width: 220, title: "Age" },
+  { colIndex: 2, width: 220, title: "Email" },
+  { colIndex: 3, width: 220, title: "Company" },
+];
 
-      if (adjustedIdx === 0) {
-        return { rowIndex: adjustedIdx, height: row.height, reorderable: false };
-      }
 
-      return { rowIndex: adjustedIdx, height: row.height };
+type UpdatePersonFn = <T>(id: string, key: string, newValue: T) => void;
+
+const generateCells = (people: Person[], columns: ColumnDef[], updatePerson: UpdatePersonFn): Cell[] => {
+  const generateHeaderCells = () => {
+    return columns.map((column, colIdx) => ({
+      rowIndex: 0,
+      colIndex: colIdx,
+      Template: NonEditableCell,
+      props: {
+        value: column.title,
+        style: cellStyles.header,
+      },
+    }));
+  };
+
+  const generateRowCells = (rowIndex: number, person: Person): Cell[] => {
+    const { id, name, age, email, company } = person;
+
+    const nameColIndex = columns.findIndex((col) => col.title === "Name");
+    const ageColIndex = columns.findIndex((col) => col.title === "Age");
+    const emailColIndex = columns.findIndex((col) => col.title === "Email");
+    const companyColIndex = columns.findIndex((col) => col.title === "Company");
+
+    return [
+      {
+        rowIndex,
+        colIndex: nameColIndex,
+        Template: TextCell,
+        props: {
+          text: name,
+          onTextChanged: (newText: string) => updatePerson(id, "name", newText),
+        },
+      },
+      {
+        rowIndex,
+        colIndex: ageColIndex,
+        Template: NumberCell,
+        props: {
+          value: age,
+          onValueChanged: (newValue: number) => updatePerson(id, "age", newValue),
+        },
+      },
+      {
+        rowIndex,
+        colIndex: emailColIndex,
+        Template: TextCell,
+        props: {
+          text: email,
+          onTextChanged: (newText: string) => updatePerson(id, "email", newText),
+        },
+      },
+      {
+        rowIndex,
+        colIndex: companyColIndex,
+        Template: TextCell,
+        props: {
+          text: company,
+          onTextChanged: (newText: string) => updatePerson(id, "company", newText),
+        },
+      },
+    ];
+  };
+
+  people.sort((a, b) => a.position - b.position);
+  const headerCells = generateHeaderCells();
+  const rowCells = people.flatMap((person, idx) => generateRowCells(idx + 1, person));
+  return [...headerCells, ...rowCells];
+};
+
+const ReactGridExample = () => {
+  const [people, setPeople] = useState(peopleArr);
+
+  const updatePerson = (id, key, newValue) => {
+    setPeople((prev) => {
+      return prev.map((p) => (p.id !== id ? p : { ...p, [key]: newValue }));
     });
+  };
 
-  orderedRows.forEach((row, rowIndex) => {
-    if (rowIndex === 0) {
-      columnDefs.forEach((col, colIndex) => {
-        cells.push({
-          rowIndex,
-          colIndex,
-          Template: NonEditableCell,
-          props: {
-            value: col.title,
-            style: {
-              backgroundColor: "#55bc71",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              fontWeight: "bold",
-            },
-          },
-        });
-      });
-    } else {
-      const personRowIndex = row.rowIndex - 1;
+  const rows = getRows(people);
+  const [columns, setColumns] = useState(getColumns());
+  const cells = generateCells(people, columns, updatePerson);
 
-      const personCells = columnDefs.map((col) => {
-        const numberCellProps = {
-          onValueChanged: (newValue) => {
-            updatePerson(people[personRowIndex]._id, col.title, newValue);
-          },
-          value: people[personRowIndex][col.title],
-          allowSeparators: false,
-        };
-
-        const textCellProps = {
-          text: people[personRowIndex][col.title],
-          onTextChanged: (newText: string) => {
-            updatePerson(people[personRowIndex]._id, col.title, newText);
-          },
-        };
-
-        return {
-          Template: col.cellTemplate,
-          props: col.title === "age" ? numberCellProps : textCellProps,
-        };
-      });
-
-      columnDefs.forEach((_, colIndex) => {
-        cells.push({
-          rowIndex,
-          colIndex,
-          ...personCells[colIndex],
-        });
-      });
-    }
-  });
-
-  // Rows that are actually used in the grid
-  const gridRows = orderedRows.map((rowDef, index) => {
-    if (index === 0) {
-      return { rowIndex: index, height: rowDef.height, ...(rowDef.reorderable === false && { reorderable: false }) };
-    }
-    return { rowIndex: index, height: rowDef.height };
-  });
-
-  // Columns that are actually used in the grid
-  const gridColumns = columnDefs.map((col, index) => ({
-    colIndex: index,
-    width: col.width,
-  }));
-
-  return { rows: gridRows, columns: gridColumns, cells };
+  return (
+    <div>
+      <ReactGrid
+        rows={rows}
+        columns={columns}
+        cells={cells}
+        enableRowSelectionOnFirstColumn
+        enableColumnSelectionOnFirstRow
+        onRowReorder={(selectedRowIndexes, destinationRowIdx) =>
+          handleRowReorder(people, selectedRowIndexes, destinationRowIdx, updatePerson)
+        }
+        onColumnReorder={(selectedColIndexes, destinationColIdx) =>
+          handleColumnReorder(selectedColIndexes, destinationColIdx, setColumns)
+        }
+      />
+    </div>
+  );
 };
 
 const handleRowReorder = (
@@ -183,22 +246,22 @@ const handleRowReorder = (
 
   adjustedSelectedRowIdxs.forEach((rowIdx, index) => {
     if (adjustedDestinationIdx === 0) {
-      prevPeopleArr[rowIdx].position = prevPeopleArr[adjustedDestinationIdx].position / 2 + index * 0.01;
+      prevPeopleArr[rowIdx].position = prevPeopleArr[adjustedDestinationIdx].position / 2 + index * 0.0001;
     } else if (adjustedDestinationIdx === peopleArr.length - 1) {
-      prevPeopleArr[rowIdx].position = prevPeopleArr[adjustedDestinationIdx].position + 1 + index * 0.01;
+      prevPeopleArr[rowIdx].position = prevPeopleArr[adjustedDestinationIdx].position + 1 + index * 0.0001;
     } else if (isReorderingUpwards) {
       prevPeopleArr[rowIdx].position =
         (prevPeopleArr[adjustedDestinationIdx].position + prevPeopleArr[adjustedDestinationIdx - 1].position) / 2 +
-        index * 0.01;
+        index * 0.0001;
     } else {
       prevPeopleArr[rowIdx].position =
         (prevPeopleArr[adjustedDestinationIdx].position + prevPeopleArr[adjustedDestinationIdx + 1].position) / 2 +
-        index * 0.01;
+        index * 0.0001;
     }
   });
 
   prevPeopleArr.forEach((row) => {
-    updatePerson(row._id, "position", row.position);
+    updatePerson(row.id, "position", row.position);
   });
 };
 
@@ -208,12 +271,15 @@ const handleColumnReorder = (
   setColumns: React.Dispatch<React.SetStateAction<ColumnDef[]>>
 ) => {
   setColumns((prevColumns) => {
+    // Filter out the selected columns and unselected columns
     const selectedColumns = prevColumns.filter((_, index) => selectedColIndexes.includes(index));
     const unselectedColumns = prevColumns.filter((_, index) => !selectedColIndexes.includes(index));
 
+    // Adjust the destination index based on the direction of the reorder
     const adjustedDestinationColIdx =
       selectedColIndexes[0] > destinationColIdx ? destinationColIdx : destinationColIdx - selectedColumns.length + 1;
 
+    // Create the new columns array with reordered columns
     const newColumns = [
       ...unselectedColumns.slice(0, adjustedDestinationColIdx),
       ...selectedColumns,
@@ -222,42 +288,6 @@ const handleColumnReorder = (
 
     return newColumns;
   });
-};
-
-const ReactGridExample = () => {
-  const [people, setPeople] = useState(peopleArr);
-
-  const [columnDefs, setColumnDefs] = useState<ColumnDef[]>(
-    Object.keys(peopleArr[0]).reduce((acc: ColumnDef[], peopleKey: string, idx: number) => {
-      if (["_id", "position"].includes(peopleKey)) return acc;
-      const cellTemplate = peopleKey === "age" ? NumberCell : TextCell;
-      return [...acc, { title: peopleKey, width: 220, cellTemplate }];
-    }, [])
-  );
-
-  const updatePerson = (id, key, newValue) => {
-    setPeople((prev) => {
-      return prev.map((p) => (p._id !== id ? p : { ...p, [key]: newValue }));
-    });
-  };
-
-  const { rows, columns, cells } = generateCells(people, updatePerson, columnDefs);
-
-  return (
-    <ReactGrid
-      enableRowSelectionOnFirstColumn
-      enableColumnSelectionOnFirstRow
-      rows={rows}
-      onColumnReorder={(selectedColIndexes, destinationColIdx) =>
-        handleColumnReorder(selectedColIndexes, destinationColIdx, setColumnDefs)
-      }
-      onRowReorder={(selectedRowIndexes, destinationRowIdx) => {
-        handleRowReorder(people, selectedRowIndexes, destinationRowIdx, updatePerson);
-      }}
-      columns={columns}
-      cells={cells}
-    />
-  );
 };
 
 render(<ReactGridExample />, document.getElementById("root"));

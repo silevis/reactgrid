@@ -1,105 +1,22 @@
 import React, { StrictMode, useState } from "react";
-import {
-  Cell,
-  CellsLookup,
-  CellsLookupCallbacks,
-  NonEditableCell,
-  NumberCell,
-  NumericalRange,
-  ReactGrid,
-  Row,
-  TextCell,
-  useReactGridAPI,
-} from "../lib/main";
+import { CellsLookup, CellsLookupCallbacks, NumericalRange, ReactGrid, useReactGridAPI } from "../lib/main";
 import { StoryDefault } from "@ladle/react";
 import { ErrorBoundary } from "../lib/components/ErrorBoundary";
-import { ColumnDef, peopleArr, rgStyles } from "./utils/examplesConfig";
 import { ReactGridAPI } from "../lib/hooks/useReactGridAPI";
+import { peopleArr, getRows, getColumns, generateCells, rgStyles } from "./utils/examplesConfig";
 
 export const CutCopyPasteExample = () => {
   const [people, setPeople] = useState(peopleArr);
 
-  const columnDefs: ColumnDef[] = Object.keys(peopleArr[0]).reduce(
-    (acc: ColumnDef[], peopleKey: string, idx: number) => {
-      if (["_id", "position"].includes(peopleKey)) return acc;
-      const cellTemplate = peopleKey === "age" ? NumberCell : TextCell;
-      return [...acc, { title: peopleKey, width: 100 * idx, cellTemplate }];
-    },
-    []
-  );
-
   const updatePerson = (id, key, newValue) => {
     setPeople((prev) => {
-      return prev.map((p) => (p._id !== id ? p : { ...p, [key]: newValue }));
+      return prev.map((p) => (p.id !== id ? p : { ...p, [key]: newValue }));
     });
   };
 
-  const gridRows: Row[] = Array.from({ length: people.length + 1 }, (_, i) => ({
-    rowIndex: i,
-    height: 40,
-  }));
-
-  const gridColumns = columnDefs.map((col, index) => ({
-    colIndex: index,
-    width: col.width,
-  }));
-
-  const cells: Cell[] = [];
-
-  gridRows.forEach((row, rowIndex) => {
-    const personRowIndex = row.rowIndex;
-
-    if (rowIndex === 0) {
-      columnDefs.forEach((col, colIndex) => {
-        cells.push({
-          rowIndex,
-          colIndex,
-          Template: NonEditableCell,
-          props: {
-            value: col.title,
-            style: {
-              backgroundColor: "#55bc71",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              fontWeight: "bold",
-            },
-          },
-          isSelectable: false,
-        });
-      });
-    } else {
-      const personCells = columnDefs.map((col) => {
-        const numberCellProps = {
-          onValueChanged: (newValue) => {
-            updatePerson(people[personRowIndex - 1]._id, col.title, newValue);
-          },
-          value: people[personRowIndex - 1][col.title.toLowerCase()],
-          allowSeparators: false,
-        };
-
-        const textCellProps = {
-          text: people[personRowIndex - 1][col.title.toLowerCase()],
-          onTextChanged: (newText: string) => {
-            updatePerson(people[personRowIndex - 1]._id, col.title, newText);
-          },
-        };
-
-        return {
-          Template: col.cellTemplate,
-          props: col.title === "age" ? numberCellProps : textCellProps,
-        };
-      });
-
-      columnDefs.forEach((_, colIndex) => {
-        cells.push({
-          rowIndex,
-          colIndex,
-          ...personCells[colIndex],
-        });
-      });
-    }
-  });
+  const rows = getRows(people);
+  const columns = getColumns();
+  const cells = generateCells(people, updatePerson);
 
   const gridAPI = useReactGridAPI("cut-copy-paste-example");
 
@@ -112,8 +29,8 @@ export const CutCopyPasteExample = () => {
         onCopy={(event, cellsRange, cellsLookup) => handleCopy(event, cellsRange, cellsLookup)}
         onPaste={(event, cellsRange, cellsLookup) => handlePaste(event, cellsRange, cellsLookup, gridAPI)}
         initialFocusLocation={{ rowIndex: 2, colIndex: 1 }}
-        rows={gridRows}
-        columns={gridColumns}
+        rows={rows}
+        columns={columns}
         cells={cells}
       />
     </div>

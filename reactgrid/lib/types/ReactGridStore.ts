@@ -8,6 +8,7 @@ import { RGTheme } from "./RGTheme.ts";
 import { CellsLookup } from "./PublicModel.ts";
 
 export interface ReactGridStoreProps {
+  id: string;
   rows: Row[];
   columns: Column[];
 

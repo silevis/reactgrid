@@ -7,6 +7,16 @@ import { Cell, Column, Row } from "../lib/types/PublicModel";
 import React from "react";
 import { NonEditableCell, NumberCell } from "../lib/main";
 
+const cellStyles = {
+  header: {
+    backgroundColor: "#55bc71",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    fontWeight: "bold",
+  },
+};
+
 const styledRanges = [
   {
     range: { start: { rowIndex: 2, columnIndex: 1 }, end: { rowIndex: 4, columnIndex: 3 } },
@@ -31,7 +41,113 @@ const categoryArr: Category[] = [
   { id: 6, range: "26-30", categoryName: "cat3", percentage: 0.4, records: 60 },
 ];
 
-const headers = ["Range", "Category", "Category %", "Records"];
+const getRows = (people: Category[]): Row[] => [
+  // header row
+  {
+    rowIndex: 0,
+    height: 40,
+  },
+  // data rows
+  ...people.map((_, i) => ({
+    rowIndex: i + 1,
+    height: 40,
+  })),
+];
+
+const getColumns = (): Column[] => [
+  { colIndex: 0, width: 220 },
+  { colIndex: 1, width: 220 },
+  { colIndex: 2, width: 220 },
+  { colIndex: 3, width: 220 },
+];
+
+type UpdateCategoryFn = <T>(id: number, key: string, newValue: T) => void;
+
+const generateCells = (categories: Category[], updateCategories: UpdateCategoryFn): Cell[] => {
+  const generateHeaderCells = () => {
+    const titles = ["Range", "Category", "Category %", "Records"];
+
+    return titles.map((title, colIndex) => ({
+      rowIndex: 0,
+      colIndex,
+      Template: NonEditableCell,
+      props: {
+        value: title,
+        style: cellStyles.header,
+      },
+    }));
+  };
+
+  // Spanned cells index
+  const spannedCellsIdx = [
+    { rowIndex: 2, colIndex: 1, rowSpan: 2 },
+    { rowIndex: 2, colIndex: 2, rowSpan: 2 },
+    { rowIndex: 4, colIndex: 1, rowSpan: 3 },
+    { rowIndex: 4, colIndex: 2, rowSpan: 3 },
+  ];
+
+  const isCellOverlappingSpan = (rowIndex: number, colIndex: number): boolean => {
+    return spannedCellsIdx.some(({ rowIndex: spanRow, colIndex: spanCol, rowSpan }) => {
+      return colIndex === spanCol && rowIndex > spanRow && rowIndex < spanRow + rowSpan;
+    });
+  };
+
+  const getSpan = (rowIndex: number, colIndex: number) => {
+    const spannedCell = spannedCellsIdx.find((cell) => cell.rowIndex === rowIndex && cell.colIndex === colIndex);
+    return spannedCell ? { rowSpan: spannedCell.rowSpan } : {};
+  };
+
+  const generateRowCells = (rowIndex: number, category: Category): Cell[] => {
+    const { id, range, categoryName, percentage, records } = category;
+
+    return [
+      {
+        rowIndex,
+        colIndex: 0,
+        Template: TextCell,
+        props: {
+          text: range,
+          onTextChanged: (newText: string) => updateCategories(id, "range", newText),
+        },
+      },
+      {
+        rowIndex,
+        colIndex: 1,
+        Template: TextCell,
+        props: {
+          text: categoryName,
+          onTextChanged: (newValue: string) => updateCategories(id, "categoryName", newValue),
+        },
+        ...getSpan(rowIndex, 1), // Check if this is a spanned cell
+      },
+      {
+        rowIndex,
+        colIndex: 2,
+        Template: NumberCell,
+        props: {
+          value: percentage,
+          onValueChanged: (newValue: number) => updateCategories(id, "percentage", newValue),
+          format: new Intl.NumberFormat("en-US", { style: "percent", minimumFractionDigits: 0 }),
+        },
+        ...getSpan(rowIndex, 2), // Check if this is a spanned cell
+      },
+      {
+        rowIndex,
+        colIndex: 3,
+        Template: NumberCell,
+        props: {
+          value: records,
+          onValueChanged: (newValue: number) => updateCategories(id, "records", newValue),
+        },
+      },
+    ].filter((cell) => !isCellOverlappingSpan(cell.rowIndex, cell.colIndex)); // Filter out only overlapping cells
+  };
+
+  const headerCells = generateHeaderCells();
+  const rowCells = categories.flatMap((category, idx) => generateRowCells(idx + 1, category));
+
+  return [...headerCells, ...rowCells];
+};
 
 export const SpannedCellsExample = () => {
   const [categories, setCategories] = useState<Category[]>(categoryArr);
@@ -42,109 +158,9 @@ export const SpannedCellsExample = () => {
     );
   };
 
-  const generateCells = (
-    rows: Row[],
-    columns: Column[],
-    categories: Category[],
-    updateCategories: (id: number, key: string, newValue) => void
-  ): Cell[] => {
-    const cells: Cell[] = [];
-
-    rows.forEach((row, rowIndex) => {
-      const categoryRowIndex = rowIndex;
-
-      if (rowIndex === 0) {
-        // Header Row
-        columns.forEach((col, colIndex) => {
-          cells.push({
-            rowIndex,
-            colIndex,
-            Template: NonEditableCell,
-            props: {
-              value: headers[colIndex],
-              style: {
-                backgroundColor: "#55bc71",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                fontWeight: "bold",
-              },
-            },
-          });
-        });
-      } else {
-        const categoryCells = [
-          {
-            Template: TextCell,
-            props: {
-              text: categories[categoryRowIndex - 1].range,
-              onTextChanged: (newRange: string) => {
-                updateCategories(categories[categoryRowIndex - 1].id, "range", newRange);
-              },
-            },
-          },
-          {
-            Template: TextCell,
-            props: {
-              text: categories[categoryRowIndex - 1].categoryName,
-              onTextChanged: (newCategory: string) => {
-                updateCategories(categories[categoryRowIndex - 1].id, "categoryName", newCategory);
-              },
-            },
-          },
-          {
-            Template: NumberCell,
-            props: {
-              value: categories[categoryRowIndex - 1].percentage,
-              onValueChanged: (newCategoryPercentage: number) => {
-                updateCategories(categories[categoryRowIndex - 1].id, "percentage", newCategoryPercentage);
-              },
-              format: new Intl.NumberFormat("en-US", { style: "percent", minimumFractionDigits: 0 }),
-            },
-          },
-          {
-            Template: NumberCell,
-            props: {
-              value: categories[categoryRowIndex - 1].records,
-              onValueChanged: (newRecords: string) => {
-                updateCategories(categories[categoryRowIndex - 1].id, "records", newRecords);
-              },
-            },
-          },
-        ];
-
-        columns.forEach((col, colIndex) => {
-          const cell: Cell = {
-            rowIndex,
-            colIndex,
-            ...categoryCells[colIndex],
-          };
-
-          if (colIndex === 1 || colIndex === 2) {
-            if (rowIndex === 2) cell.rowSpan = 2;
-            if (rowIndex === 4) cell.rowSpan = 3;
-            if ([3, 5, 6].includes(rowIndex)) return; // Skip merged cells
-          }
-
-          cells.push(cell);
-        });
-      }
-    });
-
-    return cells;
-  };
-
-  const rows: Row[] = Array.from({ length: categories.length + 1 }, (_, i) => ({
-    rowIndex: i,
-    height: 40,
-  }));
-
-  const columns: Column[] = headers.map((_, index) => ({
-    colIndex: index,
-    width: 200,
-  }));
-
-  const cells = generateCells(rows, columns, categories, updateCategories);
+  const rows = getRows(categories);
+  const columns = getColumns();
+  const cells = generateCells(categories, updateCategories);
 
   return (
     <div style={{ height: "100%", overflow: "auto" }}>
