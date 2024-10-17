@@ -34,7 +34,7 @@ interface NumberCellProps {
 Each cell template includes a handler to manage data changes. For the [TextCell](/docs/5.0/3-cell-templates/1-text-cell), this is the `onTextChanged` handler, and for the [NumberCell](/docs/5.0/3-cell-templates/2-number-cell), it’s `onValueChanged`. These handlers allow you to update your source data and re-render ReactGrid with the new values.
 
 ```tsx
-const peopleArr = [
+const peopleData = [
   {
     _id: "66d61077035753f369ddbb16",
     name: "Jordan Rodriquez",
@@ -78,7 +78,7 @@ const peopleArr = [
 ];
 
 const ReactGridExample = () => {
-  const [people, setPeople] = useState(peopleArr);
+  const [people, setPeople] = useState(peopleData);
 
   const updatePerson = (id, key, newValue) => {
     setPeople((prev) => {

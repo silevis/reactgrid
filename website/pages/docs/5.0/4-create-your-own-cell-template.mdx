@@ -68,7 +68,7 @@ import moment from "moment";
     moment
   }}
   code={`
-const peopleArr = [
+const peopleData = [
   {
     id: "66d61077035753f369ddbb16",
     name: "Jordan Rodriquez",
@@ -136,9 +136,9 @@ const getColumns = (): Column[] => [
   { colIndex: 3, width: 220 },
 ];
 
-type UpdatePersonFn = <T>(id: string, key: string, newValue: T) => void;
+type UpdatePerson = <T>(id: string, key: string, newValue: T) => void;
 
-const generateCells = (people: Person[], updatePerson: UpdatePersonFn): Cell[] => {
+const generateCells = (people: Person[], updatePerson: UpdatePerson): Cell[] => {
   const generateHeaderCells = () => {
     const titles = ["Name", "Birth", "Email", "Company"];
 
@@ -202,7 +202,7 @@ const generateCells = (people: Person[], updatePerson: UpdatePersonFn): Cell[] =
 };
 
 const ReactGridExample = () => {
-  const [people, setPeople] = useState(peopleArr);
+  const [people, setPeople] = useState(peopleData);
 
   const updatePerson = (id, key, newValue) => {
     setPeople((prev) => {

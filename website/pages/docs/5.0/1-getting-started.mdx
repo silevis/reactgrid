@@ -23,7 +23,7 @@ To integrate ReactGrid into your application, configure the grid using [rows](/d
 
 ### Configure ReactGrid inside your application
 
-Let's generate rows, columns, and cells using the prepared data:
+Let's create a simple example including the aggregation:
 
 ---
 
@@ -48,162 +48,140 @@ scope={{
   useState
 }}
 code={`
-const peopleArr = [
-  {
-    id: "66d61077035753f369ddbb16",
-    name: "Jordan Rodriquez",
-    age: 30,
-    email: "jordanrodriquez@cincyr.com",
-    company: "Zaggles",
-  },
-  {
-    id: "66d61077794e7949ab167fd5",
-    email: "allysonrios@satiance.com",
-    name: "Allyson Rios",
-    age: 30,
-    company: "Zoxy",
-  },
-  {
-    id: "66d61077dd754e88981ae434",
-    name: "Pickett Lucas",
-    age: 25,
-    email: "pickettlucas@zoxy.com",
-    company: "Techade",
-  },
-  {
-    id: "66d61077115e2f8748c334d9",
-    name: "Louella David",
-    age: 37,
-    email: "louelladavid@techade.com",
-    company: "Ginkogene",
-  },
-  {
-    id: "66d61077540d53374b427e4b",
-    name: "Tricia Greene",
-    age: 27,
-    email: "triciagreene@ginkogene.com",
-    company: "Naxdis",
-  },
-];
+interface Year {
+  label: string;
+  values: number[];
+}
 
-const cellStyles = {
-  header: {
-    backgroundColor: "#55bc71",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    fontWeight: "bold",
+const createMonthHeaderCell = (rowIndex: number, colIndex: number, label: string) => ({
+  rowIndex,
+  colIndex,
+  Template: NonEditableCell,
+  props: {
+    value: label,
   },
-};
+  isSelectable: false,
+});
 
-const getRows = (people: Person[]): Row[] => [
-  // header row
-  {
-    rowIndex: 0,
-    height: 40,
-  },
-  // data rows
-  ...people.map((_, i) => ({
-    rowIndex: i + 1,
-    height: 40,
-  })),
-];
+const createYearDataRow = (rowIndex: number, year: Year, setYearsData) => {
+  const yearTitleCell = {
+    rowIndex,
+    colIndex: 0,
+    Template: NonEditableCell,
+    props: {
+      value: year.label,
+    },
+  };
 
-const getColumns = (): Column[] => [
-  { colIndex: 0, width: 220 },
-  { colIndex: 1, width: 220 },
-  { colIndex: 2, width: 220 },
-  { colIndex: 3, width: 220 },
-];
+  const isTotalCell = (colIndex: number) => colIndex === year.values.length - 1; // last column is the total
 
-type UpdatePersonFn = <T>(id: string, key: string, newValue: T) => void;
-
-const generateCells = (people: Person[], updatePerson: UpdatePersonFn): Cell[] => {
-  const generateHeaderCells = () => {
-    const titles = ["Name", "Age", "Email", "Company"];
-
-    return titles.map((title, colIndex) => ({
-      rowIndex: 0,
-      colIndex,
-      Template: NonEditableCell,
+  const yearValueCells = year.values.map((value, colIndex) => {
+    const isEditable = year.label !== "Sum" && !isTotalCell(colIndex);
+    return {
+      rowIndex,
+      colIndex: colIndex + 1, // skip the first column for the year label
+      Template: isEditable ? NumberCell : NonEditableCell,
       props: {
-        value: title,
-        style: cellStyles.header,
+        value,
+        ...(isEditable && {
+          onValueChanged: (newValue) => {
+            setYearsData((prev: Year[]) => {
+              const newYearsData = [...prev];
+              const yearIndex = rowIndex - 1; // adjust for header row
+              newYearsData[yearIndex].values[colIndex] = newValue;
+              return newYearsData;
+            });
+          },
+        }),
       },
-    }));
-  };
+    };
+  });
 
-  const generateRowCells = (rowIndex: number, person: Person): Cell[] => {
-    const { id, name, age, email, company } = person;
-
-    return [
-      {
-        rowIndex,
-        colIndex: 0,
-        Template: TextCell,
-        props: {
-          text: name,
-          onTextChanged: (newText: string) => updatePerson(id, "name", newText),
-        },
-      },
-      {
-        rowIndex,
-        colIndex: 1,
-        Template: NumberCell,
-        props: {
-          value: age,
-          onValueChanged: (newValue: number) => updatePerson(id, "age", newValue),
-        },
-      },
-      {
-        rowIndex,
-        colIndex: 2,
-        Template: TextCell,
-        props: {
-          text: email,
-          onTextChanged: (newText: string) => updatePerson(id, "email", newText),
-        },
-      },
-      {
-        rowIndex,
-        colIndex: 3,
-        Template: TextCell,
-        props: {
-          text: company,
-          onTextChanged: (newText: string) => updatePerson(id, "company", newText),
-        },
-      },
-    ];
-  };
-
-  const headerCells = generateHeaderCells();
-  const rowCells = people.flatMap((person, idx) => generateRowCells(idx + 1, person));
-  return [...headerCells, ...rowCells];
+  return [yearTitleCell, ...yearValueCells];
 };
+
+const generateGridCells = (yearDataList: Year[], setYearsData) => {
+  const headerRowCells = [
+    createMonthHeaderCell(0, 0, ""),
+    createMonthHeaderCell(0, 1, "H1"),
+    createMonthHeaderCell(0, 2, "H2"),
+    createMonthHeaderCell(0, 3, "Total"),
+  ];
+
+  const yearCells = yearDataList.reduce((acc: Cell[], yearData, yearIndex) => {
+    const rowIndex = yearIndex + 1; // skip the first row for the header
+    return acc.concat(createYearDataRow(rowIndex, yearData, setYearsData));
+  }, []);
+
+  return [...headerRowCells, ...yearCells];
+};
+
+const addSummaryRow = (years: Year[]) => {
+  const summedValues = years.reduce(
+    (sum, year) => sum.map((currentSum, index) => currentSum + year.values[index]),
+    [0, 0, 0]
+  );
+
+  return [...years, {
+    label: "Sum",
+    values: summedValues, // e.g. [3, 7, 10]
+  }];
+};
+
+const addTotalValues = (years: Year[]) => {
+  return years.map((year) => {
+    const total = year.values.reduce((sum, value) => sum + value, 0);
+    return {
+      ...year,
+      values: [...year.values, total], // e.g. [1, 3, 4]
+    };
+  });
+};
+
+const initialYearData: Year[] = [
+  {
+    label: "2023",
+    values: new Array(2).fill(0).map(() => Math.floor(Math.random() * 9) + 1), // e.g. [1, 3]
+  },
+  {
+    label: "2024",
+    values: new Array(2).fill(0).map(() => Math.floor(Math.random() * 9) + 1), // e.g. [2, 4]
+  },
+];
 
 const ReactGridExample = () => {
-  const [people, setPeople] = useState(peopleArr);
+  const [yearsData, setYearsData] = useState(initialYearData);
 
-  const updatePerson = (id, key, newValue) => {
-    setPeople((prev) => {
-      return prev.map((p) => (p.id !== id ? p : { ...p, [key]: newValue }));
-    });
-  };
+  const yearsDataWithTotal = addTotalValues(yearsData);
+  const yearsDataWithSummary = addSummaryRow(yearsDataWithTotal);
 
-  const rows = getRows(people);
-  const columns = getColumns();
-  const cells = generateCells(people, updatePerson);
+  const cells: Cell[] = generateGridCells(yearsDataWithSummary, setYearsData);
 
-  return (
-    <div>
-      <ReactGrid
-        rows={rows}
-        columns={columns}
-        cells={cells}
-      />
-    </div>
-  );
+  return <ReactGrid cells={cells} styledRanges={styledRanges} />;
 };
+
+const styledRanges = [
+  {
+    range: { start: { rowIndex: 0, columnIndex: 1 }, end: { rowIndex: 1, columnIndex: 4 } },
+    styles: { background: "#55bc71", color: "white" },
+  },
+  {
+    range: { start: { rowIndex: 1, columnIndex: 0 }, end: { rowIndex: 4, columnIndex: 1 } },
+    styles: { background: "#55bc71", color: "white" },
+  },
+  {
+    range: { start: { rowIndex: 0, columnIndex: 0 }, end: { rowIndex: 1, columnIndex: 1 } },
+    styles: { background: "#318146", color: "white" },
+  },
+  {
+    range: { start: { rowIndex: 3, columnIndex: 1 }, end: { rowIndex: 4, columnIndex: 4 } },
+    styles: { background: "#f8f8f8" },
+  },
+  {
+    range: { start: { rowIndex: 1, columnIndex: 3 }, end: { rowIndex: 3, columnIndex: 4 } },
+    styles: { background: "#f8f8f8" },
+  },
+];
 
 render(<ReactGridExample />, document.getElementById("root"));
 `}

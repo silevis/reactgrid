@@ -45,7 +45,7 @@ scope={{
   useState
 }}
 code={`
-const peopleArr = [
+const peopleData = [
   {
     id: "66d61077035753f369ddbb16",
     name: "Jordan Rodriquez",
@@ -129,9 +129,9 @@ const getColumns = (): ColumnDef[] => [
 ];
 
 
-type UpdatePersonFn = <T>(id: string, key: string, newValue: T) => void;
+type UpdatePerson = <T>(id: string, key: string, newValue: T) => void;
 
-const generateCells = (people: Person[], columns: ColumnDef[], updatePerson: UpdatePersonFn): Cell[] => {
+const generateCells = (people: Person[], columns: ColumnDef[], updatePerson: UpdatePerson): Cell[] => {
   const generateHeaderCells = () => {
     return columns.map((column, colIdx) => ({
       rowIndex: 0,
@@ -199,7 +199,7 @@ const generateCells = (people: Person[], columns: ColumnDef[], updatePerson: Upd
 };
 
 const ReactGridExample = () => {
-  const [people, setPeople] = useState(peopleArr);
+  const [people, setPeople] = useState(peopleData);
 
   const updatePerson = (id, key, newValue) => {
     setPeople((prev) => {
@@ -231,12 +231,12 @@ const ReactGridExample = () => {
 };
 
 const handleRowReorder = (
-  peopleArr: Person[],
+  peopleData: Person[],
   selectedRowIndexes: number[],
   destinationRowIdx: number,
   updatePerson: (id: string, key: string, newValue: number) => void
 ) => {
-  const prevPeopleArr = [...peopleArr].sort((a, b) => a.position - b.position);
+  const prevPeopleData = [...peopleData].sort((a, b) => a.position - b.position);
 
   // Adjust the destination index to account for the header row
   const adjustedDestinationIdx = destinationRowIdx - 1;
@@ -246,21 +246,21 @@ const handleRowReorder = (
 
   adjustedSelectedRowIdxs.forEach((rowIdx, index) => {
     if (adjustedDestinationIdx === 0) {
-      prevPeopleArr[rowIdx].position = prevPeopleArr[adjustedDestinationIdx].position / 2 + index * 0.0001;
+      prevPeopleData[rowIdx].position = prevPeopleData[adjustedDestinationIdx].position / 2 + index * 0.0001;
     } else if (adjustedDestinationIdx === peopleArr.length - 1) {
-      prevPeopleArr[rowIdx].position = prevPeopleArr[adjustedDestinationIdx].position + 1 + index * 0.0001;
+      prevPeopleData[rowIdx].position = prevPeopleData[adjustedDestinationIdx].position + 1 + index * 0.0001;
     } else if (isReorderingUpwards) {
-      prevPeopleArr[rowIdx].position =
-        (prevPeopleArr[adjustedDestinationIdx].position + prevPeopleArr[adjustedDestinationIdx - 1].position) / 2 +
+      prevPeopleData[rowIdx].position =
+        (prevPeopleData[adjustedDestinationIdx].position + prevPeopleData[adjustedDestinationIdx - 1].position) / 2 +
         index * 0.0001;
     } else {
-      prevPeopleArr[rowIdx].position =
-        (prevPeopleArr[adjustedDestinationIdx].position + prevPeopleArr[adjustedDestinationIdx + 1].position) / 2 +
+      prevPeopleData[rowIdx].position =
+        (prevPeopleData[adjustedDestinationIdx].position + prevPeopleData[adjustedDestinationIdx + 1].position) / 2 +
         index * 0.0001;
     }
   });
 
-  prevPeopleArr.forEach((row) => {
+  prevPeopleData.forEach((row) => {
     updatePerson(row.id, "position", row.position);
   });
 };
