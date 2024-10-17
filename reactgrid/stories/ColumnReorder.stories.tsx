@@ -25,7 +25,7 @@ const getColumns = (): ColumnDef[] => [
 
 type UpdatePersonFn = <T>(id: string, key: string, newValue: T) => void;
 
-export const generateCells = (people: Person[], columns: ColumnDef[], updatePerson: UpdatePersonFn): Cell[] => {
+const generateCells = (people: Person[], columns: ColumnDef[], updatePerson: UpdatePersonFn): Cell[] => {
   const generateHeaderCells = () => {
     return columns.map((column, colIdx) => ({
       rowIndex: 0,

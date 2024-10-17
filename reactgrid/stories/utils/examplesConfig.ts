@@ -16,6 +16,7 @@ export const getRows = (people: Person[]): Row[] => [
   {
     rowIndex: 0,
     height: 40,
+    reorderable: false,
   },
   // data rows
   ...people.map((_, i) => ({

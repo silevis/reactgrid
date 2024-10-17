@@ -5,10 +5,10 @@ import Link from "next/link";
 
 export const Footer = () => {
   return (
-    <footer className="grid grid-cols-main bg-black-primary py-[40px] gap-y-32">
-      <div className="flex justify-between gap-y-16 col-start-3 col-end-11 flex-wrap lg:flex-nowrap">
+    <footer className="grid grid-cols-main bg-black-primary py-[40px] gap-y-12 md:gap-y-32">
+      <div className="flex justify-between gap-y-8 md:gap-y-16 col-start-3 col-end-11 flex-wrap lg:flex-nowrap">
         <div className="w-[100%] sm:w-[50%] lg:w-auto">
-          <h2 className="font-bold text-green-primary text-sm mb-[32px]">
+          <h2 className="font-bold text-green-primary text-sm mb-4 md:mb-[32px]">
             Info
           </h2>
           <ul className="text-white-secondary3 flex flex-col gap-y-2">
@@ -17,7 +17,7 @@ export const Footer = () => {
           </ul>
         </div>
         <div className="w-[100%] sm:w-[50%] lg:w-auto">
-          <h2 className="font-bold text-green-primary text-sm mb-[32px]">
+          <h2 className="font-bold text-green-primary text-sm mb-4 md:mb-[32px]">
             Explore
           </h2>
           <ul className="text-white-secondary3 flex flex-col gap-y-2">
@@ -33,7 +33,7 @@ export const Footer = () => {
           </ul>
         </div>
         <div className="w-[100%] sm:w-[50%] lg:w-auto">
-          <h2 className="font-bold text-green-primary text-sm mb-[32px]">
+          <h2 className="font-bold text-green-primary text-sm mb-4 md:mb-[32px]">
             Social
           </h2>
           <ul className="text-white-secondary3 flex gap-x-8">
@@ -57,7 +57,7 @@ export const Footer = () => {
           </ul>
         </div>
         <div className="w-[100%] sm:w-[50%] lg:w-auto">
-          <h2 className="font-bold text-green-primary text-sm mb-[32px]">
+          <h2 className="font-bold text-green-primary text-sm mb-4 md:mb-[32px]">
             Contact
           </h2>
           <ul className="text-white-secondary3 flex flex-col gap-y-2">
@@ -67,8 +67,8 @@ export const Footer = () => {
           </ul>
         </div>
       </div>
-      <div className="col-start-3 col-end-11 text-center text-white-secondary2">
-        Copyright © 2019-2024 Silevis Software Sp. z o.o. All rights reserved.
+      <div className="col-start-3 col-end-11 text-center text-zinc-600">
+        © Silevis Software Sp. z o.o. 2019-{new Date().getFullYear()}
       </div>
     </footer>
   );

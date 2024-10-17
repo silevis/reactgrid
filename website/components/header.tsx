@@ -91,7 +91,7 @@ export default function Header({ children }: { children: any }) {
               </DrawerLink>
             </li>
             <li>
-              <DrawerLink handleLinkClick={handleLinkClick} href="/docs">
+              <DrawerLink handleLinkClick={handleLinkClick} href="/docs/5.0/1-getting-started">
                 Docs
               </DrawerLink>
             </li>

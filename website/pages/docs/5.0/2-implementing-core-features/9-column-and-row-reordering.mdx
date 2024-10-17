@@ -103,6 +103,7 @@ const getRows = (people: Person[]): Row[] => [
   {
     rowIndex: 0,
     height: 40,
+    reorderable: false,
   },
   // data rows
   ...people.map((_, i) => ({
@@ -247,7 +248,7 @@ const handleRowReorder = (
   adjustedSelectedRowIdxs.forEach((rowIdx, index) => {
     if (adjustedDestinationIdx === 0) {
       prevPeopleData[rowIdx].position = prevPeopleData[adjustedDestinationIdx].position / 2 + index * 0.0001;
-    } else if (adjustedDestinationIdx === peopleArr.length - 1) {
+    } else if (adjustedDestinationIdx === peopleData.length - 1) {
       prevPeopleData[rowIdx].position = prevPeopleData[adjustedDestinationIdx].position + 1 + index * 0.0001;
     } else if (isReorderingUpwards) {
       prevPeopleData[rowIdx].position =
