@@ -189,11 +189,7 @@ export const HeroSection = () => {
           </div>
           <div className="relative z-10 flex items-center gap-x-1 md:min-w-[90px] h-[18px] sm:h-[24px]">
             <FaStar className="text-[#f4df50] md:text-white-primary group-hover:text-[#f4df50] transition-colors duration-200" />
-            <NumberTicker
-              value={starsCount}
-              delay={0.65}
-              decimalPlaces={getRandomDecimalPlaces()}
-            />
+            <NumberTicker value={starsCount} delay={0.65} />
           </div>
         </Link>
       </MagicCard>
