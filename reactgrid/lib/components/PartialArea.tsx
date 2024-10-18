@@ -11,6 +11,7 @@ import { areAreasEqual } from "../utils/areAreasEqual";
 import { Border, Offset } from "../types/RGTheme";
 import isEqual from "lodash.isequal";
 import { isCellInRange } from "../utils/isCellInRange";
+import { getHiddenTargetFocusByIdx } from "../utils/getHiddenTargetFocusByIdx";
 
 interface PartialAreaProps {
   /** The range of cells to area. */
@@ -101,6 +102,7 @@ export const PartialArea: FC<PartialAreaProps> = React.memo(
       store.getCellByIndexes(store.focusedLocation.rowIndex, store.focusedLocation.colIndex) ?? undefined;
 
     const focusedCellArea = focusedCell ? getCellArea(store, focusedCell) : EMPTY_AREA;
+    const focusedLocation = useReactGridStore(id, (store) => store.focusedLocation);
 
     if (areaRange.startRowIdx < 0 || areaRange.startColIdx < 0 || areaRange.endRowIdx < 0 || areaRange.endColIdx < 0)
       return null;
@@ -355,7 +357,10 @@ export const PartialArea: FC<PartialAreaProps> = React.memo(
                   border: "2px solid #fff",
                   borderRadius: "50%",
                 }}
-                onPointerDown={() => setCurrentBehavior(FillHandleBehavior)}
+                onPointerDown={() => {
+                  getHiddenTargetFocusByIdx(id, focusedLocation.rowIndex, focusedLocation.colIndex)?.focus();
+                  setCurrentBehavior(FillHandleBehavior);
+                }}
               />
             </div>
           )}
