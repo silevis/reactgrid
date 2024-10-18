@@ -6,6 +6,8 @@ import dotIcon from "@/public/static/dot-icon.svg";
 import Image from "next/image";
 import dynamic from "next/dynamic";
 import Link from "next/link";
+import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
 
 const DynamicLiquidityPlanner = dynamic(
   () =>
@@ -13,7 +15,16 @@ const DynamicLiquidityPlanner = dynamic(
       (mod) => mod.LiquidityPlanner
     ),
   {
-    loading: () => <div className="flex min-h-[750px] w-full 2xl:w-[1280px]" />,
+    loading: () => (
+      <div className="min-h-[750px] w-full 2xl:w-[1280px]">
+        <Skeleton
+          containerClassName="block h-full leading-none"
+          borderRadius={0}
+          height={"100%"}
+          className="w-full leading-none"
+        />
+      </div>
+    ),
     ssr: false,
   }
 );

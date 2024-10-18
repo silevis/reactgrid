@@ -5,6 +5,7 @@ import Header from "../components/header";
 import { Footer } from "@/components/footer";
 import "vanilla-cookieconsent/dist/cookieconsent.css";
 import CookieConsentComponent from "../components/cookie-consent";
+import GoogleAnalytics from "@/components/google-analytics";
 
 const dm_sans = DM_Sans({
   subsets: ["latin"],
@@ -43,6 +44,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${dm_mono.variable} ${dm_sans.variable}`}>
       <body>
+        <GoogleAnalytics />
         <Header>
           {children}
           <Footer />
