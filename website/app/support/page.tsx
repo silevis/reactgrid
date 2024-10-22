@@ -10,16 +10,22 @@ export default function FeaturesPage() {
 
   return (
     <div className="z-1">
-      {!shouldHideNumbers && (
-        <>
-          <div className="absolute z-0 w-[50%] top-[50px] left-[-20%]">
-            <Shape1 />
-          </div>
-          <div className="absolute z-0 w-[50%] top-[200px] right-[-20%]">
-            <Shape2 />
-          </div>
-        </>
-      )}
+      <>
+        <div
+          className={`absolute z-0 w-[50%] top-[50px] left-[-20%] ${
+            shouldHideNumbers ? "hidden" : "visible"
+          }`}
+        >
+          <Shape1 />
+        </div>
+        <div
+          className={`absolute z-0 w-[50%] top-[200px] right-[-20%] ${
+            shouldHideNumbers ? "hidden" : "visible"
+          }`}
+        >
+          <Shape2 />
+        </div>
+      </>
 
       <section className="relative texture-bg-2 z-2">
         <div className="grid grid-cols-main grid-rows-2 pt-12 md:pt-32 md:pb-12">
