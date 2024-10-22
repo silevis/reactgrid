@@ -13,7 +13,6 @@ export default function GoogleAnalytics() {
 
       <Script type="text/plain" data-category="analytics" id="">
         {`
-              console.log('Google Analytics script loaded');
               window.dataLayer = window.dataLayer || [];
               function gtag(){dataLayer.push(arguments);}
               gtag('js', new Date());

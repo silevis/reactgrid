@@ -21,6 +21,8 @@ const DynamicLiquidityPlanner = dynamic(
           containerClassName="block h-full leading-none"
           borderRadius={0}
           height={"100%"}
+          baseColor="white"
+          highlightColor="#daffec"
           className="w-full leading-none"
         />
       </div>
@@ -97,7 +99,7 @@ export default function ExamplesPage() {
           </div>
         </div>
       </div>
-      <div className="grid grid-cols-main pt-[80px] bg-white-secondary4">
+      <div className="grid grid-cols-main pt-[80px] texture-bg-2">
         <div className="col-start-1 col-end-13 sm:col-start-2 sm:col-end-12 xl:col-start-3 xl:col-end-11 text-black-secondary flex gap-x-16 mb-[128px] flex-col md:flex-row px-4">
           <div className="flex-1">
             <h2 className="text-green-primary font-bold text-sm">

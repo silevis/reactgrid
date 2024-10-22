@@ -5,7 +5,7 @@ import Link from "next/link";
 
 export const Footer = () => {
   return (
-    <footer className="grid grid-cols-main bg-black-primary py-[40px] gap-y-12 md:gap-y-32">
+    <footer className="relative z-5 texture-bg grid grid-cols-main bg-black-primary py-[40px] gap-y-12 md:gap-y-32">
       <div className="flex justify-between gap-y-8 md:gap-y-16 col-start-3 col-end-11 flex-wrap lg:flex-nowrap">
         <div className="w-[100%] sm:w-[50%] lg:w-auto">
           <h2 className="font-bold text-green-primary text-sm mb-4 md:mb-[32px]">

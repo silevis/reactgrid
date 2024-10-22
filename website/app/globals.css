@@ -31,7 +31,7 @@ body {
 }
 
 .react-grid-sample2 {
-  background: linear-gradient(to bottom, #ffffff 80%, #f4f4f4 80%);
+  background: linear-gradient(to bottom, #ffffff 80%, transparent 80%),  url(../public/static/bg-texture-2.png);
 }
 
 /* override daisyui theme */
@@ -64,6 +64,14 @@ body {
 #liquidity-planner-container input.rg-input {
   text-align: right;
   padding-right: 15px;
+}
+
+.texture-bg {
+  background-image: url(../public/static/bg-texture.png);
+}
+
+.texture-bg-2 {
+  background-image: url(../public/static/bg-texture-2.png);
 }
 
 .LiveCode input[type="date"]::-webkit-calendar-picker-indicator {

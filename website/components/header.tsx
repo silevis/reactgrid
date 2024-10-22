@@ -25,7 +25,7 @@ export default function Header({ children }: { children: any }) {
         <input id="rg-drawer" type="checkbox" className="drawer-toggle" />
         <div className="drawer-content flex flex-col">
           <nav
-            className={`relative w-full ${
+            className={`relative z-10 w-full ${
               isHomePage ? "bg-green-primary" : "bg-white-primary"
             }  top-0 border-t-1 border-l-1 border-b-1 border-r-1 font-dm-sans border-green-light grid grid-cols-main h-[86px] text-white-primary`}
           >
@@ -91,7 +91,10 @@ export default function Header({ children }: { children: any }) {
               </DrawerLink>
             </li>
             <li>
-              <DrawerLink handleLinkClick={handleLinkClick} href="/docs/5.0/1-getting-started">
+              <DrawerLink
+                handleLinkClick={handleLinkClick}
+                href="/docs/5.0/1-getting-started"
+              >
                 Docs
               </DrawerLink>
             </li>
