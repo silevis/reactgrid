@@ -12,7 +12,7 @@ In this guide, we're going to build a very simple React App, which will make use
 #### NPM Install
 
 ```shell
-npm i @silevis/reactgrid
+npm i @silevis/reactgrid@5.0.0-alpha.2
 ```
 
 Unlike previous versions, there's no longer a need to import the CSS file separately.
@@ -21,9 +21,22 @@ Unlike previous versions, there's no longer a need to import the CSS file separa
 
 To integrate ReactGrid into your application, configure the grid using [rows](/docs/5.0/6-api/1-types/1-row), [columns](/docs/5.0/6-api/1-types/2-column), and [cells](/docs/5.0/6-api/1-types/3-cell). However, if you provide only [cells](/docs/5.0/6-api/1-types/3-cell) with specified `rowIndex` and `colIndex`, the rows and columns will be automatically generated. If you want to define specific row heights, column widths or row and column reordering, you should pass them explicitly to the ReactGrid component. Below is a detailed breakdown of how to set this up, including an example configuration file.
 
-### Configure ReactGrid inside your application
+#### Understanding the Workflow
 
-Let's create a simple example including the aggregation:
+Let's create a simple example including the aggregation. The values of the cells in the **Sum** row and **Total** column will be automatically calculated from the values entered into the cells in the **H1** and **H1** columns.
+
+<div style={{ marginTop: 25, display: "flex", justifyContent: "center" }}>
+  <img src="/reactgrid/static/workflow-table-1.png" />
+</div>
+---
+
+To achieve this, we will need an array of [cells](/docs/5.0/6-api/1-types/3-cell) with defined indices, a template, and props. Once we have created all the necessary cells to build the example above, we can pass them to the ReactGrid component.
+
+<div style={{ marginTop: 25, display: "flex", justifyContent: "center" }}>
+  <img src="/reactgrid/static/workflow-table-2.png" />
+</div>
+
+### Live implementation
 
 ---
 
@@ -73,7 +86,7 @@ const createYearDataRow = (rowIndex: number, year: Year, setYearsData) => {
     },
   };
 
-  const isTotalCell = (colIndex: number) => colIndex === year.values.length - 1; // last column is the total
+  const isTotalCell = (colIndex: number) => colIndex === year.values.length - 1;
 
   const yearValueCells = year.values.map((value, colIndex) => {
     const isEditable = year.label !== "Sum" && !isTotalCell(colIndex);
@@ -141,11 +154,11 @@ const addTotalValues = (years: Year[]) => {
 const initialYearData: Year[] = [
   {
     label: "2023",
-    values: new Array(2).fill(0).map(() => Math.floor(Math.random() * 9) + 1), // e.g. [1, 3]
+    values: new Array(2).fill(0).map(() => Math.floor(Math.random() * 9) + 1),
   },
   {
     label: "2024",
-    values: new Array(2).fill(0).map(() => Math.floor(Math.random() * 9) + 1), // e.g. [2, 4]
+    values: new Array(2).fill(0).map(() => Math.floor(Math.random() * 9) + 1),
   },
 ];
 

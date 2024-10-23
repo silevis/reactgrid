@@ -9,7 +9,7 @@ const Shape1 = () => {
       "#s1-blob1",
       { path: "#s1-blob1" },
       { path: "#s1-blob2" },
-      { duration: 3500, yoyo: true, repeat: 999 }
+      { duration: 3500, yoyo: true, repeat: 100 }
     );
 
     tween1.start();
@@ -49,7 +49,7 @@ const Shape2 = () => {
       "#s2-blob1",
       { path: "#s2-blob1" },
       { path: "#s2-blob2" },
-      { duration: 3500, yoyo: true, repeat: 999 }
+      { duration: 3500, yoyo: true, repeat: 100 }
     );
 
     tween1.start();

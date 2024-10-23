@@ -11,7 +11,7 @@ export const Footer = () => {
           <h2 className="font-bold text-green-primary text-sm mb-4 md:mb-[32px]">
             Info
           </h2>
-          <ul className="text-white-secondary3 flex flex-col gap-y-2">
+          <ul className="text-white-secondary3 flex flex-col gap-y-2 font-bold">
             {/* <Link href="/cookies">Cookies</Link> */}
             <Link href="/privacy-policy">Privacy Policy</Link>
           </ul>
@@ -20,7 +20,7 @@ export const Footer = () => {
           <h2 className="font-bold text-green-primary text-sm mb-4 md:mb-[32px]">
             Explore
           </h2>
-          <ul className="text-white-secondary3 flex flex-col gap-y-2">
+          <ul className="text-white-secondary3 flex flex-col gap-y-2 font-bold">
             <li>
               <Link href="/demo">Demo</Link>
             </li>
@@ -60,7 +60,7 @@ export const Footer = () => {
           <h2 className="font-bold text-green-primary text-sm mb-4 md:mb-[32px]">
             Contact
           </h2>
-          <ul className="text-white-secondary3 flex flex-col gap-y-2">
+          <ul className="text-white-secondary3 flex flex-col gap-y-2 font-bold">
             <li>Silevis Software Sp. z o.o.</li>
             <li>Sienkiewicza Street 17/3</li>
             <li>25-007 Kielce, Poland</li>
