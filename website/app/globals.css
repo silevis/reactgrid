@@ -31,7 +31,7 @@ body {
 }
 
 .react-grid-sample2 {
-  background: linear-gradient(to bottom, #ffffff 80%, transparent 80%),  url(../public/static/bg-texture-2.png);
+  background: linear-gradient(to bottom, #ffffff 80%, transparent 80%),  url(../public/static/noise-texture-2.webp);
 }
 
 /* override daisyui theme */
@@ -67,11 +67,11 @@ body {
 }
 
 .texture-bg {
-  background-image: url(../public/static/bg-texture.png);
+  background-image: url(../public/static/noise-texture-1.webp);
 }
 
 .texture-bg-2 {
-  background-image: url(../public/static/bg-texture-2.png);
+  background-image: url(../public/static/noise-texture-2.webp);
 }
 
 .LiveCode input[type="date"]::-webkit-calendar-picker-indicator {

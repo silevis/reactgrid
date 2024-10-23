@@ -67,7 +67,7 @@ export const Footer = () => {
           </ul>
         </div>
       </div>
-      <div className="col-start-3 col-end-11 text-center text-zinc-600">
+      <div className="col-start-3 col-end-11 text-center text-zinc-700">
         © Silevis Software Sp. z o.o. 2019-{new Date().getFullYear()}
       </div>
     </footer>

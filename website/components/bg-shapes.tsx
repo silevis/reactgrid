@@ -1,18 +1,36 @@
 "use client";
 
+import { easeInOut, interpolatePaths } from "@/lib/path-interpolation";
 import { useEffect } from "react";
-import KUTE from "kute.js";
 
 const Shape1 = () => {
   useEffect(() => {
-    const tween1 = KUTE.fromTo(
-      "#s1-blob1",
-      { path: "#s1-blob1" },
-      { path: "#s1-blob2" },
-      { duration: 3500, yoyo: true, repeat: 100 }
-    );
+    const blob1 = document.getElementById("s1-blob1");
+    const path1 = blob1?.getAttribute("d");
+    const path2 = document.getElementById("s1-blob2")?.getAttribute("d");
 
-    tween1.start();
+    let startTime: number;
+    const duration = 11000;
+
+    const animateBlob = (timestamp: number) => {
+      if (!startTime) startTime = timestamp;
+      const elapsed = timestamp - startTime;
+      const progress = (elapsed % duration) / duration; // Normalized progress (0 to 1)
+      const easedProgress = easeInOut(progress);
+
+      if (!blob1 || !path1 || !path2) return;
+
+      const currentPath = interpolatePaths(
+        path1,
+        path2,
+        Math.abs(Math.sin(easedProgress * Math.PI))
+      );
+      blob1?.setAttribute("d", currentPath);
+
+      requestAnimationFrame(animateBlob);
+    };
+
+    requestAnimationFrame(animateBlob);
   }, []);
 
   return (
@@ -45,14 +63,32 @@ const Shape1 = () => {
 
 const Shape2 = () => {
   useEffect(() => {
-    const tween1 = KUTE.fromTo(
-      "#s2-blob1",
-      { path: "#s2-blob1" },
-      { path: "#s2-blob2" },
-      { duration: 3500, yoyo: true, repeat: 100 }
-    );
+    const blob1 = document.getElementById("s2-blob1");
+    const path1 = blob1?.getAttribute("d");
+    const path2 = document.getElementById("s2-blob2")?.getAttribute("d");
 
-    tween1.start();
+    let startTime: number;
+    const duration = 11000;
+
+    const animateBlob = (timestamp: number) => {
+      if (!startTime) startTime = timestamp;
+      const elapsed = timestamp - startTime;
+      const progress = (elapsed % duration) / duration; // Normalized progress (0 to 1)
+      const easedProgress = easeInOut(progress);
+
+      if (!blob1 || !path1 || !path2) return;
+
+      const currentPath = interpolatePaths(
+        path1,
+        path2,
+        Math.abs(Math.sin(easedProgress * Math.PI))
+      );
+      blob1?.setAttribute("d", currentPath);
+
+      requestAnimationFrame(animateBlob);
+    };
+
+    requestAnimationFrame(animateBlob);
   }, []);
 
   return (
