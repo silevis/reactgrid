@@ -120,7 +120,7 @@ export const PaneGridContent: React.FC<PaneGridContentProps> = React.memo(
             realColumnIndex={realColumnIndex}
             getCellOffset={memoizedGetCellOffset}
             shouldRenderReorderedCells={shouldRenderReorderedCells}
-            isCellSelected={isCellSelected}
+            isSelected={isCellSelected}
             isFocused={isFocused}
           />
         );

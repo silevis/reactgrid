@@ -18,7 +18,6 @@ type Padding = {
 export interface RGTheme {
   gap: {
     width: React.CSSProperties["width"];
-    /** Changes grid's background color for the gap to appear colored */
     color: React.CSSProperties["color"];
   };
   paneContainer: {

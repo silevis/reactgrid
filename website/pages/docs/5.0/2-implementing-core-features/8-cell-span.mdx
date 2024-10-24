@@ -91,7 +91,6 @@ const generateCells = (categories: Category[], updateCategories: UpdateCategoryF
     }));
   };
 
-  // Spanned cells index
   const spannedCellsIdx = [
     { rowIndex: 2, colIndex: 1, rowSpan: 2 },
     { rowIndex: 2, colIndex: 2, rowSpan: 2 },
@@ -107,7 +106,8 @@ const generateCells = (categories: Category[], updateCategories: UpdateCategoryF
 
   const getSpan = (rowIndex: number, colIndex: number) => {
     const spannedCell = spannedCellsIdx.find((cell) => cell.rowIndex === rowIndex && cell.colIndex === colIndex);
-    return spannedCell ? { rowSpan: spannedCell.rowSpan } : {};
+    if(!spannedCell) return null;
+    return { rowSpan: spannedCell.rowSpan };
   };
 
   const generateRowCells = (rowIndex: number, category: Category): Cell[] => {

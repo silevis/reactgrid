@@ -9,6 +9,59 @@ metaDescription: "ReactGrid docs"
 
 In version 5, ReactGrid introduces the `RGTheme` interface, allowing you to apply a theme directly to the grid. You can also customize styles by passing them through individual [cell](/docs/5.0/6-api/1-types/3-cell) properties or using standard CSS.
 
+```ts
+interface RGTheme {
+  gap: {
+    width: React.CSSProperties["width"];
+    color: React.CSSProperties["color"];
+  };
+  paneContainer: {
+    top: {
+      background: React.CSSProperties["backgroundColor"];
+      boxShadow: React.CSSProperties["boxShadow"];
+    };
+    right: {
+      background: React.CSSProperties["backgroundColor"];
+      boxShadow: React.CSSProperties["boxShadow"];
+    };
+    bottom: {
+      background: React.CSSProperties["backgroundColor"];
+      boxShadow: React.CSSProperties["boxShadow"];
+    };
+    left: {
+      background: React.CSSProperties["backgroundColor"];
+      boxShadow: React.CSSProperties["boxShadow"];
+    };
+  };
+  cellContainer: {
+    padding: Padding;
+    background: React.CSSProperties["backgroundColor"];
+  };
+  area: {
+    border: Border;
+  };
+  focusIndicator: {
+    background: React.CSSProperties["backgroundColor"];
+    border: Border;
+  };
+  fillHandle: {
+    background: React.CSSProperties["backgroundColor"];
+    border: Border;
+  };
+  line: { backgroundColor: React.CSSProperties["backgroundColor"]; size: number | string };
+  shadow: { backgroundColor: React.CSSProperties["backgroundColor"] };
+  resizeColumn: {
+    default: React.CSSProperties;
+    hover: React.CSSProperties;
+  };
+  selectionIndicator: {
+    background: React.CSSProperties["backgroundColor"];
+    border: Border;
+  };
+  gridWrapper: React.CSSProperties;
+}
+```
+
 #### Live example
 
 ---
@@ -171,7 +224,7 @@ const ReactGridExample = () => {
 
   const updatePerson = (id, key, newValue) => {
     setPeople((prev) => {
-      return prev.map((p) => (p.id !== id ? p : { ...p, [key]: newValue }));
+      return prev.map((p) => (p.id === id ? { ...p, [key]: newValue } : p));
     });
   };
 

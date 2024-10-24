@@ -7,8 +7,8 @@ metaDescription: "ReactGrid docs"
 
 ## Custom cell templates
 
-Creating a cell template is the best way to customize data visualization and behaviour in ReactGrid.
-You can define your own one and then use it as other built-in cell types. For example if you want use custom text cell you can copy default [TextCell](/docs/5.0/3-cell-templates/1-text-cell) component and modify it as you want.
+Creating a cell template is the best way to customize data visualization and behavior in ReactGrid.
+You can define your own one and then use it as other built-in cell templates. For example if you want use custom text cell you can copy default [TextCell](/docs/5.0/3-cell-templates/1-text-cell) component and modify it as you want.
 
 The key to implementing a custom cell is integrating it with the `CellWrapper`, which handles communication between the cell and ReactGrid.
 
@@ -16,7 +16,7 @@ The key to implementing a custom cell is integrating it with the `CellWrapper`, 
 <CellWrapper
   onStringValueRequested={() => value?.toString() || ""}
   onStringValueReceived={() => {
-    // Logic to update the cell value
+    // Logic to update the cell value during operations like cut, copy, paste or fill
   }}
 >
   {/* Render cell content here */}
@@ -33,11 +33,11 @@ type CellWrapperProps = React.HTMLAttributes<HTMLDivElement> & {
 };
 ```
 
+When creating your own cell template, you can also use the [useCellContext](/docs/5.0/6-api/2-hooks/2-usecellcontext) hook to get details about a specific cell.
+
 #### Example
 
-Let's create a custom `DateCell` template:
-
-### Live example
+<div style={{ marginBottom: 25 }}>Let's create a custom `DateCell` template:</div>
 
 import LiveCode from "@/nextra/components/LiveCode.tsx";
 import React, { useState, useRef } from "react";
@@ -105,6 +105,68 @@ const peopleData = [
     company: "Naxdis",
   },
 ];
+
+interface DateCellProps {
+    value: Moment;
+    onValueChanged: (data: Moment) => void;
+}
+
+const DateCell: FC<DateCellProps> = ({ value, onValueChanged }) => {
+    const ctx = useCellContext();
+    const targetInputRef = useRef<HTMLInputElement>(null);
+    const [isEditMode, setEditMode] = useState(false);
+
+    let formattedDate: string | undefined;
+
+    if (!value) {
+        formattedDate = "";
+    } else {
+        formattedDate = value.format("DD-MM-YYYY");
+    }
+
+    return (
+        <CellWrapper
+            onStringValueRequested={() => value.toDate().toDateString()}
+            onStringValueReceived={(v) => onValueChanged?.(moment(v))}
+            style={{ padding: ".2rem", textAlign: "center", outline: "none" }}
+            onDoubleClick={() => {
+                ctx.isFocused && setEditMode(true);
+            }}
+            onKeyDown={(e) => {
+                if (!isEditMode && e.key === "Enter") {
+                    e.stopPropagation();
+                    setEditMode(true);
+                }
+            }}
+        >
+            {isEditMode ? (
+                <input
+                    className="rg-input"
+                    type="date"
+                    defaultValue={value.format("YYYY-MM-DD")}
+                    onBlur={(e) => {
+                        const changedDate = e.currentTarget.value;
+                        changedDate && onValueChanged(moment(e.currentTarget.value));
+                        setEditMode(false);
+                    }}
+                    onPointerDown={(e) => e.stopPropagation()}
+                    onKeyDown={(e) => {
+                        if (e.key === "Escape") {
+                            setEditMode(false);
+                        } else if (e.key === "Enter") {
+                            onValueChanged(moment(e.currentTarget.value));
+                            setEditMode(false);
+                        }
+                    }}
+                    autoFocus
+                    ref={targetInputRef}
+                />
+            ) : (
+                formattedDate
+            )}
+        </CellWrapper>
+    );
+};
 
 const cellStyles = {
   header: {
@@ -206,7 +268,7 @@ const ReactGridExample = () => {
 
   const updatePerson = (id, key, newValue) => {
     setPeople((prev) => {
-      return prev.map((p) => (p.id !== id ? p : { ...p, [key]: newValue }));
+      return prev.map((p) => (p.id === id ? { ...p, [key]: newValue } : p));
     });
   };
 
@@ -223,68 +285,6 @@ const ReactGridExample = () => {
       />
     </div>
   );
-};
-
-interface DateCellProps {
-    value: Moment;
-    onValueChanged: (data: Moment) => void;
-}
-
-const DateCell: FC<DateCellProps> = ({ value, onValueChanged }) => {
-    const ctx = useCellContext();
-    const targetInputRef = useRef<HTMLInputElement>(null);
-    const [isEditMode, setEditMode] = useState(false);
-
-    let formattedDate: string | undefined;
-
-    if (!value) {
-        formattedDate = "";
-    } else {
-        formattedDate = value.format("DD-MM-YYYY");
-    }
-
-    return (
-        <CellWrapper
-            onStringValueRequested={() => value.toDate().toDateString()}
-            onStringValueReceived={(v) => onValueChanged?.(moment(v))}
-            style={{ padding: ".2rem", textAlign: "center", outline: "none" }}
-            onDoubleClick={() => {
-                ctx.isFocused && setEditMode(true);
-            }}
-            onKeyDown={(e) => {
-                if (!isEditMode && e.key === "Enter") {
-                    e.stopPropagation();
-                    setEditMode(true);
-                }
-            }}
-        >
-            {isEditMode ? (
-                <input
-                    className="rg-input"
-                    type="date"
-                    defaultValue={value.format("YYYY-MM-DD")}
-                    onBlur={(e) => {
-                        const changedDate = e.currentTarget.value;
-                        changedDate && onValueChanged(moment(e.currentTarget.value));
-                        setEditMode(false);
-                    }}
-                    onPointerDown={(e) => e.stopPropagation()}
-                    onKeyDown={(e) => {
-                        if (e.key === "Escape") {
-                            setEditMode(false);
-                        } else if (e.key === "Enter") {
-                            onValueChanged(moment(e.currentTarget.value));
-                            setEditMode(false);
-                        }
-                    }}
-                    autoFocus
-                    ref={targetInputRef}
-                />
-            ) : (
-                formattedDate
-            )}
-        </CellWrapper>
-    );
 };
 
 render(<ReactGridExample />, document.getElementById("root"));

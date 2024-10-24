@@ -129,6 +129,65 @@ const getColumns = (): ColumnDef[] => [
   { colIndex: 3, width: 220, title: "Company" },
 ];
 
+const handleRowReorder = (
+  peopleData: Person[],
+  selectedRowIndexes: number[],
+  destinationRowIdx: number,
+  updatePerson: (id: string, key: string, newValue: number) => void
+) => {
+  const prevPeopleData = [...peopleData].sort((a, b) => a.position - b.position);
+
+  // Adjust the destination index to account for the header row
+  const adjustedDestinationIdx = destinationRowIdx - 1;
+  const adjustedSelectedRowIdxs = selectedRowIndexes.map((rowIdx) => rowIdx - 1);
+
+  const isReorderingUpwards = adjustedSelectedRowIdxs.some((rowIdx) => rowIdx > adjustedDestinationIdx);
+
+  adjustedSelectedRowIdxs.forEach((rowIdx, index) => {
+    if (adjustedDestinationIdx === 0) {
+      prevPeopleData[rowIdx].position = prevPeopleData[adjustedDestinationIdx].position / 2 + index * 0.0001;
+    } else if (adjustedDestinationIdx === peopleData.length - 1) {
+      prevPeopleData[rowIdx].position = prevPeopleData[adjustedDestinationIdx].position + 1 + index * 0.0001;
+    } else if (isReorderingUpwards) {
+      prevPeopleData[rowIdx].position =
+        (prevPeopleData[adjustedDestinationIdx].position + prevPeopleData[adjustedDestinationIdx - 1].position) / 2 +
+        index * 0.0001;
+    } else {
+      prevPeopleData[rowIdx].position =
+        (prevPeopleData[adjustedDestinationIdx].position + prevPeopleData[adjustedDestinationIdx + 1].position) / 2 +
+        index * 0.0001;
+    }
+  });
+
+  prevPeopleData.forEach((row) => {
+    updatePerson(row.id, "position", row.position);
+  });
+};
+
+const handleColumnReorder = (
+  selectedColIndexes: number[],
+  destinationColIdx: number,
+  setColumns: React.Dispatch<React.SetStateAction<ColumnDef[]>>
+) => {
+  setColumns((prevColumns) => {
+    // Filter out the selected columns and unselected columns
+    const selectedColumns = prevColumns.filter((_, index) => selectedColIndexes.includes(index));
+    const unselectedColumns = prevColumns.filter((_, index) => !selectedColIndexes.includes(index));
+
+    // Adjust the destination index based on the direction of the reorder
+    const adjustedDestinationColIdx =
+      selectedColIndexes[0] > destinationColIdx ? destinationColIdx : destinationColIdx - selectedColumns.length + 1;
+
+    // Create the new columns array with reordered columns
+    const newColumns = [
+      ...unselectedColumns.slice(0, adjustedDestinationColIdx),
+      ...selectedColumns,
+      ...unselectedColumns.slice(adjustedDestinationColIdx),
+    ];
+
+    return newColumns;
+  });
+};
 
 type UpdatePerson = <T>(id: string, key: string, newValue: T) => void;
 
@@ -204,7 +263,7 @@ const ReactGridExample = () => {
 
   const updatePerson = (id, key, newValue) => {
     setPeople((prev) => {
-      return prev.map((p) => (p.id !== id ? p : { ...p, [key]: newValue }));
+      return prev.map((p) => (p.id === id ? { ...p, [key]: newValue } : p));
     });
   };
 
@@ -229,66 +288,6 @@ const ReactGridExample = () => {
       />
     </div>
   );
-};
-
-const handleRowReorder = (
-  peopleData: Person[],
-  selectedRowIndexes: number[],
-  destinationRowIdx: number,
-  updatePerson: (id: string, key: string, newValue: number) => void
-) => {
-  const prevPeopleData = [...peopleData].sort((a, b) => a.position - b.position);
-
-  // Adjust the destination index to account for the header row
-  const adjustedDestinationIdx = destinationRowIdx - 1;
-  const adjustedSelectedRowIdxs = selectedRowIndexes.map((rowIdx) => rowIdx - 1);
-
-  const isReorderingUpwards = adjustedSelectedRowIdxs.some((rowIdx) => rowIdx > adjustedDestinationIdx);
-
-  adjustedSelectedRowIdxs.forEach((rowIdx, index) => {
-    if (adjustedDestinationIdx === 0) {
-      prevPeopleData[rowIdx].position = prevPeopleData[adjustedDestinationIdx].position / 2 + index * 0.0001;
-    } else if (adjustedDestinationIdx === peopleData.length - 1) {
-      prevPeopleData[rowIdx].position = prevPeopleData[adjustedDestinationIdx].position + 1 + index * 0.0001;
-    } else if (isReorderingUpwards) {
-      prevPeopleData[rowIdx].position =
-        (prevPeopleData[adjustedDestinationIdx].position + prevPeopleData[adjustedDestinationIdx - 1].position) / 2 +
-        index * 0.0001;
-    } else {
-      prevPeopleData[rowIdx].position =
-        (prevPeopleData[adjustedDestinationIdx].position + prevPeopleData[adjustedDestinationIdx + 1].position) / 2 +
-        index * 0.0001;
-    }
-  });
-
-  prevPeopleData.forEach((row) => {
-    updatePerson(row.id, "position", row.position);
-  });
-};
-
-const handleColumnReorder = (
-  selectedColIndexes: number[],
-  destinationColIdx: number,
-  setColumns: React.Dispatch<React.SetStateAction<ColumnDef[]>>
-) => {
-  setColumns((prevColumns) => {
-    // Filter out the selected columns and unselected columns
-    const selectedColumns = prevColumns.filter((_, index) => selectedColIndexes.includes(index));
-    const unselectedColumns = prevColumns.filter((_, index) => !selectedColIndexes.includes(index));
-
-    // Adjust the destination index based on the direction of the reorder
-    const adjustedDestinationColIdx =
-      selectedColIndexes[0] > destinationColIdx ? destinationColIdx : destinationColIdx - selectedColumns.length + 1;
-
-    // Create the new columns array with reordered columns
-    const newColumns = [
-      ...unselectedColumns.slice(0, adjustedDestinationColIdx),
-      ...selectedColumns,
-      ...unselectedColumns.slice(adjustedDestinationColIdx),
-    ];
-
-    return newColumns;
-  });
 };
 
 render(<ReactGridExample />, document.getElementById("root"));

@@ -6,6 +6,7 @@ import { Footer } from "@/components/footer";
 import "vanilla-cookieconsent/dist/cookieconsent.css";
 import CookieConsentComponent from "../components/cookie-consent";
 import GoogleAnalytics from "@/components/google-analytics";
+import Script from "next/script";
 
 const dm_sans = DM_Sans({
   subsets: ["latin"],
@@ -44,6 +45,16 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${dm_mono.variable} ${dm_sans.variable}`}>
       <body>
+        <Script id="">
+          {`
+              if (!window.localStorage.getItem("theme_default")) {
+                window.localStorage.setItem("theme", "light");
+                window.localStorage.setItem("theme_default", "light");
+                document.documentElement.classList.add("light");
+                document.documentElement.classList.remove("dark");
+              }
+          `}
+        </Script>
         <GoogleAnalytics />
         <Header>
           {children}

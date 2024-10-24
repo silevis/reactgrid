@@ -68,7 +68,7 @@ export type CellContextType = {
   containerStyle: React.CSSProperties;
 
   /** Checks if the cell is selected */
-  isCellSelected: boolean;
+  isSelected: boolean;
 
   /** Checks if the cell is focused */
   isFocused: boolean;

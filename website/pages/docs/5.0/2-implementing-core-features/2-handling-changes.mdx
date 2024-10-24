@@ -82,7 +82,7 @@ const ReactGridExample = () => {
 
   const updatePerson = (id, key, newValue) => {
     setPeople((prev) => {
-      return prev.map((p) => (p._id !== id ? p : { ...p, [key]: newValue }));
+      return prev.map((p) => (p.id === id ? { ...p, [key]: newValue } : p));
     });
   };
 

@@ -31,7 +31,7 @@ body {
 }
 
 .react-grid-sample2 {
-  background: linear-gradient(to bottom, #ffffff 80%, transparent 80%),  url(../public/static/noise-texture-2.webp);
+  background: linear-gradient(to bottom, #ffffff 80%, transparent 80%), url(../public/static/noise-texture-2.webp);
 }
 
 /* override daisyui theme */
@@ -50,10 +50,7 @@ body {
 }
 
 /* override nextra banner background on dark mode */
-:is(
-    html[class~="dark"]
-      .dark\:nx-bg-\[linear-gradient\(1deg\,\#383838\,\#212121\)\]
-  ) {
+:is(html[class~="dark"] .dark\:nx-bg-\[linear-gradient\(1deg\,\#383838\,\#212121\)\]) {
   background-image: none !important;
 }
 
@@ -72,10 +69,6 @@ body {
 
 .texture-bg-2 {
   background-image: url(../public/static/noise-texture-2.webp);
-}
-
-.LiveCode input[type="date"]::-webkit-calendar-picker-indicator {
-  filter: invert(1);
 }
 
 #cc-main {
