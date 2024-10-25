@@ -55,6 +55,7 @@ export default function Header({ children }: { children: any }) {
               <div className="col-start-2 md:col-start-1 2xl:col-start-3 col-end-13 md:col-end-7 xl:border-l-1 border-green-light flex items-center justify-start ps-0.5 md:ps-4">
                 <Link href="/">
                   <Image
+                    draggable={false}
                     src={isHomePage ? logoIcon : nightLogoIcon}
                     alt="ReactGrid"
                     width={180}

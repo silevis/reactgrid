@@ -20,7 +20,7 @@ export default function FeaturesPage() {
         </div>
       </>
 
-      <section className="relative h-full texture-bg-2 z-2">
+      <section className="relative h-full z-2">
         <div className="grid grid-cols-main grid-rows-2 pt-12 md:pt-32 md:pb-12">
           <h1 className="col-start-1 col-end-13 sm:col-start-2 sm:col-end-12 xl:col-start-3 xl:col-end-11 text-xl md:text-2xl font-bold text-center bg-gradient-to-t from-green-primary to-green-light bg-clip-text text-transparent px-4">
             Need support?
