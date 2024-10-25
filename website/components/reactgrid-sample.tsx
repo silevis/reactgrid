@@ -9,33 +9,31 @@ export default function ReactGridMainExample() {
   return (
     <div className="text-white-primary font-dm-sans">
       <div className="relative grid grid-cols-main  bg-green-primary pt-12 pb-12 md:pt-32">
-        <BlurFade
-          className="col-start-1 col-end-13 sm:col-start-2 sm:col-end-12 xl:col-start-3 xl:col-end-11 z-10"
-          delay={0.1}
-          inView
-        >
-          <h1 className="text-md sm:text-xl md:text-2xl px-4 font-bold text-center bg-gradient-to-t from-slate-50 to-slate-300 bg-clip-text text-transparent">
-            ReactGrid component
-          </h1>
-        </BlurFade>
-        <BlurFade
-          className="col-start-1 col-end-13 sm:col-start-2 sm:col-end-12 xl:col-start-3 xl:col-end-11 z-10"
-          delay={0.25}
-          inView
-        >
-          <p className="text-center text-xs md:text-sm px-4 py-4">
-            Display your data in the most effective way for your specific needs.
-            With flexible options for organizing information, you can create
-            intuitive and clear tables that facilitate analysis and
-            presentation. You can customize the layout, formatting, and
-            interactivity to achieve the perfect solution for your project.
-          </p>
-          <div className="flex justify-center">
-            <Link className="inline-block text-center underline" href="/demo">
-              Try demo
-            </Link>
-          </div>
-        </BlurFade>
+        <div className="col-start-1 col-end-13 sm:col-start-2 sm:col-end-12 xl:col-start-3 xl:col-end-11 z-10 max-w-screen-2xl mx-auto">
+          <BlurFade className="" delay={0.1} inView>
+            <h1 className="text-md sm:text-xl md:text-2xl px-4 font-bold text-center bg-gradient-to-t from-slate-50 to-slate-300 bg-clip-text text-transparent">
+              ReactGrid component
+            </h1>
+          </BlurFade>
+          <BlurFade
+            className="col-start-1 col-end-13 sm:col-start-2 sm:col-end-12 xl:col-start-3 xl:col-end-11 z-10"
+            delay={0.25}
+            inView
+          >
+            <p className="text-center text-xs md:text-sm px-4 py-4">
+              Display your data in the most effective way for your specific
+              needs. With flexible options for organizing information, you can
+              create intuitive and clear tables that facilitate analysis and
+              presentation. You can customize the layout, formatting, and
+              interactivity to achieve the perfect solution for your project.
+            </p>
+            <div className="flex justify-center">
+              <Link className="inline-block text-center underline" href="/demo">
+                Try demo
+              </Link>
+            </div>
+          </BlurFade>
+        </div>
         <GridPattern
           width={30}
           height={30}
@@ -48,7 +46,7 @@ export default function ReactGridMainExample() {
         />
       </div>
       <div className="react-grid-sample relative bg-green-secondary grid grid-cols-main">
-        <div className="col-start-1 col-end-13 sm:col-start-2 sm:col-end-12 xl:col-start-4 xl:col-end-10 bg-white-primary shadow-reactgrid-sample rounded-t-[16px] text-[#a5a5a5] font-bold text-xl">
+        <div className="col-start-1 col-end-13 sm:col-start-2 sm:col-end-12 xl:col-start-4 xl:col-end-10 bg-white-primary shadow-reactgrid-sample rounded-t-[16px] text-[#a5a5a5] font-bold text-xl max-w-screen-2xl mx-auto">
           <div className="h-[60px] flex items-center ps-5">
             <Image src={logo} alt="ReactGrid" />
           </div>

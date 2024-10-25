@@ -6,7 +6,7 @@ import { Shape1, Shape2 } from "@/components/bg-shapes";
 
 export default function FeaturesPage() {
   return (
-    <div className="z-1">
+    <div className="z-1 flex-1">
       <>
         <div
           className={`absolute z-0 w-[100%] top-[-10%] left-[-50%] hidden lg:block`}
@@ -20,7 +20,7 @@ export default function FeaturesPage() {
         </div>
       </>
 
-      <section className="relative texture-bg-2 z-2">
+      <section className="relative h-full texture-bg-2 z-2">
         <div className="grid grid-cols-main grid-rows-2 pt-12 md:pt-32 md:pb-12">
           <h1 className="col-start-1 col-end-13 sm:col-start-2 sm:col-end-12 xl:col-start-3 xl:col-end-11 text-xl md:text-2xl font-bold text-center bg-gradient-to-t from-green-primary to-green-light bg-clip-text text-transparent px-4">
             Need support?
@@ -30,7 +30,7 @@ export default function FeaturesPage() {
             help.
           </p>
         </div>
-        <div className="grid grid-cols-main md:pb-[250px] pt-8 md:pt-0">
+        <div className="grid grid-cols-main md:pb-[250px] pt-8 md:pt-0 max-w-screen-3xl mx-auto">
           <div className="col-start-1 col-end-13 sm:col-start-2 sm:col-end-12 xl:col-start-3 xl:col-end-11 text-black-secondary flex gap-x-4 2xl:gap-x-16 mb-[128px] justify-center flex-col md:flex-row px-4">
             <div className="flex-1 flex flex-col items-center justify-start bg-[#ffffff3d] border p-4">
               <MdQuestionMark size={120} color="#107c41" />

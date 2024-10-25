@@ -21,7 +21,7 @@ export const HeaderLink = ({ href, children }: HeaderLinkProps) => {
       href={href}
       className={`md:border-l-1 border-green-light rounded-none flex ${
         isHomePage ? "md:text-white-primary" : "md:text-black-primary"
-      } text-xs font-bold justify-start md:justify-center items-center ${underlineClass}`}
+      } text-xs font-bold h-full flex items-center justify-center ${underlineClass}`}
     >
       {children}
     </Link>

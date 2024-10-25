@@ -72,7 +72,7 @@ const featuresList = [
 export const WhyUsSection = () => {
   return (
     <section>
-      <div className="relative grid grid-cols-main pt-24 md:pt-48 pb-12 md:pb-24">
+      <div className="relative grid grid-cols-main pt-24 md:pt-48 pb-12 md:pb-24 max-w-screen-2xl mx-auto">
         <BlurFade
           className="col-start-1 col-end-13 sm:col-start-2 sm:col-end-12 xl:col-start-3 xl:col-end-11"
           delay={0.1}
@@ -104,7 +104,7 @@ export const WhyUsSection = () => {
           )}
         />
       </div>
-      <div className="grid grid-cols-main mb-[128px] md:mb-[250px]">
+      <div className="grid grid-cols-main mb-[128px] md:mb-[250px] max-w-screen-2xl mx-auto">
         <div className="col-start-2 col-end-12 grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-x-16 gap-y-8 xl:gap-y-32">
           {featuresList.map((feature, index) => {
             return (
@@ -125,7 +125,7 @@ export const WhyUsSection = () => {
                   />
                 </div>
 
-                <h2 className="text-black-primary text-center font-bold text-sm">
+                <h2 className="bg-gradient-to-t from-slate-950 to-slate-500 bg-clip-text text-transparent text-center font-bold text-sm">
                   {feature.title}
                 </h2>
                 <p className="text-black-secondary text-center px-4 md:px-16">
