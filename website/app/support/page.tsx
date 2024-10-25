@@ -22,7 +22,7 @@ export default function FeaturesPage() {
 
       <section className="relative texture-bg-2 z-2">
         <div className="grid grid-cols-main grid-rows-2 pt-12 md:pt-32 md:pb-12">
-          <h1 className="col-start-1 col-end-13 sm:col-start-2 sm:col-end-12 xl:col-start-3 xl:col-end-11 text-xl md:text-2xl font-bold text-center text-green-primary px-4">
+          <h1 className="col-start-1 col-end-13 sm:col-start-2 sm:col-end-12 xl:col-start-3 xl:col-end-11 text-xl md:text-2xl font-bold text-center bg-gradient-to-t from-green-primary to-green-light bg-clip-text text-transparent px-4">
             Need support?
           </h1>
           <p className="col-start-1 col-end-13 sm:col-start-2 sm:col-end-12 xl:col-start-3 xl:col-end-11 text-black-secondary text-center text-xs md:text-sm px-4 font-bold">

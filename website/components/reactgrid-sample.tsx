@@ -14,7 +14,7 @@ export default function ReactGridMainExample() {
           delay={0.1}
           inView
         >
-          <h1 className="text-md sm:text-xl md:text-2xl px-4 font-bold text-center">
+          <h1 className="text-md sm:text-xl md:text-2xl px-4 font-bold text-center bg-gradient-to-t from-slate-50 to-slate-300 bg-clip-text text-transparent">
             ReactGrid component
           </h1>
         </BlurFade>

@@ -88,6 +88,11 @@ body {
   --cc-btn-border-radius: 10px;
 }
 
+.prism-code.language-javascript {
+  white-space: nowrap !important;
+  overflow-x: auto !important;
+}
+
 @media (min-width: 780px) {
   .flex-none {
     display: none;

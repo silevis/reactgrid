@@ -78,7 +78,7 @@ export const WhyUsSection = () => {
           delay={0.1}
           inView
         >
-          <h1 className="text-md sm:text-xl md:text-2xl px-4 font-bold text-center text-green-primary z-10">
+          <h1 className="text-md sm:text-xl md:text-2xl px-4 font-bold text-center bg-gradient-to-t from-green-primary to-green-light bg-clip-text text-transparent z-10">
             Why is ReactGrid unique?
           </h1>
         </BlurFade>

@@ -141,6 +141,9 @@ const handlePaste = (
   const doc = parser.parseFromString(html, "text/html");
 
   const rows = doc.querySelectorAll("tr");
+ 
+  if (rows.length === 0) return false;
+  
   const firstRowCells = rows[0].querySelectorAll("td");
 
   if (rows.length === 1 && firstRowCells.length === 1) {

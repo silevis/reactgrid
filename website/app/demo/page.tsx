@@ -72,7 +72,7 @@ export default function ExamplesPage() {
   return (
     <section>
       <div className="grid grid-cols-main pt-12 md:pt-32 pb-[40px]">
-        <h1 className="col-start-1 col-end-13 sm:col-start-2 sm:col-end-12 xl:col-start-3 xl:col-end-11 text-xl md:text-2xl font-bold text-center text-green-primary p-4">
+        <h1 className="col-start-1 col-end-13 sm:col-start-2 sm:col-end-12 xl:col-start-3 xl:col-end-11 text-xl md:text-2xl font-bold text-center p-4 bg-gradient-to-t from-green-primary to-green-light bg-clip-text text-transparent">
           ReactGrid Demo
         </h1>
         <p className="col-start-1 col-end-13 sm:col-start-2 sm:col-end-12 xl:col-start-3 xl:col-end-11 text-black-secondary text-center text-xs md:text-sm px-4">

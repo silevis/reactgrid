@@ -218,6 +218,7 @@ const ReactGridExample = () => {
   return (
     <div>
       <ReactGrid
+        id="cut-copy-paste-example"
         rows={rows}
         columns={columns}
         cells={cells}
@@ -334,6 +335,10 @@ const handlePaste = (
   const doc = parser.parseFromString(html, "text/html");
 
   const rows = doc.querySelectorAll("tr");
+
+  // Prevent the default paste behavior - no action will be performed
+    if (rows.length === 0) return true;
+
   const firstRowCells = rows[0].querySelectorAll("td");
 
   if (rows.length === 1 && firstRowCells.length === 1) {
