@@ -14,7 +14,7 @@ import { getHiddenFocusTargetLocation } from "../utils/getHiddenFocusTargetLocat
 import { isCellInPane } from "../utils/isCellInPane.ts";
 import { checkColumnHasSpannedCell } from "../utils/checkColumnHasSpannedCell.ts";
 import { getTheme } from "../utils/getTheme.ts";
-import { getNumberFromPixelString } from "../utils/getNumberFromPixelValueString.ts";
+import { getValueFromPixelString } from "../utils/getValueFromPixelString.ts";
 
 const devEnvironment = isDevEnvironment();
 
@@ -124,7 +124,7 @@ const handlePointerMove = (
 
   let shadowPosition = event.clientX - gridWrapperRectLeft - mouseToCellLeftBorderDistanceX;
 
-  const gapWidth = getNumberFromPixelString(getTheme(store).gap.width || 0);
+  const gapWidth = getValueFromPixelString(getTheme(store).gap.width || 0);
 
   // Use client rect instead of event.clientY to determine shadow position,
   // This allows for accurate positioning even when the cursor is not hovering directly over the cell container.

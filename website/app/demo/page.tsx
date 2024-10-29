@@ -90,13 +90,7 @@ export default function ExamplesPage() {
           <div className="h-[60px] flex items-center ps-5">
             <Image src={logo} alt="ReactGrid" />
           </div>
-          <div
-            id="liquidity-planner-container"
-            className="flex"
-            style={{ maxHeight: 750, width: "100%", overflow: "auto" }}
-          >
-            <DynamicLiquidityPlanner />
-          </div>
+          <DynamicLiquidityPlanner />
         </div>
       </div>
       <div className="grid grid-cols-main pt-[80px] texture-bg-2">

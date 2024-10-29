@@ -67,11 +67,11 @@ export function months(): number[] {
   return new Array(12).fill(0);
 }
 
-export function getColumns(): Column[] {
+export function getColumns(isMobile: boolean): Column[] {
   return [
     {
       colIndex: 0,
-      width: 250,
+      width: isMobile ? 230 : 250,
     },
     { colIndex: 1, width: COL_WIDTH },
     { colIndex: 2, width: COL_WIDTH },

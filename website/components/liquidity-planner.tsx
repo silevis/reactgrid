@@ -49,22 +49,32 @@ export const LiquidityPlanner = () => {
 
   const rows = cells.map((cell) => ({
     rowIndex: cell.rowIndex,
-    height: 35,
+    height: isMobile ? 25 : 35,
   }));
 
-  const columns = getColumns();
+  const columns = getColumns(isMobile);
 
   return (
-    <ReactGrid
-      cells={cells}
-      rows={rows}
-      columns={columns}
-      stickyTopRows={1}
-      stickyLeftColumns={!isMobile ? 1 : 0}
-      stickyRightColumns={!isMobile ? 1 : 0}
-      enableRowSelectionOnFirstColumn
-      styles={gridStyles}
-    />
+    <div
+      id="liquidity-planner-container"
+      className="flex"
+      style={{
+        maxHeight: isMobile ? 500 : 750,
+        width: "100%",
+        overflow: "auto",
+      }}
+    >
+      <ReactGrid
+        cells={cells}
+        rows={rows}
+        columns={columns}
+        stickyTopRows={1}
+        stickyLeftColumns={!isMobile ? 1 : 0}
+        stickyRightColumns={!isMobile ? 1 : 0}
+        enableRowSelectionOnFirstColumn
+        styles={gridStyles}
+      />
+    </div>
   );
 };
 

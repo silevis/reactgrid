@@ -1,6 +1,6 @@
 import { ReactGridStore } from "../types/ReactGridStore";
 import { getCellPaneOverlap } from "./getCellPaneOverlap";
-import { getNumberFromPixelString } from "./getNumberFromPixelValueString";
+import { getValueFromPixelString } from "./getValueFromPixelString";
 import { getTheme } from "./getTheme";
 
 export const handlePaneOverlap = (
@@ -11,7 +11,7 @@ export const handlePaneOverlap = (
 ) => {
   const themeStyles = getTheme(store);
 
-  const gapWidth = getNumberFromPixelString(themeStyles.gap.width || 0);
+  const gapWidth = getValueFromPixelString(themeStyles.gap.width || 0);
 
   const bottomCenterOverlapValue = getCellPaneOverlap(store, { rowIndex, colIndex }, "BottomCenter");
   const topCenterPaneOverlapValue = getCellPaneOverlap(store, { rowIndex, colIndex }, "TopCenter");

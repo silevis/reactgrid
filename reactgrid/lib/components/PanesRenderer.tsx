@@ -12,7 +12,7 @@ import {
 import { ColumnMeasurement } from "../types/ColumnMeasurement";
 import { getCellArea } from "../utils/getCellArea";
 import { isSpanMember } from "../utils/isSpanMember";
-import { getNumberFromPixelString } from "../utils/getNumberFromPixelValueString";
+import { getValueFromPixelString } from "../utils/getValueFromPixelString";
 import { PaneShadow } from "./PaneShadow";
 
 interface PanesRendererProps {
@@ -193,15 +193,33 @@ const PanesRenderer: FC<PanesRendererProps> = ({
     let colIndexOffset = 0;
 
     do {
+      const cell = store.getCellByIndexes(rowIndex, colIndexOffset);
+
+      if (!cell) {
+        colIndexOffset++;
+        continue;
+      }
+
       const cellElement = gridContainerRef.current.getElementsByClassName(
-        `rgRowIdx-${rowIndex} rgColIdx-${colIndexOffset}`
+        `rgRowIdx-${cell.rowIndex} rgColIdx-${cell.colIndex}`
       )[0];
 
       if (cellElement) {
         const cellElementStyle = window.getComputedStyle(cellElement);
         // If the cell is spanned skip it and look for another one...
         if (cellElementStyle.gridRowEnd.includes("span")) {
-          colIndexOffset += parseInt(cellElementStyle.gridRowEnd.split(" ").at(-1) ?? "1");
+          const rowHeight = getValueFromPixelString(rows[rowIndex].height);
+          const rowOffset =
+            rowIndex === 0
+              ? gapWidth
+              : rowsMeasurements[rowIndex - 1].offsetTop + rowsMeasurements[rowIndex - 1].height + gapWidth;
+
+          rowsMeasurements.push({ height: rowHeight, offsetTop: rowOffset });
+
+          colIndexOffset = 0;
+          rowIndex++;
+
+          resizeObserver.current.observe(cellElement);
           continue;
         }
 
@@ -245,15 +263,34 @@ const PanesRenderer: FC<PanesRendererProps> = ({
     let rowIndexOffset = 0;
 
     do {
+      const cell = store.getCellByIndexes(rowIndexOffset, colIndex);
+
+      if (!cell) {
+        rowIndexOffset++;
+        continue;
+      }
+
       const cellElement = gridContainerRef.current.getElementsByClassName(
-        `rgColIdx-${colIndex} rgRowIdx-${rowIndexOffset}`
+        `rgColIdx-${cell.colIndex} rgRowIdx-${cell.rowIndex}`
       )[0];
 
       if (cellElement) {
         const cellElementStyle = window.getComputedStyle(cellElement);
         // If the cell is spanned skip it and look for another one...
         if (cellElementStyle.gridColumnEnd.includes("span")) {
-          rowIndexOffset += parseInt(cellElementStyle.gridColumnEnd.split(" ").at(-1) ?? "1");
+          const colWidth = getValueFromPixelString(columns[colIndex].width);
+          const colOffset =
+            colIndex === 0
+              ? gapWidth
+              : colMeasurements[colIndex - 1].offsetLeft + colMeasurements[colIndex - 1].width + gapWidth;
+
+          // ...and store those measurements in the array
+          colMeasurements.push({ width: colWidth, offsetLeft: colOffset });
+
+          rowIndexOffset = 0;
+          colIndex++;
+
+          resizeObserver.current.observe(cellElement);
           continue;
         }
 
@@ -308,8 +345,8 @@ const PanesRenderer: FC<PanesRendererProps> = ({
           display: "grid",
           gridTemplateColumns: columns
             .map(({ width, minWidth }) => {
-              const widthValue = getNumberFromPixelString(width);
-              const minWidthValue = getNumberFromPixelString(minWidth ?? 0);
+              const widthValue = getValueFromPixelString(width);
+              const minWidthValue = getValueFromPixelString(minWidth ?? 0);
 
               return widthValue < minWidthValue ? `${minWidthValue}px` : `${widthValue}px`;
             })
