@@ -17,7 +17,7 @@ If you like our work, please give this project a star ⭐
 
 # Check out the new v5-alpha version
 
-🌐 [Visit our Homepage](https://silevis.github.io/reactgrid/)
+🌐 [Visit our new Website](https://silevis.github.io/reactgrid/)
 
 📚 [Dive into the Documentation](https://silevis.github.io/reactgrid/docs/5.0/1-getting-started) to get started quickly and easily.
 
