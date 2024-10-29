@@ -1,3 +1,5 @@
+@use "sass:color";
+
 .rg-copy-container[contenteditable] {
     -webkit-user-select: text;
     user-select: text;
@@ -195,7 +197,7 @@
             cursor: pointer;
 
             &:hover {
-                background-color: darken($main-bg-color, 5);
+                background-color: color.scale($main-bg-color, $lightness: -5%);
             }
         }
     }
