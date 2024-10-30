@@ -205,39 +205,17 @@ const PanesRenderer: FC<PanesRendererProps> = ({
       )[0];
 
       if (cellElement) {
-        const cellElementStyle = window.getComputedStyle(cellElement);
-        // If the cell is spanned skip it and look for another one...
-        if (cellElementStyle.gridRowEnd.includes("span")) {
-          const rowHeight = getValueFromPixelString(rows[rowIndex].height);
-          const rowOffset =
-            rowIndex === 0
-              ? gapWidth
-              : rowsMeasurements[rowIndex - 1].offsetTop + rowsMeasurements[rowIndex - 1].height + gapWidth;
-
-          rowsMeasurements.push({ height: rowHeight, offsetTop: rowOffset });
-
-          colIndexOffset = 0;
-          rowIndex++;
-
-          resizeObserver.current.observe(cellElement);
-          continue;
-        }
-
-        // ...else, get real (px) cell height and top offset (which represents _row_ height and offset in this context)...
         const rowHeight = cellElement.getBoundingClientRect().height;
         const rowOffset =
           rowIndex === 0
             ? gapWidth
             : rowsMeasurements[rowIndex - 1].offsetTop + rowsMeasurements[rowIndex - 1].height + gapWidth;
 
-        // ...and store those measurements in the array
         rowsMeasurements.push({ height: rowHeight, offsetTop: rowOffset });
 
-        // Reset col index offset and increment rowIndex
         colIndexOffset = 0;
         rowIndex++;
 
-        // In the end register the element in the observer (required for the measurements to update on cell resize)
         resizeObserver.current.observe(cellElement);
         continue;
       }
@@ -275,26 +253,6 @@ const PanesRenderer: FC<PanesRendererProps> = ({
       )[0];
 
       if (cellElement) {
-        const cellElementStyle = window.getComputedStyle(cellElement);
-        // If the cell is spanned skip it and look for another one...
-        if (cellElementStyle.gridColumnEnd.includes("span")) {
-          const colWidth = getValueFromPixelString(columns[colIndex].width);
-          const colOffset =
-            colIndex === 0
-              ? gapWidth
-              : colMeasurements[colIndex - 1].offsetLeft + colMeasurements[colIndex - 1].width + gapWidth;
-
-          // ...and store those measurements in the array
-          colMeasurements.push({ width: colWidth, offsetLeft: colOffset });
-
-          rowIndexOffset = 0;
-          colIndex++;
-
-          resizeObserver.current.observe(cellElement);
-          continue;
-        }
-
-        // ...else, get real (px) cell width and left offset (which represents _col_ width and offset in this context)...
         const colWidth = cellElement.getBoundingClientRect().width;
         const colOffset =
           colIndex === 0
@@ -304,11 +262,9 @@ const PanesRenderer: FC<PanesRendererProps> = ({
         // ...and store those measurements in the array
         colMeasurements.push({ width: colWidth, offsetLeft: colOffset });
 
-        // Reset row index offset and increment colIndex
         rowIndexOffset = 0;
         colIndex++;
 
-        // In the end register the element in the observer (required for the measurements to update on cell resize)
         resizeObserver.current.observe(cellElement);
         continue;
       }

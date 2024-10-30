@@ -31,10 +31,7 @@ export const BigGrid = () => {
 
   return (
     <>
-      <div
-        className="rgScrollableContainer"
-        style={{ height: "100%", width: "100%", overflow: "auto", borderRadius: 25 }}
-      >
+      <div className="rgScrollableContainer" style={{ height: "100%", width: "100%", overflow: "auto" }}>
         <ReactGrid
           id="big-grid"
           stickyLeftColumns={2}
