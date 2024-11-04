@@ -81,15 +81,16 @@
             .rg-touch-resize-handle-vertical {
                 position: absolute;
                 bottom: 0;
-                width: $resize-handle-area;
-                height: 100%;
+                left: 0;
+                height: $resize-handle-area;
+                width: 100%;
                 pointer-events: auto;
 
                 .rg-resize-handle {
                     position: absolute;
                     bottom: 0;
-                    width: $resize-handle-line-width;
-                    height: 100%;
+                    height: $resize-handle-line-width;
+                    width: 100%;
                     
                     &:hover {
                         cursor: row-resize;
