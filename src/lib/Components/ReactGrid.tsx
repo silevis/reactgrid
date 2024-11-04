@@ -91,13 +91,13 @@ export class ReactGrid extends React.Component<ReactGridProps, State> {
   }
 
   componentDidMount(): void {
-    window.addEventListener("resize", this.eventHandlers.windowResizeHandler);
+    window.addEventListener("resize", this.eventHandlers.windowResizeColumnHandler);
   }
 
   componentWillUnmount(): void {
     window.removeEventListener(
       "resize",
-      this.eventHandlers.windowResizeHandler
+      this.eventHandlers.windowResizeColumnHandler
     );
     this.state.scrollableElement?.removeEventListener(
       "scroll",

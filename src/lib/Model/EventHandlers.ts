@@ -23,7 +23,7 @@ export class EventHandlers {
         }
         return state;
     });
-    windowResizeHandler = (): void => this.updateState(recalcVisibleRange);
+    windowResizeColumnHandler = (): void => this.updateState(recalcVisibleRange);
     reactgridRefHandler = (reactGridElement: HTMLDivElement): void => this.assignElementsRefs(reactGridElement, recalcVisibleRange);
     hiddenElementRefHandler = (hiddenFocusElement: HTMLInputElement): void => this.updateState(state => {
         if (state.props?.initialFocusLocation && hiddenFocusElement) {
