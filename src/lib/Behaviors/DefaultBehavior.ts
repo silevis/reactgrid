@@ -25,6 +25,7 @@ import { ColumnReorderBehavior } from "./ColumnReorderBehavior";
 import { RowReorderBehavior } from "./RowReorderBehavior";
 import { handleCopy } from "../Functions/handleCopy";
 import { handlePaste } from "../Functions/handlePaste";
+import { ResizeRowBehavior } from "./ResizeRowBehavior";
 
 export class DefaultBehavior extends Behavior {
   handlePointerDown(
@@ -65,7 +66,24 @@ export class DefaultBehavior extends Behavior {
             ?.clientWidth || 0) -
           getScrollOfScrollableElement(state.scrollableElement).scrollLeft
     ) {
+      console.log("resize column");
       return new ResizeColumnBehavior();
+    } else if (
+      ((event.pointerType === "mouse" &&
+        target.className === "rg-resize-handle") ||
+        (event.pointerType === "touch" &&
+          (target.className === "rg-touch-resize-handle-vertical" ||
+            target.className === "rg-resize-handle"))) &&
+      location.column.idx === 0 &&
+      location.row.resizable &&
+      location.cellY >
+        location.row.height -
+          (state.reactGridElement?.querySelector(".rg-resize-handle")
+            ?.clientHeight || 0) -
+          getScrollOfScrollableElement(state.scrollableElement).scrollTop
+    ) {
+      console.log("resize row");
+      return new ResizeRowBehavior();
     } else if (
       state.enableColumnSelection &&
       location.row.idx === 0 &&

@@ -78,6 +78,27 @@
                 }
             }
 
+            .rg-touch-resize-handle-vertical {
+                position: absolute;
+                bottom: 0;
+                left: 0;
+                height: $resize-handle-area;
+                width: 100%;
+                pointer-events: auto;
+
+                .rg-resize-handle {
+                    position: absolute;
+                    bottom: 0;
+                    height: $resize-handle-line-width;
+                    width: 100%;
+                    
+                    &:hover {
+                        cursor: row-resize;
+                        background-color: $resize-handle-gb-color;
+                    }
+                }
+            }
+
             .rg-groupId {
                 font-size: 0.8em;
                 position: absolute;
