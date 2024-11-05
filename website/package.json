@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@auth0/nextjs-auth0": "^3.5.0",
     "@radix-ui/react-dialog": "^1.0.5",
     "@silevis/reactgrid": "*",
     "@silevis/reactgrid-3": "npm:@silevis/reactgrid@^3.0.29",
