@@ -5,6 +5,7 @@ import { Shape1, Shape2 } from "@/components/bg-shapes";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator"; // Import the Separator component
 
 export default function FeaturesPage() {
   return (
@@ -41,6 +42,7 @@ export default function FeaturesPage() {
             out to discuss how we can help streamline your project with expert
             support.
           </p>
+          {<Separator className="my-2 xl:hidden" />}
         </div>
         <div className="xl:flex-1 flex flex-col md:mt-0">
           <h2 className="font-bold text-black-primary sm:text-center text-md md:text-xl mb-8">
@@ -77,7 +79,7 @@ export default function FeaturesPage() {
             >
               Send
             </Button>
-            <hr className="my-2" />
+            <Separator className="my-2" />
             <p className="text-2xs text-gray-600">
               The controller of your personal data is Silevis Software Sp. z
               o.o., with a registered office at Sienkiewicza Street 17/3, 25-007

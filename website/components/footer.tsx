@@ -7,7 +7,7 @@ export const Footer = () => {
   return (
     <footer className="relative z-5 texture-bg bg-black-primary py-[40px]">
       <div className="grid grid-cols-main gap-y-12 md:gap-y-32 max-w-screen-2xl mx-auto">
-        <div className="flex justify-between gap-y-8 md:gap-y-16 col-start-3 col-end-11 flex-wrap lg:flex-nowrap">
+        <div className="flex justify-between gap-y-8 md:gap-y-16 col-start-2 col-end-12 flex-wrap lg:flex-nowrap">
           <div className="w-[100%] sm:w-[50%] lg:w-auto">
             <h2 className="font-bold bg-gradient-to-t from-green-primary to-green-light bg-clip-text text-transparent text-sm mb-4 md:mb-[32px]">
               Info
