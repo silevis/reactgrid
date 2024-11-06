@@ -85,6 +85,9 @@ export class PointerEventsController extends AbstractPointerEventsController {
             event.clientX,
             event.clientY
           );
+          if (currentLocation.row?.rowId === 'header') {
+            return state;
+          }
           state = (state.currentBehavior as Behavior).handlePointerUp(
             event,
             currentLocation,
