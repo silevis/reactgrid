@@ -5,14 +5,14 @@ import { Shape1, Shape2 } from "@/components/bg-shapes";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator"; // Import the Separator component
+import { Separator } from "@/components/ui/separator";
 
 export default function FeaturesPage() {
   return (
     <div className="z-1 flex-1">
       <>
         <div
-          className={`absolute z-0 w-[1300px] top-[-5%] left-[-35%] hidden xl:block`}
+          className={`absolute z-0 w-[1300px] top-[-5%] left-[-25%] hidden xl:block`}
         >
           <Shape1 />
         </div>
@@ -23,8 +23,8 @@ export default function FeaturesPage() {
         </div>
       </>
 
-      <section className="relative h-full z-2 flex flex-col xl:flex-row p-4 gap-4 max-w-screen-xl pt-12 gap-x-8 md:gap-x-40 md:pt-32 mb-[128px] mx-auto">
-        <div className="xl:flex-1 flex flex-col md:items-center xl:items-start xl:mt-24">
+      <section className="relative z-2 grid grid-cols-main max-w-screen-3xl px-4 pt-12 md:pt-32 mx-auto mb-[128px]">
+        <div className="col-start-1 col-end-13 xl:col-start-2 xl:col-end-5 flex flex-col md:items-center xl:items-start xl:mt-24">
           <h2 className="text-md sm:text-center xl:text-left md:text-xl pt-4 font-bold text-green-primary">
             Need help with ReactGrid?
           </h2>
@@ -42,9 +42,9 @@ export default function FeaturesPage() {
             out to discuss how we can help streamline your project with expert
             support.
           </p>
-          {<Separator className="my-2 xl:hidden" />}
+          <Separator className="my-2 xl:hidden mb-16 xl:mb-0" />
         </div>
-        <div className="xl:flex-1 flex flex-col md:mt-0">
+        <div className="col-start-1 col-end-13 xl:col-start-6 xl:col-end-12 flex flex-col md:mt-0">
           <h2 className="font-bold text-black-primary sm:text-center text-md md:text-xl mb-8">
             Let us hear from you!
           </h2>
