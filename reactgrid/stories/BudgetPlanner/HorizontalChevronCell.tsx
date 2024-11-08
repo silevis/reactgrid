@@ -8,7 +8,7 @@ interface ChevronCellProps {
   hasChildren?: boolean;
 }
 
-export const HorizontalChevronCell: FC<ChevronCellProps> = ({ value, isExpanded = false, onExpand, hasChildren }) => {
+export const HorizontalChevronCell: FC<ChevronCellProps> = ({ value, isExpanded = true, onExpand, hasChildren }) => {
   return (
     <CellWrapper
       style={{ padding: ".2rem", textAlign: "center", outline: "none" }}

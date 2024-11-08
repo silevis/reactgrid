@@ -46,12 +46,12 @@ const generateQuarterHeaderCells = (
   const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
 
   let colIndex = startColIndex;
-  const quarterKey = `Quarter ${quarter}`;
+  const quarterKey = `${colIndex}-Quarter`;
   const cells = [
     getHeaderCell({
       rowIndex,
       colIndex: colIndex++,
-      value: quarterKey,
+      value: `Quarter ${quarter}`,
       style: headerCellsStyle,
       hasChildren: true,
       isExpanded: expandStatus[quarterKey],
@@ -60,7 +60,7 @@ const generateQuarterHeaderCells = (
   ];
 
   months.forEach((month) => {
-    const monthKey = `${quarterKey} ${month}`;
+    const monthKey = `${colIndex}-Month`;
     cells.push(
       getHeaderCell({
         rowIndex,
@@ -73,7 +73,7 @@ const generateQuarterHeaderCells = (
       })
     );
     weeks.forEach((week) => {
-      const weekKey = `${monthKey} ${week}`;
+      const weekKey = `${colIndex}-Week`;
       cells.push(
         getHeaderCell({
           rowIndex,
@@ -101,12 +101,32 @@ const generateQuarterHeaderCells = (
   return cells;
 };
 
+const generateYearChevronCell = (
+  rowIndex: number,
+  colIndex: number,
+  expandStatus: Record<string, boolean>,
+  setExpandStatus: (key: string, status: boolean) => void
+): Cell => {
+  const yearKey = `${colIndex}-Year`;
+  return getHeaderCell({
+    rowIndex,
+    colIndex,
+    value: "2020",
+    style: headerCellsStyle,
+    hasChildren: true,
+    isExpanded: expandStatus[yearKey],
+    onExpand: (status) => setExpandStatus(yearKey, status),
+  });
+};
+
 export const generateYearHeaderCells = (
   expandStatus: Record<string, boolean>,
   setExpandStatus: (key: string, status: boolean) => void
 ) => {
   const headerCells: Cell[] = [];
   let colIndex = 1;
+
+  headerCells.push(generateYearChevronCell(0, colIndex++, expandStatus, setExpandStatus));
 
   for (let quarter = 1; quarter <= 4; quarter++) {
     const quarterCells = generateQuarterHeaderCells(0, colIndex, quarter, expandStatus, setExpandStatus);
@@ -116,6 +136,17 @@ export const generateYearHeaderCells = (
 
   return headerCells;
 };
+
+const generateTitleCell = (title: string, setTitleCell: (title: string) => void): Cell => ({
+  rowIndex: 0,
+  colIndex: 0,
+  Template: TextCell,
+  props: {
+    text: title,
+    onTextChanged: setTitleCell,
+  },
+  isSelectable: false,
+});
 
 export const getCells = ({
   horizontalExpandStatus,
@@ -133,14 +164,3 @@ export const getCells = ({
     ...generateYearHeaderCells(horizontalExpandStatus, handleHorizontalExpandStatusChange),
   ];
 };
-
-const generateTitleCell = (title: string, setTitleCell: (title: string) => void): Cell => ({
-  rowIndex: 0,
-  colIndex: 0,
-  Template: TextCell,
-  props: {
-    text: title,
-    onTextChanged: setTitleCell,
-  },
-  isSelectable: false,
-});
