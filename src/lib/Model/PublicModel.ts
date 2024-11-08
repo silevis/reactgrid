@@ -165,11 +165,11 @@ export interface ReactGridProps {
      * Called when row resize action was finished
      * 
      * @param {Id} rowId Resized row `Id`
-     * @param {number} width New row height
+     * @param {number} height New row height
      * @param {Id[]} selectedColIds Array of selected row `Id`s
      * @returns {void}
      */
-    readonly onRowResized?: (rowId: Id, width: number, selectedRowIds: Id[]) => void;
+    readonly onRowResized?: (rowId: Id, height: number, selectedRowIds: Id[]) => void;
 
     /** 
      * Called when row reorder action was finished
