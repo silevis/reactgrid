@@ -57,4 +57,5 @@ context("Scroll", () => {
     utils.getScrollableElement().should("have.prop", "scrollLeft", 0);
     utils.getScrollableElement().should("have.prop", "scrollTop", 0);
   });
+
 });

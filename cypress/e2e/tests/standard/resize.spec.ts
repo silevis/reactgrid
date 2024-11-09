@@ -115,4 +115,33 @@ context("Resize", () => {
       config.cellWidth + RESIZE_WIDTH
     );
   });
+
+  it("Should increase and reduce row height on scrolled view with content in vertical axis", () => { // ✅
+    const RESIZE_HEIGHT = 100;
+    const SCROLL = 60;
+
+    utils.scrollTo(0, SCROLL);
+    utils.resizeRow(1, SCROLL + (SCROLL % config.cellHeight), RESIZE_HEIGHT, {
+      beforePointerUp: () => {
+        utils.resizeHint().should("be.visible");
+        utils.resizeHint().and('contain.text', `Height: ${config.cellHeight + RESIZE_HEIGHT}px`)
+      },
+    });
+
+    utils.assertElementHeightIsEqual(
+      utils.getCell(0, 2),
+      config.cellHeight + RESIZE_HEIGHT
+    );
+
+    utils.resizeRow(1, SCROLL + RESIZE_HEIGHT + (SCROLL % config.cellHeight), -RESIZE_HEIGHT, {
+      beforePointerUp: () => {
+        utils.resizeHint().should("be.visible");
+        utils.resizeHint().and('contain.text', `Height: ${config.cellHeight+3}px`)
+      },
+    });
+
+    utils.assertElementHeightIsEqual(utils.getCell(0, 2), config.cellHeight);
+  
+  });
+  
 });
