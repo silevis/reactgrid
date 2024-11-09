@@ -864,6 +864,58 @@ export class Utilities {
     cy.wait(200);
   }
 
+  resizeRow(
+    startX: number,
+    startY: number,
+    distance: number,
+    options?: ResizeParams
+  ) {
+    const { log, resizeHandleClickOffset, step, beforePointerUp } = {
+      log: false,
+      resizeHandleClickOffset: 4, // probably need check
+      step: 1,
+      beforePointerUp: () => null,
+      ...options,
+    };
+    const endingPoint = startY + distance + resizeHandleClickOffset;
+    const scrollableElement = this.getScrollableElement();
+    scrollableElement.then(($el) => {
+      const { offsetLeft, offsetTop } = $el[0];
+      const body = this.getBody();
+      scrollableElement.trigger(
+        "pointerdown",
+        startX + offsetLeft,
+        startY - resizeHandleClickOffset + offsetTop,
+        { log, pointerType: options?.useTouch ? "touch" : "mouse" }
+      );
+      for (
+        let y = startY;
+        distance < 0 ? y > endingPoint : y < endingPoint;
+        y += distance > 0 ? step : -step
+      ) {
+        body
+          .wait(3, { log: false })
+          .trigger("pointermove", startX + offsetLeft, y + offsetTop, {
+            log,
+            force: true,
+            pointerType: options?.useTouch ? "touch" : "mouse",
+          });
+      }
+      this.getLine().should("exist");
+      this.resizeHint().should("exist");
+      beforePointerUp();
+      body.trigger("pointerup", {
+        clientX: startX + offsetLeft,
+        clientY: endingPoint + offsetTop,
+        force: true,
+        log,
+        pointerType: options?.useTouch ? "touch" : "mouse",
+      });
+    });
+
+    cy.wait(200);
+  }
+
   reorderColumn(
     startX: number,
     startY: number,

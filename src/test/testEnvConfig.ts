@@ -22,6 +22,7 @@ export const config: TestConfig = {
     cellHeight: 25,
     cellWidth: 150,
     minCellWidth: 40,
+    minCellHeight: 30,
     fillHandleWidth: 18,
 
     columns: 30,
@@ -203,6 +204,7 @@ export interface TestConfig {
     cellHeight: number;
     cellWidth: number;
     minCellWidth: number;
+    minCellHeight: number;
     fillHandleWidth: number;
     enableRangeSelection: boolean;
     enableFillHandle: boolean;

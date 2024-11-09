@@ -158,4 +158,102 @@ context("Resize", () => {
       config.cellWidth + RESIZE_WIDTH
     );
   });
+  
+  // rows height
+  it("should increase and reduce row height on scrolled view with content in vertical axis", () => {
+    // ✅
+    const RESIZE_HEIGHT = 100;
+
+    utils.scrollTo(0, 200);
+    utils.resizeRow(
+      utils.getCellXCenter(),
+      config.cellHeight - 2,
+      RESIZE_HEIGHT
+    );
+    cy.wait(200);
+
+    utils.assertElementHeightIsEqual(
+      utils.getCell(0, 0),
+      config.cellHeight + RESIZE_HEIGHT
+    );
+
+    utils.resizeRow(
+      utils.getCellXCenter(),
+      config.cellHeight + RESIZE_HEIGHT,
+      -RESIZE_HEIGHT
+    );
+    cy.wait(200);
+
+    utils.assertElementHeightIsEqual(utils.getCell(0, 0), config.cellHeight);
+  });
+
+  it("should extend height of many rows", () => {
+    // ✅
+    const RESIZE_HEIGHT = 100;
+    utils.resizeRow(utils.getCellXCenter(), config.cellHeight, RESIZE_HEIGHT);
+    cy.wait(200);
+
+    utils.resizeRow(
+      utils.getCellXCenter(),
+      config.cellHeight * 2 + RESIZE_HEIGHT,
+      RESIZE_HEIGHT
+    );
+    cy.wait(200);
+
+    utils.resizeRow(
+      utils.getCellXCenter(),
+      config.cellHeight * 3 + RESIZE_HEIGHT * 2,
+      RESIZE_HEIGHT
+    );
+    cy.wait(200);
+
+    utils.assertElementHeightIsEqual(
+      utils.getCell(0, 0),
+      config.cellHeight + RESIZE_HEIGHT
+    );
+    utils.assertElementHeightIsEqual(
+      utils.getCell(1, 0),
+      config.cellHeight + RESIZE_HEIGHT
+    );
+    utils.assertElementHeightIsEqual(
+      utils.getCell(2, 0),
+      config.cellHeight + RESIZE_HEIGHT
+    );
+  });
+
+  it("should reduce height of many rows", () => {
+    // ✅
+    const RESIZE_HEIGHT = -100;
+
+    utils.resizeRow(utils.getCellXCenter(), config.cellHeight, RESIZE_HEIGHT);
+    cy.wait(200);
+
+    utils.resizeRow(
+      utils.getCellXCenter(),
+      config.cellHeight * 2 + RESIZE_HEIGHT,
+      RESIZE_HEIGHT
+    );
+    cy.wait(200);
+
+    utils.resizeRow(
+      utils.getCellXCenter(),
+      config.cellHeight * 3 + RESIZE_HEIGHT * 2,
+      RESIZE_HEIGHT
+    );
+    cy.wait(200);
+
+    utils.assertElementHeightIsEqual(
+      utils.getCell(0, 0),
+      config.cellHeight + RESIZE_HEIGHT
+    );
+    utils.assertElementHeightIsEqual(
+      utils.getCell(1, 0),
+      config.cellHeight + RESIZE_HEIGHT
+    );
+    utils.assertElementHeightIsEqual(
+      utils.getCell(2, 0),
+      config.cellHeight + RESIZE_HEIGHT
+    );
+  });
+  
 });

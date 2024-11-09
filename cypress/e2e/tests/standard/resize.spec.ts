@@ -115,4 +115,51 @@ context("Resize", () => {
       config.cellWidth + RESIZE_WIDTH
     );
   });
+
+  it("Should increase and reduce row height on scrolled view with content in vertical axis", () => { // ✅
+    const RESIZE_HEIGHT = 100;
+    const SCROLL = 200;
+
+    utils.scrollTo(0, SCROLL);
+    utils.resizeRow(1, SCROLL + (SCROLL % config.cellHeight), RESIZE_HEIGHT, {
+      beforePointerUp: () => {
+        utils.resizeHint().should("be.visible");
+        // 🟠 TODO - hint should contain exact value
+        // utils.resizeHint().and('contain.text', `Height: ${config.cellHeight + RESIZE_HEIGHT}px`)
+      },
+    });
+
+    utils.assertElementHeightIsEqual(
+      utils.getCell(0, 2),
+      config.cellHeight + RESIZE_HEIGHT
+    );
+
+    utils.resizeRow(1, SCROLL + RESIZE_HEIGHT + (SCROLL % config.cellHeight), -RESIZE_HEIGHT, {
+      beforePointerUp: () => {
+        utils.resizeHint().should("be.visible");
+        // 🟠 TODO - hint should contain exact value
+        // utils.resizeHint().and('contain.text', `Height: ${config.cellHeight}px`)
+      },
+    });
+
+    utils.assertElementHeightIsEqual(utils.getCell(0, 2), config.cellHeight);
+  
+  });
+
+  it("Row should shrink to min height", () => { // ✅
+    const RESIZE_HEIGHT = -config.cellHeight;
+
+    utils.resizeRow(utils.getCellXCenter(), config.cellHeight, RESIZE_HEIGHT, {
+      beforePointerUp: () => {
+        utils.resizeHint().should("be.visible");
+        utils
+          .resizeHint()
+          .and("contain.text", `Height: ${config.minCellHeight}px`);
+      },
+    });
+
+    utils.assertElementHeightIsEqual(utils.getCell(0, 0), config.minCellHeight);
+  });
+
+  
 });
