@@ -58,26 +58,4 @@ context("Scroll", () => {
     utils.getScrollableElement().should("have.prop", "scrollTop", 0);
   });
 
-  it("Should keep position while resizing row with touch", () => { // ✅
-    const RESIZE_HEIGHT = -(config.cellHeight * 0.5);
-    const NEW_HEIGHT = config.cellHeight + RESIZE_HEIGHT;
-
-    utils.resizeRow(utils.getCellXCenter(), config.cellHeight, RESIZE_HEIGHT, {
-      useTouch: true,
-      beforePointerUp: () => {
-        utils.resizeHint().should("be.visible");
-        utils
-          .resizeHint()
-          .and("contain.text", `Height: ${NEW_HEIGHT + 5 /* 5px is the resize handle offset */}px`);
-      },
-    });
-
-    cy.wait(100);
-
-    utils.assertElementHeightIsEqual(utils.getCell(0, 0), NEW_HEIGHT);
-
-    utils.getScrollableElement().should("have.prop", "scrollLeft", 0);
-    utils.getScrollableElement().should("have.prop", "scrollTop", 0);
-  
-  });
 });

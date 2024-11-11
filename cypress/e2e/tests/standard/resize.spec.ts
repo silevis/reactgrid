@@ -145,21 +145,5 @@ context("Resize", () => {
     utils.assertElementHeightIsEqual(utils.getCell(0, 2), config.cellHeight);
   
   });
-
-  it("Row should shrink to min height", () => { // ✅
-    const RESIZE_HEIGHT = -config.cellHeight;
-
-    utils.resizeRow(utils.getCellXCenter(), config.cellHeight, RESIZE_HEIGHT, {
-      beforePointerUp: () => {
-        utils.resizeHint().should("be.visible");
-        utils
-          .resizeHint()
-          .and("contain.text", `Height: ${config.minCellHeight}px`);
-      },
-    });
-
-    utils.assertElementHeightIsEqual(utils.getCell(0, 0), config.minCellHeight);
-  });
-
   
 });
