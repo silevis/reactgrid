@@ -19,7 +19,7 @@ export const config: TestConfig = {
     disableVirtualScrolling: false,
     moveRightOnEnter: true,
 
-    cellHeight: 25,
+    cellHeight: 40,
     cellWidth: 150,
     minCellWidth: 40,
     minCellHeight: 30,
