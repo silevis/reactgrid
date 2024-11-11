@@ -94,6 +94,7 @@ export const TestGrid: React.FC<TestGridProps> = (props) => {
     new Array(config.rows).fill(0).map<TestGridRow>((_, ri) => ({
       rowId: `row-${ri}`,
       reorderable: true,
+      resizable: true,
       height: config.cellHeight,
       cells: columns.map<TestGridCells>((_, ci) => {
         if (ri === 0) return { type: firstRowType, text: `${ri} - ${ci}` };
@@ -295,6 +296,30 @@ export const TestGrid: React.FC<TestGridProps> = (props) => {
         setColumnWidth(columnIndex);
       }
       return [...prevColumns];
+    });
+  };
+
+  const handleRowResize = (
+    rowId: Id,
+    height: number,
+    selectedRowIds: Id[]
+  ) => {
+    setRows((prevRows) => {
+      const setRowHeight = (rowIndex: number) => {
+        const resizedRow = prevRows[rowIndex];
+        prevRows[rowIndex] = { ...resizedRow, height };
+      };
+
+      if (selectedRowIds.includes(rowId)) {
+        const stateRowIndexes = prevRows
+          .filter((row) => selectedRowIds.includes(row.rowId))
+          .map((row) => prevRows.findIndex((el) => el.rowId === row.rowId));
+        stateRowIndexes.forEach(setRowHeight);
+      } else {
+        const rowIndex = prevRows.findIndex((row) => row.rowId === rowId);
+        setRowHeight(rowIndex);
+      }
+      return [...prevRows];
     });
   };
 
@@ -528,6 +553,7 @@ export const TestGrid: React.FC<TestGridProps> = (props) => {
                   // onCellsChanged={handleChangesTest2} // TODO This handler should be allowed
                   onCellsChanged={handleChanges}
                   onColumnResized={handleColumnResize}
+                  onRowResized={handleRowResize}
                   customCellTemplates={{ 'flag': new FlagCellTemplate() }}
                   highlights={config.highlights}
                   stickyLeftColumns={enableSticky ? config.stickyLeft : undefined}
