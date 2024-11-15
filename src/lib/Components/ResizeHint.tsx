@@ -1,19 +1,19 @@
 import * as React from 'react';
 
-interface HintProps {
+interface HintColumnProps {
     linePosition: number;
     left: number;
     offset: number;
 }
 
-interface VerticalHintProps {
+interface HintRowProps {
     linePosition: number;
     top: number;
     offset: number;
 }
 
 // TODO these component props should be calculated directly by behaviour (only integers) 
-export const ResizeHint: React.FC<HintProps> = ({ left, linePosition, offset }) => {
+export const ResizeColumnHint: React.FC<HintColumnProps> = ({ left, linePosition, offset }) => {
     return (
         <>
             {linePosition !== -1 &&
@@ -30,7 +30,7 @@ export const ResizeHint: React.FC<HintProps> = ({ left, linePosition, offset }) 
     )
 }
 
-export const ResizeVerticalHint: React.FC<VerticalHintProps> = ({ top, linePosition, offset }) => {
+export const ResizeRowHint: React.FC<HintRowProps> = ({ top, linePosition, offset }) => {
     return (
         <>
             {linePosition !== -1 &&

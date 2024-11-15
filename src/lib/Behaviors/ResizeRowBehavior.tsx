@@ -13,7 +13,7 @@ import {
 import { PointerEvent } from "../Model/domEventsTypes";
 import { State } from "../Model/State";
 import { Behavior } from "../Model/Behavior";
-import { ResizeVerticalHint } from "../Components/ResizeHint";
+import { ResizeRowHint } from "../Components/ResizeHint";
 
 export class ResizeRowBehavior extends Behavior {
   // TODO min / max row height on row object
@@ -86,12 +86,12 @@ export class ResizeRowBehavior extends Behavior {
     return { ...state, linePosition: -1, focusedLocation };
   }
 
-  // Should render ResizeVerticalHint on pane which has the highest priority
+  // Should render ResizeRowHint on pane which has the highest priority
   renderPanePart(state: State, pane: Range): React.ReactNode {
     const offset = this.getLinePositionOffset(state);
     return (
       pane.contains(this.initialLocation) && (
-        <ResizeVerticalHint
+        <ResizeRowHint
           top={this.resizedRow.top}
           linePosition={state.linePosition}
           offset={offset}
