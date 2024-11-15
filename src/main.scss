@@ -57,7 +57,7 @@
             border-color: $cell-border-color;
             color: $cell-text-color;
 
-            .rg-touch-resize-handle {
+            .rg-touch-column-resize-handle {
                 position: absolute;
                 top: 0;
                 right: 0;
@@ -78,7 +78,7 @@
                 }
             }
 
-            .rg-touch-resize-handle-vertical {
+            .rg-touch-row-resize-handle {
                 position: absolute;
                 bottom: 0;
                 left: 0;
@@ -231,6 +231,13 @@
     }
 
     .rg-column-resize-hint {
+        background-color: $resize-hint-bg-color;
+        position: absolute;
+        padding: 5px;
+        border-radius: 0 5px 5px 0;
+    }
+
+    .rg-row-resize-hint {
         background-color: $resize-hint-bg-color;
         position: absolute;
         padding: 5px;

@@ -35,7 +35,7 @@ export const ResizeVerticalHint: React.FC<VerticalHintProps> = ({ top, linePosit
         <>
             {linePosition !== -1 &&
                 <div
-                    className={`rg-column-resize-hint`}
+                    className={`rg-row-resize-hint`}
                     style={{
                         top: linePosition - offset,
                     }}

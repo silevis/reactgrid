@@ -672,8 +672,12 @@ export class Utilities {
     return cy.get(".rg-shadow");
   }
 
-  resizeHint() {
-    return cy.get(".rg-column-resize-hint");
+  resizeHintColumn() {
+    return cy.get(`.rg-column-resize-hint`);
+  }
+
+  resizeHintRow() {
+    return cy.get(`.rg-row-resize-hint`);
   }
 
   getRightStickyPane() {
@@ -850,7 +854,7 @@ export class Utilities {
           });
       }
       this.getLine().should("exist");
-      this.resizeHint().should("exist");
+      this.resizeHintColumn().should("exist");
       beforePointerUp();
       body.trigger("pointerup", {
         clientX: endingPoint + offsetLeft,
@@ -902,7 +906,7 @@ export class Utilities {
           });
       }
       this.getLine().should("exist");
-      this.resizeHint().should("exist");
+      this.resizeHintRow().should("exist");
       beforePointerUp();
       body.trigger("pointerup", {
         clientX: startX + offsetLeft,

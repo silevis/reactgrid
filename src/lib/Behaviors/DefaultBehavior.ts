@@ -56,7 +56,7 @@ export class DefaultBehavior extends Behavior {
       ((event.pointerType === "mouse" &&
         target.className === "rg-resize-handle") ||
         (event.pointerType === "touch" &&
-          (target.className === "rg-touch-resize-handle" ||
+          (target.className === "rg-touch-column-resize-handle" ||
             target.className === "rg-resize-handle"))) &&
       location.row.idx === 0 &&
       location.column.resizable &&
@@ -72,7 +72,7 @@ export class DefaultBehavior extends Behavior {
       ((event.pointerType === "mouse" &&
         target.className === "rg-resize-handle") ||
         (event.pointerType === "touch" &&
-          (target.className === "rg-touch-resize-handle-vertical" ||
+          (target.className === "rg-touch-row-resize-handle" ||
             target.className === "rg-resize-handle"))) &&
       location.column.idx === 0 &&
       location.row.resizable &&
