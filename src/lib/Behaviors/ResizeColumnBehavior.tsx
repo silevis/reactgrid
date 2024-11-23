@@ -13,7 +13,7 @@ import {
 import { PointerEvent } from "../Model/domEventsTypes";
 import { State } from "../Model/State";
 import { Behavior } from "../Model/Behavior";
-import { ResizeHint } from "../Components/ResizeHint";
+import { ResizeColumnHint } from "../Components/ResizeHint";
 
 export class ResizeColumnBehavior extends Behavior {
   // TODO min / max column with on column object
@@ -85,12 +85,12 @@ export class ResizeColumnBehavior extends Behavior {
     return { ...state, linePosition: -1, focusedLocation };
   }
 
-  //should render ResizeHint on pane which has got the highest priority
+  //should render ResizeColumnHint on pane which has got the highest priority
   renderPanePart(state: State, pane: Range): React.ReactNode {
     const offset = this.getLinePositionOffset(state);
     return (
       pane.contains(this.initialLocation) && (
-        <ResizeHint
+        <ResizeColumnHint
           left={this.resizedColumn.left}
           linePosition={state.linePosition}
           offset={offset}

@@ -43,9 +43,9 @@ context("Scroll", () => {
     utils.resizeColumn(config.cellWidth, utils.getCellYCenter(), RESIZE_WIDTH, {
       useTouch: true,
       beforePointerUp: () => {
-        utils.resizeHint().should("be.visible");
+        utils.resizeHintColumn().should("be.visible");
         utils
-          .resizeHint()
+          .resizeHintColumn()
           .and("contain.text", `Width: ${NEW_WIDTH + 5 /* 5px is the resize handle offset */}px`);
       },
     });
@@ -57,4 +57,5 @@ context("Scroll", () => {
     utils.getScrollableElement().should("have.prop", "scrollLeft", 0);
     utils.getScrollableElement().should("have.prop", "scrollTop", 0);
   });
+
 });

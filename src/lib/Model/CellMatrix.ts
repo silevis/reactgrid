@@ -16,6 +16,7 @@ export interface CellMatrixProps {
     stickyRightColumns?: number;
     stickyBottomRows?: number;
     minColumnWidth?: number;
+    minRowHeight?: number;
 }
 
 export interface StickyRanges {
@@ -33,6 +34,7 @@ export interface SpanLookup {
 export class CellMatrix {
 
     static DEFAULT_ROW_HEIGHT = 25;
+    static MIN_ROW_HEIGHT = 25;
     static DEFAULT_COLUMN_WIDTH = 150;
     static MIN_COLUMN_WIDTH = 40;
 

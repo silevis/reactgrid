@@ -59,7 +59,11 @@ export class CellMatrixBuilder implements ICellMatrixBuilder {
       this.cellMatrix.rows = this.cellMatrix.props.rows.reduce<GridRow[]>(
         (rows, row, idx) => {
           const top = this.getTop(idx, topStickyRows, bottomStickyRows, rows);
-          const height = row.height || CellMatrix.DEFAULT_ROW_HEIGHT;
+          const height = row.height
+            ? row.height < (this.cellMatrix.props?.minRowHeight ?? CellMatrix.MIN_ROW_HEIGHT)
+              ? (this.cellMatrix.props?.minRowHeight ?? CellMatrix.MIN_ROW_HEIGHT)
+              : row.height
+            : CellMatrix.DEFAULT_ROW_HEIGHT;
           rows.push({
             ...row,
             top,
