@@ -13,4 +13,6 @@ export { isValidKey } from "./utils/keyCodeCheckings";
 export { default as CellWrapper } from "./components/CellWrapper";
 export { useCellContext } from "./components/CellContext";
 
+export { useDoubleTouch } from "./hooks/useDoubleTouch";
+
 export { useReactGridAPI } from "./hooks/useReactGridAPI";
