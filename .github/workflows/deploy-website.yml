@@ -5,7 +5,7 @@ on:
     branches:
       - v5/build-next-proj
     paths:
-      - "reactgrid/**"
+      # - "reactgrid/**"
       - "website/**"
 
 permissions:
