@@ -6,7 +6,13 @@ import { IndexedLocation } from "../types/InternalModel";
  * @param targetElement The element from which to extract row and column indexes.
  * @returns An object containing the row and column indexes, or null if they cannot be extracted.
  */
-export const getHiddenFocusTargetLocation = (targetElement: Element): IndexedLocation => {
+export const getHiddenFocusTargetLocation = (storeId: string, targetElement: Element): IndexedLocation => {
+  const container = document.getElementById(`ReactGrid-${storeId}`);
+
+  if (!container || !container.contains(targetElement)) {
+    return { rowIndex: -1, colIndex: -1 };
+  }
+
   const classList = targetElement.className.split(" ");
   let rowIndex: number | null = null;
   let colIndex: number | null = null;

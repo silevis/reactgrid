@@ -1,4 +1,4 @@
-import Header from "../components/header";
+import React from "react";
 import { Footer } from "@/components/footer";
 import "../app/globals.css";
 import { AppProps } from "next/app";
@@ -12,10 +12,10 @@ export default function RootLayout({ pageProps, Component }: AppProps) {
   return (
     // <html lang="en" className={`${dm_mono.variable} ${dm_sans.variable}`}>
     //   <body>
-    <Header>
+    <React.Fragment>
       <Component {...pageProps} />
       <Footer />
-    </Header>
+    </React.Fragment>
     //   </body>
     // </html>
   );

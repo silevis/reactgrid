@@ -58,3 +58,7 @@ export class RateCellTemplate implements CellTemplate<RateCell> {
     return <div className="rate">{stars.reverse()}</div>
   }
 }
+
+export default function Def() {
+  return null;
+}

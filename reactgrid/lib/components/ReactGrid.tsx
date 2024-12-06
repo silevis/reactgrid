@@ -87,7 +87,7 @@ export const ReactGrid: FC<ReactGridProps> = ({
             stickyLeftColumns={stickyLeftColumns ?? 0}
             stickyRightColumns={stickyRightColumns ?? 0}
           />
-          {linePosition && <Line />}
+          {linePosition !== undefined && <Line />}
           {isReorderBehavior(currentBehavior.id) && <Shadow />}
         </GridWrapper>
       </ErrorBoundary>

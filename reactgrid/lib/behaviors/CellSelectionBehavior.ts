@@ -12,9 +12,9 @@ import { getNonStickyCellContainer } from "../utils/getNonStickyCellContainer.ts
 import { getPaneNameByCell } from "../utils/getPaneNameByCell.ts";
 import { isCellSticky } from "../utils/isCellSticky.ts";
 import isDevEnvironment from "../utils/isDevEnvironment.ts";
-import { getScrollableParent } from "../utils/scrollHelpers.ts";
-import { scrollToElementEdge } from "../utils/scrollToElementEdge.ts";
 import { scrollTowardsSticky } from "../utils/scrollTowardsSticky.ts";
+import { isSpanMember } from "../utils/isSpanMember.ts";
+import { getCellArea } from "../utils/getCellArea.ts";
 
 const devEnvironment = isDevEnvironment();
 
@@ -64,6 +64,24 @@ const tryExpandingTowardsCell = (
       selectedArea.startColIdx = startingPointerIdx.colIndex;
       selectedArea.endColIdx = currentPointerIdx.colIndex + (currentDragOverCell?.colSpan || 1);
     }
+
+    // Check if the first row cell is selectable and focusable
+    for (let colIdx = selectedArea.startColIdx; colIdx < selectedArea.endColIdx; colIdx++) {
+      const firstCell = store.cells.get(`0 ${colIdx}`);
+
+      if (!firstCell) return store;
+
+      if (isSpanMember(firstCell)) {
+        const originCell = store.getCellByIndexes(firstCell.originRowIndex, firstCell.originColIndex);
+        if (originCell && (originCell.isSelectable === false || originCell.isFocusable === false)) {
+          return store;
+        }
+      } else {
+        if (firstCell.isSelectable === false || firstCell.isFocusable === false) {
+          return store; // Do not select this column
+        }
+      }
+    }
   } else if (shouldEnableRowSelection) {
     selectedArea.startColIdx = 0;
     selectedArea.endColIdx = store.columns.length;
@@ -76,6 +94,24 @@ const tryExpandingTowardsCell = (
       // Moving down
       selectedArea.startRowIdx = startingPointerIdx.rowIndex;
       selectedArea.endRowIdx = currentPointerIdx.rowIndex + (currentDragOverCell?.rowSpan || 1);
+    }
+
+    // Check if the first column cell is selectable and focusable
+    for (let rowIdx = selectedArea.startRowIdx; rowIdx < selectedArea.endRowIdx; rowIdx++) {
+      const firstCell = store.cells.get(`${rowIdx} 0`);
+
+      if (!firstCell) return store;
+
+      if (isSpanMember(firstCell)) {
+        const originCell = store.getCellByIndexes(firstCell.originRowIndex, firstCell.originColIndex);
+        if (originCell && (originCell.isSelectable === false || originCell.isFocusable === false)) {
+          return store;
+        }
+      } else {
+        if (firstCell.isSelectable === false || firstCell.isFocusable === false) {
+          return store; // Do not select this row
+        }
+      }
     }
   } else {
     if (currentPointerIdx.rowIndex < focusedLocation.rowIndex) {
@@ -100,6 +136,15 @@ const tryExpandingTowardsCell = (
   }
 
   const newSelectedArea = findMinimalSelectedArea(store, selectedArea);
+
+  const cellArea = getCellArea(store, currentDragOverCell);
+
+  if (isEqual(newSelectedArea, cellArea)) {
+    return {
+      ...store,
+      selectedArea: EMPTY_AREA,
+    };
+  }
 
   return {
     ...store,
@@ -217,8 +262,31 @@ export const CellSelectionBehavior: Behavior = {
 
     const currentDragOverCell = store.getCellByIndexes(currentPointerIdx.rowIndex, currentPointerIdx.colIndex);
 
+    let PreviousPane;
+
+    if (!isEqual(store.selectedArea, EMPTY_AREA)) {
+      // Get the previous pane based on the last cell of the selected area (where the fill handle button is located)
+      PreviousPane = getPaneNameByCell(
+        store,
+        store.getCellByIndexes(store.pointerStartIdx.rowIndex, store.pointerStartIdx.colIndex)
+      );
+    } else {
+      // Get the previous pane based on the focused cell
+      PreviousPane = getPaneNameByCell(store, store.getFocusedCell());
+    }
+
     if (!currentDragOverCell) {
       return store;
+    }
+
+    if (PreviousPane === "Center") {
+      scrollTowardsSticky(store, currentDragOverCell, currentPointerIdx);
+    }
+    if (PreviousPane === "Left" || PreviousPane === "Right") {
+      scrollTowardsSticky(store, currentDragOverCell, currentPointerIdx, false, true);
+    }
+    if (PreviousPane === "TopCenter" || PreviousPane === "BottomCenter") {
+      scrollTowardsSticky(store, currentDragOverCell, currentPointerIdx, true);
     }
 
     const isStickyCell = isCellSticky(store, currentDragOverCell);
@@ -232,14 +300,6 @@ export const CellSelectionBehavior: Behavior = {
     const shouldEnableRowSelection = store.pointerStartIdx.colIndex === 0 && !!store.enableRowSelectionOnFirstColumn;
 
     if (cellContainer) {
-      const scrollableParent = getScrollableParent(cellContainer as HTMLElement, true);
-      const scrollableParentIsNotAWindow =
-        scrollableParent && "clientWidth" in scrollableParent && "clientHeight" in scrollableParent;
-
-      scrollableParentIsNotAWindow ? scrollToElementEdge({ x: clientX, y: clientY }, scrollableParent) : () => {};
-      // TODO: scrollToWindowEdge({ x: clientX, y: clientY }); - function not implemented yet!
-      // * scrollToWindowEdge - not possible to test in Ladle environment, due to clientX/Y acting like pageX/Y
-
       if (isStickyCell) {
         const nonStickyRowsAndColumns = getCellIndexesFromContainerElement(cellContainer);
         const currentPointerIdx = nonStickyRowsAndColumns || NO_CELL_LOCATION;

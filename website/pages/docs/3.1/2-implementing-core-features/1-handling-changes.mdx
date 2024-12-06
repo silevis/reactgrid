@@ -29,11 +29,16 @@ To support dynamic data editing, you will have to handle the `onCellsChanged` ev
 
 This part is based on [getting started](/docs/3.1/1-getting-started/).
 
-
 Let's start with updating imports:
 
 ```ts
-import { ReactGrid, Column, Row, CellChange, TextCell} from "@silevis/reactgrid";
+import {
+  ReactGrid,
+  Column,
+  Row,
+  CellChange,
+  TextCell,
+} from "@silevis/reactgrid-3.1";
 ```
 
 #### Sample change handler function
@@ -68,29 +73,12 @@ function App() {
   const rows = getRows(people);
   const columns = getColumns();
 
-  const handleChanges = (changes: CellChange<TextCell>[]) => { 
-    setPeople((prevPeople) => applyChangesToPeople(changes, prevPeople)); 
-  }; 
+  const handleChanges = (changes: CellChange<TextCell>[]) => {
+    setPeople((prevPeople) => applyChangesToPeople(changes, prevPeople));
+  };
 
   return (
-    <ReactGrid 
-      rows={rows} 
-      columns={columns} 
-      onCellsChanged={handleChanges}
-    />
+    <ReactGrid rows={rows} columns={columns} onCellsChanged={handleChanges} />
   );
 }
 ```
-
-#### Live demo
-
-And here's an interactive demo showing the event handler in action.
-Notice how it is now possible to edit the data not only by typing new values into the cells,
-but also by using the fill handle (only PRO) or by pasting data from the clipboard.
-
-<iframe src="https://codesandbox.io/embed/reactgrid-handling-changes-crzfx?fontsize=14&hidenavigation=1&theme=dark"
-  style="width:100%; height:500px; border:0; border-radius: 4px; overflow:hidden;"
-  title="reactgrid-handling-changes"
-  allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking"
-  sandbox="allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"
-></iframe>

@@ -1,18 +1,18 @@
 import React from "react";
-import { StrictMode, useState } from "react";
-import { ReactGrid, TextCell, Column, Row, Cell } from "../lib/main";
+import { StrictMode } from "react";
+import { ReactGrid, TextCell, Column, Cell } from "../lib/main";
 import { StoryDefault } from "@ladle/react";
 import { ErrorBoundary } from "../lib/components/ErrorBoundary";
 import { rgStyles } from "./utils/examplesConfig";
 
 export const TestGridExample = () => {
-  const [columns, setColumns] = useState<Column[]>([
+  const columns: Column[] = [
     { colIndex: 0, width: 100 },
     { colIndex: 1, width: 100 },
     { colIndex: 2, width: 100 },
-  ]);
+  ];
 
-  const [cells, setCells] = useState<Cell[]>(() => [
+  const cells: Cell[] = [
     {
       rowIndex: 0,
       colIndex: 0,
@@ -37,7 +37,7 @@ export const TestGridExample = () => {
       },
       Template: TextCell,
     },
-  ]);
+  ];
 
   return (
     <div>

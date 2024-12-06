@@ -1,5 +1,5 @@
 "use client";
-
+import React from "react";
 import Link from "next/link";
 import logoIcon from "@/public/static/logo-light.svg";
 import nightLogoIcon from "@/public/static/logo-night.svg";
@@ -14,84 +14,107 @@ export default function Header({ children }: { children: any }) {
 
   const isHomePage = pathname === "/";
 
+  const handleLinkClick = () => {
+    // Close the drawer when a link is clicked
+    (document.getElementById("rg-drawer") as HTMLInputElement).checked = false;
+  };
+
   return (
     <>
       <div className="drawer">
-        <input id="my-drawer-3" type="checkbox" className="drawer-toggle" />
-        <div className="drawer-content flex flex-col">
+        <input id="rg-drawer" type="checkbox" className="drawer-toggle" />
+        <div className="drawer-content min-h-screen flex flex-col">
           <nav
-            className={`relative w-full ${
+            className={`relative z-10 w-full ${
               isHomePage ? "bg-green-primary" : "bg-white-primary"
-            }  top-0 border-t-1 border-l-1 border-b-1 border-r-1 font-dm-sans border-green-light grid grid-cols-main h-[86px] text-white-primary`}
+            }  top-0 border-t-1 border-l-1 border-b-1 border-r-1 font-dm-sans border-green-light text-white-primary`}
           >
-            <div className="flex-none lg:hidden flex items-center ps-2">
-              <label
-                htmlFor="my-drawer-3"
-                aria-label="open sidebar"
-                className="btn btn-square btn-ghost"
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="black"
-                  viewBox="0 0 24 24"
-                  className="inline-block w-6 h-6 stroke-current"
+            <div className="grid grid-cols-main max-w-screen-3xl mx-auto h-[86px]">
+              <div className="flex-none lg:hidden flex items-center ps-2">
+                <label
+                  htmlFor="rg-drawer"
+                  aria-label="open sidebar"
+                  className="btn btn-square btn-ghost"
                 >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    stroke={isHomePage ? "#ffffff" : "#202020"}
-                    d="M4 6h16M4 12h16M4 18h16"
-                  ></path>
-                </svg>
-              </label>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="black"
+                    viewBox="0 0 24 24"
+                    className="inline-block w-6 h-6 stroke-current"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      stroke={isHomePage ? "#ffffff" : "#202020"}
+                      d="M4 6h16M4 12h16M4 18h16"
+                    ></path>
+                  </svg>
+                </label>
+              </div>
+              <div className="col-start-2 md:col-start-1 2xl:col-start-3 col-end-13 md:col-end-7 xl:border-l-1 border-green-light flex items-center justify-start ps-0.5 md:ps-4">
+                <Link href="/">
+                  <Image
+                    draggable={false}
+                    src={isHomePage ? logoIcon : nightLogoIcon}
+                    alt="ReactGrid"
+                    width={180}
+                  />
+                </Link>
+              </div>
+
+              <div className="hidden md:contents md:col-start-7">
+                <div className="col-span-2 2xl:col-span-1">
+                  <HeaderLink href="/demo">Demo</HeaderLink>
+                </div>
+                <div className="col-span-2 2xl:col-span-1">
+                  <HeaderLink href="/docs/5.0/1-getting-started">
+                    Docs
+                  </HeaderLink>
+                </div>
+                <div className="col-span-2">
+                  <HeaderLink href="/support">
+                    <span className="block xl:hidden">Dev support</span>
+                    <span className="hidden xl:block">Development Support</span>
+                  </HeaderLink>
+                </div>
+              </div>
+              <span className="border-l-1 hidden 2xl:flex border-l-1 border-green-light"></span>
+              <span className="hidden 2xl:flex"></span>
             </div>
-            <div className="col-start-2 md:col-start-1 2xl:col-start-3 col-end-13 md:col-end-5 2xl:col-end-7 xl:border-l-1 border-green-light flex items-center justify-start ps-0.5 md:ps-4">
-              <Link href="/">
-                <Image
-                  src={isHomePage ? logoIcon : nightLogoIcon}
-                  alt="ReactGrid"
-                  width={180}
-                />
-              </Link>
-            </div>
-            <div
-              className={`grid hidden md:grid text-black-primary md:text-white-primary col-start-5 col-end-13 2xl:col-start-7 2xl:col-end-11 grid-cols-1 md:grid-cols-navLinks justify-items-start md:justify-items-stretch content-start md:content-stretch md:top-auto gap-y-4 md:gap-y-0 menu-horizontal`}
-            >
-              <HeaderLink href="/examples">Demo</HeaderLink>
-              <HeaderLink href="/features">Features</HeaderLink>
-              <HeaderLink href="/docs">Docs</HeaderLink>
-              <HeaderLink href="/support">Support</HeaderLink>
-            </div>
-            <span className="border-l-1 hidden 2xl:flex border-l-1 border-green-light"></span>
-            <span className="hidden 2xl:flex"></span>
           </nav>
 
           {children}
         </div>
-        <div className="drawer-side">
+        <div className="md:hidden drawer-side z-50">
           <label
-            htmlFor="my-drawer-3"
+            htmlFor="rg-drawer"
             aria-label="close sidebar"
             className="drawer-overlay"
           ></label>
-          <ul className="menu p-4 w-80 min-h-full bg-base-200">
+          <ul className="menu p-4 w-[85%] min-h-full bg-base-200">
             <li>
-              <Link href="/">
+              <Link href="/" onClick={handleLinkClick}>
                 <Image src={logoGreen} alt="ReactGrid" width={30} />
               </Link>
             </li>
             <li>
-              <DrawerLink href="/examples">Demo</DrawerLink>
+              <DrawerLink handleLinkClick={handleLinkClick} href="/demo">
+                Demo
+              </DrawerLink>
             </li>
             <li>
-              <DrawerLink href="/features">Features</DrawerLink>
+              <DrawerLink
+                handleLinkClick={handleLinkClick}
+                href="/docs/5.0/1-getting-started"
+              >
+                Docs
+              </DrawerLink>
             </li>
             <li>
-              <DrawerLink href="/docs">Docs</DrawerLink>
-            </li>
-            <li>
-              <DrawerLink href="/support">Support</DrawerLink>
+              <DrawerLink handleLinkClick={handleLinkClick} href="/support">
+                Development Support
+              </DrawerLink>
             </li>
           </ul>
         </div>

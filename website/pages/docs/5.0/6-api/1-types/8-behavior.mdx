@@ -1,0 +1,72 @@
+---
+posttype: "docs"
+title: Behavior
+metaTitle: "Behavior type"
+metaDescription: "ReactGrid docs"
+---
+
+#### Definition
+
+```ts
+type Behavior = {
+  id: BehaviorId;
+
+  handlePointerDown?: PointerEventHandler;
+  handlePointerEnter?: PointerEventHandler;
+  handlePointerMove?: PointerEventHandler;
+  handlePointerLeave?: PointerEventHandler;
+  handlePointerUp?: PointerEventHandler;
+  handlePointerHold?: PointerHoldEventHandler;
+
+  handlePointerDownTouch?: PointerEventHandler;
+  handlePointerMoveTouch?: PointerEventHandler;
+  handlePointerEnterTouch?: PointerEventHandler;
+  handlePointerUpTouch?: PointerEventHandler;
+  handlePointerHoldTouch?: PointerHoldEventHandler;
+
+  handleFocus?: FocusEventHandler;
+
+  handleDoubleClick?: MouseEventHandler;
+
+  handleKeyDown?: KeyboardEventHandler;
+  handleKeyUp?: KeyboardEventHandler;
+
+  handleCompositionStart?: CompositionEventHandler;
+  handleCompositionUpdate?: CompositionEventHandler;
+  handleCompositionEnd?: CompositionEventHandler;
+
+  handleCut?: ClipboardEventHandler;
+  handleCopy?: ClipboardEventHandler;
+  handlePaste?: ClipboardEventHandler;
+
+  handleContextMenu?: MouseEventHandler;
+};
+```
+
+#### Properties
+
+| Name                       | Type                      | Description                              |
+|----------------------------|---------------------------|------------------------------------------|
+| id                         | BehaviorId                | `"Default"` \| `"CellSelection"` \| `"ColumnReorder"` \| `"RowReorder"` \| `"ResizeColumn"` \| `"FillHandle"`  |
+| handlePointerDown           | PointerEventHandler       | Handler for pointer down events.         |
+| handlePointerEnter          | PointerEventHandler       | Handler for pointer enter events.        |
+| handlePointerMove           | PointerEventHandler       | Handler for pointer move events.         |
+| handlePointerLeave          | PointerEventHandler       | Handler for pointer leave events.        |
+| handlePointerUp             | PointerEventHandler       | Handler for pointer up events.           |
+| handlePointerHold           | PointerHoldEventHandler   | Handler for pointer hold events.         |
+| handlePointerDownTouch      | PointerEventHandler       | Handler for pointer down touch events.   |
+| handlePointerMoveTouch      | PointerEventHandler       | Handler for pointer move touch events.   |
+| handlePointerEnterTouch     | PointerEventHandler       | Handler for pointer enter touch events.  |
+| handlePointerUpTouch        | PointerEventHandler       | Handler for pointer up touch events.     |
+| handlePointerHoldTouch      | PointerHoldEventHandler   | Handler for pointer hold touch events.   |
+| handleFocus                 | FocusEventHandler         | Handler for focus events.                |
+| handleDoubleClick           | MouseEventHandler         | Handler for double click events.         |
+| handleKeyDown               | KeyboardEventHandler      | Handler for key down events.             |
+| handleKeyUp                 | KeyboardEventHandler      | Handler for key up events.               |
+| handleCompositionStart      | CompositionEventHandler   | Handler for composition start events.    |
+| handleCompositionUpdate     | CompositionEventHandler   | Handler for composition update events.   |
+| handleCompositionEnd        | CompositionEventHandler   | Handler for composition end events.      |
+| handleCut                   | ClipboardEventHandler     | Handler for cut events.                  |
+| handleCopy                  | ClipboardEventHandler     | Handler for copy events.                 |
+| handlePaste                 | ClipboardEventHandler     | Handler for paste events.                |
+| handleContextMenu           | MouseEventHandler         | Handler for context menu events.         |

@@ -4,12 +4,12 @@ import { useReactGridId } from "./ReactGridIdProvider";
 import { getHiddenTargetFocusByIdx } from "../utils/getHiddenTargetFocusByIdx";
 
 const HiddenFocusTarget = ({ rowIdx, colIdx }: { colIdx: number; rowIdx: number }) => {
-  const id = useReactGridId();
-  const changedFocusedLocation = useReactGridStore(id, (store) => store.changedFocusedLocation);
+  const storeId = useReactGridId();
+  const changedFocusedLocation = useReactGridStore(storeId, (store) => store.changedFocusedLocation);
 
   useEffect(() => {
     if (changedFocusedLocation) {
-      getHiddenTargetFocusByIdx(changedFocusedLocation.rowIndex, changedFocusedLocation.colIndex)?.focus();
+      getHiddenTargetFocusByIdx(storeId, changedFocusedLocation.rowIndex, changedFocusedLocation.colIndex)?.focus();
     }
   }, [changedFocusedLocation]);
 

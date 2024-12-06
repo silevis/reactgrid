@@ -1,13 +1,14 @@
-import { Cell, Column, Range, Row, StyledRange } from "./PublicModel.ts";
+import { Cell, Column, Range, RGThemeType, Row, StyledRange } from "./PublicModel.ts";
 import { RowMeasurement } from "./RowMeasurement.ts";
 import { ColumnMeasurement } from "./ColumnMeasurement.ts";
-import { CellMap, FocusedCell, IndexedLocation, NestedStylesPartial, PaneName, SpanMember } from "./InternalModel.ts";
+import { CellMap, FocusedCell, IndexedLocation, PaneName, SpanMember } from "./InternalModel.ts";
 import { NumericalRange } from "./PublicModel.ts";
 import { Behavior, BehaviorId } from "./Behavior.ts";
 import { RGTheme } from "./RGTheme.ts";
 import { CellsLookup } from "./PublicModel.ts";
 
 export interface ReactGridStoreProps {
+  id: string;
   rows: Row[];
   columns: Column[];
 
@@ -20,7 +21,7 @@ export interface ReactGridStoreProps {
   paneRanges: Record<PaneName, NumericalRange>;
   styledRanges: StyledRange[];
 
-  styles?: NestedStylesPartial<RGTheme>;
+  styles?: RGThemeType;
 
   focusedLocation: IndexedLocation;
   changedFocusedLocation?: IndexedLocation;
@@ -28,7 +29,6 @@ export interface ReactGridStoreProps {
   fillHandleArea: NumericalRange;
 
   reactGridRef?: HTMLDivElement;
-  hiddenFocusTargetRef?: HTMLDivElement;
 
   behaviors?: Partial<Record<BehaviorId, Behavior>>;
   currentBehavior: Behavior;
@@ -36,33 +36,49 @@ export interface ReactGridStoreProps {
   resizingColIdx?: number;
 
   enableColumnSelectionOnFirstRow?: boolean;
-
   enableRowSelectionOnFirstColumn?: boolean;
+
+  disableCut?: boolean;
+  disableCopy?: boolean;
+  disablePaste?: boolean;
+  disableFillHandle?: boolean;
 
   linePosition?: number;
   lineOrientation: "vertical" | "horizontal";
+
+  moveRightOnEnter: boolean;
 
   shadowPosition?: number;
   shadowSize?: number;
 
   pointerStartIdx: IndexedLocation;
 
-  onFillHandle?: (selectedArea: NumericalRange, fillRange: NumericalRange, cellsLookup: CellsLookup) => void;
+  onFillHandle?: (selectedArea: NumericalRange, fillRange: NumericalRange, cellsLookup: CellsLookup) => boolean;
   onAreaSelected?: (selectedArea: NumericalRange) => void;
   onCellFocused?: (cellLocation: IndexedLocation) => void;
-  onCut?: (event: React.ClipboardEvent<HTMLDivElement>, cellsRange: NumericalRange, cellsLookup: CellsLookup) => void;
-  onCopy?: (event: React.ClipboardEvent<HTMLDivElement>, cellsRange: NumericalRange, cellsLookup: CellsLookup) => void;
-  onPaste?: (event: React.ClipboardEvent<HTMLDivElement>, cellsRange: NumericalRange, cellsLookup: CellsLookup) => void;
+  onCut?: (
+    event: React.ClipboardEvent<HTMLDivElement>,
+    cellsRange: NumericalRange,
+    cellsLookup: CellsLookup
+  ) => boolean;
+  onCopy?: (
+    event: React.ClipboardEvent<HTMLDivElement>,
+    cellsRange: NumericalRange,
+    cellsLookup: CellsLookup
+  ) => boolean;
+  onPaste?: (
+    event: React.ClipboardEvent<HTMLDivElement>,
+    cellsRange: NumericalRange,
+    cellsLookup: CellsLookup
+  ) => boolean;
   onResizeColumn?: (width: number, columnIdx: number[]) => void;
   onColumnReorder?: (selectedColIndexes: number[], destinationColIdx: number) => void;
   onRowReorder?: (selectedRowIndexes: number[], destinationRowIdx: number) => void;
 }
 
 export interface ReactGridStore extends ReactGridStoreProps {
-  readonly setRows: (rows: Row[]) => void;
   readonly getRowAmount: () => number;
 
-  readonly setColumns: (columns: Column[]) => void;
   readonly getColumnByIdx: (columnIdx: number) => Column | null;
   readonly getColumnAmount: () => number;
 
@@ -100,8 +116,6 @@ export interface ReactGridStore extends ReactGridStoreProps {
   readonly setLinePosition: (linePosition: number) => void;
 
   readonly assignReactGridRef: (reactGridRef?: HTMLDivElement) => void;
-
-  readonly assignHiddenFocusTargetRef: (hiddenFocusTargetRef?: HTMLDivElement) => void;
 
   readonly getStyledRanges: (range?: Range) => StyledRange[] | [];
 

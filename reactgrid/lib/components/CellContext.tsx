@@ -9,12 +9,12 @@ interface CellContextProviderProps {
   realRowIndex: number;
   realColumnIndex: number;
   cell: Cell;
+  isSelected: boolean;
   isFocused: boolean;
   rowSpan?: number;
   colSpan?: number;
   getCellOffset: (rowIdx: number, colIdx: number, rowSpan: number, colSpan: number) => React.CSSProperties;
-  isCellInSelectedArea: boolean;
-  isCellInFillArea: boolean;
+  shouldRenderReorderedCells: boolean;
   stickyOffsets?: StickyOffsets;
   cellStyles?: React.CSSProperties;
 }
@@ -22,6 +22,7 @@ interface CellContextProviderProps {
 export const CellContext = createContext<CellContextType>({
   realRowIndex: -1,
   realColumnIndex: -1,
+  isSelected: false,
   isFocused: false,
   containerStyle: {},
 });
@@ -46,6 +47,7 @@ export const CellContextProvider = memo(
     colSpan,
     getCellOffset = () => ({}),
     cell,
+    isSelected,
     isFocused,
   }: CellContextProviderProps) => {
     const { Template, props } = cell;
@@ -55,6 +57,7 @@ export const CellContextProvider = memo(
         value={{
           realRowIndex,
           realColumnIndex,
+          isSelected,
           isFocused,
           containerStyle: {
             ...(rowSpan && {
@@ -66,7 +69,6 @@ export const CellContextProvider = memo(
             ...getCellOffset?.(rowIndex, colIndex, rowSpan ?? 1, colSpan ?? 1),
             gridRowStart: realRowIndex + 1,
             gridColumnStart: realColumnIndex + 1,
-            ...props.style,
           },
         }}
       >
@@ -76,9 +78,9 @@ export const CellContextProvider = memo(
   },
   (prev, next) => {
     return (
-      !next.isCellInSelectedArea &&
-      !next.isCellInFillArea &&
+      !next.shouldRenderReorderedCells &&
       deepCompare(prev.cell, next.cell) &&
+      prev.isSelected === next.isSelected &&
       prev.isFocused === next.isFocused &&
       prev.getCellOffset === next.getCellOffset
     );

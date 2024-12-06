@@ -1,6 +1,6 @@
 import { Behavior } from "../types/Behavior.ts";
 import { ReactGridStore } from "../types/ReactGridStore.ts";
-import { getNumberFromPixelString } from "../utils/getNumberFromPixelValueString.ts";
+import { getValueFromPixelString } from "../utils/getValueFromPixelString.ts";
 import isDevEnvironment from "../utils/isDevEnvironment.ts";
 
 const devEnvironment = isDevEnvironment();
@@ -104,7 +104,7 @@ const handlePointerMove = (
   // calculate the minimum width for all columns in colSpan
   const minColumnWidth = colIndexesToResize.reduce((acc, colIdx) => {
     const column = store.getColumnByIdx(colIdx);
-    return acc + getNumberFromPixelString(column?.minWidth ?? 0);
+    return acc + getValueFromPixelString(column?.minWidth ?? 0);
   }, 0);
 
   return {
@@ -131,7 +131,7 @@ const handlePointerUp = (
 
   const resizingColumn = store.getColumnByIdx(store.resizingColIdx);
 
-  const minColumnWidth = getNumberFromPixelString(resizingColumn?.minWidth ?? 0);
+  const minColumnWidth = getValueFromPixelString(resizingColumn?.minWidth ?? 0);
 
   const rect = reactGridRef.getBoundingClientRect();
 

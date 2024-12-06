@@ -1,21 +1,19 @@
-import React, { FC, useEffect } from "react";
+import React, { FC } from "react";
 import { useCellContext } from "./CellContext";
 import HiddenFocusTarget from "./HiddenFocusTarget";
 import { ColumnResizeBadge } from "./ColumnResizeBadge";
 import { useReactGridStore } from "../utils/reactGridStore";
 import { useReactGridId } from "./ReactGridIdProvider";
-import { CellsLookup } from "../types/PublicModel";
 
 type CellWrapperProps = React.HTMLAttributes<HTMLDivElement> & {
-  targetInputRef?: React.RefObject<HTMLInputElement | HTMLElement>;
-  onStringValueRequsted: () => string;
+  onStringValueRequested: () => string;
   onStringValueReceived: (v: string) => void;
   children?: React.ReactNode;
 };
 
 const CellWrapper: FC<CellWrapperProps> = ({
   children,
-  onStringValueRequsted,
+  onStringValueRequested,
   onStringValueReceived,
   ...wrapperDivAttributes
 }) => {
@@ -32,19 +30,12 @@ const CellWrapper: FC<CellWrapperProps> = ({
     (ctx.realColumnIndex === 0 && enableRowSelectionOnFirstColumn); // if row selection is enabled on first column
 
   const cellsLookup = useReactGridStore(id, (store) => store.cellsLookup);
-  const setCellsLookup = useReactGridStore(id, (store) => store.setCellsLookup);
 
-  useEffect(() => {
-    const newCellsLookup: CellsLookup = cellsLookup;
-
-    newCellsLookup.set(`${ctx.realRowIndex} ${ctx.realColumnIndex}`, {
-      rowIndex: ctx.realRowIndex,
-      colIndex: ctx.realColumnIndex,
-      onStringValueRequsted,
-      onStringValueReceived,
-    });
-
-    setCellsLookup(newCellsLookup);
+  cellsLookup.set(`${ctx.realRowIndex} ${ctx.realColumnIndex}`, {
+    rowIndex: ctx.realRowIndex,
+    colIndex: ctx.realColumnIndex,
+    onStringValueRequested,
+    onStringValueReceived,
   });
 
   return (
@@ -54,14 +45,18 @@ const CellWrapper: FC<CellWrapperProps> = ({
         customClassName ?? ""
       }`}
       style={{
+        minHeight: 0,
         padding: ".2rem",
-        textAlign: "center",
         position: "relative",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
         outline: "none",
         overflow: "hidden",
         touchAction: disableTouchAction ? "none" : "auto",
         ...customStyle,
         ...ctx.containerStyle,
+        ...(customStyle?.backgroundColor && { backgroundColor: customStyle.backgroundColor }),
       }}
     >
       {ctx.realRowIndex === 0 && <ColumnResizeBadge />}

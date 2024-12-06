@@ -2,7 +2,6 @@ import React, { FC, useEffect, useRef, useState } from "react";
 import { useCellContext } from "../components/CellContext";
 import CellWrapper from "../components/CellWrapper";
 import { useDoubleTouch } from "../hooks/useDoubleTouch";
-import { inNumericKey, isNumberSeparator } from "../utils/keyCodeCheckings";
 
 interface NumberCellProps {
   value: number;
@@ -10,16 +9,19 @@ interface NumberCellProps {
   validator?: (value: number) => boolean;
   errorMessage?: string;
   hideZero?: boolean;
+  allowSeparators?: boolean;
   format?: Intl.NumberFormat;
   style?: React.CSSProperties;
 }
 
 export const NumberCell: FC<NumberCellProps> = ({
   value: initialValue,
+  style,
   onValueChanged,
   validator,
   errorMessage,
   hideZero,
+  allowSeparators = true,
   format,
 }) => {
   const initialValueStr = initialValue?.toString();
@@ -31,10 +33,13 @@ export const NumberCell: FC<NumberCellProps> = ({
 
   const isValid = validator ? validator(Number(initialValue)) : true;
 
-  const getFormattedValue = () => {
-    if (hideZero && initialValue === 0) return "";
+  // display the formatted value or error message
+  const getFormattedValue = (): string => {
+    if (Number.isNaN(Number(initialValue)) || (hideZero && initialValue === 0)) return "";
     if (format) return format.format(initialValue);
     if (!isValid && errorMessage) return errorMessage;
+
+    // show the value as a string without any formatting
     return initialValueStr;
   };
 
@@ -42,11 +47,18 @@ export const NumberCell: FC<NumberCellProps> = ({
     setCurrentValue(initialValueStr);
   }, [initialValue]);
 
+  const numberKeys = "0123456789";
+  const numberSeparators = [".", ","];
+
   return (
     <CellWrapper
       onTouchEnd={handleDoubleTouch}
-      onStringValueRequsted={() => initialValueStr}
-      onStringValueReceived={(v) => onValueChanged?.(Number(v))}
+      onStringValueRequested={() => initialValueStr}
+      onStringValueReceived={(v) => {
+        const numValue = Number(v);
+        onValueChanged?.(isNaN(numValue) ? 0 : numValue);
+      }}
+      style={style}
       onDoubleClick={() => {
         if (ctx.isFocused) {
           setCurrentValue(initialValueStr || "0");
@@ -54,10 +66,10 @@ export const NumberCell: FC<NumberCellProps> = ({
         }
       }}
       onKeyDown={(e) => {
-        if ((!isEditMode && inNumericKey(e.keyCode)) || isNumberSeparator(e.keyCode)) {
+        if ((!isEditMode && numberKeys.includes(e.key)) || (allowSeparators && numberSeparators.includes(e.key))) {
           setCurrentValue("");
           setEditMode(true);
-        } else if (!isEditMode && e.key === "Enter") {
+        } else if (!isEditMode && !ctx.isSelected && (e.key === "Enter" || e.key === "F2")) {
           e.stopPropagation();
           setCurrentValue(initialValueStr || "0");
           setEditMode(true);
@@ -66,10 +78,11 @@ export const NumberCell: FC<NumberCellProps> = ({
     >
       {isEditMode ? (
         <input
+          className="rg-input"
           value={currentValue}
           onChange={(e) => {
-            let newValue = e.currentTarget.value.replace(/[^0-9,.]/g, "");
-            if (isNumberSeparator(newValue.charCodeAt(0))) {
+            let newValue = e.currentTarget.value.replace(allowSeparators ? /[^0-9,.]/g : /[^0-9]/g, "");
+            if (numberSeparators.includes(newValue)) {
               newValue = "0" + newValue;
             }
             setCurrentValue(newValue);
@@ -83,7 +96,6 @@ export const NumberCell: FC<NumberCellProps> = ({
           onCut={(e) => e.stopPropagation()}
           onCopy={(e) => e.stopPropagation()}
           onPaste={(e) => e.stopPropagation()}
-          style={inputStyle}
           onKeyDown={(e) => {
             const controlKeys = ["Escape", "Enter", "Tab"];
             if (!controlKeys.includes(e.key)) {
@@ -105,20 +117,4 @@ export const NumberCell: FC<NumberCellProps> = ({
       )}
     </CellWrapper>
   );
-};
-
-const inputStyle: React.CSSProperties = {
-  resize: "none",
-  overflowY: "hidden",
-  boxSizing: "border-box",
-  textAlign: "center",
-  width: "100%",
-  height: "100%",
-  background: "transparent",
-  border: "none",
-  padding: 0,
-  outline: "none",
-  color: "inherit",
-  fontSize: "inherit",
-  fontFamily: "inherit",
 };

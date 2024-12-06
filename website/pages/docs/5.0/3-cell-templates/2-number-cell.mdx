@@ -5,11 +5,13 @@ metaTitle: "Number cell template"
 metaDescription: "ReactGrid docs"
 ---
 
+## NumberCell
+
 The `NumberCell` template is used to display and manipulate numeric values within a cell.
 
 #### Implementation
 
- - Open `NumberCell` implementation on <a href="https://github.com/silevis/reactgrid/blob/v5-dev/reactgrid/lib/cellTemplates/NumberCell.tsx" target="_blank"> github <i className="fas fa-external-link-alt fa-xs pl-1"></i></a>
+- Open `NumberCell` implementation on [GitHub](https://github.com/silevis/reactgrid/blob/v5-dev/reactgrid/lib/cellTemplates/NumberCell.tsx)
 
 #### Interface declaration 
 
@@ -20,6 +22,7 @@ interface NumberCellProps {
   validator?: (value: number) => boolean;
   errorMessage?: string;
   hideZero?: boolean;
+  allowSeparators?: boolean;
   format?: Intl.NumberFormat;
   style?: React.CSSProperties;
 }
@@ -32,5 +35,6 @@ interface NumberCellProps {
 | `validator?`      | `(value: number) => boolean`      | Function to validate the value.                                    |
 | `errorMessage?`   | `string`                          | Error message to display when validation fails.                    |
 | `hideZero?`       | `boolean`                         | Flag to hide the zero value.                                       |
+| `allowSeparators?`       | `boolean`                  | Flag to allow or disallow the use of separators in the cell.     |
 | `format?`         | `Intl.NumberFormat`               | Number format to apply to the value.                               |
 | `style?`          | `React.CSSProperties`             | CSS properties to apply to the cell.                               |

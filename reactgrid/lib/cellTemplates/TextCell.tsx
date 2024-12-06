@@ -2,7 +2,7 @@ import { FC, useEffect, useRef, useState } from "react";
 import CellWrapper from "../components/CellWrapper";
 import { useCellContext } from "../components/CellContext";
 import { useDoubleTouch } from "../hooks/useDoubleTouch";
-import { isAlphaNumericWithoutModifiers } from "../utils/keyCodeCheckings";
+import { isValidKey } from "../utils/keyCodeCheckings";
 
 interface TextCellProps {
   text: string;
@@ -10,7 +10,7 @@ interface TextCellProps {
   style?: React.CSSProperties;
 }
 
-export const TextCell: FC<TextCellProps> = ({ text: initialText, onTextChanged }) => {
+export const TextCell: FC<TextCellProps> = ({ text: initialText, onTextChanged, style }) => {
   const ctx = useCellContext();
   const targetInputRef = useRef<HTMLInputElement>(null);
   const [isEditMode, setEditMode] = useState(false);
@@ -23,10 +23,10 @@ export const TextCell: FC<TextCellProps> = ({ text: initialText, onTextChanged }
 
   return (
     <CellWrapper
-      onStringValueRequsted={() => initialText}
+      onStringValueRequested={() => initialText}
       onStringValueReceived={(v) => onTextChanged?.(v)}
       onTouchEnd={handleDoubleTouch}
-      style={{ padding: ".2rem", textAlign: "center", outline: "none", minHeight: 0 }}
+      style={style}
       onDoubleClick={() => {
         if (ctx.isFocused) {
           setCurrentValue(initialText || "");
@@ -34,10 +34,11 @@ export const TextCell: FC<TextCellProps> = ({ text: initialText, onTextChanged }
         }
       }}
       onKeyDown={(e) => {
-        if (!isEditMode && isAlphaNumericWithoutModifiers(e)) {
+        if (!isEditMode && isValidKey(e, [])) {
+          e.stopPropagation();
           setCurrentValue("");
           setEditMode(true);
-        } else if (!isEditMode && e.key === "Enter") {
+        } else if (!isEditMode && !ctx.isSelected && (e.key === "Enter" || e.key === "F2")) {
           e.stopPropagation();
           setCurrentValue(initialText || "");
           setEditMode(true);
@@ -46,8 +47,8 @@ export const TextCell: FC<TextCellProps> = ({ text: initialText, onTextChanged }
     >
       {isEditMode ? (
         <input
+          className="rg-input"
           value={currentValue}
-          style={inputStyle}
           onChange={(e) => setCurrentValue(e.currentTarget.value)}
           onBlur={(e) => {
             onTextChanged?.(e.currentTarget.value);
@@ -77,20 +78,4 @@ export const TextCell: FC<TextCellProps> = ({ text: initialText, onTextChanged }
       )}
     </CellWrapper>
   );
-};
-
-const inputStyle: React.CSSProperties = {
-  resize: "none",
-  overflowY: "hidden",
-  boxSizing: "border-box",
-  textAlign: "center",
-  width: "100%",
-  height: "100%",
-  background: "transparent",
-  border: "none",
-  padding: 0,
-  outline: "none",
-  color: "inherit",
-  fontSize: "inherit",
-  fontFamily: "inherit",
 };

@@ -5,11 +5,9 @@ metaTitle: "useReactGridAPI hook"
 metaDescription: "ReactGrid docs"
 ---
 
-## Introduction
+## useReactGridAPI
 
 The `useReactGridAPI` hook provides a set of methods to interact with the ReactGrid component. It allows you to set and get various states of the grid, such as the selected area, focused cell, and selected rows or columns. This hook is essential for managing the grid's state programmatically.
-
-#### Definition
 
 ```ts
 function useReactGridAPI(id: string): ReactGridAPI | undefined {
@@ -42,6 +40,8 @@ function useReactGridAPI(id: string): ReactGridAPI | undefined {
       getPaneRanges: store.getPaneRanges,
       getCellsLookup: store.getCellsLookup,
       getSelectedArea: store.getSelectedArea,
+      getRows: () => store.rows,
+      getColumns: () => store.columns,
     };
   });
 }
@@ -62,3 +62,5 @@ function useReactGridAPI(id: string): ReactGridAPI | undefined {
 | `getPaneRanges`            | `() => PaneRange[]`                                                                          | Get the pane ranges in the ReactGrid.                                                                    |
 | `getCellsLookup`           | `() => CellsLookup`                                                                         | Get the cells lookup in the ReactGrid.                                                                   |
 | `getSelectedArea`          | `() => NumericalRange \| undefined`                                                             | Get the selected area in the ReactGrid.                                                                  |
+| `getRows`          | `Column[]`                                                             | Get the rows in the ReactGrid.                                                                  |
+| `getColumns`          | `Row[]`                                                             | Get the columns in the ReactGrid.                                                                  |

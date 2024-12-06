@@ -5,178 +5,40 @@ metaTitle: "Getting started"
 metaDescription: "ReactGrid docs"
 ---
 
-#### Introduction
+## Introduction to version 5
 
 In this guide, we're going to build a very simple React App, which will make use of ReactGrid.
 
 #### NPM Install
 
 ```shell
-npm i @silevis/reactgrid
+npm i @silevis/reactgrid@alpha
 ```
 
-## Integrate ReactGrid into the App
+Unlike previous versions, there's no longer a need to import the CSS file separately.
 
-To integrate ReactGrid into your application, configure the grid using [rows](/docs/5.0/6-api/1-types/1-row), [columns](/docs/5.0/6-api/1-types/2-column), and [cells](/docs/5.0/6-api/1-types/3-cell). However, if you provide only cells with specified `rowIndex` and `colIndex`, the rows and columns will be automatically generated. If you want to define specific row heights or column widths, you should pass them explicitly to the ReactGrid component. Below is a detailed breakdown of how to set this up, including an example configuration file.
+### Integrate ReactGrid into the App
 
-### Integration Steps for ReactGrid
+To integrate ReactGrid into your application, configure the grid using [rows](/docs/5.0/6-api/1-types/1-row), [columns](/docs/5.0/6-api/1-types/2-column), and [cells](/docs/5.0/6-api/1-types/3-cell). However, if you provide only [cells](/docs/5.0/6-api/1-types/3-cell) with specified `rowIndex` and `colIndex`, the rows and columns will be automatically generated. If you want to define specific row heights, column widths or row and column reordering, you should pass them explicitly to the ReactGrid component. Below is a detailed breakdown of how to set this up, including an example configuration file.
 
-#### 1. Prepare the data that will be used within ReactGrid
+#### Understanding the Workflow
 
-For this example, let's create a configuration file, such as `reactgrid.config.ts`, to store the data that will be used by ReactGrid. However, in many cases, the data is fetched from a server.
+Let's create a simple example including the aggregation. The values of the cells in the **Sum** row and **Total** column will be automatically calculated from the values entered into the cells in the **H1** and **H1** columns.
 
-#### Data Example
+<div style={{ marginTop: 25, display: "flex", justifyContent: "center" }}>
+  <img src="/reactgrid/static/workflow-table-1.png" />
+</div>
+---
 
-```tsx
-export const peopleArr: Person[] = [
-  {
-    _id: "66d61077035753f369ddbb16",
-    name: "Jordan Rodriquez",
-    age: 30,
-    email: "jordanrodriquez@cincyr.com",
-    company: "Zaggles",
-    position: 1,
-  },
-  {
-    _id: "66d61077794e7949ab167fd5",
-    email: "allysonrios@satiance.com",
-    name: "Allyson Rios",
-    age: 30,
-    company: "Zoxy",
-    position: 2,
-  },
-  {
-    _id: "66d61077dd754e88981ae434",
-    name: "Pickett Lucas",
-    age: 25,
-    email: "pickettlucas@zoxy.com",
-    company: "Techade",
-    position: 3,
-  },
-  {
-    _id: "66d61077115e2f8748c334d9",
-    name: "Louella David",
-    age: 37,
-    email: "louelladavid@techade.com",
-    company: "Ginkogene",
-    position: 4,
-  },
-  {
-    _id: "66d61077540d53374b427e4b",
-    name: "Tricia Greene",
-    age: 27,
-    email: "triciagreene@ginkogene.com",
-    company: "Naxdis",
-    position: 5,
-  },
-];
-```
+To achieve this, we will need an array of [cells](/docs/5.0/6-api/1-types/3-cell) with defined indices, a template, and props. Once we have created all the necessary cells to build the example above, we can pass them to the ReactGrid component.
 
-#### 2. Configure ReactGrid inside your application
+<div style={{ marginTop: 25, display: "flex", justifyContent: "center" }}>
+  <img src="/reactgrid/static/workflow-table-2.png" />
+</div>
 
-Now you can generate rows, columns, and cells using the prepared data.
+### Live implementation
 
-```tsx
-import React, { useState } from "react";
-import { ReactGrid, NumberCell, TextCell, NonEditableCell, Cell } from "@silevis/reactgrid";
-import { peopleArr } from "./utils/reactgrid.config";
-
-interface ColumnDef {
-  title: string;
-  width: number;
-  cellTemplate: React.ComponentType<any>;
-}
-
-export const ReactGridExample = () => {
-  const [people, setPeople] = useState(peopleArr);
-
-  const columnDefs: ColumnDef[] = Object.keys(peopleArr[0]).reduce(
-    (acc: ColumnDef[], peopleKey: string, idx: number) => {
-      if (["_id", "position"].includes(peopleKey)) return acc;
-      const cellTemplate = peopleKey === "age" ? NumberCell : TextCell;
-      return [...acc, { title: peopleKey, width: 100, cellTemplate }];
-    },
-    []
-  );
-
-  const updatePerson = (id, key, newValue) => {
-    setPeople((prev) => {
-      return prev.map((p) => (p._id !== id ? p : { ...p, [key]: newValue }));
-    });
-  };
-
-  const gridRows = Array.from({ length: people.length + 1 }, (_, i) => ({
-    rowIndex: i,
-    height: 40,
-  }));
-
-  const gridColumns = columnDefs.map((col, index) => ({
-    colIndex: index,
-    width: col.width,
-  }));
-
-  const cells: Cell[] = [];
-
-  gridRows.forEach((row, rowIndex) => {
-    const personRowIndex = row.rowIndex;
-
-    // header cells
-    if (rowIndex === 0) {
-      columnDefs.forEach((col, colIndex) => {
-        cells.push({
-          rowIndex,
-          colIndex,
-          Template: NonEditableCell,
-          props: {
-            value: col.title,
-            style: {
-              backgroundColor: "#55bc71",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              fontWeight: "bold",
-            },
-          },
-          isSelectable: false,
-        });
-      });
-    } else {
-      const personCells = columnDefs.map((col) => {
-        const numberCellProps = {
-          onValueChanged: (newValue) => {
-            updatePerson(people[personRowIndex - 1]._id, col.title, newValue);
-          },
-          value: people[personRowIndex - 1][col.title.toLowerCase()],
-        };
-
-        const textCellProps = {
-          text: people[personRowIndex - 1][col.title.toLowerCase()],
-          onTextChanged: (newText: string) => {
-            updatePerson(people[personRowIndex - 1]._id, col.title, newText);
-          },
-        };
-
-        return {
-          Template: col.cellTemplate,
-          props: col.title === "age" ? numberCellProps : textCellProps,
-        };
-      });
-
-      columnDefs.forEach((_, colIndex) => {
-        cells.push({
-          rowIndex,
-          colIndex,
-          ...personCells[colIndex],
-        });
-      });
-    }
-  });
-
-  return <ReactGrid rows={gridRows} columns={gridColumns} cells={cells} />;
-};
-```
-
-#### Live example
+---
 
 import LiveCode from "@/nextra/components/LiveCode.tsx";
 import React, { useState } from "react";
@@ -188,6 +50,7 @@ import {
   Cell,
 } from "@silevis/reactgrid";
 
+
 <LiveCode
 scope={{
   ReactGrid,
@@ -198,141 +61,99 @@ scope={{
   useState
 }}
 code={`
-const peopleArr = [
+const styledRanges = [
   {
-    _id: "66d61077035753f369ddbb16",
-    name: "Jordan Rodriquez",
-    age: 30,
-    email: "jordanrodriquez@cincyr.com",
-    company: "Zaggles",
-    position: 1,
+    range: { start: { rowIndex: 0, columnIndex: 1 }, end: { rowIndex: 1, columnIndex: 4 } },
+    styles: { background: "#55bc71", color: "white" },
   },
   {
-    _id: "66d61077794e7949ab167fd5",
-    email: "allysonrios@satiance.com",
-    name: "Allyson Rios",
-    age: 30,
-    company: "Zoxy",
-    position: 2,
+    range: { start: { rowIndex: 1, columnIndex: 0 }, end: { rowIndex: 4, columnIndex: 1 } },
+    styles: { background: "#55bc71", color: "white" },
   },
   {
-    _id: "66d61077dd754e88981ae434",
-    name: "Pickett Lucas",
-    age: 25,
-    email: "pickettlucas@zoxy.com",
-    company: "Techade",
-    position: 3,
+    range: { start: { rowIndex: 0, columnIndex: 0 }, end: { rowIndex: 1, columnIndex: 1 } },
+    styles: { background: "#318146", color: "white" },
   },
   {
-    _id: "66d61077115e2f8748c334d9",
-    name: "Louella David",
-    age: 37,
-    email: "louelladavid@techade.com",
-    company: "Ginkogene",
-    position: 4,
+    range: { start: { rowIndex: 3, columnIndex: 1 }, end: { rowIndex: 4, columnIndex: 4 } },
+    styles: { background: "#f8f8f8" },
   },
   {
-    _id: "66d61077540d53374b427e4b",
-    name: "Tricia Greene",
-    age: 27,
-    email: "triciagreene@ginkogene.com",
-    company: "Naxdis",
-    position: 5,
+    range: { start: { rowIndex: 1, columnIndex: 3 }, end: { rowIndex: 3, columnIndex: 4 } },
+    styles: { background: "#f8f8f8" },
   },
 ];
 
-interface ColumnDef {
-  title: string;
-  width: number;
-  cellTemplate: React.ComponentType<any>;
-}
-
 const ReactGridExample = () => {
-  const [people, setPeople] = useState(peopleArr);
+    const [yearsData, setYearsData] = useState([
+    { label: "2023", values: [1, 3] },
+    { label: "2024", values: [2, 4] },
+  ]);
 
-  const columnDefs: ColumnDef[] = Object.keys(peopleArr[0]).reduce(
-    (acc: ColumnDef[], peopleKey: string, idx: number) => {
-      if (["_id", "position"].includes(peopleKey)) return acc;
-      const cellTemplate = peopleKey === "age" ? NumberCell : TextCell;
-      return [...acc, { title: peopleKey, width: 250, cellTemplate }];
-    },
-    []
-  );
+  // [{ label: "2023", values: [1, 3, 4] }, { label: "2024", values: [2, 4, 6] }]
+  const yearsDataWithTotals = yearsData.map((year) => ({
+    ...year,
+    values: [...year.values, year.values.reduce((sum, value) => sum + value, 0)],
+  }));
 
-  const updatePerson = (id, key, newValue) => {
-    setPeople((prev) => {
-      return prev.map((p) => (p._id !== id ? p : { ...p, [key]: newValue }));
-    });
+  // { label: "Sum", values: [3, 7, 10] }
+  const summaryRow = {
+    label: "Sum",
+    values: yearsDataWithTotals.reduce(
+      (sum, year) => sum.map((currentSum, index) => currentSum + year.values[index]),
+      [0, 0, 0]
+    ),
   };
 
-  const gridRows = Array.from({ length: people.length + 1 }, (_, i) => ({
-    rowIndex: i,
-    height: 40,
-  }));
-
-  const gridColumns = columnDefs.map((col, index) => ({
-    colIndex: index,
-    width: col.width,
-  }));
-
-  const cells: Cell[] = [];
-
-  gridRows.forEach((row, rowIndex) => {
-    const personRowIndex = row.rowIndex;
-
-    // header cells
-    if (rowIndex === 0) {
-      columnDefs.forEach((col, colIndex) => {
-        cells.push({
-          rowIndex,
-          colIndex,
-          Template: NonEditableCell,
-          props: {
-            value: col.title,
-            style: {
-              backgroundColor: "#55bc71",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              fontWeight: "bold",
+  const cells: Cell[] = [
+    // Header cells
+    { rowIndex: 0, colIndex: 0, Template: NonEditableCell, props: { value: "" } },
+    { rowIndex: 0, colIndex: 1, Template: NonEditableCell, props: { value: "H1" } },
+    { rowIndex: 0, colIndex: 2, Template: NonEditableCell, props: { value: "H2" } },
+    { rowIndex: 0, colIndex: 3, Template: NonEditableCell, props: { value: "Total" } },
+    // Year data cells
+    ...yearsDataWithTotals
+      .map((year, rowIndex) => [
+        { rowIndex: rowIndex + 1, colIndex: 0, Template: NonEditableCell, props: { value: year.label } },
+        ...year.values.map((value, colIndex) => {
+          // Last column is not editable
+          const isEditable = colIndex + 1 !== year.values.length; 
+          return {
+            rowIndex: rowIndex + 1,
+            colIndex: colIndex + 1,
+            Template: !isEditable ? NonEditableCell : NumberCell,
+            props: {
+              value,
+              ...(isEditable && {
+                onValueChanged: (newValue) => {
+                  setYearsData((prev) => {
+                    const updatedYears = [...prev];
+                    updatedYears[rowIndex].values[colIndex] = newValue;
+                    return updatedYears;
+                  });
+                },
+              }),
             },
-          },
-          isSelectable: false,
-        });
-      });
-    } else {
-      const personCells = columnDefs.map((col) => {
-        const numberCellProps = {
-          onValueChanged: (newValue) => {
-            updatePerson(people[personRowIndex - 1]._id, col.title, newValue);
-          },
-          value: people[personRowIndex - 1][col.title.toLowerCase()],
-        };
+          };
+        }),
+      ])
+      .flat(),
+    // Summary row
+    {
+      rowIndex: yearsDataWithTotals.length + 1,
+      colIndex: 0,
+      Template: NonEditableCell,
+      props: { value: summaryRow.label },
+    },
+    ...summaryRow.values.map((value, colIndex) => ({
+      rowIndex: yearsDataWithTotals.length + 1,
+      colIndex: colIndex + 1,
+      Template: NonEditableCell,
+      props: { value },
+    })),
+  ];
 
-        const textCellProps = {
-          text: people[personRowIndex - 1][col.title.toLowerCase()],
-          onTextChanged: (newText: string) => {
-            updatePerson(people[personRowIndex - 1]._id, col.title, newText);
-          },
-        };
-
-        return {
-          Template: col.cellTemplate,
-          props: col.title === "age" ? numberCellProps : textCellProps,
-        };
-      });
-
-      columnDefs.forEach((_, colIndex) => {
-        cells.push({
-          rowIndex,
-          colIndex,
-          ...personCells[colIndex],
-        });
-      });
-    }
-  });
-
-  return <ReactGrid rows={gridRows} columns={gridColumns} cells={cells} />;
+  return <ReactGrid cells={cells} styledRanges={styledRanges} />;
 };
 
 render(<ReactGridExample />, document.getElementById("root"));

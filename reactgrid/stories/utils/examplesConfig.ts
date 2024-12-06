@@ -1,125 +1,108 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Cell, Column, NonEditableCell, Row } from "../../lib/main";
+import { Cell, Column, NonEditableCell, NumberCell, RGThemeType, Row, TextCell } from "../../lib/main";
 
-export interface RowDef {
-  rowIndex: number;
-  height: number;
-  reorderable?: boolean;
-}
+export const cellStyles = {
+  header: {
+    backgroundColor: "#55bc71",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    fontWeight: "bold",
+  },
+};
 
-export interface ColumnDef {
-  title: string;
-  width: number;
-  cellTemplate: React.ComponentType<any>;
-}
-
-interface CellMatrixDef {
-  cells: Cell[];
-  rows: Row[];
-  columns: Column[];
-}
-
-export const generateDataTable = (
-  people: Person[],
-  updatePerson: (id, selector, p) => void,
-  columnDefs: ColumnDef[]
-): CellMatrixDef => {
-  const cells: Cell[] = [];
-
-  const rowsWithAssignedHeights = people.map((person, i) => ({
-    id: person._id,
+export const getRows = (people: Person[]): Row[] => [
+  // header row
+  {
+    rowIndex: 0,
     height: 40,
-    position: person.position,
-  }));
+    reorderable: false,
+  },
+  // data rows
+  ...people.map((_, i) => ({
+    rowIndex: i + 1,
+    height: 40,
+  })),
+];
 
-  const headerRow = [{ id: "header", position: 0, height: 40 }];
+export const getColumns = (): Column[] => [
+  { colIndex: 0, width: 220 },
+  { colIndex: 1, width: 220 },
+  { colIndex: 2, width: 220 },
+  { colIndex: 3, width: 220 },
+];
 
-  const orderedRows: RowDef[] = [...headerRow, ...rowsWithAssignedHeights]
-    .sort((a, b) => a.position - b.position)
-    .map((row) => {
-      const idx = rowsWithAssignedHeights.findIndex((r) => r.id === row.id);
-      const adjustedIdx = idx === -1 ? 0 : idx + 1;
+type UpdatePersonFn = <T>(id: string, key: string, newValue: T) => void;
 
-      if (adjustedIdx === 0) {
-        return { rowIndex: adjustedIdx, height: row.height, reorderable: false };
-      }
+export const generateCells = (people: Person[], updatePerson: UpdatePersonFn): Cell[] => {
+  const generateHeaderCells = () => {
+    const titles = ["Name", "Age", "Email", "Company"];
 
-      return { rowIndex: adjustedIdx, height: row.height };
-    });
+    return titles.map((title, colIndex) => ({
+      rowIndex: 0,
+      colIndex,
+      Template: NonEditableCell,
+      props: {
+        value: title,
+        style: cellStyles.header,
+      },
+    }));
+  };
 
-  orderedRows.forEach((row, rowIndex) => {
-    if (rowIndex === 0) {
-      columnDefs.forEach((col, colIndex) => {
-        cells.push({
-          rowIndex,
-          colIndex,
-          Template: NonEditableCell,
-          props: {
-            value: col.title,
-            style: {
-              backgroundColor: "#55bc71",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              fontWeight: "bold",
-            },
-          },
-          isSelectable: false,
-        });
-      });
-    } else {
-      const personRowIndex = row.rowIndex - 1;
+  const generateRowCells = (rowIndex: number, person: Person): Cell[] => {
+    const { id, name, age, email, company } = person;
 
-      const personCells = columnDefs.map((col) => {
-        const numberCellProps = {
-          onValueChanged: (newValue) => {
-            updatePerson(people[personRowIndex]._id, col.title, newValue);
-          },
-          value: people[personRowIndex][col.title],
-        };
+    return [
+      {
+        rowIndex,
+        colIndex: 0,
+        Template: TextCell,
+        props: {
+          text: name,
+          onTextChanged: (newText: string) => updatePerson(id, "name", newText),
+        },
+      },
+      {
+        rowIndex,
+        colIndex: 1,
+        Template: NumberCell,
+        props: {
+          value: age,
+          onValueChanged: (newValue: number) => updatePerson(id, "age", newValue),
+        },
+      },
+      {
+        rowIndex,
+        colIndex: 2,
+        Template: TextCell,
+        props: {
+          text: email,
+          onTextChanged: (newText: string) => updatePerson(id, "email", newText),
+        },
+      },
+      {
+        rowIndex,
+        colIndex: 3,
+        Template: TextCell,
+        props: {
+          text: company,
+          onTextChanged: (newText: string) => updatePerson(id, "company", newText),
+        },
+      },
+    ];
+  };
 
-        const textCellProps = {
-          text: people[personRowIndex][col.title],
-          onTextChanged: (newText: string) => {
-            updatePerson(people[personRowIndex]._id, col.title, newText);
-          },
-        };
+  const headerCells = generateHeaderCells();
 
-        return {
-          Template: col.cellTemplate,
-          props: col.title === "age" ? numberCellProps : textCellProps,
-        };
-      });
+  people.sort((a, b) => a.position - b.position);
 
-      columnDefs.forEach((_, colIndex) => {
-        cells.push({
-          rowIndex,
-          colIndex,
-          ...personCells[colIndex],
-        });
-      });
-    }
-  });
+  const rowCells = people.flatMap((person, idx) => generateRowCells(idx + 1, person));
 
-  // Rows that are actually used in the grid
-  const gridRows = orderedRows.map((rowDef, index) => {
-    if (index === 0) {
-      return { rowIndex: index, height: rowDef.height, ...(rowDef.reorderable === false && { reorderable: false }) };
-    }
-    return { rowIndex: index, height: rowDef.height };
-  });
-
-  // Columns that are actually used in the grid
-  const gridColumns = columnDefs.map((col, index) => ({
-    colIndex: index,
-    width: col.width,
-  }));
-
-  return { rows: gridRows, columns: gridColumns, cells };
+  return [...headerCells, ...rowCells];
 };
 
 export interface Person {
-  _id: string;
+  id: string;
   name: string;
   age: number;
   email: string;
@@ -129,7 +112,7 @@ export interface Person {
 
 export const peopleArr: Person[] = [
   {
-    _id: "66d61077035753f369ddbb16",
+    id: "66d61077035753f369ddbb16",
     name: "Jordan Rodriquez",
     age: 30,
     email: "jordanrodriquez@cincyr.com",
@@ -137,7 +120,7 @@ export const peopleArr: Person[] = [
     position: 1,
   },
   {
-    _id: "66d61077794e7949ab167fd5",
+    id: "66d61077794e7949ab167fd5",
     email: "allysonrios@satiance.com",
     name: "Allyson Rios",
     age: 30,
@@ -145,7 +128,7 @@ export const peopleArr: Person[] = [
     position: 2,
   },
   {
-    _id: "66d61077dd754e88981ae434",
+    id: "66d61077dd754e88981ae434",
     name: "Pickett Lucas",
     age: 25,
     email: "pickettlucas@zoxy.com",
@@ -153,7 +136,7 @@ export const peopleArr: Person[] = [
     position: 3,
   },
   {
-    _id: "66d61077115e2f8748c334d9",
+    id: "66d61077115e2f8748c334d9",
     name: "Louella David",
     age: 37,
     email: "louelladavid@techade.com",
@@ -161,7 +144,7 @@ export const peopleArr: Person[] = [
     position: 4,
   },
   {
-    _id: "66d61077540d53374b427e4b",
+    id: "66d61077540d53374b427e4b",
     name: "Tricia Greene",
     age: 27,
     email: "triciagreene@ginkogene.com",
@@ -170,7 +153,7 @@ export const peopleArr: Person[] = [
   },
 ];
 
-export const rgStyles = {
+export const rgStyles: RGThemeType = {
   focusIndicator: {
     border: {
       color: "#32a852",
@@ -197,5 +180,11 @@ export const rgStyles = {
   },
   gridWrapper: {
     fontFamily: "Roboto, sans-serif",
+  },
+  paneContainer: {
+    top: {},
+    bottom: {},
+    left: {},
+    right: {},
   },
 };

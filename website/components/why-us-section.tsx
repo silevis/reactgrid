@@ -1,68 +1,139 @@
 import Image from "next/image";
-import illustration1 from "@/public/static/illustration1.svg";
-import illustration2 from "@/public/static/illustration2.svg";
-import illustration3 from "@/public/static/illustration3.svg";
+import feature1 from "@/public/static/feature1.svg";
+import feature2 from "@/public/static/feature2.svg";
+import feature3 from "@/public/static/feature3.svg";
+import feature4 from "@/public/static/feature4.svg";
+import feature5 from "@/public/static/feature5.svg";
+import feature6 from "@/public/static/feature6.svg";
+import feature7 from "@/public/static/feature7.svg";
+import feature8 from "@/public/static/feature8.svg";
+import feature9 from "@/public/static/feature9.svg";
+import BlurFade from "./ui/blur-fade";
+import GridPattern from "./ui/grid-pattern";
+import { cn } from "@/lib/utils";
+
+const featuresList = [
+  {
+    title: "Fill handle",
+    desc: "Clone cell data and its properties with fill handle like in other spreadsheets",
+    icon: feature1,
+    docs: false,
+  },
+  {
+    title: "Spreadsheet-like look and feel",
+    desc: "Clone cell data and its properties with fill handle like in other spreadsheets",
+    icon: feature2,
+    docs: false,
+  },
+  {
+    title: "Area selection",
+    desc: "Choose any area you like",
+    icon: feature3,
+    docs: false,
+  },
+  {
+    title: "Column Resize",
+    desc: "Modify the width of each column with drag&drop capability",
+    icon: feature4,
+    docs: true,
+  },
+  {
+    title: "Column reordering",
+    desc: "Select columns, drag them and drop at the desired destination",
+    icon: feature5,
+    docs: true,
+  },
+  {
+    title: "Row reordering",
+    desc: "Select rows, drag them and drop at the desired destination",
+    icon: feature6,
+    docs: true,
+  },
+  {
+    title: "Sticky columns and rows",
+    desc: "You're able to lock specific rows or columns so that they are always visible when scrolling",
+    icon: feature7,
+    docs: true,
+  },
+  {
+    title: "Copy, cut, paste",
+    desc: "Let users copy/cut/paste data inside the grid and apply changes, then move the data back to where it was taken from",
+    icon: feature8,
+    docs: false,
+  },
+  {
+    title: "Optimized for Touch devices",
+    desc: "ReactGrid is adapted for usage on touch devices",
+    icon: feature9,
+    docs: false,
+  },
+];
 
 export const WhyUsSection = () => {
   return (
     <section>
-      <div className="grid grid-cols-main grid-rows-2 mt-[128px] md:mt-[256px]">
-        <h1 className="col-start-1 col-end-13 sm:col-start-2 sm:col-end-12 xl:col-start-3 xl:col-end-11 text-xl md:text-2xl font-bold text-center text-black-primary">
-          Why is ReactGrid unique?
-        </h1>
-        <p className="col-start-1 col-end-13 sm:col-start-2 sm:col-end-12 xl:col-start-3 xl:col-end-11 text-center text-xs md:text-sm px-4 text-black-secondary">
-          Congue dictum neque, nibh at vel turpis dignissim felis pellentesque.
-          Nulla iaculis faucibus nisi nunc netus dolor.
-        </p>
+      <div className="relative grid grid-cols-main pt-24 md:pt-48 pb-12 md:pb-24 max-w-screen-2xl mx-auto">
+        <BlurFade
+          className="col-start-1 col-end-13 sm:col-start-2 sm:col-end-12 xl:col-start-3 xl:col-end-11"
+          delay={0.1}
+          inView
+        >
+          <h1 className="text-md sm:text-xl md:text-2xl px-4 font-bold text-center bg-gradient-to-t from-green-primary to-green-light bg-clip-text text-transparent z-10">
+            Why is ReactGrid unique?
+          </h1>
+        </BlurFade>
+        <BlurFade
+          className="col-start-1 col-end-13 sm:col-start-2 sm:col-end-12 xl:col-start-3 xl:col-end-11"
+          delay={0.25}
+          inView
+        >
+          <p className="text-center text-xs md:text-sm text-black-secondary px-4 py-4 md:pb-12 z-10">
+            Discover the advanced capabilities of ReactGrid. Leverage its
+            exceptional flexibility, intuitive interface, and comprehensive
+            features to enhance your productivity and streamline your workflow.
+          </p>
+        </BlurFade>
+        <GridPattern
+          width={30}
+          height={30}
+          x={-1}
+          y={-1}
+          strokeDasharray={"4 2"}
+          className={cn(
+            "[mask-image:radial-gradient(300px_circle_at_center,white,transparent)]"
+          )}
+        />
       </div>
-      <div className="grid grid-cols-main mt-[40px]">
-        <div className="col-start-1 col-end-13 sm:col-start-2 sm:col-end-12 xl:col-start-3 xl:col-end-11 flex justify-around xl:justify-between flex-wrap gap-y-16 xl:gap-y-16 xl:gap-x-16">
-          <div className="flex flex-initial xl:flex-1 w-full md:w-[46%] xl:w-auto flex-col items-center gap-y-4">
-            <Image
-              src={illustration1}
-              alt="ReactGrid"
-              width={300}
-              className="w-[150px] md:w-auto"
-            />
-            <h2 className="text-black-primary font-bold text-sm">
-              Open source
-            </h2>
-            <p className="text-black-secondary2 text-center px-4">
-              ReactGrid follows an open-source development model, allowing free
-              access, modification, and distribution of its source code.
-            </p>
-          </div>
-          <div className="flex flex-initial xl:flex-1 w-full md:w-[46%] xl:w-auto flex-col items-center gap-y-4">
-            <Image
-              src={illustration2}
-              alt="ReactGrid"
-              width={300}
-              className="w-[150px] md:w-auto"
-            />
+      <div className="grid grid-cols-main mb-[128px] md:mb-[250px] max-w-screen-2xl mx-auto">
+        <div className="col-start-2 col-end-12 grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-x-16 gap-y-8 xl:gap-y-32">
+          {featuresList.map((feature, index) => {
+            return (
+              <BlurFade
+                key={index}
+                className="col-span-1 flex flex-col items-center gap-y-4 border-2 border-white-primary"
+                delay={0.25}
+                inView
+              >
+                <div className="transform transition-transform duration-200 hover:scale-95">
+                  <Image
+                    src={feature.icon}
+                    alt="ReactGrid"
+                    priority
+                    width={300}
+                    className="w-[150px] md:w-auto"
+                    draggable={false}
+                  />
+                </div>
 
-            <h2 className="text-black-primary font-bold text-sm">
-              Place any cell anywhere
-            </h2>
-            <p className="text-black-secondary2 text-center px-4">
-              ReactGrid is fully customizable and extensible. You can literally
-              place any cell type anywhere in the grid.
-            </p>
-          </div>
-          <div className="flex flex-initial xl:flex-1 w-full md:w-[46%] xl:w-auto flex-col items-center gap-y-4">
-            <Image
-              src={illustration3}
-              alt="ReactGrid"
-              width={300}
-              className="w-[150px] md:w-auto"
-            />
-            <h2 className="text-black-primary font-bold text-sm">
-              Optimized for touch devices
-            </h2>
-            <p className="text-black-secondary2 text-center px-4">
-              ReactGrid gives the same experience to you no matter if you work
-              on desktop or mobile devices.
-            </p>
-          </div>
+                <h2 className="bg-gradient-to-t from-slate-950 to-slate-500 bg-clip-text text-transparent text-center font-bold text-sm">
+                  {feature.title}
+                </h2>
+                <p className="text-black-secondary text-center px-4 md:px-16">
+                  {feature.desc}
+                </p>
+              </BlurFade>
+            );
+          })}
         </div>
       </div>
     </section>

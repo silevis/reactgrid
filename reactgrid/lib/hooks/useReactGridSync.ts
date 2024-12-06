@@ -1,5 +1,4 @@
-import { useEffect, useRef } from "react";
-import { deepCompare } from "../utils/deepCompare";
+import { useEffect } from "react";
 import { CellMatrix } from "../types/CellMatrix";
 import { ReactGridStore, ReactGridStoreProps } from "../types/ReactGridStore";
 import isEqual from "lodash.isequal";
@@ -9,15 +8,9 @@ export const useReactGridSync = (
   cellMatrix: CellMatrix,
   rgProps: Partial<ReactGridStoreProps>
 ) => {
-  const previousGridProps = useRef<Partial<ReactGridStoreProps> | null>(null);
-
-  // sync props with store in case of one of them changes
+  // sync grid props with store
   useEffect(() => {
-    // perform a deep comparison of props to avoid unnecessary updates
-    if (!deepCompare(previousGridProps.current, rgProps)) {
-      store.setExternalData({ ...rgProps });
-      previousGridProps.current = rgProps;
-    }
+    store.setExternalData({ ...rgProps });
   }, [rgProps]);
 
   // sync rows with store

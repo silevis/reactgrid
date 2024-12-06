@@ -27,7 +27,7 @@ export const useInitialFocusLocation = (
           console.error("The provided 'initialFocusLocation' is invalid as it targets !");
       }
 
-      getHiddenTargetFocusByIdx(rowIndex, colIndex)?.focus();
+      getHiddenTargetFocusByIdx(store.id, rowIndex, colIndex)?.focus();
     }
   }, []);
 };

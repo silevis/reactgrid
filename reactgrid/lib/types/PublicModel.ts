@@ -44,7 +44,7 @@ export type Cell = {
 export type CellsLookupCallbacks = {
   rowIndex: number;
   colIndex: number;
-  onStringValueRequsted: () => string;
+  onStringValueRequested: () => string;
   onStringValueReceived: (v: string) => void;
 };
 
@@ -67,6 +67,10 @@ export type CellContextType = {
   /** Internal: provides cell container's style  */
   containerStyle: React.CSSProperties;
 
+  /** Checks if the cell is selected */
+  isSelected: boolean;
+
+  /** Checks if the cell is focused */
   isFocused: boolean;
 };
 
@@ -93,10 +97,12 @@ export type StyledRange = {
   range: Range;
 };
 
+export type RGThemeType = NestedStylesPartial<RGTheme>;
+
 export interface ReactGridProps {
   id?: string;
 
-  styles?: NestedStylesPartial<RGTheme>;
+  styles?: RGThemeType;
 
   styledRanges?: StyledRange[];
 
@@ -114,20 +120,38 @@ export interface ReactGridProps {
   stickyLeftColumns?: number;
 
   enableColumnSelectionOnFirstRow?: boolean;
-
   enableRowSelectionOnFirstColumn?: boolean;
+
+  disableCut?: boolean;
+  disableCopy?: boolean;
+  disablePaste?: boolean;
+  disableFillHandle?: boolean;
 
   behaviors?: Partial<Record<BehaviorId, Behavior>>;
 
   initialFocusLocation?: IndexedLocation;
   initialSelectedRange?: Range;
 
+  moveRightOnEnter?: boolean;
+
   onFocusLocationChanging?: ({ location }: { location: IndexedLocation }) => boolean;
   onFocusLocationChanged?: ({ location }: { location: IndexedLocation }) => void;
-  onFillHandle?: (selectedArea: NumericalRange, fillRange: NumericalRange, cellsLookup: CellsLookup) => void;
-  onCut?: (event: React.ClipboardEvent<HTMLDivElement>, cellsRange: NumericalRange, cellsLookup: CellsLookup) => void;
-  onCopy?: (event: React.ClipboardEvent<HTMLDivElement>, cellsRange: NumericalRange, cellsLookup: CellsLookup) => void;
-  onPaste?: (event: React.ClipboardEvent<HTMLDivElement>, cellsRange: NumericalRange, cellsLookup: CellsLookup) => void;
+  onFillHandle?: (selectedArea: NumericalRange, fillRange: NumericalRange, cellsLookup: CellsLookup) => boolean;
+  onCut?: (
+    event: React.ClipboardEvent<HTMLDivElement>,
+    cellsRange: NumericalRange,
+    cellsLookup: CellsLookup
+  ) => boolean;
+  onCopy?: (
+    event: React.ClipboardEvent<HTMLDivElement>,
+    cellsRange: NumericalRange,
+    cellsLookup: CellsLookup
+  ) => boolean;
+  onPaste?: (
+    event: React.ClipboardEvent<HTMLDivElement>,
+    cellsRange: NumericalRange,
+    cellsLookup: CellsLookup
+  ) => boolean;
   onColumnReorder?: (selectedColIndexes: number[], destinationColIdx: number) => void;
   onRowReorder?: (selectedRowIndexes: number[], destinationRowIdx: number) => void;
   onResizeColumn?: (width: number, columnIdx: number[]) => void;

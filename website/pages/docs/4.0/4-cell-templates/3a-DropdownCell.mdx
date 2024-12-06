@@ -5,34 +5,29 @@ metaTitle: "DropdownCell template"
 metaDescription: "ReactGrid docs"
 ---
 
-This cell renders dropdown from <a href="https://react-select.com/home" target="_blank"> `react-select`</a> package.
+This cell renders dropdown from [react-select](https://react-select.com/home) package.
 
-import { Callout } from 'nextra/components'
-
-<Callout color="warning">
-  
-  Visibility of the dropdown is controlled by the <code style="color:white;">isOpen</code> prop.
-</Callout>
+**Note:** Visibility of the dropdown is controlled by the `isOpen` prop.
 
 #### Implementation
 
-- Open `DropdownCell` implementation on <a href="https://github.com/silevis/reactgrid/blob/develop/src/lib/CellTemplates/DropdownCellTemplate.tsx" target="_blank"> github <i className="fas fa-external-link-alt fa-xs pl-1"></i></a>
+- Open `DropdownCell` implementation on [Github](https://github.com/silevis/reactgrid/blob/develop/src/lib/CellTemplates/DropdownCellTemplate.tsx)
 
 #### Interface declaration
 
 ```ts
 type OptionType = {
-  label: string
-  value: string
-}
+  label: string;
+  value: string;
+};
 
 interface DropdownCell extends Cell {
-  type: "dropdown"
-  selectedValue?: string
-  values: OptionType[]
-  isDisabled?: boolean
-  isOpen?: boolean
-  inputValue?: string
+  type: "dropdown";
+  selectedValue?: string;
+  values: OptionType[];
+  isDisabled?: boolean;
+  isOpen?: boolean;
+  inputValue?: string;
 }
 ```
 

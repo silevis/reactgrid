@@ -5,98 +5,39 @@ metaTitle: "Create your own cell template"
 metaDescription: "ReactGrid docs"
 ---
 
-#### Custom cell templates
+## Custom cell templates
 
-Creating a cell template is the best way to customize data visualization and behaviour in ReactGrid.
-You can define your own one and then use it as other built-in cell types.
+Creating a cell template is the best way to customize data visualization and behavior in ReactGrid.
+You can define your own one and then use it as other built-in cell templates. For example if you want use custom text cell you can copy default [TextCell](/docs/5.0/3-cell-templates/1-text-cell) component and modify it as you want.
 
 The key to implementing a custom cell is integrating it with the `CellWrapper`, which handles communication between the cell and ReactGrid.
 
-In this example, we will create a custom `DateCell` template:
+```tsx
+<CellWrapper
+  onStringValueRequested={() => value?.toString() || ""}
+  onStringValueReceived={() => {
+    // Logic to update the cell value during operations like cut, copy, paste or fill
+  }}
+>
+  {/* Render cell content here */}
+</CellWrapper>
+```
+
+`onStringValueRequested` and `onStringValueReceived` are required props for the `CellWrapper` component. These props handle retrieving and updating cell values through the [cellsLookup](/docs/5.0/6-api/1-types/4-cells-lookup).
 
 ```tsx
-import React, { FC, useRef, useState, CSSProperties } from "react";
-import { CellWrapper, useCellContext } from "@silevis/reactgrid";
-import moment, { Moment } from "moment";
-
-const inputStyle: CSSProperties = {
-  boxSizing: "border-box",
-  textAlign: "center",
-  width: "100%",
-  height: "100%",
-  background: "transparent",
-  border: "none",
-  padding: 0,
-  outline: "none",
-  color: "inherit",
-  fontSize: "inherit",
-  fontFamily: "inherit",
-};
-
-interface DateCellProps {
-  value: Moment;
-  onValueChanged: (data: Moment) => void;
-}
-
-export const DateCell: FC<DateCellProps> = ({ value, onValueChanged }) => {
-  const ctx = useCellContext();
-  const targetInputRef = useRef<HTMLInputElement>(null);
-  const [isEditMode, setEditMode] = useState(false);
-
-  let formattedDate: string | undefined;
-
-  if (!value) {
-    formattedDate = "";
-  } else {
-    formattedDate = value.format("DD-MM-YYYY");
-  }
-
-  return (
-    <CellWrapper
-      onStringValueRequsted={() => value.toDate().toDateString()}
-      onStringValueReceived={(v) => onValueChanged?.(moment(v))}
-      style={{ padding: ".2rem", textAlign: "center", outline: "none" }}
-      onDoubleClick={() => {
-        ctx.isFocused && setEditMode(true);
-      }}
-      onKeyDown={(e) => {
-        if (!isEditMode && e.key === "Enter") {
-          e.stopPropagation();
-          setEditMode(true);
-        }
-      }}
-    >
-      {isEditMode ? (
-        <input
-          type="date"
-          defaultValue={value.format("YYYY-MM-DD")}
-          style={inputStyle}
-          onBlur={(e) => {
-            const changedDate = e.currentTarget.value;
-            changedDate && onValueChanged(moment(e.currentTarget.value));
-            setEditMode(false);
-          }}
-          onPointerDown={(e) => e.stopPropagation()}
-          onKeyDown={(e) => {
-            if (e.key === "Escape") {
-              setEditMode(false);
-            } else if (e.key === "Enter") {
-              onValueChanged(moment(e.currentTarget.value));
-              setEditMode(false);
-            }
-          }}
-          autoFocus
-          ref={targetInputRef}
-        />
-      ) : (
-        formattedDate
-      )}
-    </CellWrapper>
-  );
+type CellWrapperProps = React.HTMLAttributes<HTMLDivElement> & {
+  onStringValueRequested: () => string;
+  onStringValueReceived: (v: string) => void;
+  children?: React.ReactNode;
 };
 ```
 
-### Live Demo
+When creating your own cell template, you can also use the [useCellContext](/docs/5.0/6-api/2-hooks/2-usecellcontext) hook to get details about a specific cell.
+
+#### Example
+
+<div style={{ marginBottom: 25 }}>Let's create a custom `DateCell` template:</div>
 
 import LiveCode from "@/nextra/components/LiveCode.tsx";
 import React, { useState, useRef } from "react";
@@ -124,218 +65,228 @@ import moment from "moment";
     Cell,
     CellWrapper, 
     useCellContext,
-    moment,
+    moment
   }}
   code={`
-const peopleArr = [
+const peopleData = [
   {
-    _id: "66d61077035753f369ddbb16",
+    id: "66d61077035753f369ddbb16",
     name: "Jordan Rodriquez",
     birth: moment("1991-01-01"),
     email: "jordanrodriquez@cincyr.com",
     company: "Zaggles",
-    position: 1,
   },
   {
-    _id: "66d61077794e7949ab167fd5",
+    id: "66d61077794e7949ab167fd5",
     email: "allysonrios@satiance.com",
     name: "Allyson Rios",
     birth: moment("1991-01-01"),
     company: "Zoxy",
-    position: 2,
   },
   {
-    _id: "66d61077dd754e88981ae434",
+    id: "66d61077dd754e88981ae434",
     name: "Pickett Lucas",
     birth: moment("1996-01-01"),
     email: "pickettlucas@zoxy.com",
     company: "Techade",
-    position: 3,
   },
   {
-    _id: "66d61077115e2f8748c334d9",
+    id: "66d61077115e2f8748c334d9",
     name: "Louella David",
     birth: moment("1984-01-01"),
     email: "louelladavid@techade.com",
     company: "Ginkogene",
-    position: 4,
   },
   {
-    _id: "66d61077540d53374b427e4b",
+    id: "66d61077540d53374b427e4b",
     name: "Tricia Greene",
     birth: moment("1994-01-01"),
     email: "triciagreene@ginkogene.com",
     company: "Naxdis",
-    position: 5,
   },
 ];
 
-const inputStyle: CSSProperties = {
-  boxSizing: "border-box",
-  textAlign: "center",
-  width: "100%",
-  height: "100%",
-  background: "transparent",
-  border: "none",
-  padding: 0,
-  outline: "none",
-  color: "inherit",
-  fontSize: "inherit",
-  fontFamily: "inherit",
-};
-
 interface DateCellProps {
-  value: Moment;
-  onValueChanged: (data: Moment) => void;
+    value: Moment;
+    onValueChanged: (data: Moment) => void;
 }
 
 const DateCell: FC<DateCellProps> = ({ value, onValueChanged }) => {
-  const ctx = useCellContext();
-  const targetInputRef = useRef<HTMLInputElement>(null);
-  const [isEditMode, setEditMode] = useState(false);
+    const ctx = useCellContext();
+    const targetInputRef = useRef<HTMLInputElement>(null);
+    const [isEditMode, setEditMode] = useState(false);
 
-  let formattedDate: string | undefined;
+    let formattedDate: string | undefined;
 
-  if (!value) {
-    formattedDate = "";
-  } else {
-    formattedDate = value.format("DD-MM-YYYY");
-  }
+    if (!value) {
+        formattedDate = "";
+    } else {
+        formattedDate = value.format("DD-MM-YYYY");
+    }
 
-  return (
-    <CellWrapper
-      onStringValueRequsted={() => value.toDate().toDateString()}
-      onStringValueReceived={(v) => onValueChanged?.(moment(v))}
-      style={{ padding: ".2rem", textAlign: "center", outline: "none" }}
-      onDoubleClick={() => {
-        ctx.isFocused && setEditMode(true);
-      }}
-      onKeyDown={(e) => {
-        if (!isEditMode && e.key === "Enter") {
-          e.stopPropagation();
-          setEditMode(true);
-        }
-      }}
-    >
-      {isEditMode ? (
-        <input
-          type="date"
-          defaultValue={value.format("YYYY-MM-DD")}
-          style={inputStyle}
-          onBlur={(e) => {
-            const changedDate = e.currentTarget.value;
-            changedDate && onValueChanged(moment(e.currentTarget.value));
-            setEditMode(false);
-          }}
-          onPointerDown={(e) => e.stopPropagation()}
-          onKeyDown={(e) => {
-            if (e.key === "Escape") {
-              setEditMode(false);
-            } else if (e.key === "Enter") {
-              onValueChanged(moment(e.currentTarget.value));
-              setEditMode(false);
-            }
-          }}
-          autoFocus
-          ref={targetInputRef}
-        />
-      ) : (
-        formattedDate
-      )}
-    </CellWrapper>
-  );
+    return (
+        <CellWrapper
+            onStringValueRequested={() => value.toDate().toDateString()}
+            onStringValueReceived={(v) => onValueChanged?.(moment(v))}
+            style={{ padding: ".2rem", textAlign: "center", outline: "none" }}
+            onDoubleClick={() => {
+                ctx.isFocused && setEditMode(true);
+            }}
+            onKeyDown={(e) => {
+                if (!isEditMode && e.key === "Enter") {
+                    e.stopPropagation();
+                    setEditMode(true);
+                }
+            }}
+        >
+            {isEditMode ? (
+                <input
+                    className="rg-input"
+                    type="date"
+                    defaultValue={value.format("YYYY-MM-DD")}
+                    onBlur={(e) => {
+                        const changedDate = e.currentTarget.value;
+                        changedDate && onValueChanged(moment(e.currentTarget.value));
+                        setEditMode(false);
+                    }}
+                    onPointerDown={(e) => e.stopPropagation()}
+                    onKeyDown={(e) => {
+                        if (e.key === "Escape") {
+                            setEditMode(false);
+                        } else if (e.key === "Enter") {
+                            onValueChanged(moment(e.currentTarget.value));
+                            setEditMode(false);
+                        }
+                    }}
+                    autoFocus
+                    ref={targetInputRef}
+                />
+            ) : (
+                formattedDate
+            )}
+        </CellWrapper>
+    );
 };
 
-const CustomCellExample = () => {
-  const [people, setPeople] = useState(peopleArr);
+const cellStyles = {
+  header: {
+    backgroundColor: "#55bc71",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    fontWeight: "bold",
+  },
+};
 
-  const columnDefs = Object.keys(peopleArr[0]).reduce((acc, peopleKey, idx) => {
-    if (["_id", "position"].includes(peopleKey)) return acc;
-    const cellTemplate = peopleKey === "birth" ? DateCell : TextCell;
-    return [...acc, { title: peopleKey, width: 250, cellTemplate }];
-  }, []);
+const getRows = (people: Person[]): Row[] => [
+  // header row
+  {
+    rowIndex: 0,
+    height: 40,
+  },
+  // data rows
+  ...people.map((_, i) => ({
+    rowIndex: i + 1,
+    height: 40,
+  })),
+];
+
+const getColumns = (): Column[] => [
+  { colIndex: 0, width: 220 },
+  { colIndex: 1, width: 220 },
+  { colIndex: 2, width: 220 },
+  { colIndex: 3, width: 220 },
+];
+
+type UpdatePerson = <T>(id: string, key: string, newValue: T) => void;
+
+const generateCells = (people: Person[], updatePerson: UpdatePerson): Cell[] => {
+  const generateHeaderCells = () => {
+    const titles = ["Name", "Birth", "Email", "Company"];
+
+    return titles.map((title, colIndex) => ({
+      rowIndex: 0,
+      colIndex,
+      Template: NonEditableCell,
+      props: {
+        value: title,
+        style: cellStyles.header,
+      },
+    }));
+  };
+
+  const generateRowCells = (rowIndex: number, person: Person): Cell[] => {
+    const { id, name, birth, email, company } = person;
+
+    return [
+      {
+        rowIndex,
+        colIndex: 0,
+        Template: TextCell,
+        props: {
+          text: name,
+          onTextChanged: (newText: string) => updatePerson(id, "name", newText),
+        },
+      },
+      {
+        rowIndex,
+        colIndex: 1,
+        Template: DateCell,
+        props: {
+          value: birth,
+          onValueChanged: (newValue: number) => updatePerson(id, "birth", newValue),
+        },
+      },
+      {
+        rowIndex,
+        colIndex: 2,
+        Template: TextCell,
+        props: {
+          text: email,
+          onTextChanged: (newText: string) => updatePerson(id, "email", newText),
+        },
+      },
+      {
+        rowIndex,
+        colIndex: 3,
+        Template: TextCell,
+        props: {
+          text: company,
+          onTextChanged: (newText: string) => updatePerson(id, "company", newText),
+        },
+      },
+    ];
+  };
+
+  const headerCells = generateHeaderCells();
+  const rowCells = people.flatMap((person, idx) => generateRowCells(idx + 1, person));
+  return [...headerCells, ...rowCells];
+};
+
+const ReactGridExample = () => {
+  const [people, setPeople] = useState(peopleData);
 
   const updatePerson = (id, key, newValue) => {
     setPeople((prev) => {
-      return prev.map((p) => (p._id !== id ? p : { ...p, [key]: newValue }));
+      return prev.map((p) => (p.id === id ? { ...p, [key]: newValue } : p));
     });
   };
 
-  const gridRows = Array.from({ length: people.length + 1 }, (_, i) => ({
-    rowIndex: i,
-    height: 40,
-  }));
-
-  const gridColumns = columnDefs.map((col, index) => ({
-    colIndex: index,
-    width: col.width,
-  }));
-
-  const cells = [];
-
-  gridRows.forEach((row, rowIndex) => {
-    const personRowIndex = row.rowIndex;
-
-    if (rowIndex === 0) {
-      columnDefs.forEach((col, colIndex) => {
-        cells.push({
-          rowIndex,
-          colIndex,
-          Template: NonEditableCell,
-          props: {
-            value: col.title,
-            style: {
-              backgroundColor: "#55bc71",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              fontWeight: "bold",
-            },
-          },
-          isSelectable: false,
-        });
-      });
-    } else {
-      const personCells = columnDefs.map((col) => {
-        const dateCellProps = {
-          onValueChanged: (newValue) => {
-            updatePerson(people[personRowIndex - 1]._id, col.title, newValue);
-          },
-          value: people[personRowIndex - 1][col.title.toLowerCase()],
-        };
-
-        const textCellProps = {
-          text: people[personRowIndex - 1][col.title.toLowerCase()],
-          onTextChanged: (newText) => {
-            updatePerson(people[personRowIndex - 1]._id, col.title, newText);
-          },
-        };
-
-        return {
-          Template: col.cellTemplate,
-          props: col.title === "birth" ? dateCellProps : textCellProps,
-        };
-      });
-
-      columnDefs.forEach((_, colIndex) => {
-        cells.push({
-          rowIndex,
-          colIndex,
-          ...personCells[colIndex],
-        });
-      });
-    }
-  });
+  const rows = getRows(people);
+  const columns = getColumns();
+  const cells = generateCells(people, updatePerson);
 
   return (
-    <ReactGrid
-      rows={gridRows}
-      columns={gridColumns}
-      cells={cells}
-    />
+    <div>
+      <ReactGrid
+        rows={rows}
+        columns={columns}
+        cells={cells}
+      />
+    </div>
   );
 };
 
-render(<CustomCellExample />, document.getElementById("root"));
+render(<ReactGridExample />, document.getElementById("root"));
 `}
 />

@@ -27,9 +27,129 @@ you have passed `enableGroupIdRender` property:
 `groupId` property is available in every cell template because it's provided by [`Cell`](/docs/3.1/7-api/0-interfaces/4-cell/)
 interface. 
 
+import LiveCode from "@/nextra/components/LiveCode.tsx";
+import { ReactGrid, Column, Row, CellChange, MenuOption, SelectionMode, Id } from "@silevis/reactgrid-3.1";
+import "@silevis/reactgrid-3.1/styles.css";
+
 #### Live example
 
 An example shows that a few cells were marked with `group: A` or `group: B` *group Id*.
 Try and select any range and then copy and paste or use fill handle to clone data. 
 
-<GroupIdSample />
+<LiveCode
+scope={{ ReactGrid, Column, Row, CellChange, MenuOption, SelectionMode, Id }}
+code={`
+const GroupIdSample: React.FC = () => {
+    const [columns] = React.useState<Column[]>(() => [
+        { columnId: "Name", width: 200 },
+        { columnId: "Surname" },
+        { columnId: "Birth Data", width: 100 },
+    ]);
+
+    const [rows, setRows] = React.useState<Row[]>(() => [
+        {
+            rowId: 0,
+            cells: [
+                { type: "header", text: 'Name' },
+                { type: "header", text: "Surname" },
+                { type: "header", text: "Birth Data" },
+            ]
+        },
+        {
+            rowId: 1,
+            cells: [
+                { type: "text", text: "Thomas Anthony", groupId: 'group: A' },
+                { type: "text", text: "Goldman", groupId: 'group: B' },
+                { type: "date", date: new Date("1989-04-01") },
+            ]
+        },
+        {
+            rowId: 2,
+            cells: [
+                { type: "text", text: "Susie Evelyn", groupId: 'group: A' },
+                { type: "text", text: "Spencer", groupId: 'group: B' },
+                { type: "date", date: new Date("1967-11-02") },
+            ]
+        },
+        {
+            rowId: 3,
+            cells: [
+                { type: "text", text: "Nancy" },
+                { type: "text", text: "Gibbons", groupId: 'group: C' },
+                { type: "date", date: new Date("1976-02-08") },
+            ]
+        },
+        {
+            rowId: 4,
+            cells: [
+                { type: "text", text: "Jose" },
+                { type: "text", text: "Bell", groupId: 'group: C' },
+                { type: "date", date: new Date("1966-10-12") },
+            ]
+        },
+        {
+            rowId: 5,
+            cells: [
+                { type: "text", text: "Jim", groupId: 'group: A' },
+                { type: "text", text: "Hurst", groupId: 'group: C' },
+                { type: "date", date: new Date("1976-08-30") },
+            ]
+        },
+        {
+            rowId: 6,
+            cells: [
+                { type: "text", text: "Laura" },
+                { type: "text", text: "Pepper", groupId: 'group: C' },
+                { type: "date", date: new Date("1956-05-01") },
+            ]
+        },
+        {
+            rowId: 7,
+            cells: [
+                { type: "text", text: "Sandra" },
+                { type: "text", text: "Pollock", groupId: 'group: C' },
+                { type: "date", date: new Date("1956-05-01") },
+            ]
+        },
+        {
+            rowId: 8,
+            cells: [
+                { type: "text", text: "" },
+                { type: "text", text: "" },
+                { type: "date", date: undefined },
+            ]
+        }
+    ]);
+
+    const handleContextMenu = (selectedRowIds: Id[], selectedColIds: Id[], selectionMode: SelectionMode, menuOptions: MenuOption[]): MenuOption[] => {
+        return menuOptions;
+    }
+
+    const handleChanges = (changes: CellChange[]) => {
+        setRows((prevRows) => {
+            changes.forEach(change => {
+                const changeRowIdx = prevRows.findIndex(el => el.rowId === change.rowId);
+                const changeColumnIdx = columns.findIndex(el => el.columnId === change.columnId);
+                prevRows[changeRowIdx].cells[changeColumnIdx] = change.newCell;
+            });
+            return [...prevRows];
+        });
+    };
+
+    return (
+        <ReactGrid
+            rows={rows}
+            columns={columns}
+            onCellsChanged={handleChanges}
+            onContextMenu={handleContextMenu}
+            enableFillHandle
+            enableRangeSelection
+            enableGroupIdRender
+        />
+    );
+}
+
+render(<GroupIdSample />, document.getElementById("root"));
+`
+}
+/>

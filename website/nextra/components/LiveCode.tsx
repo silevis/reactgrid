@@ -1,5 +1,6 @@
 import PreviewWindow from "@/components/preview-window";
 import { LiveProvider, LiveEditor, LiveError, LivePreview } from "react-live";
+import { Highlight, themes } from 'prism-react-renderer'
 // Import Head from 'next/head' if you haven't already
 
 /**
@@ -42,7 +43,7 @@ export default function LiveCode({
       noInline={noInline}
       scope={scope}
       code={code}
-      language={language}
+      language={language || "javascript"}
       disabled={disabled}
     >
       <div

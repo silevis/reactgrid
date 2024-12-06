@@ -1,10 +1,11 @@
-import theme from "../assets/theme";
 import { ResizeColumnBehavior } from "../behaviors/ResizeColumnBehavior";
+import { useTheme } from "../hooks/useTheme";
 import { useReactGridStore } from "../utils/reactGridStore";
 import { useCellContext } from "./CellContext";
 import { useReactGridId } from "./ReactGridIdProvider";
 
 export const ColumnResizeBadge = () => {
+  const theme = useTheme();
   const id = useReactGridId();
   const ctx = useCellContext();
 

@@ -12,7 +12,8 @@ import {
 import { ColumnMeasurement } from "../types/ColumnMeasurement";
 import { getCellArea } from "../utils/getCellArea";
 import { isSpanMember } from "../utils/isSpanMember";
-import { getNumberFromPixelString } from "../utils/getNumberFromPixelValueString";
+import { getValueFromPixelString } from "../utils/getValueFromPixelString";
+import { PaneShadow } from "./PaneShadow";
 
 interface PanesRendererProps {
   rowAmount: number;
@@ -192,33 +193,29 @@ const PanesRenderer: FC<PanesRendererProps> = ({
     let colIndexOffset = 0;
 
     do {
+      const cell = store.getCellByIndexes(rowIndex, colIndexOffset);
+
+      if (!cell) {
+        colIndexOffset++;
+        continue;
+      }
+
       const cellElement = gridContainerRef.current.getElementsByClassName(
-        `rgRowIdx-${rowIndex} rgColIdx-${colIndexOffset}`
+        `rgRowIdx-${cell.rowIndex} rgColIdx-${cell.colIndex}`
       )[0];
 
       if (cellElement) {
-        const cellElementStyle = window.getComputedStyle(cellElement);
-        // If the cell is spanned skip it and look for another one...
-        if (cellElementStyle.gridRowEnd.includes("span")) {
-          colIndexOffset += parseInt(cellElementStyle.gridRowEnd.split(" ").at(-1) ?? "1");
-          continue;
-        }
-
-        // ...else, get real (px) cell height and top offset (which represents _row_ height and offset in this context)...
         const rowHeight = cellElement.getBoundingClientRect().height;
         const rowOffset =
           rowIndex === 0
             ? gapWidth
             : rowsMeasurements[rowIndex - 1].offsetTop + rowsMeasurements[rowIndex - 1].height + gapWidth;
 
-        // ...and store those measurements in the array
         rowsMeasurements.push({ height: rowHeight, offsetTop: rowOffset });
 
-        // Reset col index offset and increment rowIndex
         colIndexOffset = 0;
         rowIndex++;
 
-        // In the end register the element in the observer (required for the measurements to update on cell resize)
         resizeObserver.current.observe(cellElement);
         continue;
       }
@@ -244,19 +241,18 @@ const PanesRenderer: FC<PanesRendererProps> = ({
     let rowIndexOffset = 0;
 
     do {
+      const cell = store.getCellByIndexes(rowIndexOffset, colIndex);
+
+      if (!cell) {
+        rowIndexOffset++;
+        continue;
+      }
+
       const cellElement = gridContainerRef.current.getElementsByClassName(
-        `rgColIdx-${colIndex} rgRowIdx-${rowIndexOffset}`
+        `rgColIdx-${cell.colIndex} rgRowIdx-${cell.rowIndex}`
       )[0];
 
       if (cellElement) {
-        const cellElementStyle = window.getComputedStyle(cellElement);
-        // If the cell is spanned skip it and look for another one...
-        if (cellElementStyle.gridColumnEnd.includes("span")) {
-          rowIndexOffset += parseInt(cellElementStyle.gridColumnEnd.split(" ").at(-1) ?? "1");
-          continue;
-        }
-
-        // ...else, get real (px) cell width and left offset (which represents _col_ width and offset in this context)...
         const colWidth = cellElement.getBoundingClientRect().width;
         const colOffset =
           colIndex === 0
@@ -266,11 +262,9 @@ const PanesRenderer: FC<PanesRendererProps> = ({
         // ...and store those measurements in the array
         colMeasurements.push({ width: colWidth, offsetLeft: colOffset });
 
-        // Reset row index offset and increment colIndex
         rowIndexOffset = 0;
         colIndex++;
 
-        // In the end register the element in the observer (required for the measurements to update on cell resize)
         resizeObserver.current.observe(cellElement);
         continue;
       }
@@ -282,6 +276,11 @@ const PanesRenderer: FC<PanesRendererProps> = ({
     return colMeasurements;
   };
 
+  const topPaneBackground = theme.paneContainer.top.background;
+  const bottomPaneBackground = theme.paneContainer.bottom.background;
+  const leftPaneBackground = theme.paneContainer.left.background;
+  const rightPaneBackground = theme.paneContainer.right.background;
+
   return (
     <div
       css={{
@@ -292,7 +291,7 @@ const PanesRenderer: FC<PanesRendererProps> = ({
           paddingLeft: theme.cellContainer.padding.left,
           paddingBottom: theme.cellContainer.padding.bottom,
           paddingRight: theme.cellContainer.padding.right,
-          backgroundColor: "white",
+          backgroundColor: theme.cellContainer.background,
         },
       }}
     >
@@ -302,30 +301,40 @@ const PanesRenderer: FC<PanesRendererProps> = ({
           display: "grid",
           gridTemplateColumns: columns
             .map(({ width, minWidth }) => {
-              const widthValue = getNumberFromPixelString(width);
-              const minWidthValue = getNumberFromPixelString(minWidth ?? 0);
+              const widthValue = getValueFromPixelString(width);
+              const minWidthValue = getValueFromPixelString(minWidth ?? 0);
 
               return widthValue < minWidthValue ? `${minWidthValue}px` : `${widthValue}px`;
             })
             .join(" "),
           gridTemplateRows: rows.map(({ height }) => (typeof height === "number" ? `${height}px` : height)).join(" "),
-          gap: theme.grid.gap.width,
-          backgroundColor: theme.grid.gap.color,
-          padding: theme.grid.gap.width,
+          gap: theme.gap.width,
+          backgroundColor: theme.gap.color,
+          padding: theme.gap.width,
         }}
         ref={gridContainerRef}
       >
         <Pane paneName="Center" gridContentRange={ranges.Center} />
+        <PaneShadow
+          paneShadowName="Bottom"
+          gridContentRange={{ ...ranges.BottomCenter, startColIdx: 0, endColIdx: columnAmount }}
+          shouldRender={stickyBottomRows > 0 && !!theme.paneContainer.bottom.boxShadow}
+        />
         <Pane
           paneName="BottomCenter"
           gridContentRange={ranges.BottomCenter}
           stickyOffsets={stickyOffsets}
           getCellOffset={(rowIndex, _colIndex, rowSpan) => ({
             position: "sticky",
-            backgroundColor: theme.paneContainer.bottom.background,
+            ...(bottomPaneBackground && { backgroundColor: bottomPaneBackground }),
             bottom: stickyOffsets.bottomRows.at(-rowIndex - rowSpan),
           })}
           shouldRender={stickyBottomRows > 0}
+        />
+        <PaneShadow
+          paneShadowName="Top"
+          gridContentRange={{ ...ranges.TopCenter, startColIdx: 0, endColIdx: columnAmount }}
+          shouldRender={stickyTopRows > 0 && !!theme.paneContainer.top.boxShadow}
         />
         <Pane
           paneName="TopCenter"
@@ -333,10 +342,15 @@ const PanesRenderer: FC<PanesRendererProps> = ({
           stickyOffsets={stickyOffsets}
           getCellOffset={(rowIndex) => ({
             position: "sticky",
-            backgroundColor: theme.paneContainer.top.background,
+            ...(topPaneBackground && { backgroundColor: topPaneBackground }),
             top: stickyOffsets.topRows[rowIndex],
           })}
           shouldRender={stickyTopRows > 0}
+        />
+        <PaneShadow
+          paneShadowName="Right"
+          gridContentRange={{ ...ranges.Right, startRowIdx: 0, endRowIdx: rowAmount }}
+          shouldRender={stickyRightColumns > 0 && !!theme.paneContainer.right.boxShadow}
         />
         <Pane
           paneName="Right"
@@ -344,10 +358,15 @@ const PanesRenderer: FC<PanesRendererProps> = ({
           stickyOffsets={stickyOffsets}
           getCellOffset={(_rowIndex, colIndex, _rowSpan, colSpan) => ({
             position: "sticky",
-            backgroundColor: theme.paneContainer.right.background,
+            ...(rightPaneBackground && { backgroundColor: rightPaneBackground }),
             right: stickyOffsets.rightColumns.at(-colIndex - colSpan),
           })}
           shouldRender={stickyRightColumns > 0}
+        />
+        <PaneShadow
+          paneShadowName="Left"
+          gridContentRange={{ ...ranges.Left, startRowIdx: 0, endRowIdx: rowAmount }}
+          shouldRender={stickyLeftColumns > 0 && !!theme.paneContainer.left.boxShadow}
         />
         <Pane
           paneName="Left"
@@ -355,7 +374,7 @@ const PanesRenderer: FC<PanesRendererProps> = ({
           stickyOffsets={stickyOffsets}
           getCellOffset={(_rowIndex, colIndex) => ({
             position: "sticky",
-            backgroundColor: theme.paneContainer.left.background,
+            ...(leftPaneBackground && { backgroundColor: leftPaneBackground }),
             left: stickyOffsets.leftColumns[colIndex],
           })}
           shouldRender={stickyLeftColumns > 0}
@@ -366,7 +385,7 @@ const PanesRenderer: FC<PanesRendererProps> = ({
           stickyOffsets={stickyOffsets}
           getCellOffset={(rowIndex, colIndex, rowSpan, colSpan) => ({
             position: "sticky",
-            backgroundColor: theme.paneContainer.bottom.background,
+            ...(bottomPaneBackground && { backgroundColor: bottomPaneBackground }),
             bottom: stickyOffsets.bottomRows.at(-rowIndex - rowSpan),
             right: stickyOffsets.rightColumns.at(-colIndex - colSpan),
           })}
@@ -378,7 +397,7 @@ const PanesRenderer: FC<PanesRendererProps> = ({
           stickyOffsets={stickyOffsets}
           getCellOffset={(rowIndex, colIndex, rowSpan) => ({
             position: "sticky",
-            backgroundColor: theme.paneContainer.bottom.background,
+            ...(bottomPaneBackground && { backgroundColor: bottomPaneBackground }),
             bottom: stickyOffsets.bottomRows.at(-rowIndex - rowSpan),
             left: stickyOffsets.leftColumns[colIndex],
           })}
@@ -390,7 +409,7 @@ const PanesRenderer: FC<PanesRendererProps> = ({
           stickyOffsets={stickyOffsets}
           getCellOffset={(rowIndex, colIndex, _rowSpan, colSpan) => ({
             position: "sticky",
-            backgroundColor: theme.paneContainer.top.background,
+            ...(topPaneBackground && { backgroundColor: topPaneBackground }),
             top: stickyOffsets.topRows[rowIndex],
             right: stickyOffsets.rightColumns.at(-colIndex - colSpan),
           })}
@@ -402,7 +421,7 @@ const PanesRenderer: FC<PanesRendererProps> = ({
           stickyOffsets={stickyOffsets}
           getCellOffset={(rowIndex, colIndex) => ({
             position: "sticky",
-            backgroundColor: theme.paneContainer.top.background,
+            ...(topPaneBackground && { backgroundColor: topPaneBackground }),
             top: stickyOffsets.topRows[rowIndex],
             left: stickyOffsets.leftColumns[colIndex],
           })}

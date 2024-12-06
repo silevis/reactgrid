@@ -1,4 +1,4 @@
-import { Column } from '@silevis/reactgrid';
+import { Column } from '@silevis/reactgrid-4';
 export const columns = (reorderable: boolean, resizable: boolean): Column[] => [
   { columnId: 'company', reorderable, resizable, width: 130 }, // text
   { columnId: 'country', reorderable, resizable, width: 70 }, // flag
@@ -7,3 +7,6 @@ export const columns = (reorderable: boolean, resizable: boolean): Column[] => [
   { columnId: 'rate', reorderable, resizable, width: 140 }, // rate
 ];
 
+export default function Def() {
+  return null;
+}
