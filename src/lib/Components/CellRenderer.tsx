@@ -134,7 +134,7 @@ export const CellRenderer: React.FC<CellRendererProps> = ({
             })}
         >
             {cellTemplate.render(cellToRender, isMobile ? isInEditMode : false, onCellChanged)}
-            {(location.row.idx === 0 || cell.type === 'header')&& location.column.resizable && <ResizeHandle />}
+            {(location.row.idx === 0 || cell.type === 'header' && state.props?.enableColumnResizeOnAllHeaders) && location.column.resizable && <ResizeHandle />}
             {state.enableGroupIdRender && cell?.groupId !== undefined && !(isInEditMode && isMobile) && (
                 <span className="rg-groupId">{cell.groupId}</span>
             )}
