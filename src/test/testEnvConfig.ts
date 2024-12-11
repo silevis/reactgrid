@@ -8,6 +8,7 @@ export const config: TestConfig = {
     pinToBody: false,
     additionalContent: false,
     flexRow: false,
+    enableColumnResizeOnAllHeaders: false,
 
     rgViewportHeight: 600,
     rgViewportWidth: 1150,
@@ -196,6 +197,8 @@ export interface TestConfig {
     pinToBody: boolean;
     additionalContent: boolean;
     flexRow: boolean;
+
+    enableColumnResizeOnAllHeaders: boolean;
 
     rgViewportHeight: number;
     rgViewportWidth: number;

@@ -549,6 +549,7 @@ export const TestGrid: React.FC<TestGridProps> = (props) => {
                   rows={rows}
                   columns={columns}
                   initialFocusLocation={config.initialFocusLocation}
+                  enableColumnResizeOnAllHeaders={config.enableColumnResizeOnAllHeaders}
                   focusLocation={enableFrozenFocus ? config.focusLocation : undefined}
                   // onCellsChanged={handleChangesTest2} // TODO This handler should be allowed
                   onCellsChanged={handleChanges}
