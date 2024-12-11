@@ -1,0 +1,28 @@
+---
+posttype: "docs"
+title: isValidKey
+metaTitle: "isValidKey function"
+metaDescription: "isValidKey function"
+---
+
+## isValidKey Function
+
+The `isValidKey` function checks if a keyboard event is triggered by a valid key without any specified invalid keys or modifier keys. This function is particularly useful when you want to prevent entering edit mode for a cell on certain keys.
+
+
+```ts
+type isValidKey = (event: React.KeyboardEvent, invalidKeys?: string[]) => boolean;
+```
+
+### Parameters
+
+| Parameter   | Type                   | Description                                                                 |
+|-------------|------------------------|-----------------------------------------------------------------------------|
+| `event`         | `React.KeyboardEvent`  | The keyboard event to check.                                                |
+| `invalidKeys` | `string[]` (optional) | An optional array of additional keys that should be considered invalid.     |
+
+### Returns
+
+| Type    | Description                                                                 |
+|---------|-----------------------------------------------------------------------------|
+| `boolean` | **true** if the event is triggered by a valid key without any specified invalid keys or modifier keys, **false** otherwise. |

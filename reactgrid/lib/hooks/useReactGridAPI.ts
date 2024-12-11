@@ -1,5 +1,5 @@
 import { FocusedCell, IndexedLocation, PaneName, SpanMember } from "../types/InternalModel.ts";
-import { Cell, CellsLookup, NumericalRange } from "../types/PublicModel.ts";
+import { Cell, CellsLookup, Column, NumericalRange, Row } from "../types/PublicModel.ts";
 import isDevEnvironment from "../utils/isDevEnvironment.ts";
 import { ReactGridStore } from "../types/ReactGridStore.ts";
 import { useReactGridStoreApi } from "../utils/reactGridStore.ts";
@@ -20,6 +20,8 @@ export interface ReactGridAPI {
   getPaneRanges: () => Record<PaneName, NumericalRange>;
   getCellsLookup: () => CellsLookup;
   getSelectedArea: () => NumericalRange | null;
+  getColumns: () => Column[];
+  getRows: () => Row[];
 }
 
 /**
@@ -113,6 +115,18 @@ export function useReactGridAPI(id: string): ReactGridAPI | undefined {
        * @returns The selected area.
        */
       getSelectedArea: store.getSelectedArea,
+
+      /**
+       * Get the rows in the ReactGrid.
+       * @returns Row[]
+       */
+      getRows: () => store.rows,
+
+      /**
+       * Get the columns in the ReactGrid.
+       * @returns Column[]
+       */
+      getColumns: () => store.columns,
     };
   });
 }

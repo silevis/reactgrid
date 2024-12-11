@@ -6,4 +6,11 @@ const withNextra = require("nextra")({
   themeConfig: "./nextra/theme.config.jsx",
 });
 
-module.exports = withNextra();
+module.exports = withNextra({
+  output: "export",
+  images: {
+    loader: "akamai",
+    path: "",
+  },
+  basePath: "/reactgrid",
+});

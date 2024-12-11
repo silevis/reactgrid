@@ -15,6 +15,7 @@ type ReactGridStores = Record<string, StoreApi<ReactGridStore>>;
 export const reactGridStores = create<ReactGridStores>(() => ({}));
 
 const DEFAULT_STORE_PROPS: ReactGridStoreProps = {
+  id: "",
   // fields passed by the user
   rows: [],
   columns: [],
@@ -46,6 +47,8 @@ const DEFAULT_STORE_PROPS: ReactGridStoreProps = {
   onCut: undefined,
   onPaste: undefined,
 
+  moveRightOnEnter: false,
+
   // internal state
   rowMeasurements: [],
   colMeasurements: [],
@@ -54,7 +57,6 @@ const DEFAULT_STORE_PROPS: ReactGridStoreProps = {
   selectedArea: { startRowIdx: -1, endRowIdx: -1, startColIdx: -1, endColIdx: -1 },
   fillHandleArea: { startRowIdx: -1, endRowIdx: -1, startColIdx: -1, endColIdx: -1 },
   reactGridRef: undefined,
-  hiddenFocusTargetRef: undefined,
   resizingColIdx: undefined,
   lineOrientation: "vertical",
   linePosition: undefined,
@@ -73,10 +75,9 @@ export function initReactGridStore(id: string, initialProps: Partial<ReactGridSt
       [id]: createStore<ReactGridStore>()((set, get) => ({
         ...DEFAULT_STORE_PROPS,
         ...initialProps,
+        id,
         behaviors: { ...DEFAULT_STORE_PROPS.behaviors, ...initialProps?.behaviors },
-        setRows: (rows) => set(() => ({ rows })),
         getRowAmount: () => get().rows.length,
-        setColumns: (columns) => set(() => ({ columns })),
         getColumnByIdx: (columnIdx) => {
           const column = get().columns[columnIdx];
           return column;
@@ -143,7 +144,7 @@ export function initReactGridStore(id: string, initialProps: Partial<ReactGridSt
         },
 
         setFocusedLocation: (rowIndex, colIndex) => {
-          getHiddenTargetFocusByIdx(rowIndex, colIndex)?.focus();
+          getHiddenTargetFocusByIdx(id, rowIndex, colIndex)?.focus();
           set(() => {
             return { focusedLocation: { rowIndex, colIndex } };
           });
@@ -187,7 +188,6 @@ export function initReactGridStore(id: string, initialProps: Partial<ReactGridSt
         setLinePosition: (linePosition) => set(() => ({ linePosition })),
 
         assignReactGridRef: (reactGridRef) => set(() => ({ reactGridRef })),
-        assignHiddenFocusTargetRef: (hiddenFocusTargetRef) => set(() => ({ hiddenFocusTargetRef })),
 
         getBehavior: (behaviorId) => {
           const behavior = get().behaviors?.[behaviorId];

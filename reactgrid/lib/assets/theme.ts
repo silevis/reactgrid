@@ -1,25 +1,15 @@
 import { RGTheme } from "../types/RGTheme";
 
 const lightTheme: RGTheme = {
-  grid: {
-    gap: {
-      width: "1px",
-      color: "#efefef",
-    },
+  gap: {
+    width: "1px",
+    color: "rgb(230 230 230)",
   },
   paneContainer: {
-    top: {
-      background: "#feffde",
-    },
-    right: {
-      background: "#fcfceb",
-    },
-    bottom: {
-      background: "#feffde",
-    },
-    left: {
-      background: "#fcfceb",
-    },
+    top: {},
+    right: {},
+    bottom: {},
+    left: {},
   },
   cellContainer: {
     padding: {

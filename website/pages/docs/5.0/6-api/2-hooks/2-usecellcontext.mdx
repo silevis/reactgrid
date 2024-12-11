@@ -1,0 +1,28 @@
+---
+posttype: "docs"
+title: useCellContext
+metaTitle: "useCellContext hook"
+metaDescription: "ReactGrid docs"
+---
+
+## useCellContext
+The `useCellContext` hook provides access to the context of a specific cell within the ReactGrid component. This hook is essential for obtaining detailed information about a cell's position, selection state, focus state, and styling. It allows you to interact with and manipulate individual cells programmatically.
+
+```ts
+import { useCellContext } from '@silevis/reactgrid'
+
+const ctx = useCellContext();
+```
+
+#### Properties
+
+
+| Name                | Type                      | Description                                                        |
+|---------------------|---------------------------|--------------------------------------------------------------------|
+| `realRowIndex`        | `number`                    | Numerical cell's row index representation in relation to the whole grid. |
+| `realColumnIndex`     | `number`                    | Numerical cell's column index representation in relation to the whole grid. |
+| `rowSpan`             | `number \| undefined`       | Represents how many rows the cell should occupy.                   |
+| `colSpan`             |` number \| undefined`       | Represents how many columns the cell should occupy.                |
+| `containerStyle`      | `React.CSSProperties`       | Provides the cell container's style.                               |
+| `isSelected`      | `boolean`                   | Checks if the cell is selected.                                   |
+| `isFocused`           | `boolean`                   | Checks if the cell is focused.                                    |

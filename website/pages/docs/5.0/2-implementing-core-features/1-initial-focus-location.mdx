@@ -5,10 +5,9 @@ metaTitle: "Initial focus location"
 metaDescription: "ReactGrid docs"
 ---
 
-#### Initial focus location
+## Initial focus location
 
 The focused location isn't set up by default. You can enable it by setting the `initialFocusLocation` property in the `ReactGrid` component.
-
 
 Example:
 
@@ -19,4 +18,12 @@ Example:
   columns={columns}
   initialFocusLocation={{ rowIndex: 2, colIndex: 1 }}
 />
+```
+
+**Note:** The focused cell is entirely controlled by the browser's focus mechanism, which means it can easily be set programmatically. The recommended approach for doing this is by using the `setFocusedCell` method from the [useReactGridAPI](/docs/5.0/6-api/2-hooks/1-usereactgridapi) hook.
+
+Alternatively, you can directly invoke the `.focus()` method. Example:
+
+```ts
+document.querySelector("rgHiddenFocusTarget rgFocusRowIdx-3 rgFocusColIdx-3").focus();
 ```

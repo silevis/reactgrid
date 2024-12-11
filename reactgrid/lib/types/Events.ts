@@ -21,7 +21,6 @@ export type ChangeObservedKeys = keyof Pick<
   | "focusedLocation"
   | "selectedArea"
   | "colMeasurements"
-  | "hiddenFocusTargetRef"
 >;
 export type EventKeyPair = [ReactGridEventNames, ChangeObservedKeys];
 export type RegisteredChanges = {

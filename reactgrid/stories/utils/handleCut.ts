@@ -1,7 +1,7 @@
 import { CellsLookup, CellsLookupCallbacks } from "../../lib/types/PublicModel";
 import { NumericalRange } from "../../lib/types/PublicModel";
 
-export const handleCut = (event, cellsRange: NumericalRange, cellsLookup: CellsLookup) => {
+export const handleCut = (event, cellsRange: NumericalRange, cellsLookup: CellsLookup): boolean => {
   const { startRowIdx, endRowIdx, startColIdx, endColIdx } = cellsRange;
   const cellsLookupCallbacks: CellsLookupCallbacks[] = [];
 
@@ -14,7 +14,7 @@ export const handleCut = (event, cellsRange: NumericalRange, cellsLookup: CellsL
     }
   }
 
-  const values = cellsLookupCallbacks.map((element) => element.onStringValueRequsted());
+  const values = cellsLookupCallbacks.map((element) => element.onStringValueRequested());
 
   cellsLookupCallbacks.forEach((element) => element.onStringValueReceived(""));
 
@@ -26,7 +26,7 @@ export const handleCut = (event, cellsRange: NumericalRange, cellsLookup: CellsL
           <tr>
             ${Array.from({ length: cellsRange.endColIdx - cellsRange.startColIdx }, (_, colIndex) => {
               const cell = cellsLookup.get(`${cellsRange.startRowIdx + rowIndex} ${cellsRange.startColIdx + colIndex}`);
-              const value = cell?.onStringValueRequsted() || "";
+              const value = cell?.onStringValueRequested() || "";
               return `<td>${value}</td>`;
             }).join("")}
           </tr>
@@ -37,4 +37,6 @@ export const handleCut = (event, cellsRange: NumericalRange, cellsLookup: CellsL
 
   event.clipboardData.setData("text/html", htmlData);
   event.clipboardData.setData("text/plain", values.join("\t"));
+
+  return true;
 };

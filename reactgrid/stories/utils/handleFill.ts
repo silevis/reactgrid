@@ -1,7 +1,11 @@
 import { CellsLookup } from "../../lib/types/PublicModel";
 import { NumericalRange } from "../../lib/types/PublicModel";
 
-export const handleFill = (selectedArea: NumericalRange, fillRange: NumericalRange, cellsLookup: CellsLookup) => {
+export const handleFill = (
+  selectedArea: NumericalRange,
+  fillRange: NumericalRange,
+  cellsLookup: CellsLookup
+): boolean => {
   // Check if the fill handle is being dragged upwards
   const isFillingUpwards = fillRange.startRowIdx < selectedArea.startRowIdx;
   // Calculate the number of rows and columns in the selected area
@@ -30,9 +34,12 @@ export const handleFill = (selectedArea: NumericalRange, fillRange: NumericalRan
       );
 
       if (sourceCellCallbacks) {
-        const newValue = sourceCellCallbacks.onStringValueRequsted();
+        const newValue = sourceCellCallbacks.onStringValueRequested();
         currentCellCallbacks.onStringValueReceived(newValue);
       }
     }
   }
+
+  // Override the default fill handle behavior
+  return true;
 };

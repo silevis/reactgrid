@@ -13,9 +13,27 @@ export const testStyles = {
     fontSize: "16px",
     fontFamily: "Arial",
   },
+  paneContainer: {
+    top: {
+      background: "#55bc71",
+      boxShadow: "rgba(0, 0, 0, 0.2) -8px 4px 10px 0px",
+    },
+    right: {
+      background: "#e8ffee",
+      boxShadow: "rgba(0, 0, 0, 0.2) -3px 0px 10px 0px",
+    },
+    bottom: {
+      background: "#55bc71",
+      boxShadow: "rgba(0, 0, 0, 0.2) -8px -4px 10px 0px",
+    },
+    left: {
+      background: "#e8ffee",
+      boxShadow: "rgba(0, 0, 0, 0.2) 3px 0px 10px 0px",
+    },
+  },
 };
 
-const myNumberFormat = new Intl.NumberFormat("en-US", {
+const numberFormat = new Intl.NumberFormat("en-US", {
   style: "currency",
   minimumFractionDigits: 2,
   maximumFractionDigits: 2,
@@ -60,7 +78,6 @@ export const generateCells = (
           props: {
             value: col.title,
             style: {
-              backgroundColor: "#55bc71",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
@@ -78,6 +95,7 @@ export const generateCells = (
             updatePerson(employees[personRowIndex]._id, col.title, newValue);
           },
           value: employees[personRowIndex][col.title],
+          allowSeparators: false,
         };
 
         const balanceCellProps = {
@@ -85,7 +103,14 @@ export const generateCells = (
             updatePerson(employees[personRowIndex]._id, col.title, newValue);
           },
           value: employees[personRowIndex][col.title],
-          format: myNumberFormat,
+          format: numberFormat,
+        };
+
+        const coordinatesCellProps = {
+          onValueChanged: (newValue) => {
+            updatePerson(employees[personRowIndex]._id, col.title, newValue);
+          },
+          value: employees[personRowIndex][col.title],
         };
 
         const textCellProps = {
@@ -102,6 +127,8 @@ export const generateCells = (
               ? { ...balanceCellProps }
               : col.title === "age"
               ? { ...ageCellProps }
+              : col.title === "latitude" || col.title === "longitude"
+              ? { ...coordinatesCellProps }
               : { ...textCellProps },
         };
       });

@@ -1,0 +1,18 @@
+.rg-input {
+  position: absolute;
+  top: 0;
+  left: 0;
+  resize: none;
+  overflow-y: hidden;
+  box-sizing: border-box;
+  text-align: center;
+  width: 100%;
+  height: 100%;
+  background: transparent;
+  border: none;
+  padding: 0;
+  outline: none;
+  color: inherit;
+  font-size: inherit;
+  font-family: inherit;
+}

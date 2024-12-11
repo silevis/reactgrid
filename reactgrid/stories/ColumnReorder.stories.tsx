@@ -1,92 +1,133 @@
-import React from "react";
+import React, { Dispatch, SetStateAction } from "react";
 import { StrictMode, useState } from "react";
-import { Cell, NonEditableCell, NumberCell, ReactGrid, Row, TextCell } from "../lib/main";
+import { Cell, Column, NonEditableCell, NumberCell, ReactGrid, TextCell } from "../lib/main";
 import { StoryDefault } from "@ladle/react";
 import { ErrorBoundary } from "../lib/components/ErrorBoundary";
-import { rgStyles, peopleArr, ColumnDef } from "./utils/examplesConfig";
+import { rgStyles, peopleArr, getRows, cellStyles, Person } from "./utils/examplesConfig";
 import { handleColumnReorder } from "./utils/handleColumnReorder";
-import { handleResizeColumn } from "./utils/handleResizeColumn";
+
+type ColumnDef = {
+  colIndex: number;
+  width: string | number;
+  title: string;
+  minWidth?: string | number;
+  resizable?: boolean;
+  reorderable?: boolean;
+};
+
+// Columns with fields 'title' will be used for column reordering
+const getColumns = (): ColumnDef[] => [
+  { colIndex: 0, width: 220, title: "Name" },
+  { colIndex: 1, width: 220, title: "Age" },
+  { colIndex: 2, width: 220, title: "Email" },
+  { colIndex: 3, width: 220, title: "Company" },
+];
+
+type UpdatePersonFn = <T>(id: string, key: string, newValue: T) => void;
+
+const generateCells = (people: Person[], columns: ColumnDef[], updatePerson: UpdatePersonFn): Cell[] => {
+  const generateHeaderCells = () => {
+    return columns.map((column, colIdx) => ({
+      rowIndex: 0,
+      colIndex: colIdx,
+      Template: NonEditableCell,
+      props: {
+        value: column.title,
+        style: cellStyles.header,
+      },
+    }));
+  };
+
+  const generateRowCells = (rowIndex: number, person: Person): Cell[] => {
+    const { id, name, age, email, company } = person;
+
+    const nameColIndex = columns.findIndex((col) => col.title === "Name");
+    const ageColIndex = columns.findIndex((col) => col.title === "Age");
+    const emailColIndex = columns.findIndex((col) => col.title === "Email");
+    const companyColIndex = columns.findIndex((col) => col.title === "Company");
+
+    return [
+      {
+        rowIndex,
+        colIndex: nameColIndex,
+        Template: TextCell,
+        props: {
+          text: name,
+          onTextChanged: (newText: string) => updatePerson(id, "name", newText),
+        },
+      },
+      {
+        rowIndex,
+        colIndex: ageColIndex,
+        Template: NumberCell,
+        props: {
+          value: age,
+          onValueChanged: (newValue: number) => updatePerson(id, "age", newValue),
+        },
+      },
+      {
+        rowIndex,
+        colIndex: emailColIndex,
+        Template: TextCell,
+        props: {
+          text: email,
+          onTextChanged: (newText: string) => updatePerson(id, "email", newText),
+        },
+      },
+      {
+        rowIndex,
+        colIndex: companyColIndex,
+        Template: TextCell,
+        props: {
+          text: company,
+          onTextChanged: (newText: string) => updatePerson(id, "company", newText),
+        },
+      },
+    ];
+  };
+
+  const headerCells = generateHeaderCells();
+
+  const rowCells = people.flatMap((person, idx) => generateRowCells(idx + 1, person));
+
+  return [...headerCells, ...rowCells];
+};
+
+const handleResizeColumn = (
+  newWidth: number,
+  columnIndexes: number[],
+  setColumns: Dispatch<SetStateAction<ColumnDef[]>>
+) => {
+  setColumns((prevColumns) => {
+    const widthPerColumn = columnIndexes.length > 1 ? newWidth / columnIndexes.length : newWidth;
+
+    return prevColumns.map((column, idx) => {
+      if (columnIndexes.includes(idx)) {
+        return { ...column, width: widthPerColumn };
+      }
+
+      return column;
+    });
+  });
+};
 
 export const ColumnReorderExample = () => {
   const [people, setPeople] = useState(peopleArr);
 
-  const [columnDefs, setColumnDefs] = useState<ColumnDef[]>(
-    Object.keys(peopleArr[0]).reduce((acc: ColumnDef[], peopleKey: string, idx: number) => {
-      if (["_id", "position"].includes(peopleKey)) return acc;
-      const cellTemplate = peopleKey === "age" ? NumberCell : TextCell;
-      return [...acc, { title: peopleKey, width: 100 * idx, cellTemplate }];
-    }, [])
-  );
-
   const updatePerson = (id, key, newValue) => {
     setPeople((prev) => {
-      return prev.map((p) => (p._id !== id ? p : { ...p, [key]: newValue }));
+      return prev.map((p) => (p.id !== id ? p : { ...p, [key]: newValue }));
     });
   };
 
-  const cells: Cell[] = [];
+  const rows = getRows(people);
+  const [columns, setColumns] = useState(getColumns());
+  const cells = generateCells(people, columns, updatePerson);
 
-  const gridRows: Row[] = Array.from({ length: people.length + 1 }, (_, i) => ({
-    rowIndex: i,
-    height: 40,
-  }));
-
-  const gridColumns = columnDefs.map((col, index) => ({
-    colIndex: index,
-    width: col.width,
-  }));
-
-  gridRows.forEach((row, rowIndex) => {
-    const personRowIndex = row.rowIndex;
-
-    if (rowIndex === 0) {
-      columnDefs.forEach((col, colIndex) => {
-        cells.push({
-          rowIndex,
-          colIndex,
-          Template: NonEditableCell,
-          props: {
-            value: col.title,
-            style: {
-              backgroundColor: "#55bc71",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              fontWeight: "bold",
-            },
-          },
-        });
-      });
-    } else {
-      const personCells = columnDefs.map((col) => {
-        const numberCellProps = {
-          onValueChanged: (newValue) => {
-            updatePerson(people[personRowIndex - 1]._id, col.title, newValue);
-          },
-          value: people[personRowIndex - 1][col.title.toLowerCase()],
-        };
-
-        const textCellProps = {
-          text: people[personRowIndex - 1][col.title.toLowerCase()],
-          onTextChanged: (newText: string) => {
-            updatePerson(people[personRowIndex - 1]._id, col.title, newText);
-          },
-        };
-
-        return {
-          Template: col.cellTemplate,
-          props: col.title === "age" ? numberCellProps : textCellProps,
-        };
-      });
-
-      columnDefs.forEach((_, colIndex) => {
-        cells.push({
-          rowIndex,
-          colIndex,
-          ...personCells[colIndex],
-        });
-      });
-    }
+  // Remove the 'title' field to follow the Column type
+  const gridColumns: Column[] = columns.filter((col) => {
+    const { title, ...columnFields } = col;
+    return columnFields;
   });
 
   return (
@@ -96,11 +137,11 @@ export const ColumnReorderExample = () => {
         styles={rgStyles}
         enableColumnSelectionOnFirstRow
         onColumnReorder={(selectedColIndexes, destinationColIdx) =>
-          handleColumnReorder(selectedColIndexes, destinationColIdx, setColumnDefs)
+          handleColumnReorder(selectedColIndexes, destinationColIdx, setColumns)
         }
-        onResizeColumn={(width, columnIdx) => handleResizeColumn(width, columnIdx, setColumnDefs)}
+        onResizeColumn={(width, columnIdx) => handleResizeColumn(width, columnIdx, setColumns)}
         initialFocusLocation={{ rowIndex: 2, colIndex: 1 }}
-        rows={gridRows}
+        rows={rows}
         columns={gridColumns}
         cells={cells}
       />

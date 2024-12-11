@@ -11,6 +11,7 @@ import { areAreasEqual } from "../utils/areAreasEqual";
 import { Border, Offset } from "../types/RGTheme";
 import isEqual from "lodash.isequal";
 import { isCellInRange } from "../utils/isCellInRange";
+import { getHiddenTargetFocusByIdx } from "../utils/getHiddenTargetFocusByIdx";
 
 interface PartialAreaProps {
   /** The range of cells to area. */
@@ -96,11 +97,12 @@ export const PartialArea: FC<PartialAreaProps> = React.memo(
     const selectedArea = useReactGridStore(id, (store) => store.selectedArea);
     const paneRanges = useReactGridStore(id, (store) => store.paneRanges);
     const fillHandleArea = useReactGridStore(id, (store) => store.fillHandleArea);
-    const onFillHandle = useReactGridStore(id, (store) => store.onFillHandle);
+    const disableFillHandle = useReactGridStore(id, (store) => store.disableFillHandle);
     const focusedCell =
       store.getCellByIndexes(store.focusedLocation.rowIndex, store.focusedLocation.colIndex) ?? undefined;
 
     const focusedCellArea = focusedCell ? getCellArea(store, focusedCell) : EMPTY_AREA;
+    const focusedLocation = useReactGridStore(id, (store) => store.focusedLocation);
 
     if (areaRange.startRowIdx < 0 || areaRange.startColIdx < 0 || areaRange.endRowIdx < 0 || areaRange.endColIdx < 0)
       return null;
@@ -217,7 +219,7 @@ export const PartialArea: FC<PartialAreaProps> = React.memo(
 
       // If the area part is on the sticky pane and renders only one border,
       // we need to adjust the height/width such that the border sticks out a bit (at a length of gap width)
-      if (!shouldRenderBottomBorder) height = `calc(100% - (${areaBorder.width} - ${theme.grid.gap.width}))`;
+      if (!shouldRenderBottomBorder) height = `calc(100% - (${areaBorder.width} - ${theme.gap.width}))`;
     }
     if (parentPaneName === "TopRight" || parentPaneName === "Right" || parentPaneName === "BottomRight") {
       baseStyle.position = "sticky";
@@ -228,7 +230,7 @@ export const PartialArea: FC<PartialAreaProps> = React.memo(
         1
       ).right;
 
-      if (!shouldRenderLeftBorder) width = `calc(100% - (${areaBorder.width} - ${theme.grid.gap.width}))`;
+      if (!shouldRenderLeftBorder) width = `calc(100% - (${areaBorder.width} - ${theme.gap.width}))`;
     }
     if (parentPaneName === "BottomLeft" || parentPaneName === "BottomCenter" || parentPaneName === "BottomRight") {
       baseStyle.position = "sticky";
@@ -239,18 +241,18 @@ export const PartialArea: FC<PartialAreaProps> = React.memo(
         1
       ).bottom;
 
-      if (!shouldRenderTopBorder) height = `calc(100% - (${areaBorder.width} - ${theme.grid.gap.width}))`;
+      if (!shouldRenderTopBorder) height = `calc(100% - (${areaBorder.width} - ${theme.gap.width}))`;
     }
     if (parentPaneName === "TopLeft" || parentPaneName === "Left" || parentPaneName === "BottomLeft") {
       baseStyle.position = "sticky";
       offset.left = getCellOffset?.(areaRange.startRowIdx, areaRange.startColIdx, 1, 1).left;
 
-      if (!shouldRenderRightBorder) width = `calc(100% - (${areaBorder.width} - ${theme.grid.gap.width}))`;
+      if (!shouldRenderRightBorder) width = `calc(100% - (${areaBorder.width} - ${theme.gap.width}))`;
     }
 
     let shouldEnableFillHandle = false;
 
-    if (onFillHandle) {
+    if (!disableFillHandle) {
       const isTopPane = ["TopLeft", "TopCenter", "TopRight"].includes(parentPaneName);
       const isCenterPane = ["Left", "Center", "Right"].includes(parentPaneName);
 
@@ -266,7 +268,7 @@ export const PartialArea: FC<PartialAreaProps> = React.memo(
         (parentPaneName === "BottomLeft" && selectedArea.endColIdx > paneRanges.BottomLeft.endColIdx) ||
         (parentPaneName === "BottomCenter" && selectedArea.endColIdx > paneRanges.BottomCenter.endColIdx);
 
-      // `exceedsRowLimit` and `exceedsColLimit` are used to prevent showing multiple fill handle button when selected area exceeds the pane limits
+      // `exceedsRowLimit` and `exceedsColLimit` are used to prevent showing multiple fill handle buttons when selected area exceeds the pane limits
 
       if (!isEqual(selectedArea, EMPTY_AREA)) {
         if (isFocusedCellPartial && areAreasEqual(selectedArea, focusedCellArea)) {
@@ -301,10 +303,10 @@ export const PartialArea: FC<PartialAreaProps> = React.memo(
           <div
             style={{
               position: "absolute",
-              top: `-${theme.grid.gap.width}`,
-              right: `-${theme.grid.gap.width}`,
-              bottom: `-${theme.grid.gap.width}`,
-              left: `-${theme.grid.gap.width}`,
+              top: `-${theme.gap.width}`,
+              right: `-${theme.gap.width}`,
+              bottom: `-${theme.gap.width}`,
+              left: `-${theme.gap.width}`,
 
               ...(shouldRenderTopBorder && {
                 borderTop: `${areaBorder.width} ${areaBorder.style} ${areaBorder.color}`,
@@ -329,8 +331,8 @@ export const PartialArea: FC<PartialAreaProps> = React.memo(
                   display: "flex",
                   justifyContent: "center",
                   alignItems: "center",
-                  right: -15,
-                  bottom: -15,
+                  right: `calc(-${theme.gap.width} - 15px)`,
+                  bottom: `calc(-${theme.gap.width} - 15px)`,
                   width: 30,
                   height: 30,
                   pointerEvents: "auto",
@@ -350,11 +352,15 @@ export const PartialArea: FC<PartialAreaProps> = React.memo(
                   height: 6.5,
                   backgroundColor: isFillHandlePartial ? areaBorder.color : theme.focusIndicator.border.color,
                   cursor: "crosshair",
+                  boxSizing: "content-box",
                   pointerEvents: "auto",
                   border: "2px solid #fff",
                   borderRadius: "50%",
                 }}
-                onPointerDown={() => setCurrentBehavior(FillHandleBehavior)}
+                onPointerDown={() => {
+                  getHiddenTargetFocusByIdx(id, focusedLocation.rowIndex, focusedLocation.colIndex)?.focus();
+                  setCurrentBehavior(FillHandleBehavior);
+                }}
               />
             </div>
           )}

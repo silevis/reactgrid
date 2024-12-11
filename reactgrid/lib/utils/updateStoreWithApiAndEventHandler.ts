@@ -63,7 +63,7 @@ function findChangesInStore(
     const oldValue = oldStore[key];
     const newValue = newStore[key];
 
-    if (arePropertiesDifferent(oldValue, newValue)) {
+    if (newValue !== undefined && arePropertiesDifferent(oldValue, newValue)) {
       updatedKeys[key] = { after: newValue, before: oldValue };
     }
   });

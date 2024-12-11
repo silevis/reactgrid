@@ -2,17 +2,13 @@ import React, { FC } from "react";
 import CellWrapper from "../components/CellWrapper";
 
 interface NonEditableCellProps {
-  value?: string;
+  value?: string | number;
   style?: React.CSSProperties;
 }
 
-export const NonEditableCell: FC<NonEditableCellProps> = ({ value }) => {
+export const NonEditableCell: FC<NonEditableCellProps> = ({ value, style }) => {
   return (
-    <CellWrapper
-      onStringValueRequsted={() => value?.toString() || ""}
-      onStringValueReceived={() => {}}
-      style={{ padding: ".5rem", textAlign: "center", outline: "none" }}
-    >
+    <CellWrapper onStringValueRequested={() => value?.toString() || ""} onStringValueReceived={() => {}} style={style}>
       {value}
     </CellWrapper>
   );

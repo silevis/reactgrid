@@ -1,8 +1,17 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Props } from "./header-link";
 
-export const DrawerLink = ({ href, children }: Props) => {
+export interface DrawerLinkProps {
+  href: string;
+  handleLinkClick: () => void;
+  children: React.ReactNode;
+}
+
+export const DrawerLink = ({
+  href,
+  handleLinkClick,
+  children,
+}: DrawerLinkProps) => {
   const pathname = usePathname();
   const isActive = pathname === href;
 
@@ -13,7 +22,8 @@ export const DrawerLink = ({ href, children }: Props) => {
   return (
     <Link
       href={href}
-      className={`md:border-l-1 border-green-light flex  md:text-black-primary text-xs font-bold justify-start md:justify-center items-center ${underlineClass}`}
+      className={`md:border-l-1 border-green-light flex md:text-black-primary text-xs font-bold justify-start md:justify-center items-center ${underlineClass}`}
+      onClick={handleLinkClick}
     >
       {children}
     </Link>

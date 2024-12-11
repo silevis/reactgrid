@@ -1,6 +1,6 @@
-import { Row, DefaultCellTypes } from '@silevis/reactgrid';
-import { FlagCell } from '../cell-templates/flagCell/FlagCellTemplate';
-import { RateCell } from '../cell-templates/rateCell/RateCellTemplate';
+import { Row, DefaultCellTypes } from '@silevis/reactgrid-4';
+import { FlagCell } from '../cellTemplates/flagCell/FlagCellTemplate';
+import { RateCell } from '../cellTemplates/rateCell/RateCellTemplate';
 
 export const rows = (reorderable: boolean): Row<DefaultCellTypes | FlagCell | RateCell>[] => [
   {
@@ -221,3 +221,7 @@ export const rows = (reorderable: boolean): Row<DefaultCellTypes | FlagCell | Ra
     ]
   },
 ];
+
+export default function Def() {
+  return null;
+}

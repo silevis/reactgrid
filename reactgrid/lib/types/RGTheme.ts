@@ -16,25 +16,26 @@ type Padding = {
 };
 
 export interface RGTheme {
-  grid: {
-    gap: {
-      width: React.CSSProperties["width"];
-      /** Changes grid's background color for the gap to appear colored */
-      color: React.CSSProperties["color"];
-    };
+  gap: {
+    width: React.CSSProperties["width"];
+    color: React.CSSProperties["color"];
   };
   paneContainer: {
     top: {
-      background: React.CSSProperties["backgroundColor"];
+      background?: React.CSSProperties["backgroundColor"];
+      boxShadow?: React.CSSProperties["boxShadow"];
     };
     right: {
-      background: React.CSSProperties["backgroundColor"];
+      background?: React.CSSProperties["backgroundColor"];
+      boxShadow?: React.CSSProperties["boxShadow"];
     };
     bottom: {
-      background: React.CSSProperties["backgroundColor"];
+      background?: React.CSSProperties["backgroundColor"];
+      boxShadow?: React.CSSProperties["boxShadow"];
     };
     left: {
-      background: React.CSSProperties["backgroundColor"];
+      background?: React.CSSProperties["backgroundColor"];
+      boxShadow?: React.CSSProperties["boxShadow"];
     };
   };
   cellContainer: {

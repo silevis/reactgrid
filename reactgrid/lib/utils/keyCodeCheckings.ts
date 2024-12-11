@@ -1,17 +1,57 @@
 import { keyCodes } from "./keyCodes";
 
 /**
- * Checks if a keyboard event is triggered by an alphanumeric key or the Enter key without any modifier keys (Ctrl, Meta, Shift, Alt).
+ * Checks if a keyboard event is triggered by a valid key without any specified invalid keys or modifier keys.
  *
  * @param e The keyboard event to check.
- * @returns True if the event is triggered by an alphanumeric key or the Enter key without any modifier keys, false otherwise.
+ * @param invalidKeys An optional array of additional keys that should be considered invalid.
+ * @returns True if the event is triggered by a valid key without any specified invalid keys or modifier keys, false otherwise.
  */
-export const isAlphaNumericWithoutModifiers = (e: React.KeyboardEvent): boolean => {
-  const isAlphaNumericOrEnter = isKeyCodeAlphaNumeric(e.keyCode);
-  const noModifiers = !e.ctrlKey && !e.metaKey && !e.altKey;
-  return isAlphaNumericOrEnter && noModifiers;
-};
+export const isValidKey = (e: React.KeyboardEvent, invalidKeys: string[] = []): boolean => {
+  const defaultInvalidKeys = [
+    "Shift",
+    "Alt", // Modifiers
+    "ArrowLeft",
+    "ArrowRight",
+    "ArrowUp",
+    "ArrowDown", // Arrow keys
+    " ", // Space key
+    "Tab",
+    "PageDown",
+    "PageUp",
+    "Home",
+    "End",
+    "Insert",
+    "Delete",
+    "Backspace",
+    "Escape",
+    "CapsLock",
+    "Enter", // Other keys
+    "F1",
+    "F2",
+    "F3",
+    "F4",
+    "F5",
+    "F6",
+    "F7",
+    "F8",
+    "F9",
+    "F10",
+    "F11",
+    "F12", // Function keys
+  ];
 
+  const allInvalidKeys = [...defaultInvalidKeys, ...invalidKeys];
+
+  const isKeyCombination = e.ctrlKey || e.metaKey;
+
+  const isInvalidKey =
+    allInvalidKeys.includes(e.key) ||
+    allInvalidKeys.some((mod) => e[mod as keyof React.KeyboardEvent]) ||
+    isKeyCombination;
+
+  return !isInvalidKey;
+};
 /**
  * Checks that the pressed key's `keyCode` is one of printable characters
  * @param {number} keyCode `keyCode` field from `KeyboardEvent` interface

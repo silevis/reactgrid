@@ -1,40 +1,60 @@
-# name: Deploy Website to GitHub Pages
+name: Deploy Website to GitHub Pages
 
-# on:
-#   push:
-#     branches:
-#       - v5-dev
-#     paths:
-#       - "reactgrid/**"
-#       - "website/**"
+on:
+  push:
+    branches:
+      - v5/build-next-proj
+    paths:
+      # - "reactgrid/**"
+      - "website/**"
 
-# jobs:
-#   deploy:
-#     runs-on: ubuntu-latest
+permissions:
+  id-token: write
+  pages: write
 
-#     steps:
-#       - name: Checkout code
-#         uses: actions/checkout@v3
+jobs:
+  # Build job
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          lfs: true
 
-#       - name: Setup Node.js
-#         uses: actions/setup-node@v3
-#         with:
-#           node-version: "18"
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "18"
 
-#       - name: Install dependencies
-#         run: |
-#           cd website
-#           npm install
+      - name: Install dependencies for the whole workspace
+        run: |
+          npm install
 
-#       - name: Build and Export
-#         run: |
-#           cd website
-#           npm run build
-#           npm run export
+      - name: Build all packages (reactgrid and website)
+        env:
+          NEXT_PUBLIC_BASE_PATH: "/reactgrid"
+        run: |
+          npm run build --workspaces
 
-#       - name: Deploy to GitHub Pages
-#         uses: peaceiris/actions-gh-pages@v3
-#         with:
-#           personal_token: ${{ secrets.GITHUB_TOKEN }}
-#           publish_dir: website/dist
-#           publish_branch: gh-pages
+      - name: Upload build artifact
+        uses: actions/upload-pages-artifact@v1
+        with:
+          path: website/out
+
+  # Deployment job
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          lfs: true
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v1
