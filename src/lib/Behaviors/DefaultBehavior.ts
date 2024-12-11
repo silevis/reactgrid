@@ -6,6 +6,7 @@ import {
   handleDoubleClick,
   getScrollOfScrollableElement,
   isSelectionKey,
+  getCompatibleCellAndTemplate,
 } from "../../core";
 import {
   KeyboardEvent,
@@ -49,6 +50,8 @@ export class DefaultBehavior extends Behavior {
     location: PointerLocation,
     state: State
   ): Behavior {
+    const { cell } = getCompatibleCellAndTemplate(state, location);
+    
     // changing behavior will disable all keyboard event handlers
     const target = event.target as HTMLDivElement;
     if (
@@ -57,7 +60,7 @@ export class DefaultBehavior extends Behavior {
         (event.pointerType === "touch" &&
           (target.className === "rg-touch-resize-handle" ||
             target.className === "rg-resize-handle"))) &&
-      location.row.idx === 0 &&
+      (location.row.idx === 0 || cell.type === "header") &&
       location.column.resizable &&
       location.cellX >
         location.column.width -

@@ -35,8 +35,10 @@ export type SelectionMode =
 export interface ReactGridProps {
     /** Array of `Column`s */
     readonly columns: Column[];
-    /** Array of `Row`s  */
+    /** Array of `Row`s */
     readonly rows: Row<Cell>[];
+    /** Enables column resizing on all header cells */
+    readonly enableColumnResizeOnAllHeaders?: boolean;
     /** Object that contains available custom cell templates */
     readonly customCellTemplates?: CellTemplates;
     /** Focus position (managed constantly by outer app) */
