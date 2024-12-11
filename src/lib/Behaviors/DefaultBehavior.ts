@@ -66,7 +66,6 @@ export class DefaultBehavior extends Behavior {
             ?.clientWidth || 0) -
           getScrollOfScrollableElement(state.scrollableElement).scrollLeft
     ) {
-      console.log("resize column");
       return new ResizeColumnBehavior();
     } else if (
       ((event.pointerType === "mouse" &&
@@ -82,7 +81,6 @@ export class DefaultBehavior extends Behavior {
             ?.clientHeight || 0) -
           getScrollOfScrollableElement(state.scrollableElement).scrollTop
     ) {
-      console.log("resize row");
       return new ResizeRowBehavior();
     } else if (
       state.enableColumnSelection &&
