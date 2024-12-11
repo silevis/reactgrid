@@ -105,6 +105,12 @@ export interface ReactGridProps {
      */
     readonly minColumnWidth?: number;
 
+    /**
+     * Minimum row height (by default `25`), in pixels
+     * Used to limit the height row can be resized down to.
+     */
+    readonly minRowHeight?: number;
+
     /** 
      * Called when cell was changed (e.g. property `value`)
      * 
@@ -156,6 +162,16 @@ export interface ReactGridProps {
      * @returns {void}
      */
     readonly onColumnResized?: (columnId: Id, width: number, selectedColIds: Id[]) => void;
+
+    /** 
+     * Called when row resize action was finished
+     * 
+     * @param {Id} rowId Resized row `Id`
+     * @param {number} height New row height
+     * @param {Id[]} selectedColIds Array of selected row `Id`s
+     * @returns {void}
+     */
+    readonly onRowResized?: (rowId: Id, height: number, selectedRowIds: Id[]) => void;
 
     /** 
      * Called when row reorder action was finished
@@ -595,6 +611,11 @@ export interface Row<TCell extends Cell = DefaultCellTypes> {
      * default: `false` (row reorder implementation is on the developer's side) 
      */
     readonly reorderable?: boolean;
+
+    /** Allow row to change is height in grid, 
+     * default: `false` (row resize implementation is on the developers side) 
+     */
+    readonly resizable?: boolean;
 }
 
 /**
