@@ -8,6 +8,7 @@ export const config: TestConfig = {
     pinToBody: false,
     additionalContent: false,
     flexRow: false,
+    enableColumnResizeOnAllHeaders: false,
 
     rgViewportHeight: 600,
     rgViewportWidth: 1150,
@@ -22,6 +23,7 @@ export const config: TestConfig = {
     cellHeight: 25,
     cellWidth: 150,
     minCellWidth: 40,
+    minCellHeight: 25,
     fillHandleWidth: 18,
 
     columns: 30,
@@ -196,6 +198,8 @@ export interface TestConfig {
     additionalContent: boolean;
     flexRow: boolean;
 
+    enableColumnResizeOnAllHeaders: boolean;
+
     rgViewportHeight: number;
     rgViewportWidth: number;
     margin: string;
@@ -203,6 +207,7 @@ export interface TestConfig {
     cellHeight: number;
     cellWidth: number;
     minCellWidth: number;
+    minCellHeight: number;
     fillHandleWidth: number;
     enableRangeSelection: boolean;
     enableFillHandle: boolean;
