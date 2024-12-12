@@ -16,9 +16,9 @@ context("Resize", () => {
     utils.scrollTo(SCROLL, 0);
     utils.resizeColumn(SCROLL + (SCROLL % config.cellWidth), 1, RESIZE_WIDTH, {
       beforePointerUp: () => {
-        utils.resizeHint().should("be.visible");
+        utils.resizeHintColumn().should("be.visible");
         // 🟠 TODO - hint should contain exact value
-        // utils.resizeHint().and('contain.text', `Width: ${config.cellWidth + RESIZE_WIDTH}px`)
+        // utils.resizeHintColumn().and('contain.text', `Width: ${config.cellWidth + RESIZE_WIDTH}px`)
       },
     });
 
@@ -33,9 +33,9 @@ context("Resize", () => {
       -RESIZE_WIDTH,
       {
         beforePointerUp: () => {
-          utils.resizeHint().should("be.visible");
+          utils.resizeHintColumn().should("be.visible");
           // 🟠 TODO - hint should contain exact value
-          // utils.resizeHint().and('contain.text', `Width: ${config.cellWidth}px`)
+          // utils.resizeHintColumn().and('contain.text', `Width: ${config.cellWidth}px`)
         },
       }
     );
@@ -48,9 +48,9 @@ context("Resize", () => {
 
     utils.resizeColumn(config.cellWidth, utils.getCellYCenter(), RESIZE_WIDTH, {
       beforePointerUp: () => {
-        utils.resizeHint().should("be.visible");
+        utils.resizeHintColumn().should("be.visible");
         utils
-          .resizeHint()
+          .resizeHintColumn()
           .and("contain.text", `Width: ${config.minCellWidth}px`);
       },
     });
@@ -74,9 +74,9 @@ context("Resize", () => {
       {
         // 17 px - scroll width
         beforePointerUp: () => {
-          utils.resizeHint().should("be.visible");
+          utils.resizeHintColumn().should("be.visible");
           utils
-            .resizeHint()
+            .resizeHintColumn()
             .and("contain.text", `Width: ${config.minCellWidth}px`);
         },
       }
@@ -105,7 +105,7 @@ context("Resize", () => {
         // 17 px - scroll width
         beforePointerUp: () => {
           // 🟠 TODO - hint should contain exact value
-          utils.resizeHint().and('contain.text', `Width: ${config.cellWidth + RESIZE_WIDTH + 3}px`)
+          utils.resizeHintColumn().and('contain.text', `Width: ${config.cellWidth + RESIZE_WIDTH + 3}px`)
         },
       }
     );
@@ -115,4 +115,33 @@ context("Resize", () => {
       config.cellWidth + RESIZE_WIDTH
     );
   });
+
+  it("Should increase and reduce row height on scrolled view with content in vertical axis", () => { // ✅
+    const RESIZE_HEIGHT = 100;
+    const SCROLL = 15;
+
+    utils.scrollTo(0, SCROLL);
+    utils.resizeRow(1, SCROLL + (SCROLL % config.cellHeight), RESIZE_HEIGHT, {
+      beforePointerUp: () => {
+        utils.resizeHintRow().should("be.visible");
+        utils.resizeHintRow().and('contain.text', `Height: ${config.cellHeight + RESIZE_HEIGHT+1}px`)
+      },
+    });
+
+    utils.assertElementHeightIsEqual(
+      utils.getCell(0, 0),
+      config.cellHeight + RESIZE_HEIGHT
+    );
+
+    utils.resizeRow(1, SCROLL + RESIZE_HEIGHT + (SCROLL % config.cellHeight), -RESIZE_HEIGHT, {
+      beforePointerUp: () => {
+        utils.resizeHintRow().should("be.visible");
+        utils.resizeHintRow().and('contain.text', `Height: ${config.cellHeight+3}px`)
+      },
+    });
+
+    utils.assertElementHeightIsEqual(utils.getCell(0, 0), config.cellHeight);
+  
+  });
+  
 });
