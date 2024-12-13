@@ -39,7 +39,7 @@ const MappedColumns: React.FC<RowRendererProps> = ({ columns, row, cellRenderer,
                     borders={{
                         ...borders,
                         left: borders.left && column.left === 0,
-                        right: (borders.right && column.idx === lastColIdx) || !(state.cellMatrix.scrollableRange.last.column.idx === location.column.idx)
+                        right: (borders.right && column.idx === lastColIdx) || !(state.cellMatrix.scrollableRange.last.column?.idx === location.column.idx)
                     }}
                     state={state}
                     location={location}
