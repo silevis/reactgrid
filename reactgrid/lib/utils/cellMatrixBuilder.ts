@@ -40,8 +40,8 @@ export const cellMatrixBuilder = (
     if (rowIndex === -1) throw new Error(`Row with id "${rowIndex}" isn't defined in rows array`);
     if (colIndex === -1) throw new Error(`Column with id "${colIndex}" isn't defined in columns array`);
 
-    if (process.env.NODE_ENV === "development" && cells.has(`${rowIndex} ${colIndex}`)) {
-      console.warn(`Cell with coordinates [${rowIndex}, ${colIndex}] already exists and will be overwritten!`);
+    if (cells.has(`${rowIndex} ${colIndex}`)) {
+      process.env.NODE_ENV === "development" && console.warn(`Cell with coordinates [${rowIndex}, ${colIndex}] already exists and will be overwritten!`);
       return;
     }
 
