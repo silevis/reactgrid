@@ -6,6 +6,7 @@ import {
   handleDoubleClick,
   getScrollOfScrollableElement,
   isSelectionKey,
+  getCompatibleCellAndTemplate,
 } from "../../core";
 import {
   KeyboardEvent,
@@ -25,6 +26,7 @@ import { ColumnReorderBehavior } from "./ColumnReorderBehavior";
 import { RowReorderBehavior } from "./RowReorderBehavior";
 import { handleCopy } from "../Functions/handleCopy";
 import { handlePaste } from "../Functions/handlePaste";
+import { ResizeRowBehavior } from "./ResizeRowBehavior";
 
 export class DefaultBehavior extends Behavior {
   handlePointerDown(
@@ -49,15 +51,17 @@ export class DefaultBehavior extends Behavior {
     location: PointerLocation,
     state: State
   ): Behavior {
+    const { cell } = getCompatibleCellAndTemplate(state, location);
+    
     // changing behavior will disable all keyboard event handlers
     const target = event.target as HTMLDivElement;
     if (
       ((event.pointerType === "mouse" &&
         target.className === "rg-resize-handle") ||
         (event.pointerType === "touch" &&
-          (target.className === "rg-touch-resize-handle" ||
+          (target.className === "rg-touch-column-resize-handle" ||
             target.className === "rg-resize-handle"))) &&
-      location.row.idx === 0 &&
+      (location.row.idx === 0 || cell.type === "header") &&
       location.column.resizable &&
       location.cellX >
         location.column.width -
@@ -66,6 +70,21 @@ export class DefaultBehavior extends Behavior {
           getScrollOfScrollableElement(state.scrollableElement).scrollLeft
     ) {
       return new ResizeColumnBehavior();
+    } else if (
+      ((event.pointerType === "mouse" &&
+        target.className === "rg-resize-handle") ||
+        (event.pointerType === "touch" &&
+          (target.className === "rg-touch-row-resize-handle" ||
+            target.className === "rg-resize-handle"))) &&
+      location.column.idx === 0 &&
+      location.row.resizable &&
+      location.cellY >
+        location.row.height -
+          (state.reactGridElement?.querySelector(".rg-resize-handle")
+            ?.clientHeight || 0) -
+          getScrollOfScrollableElement(state.scrollableElement).scrollTop
+    ) {
+      return new ResizeRowBehavior();
     } else if (
       state.enableColumnSelection &&
       location.row.idx === 0 &&
