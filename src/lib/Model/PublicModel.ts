@@ -626,7 +626,7 @@ export interface Row<TCell extends Cell = DefaultCellTypes> {
 export interface MenuOption {
     /** Text that identifies each menu option */
     id: string;
-    /** Text label displayed as its title */
+    /** Label displayed as its title */
     label: React.ReactNode;
     /** 
      * Function that is called when an option is clicked
