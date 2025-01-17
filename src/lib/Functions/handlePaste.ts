@@ -41,9 +41,16 @@ export function handlePaste(event: ClipboardEvent, state: State): State {
         .getData("text/plain")
         .replace(/(\r\n)$/, '')
         .split("\n")
-        .map((line: string) => line.split("\t").map((t) => ({ type: "text", text: t, value: parseLocaleNumber(t) })));
+        .map((line: string) => line.split("\t").map((t) => {
+          const parsedDate = parseExcelDate(t);
+          return parsedDate ? { type: "date", text: t, value: parsedDate.getTime() } : { type: "text", text: t, value: parseLocaleNumber(t) };
+      }));
     }
     event.preventDefault();
     return { ...pasteData(state, pastedRows) };
   }
   
+function parseExcelDate(excelDate: string): Date | null {
+    const timestamp = Date.parse(excelDate);
+    return isNaN(timestamp) ? null : new Date(timestamp);
+}
