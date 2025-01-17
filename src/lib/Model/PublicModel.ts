@@ -627,7 +627,7 @@ export interface MenuOption {
     /** Text that identifies each menu option */
     id: string;
     /** Text label displayed as its title */
-    label: string;
+    label: React.ReactNode;
     /** 
      * Function that is called when an option is clicked
      * 
@@ -643,4 +643,4 @@ export interface MenuOption {
 export interface ReactGridInstance extends React.Component<ReactGridProps, any, any> {
     /** This method is used to clear the selected item */
     clearSelections(): void;
-    }
+}
