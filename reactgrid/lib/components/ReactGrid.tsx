@@ -80,6 +80,7 @@ export const ReactGrid: FC<ReactGridProps> = ({
       <ErrorBoundary>
         <GridWrapper reactGridId={reactGridId.current} style={{ position: "relative", ...rgProps.styles?.gridWrapper }}>
           <PanesRenderer
+            cells={cellMatrix.cells}
             rowAmount={cellMatrix.rows.length}
             columnAmount={cellMatrix.columns.length}
             stickyTopRows={stickyTopRows ?? 0}
