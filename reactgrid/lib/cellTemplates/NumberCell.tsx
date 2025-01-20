@@ -55,8 +55,8 @@ export const NumberCell: FC<NumberCellProps> = ({
       onTouchEnd={handleDoubleTouch}
       onStringValueRequested={() => initialValueStr}
       onStringValueReceived={(v) => {
-        const numValue = Number(v);
-        onValueChanged?.(isNaN(numValue) ? 0 : numValue);
+        const numValue = v === "" ? NaN : Number(v);
+        onValueChanged?.(numValue);
       }}
       style={style}
       onDoubleClick={() => {
