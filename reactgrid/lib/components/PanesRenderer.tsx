@@ -14,11 +14,12 @@ import { getCellArea } from "../utils/getCellArea";
 import { isSpanMember } from "../utils/isSpanMember";
 import { getValueFromPixelString } from "../utils/getValueFromPixelString";
 import { PaneShadow } from "./PaneShadow";
+import { Column, Row } from "../types/PublicModel";
 
 interface PanesRendererProps {
+  rows: Row[];
+  columns: Column[];
   cells: CellMap;
-  rowAmount: number;
-  columnAmount: number;
   stickyTopRows: number;
   stickyBottomRows: number;
   stickyLeftColumns: number;
@@ -26,9 +27,9 @@ interface PanesRendererProps {
 }
 
 const PanesRenderer: FC<PanesRendererProps> = ({
+  rows,
+  columns,
   cells,
-  rowAmount,
-  columnAmount,
   stickyTopRows,
   stickyBottomRows,
   stickyLeftColumns,
@@ -38,15 +39,16 @@ const PanesRenderer: FC<PanesRendererProps> = ({
   const store = reactGridStores()[id].getState();
 
   const theme = useTheme();
-  const rows = useReactGridStore(id, (store) => store.rows);
   const focusedLocation = useReactGridStore(id, (store) => store.focusedLocation);
-  const columns = useReactGridStore(id, (store) => store.columns);
 
   const setPaneRanges = useReactGridStore(id, (store) => store.setPaneRanges);
   const setRowMeasurements = useReactGridStore(id, (store) => store.setRowMeasurements);
   const setColMeasurements = useReactGridStore(id, (store) => store.setColMeasurements);
 
   const onCellFocused = useReactGridStore(id, (store) => store.onCellFocused);
+
+  const rowAmount = rows.length;
+  const columnAmount = columns.length;
 
   const ranges = useMemo(
     () => ({
