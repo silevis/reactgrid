@@ -15,6 +15,7 @@ export const TextCell: FC<TextCellProps> = ({ text: initialText, onTextChanged, 
   const targetInputRef = useRef<HTMLInputElement>(null);
   const [isEditMode, setEditMode] = useState(false);
   const [currentValue, setCurrentValue] = useState(initialText || "");
+  const escapePressedRef = useRef(false);
   const { handleDoubleTouch } = useDoubleTouch(ctx, setEditMode);
 
   useEffect(() => {
@@ -51,8 +52,13 @@ export const TextCell: FC<TextCellProps> = ({ text: initialText, onTextChanged, 
           value={currentValue}
           onChange={(e) => setCurrentValue(e.currentTarget.value)}
           onBlur={(e) => {
-            onTextChanged?.(e.currentTarget.value);
+            if (!escapePressedRef.current) {
+              onTextChanged?.(e.currentTarget.value);
+            }
             setEditMode(false);
+            if (escapePressedRef.current) {
+              escapePressedRef.current = false;
+            }
           }}
           onCut={(e) => e.stopPropagation()}
           onCopy={(e) => e.stopPropagation()}
@@ -64,9 +70,9 @@ export const TextCell: FC<TextCellProps> = ({ text: initialText, onTextChanged, 
               e.stopPropagation();
             }
             if (e.key === "Escape") {
+              escapePressedRef.current = true;
               setEditMode(false);
             } else if (e.key === "Enter") {
-              onTextChanged?.(e.currentTarget.value);
               setEditMode(false);
             }
           }}

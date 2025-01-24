@@ -29,6 +29,7 @@ export const NumberCell: FC<NumberCellProps> = ({
   const targetInputRef = useRef<HTMLInputElement>(null);
   const [isEditMode, setEditMode] = useState(false);
   const [currentValue, setCurrentValue] = useState(initialValueStr || "0");
+  const escapePressedRef = useRef(false);
   const { handleDoubleTouch } = useDoubleTouch(ctx, setEditMode);
 
   const isValid = validator ? validator(Number(initialValue)) : true;
@@ -89,9 +90,14 @@ export const NumberCell: FC<NumberCellProps> = ({
           }}
           onPointerDown={(e) => e.stopPropagation()}
           onBlur={(e) => {
-            const value = e.currentTarget.value.replace(/,/g, ".");
-            onValueChanged?.(Number(value));
+            if (!escapePressedRef.current) {
+              const value = e.currentTarget.value.replace(/,/g, ".");
+              onValueChanged?.(Number(value));
+            }
             setEditMode(false);
+            if (escapePressedRef.current) {
+              escapePressedRef.current = false;
+            }
           }}
           onCut={(e) => e.stopPropagation()}
           onCopy={(e) => e.stopPropagation()}
@@ -102,10 +108,9 @@ export const NumberCell: FC<NumberCellProps> = ({
               e.stopPropagation();
             }
             if (e.key === "Escape") {
+              escapePressedRef.current = true;
               setEditMode(false);
             } else if (e.key === "Enter") {
-              const value = e.currentTarget.value.replace(/,/g, ".");
-              onValueChanged?.(Number(value));
               setEditMode(false);
             }
           }}
