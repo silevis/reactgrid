@@ -28,7 +28,7 @@ export const NumberCell: FC<NumberCellProps> = ({
   const ctx = useCellContext();
   const targetInputRef = useRef<HTMLInputElement>(null);
   const [isEditMode, setEditMode] = useState(false);
-  const [currentValue, setCurrentValue] = useState(initialValueStr || "0");
+  const [currentValue, setCurrentValue] = useState({ value: initialValue, text: initialValueStr || "0" });
   const escapePressedRef = useRef(false);
   const { handleDoubleTouch } = useDoubleTouch(ctx, setEditMode);
 
@@ -36,17 +36,17 @@ export const NumberCell: FC<NumberCellProps> = ({
 
   // display the formatted value or error message
   const getFormattedValue = (): string => {
-    if (Number.isNaN(Number(initialValue)) || (hideZero && initialValue === 0)) return "";
-    if (format) return format.format(initialValue);
+    if (Number.isNaN(Number(currentValue.value)) || (hideZero && currentValue.value === 0)) return "";
+    if (format) return format.format(currentValue.value);
     if (!isValid && errorMessage) return errorMessage;
 
     // show the value as a string without any formatting
-    return initialValueStr;
+    return currentValue.text;
   };
 
   useEffect(() => {
-    setCurrentValue(initialValueStr);
-  }, [initialValue]);
+    setCurrentValue({ text: initialValueStr || "0", value: initialValue });
+  }, [initialValue, initialValueStr]);
 
   const numberKeys = "0123456789";
   const numberSeparators = [".", ","];
@@ -62,17 +62,17 @@ export const NumberCell: FC<NumberCellProps> = ({
       style={style}
       onDoubleClick={() => {
         if (ctx.isFocused) {
-          setCurrentValue(initialValueStr || "0");
+          setCurrentValue({ text: initialValueStr || "0", value: initialValue });
           setEditMode(true);
         }
       }}
       onKeyDown={(e) => {
         if ((!isEditMode && numberKeys.includes(e.key)) || (allowSeparators && numberSeparators.includes(e.key))) {
-          setCurrentValue("");
+          setCurrentValue({ text: "", value: NaN });
           setEditMode(true);
         } else if (!isEditMode && !ctx.isSelected && (e.key === "Enter" || e.key === "F2")) {
           e.stopPropagation();
-          setCurrentValue(initialValueStr || "0");
+          setCurrentValue({ text: initialValueStr || "0", value: initialValue });
           setEditMode(true);
         }
       }}
@@ -80,13 +80,13 @@ export const NumberCell: FC<NumberCellProps> = ({
       {isEditMode ? (
         <input
           className="rg-input"
-          value={currentValue}
+          value={currentValue.text}
           onChange={(e) => {
             let newValue = e.currentTarget.value.replace(allowSeparators ? /[^0-9,.]/g : /[^0-9]/g, "");
             if (numberSeparators.includes(newValue)) {
               newValue = "0" + newValue;
             }
-            setCurrentValue(newValue);
+            setCurrentValue({ text: newValue, value: Number(newValue) });
           }}
           onPointerDown={(e) => e.stopPropagation()}
           onBlur={(e) => {

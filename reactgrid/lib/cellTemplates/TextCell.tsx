@@ -80,7 +80,7 @@ export const TextCell: FC<TextCellProps> = ({ text: initialText, onTextChanged, 
           ref={targetInputRef}
         />
       ) : (
-        initialText
+        currentValue
       )}
     </CellWrapper>
   );
