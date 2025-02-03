@@ -8,14 +8,11 @@ import { getCellIndexesFromContainerElement } from "../utils/getCellIndexes.ts";
 import { getCellIndexesFromPointerLocation } from "../utils/getCellIndexesFromPointerLocation.ts";
 import { getLastRowMetrics } from "../utils/getLastRowMetrics.ts";
 import { getCellPaneOverlap } from "../utils/getCellPaneOverlap.ts";
-import isDevEnvironment from "../utils/isDevEnvironment.ts";
 import { scrollTowardsSticky } from "../utils/scrollTowardsSticky.ts";
 import { getHiddenFocusTargetLocation } from "../utils/getHiddenFocusTargetLocation.ts";
 import { getCellArea } from "../utils/getCellArea.ts";
 import { isCellInPane } from "../utils/isCellInPane.ts";
 import { checkRowHasSpannedCell } from "../utils/checkRowHasSpannedCell.ts";
-
-const devEnvironment = isDevEnvironment();
 
 let initialMouseYPos = 0;
 let mouseToCellTopBorderDistanceY = 0;
@@ -24,25 +21,25 @@ let destinationRowIdx = 0;
 export const RowReorderBehavior: Behavior = {
   id: "RowReorder",
   handlePointerDown: function (event, store) {
-    devEnvironment && console.log("RRB/handlePointerDown");
+    store.enableLogging && console.log("RRB/handlePointerDown");
 
     return store;
   },
 
   handlePointerMove: (event, store) => {
-    // devEnvironment && console.log("RRB/handlePointerMove");
+    store.enableLogging && console.log("RRB/handlePointerMove");
 
     return handlePointerMove(store, event);
   },
 
   handlePointerUp: function (event, store) {
-    devEnvironment && console.log("RRB/handlePointerUp");
+    store.enableLogging && console.log("RRB/handlePointerUp");
 
     return handlePointerUp(store, event);
   },
 
   handleFocus: (event, store) => {
-    devEnvironment && console.log("RRB/handleFocus");
+    store.enableLogging && console.log("RRB/handleFocus");
 
     const hiddenFocusTarget = document.activeElement;
     if (!hiddenFocusTarget) return store;
@@ -56,29 +53,29 @@ export const RowReorderBehavior: Behavior = {
   },
 
   handlePointerHold: function (event, store) {
-    devEnvironment && console.log("RRB/handlePointerHold");
+    store.enableLogging && console.log("RRB/handlePointerHold");
     return store;
   },
 
   handlePointerHoldTouch: function (event, store) {
-    devEnvironment && console.log("RRB/handlePointerHoldTouch");
+    store.enableLogging && console.log("RRB/handlePointerHoldTouch");
     return store;
   },
 
   handlePointerDownTouch: function (event, store) {
-    devEnvironment && console.log("RRB/handlePointerDownTouch");
+    store.enableLogging && console.log("RRB/handlePointerDownTouch");
 
     return store;
   },
 
   handlePointerMoveTouch: function (event, store) {
-    devEnvironment && console.log("RRB/handlePointerMoveTouch");
+    store.enableLogging && console.log("RRB/handlePointerMoveTouch");
 
     return handlePointerMove(store, event);
   },
 
   handlePointerUpTouch: function (event, store) {
-    devEnvironment && console.log("RRB/handlePointerUpTouch");
+    store.enableLogging && console.log("RRB/handlePointerUpTouch");
 
     return handlePointerUp(store, event);
   },

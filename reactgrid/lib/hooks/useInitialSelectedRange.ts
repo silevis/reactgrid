@@ -22,7 +22,7 @@ export const useInitialSelectedRange = (
           rgProps.initialFocusLocation.colIndex
         );
         if (!cell) {
-          devEnvironment && console.error("There is no cell with indexes passed in initialFocusLocation prop.");
+          store.enableLogging && console.error("There is no cell with indexes passed in initialFocusLocation prop.");
         }
       }
 

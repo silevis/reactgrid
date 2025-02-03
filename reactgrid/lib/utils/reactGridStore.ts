@@ -62,6 +62,7 @@ const DEFAULT_STORE_PROPS: ReactGridStoreProps = {
   linePosition: undefined,
   shadowPosition: undefined,
   shadowSize: undefined,
+  enableLogging: false,
   pointerStartIdx: { rowIndex: -1, colIndex: -1 }, // used for cell selection behavior
   currentBehavior: DefaultBehavior(),
 };

@@ -127,6 +127,8 @@ export interface ReactGridProps {
   disablePaste?: boolean;
   disableFillHandle?: boolean;
 
+  enableLogging?: boolean;
+
   behaviors?: Partial<Record<BehaviorId, Behavior>>;
 
   initialFocusLocation?: IndexedLocation;
