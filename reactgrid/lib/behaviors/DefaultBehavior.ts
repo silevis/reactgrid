@@ -5,6 +5,7 @@ import { getCellContainerFromPoint } from "../utils/getCellContainerFromPoint.ts
 import { getCellContainerLocation } from "../utils/getCellContainerLocation.ts";
 import { handleKeyDown } from "../utils/handleKeyDown.ts";
 import { isCellInRange } from "../utils/isCellInRange.ts";
+import isDevEnvironment from "../utils/isDevEnvironment.ts";
 import { getScrollableParent } from "../utils/scrollHelpers.ts";
 import { ColumnReorderBehavior } from "./ColumnReorderBehavior.ts";
 import { RowReorderBehavior } from "./RowReorderBehavior.ts";
@@ -21,12 +22,14 @@ import { getCellContainerByIndexes } from "../utils/getCellContainerByIndexes.ts
 import { areAreasEqual } from "../utils/areAreasEqual.ts";
 import { ReactGridStore } from "../types/ReactGridStore.ts";
 
+const devEnvironment = isDevEnvironment();
+
 let isShiftPressed = false;
 
 export const DefaultBehavior = (): Behavior => ({
   id: "Default",
   handlePointerDown: function (event, store) {
-    store.enableLogging && console.log("DB/handlePointerDown");
+    devEnvironment && console.log("DB/handlePointerDown");
 
     const cellContainer = getCellContainerFromPoint(event.clientX, event.clientY);
     if (!cellContainer) return store;
@@ -118,7 +121,7 @@ export const DefaultBehavior = (): Behavior => ({
   },
 
   handleFocus: (event, store) => {
-    store.enableLogging && console.log("DB/handleFocus");
+    devEnvironment && console.log("DB/handleFocus");
 
     const hiddenFocusTarget = document.activeElement;
     if (!hiddenFocusTarget) return store;
@@ -132,7 +135,7 @@ export const DefaultBehavior = (): Behavior => ({
   },
 
   handlePointerMove: (event, store) => {
-    store.enableLogging && console.log("DB/handlePointerMove");
+    devEnvironment && console.log("DB/handlePointerMove");
 
     const cell = store.getCellByIndexes(store.pointerStartIdx.rowIndex, store.pointerStartIdx.colIndex);
 
@@ -146,17 +149,17 @@ export const DefaultBehavior = (): Behavior => ({
   },
 
   handlePointerHold: function (event, store) {
-    store.enableLogging && console.log("DB/handlePointerHold");
+    devEnvironment && console.log("DB/handlePointerHold");
     return store;
   },
 
   handlePointerHoldTouch: function (event, store) {
-    store.enableLogging && console.log("DB/handlePointerHoldTouch");
+    devEnvironment && console.log("DB/handlePointerHoldTouch");
     return store;
   },
 
   handleKeyDown: function (event, store) {
-    store.enableLogging && console.log("DB/handleKeyDown");
+    devEnvironment && console.log("DB/handleKeyDown");
 
     if (event.key === "Shift") isShiftPressed = true;
 
@@ -164,7 +167,7 @@ export const DefaultBehavior = (): Behavior => ({
   },
 
   handleKeyUp: function (event, store) {
-    store.enableLogging && console.log("DB/handleKeyUp");
+    devEnvironment && console.log("DB/handleKeyUp");
 
     if (event.key === "Shift") isShiftPressed = false;
 
@@ -172,7 +175,7 @@ export const DefaultBehavior = (): Behavior => ({
   },
 
   handlePointerDownTouch: function (event, store) {
-    store.enableLogging && console.log("DB/handlePointerDownTouch");
+    devEnvironment && console.log("DB/handlePointerDownTouch");
 
     const { rowIndex, colIndex } = getCellIndexesFromPointerLocation(event.clientX, event.clientY);
 
@@ -241,7 +244,7 @@ export const DefaultBehavior = (): Behavior => ({
   },
 
   handlePointerMoveTouch: function (event, store) {
-    store.enableLogging && console.log("DB/handlePointerMoveTouch");
+    devEnvironment && console.log("DB/handlePointerMoveTouch");
 
     const shouldSelectEntireColumn = store.pointerStartIdx.rowIndex === 0 && store.enableColumnSelectionOnFirstRow;
     const shouldSelectEntireRow = store.pointerStartIdx.colIndex === 0 && store.enableRowSelectionOnFirstColumn;
@@ -264,7 +267,7 @@ export const DefaultBehavior = (): Behavior => ({
   },
 
   handlePointerUpTouch: function (event, store) {
-    store.enableLogging && console.log("DB/handlePointerUpTouch");
+    devEnvironment && console.log("DB/handlePointerUpTouch");
 
     const cellContainer = getCellContainerFromPoint(event.clientX, event.clientY);
     if (!cellContainer) return store;
@@ -302,7 +305,7 @@ export const DefaultBehavior = (): Behavior => ({
   },
 
   handleCopy: function (event, store) {
-    store.enableLogging && console.log("DB/handleCopy");
+    devEnvironment && console.log("DB/handleCopy");
 
     event.preventDefault();
 
@@ -334,7 +337,7 @@ export const DefaultBehavior = (): Behavior => ({
   },
 
   handleCut: function (event, store) {
-    store.enableLogging && console.log("DB/handleCut");
+    devEnvironment && console.log("DB/handleCut");
 
     event.preventDefault();
 
@@ -365,7 +368,7 @@ export const DefaultBehavior = (): Behavior => ({
   },
 
   handlePaste: function (event, store) {
-    store.enableLogging && console.log("DB/handlePaste");
+    devEnvironment && console.log("DB/handlePaste");
     event.preventDefault();
 
     const focusedCell = store.getCellByIndexes(store.focusedLocation.rowIndex, store.focusedLocation.colIndex);

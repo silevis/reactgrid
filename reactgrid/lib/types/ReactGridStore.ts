@@ -43,8 +43,6 @@ export interface ReactGridStoreProps {
   disablePaste?: boolean;
   disableFillHandle?: boolean;
 
-  enableLogging?: boolean;
-
   linePosition?: number;
   lineOrientation: "vertical" | "horizontal";
 

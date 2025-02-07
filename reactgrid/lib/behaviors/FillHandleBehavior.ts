@@ -6,41 +6,44 @@ import { ReactGridStore } from "../types/ReactGridStore";
 import { getCellArea } from "../utils/getCellArea";
 import { getFillDirection } from "../utils/getFillDirection";
 import { getFillSideLocation } from "../utils/getFillSideLocation";
+import isDevEnvironment from "../utils/isDevEnvironment";
 import { getCellIndexesFromPointerLocation } from "../utils/getCellIndexesFromPointerLocation";
 import { scrollTowardsSticky } from "../utils/scrollTowardsSticky";
 import { getPaneNameByCell } from "../utils/getPaneNameByCell";
 
+const devEnvironment = isDevEnvironment();
+
 export const FillHandleBehavior: Behavior = {
   id: "FillHandle",
   handlePointerDown: function (event, store) {
-    store.enableLogging && console.log("FHB/handlePointerDown");
+    devEnvironment && console.log("FHB/handlePointerDown");
     return store;
   },
   handlePointerMove: function (event, store) {
-    store.enableLogging && console.log("FHB/handlePointerMove");
+    devEnvironment && console.log("FHB/handlePointerMove");
 
     return handlePointerMove(store, event);
   },
   handlePointerUp: function (event, store) {
-    store.enableLogging && console.log("FHB/handlePointerUp");
+    devEnvironment && console.log("FHB/handlePointerUp");
 
     return handlePointerUp(store);
   },
 
   handlePointerDownTouch: function (event, store) {
-    store.enableLogging && console.log("FHB/handlePointerDownTouch");
+    devEnvironment && console.log("FHB/handlePointerDownTouch");
 
     return store;
   },
 
   handlePointerMoveTouch: function (event, store) {
-    store.enableLogging && console.log("FHB/handlePointerMoveTouch");
+    devEnvironment && console.log("FHB/handlePointerMoveTouch");
 
     return handlePointerMove(store, event);
   },
 
   handlePointerUpTouch: function (event, store) {
-    store.enableLogging && console.log("FHB/handlePointerUpTouch");
+    devEnvironment && console.log("FHB/handlePointerUpTouch");
 
     return handlePointerUp(store);
   },

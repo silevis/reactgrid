@@ -8,12 +8,15 @@ import { getCellIndexesFromContainerElement } from "../utils/getCellIndexes.ts";
 import { getCellIndexesFromPointerLocation } from "../utils/getCellIndexesFromPointerLocation.ts";
 import { getLastColumnMetrics } from "../utils/getLastColumnMetrics.ts";
 import { getCellPaneOverlap } from "../utils/getCellPaneOverlap.ts";
+import isDevEnvironment from "../utils/isDevEnvironment.ts";
 import { scrollTowardsSticky } from "../utils/scrollTowardsSticky.ts";
 import { getHiddenFocusTargetLocation } from "../utils/getHiddenFocusTargetLocation.ts";
 import { isCellInPane } from "../utils/isCellInPane.ts";
 import { checkColumnHasSpannedCell } from "../utils/checkColumnHasSpannedCell.ts";
 import { getTheme } from "../utils/getTheme.ts";
 import { getValueFromPixelString } from "../utils/getValueFromPixelString.ts";
+
+const devEnvironment = isDevEnvironment();
 
 let initialMouseXPos = 0;
 let mouseToCellLeftBorderDistanceX = 0;
@@ -22,30 +25,30 @@ let destinationColIdx = 0;
 export const ColumnReorderBehavior: Behavior = {
   id: "ColumnReorder",
   handlePointerDown: function (event, store) {
-    store.enableLogging && console.log("CRB/handlePointerDown");
+    devEnvironment && console.log("CRB/handlePointerDown");
 
     return store;
   },
 
   handlePointerMove: (event, store) => {
-    store.enableLogging && console.log("CRB/handlePointerMove");
+    devEnvironment && console.log("CRB/handlePointerMove");
 
     return handlePointerMove(store, event);
   },
 
   handlePointerUp: function (event, store) {
-    store.enableLogging && console.log("CRB/handlePointerUp");
+    devEnvironment && console.log("CRB/handlePointerUp");
 
     return handlePointerUp(store, event);
   },
 
   handlePointerHold: function (event, store) {
-    store.enableLogging && console.log("CRB/handlePointerHold");
+    devEnvironment && console.log("CRB/handlePointerHold");
     return store;
   },
 
   handleFocus: (event, store) => {
-    store.enableLogging && console.log("CRB/handleFocus");
+    devEnvironment && console.log("CRB/handleFocus");
 
     const hiddenFocusTarget = document.activeElement;
     if (!hiddenFocusTarget) return store;
@@ -59,24 +62,24 @@ export const ColumnReorderBehavior: Behavior = {
   },
 
   handlePointerHoldTouch: function (event, store) {
-    store.enableLogging && console.log("CRB/handlePointerHoldTouch");
+    devEnvironment && console.log("CRB/handlePointerHoldTouch");
     return store;
   },
 
   handlePointerDownTouch: function (event, store) {
-    store.enableLogging && console.log("CRB/handlePointerDownTouch");
+    devEnvironment && console.log("CRB/handlePointerDownTouch");
 
     return store;
   },
 
   handlePointerMoveTouch: function (event, store) {
-    store.enableLogging && console.log("CRB/handlePointerMoveTouch");
+    devEnvironment && console.log("CRB/handlePointerMoveTouch");
 
     return handlePointerMove(store, event);
   },
 
   handlePointerUpTouch: function (event, store) {
-    store.enableLogging && console.log("CRB/handlePointerUpTouch");
+    devEnvironment && console.log("CRB/handlePointerUpTouch");
 
     return handlePointerUp(store, event);
   },

@@ -1,6 +1,9 @@
 import { Behavior } from "../types/Behavior.ts";
 import { ReactGridStore } from "../types/ReactGridStore.ts";
 import { getValueFromPixelString } from "../utils/getValueFromPixelString.ts";
+import isDevEnvironment from "../utils/isDevEnvironment.ts";
+
+const devEnvironment = isDevEnvironment();
 
 let headerLeftPosition = 0;
 let initialPointerX = 0;
@@ -9,47 +12,47 @@ let initialHeaderWidth = 0;
 export const ResizeColumnBehavior: Behavior = {
   id: "ResizeColumn",
   handlePointerDown: function (event, store) {
-    store.enableLogging && console.log("RCB/handlePointerDown");
+    devEnvironment && console.log("RCB/handlePointerDown");
 
     return handlePointerDown(event, store);
   },
 
   handlePointerMove: (event, store) => {
-    store.enableLogging && console.log("RCB/handlePointerMove");
+    devEnvironment && console.log("RCB/handlePointerMove");
 
     return handlePointerMove(event, store);
   },
 
   handlePointerUp: function (event, store) {
-    store.enableLogging && console.log("RCB/handlePointerUp");
+    devEnvironment && console.log("RCB/handlePointerUp");
 
     return handlePointerUp(event, store);
   },
 
   handlePointerHold: function (event, store) {
-    store.enableLogging && console.log("RCB/handlePointerHold");
+    devEnvironment && console.log("RCB/handlePointerHold");
     return store;
   },
 
   handlePointerHoldTouch: function (event, store) {
-    store.enableLogging && console.log("RCB/handlePointerHoldTouch");
+    devEnvironment && console.log("RCB/handlePointerHoldTouch");
     return store;
   },
 
   handlePointerDownTouch: function (event, store) {
-    store.enableLogging && console.log("RCB/handlePointerDownTouch");
+    devEnvironment && console.log("RCB/handlePointerDownTouch");
 
     return handlePointerDown(event, store);
   },
 
   handlePointerMoveTouch: function (event, store) {
-    store.enableLogging && console.log("RCB/handlePointerMoveTouch");
+    devEnvironment && console.log("RCB/handlePointerMoveTouch");
 
     return handlePointerMove(event, store);
   },
 
   handlePointerUpTouch: function (event, store) {
-    store.enableLogging && console.log("RCB/handlePointerUpTouch");
+    devEnvironment && console.log("RCB/handlePointerUpTouch");
 
     return handlePointerUp(event, store);
   },

@@ -11,9 +11,12 @@ import { getCellIndexesFromPointerLocation } from "../utils/getCellIndexesFromPo
 import { getNonStickyCellContainer } from "../utils/getNonStickyCellContainer.ts";
 import { getPaneNameByCell } from "../utils/getPaneNameByCell.ts";
 import { isCellSticky } from "../utils/isCellSticky.ts";
+import isDevEnvironment from "../utils/isDevEnvironment.ts";
 import { scrollTowardsSticky } from "../utils/scrollTowardsSticky.ts";
 import { isSpanMember } from "../utils/isSpanMember.ts";
 import { getCellArea } from "../utils/getCellArea.ts";
+
+const devEnvironment = isDevEnvironment();
 
 /**
  * Tries to expand the selected area towards a target cell.
@@ -153,7 +156,7 @@ export const CellSelectionBehavior: Behavior = {
   id: "CellSelection",
 
   handlePointerMove(event, store) {
-    store.enableLogging && console.log("CSB/handlePointerMove");
+    devEnvironment && console.log("CSB/handlePointerMove");
 
     const { clientX, clientY } = event;
     const currentPointerIdx = getCellIndexesFromPointerLocation(clientX, clientY);
@@ -202,7 +205,7 @@ export const CellSelectionBehavior: Behavior = {
   },
 
   handlePointerUp(event, store) {
-    store.enableLogging && console.log("CSB/handlePointerUp");
+    devEnvironment && console.log("CSB/handlePointerUp");
 
     const DefaultBehavior = store.getBehavior("Default");
 
@@ -215,7 +218,7 @@ export const CellSelectionBehavior: Behavior = {
   },
 
   handlePointerDownTouch(event, store) {
-    store.enableLogging && console.log("CSB/handlePointerDownTouch");
+    devEnvironment && console.log("CSB/handlePointerDownTouch");
 
     const DefaultBehavior = store.getBehavior("Default");
 
@@ -226,7 +229,7 @@ export const CellSelectionBehavior: Behavior = {
   },
 
   handlePointerUpTouch(event, store) {
-    store.enableLogging && console.log("CSB/handlePointerUpTouch");
+    devEnvironment && console.log("CSB/handlePointerUpTouch");
 
     const DefaultBehavior = store.getBehavior("Default");
 
@@ -241,17 +244,17 @@ export const CellSelectionBehavior: Behavior = {
   },
 
   handlePointerHold: function (event, store) {
-    store.enableLogging && console.log("CSB/handlePointerHold");
+    devEnvironment && console.log("CSB/handlePointerHold");
     return store;
   },
 
   handlePointerHoldTouch: function (event, store) {
-    store.enableLogging && console.log("CSB/handlePointerHoldTouch");
+    devEnvironment && console.log("CSB/handlePointerHoldTouch");
     return store;
   },
 
   handlePointerMoveTouch(event, store) {
-    store.enableLogging && console.log("CSB/handlePointerMoveTouch");
+    devEnvironment && console.log("CSB/handlePointerMoveTouch");
 
     const { clientX, clientY } = event;
 
