@@ -13,6 +13,9 @@ export default defineConfig({
     dts({ include: ["lib"] }),
     cssInjectedByJsPlugin(),
   ],
+  esbuild: {
+    drop: ["console"],
+  },
   build: {
     lib: {
       entry: resolve(__dirname, "lib/main.ts"),
