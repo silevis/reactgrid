@@ -30,7 +30,7 @@ export const RowReorderBehavior: Behavior = {
   },
 
   handlePointerMove: (event, store) => {
-    // devEnvironment && console.log("RRB/handlePointerMove");
+    devEnvironment && console.log("RRB/handlePointerMove");
 
     return handlePointerMove(store, event);
   },
