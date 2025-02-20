@@ -112,11 +112,6 @@ const PanesRenderer: FC<PanesRendererProps> = ({
   }, [focusedLocation]);
 
   useEffect(() => {
-    console.log({
-      storeCells: store.cells,
-      cells: cells,
-    });
-
     cells?.forEach((cell) => {
       const cellArea = getCellArea(store, cell);
 
