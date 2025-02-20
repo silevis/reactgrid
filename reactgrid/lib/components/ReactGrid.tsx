@@ -1,20 +1,18 @@
-import { FC, useRef, useState } from "react";
+import { FC, useEffect, useRef, useState } from "react";
 import { ErrorBoundary } from "./ErrorBoundary";
 import GridWrapper from "./GridWrapper";
 import PanesRenderer from "./PanesRenderer";
 import { ReactGridIdProvider } from "./ReactGridIdProvider";
 import { ReactGridProps } from "../types/PublicModel";
 import isDevEnvironment from "../utils/isDevEnvironment";
-import { initReactGridStore, reactGridStores, useReactGridStore } from "../utils/reactGridStore";
-import { Line } from "./Line";
-import { Shadow } from "./Shadow";
-import { isReorderBehavior } from "../utils/isReorderBehavior";
+import { initReactGridStore, reactGridStores } from "../utils/reactGridStore";
 import { cellMatrixBuilder } from "../utils/cellMatrixBuilder";
 import { useDeepCompareMemo } from "../hooks/useDeepCompareMemo";
 import { useInitialFocusLocation } from "../hooks/useInitialFocusLocation";
 import { useInitialSelectedRange } from "../hooks/useInitialSelectedRange";
 import { v4 as uuidv4 } from "uuid";
 import { useReactGridSync } from "../hooks/useReactGridSync";
+import { ReactGridStore } from "../types/ReactGridStore";
 
 const devEnvironment = isDevEnvironment();
 
@@ -43,21 +41,25 @@ export const ReactGrid: FC<ReactGridProps> = ({
     });
   }, [rows, columns, cells]);
 
-  initReactGridStore(reactGridId.current, {
-    ...rgProps,
-    ...cellMatrix,
+  useEffect(() => {
+    initReactGridStore(reactGridId.current, {
+      ...rgProps,
+      ...cellMatrix,
+    });
   });
 
-  // access store in non-reactive way
-  const store = reactGridStores()[reactGridId.current].getState();
+  const store = reactGridStores()[reactGridId.current];
 
-  useReactGridSync(store, cellMatrix, rgProps);
+  let storeState: ReactGridStore | undefined;
 
-  useInitialSelectedRange(store, rgProps, devEnvironment);
-  useInitialFocusLocation(store, rgProps, devEnvironment);
+  if (store) {
+    storeState = store.getState();
+  }
 
-  const currentBehavior = useReactGridStore(reactGridId.current, (store) => store.currentBehavior);
-  const linePosition = useReactGridStore(reactGridId.current, (store) => store.linePosition);
+  useReactGridSync(storeState, cellMatrix, rgProps);
+
+  useInitialSelectedRange(storeState, rgProps, devEnvironment);
+  useInitialFocusLocation(storeState, rgProps, devEnvironment);
 
   const [bypassSizeWarning, setBypassSizeWarning] = useState(false);
 
@@ -75,6 +77,10 @@ export const ReactGrid: FC<ReactGridProps> = ({
     );
   }
 
+  if (!storeState) {
+    return null;
+  }
+
   return (
     <ReactGridIdProvider id={reactGridId.current}>
       <ErrorBoundary>
@@ -88,8 +94,6 @@ export const ReactGrid: FC<ReactGridProps> = ({
             stickyLeftColumns={stickyLeftColumns ?? 0}
             stickyRightColumns={stickyRightColumns ?? 0}
           />
-          {linePosition !== undefined && <Line />}
-          {isReorderBehavior(currentBehavior.id) && <Shadow />}
         </GridWrapper>
       </ErrorBoundary>
     </ReactGridIdProvider>
