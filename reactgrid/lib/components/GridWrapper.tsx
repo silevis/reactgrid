@@ -8,6 +8,9 @@ import { updateStoreWithApiAndEventHandler } from "../utils/updateStoreWithApiAn
 import { handlePointerDown } from "../controllers/handlePointerDown";
 import { Interpolation, Theme } from "@emotion/react";
 import { css as emotionCss } from "@emotion/react";
+import { isReorderBehavior } from "../utils/isReorderBehavior";
+import { Line } from "./Line";
+import { Shadow } from "./Shadow";
 
 interface GridWrapperProps {
   reactGridId: string;
@@ -23,6 +26,8 @@ const GridWrapper: FC<PropsWithChildren<GridWrapperProps>> = ({ reactGridId, sty
 
   const styledRanges = useReactGridStore(reactGridId, (store) => store.styledRanges);
   const [css, setCSS] = useState<Interpolation<Theme>>(emotionCss({}));
+
+  const linePosition = useReactGridStore(reactGridId, (store) => store.linePosition);
 
   useEffect(() => {
     if (reactGridElement.current) assignReactGridRef(reactGridElement.current);
@@ -41,29 +46,33 @@ const GridWrapper: FC<PropsWithChildren<GridWrapperProps>> = ({ reactGridId, sty
   }, [styledRanges.length]); // DO NOT USE ANYTHING RELATED TO STORE IN DEPENDENCY ARRAY!
 
   return (
-    <div
-      css={css}
-      id={`ReactGrid-${reactGridId}`}
-      className="ReactGrid"
-      ref={reactGridElement}
-      style={style}
-      onPointerDown={(e) => {
-        e.preventDefault();
-        handlePointerDown(e, store);
-      }}
-      onFocus={(e) => withStoreApi(e, currentBehavior?.handleFocus)}
-      onKeyDown={(e) => withStoreApi(e, currentBehavior?.handleKeyDown)}
-      onKeyUp={(e) => withStoreApi(e, currentBehavior?.handleKeyUp)}
-      onCompositionStart={(e) => withStoreApi(e, currentBehavior?.handleCompositionStart)}
-      onCompositionUpdate={(e) => withStoreApi(e, currentBehavior?.handleCompositionUpdate)}
-      onCompositionEnd={(e) => withStoreApi(e, currentBehavior?.handleCompositionEnd)}
-      onCut={(e) => withStoreApi(e, currentBehavior?.handleCut)}
-      onCopy={(e) => withStoreApi(e, currentBehavior?.handleCopy)}
-      onPaste={(e) => withStoreApi(e, currentBehavior?.handlePaste)}
-      onContextMenu={(e) => withStoreApi(e, currentBehavior?.handleContextMenu)}
-    >
-      {children}
-    </div>
+    <>
+      <div
+        css={css}
+        id={`ReactGrid-${reactGridId}`}
+        className="ReactGrid"
+        ref={reactGridElement}
+        style={style}
+        onPointerDown={(e) => {
+          e.preventDefault();
+          handlePointerDown(e, store);
+        }}
+        onFocus={(e) => withStoreApi(e, currentBehavior?.handleFocus)}
+        onKeyDown={(e) => withStoreApi(e, currentBehavior?.handleKeyDown)}
+        onKeyUp={(e) => withStoreApi(e, currentBehavior?.handleKeyUp)}
+        onCompositionStart={(e) => withStoreApi(e, currentBehavior?.handleCompositionStart)}
+        onCompositionUpdate={(e) => withStoreApi(e, currentBehavior?.handleCompositionUpdate)}
+        onCompositionEnd={(e) => withStoreApi(e, currentBehavior?.handleCompositionEnd)}
+        onCut={(e) => withStoreApi(e, currentBehavior?.handleCut)}
+        onCopy={(e) => withStoreApi(e, currentBehavior?.handleCopy)}
+        onPaste={(e) => withStoreApi(e, currentBehavior?.handlePaste)}
+        onContextMenu={(e) => withStoreApi(e, currentBehavior?.handleContextMenu)}
+      >
+        {children}
+        {linePosition !== undefined && <Line />}
+        {isReorderBehavior(currentBehavior.id) && <Shadow />}
+      </div>
+    </>
   );
 };
 

@@ -5,12 +5,12 @@ import { isSpanMember } from "../utils/isSpanMember";
 import { ReactGridStore } from "../types/ReactGridStore";
 
 export const useInitialFocusLocation = (
-  store: ReactGridStore,
+  store: ReactGridStore | undefined,
   rgProps: Partial<ReactGridProps>,
   devEnvironment: boolean
 ) => {
   useEffect(() => {
-    if (rgProps.initialFocusLocation) {
+    if (store && rgProps.initialFocusLocation) {
       const { rowIndex, colIndex } = rgProps.initialFocusLocation;
       const cell = store.getCellByIndexes(rowIndex, colIndex);
 

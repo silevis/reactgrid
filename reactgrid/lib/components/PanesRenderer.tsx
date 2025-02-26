@@ -1,5 +1,5 @@
 import { FC, useEffect, useMemo, useRef, useState } from "react";
-import { CellMap, StickyOffsets } from "../types/InternalModel";
+import { StickyOffsets } from "../types/InternalModel";
 import { reactGridStores, useReactGridStore } from "../utils/reactGridStore";
 import { useTheme } from "../hooks/useTheme";
 import { Pane } from "./Pane";
@@ -14,12 +14,8 @@ import { getCellArea } from "../utils/getCellArea";
 import { isSpanMember } from "../utils/isSpanMember";
 import { getValueFromPixelString } from "../utils/getValueFromPixelString";
 import { PaneShadow } from "./PaneShadow";
-import { Column, Row } from "../types/PublicModel";
 
 interface PanesRendererProps {
-  rows: Row[];
-  columns: Column[];
-  cells: CellMap;
   stickyTopRows: number;
   stickyBottomRows: number;
   stickyLeftColumns: number;
@@ -27,9 +23,6 @@ interface PanesRendererProps {
 }
 
 const PanesRenderer: FC<PanesRendererProps> = ({
-  rows,
-  columns,
-  cells,
   stickyTopRows,
   stickyBottomRows,
   stickyLeftColumns,
@@ -37,6 +30,10 @@ const PanesRenderer: FC<PanesRendererProps> = ({
 }) => {
   const id = useReactGridId();
   const store = reactGridStores()[id].getState();
+
+  const rows = useReactGridStore(id, (store) => store.rows);
+  const columns = useReactGridStore(id, (store) => store.columns);
+  const cells = useReactGridStore(id, (store) => store.cells);
 
   const theme = useTheme();
   const focusedLocation = useReactGridStore(id, (store) => store.focusedLocation);
