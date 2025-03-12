@@ -1,0 +1,188 @@
+.rg-celleditor-input {
+    width: 100%;
+    height: 100%;
+    border: 0;
+    padding: $template-padding;
+    margin: $template-margin;
+    background: $template-bg-color;
+    font-size: $template-font-size;
+    outline: none;
+}
+
+.rg-celleditor {
+    box-sizing: border-box;
+    z-index: 5;
+    background-color: $cell-editor-gb-color;
+    box-shadow: $cell-editor-shadow $cell-shadow-color;
+    display: flex;
+    border-style: solid;
+    border-color: $cell-editor-border-color;
+    border-width: $celleditor-border-width;
+    padding: $cell-padding;
+
+    .rg-input {
+        @extend .rg-celleditor-input;
+    }
+}
+
+.rg-number-celleditor input {
+    text-align: right;
+}
+
+.reactgrid-content .rg-pane .rg-cell {
+
+    &.rg-number-cell,
+    .rg-time-cell,
+    .rg-date-cell {
+        justify-content: flex-end;
+    }
+
+    &.rg-email-cell.rg-invalid {
+        color: $template-content-invalid;
+    }
+
+    &.rg-text-cell.placeholder {
+        color: #999;
+        font-size: 0.8em;
+    }
+
+    &.rg-checkbox-cell {
+        align-items: center;
+        justify-content: center;
+        padding: $template-padding;
+        margin: $template-margin;
+        background: $template-bg-color;
+        pointer-events: auto;
+
+        input {
+            width: $template-checkbox-size;
+            height: $template-checkbox-size;
+        }
+    }
+
+    &.rg-chevron-cell {
+        .chevron {
+            pointer-events: auto;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+            margin-right: $template-font-size * 0.1;
+            cursor: pointer;
+            transition: 200ms all ease-in-out;
+            height: $template-font-size;
+            width: $template-font-size;
+        }
+
+        .no-child {
+            width: 0.5em;
+        }
+
+        &.expanded .chevron {
+            transform: rotate(90deg);
+        }
+
+        &.collapsed .chevron {
+            transform: rotate(0deg);
+        }
+    }
+
+    &.rg-checkbox-cell {
+        justify-content: center;
+
+        label {
+            position: relative;
+            height: $checkbox-size;
+            width: $checkbox-size;
+            cursor: pointer;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+            margin: 0;
+        }
+
+        label input {
+            position: absolute;
+            opacity: 0;
+            cursor: pointer;
+            margin: 0;
+            height: $checkbox-size;
+            width: $checkbox-size;
+        }
+
+        span {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: $checkbox-size;
+            width: $checkbox-size;
+            background-color: $checkbox-unchecked;
+        }
+
+        label:hover input~span {
+            background-color: $checkbox-hover;
+        }
+
+        label input:checked~span {
+            background-color: $checkbox-checked;
+        }
+
+        span:after {
+            content: "";
+            position: absolute;
+            display: none;
+        }
+
+        label input:checked~span:after {
+            display: block;
+        }
+
+        label span:after {
+            left: 7px;
+            top: 2px;
+            width: 4px;
+            height: $checkbox-size - 6px;
+            border: solid $checkbox-mark;
+            border-width: 0 3px 3px 0;
+            -webkit-transform: rotate(45deg);
+            -ms-transform: rotate(45deg);
+            transform: rotate(45deg);
+        }
+    }
+
+    &.rg-dropdown-cell {
+        padding: 0;
+        overflow: visible;
+
+        .rg-dropdown-menu {
+            top: 100%;
+            background-color: $dropdown-menu-bg-color;
+            border-radius: 4px;
+            box-shadow: 0px 0px 7px rgba(0, 0, 0, 0.5);
+            margin-bottom: 8px;
+            margin-top: 2px;
+            position: absolute;
+            width: 100%;
+            z-index: 1;
+            box-sizing: border-box;
+        }
+
+        .rg-dropdown-option {
+            padding: 0.3em 0.5em;
+            min-height: 1.5em;
+            display: flex;
+            align-items: center;
+
+            &.selected::before {
+                content: "✓";
+                padding-right: 0.2em;
+            }
+
+            &.focused {
+                color: black;
+                background-color: $dropdown-focused-item-bg-color;
+            }
+        }
+    }
+}
