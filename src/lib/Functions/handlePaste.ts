@@ -51,6 +51,10 @@ export function handlePaste(event: ClipboardEvent, state: State): State {
   }
   
 function parseExcelDate(excelDate: string): Date | null {
+    const isDateString = excelDate.split('.').length > 2;
+    if(!isDateString) {
+      return null;
+    }
     const timestamp = Date.parse(excelDate);
     return isNaN(timestamp) ? null : new Date(timestamp);
 }
