@@ -1,7 +1,6 @@
 import { createContext, memo, useContext } from "react";
 import { Cell, CellContextType } from "../types/PublicModel";
 import { StickyOffsets } from "../types/InternalModel";
-import { deepCompare } from "../utils/deepCompare";
 
 interface CellContextProviderProps {
   rowIndex: number;
@@ -79,7 +78,7 @@ export const CellContextProvider = memo(
   (prev, next) => {
     return (
       !next.shouldRenderReorderedCells &&
-      deepCompare(prev.cell, next.cell) &&
+      prev.cell === next.cell &&
       prev.isSelected === next.isSelected &&
       prev.isFocused === next.isFocused &&
       prev.getCellOffset === next.getCellOffset
