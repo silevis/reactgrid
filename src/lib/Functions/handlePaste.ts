@@ -50,7 +50,21 @@ export function handlePaste(event: ClipboardEvent, state: State): State {
     return { ...pasteData(state, pastedRows) };
   }
   
-function parseExcelDate(excelDate: string): Date | null {
+  function parseExcelDate(excelDate: string): Date | null {
+    /*
+    Regular expression to match various date formats:
+    - YYYY-MM-DD
+    - MM/DD/YYYY
+    - DD.MM.YYYY
+    - DD-MM-YYYY
+    - YYYY.MM.DD
+    */
+    const dateRegex = /^\d{4}-\d{2}-\d{2}$|^\d{2}\/\d{2}\/\d{4}$|^\d{2}\.\d{2}\.\d{4}$|^\d{2}-\d{2}-\d{4}$|^\d{4}\.\d{2}\.\d{2}$/;
+
+    if (!dateRegex.test(excelDate)) {
+        return null;
+    }
+
     const timestamp = Date.parse(excelDate);
     return isNaN(timestamp) ? null : new Date(timestamp);
 }
