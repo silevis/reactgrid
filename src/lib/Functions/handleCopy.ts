@@ -1,13 +1,13 @@
 import { ClipboardEvent } from '../Model/domEventsTypes';
 import { State } from '../Model/State';
-import { getDataToCopy } from './getDataToCopy';
 import { getActiveSelectedRange } from './getActiveSelectedRange';
+import { getDataToCopy } from './getDataToCopy';
 import { isBrowserSafari } from './safari';
 
 export function handleCopy(event: ClipboardEvent, state: State, removeValues = false): State {
     const activeSelectedRange = getActiveSelectedRange(state);
     if (!activeSelectedRange) {
-      return state;
+        return state;
     }
     const { div } = getDataToCopy(state, activeSelectedRange, removeValues);
     copyDataCommands(event, state, div);
@@ -23,10 +23,14 @@ export function copyDataCommands(event: ClipboardEvent, state: State, div: HTMLD
         event.clipboardData.setData('text/html', div.innerHTML);
     } else if (supportNavigatorClipboard) {
         const clipboardItemData = {
-          'text/html': div.innerHTML,
+            'text/html': new Blob([div.innerHTML], { type: 'text/html' }),
+            'text/plain': new Blob([div.textContent || ''], { type: 'text/plain' }),
         };
         const clipboardItem = new ClipboardItem(clipboardItemData);
-        navigator.clipboard.write([clipboardItem]).then(() => ({}));
+    
+        navigator.clipboard.write([clipboardItem]).catch((error) => {
+            console.error("Error copying to clipboard: ", error);
+        });
     } else {
         document.body.appendChild(div);
         div.focus();
